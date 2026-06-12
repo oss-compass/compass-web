@@ -141,8 +141,8 @@ export const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
   if (status === PainStatus.NO_FIX_NEEDED) {
     return PainStatus.CONFIRMED_PENDING_FIX;
   }
-  if (status === PainStatus.RETESTED_FAILED) {
-    return PainStatus.CONFIRMED_PENDING_FIX;
+  if (status === PainStatus.RETESTING) {
+    return PainStatus.FIXED_PENDING_RETEST;
   }
   return Math.min(status, PainStatus.RETESTED_PASSED) as PainStatus;
 };
@@ -689,7 +689,7 @@ export const getModalStatusState = (
     latestFileKey,
     showRetestDecision:
       !isCurrentNonProjectIssue &&
-      currentStatus === PainStatus.RETESTING &&
+      currentStatus === PainStatus.FIXED_PENDING_RETEST &&
       !!latestFileKey,
   };
 };
@@ -710,6 +710,7 @@ export const shouldRenderCustomFooter = ({
   showHistory ||
   isReviewingHistoryStep ||
   isCurrentNonProjectIssue ||
+  currentStatus === PainStatus.RETESTED_FAILED ||
   currentStatus === PainStatus.FIXED_PENDING_RETEST ||
   (currentStatus >= PainStatus.RETESTING &&
     !showRetestDecision &&

@@ -61,6 +61,12 @@ export type TrendWindow =
   | { kind: 'weeks'; weeks: number }
   | { kind: 'range'; start: string; end: string };
 
+export type ScoreHistoryEntry = {
+  reportId: string;
+  date: string;
+  score: number;
+};
+
 export type RepoProgressRow = {
   id: string;
   name: string;
@@ -70,6 +76,7 @@ export type RepoProgressRow = {
   executionTime: number | null;
   latestReportId?: string;
   detailReportUrl?: string;
+  scoreHistory: ScoreHistoryEntry[];
   overall: MetricSummary;
   key: MetricSummary;
   issues: DashboardIssue[];

@@ -224,6 +224,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         executionTime: card.latestExecutionTime ?? null,
         latestReportId: card.latestReportId,
         detailReportUrl: card.detailReportUrl,
+        scoreHistory: card.scoreHistory ?? [],
         overall: metrics,
         key: metrics,
         issues,

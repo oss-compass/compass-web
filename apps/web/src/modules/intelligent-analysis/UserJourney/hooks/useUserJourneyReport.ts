@@ -41,15 +41,50 @@ const fetchUserJourneyReport = async (
  * 基于 react-query，相同 projectFileKey 只 fetch 一次，自动缓存与去重。
  */
 export const useUserJourneyReport = (
-  projectFileKey: UserJourneyProjectFileKey | undefined
+  projectFileKey: UserJourneyProjectFileKey | undefined,
+  options?: { enabled?: boolean }
 ) => {
   return useQuery({
     queryKey: ['userJourneyReport', projectFileKey],
     queryFn: async (): Promise<UserJourneyProjectData> => {
       return await fetchUserJourneyReport(projectFileKey!);
     },
-    enabled: !!projectFileKey,
+    enabled: (options?.enabled ?? true) && !!projectFileKey,
     staleTime: Infinity,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+};
+
+const fetchPreviewUserJourneyReport = async (
+  reviewId: string,
+  adminToken: string
+): Promise<UserJourneyProjectData> => {
+  const report = await compassApiFetch<BackendReportData>(
+    `/report-reviews/${encodeURIComponent(reviewId)}/preview-report`,
+    {
+      headers: { 'X-Admin-Token': adminToken },
+    }
+  );
+  return buildUserJourneyProjectData(report);
+};
+
+export const usePreviewUserJourneyReport = (
+  reviewId: string | undefined,
+  adminToken: string | undefined,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery({
+    queryKey: ['previewUserJourneyReport', reviewId],
+    queryFn: async (): Promise<UserJourneyProjectData> => {
+      return await fetchPreviewUserJourneyReport(reviewId!, adminToken!);
+    },
+    enabled:
+      (options?.enabled ?? true) &&
+      !!reviewId &&
+      !!adminToken &&
+      adminToken.trim().length > 0,
+    staleTime: 0,
     retry: false,
     refetchOnWindowFocus: false,
   });

@@ -22,6 +22,7 @@ type JourneyPanoramaSectionProps = {
   isLatestReport?: boolean;
   activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
+  previewMode?: boolean;
 };
 
 /* ─── 静态 task 定义 map ─── */
@@ -37,6 +38,7 @@ const TaskEvidenceCard: React.FC<{
   fileKey?: string;
   stepId?: string;
   isLatestReport?: boolean;
+  previewMode?: boolean;
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
 }> = ({
   taskId,
@@ -45,6 +47,7 @@ const TaskEvidenceCard: React.FC<{
   fileKey,
   stepId,
   isLatestReport = false,
+  previewMode = false,
   onStepClick,
 }) => {
   const def = TASK_DEF_MAP[taskId];
@@ -97,6 +100,7 @@ const TaskEvidenceCard: React.FC<{
           legacyStepId={stepId}
           onStepClick={onStepClick}
           isLatestReport={isLatestReport}
+          previewMode={previewMode}
         />
       </div>
     </div>
@@ -124,10 +128,13 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   isLatestReport = false,
   activeStepKey,
   onStepChange,
+  previewMode = false,
 }) => {
   const [detailExpanded, setDetailExpanded] = useState(true);
   const logData = useLogData(projectFileKey);
-  const { overviewPains } = usePainConfirmations(projectFileKey);
+  const { overviewPains } = usePainConfirmations(projectFileKey, {
+    enabled: !previewMode,
+  });
 
   // 由全景图内部 activeStepKey 反推 step
   const panoramaActiveStep = steps.find((s) => s.key === activeStepKey);
@@ -172,6 +179,9 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
               | undefined)
           : undefined;
 
+        if ((!overviewPains || overviewPains.length === 0) && previewMode) {
+          painCount += logTask?.evidence?.pain_points?.length ?? 0;
+        }
         obsCount += logTask?.evidence?.observations?.length ?? 0;
       }
       map[step.key] = { taskCount: ids.length, painCount, obsCount };
@@ -268,6 +278,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
                         fileKey={projectFileKey}
                         stepId={activeStep?.code}
                         isLatestReport={isLatestReport}
+                        previewMode={previewMode}
                         onStepClick={(toolIds, ctx) => {
                           // 1. 切换主视图步骤
                           onStepChange?.(activeStep.key);

@@ -28,6 +28,7 @@ type StepDetailCardProps = {
   };
   onPainFocusHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
+  previewMode?: boolean;
 };
 
 const StepDetailCard: React.FC<StepDetailCardProps> = ({
@@ -43,6 +44,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
   painFocusTarget,
   onPainFocusHandled,
   versionOptions,
+  previewMode = false,
 }) => {
   const achievementMetric = keyMetrics.find(
     (m) => m.metricId === 'SDX_TASK_ACHIEVEMENT_RATE'
@@ -226,6 +228,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
           {...(painFocusTarget ? { painFocusTarget } : {})}
           onPainFocusHandled={onPainFocusHandled}
           versionOptions={versionOptions}
+          previewMode={previewMode}
         />
       </div>
 

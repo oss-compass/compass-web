@@ -61,6 +61,7 @@ type ReportSummaryCardProps = {
   isLatestReport?: boolean;
   activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
+  previewMode?: boolean;
 };
 
 const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
@@ -75,6 +76,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
   isLatestReport = false,
   activeStepKey,
   onStepChange,
+  previewMode = false,
 }) => {
   const metadataItems = projectVersion
     ? [
@@ -192,6 +194,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         isLatestReport={isLatestReport}
         activeStepKey={activeStepKey}
         onStepChange={onStepChange}
+        previewMode={previewMode}
       />
     </Card>
   );

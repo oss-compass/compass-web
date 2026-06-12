@@ -8,10 +8,14 @@ import ReportSummaryCard from './components/ReportSummaryCard';
 import StepDetailCard from './components/StepDetailCard';
 import StepSidebar from './components/StepSidebar';
 import { UserJourneyProjectFileKey } from './rawData';
-import { useUserJourneyReport } from './hooks/useUserJourneyReport';
+import {
+  usePreviewUserJourneyReport,
+  useUserJourneyReport,
+} from './hooks/useUserJourneyReport';
 import {
   useRegistryData,
   resolveFileKeyFromRegistry,
+  type RegistryData,
 } from './hooks/useRegistryData';
 import { UserJourneyProjectView } from './types';
 
@@ -33,6 +37,332 @@ const getSingleQueryValue = (value: string | string[] | undefined) => {
   return value;
 };
 
+const getBooleanQueryValue = (value: string | string[] | undefined) => {
+  const normalized = getSingleQueryValue(value)?.trim().toLowerCase();
+  return normalized === '1' || normalized === 'true';
+};
+
+const resolveRequestedProjects = (
+  project: string | string[] | undefined,
+  registry: RegistryData | undefined
+): UserJourneyProjectFileKey[] => {
+  if (!registry) return [];
+
+  const normalizedProjects = getProjectQueryValues(project)
+    .map((item) => resolveFileKeyFromRegistry(item, registry))
+    .filter((item): item is string => item !== null)
+    .filter(
+      (item, index, currentProjects) => currentProjects.indexOf(item) === index
+    ) as UserJourneyProjectFileKey[];
+
+  if (normalizedProjects.length) {
+    return normalizedProjects.slice(0, 2);
+  }
+
+  return [registry.fallbackProject as UserJourneyProjectFileKey];
+};
+
+const getSelectedSigValue = (sig: string | string[] | undefined) => {
+  const sigQuery = getSingleQueryValue(sig);
+  return sigQuery === ALL_SIG_QUERY_VALUE ? '' : sigQuery;
+};
+
+const getOverviewHrefValue = (
+  orgQuery: string | string[] | undefined,
+  org?: string
+) => {
+  const orgValue = getSingleQueryValue(orgQuery)?.trim() || org?.trim();
+  return orgValue
+    ? `/intelligent-analysis/${encodeURIComponent(
+        orgValue
+      )}/community-experience/overview`
+    : '/intelligent-analysis/community-experience/overview';
+};
+
+const buildProjectViews = ({
+  previewMode,
+  previewProjectViews,
+  project0Key,
+  project0Data,
+  project1Key,
+  project1Data,
+}: {
+  previewMode: boolean;
+  previewProjectViews: UserJourneyProjectView[];
+  project0Key?: UserJourneyProjectFileKey;
+  project0Data?: UserJourneyProjectView['data'];
+  project1Key?: UserJourneyProjectFileKey;
+  project1Data?: UserJourneyProjectView['data'];
+}): UserJourneyProjectView[] => {
+  if (previewMode) {
+    return previewProjectViews;
+  }
+
+  const views: UserJourneyProjectView[] = [];
+  if (project0Key && project0Data) {
+    views.push({ queryKey: project0Key, data: project0Data });
+  }
+  if (project1Key && project1Data) {
+    views.push({ queryKey: project1Key, data: project1Data });
+  }
+  return views;
+};
+
+const getLoadingErrorMessage = ({
+  previewMode,
+  previewParamsReady,
+  isPreviewError,
+  isError0,
+}: {
+  previewMode: boolean;
+  previewParamsReady: boolean;
+  isPreviewError: boolean;
+  isError0: boolean;
+}) => {
+  if (!previewMode) {
+    return isError0 ? '报告数据加载失败' : null;
+  }
+  if (!previewParamsReady) {
+    return '缺少预览参数';
+  }
+  return isPreviewError ? '预发布报告加载失败' : null;
+};
+
+const getInitialProjectSelection = (projectViews: UserJourneyProjectView[]) => {
+  const firstProject = projectViews[0]?.data;
+  const firstStep = firstProject?.journeySteps[0];
+
+  if (!firstProject || !firstStep) {
+    return null;
+  }
+
+  const firstEvaluated = firstProject.journeySteps.find(
+    (step) => step.panoramaScore !== null && step.panoramaScore !== undefined
+  );
+
+  return {
+    developerType: firstProject.defaultDeveloperType,
+    journeyMode: firstProject.defaultJourneyMode,
+    defaultStepKey: (firstEvaluated ?? firstStep).key,
+  };
+};
+
+const findStepKeyByFocusTask = (
+  projectViews: UserJourneyProjectView[],
+  focusTaskId: string
+) => {
+  if (!focusTaskId) {
+    return '';
+  }
+
+  const primaryProject = projectViews[0]?.data;
+  const primaryMatch = primaryProject?.journeySteps.find((step) =>
+    (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
+  );
+  if (primaryMatch) {
+    return primaryMatch.key;
+  }
+
+  return (
+    projectViews
+      .map((project) => project.data)
+      .flatMap((project) => project.journeySteps)
+      .find((step) =>
+        (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
+      )?.key ?? ''
+  );
+};
+
+const getCurrentStep = (
+  primaryProject: UserJourneyProjectView['data'] | null,
+  activeStepKey: string
+) => {
+  if (!primaryProject) {
+    return null;
+  }
+
+  return (
+    primaryProject.journeySteps.find((step) => step.key === activeStepKey) ??
+    primaryProject.journeySteps[0] ??
+    null
+  );
+};
+
+const getProjectContext = ({
+  previewMode,
+  previewReviewId,
+  registry,
+  requestedProjects,
+  primaryProject,
+}: {
+  previewMode: boolean;
+  previewReviewId: string;
+  registry: RegistryData | undefined;
+  requestedProjects: UserJourneyProjectFileKey[];
+  primaryProject: UserJourneyProjectView['data'] | null;
+}) => {
+  const currentProjectFileKey = requestedProjects[0];
+  const effectiveProjectFileKey = previewMode
+    ? previewReviewId
+    : currentProjectFileKey;
+  const currentProjectKey = previewMode
+    ? primaryProject?.projectKey ?? ''
+    : registry?.fileKeyToProjectKey[currentProjectFileKey] ?? '';
+  const currentVersionOptions =
+    previewMode || !registry || !currentProjectKey
+      ? []
+      : registry.versionOptionsMap[currentProjectKey] ?? [];
+  const currentVersion = previewMode ? previewReviewId : currentProjectFileKey;
+  const isLatestReport =
+    !previewMode &&
+    !!registry &&
+    !!currentProjectKey &&
+    !!currentProjectFileKey &&
+    registry.defaultFileMap[currentProjectKey] === currentProjectFileKey;
+  const availableCompareProjects = (
+    registry?.compareProjectOptions ?? []
+  ).filter(
+    (option) =>
+      !requestedProjects.includes(option.value as UserJourneyProjectFileKey)
+  );
+
+  return {
+    effectiveProjectFileKey,
+    currentProjectKey,
+    currentVersionOptions,
+    currentVersion,
+    isLatestReport,
+    availableCompareProjects,
+  };
+};
+
+const getPainFocusTarget = ({
+  focusTaskId,
+  painId,
+  autoOpenPain,
+}: {
+  focusTaskId: string;
+  painId: string;
+  autoOpenPain: boolean;
+}) =>
+  !focusTaskId || !painId
+    ? undefined
+    : {
+        taskId: focusTaskId,
+        painId,
+        autoOpen: autoOpenPain,
+      };
+
+const useUserJourneyRouteState = (
+  router: ReturnType<typeof useRouter>,
+  previewMode: boolean,
+  org: string | undefined,
+  registry: RegistryData | undefined
+) => {
+  const previewReviewId = useMemo(
+    () => getSingleQueryValue(router.query.reviewId)?.trim() ?? '',
+    [router.query.reviewId]
+  );
+  const previewAdminToken = useMemo(
+    () => getSingleQueryValue(router.query.adminToken)?.trim() ?? '',
+    [router.query.adminToken]
+  );
+  const requestedProjects = useMemo(
+    () => resolveRequestedProjects(router.query.project, registry),
+    [registry, router.query.project]
+  );
+  const selectedSig = useMemo(
+    () => getSelectedSigValue(router.query.sig),
+    [router.query.sig]
+  );
+  const focusTaskId = useMemo(
+    () => getSingleQueryValue(router.query.focusTaskId)?.trim() ?? '',
+    [router.query.focusTaskId]
+  );
+  const painId = useMemo(
+    () => getSingleQueryValue(router.query.painId)?.trim() ?? '',
+    [router.query.painId]
+  );
+  const autoOpenPain = useMemo(
+    () => getBooleanQueryValue(router.query.autoOpenPain),
+    [router.query.autoOpenPain]
+  );
+  const overviewHref = useMemo(
+    () => getOverviewHrefValue(router.query.org, org),
+    [org, router.query.org]
+  );
+
+  return {
+    previewMode,
+    previewReviewId,
+    previewAdminToken,
+    requestedProjects,
+    selectedSig,
+    focusTaskId,
+    painId,
+    autoOpenPain,
+    overviewHref,
+  };
+};
+
+const useUserJourneySelectionState = (
+  projectViews: UserJourneyProjectView[],
+  focusTaskId: string
+) => {
+  const [activeStepKey, setActiveStepKey] = useState('');
+  const [ignoreFocusTaskLock, setIgnoreFocusTaskLock] = useState(false);
+  const [developerType, setDeveloperType] = useState('');
+  const [journeyMode, setJourneyMode] = useState('');
+  const initialSelection = useMemo(
+    () => getInitialProjectSelection(projectViews),
+    [projectViews]
+  );
+  const matchedFocusStepKey = useMemo(
+    () => findStepKeyByFocusTask(projectViews, focusTaskId),
+    [focusTaskId, projectViews]
+  );
+
+  useEffect(() => {
+    if (!initialSelection) {
+      return;
+    }
+
+    setDeveloperType(initialSelection.developerType);
+    setJourneyMode(initialSelection.journeyMode);
+    setActiveStepKey(initialSelection.defaultStepKey);
+  }, [initialSelection]);
+
+  useEffect(() => {
+    if (!focusTaskId) {
+      setIgnoreFocusTaskLock(false);
+    }
+  }, [focusTaskId]);
+
+  useEffect(() => {
+    if (
+      !focusTaskId ||
+      ignoreFocusTaskLock ||
+      !matchedFocusStepKey ||
+      matchedFocusStepKey === activeStepKey
+    ) {
+      return;
+    }
+
+    setActiveStepKey(matchedFocusStepKey);
+  }, [activeStepKey, focusTaskId, ignoreFocusTaskLock, matchedFocusStepKey]);
+
+  return {
+    activeStepKey,
+    setActiveStepKey,
+    ignoreFocusTaskLock,
+    setIgnoreFocusTaskLock,
+    developerType,
+    setDeveloperType,
+    journeyMode,
+    setJourneyMode,
+  };
+};
+
 type UserJourneyProps = {
   hidePageHeaderDeveloperControls?: boolean;
   transparentPageHeader?: boolean;
@@ -45,73 +375,23 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   org,
 }) => {
   const router = useRouter();
-  const registry = useRegistryData(org);
-
-  const normalizeRequestedProjects = useMemo(
-    () =>
-      (project: string | string[] | undefined): UserJourneyProjectFileKey[] => {
-        if (!registry) return [];
-
-        const normalizedProjects = getProjectQueryValues(project)
-          .map((item) => resolveFileKeyFromRegistry(item, registry))
-          .filter((item): item is string => item !== null)
-          .filter(
-            (item, index, currentProjects) =>
-              currentProjects.indexOf(item) === index
-          ) as UserJourneyProjectFileKey[];
-
-        if (normalizedProjects.length) {
-          return normalizedProjects.slice(0, 2);
-        }
-
-        // URL 无 project 参数时，使用 API 返回的默认项目
-        return [registry.fallbackProject as UserJourneyProjectFileKey];
-      },
-    [registry]
+  const previewMode = useMemo(
+    () => getBooleanQueryValue(router.query.preview),
+    [router.query.preview]
   );
-
-  const requestedProjectsRaw = useMemo(
-    () => normalizeRequestedProjects(router.query.project),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [router.query.project, normalizeRequestedProjects]
-  );
-  const requestedProjectsKey = requestedProjectsRaw.join(',');
-  const requestedProjects = useMemo(
-    () => requestedProjectsRaw,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [requestedProjectsKey]
-  );
-  const selectedSig = useMemo(() => {
-    const sigQuery = getSingleQueryValue(router.query.sig);
-    if (sigQuery === ALL_SIG_QUERY_VALUE) {
-      return '';
-    }
-    return sigQuery;
-  }, [router.query.sig]);
-  const focusTaskId = useMemo(
-    () => getSingleQueryValue(router.query.focusTaskId)?.trim() ?? '',
-    [router.query.focusTaskId]
-  );
-  const painId = useMemo(
-    () => getSingleQueryValue(router.query.painId)?.trim() ?? '',
-    [router.query.painId]
-  );
-  const autoOpenPain = useMemo(() => {
-    const raw = getSingleQueryValue(router.query.autoOpenPain);
-    return raw === '1' || raw === 'true';
-  }, [router.query.autoOpenPain]);
-  const overviewHref = useMemo(() => {
-    const orgValue =
-      getSingleQueryValue(router.query.org)?.trim() || org?.trim();
-    return orgValue
-      ? `/intelligent-analysis/${encodeURIComponent(
-          orgValue
-        )}/community-experience/overview`
-      : '/intelligent-analysis/community-experience/overview';
-  }, [org, router.query.org]);
-  const [activeStepKey, setActiveStepKey] = useState('');
-  const [developerType, setDeveloperType] = useState('');
-  const [journeyMode, setJourneyMode] = useState('');
+  const registry = useRegistryData(org, { enabled: !previewMode });
+  const {
+    previewReviewId,
+    previewAdminToken,
+    requestedProjects,
+    selectedSig,
+    focusTaskId,
+    painId,
+    autoOpenPain,
+    overviewHref,
+  } = useUserJourneyRouteState(router, previewMode, org, registry);
+  const previewParamsReady =
+    !previewMode || (!!previewReviewId && !!previewAdminToken);
 
   const project0Key = requestedProjects[0] as
     | UserJourneyProjectFileKey
@@ -119,109 +399,96 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   const project1Key = requestedProjects[1] as
     | UserJourneyProjectFileKey
     | undefined;
+  const reportQueryEnabled = router.isReady && !previewMode;
+  const previewQueryEnabled =
+    router.isReady && previewMode && previewParamsReady;
 
   const { data: project0Data, isError: isError0 } = useUserJourneyReport(
-    router.isReady ? project0Key : undefined
+    reportQueryEnabled ? project0Key : undefined,
+    { enabled: reportQueryEnabled }
   );
   const { data: project1Data } = useUserJourneyReport(
-    router.isReady ? project1Key : undefined
+    reportQueryEnabled ? project1Key : undefined,
+    { enabled: reportQueryEnabled }
+  );
+  const { data: previewProjectData, isError: isPreviewError } =
+    usePreviewUserJourneyReport(
+      previewQueryEnabled ? previewReviewId : undefined,
+      previewAdminToken,
+      { enabled: previewQueryEnabled }
+    );
+  const previewProjectViews = useMemo<UserJourneyProjectView[]>(
+    () =>
+      previewProjectData && previewReviewId
+        ? [{ queryKey: previewReviewId, data: previewProjectData }]
+        : [],
+    [previewProjectData, previewReviewId]
   );
 
-  const projectViews = useMemo<UserJourneyProjectView[]>(() => {
-    const views: UserJourneyProjectView[] = [];
-    if (project0Key && project0Data) {
-      views.push({ queryKey: project0Key, data: project0Data });
-    }
-    if (project1Key && project1Data) {
-      views.push({ queryKey: project1Key, data: project1Data });
-    }
-    return views;
-  }, [project0Key, project0Data, project1Key, project1Data]);
+  const projectViews = useMemo(
+    () =>
+      buildProjectViews({
+        previewMode,
+        previewProjectViews,
+        project0Key,
+        project0Data,
+        project1Key,
+        project1Data,
+      }),
+    [
+      previewMode,
+      previewProjectViews,
+      project0Key,
+      project0Data,
+      project1Key,
+      project1Data,
+    ]
+  );
+  const {
+    activeStepKey,
+    setActiveStepKey,
+    setIgnoreFocusTaskLock,
+    developerType,
+    setDeveloperType,
+    journeyMode,
+    setJourneyMode,
+  } = useUserJourneySelectionState(projectViews, focusTaskId);
 
   const compareMode = projectViews.length > 1;
   const primaryProject = projectViews[0]?.data ?? null;
-  const loadingError = isError0 ? '报告数据加载失败' : null;
-
-  useEffect(() => {
-    const firstProject = projectViews[0]?.data;
-    const firstStep = firstProject?.journeySteps[0];
-
-    if (!firstProject || !firstStep) {
-      return;
-    }
-
-    setDeveloperType(firstProject.defaultDeveloperType);
-    setJourneyMode(firstProject.defaultJourneyMode);
-
-    // 默认选中第一个有评估的步骤；若全部未评估则选第一个
-    const firstEvaluated = firstProject.journeySteps.find(
-      (s) => s.panoramaScore !== null && s.panoramaScore !== undefined
-    );
-    const defaultStepKey = (firstEvaluated ?? firstStep).key;
-
-    setActiveStepKey(defaultStepKey);
-  }, [projectViews]);
-
-  useEffect(() => {
-    if (!focusTaskId) {
-      return;
-    }
-
-    const matchedStep = projectViews
-      .map((project) => project.data)
-      .find(Boolean)
-      ?.journeySteps.find((step) =>
-        (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
-      );
-
-    const matchedAcrossProjects =
-      matchedStep ??
-      projectViews
-        .map((project) => project.data)
-        .flatMap((project) => project.journeySteps)
-        .find((step) =>
-          (step.executionPath ?? []).some((item) => item.taskId === focusTaskId)
-        );
-
-    if (matchedAcrossProjects && matchedAcrossProjects.key !== activeStepKey) {
-      setActiveStepKey(matchedAcrossProjects.key);
-    }
-  }, [activeStepKey, focusTaskId, projectViews]);
-
-  const currentStep = useMemo(() => {
-    if (!primaryProject) {
-      return null;
-    }
-
-    return (
-      primaryProject.journeySteps.find((step) => step.key === activeStepKey) ??
-      primaryProject.journeySteps[0] ??
-      null
-    );
-  }, [activeStepKey, primaryProject]);
+  const loadingError = getLoadingErrorMessage({
+    previewMode,
+    previewParamsReady,
+    isPreviewError,
+    isError0,
+  });
+  const currentStep = useMemo(
+    () => getCurrentStep(primaryProject, activeStepKey),
+    [activeStepKey, primaryProject]
+  );
 
   const headerProjects = projectViews.map((project) => ({
     queryKey: project.queryKey,
     name: project.data.projectInfo.name,
     version: project.data.projectInfo.version,
   }));
-  const currentProjectFileKey = requestedProjects[0];
-  const currentProjectKey =
-    registry?.fileKeyToProjectKey[currentProjectFileKey] ?? '';
-  const currentVersionOptions =
-    registry?.versionOptionsMap[currentProjectKey] ?? [];
-  const currentVersion = currentProjectFileKey;
-  const isLatestReport = useMemo(() => {
-    if (!registry || !currentProjectKey || !currentProjectFileKey) return false;
-    const latest = registry.defaultFileMap[currentProjectKey];
-    return !!latest && latest === currentProjectFileKey;
-  }, [currentProjectFileKey, currentProjectKey, registry]);
-
-  const availableCompareProjects = (
-    registry?.compareProjectOptions ?? []
-  ).filter(
-    (option) =>
-      !requestedProjects.includes(option.value as UserJourneyProjectFileKey)
+  const {
+    effectiveProjectFileKey,
+    currentProjectKey,
+    currentVersionOptions,
+    currentVersion,
+    isLatestReport,
+    availableCompareProjects,
+  } = useMemo(
+    () =>
+      getProjectContext({
+        previewMode,
+        previewReviewId,
+        registry,
+        requestedProjects,
+        primaryProject,
+      }),
+    [previewMode, previewReviewId, registry, requestedProjects, primaryProject]
   );
 
   const updateProjectsRoute = (
@@ -256,10 +523,10 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   };
 
   const handleAddProject = (projectKey: string) => {
-    const nextProjects = normalizeRequestedProjects([
-      ...requestedProjects,
-      projectKey,
-    ]);
+    const nextProjects = resolveRequestedProjects(
+      [...requestedProjects, projectKey],
+      registry
+    );
 
     updateProjectsRoute(nextProjects, { sig: selectedSig });
   };
@@ -315,9 +582,30 @@ const UserJourney: React.FC<UserJourneyProps> = ({
       undefined,
       {
         shallow: true,
+        scroll: false,
       }
     );
   }, [router]);
+
+  const handleStepChange = useCallback(
+    (nextStepKey: string) => {
+      if (focusTaskId || painId || autoOpenPain) {
+        setIgnoreFocusTaskLock(true);
+      }
+      setActiveStepKey(nextStepKey);
+      if (focusTaskId || painId || autoOpenPain) {
+        clearPainFocusQuery();
+      }
+    },
+    [
+      autoOpenPain,
+      clearPainFocusQuery,
+      focusTaskId,
+      painId,
+      setActiveStepKey,
+      setIgnoreFocusTaskLock,
+    ]
+  );
 
   if (
     !projectViews.length ||
@@ -333,14 +621,60 @@ const UserJourney: React.FC<UserJourneyProps> = ({
 
   const keyMetrics = currentStep?.metrics ?? [];
   const executionPathItems = currentStep?.executionPath ?? [];
-  const painFocusTarget =
-    !focusTaskId || !painId
-      ? undefined
-      : {
-          taskId: focusTaskId,
-          painId,
-          autoOpen: autoOpenPain,
-        };
+  const painFocusTarget = getPainFocusTarget({
+    focusTaskId,
+    painId,
+    autoOpenPain,
+  });
+
+  if (previewMode && currentStep) {
+    return (
+      <div className="min-h-full bg-[linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)]">
+        <div className="mx-auto flex min-h-screen max-w-[1520px] flex-col gap-5 p-5">
+          <ReportSummaryCard
+            projectName={primaryProject.projectInfo.name}
+            reportMetadata={primaryProject.reportMetadata}
+            overviewMetrics={primaryProject.overviewMetrics}
+            journeySteps={primaryProject.journeySteps}
+            reportUpdatedAt={primaryProject.reportUpdatedAt}
+            detailReportUrl={primaryProject.reportDetailUrl}
+            projectVersion={primaryProject.projectInfo.version}
+            projectFileKey={effectiveProjectFileKey}
+            isLatestReport={false}
+            activeStepKey={activeStepKey}
+            onStepChange={handleStepChange}
+            previewMode
+          />
+          <Row gutter={20} wrap={false} className="flex-1 items-stretch">
+            <Col flex="260px" className="min-w-[260px]">
+              <div className="sticky top-5">
+                <StepSidebar
+                  steps={primaryProject.journeySteps}
+                  activeStepKey={activeStepKey}
+                  onStepChange={handleStepChange}
+                />
+              </div>
+            </Col>
+            <Col flex="auto" className="flex min-w-0">
+              <StepDetailCard
+                currentStep={currentStep}
+                keyMetrics={keyMetrics}
+                painNarrative={
+                  currentStep.painNarrative || currentStep.painSummary
+                }
+                executionPathItems={executionPathItems}
+                agentVersion={primaryProject.agentVersion}
+                projectFileKey={effectiveProjectFileKey}
+                isLatestReport={false}
+                versionOptions={[]}
+                previewMode
+              />
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-full bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
@@ -373,12 +707,12 @@ const UserJourney: React.FC<UserJourneyProps> = ({
             <CompareReportSummary
               projects={projectViews}
               activeStepKey={activeStepKey}
-              onStepChange={setActiveStepKey}
+              onStepChange={handleStepChange}
             />
             <CompareStepSection
               projects={projectViews}
               activeStepKey={activeStepKey}
-              onStepChange={setActiveStepKey}
+              onStepChange={handleStepChange}
               stickyTop={0}
             />
           </>
@@ -392,10 +726,11 @@ const UserJourney: React.FC<UserJourneyProps> = ({
               reportUpdatedAt={primaryProject.reportUpdatedAt}
               detailReportUrl={primaryProject.reportDetailUrl}
               projectVersion={primaryProject.projectInfo.version}
-              projectFileKey={currentProjectFileKey}
+              projectFileKey={effectiveProjectFileKey}
               isLatestReport={isLatestReport}
               activeStepKey={activeStepKey}
-              onStepChange={setActiveStepKey}
+              onStepChange={handleStepChange}
+              previewMode={previewMode}
             />
 
             <Row gutter={20} wrap={false} className="flex-1 items-stretch">
@@ -404,7 +739,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                   <StepSidebar
                     steps={primaryProject.journeySteps}
                     activeStepKey={activeStepKey}
-                    onStepChange={setActiveStepKey}
+                    onStepChange={handleStepChange}
                   />
                 </div>
               </Col>
@@ -418,11 +753,12 @@ const UserJourney: React.FC<UserJourneyProps> = ({
                   }
                   executionPathItems={executionPathItems}
                   agentVersion={primaryProject.agentVersion}
-                  projectFileKey={currentProjectFileKey}
+                  projectFileKey={effectiveProjectFileKey}
                   isLatestReport={isLatestReport}
                   painFocusTarget={painFocusTarget}
                   onPainFocusHandled={clearPainFocusQuery}
                   versionOptions={currentVersionOptions}
+                  previewMode={previewMode}
                 />
               </Col>
             </Row>

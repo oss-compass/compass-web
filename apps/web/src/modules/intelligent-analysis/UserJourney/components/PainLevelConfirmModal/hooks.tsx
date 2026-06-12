@@ -11,6 +11,20 @@ import type { StepSnapshot } from './types';
 import { PainStatus } from './types';
 import { enrichPayloadByStatus, formatStatusTime } from './utils';
 
+export const DISPLAY_STEP_SEQUENCE: PainStatus[] = [
+  PainStatus.TO_BE_CONFIRMED,
+  PainStatus.CONFIRMED_PENDING_FIX,
+  PainStatus.FIXED_PENDING_RETEST,
+  PainStatus.RETESTED_PASSED,
+];
+
+export const RETEST_FAILED_STEP_SEQUENCE: PainStatus[] = [
+  PainStatus.TO_BE_CONFIRMED,
+  PainStatus.CONFIRMED_PENDING_FIX,
+  PainStatus.FIXED_PENDING_RETEST,
+  PainStatus.RETESTED_FAILED,
+];
+
 export const usePainConfirmationForm = ({
   stepId,
   painIndex,
@@ -82,6 +96,7 @@ export const useStepsItems = ({
   currentRecord,
   reviewStepSnapshotMap,
   setSelectedStep,
+  stepSequence = DISPLAY_STEP_SEQUENCE,
 }: {
   displayedStepStatus: number;
   isReviewingHistoryStep: boolean;
@@ -89,9 +104,10 @@ export const useStepsItems = ({
   currentRecord: PainConfirmationRecord | undefined;
   reviewStepSnapshotMap: Map<number, StepSnapshot | undefined>;
   setSelectedStep: (step: number | null) => void;
+  stepSequence?: PainStatus[];
 }) => {
   return useMemo(() => {
-    return [1, 2, 3, 4, 5].map((step) => {
+    return stepSequence.map((step) => {
       const isCurrentStep = step === displayedStepStatus;
       const canReviewStep = step < displayedStepStatus;
       const canBackToCurrent = isCurrentStep && isReviewingHistoryStep;
@@ -160,6 +176,7 @@ export const useStepsItems = ({
     isReviewingHistoryStep,
     reviewStepSnapshotMap,
     setSelectedStep,
+    stepSequence,
   ]);
 };
 

@@ -82,7 +82,10 @@ const transformBackendRegistry = (
  * 从后端 /registry 接口获取 registry 数据。
  * API 未完成时返回 undefined，调用方据此显示加载状态。
  */
-export const useRegistryData = (org?: string): RegistryData | undefined => {
+export const useRegistryData = (
+  org?: string,
+  options?: { enabled?: boolean }
+): RegistryData | undefined => {
   const { data } = useQuery({
     queryKey: ['userJourneyRegistry', org],
     queryFn: async (): Promise<RegistryData> => {
@@ -92,6 +95,7 @@ export const useRegistryData = (org?: string): RegistryData | undefined => {
       const res = await compassApiFetch<BackendRegistryResponse>(path);
       return transformBackendRegistry(res);
     },
+    enabled: options?.enabled ?? true,
     staleTime: 5 * 60 * 1000, // 5 分钟缓存
     retry: 1,
     refetchOnWindowFocus: false,

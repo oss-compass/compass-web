@@ -1680,7 +1680,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .overview-close-rate-value {
-      min-width: 56px;
+      min-width: 36px;
       text-align: left;
       font-variant-numeric: tabular-nums;
     }

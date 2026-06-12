@@ -8,6 +8,8 @@ type CloseRateSparklineProps = {
   width?: number;
   height?: number;
   stroke?: string;
+  minValue?: number;
+  maxValue?: number;
 };
 
 const buildLinePath = (
@@ -26,7 +28,12 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
   width = 38,
   height = 30,
   stroke = OJ_TREND_COLORS.line,
+  minValue = 0,
+  maxValue = 100,
 }) => {
+  const validValues = values.filter(
+    (value): value is number => value != null && Number.isFinite(value)
+  );
   const gradientId = React.useId();
   const w = Math.max(10, width);
   const h = Math.max(10, height);
@@ -35,6 +42,11 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
   const innerH = h - padding * 2;
   const n = values.length;
   const step = n > 1 ? innerW / (n - 1) : 0;
+  const derivedMin = validValues.length ? Math.min(...validValues) : minValue;
+  const derivedMax = validValues.length ? Math.max(...validValues) : maxValue;
+  const lower = Math.min(minValue, derivedMin);
+  const upper = Math.max(maxValue, derivedMax);
+  const range = Math.max(upper - lower, 1);
 
   const segments: Array<Array<{ x: number; y: number }>> = [];
   let current: Array<{ x: number; y: number }> = [];
@@ -46,8 +58,8 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
       current = [];
       return;
     }
-    const clamped = Math.max(0, Math.min(100, value));
-    const y = padding + innerH - (clamped / 100) * innerH;
+    const clamped = Math.max(lower, Math.min(upper, value));
+    const y = padding + innerH - ((clamped - lower) / range) * innerH;
     current.push({ x, y });
   });
   if (current.length) segments.push(current);
@@ -95,6 +107,37 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
         );
       })}
     </svg>
+  );
+};
+
+type ScoreSparklineProps = {
+  values: Array<number | null>;
+  width?: number;
+  height?: number;
+};
+
+export const ScoreSparkline: React.FC<ScoreSparklineProps> = ({
+  values,
+  width = 38,
+  height = 30,
+}) => {
+  const validValues = values.filter(
+    (value): value is number => value != null && Number.isFinite(value)
+  );
+  const minValue = validValues.length
+    ? Math.max(0, Math.min(...validValues) - 0.3)
+    : 0;
+  const maxValue = validValues.length ? Math.max(...validValues) + 0.3 : 5;
+
+  return (
+    <CloseRateSparkline
+      values={values}
+      width={width}
+      height={height}
+      stroke="#2563EB"
+      minValue={minValue}
+      maxValue={maxValue}
+    />
   );
 };
 

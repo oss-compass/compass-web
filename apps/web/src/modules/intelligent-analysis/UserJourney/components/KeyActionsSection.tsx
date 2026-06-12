@@ -38,6 +38,7 @@ type KeyActionsSectionProps = {
   };
   onPainFocusHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
+  previewMode?: boolean;
 };
 
 /* ─── 静态 task 定义 map ─── */
@@ -256,6 +257,7 @@ const EvidenceInline: React.FC<{
   onPainFocusHandled?: () => void;
   isLatestReport?: boolean;
   versionOptions?: Array<{ value: string; label: string }>;
+  previewMode?: boolean;
 }> = ({
   observations,
   pain_points,
@@ -269,6 +271,7 @@ const EvidenceInline: React.FC<{
   onPainFocusHandled,
   isLatestReport = false,
   versionOptions,
+  previewMode = false,
 }) => {
   const hasObs = observations && observations.length > 0;
   const hasPain = pain_points && pain_points.length > 0;
@@ -299,6 +302,7 @@ const EvidenceInline: React.FC<{
         onPainFocusHandled={onPainFocusHandled}
         isLatestReport={isLatestReport}
         versionOptions={versionOptions}
+        previewMode={previewMode}
       />
     </div>
   );
@@ -321,6 +325,7 @@ const EvidenceBlock: React.FC<{
   onPainFocusHandled?: () => void;
   isLatestReport?: boolean;
   versionOptions?: Array<{ value: string; label: string }>;
+  previewMode?: boolean;
 }> = ({
   observations,
   pain_points,
@@ -334,6 +339,7 @@ const EvidenceBlock: React.FC<{
   onPainFocusHandled,
   isLatestReport = false,
   versionOptions,
+  previewMode = false,
 }) => {
   const [open, setOpen] = useState(false);
   const hasData =
@@ -383,6 +389,7 @@ const EvidenceBlock: React.FC<{
             onPainFocusHandled={onPainFocusHandled}
             isLatestReport={isLatestReport}
             versionOptions={versionOptions}
+            previewMode={previewMode}
           />
         </div>
       )}
@@ -766,6 +773,7 @@ const TaskCard: React.FC<{
   };
   onPainFocusHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
+  previewMode?: boolean;
 }> = ({
   taskId,
   rows,
@@ -780,6 +788,7 @@ const TaskCard: React.FC<{
   painFocusTarget,
   onPainFocusHandled,
   versionOptions,
+  previewMode = false,
 }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
 
@@ -867,6 +876,7 @@ const TaskCard: React.FC<{
             onPainFocusHandled={onPainFocusHandled}
             isLatestReport={isLatestReport}
             versionOptions={versionOptions}
+            previewMode={previewMode}
           />
         </div>
       ) : null}
@@ -900,6 +910,7 @@ const TaskCard: React.FC<{
             onPainFocusHandled={onPainFocusHandled}
             isLatestReport={isLatestReport}
             versionOptions={versionOptions}
+            previewMode={previewMode}
           />
         </div>
       )}
@@ -917,6 +928,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   painFocusTarget,
   onPainFocusHandled,
   versionOptions,
+  previewMode = false,
 }) => {
   const logData = useLogData(projectFileKey);
   const [highlightedInfo, setHighlightedInfo] = useState<{
@@ -1042,6 +1054,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 projectFileKey={projectFileKey}
                 stepCode={stepCode}
                 isLatestReport={isLatestReport}
+                previewMode={previewMode}
                 highlightedIndices={
                   highlightedInfo?.tableKey === tableKey
                     ? highlightedInfo.indices

@@ -88,8 +88,12 @@ export const NonProjectIssueInfo: React.FC<{
 
 export const RetestPassedInfo: React.FC<{
   currentRecord?: PainConfirmationRecord | null;
+  fileKey: string;
+  focusTaskId: string;
+  versionOptions?: VersionOption[];
   parentPainRemark?: string | null;
-}> = ({ currentRecord }) => {
+}> = ({ currentRecord, fileKey, focusTaskId, versionOptions }) => {
+  const router = useRouter();
   const prLinkValue = String(currentRecord?.pr_link || '').trim();
   const showPrLinkAsAnchor =
     prLinkValue !== FALLBACK_LINK_TEXT &&
@@ -102,6 +106,20 @@ export const RetestPassedInfo: React.FC<{
         currentRecord?.latest_file_key ||
         ''
     ).trim() || '';
+  const latestVersionLabel = getVersionLabelByFileKey(
+    versionOptions,
+    retestReportId
+  );
+  const canCompare =
+    !!retestReportId && !!fileKey && String(retestReportId) !== String(fileKey);
+  const compareHref = canCompare
+    ? `/intelligent-analysis/community-experience?project=${encodeURIComponent(
+        retestReportId
+      )}&project=${encodeURIComponent(
+        fileKey
+      )}&focusTaskId=${encodeURIComponent(focusTaskId)}`
+    : '';
+  const compareLeftLabel = latestVersionLabel || retestReportId;
 
   return (
     <div className="space-y-3 rounded-md bg-emerald-50 p-4">
@@ -149,17 +167,29 @@ export const RetestPassedInfo: React.FC<{
             <span>{FALLBACK_LINK_TEXT}</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
           <span className="shrink-0 text-xs text-slate-400">复测报告ID：</span>
           {retestReportId ? (
-            <Link
-              href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
-                retestReportId
-              )}`}
-              className="text-blue-600 hover:text-blue-800"
-            >
-              {retestReportId}
-            </Link>
+            <>
+              <span className="font-mono font-medium text-slate-700">
+                {compareLeftLabel}
+              </span>
+              <span className="text-slate-300">·</span>
+              {compareHref ? (
+                <button
+                  type="button"
+                  className="text-blue-600 hover:text-blue-700 hover:underline"
+                  aria-label="查看对比报告"
+                  onClick={() => router.push(compareHref)}
+                >
+                  查看对比报告
+                </button>
+              ) : (
+                <span className="cursor-not-allowed text-slate-300">
+                  查看对比报告
+                </span>
+              )}
+            </>
           ) : (
             <span>{FALLBACK_LINK_TEXT}</span>
           )}
@@ -176,6 +206,90 @@ export const RetestPassedInfo: React.FC<{
             <span>{formatStatusTime(currentRecord.confirmed_at)}</span>
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
+export const RetestFailedInfo: React.FC<{
+  currentRecord?: PainConfirmationRecord | null;
+  fileKey: string;
+  focusTaskId: string;
+  versionOptions?: VersionOption[];
+}> = ({ currentRecord, fileKey, focusTaskId, versionOptions }) => {
+  const router = useRouter();
+  const actionReason = getActionReasonText(currentRecord) || FALLBACK_LINK_TEXT;
+  const latestFileKey = String(currentRecord?.latest_file_key || '').trim();
+  const latestVersionLabel = getVersionLabelByFileKey(
+    versionOptions,
+    latestFileKey
+  );
+  const canCompare =
+    !!latestFileKey && !!fileKey && String(latestFileKey) !== String(fileKey);
+  const compareHref = canCompare
+    ? `/intelligent-analysis/community-experience?project=${encodeURIComponent(
+        latestFileKey
+      )}&project=${encodeURIComponent(
+        fileKey
+      )}&focusTaskId=${encodeURIComponent(focusTaskId)}`
+    : '';
+  const compareLeftLabel = latestVersionLabel || latestFileKey;
+
+  return (
+    <div className="space-y-3 rounded-md border border-rose-200 bg-rose-50 p-4">
+      <div className="flex items-center gap-2">
+        <span className="inline-block h-2 w-2 rounded-full bg-rose-500" />
+        <Text strong className="!text-rose-700">
+          复测不通过
+        </Text>
+      </div>
+      <div className="space-y-1.5 text-sm text-slate-600">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-slate-400">不通过原因</span>
+          <div className="rounded-md bg-white/80 px-3 py-2 leading-6 text-slate-700">
+            {actionReason}
+          </div>
+        </div>
+        {latestFileKey ? (
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+            <span className="shrink-0 text-xs text-slate-400">
+              关联新报告：
+            </span>
+            <span className="font-mono font-medium text-slate-700">
+              {compareLeftLabel}
+            </span>
+            <span className="text-slate-300">·</span>
+            {compareHref ? (
+              <button
+                type="button"
+                className="text-blue-600 hover:text-blue-700 hover:underline"
+                aria-label="查看对比报告"
+                onClick={() => router.push(compareHref)}
+              >
+                查看对比报告
+              </button>
+            ) : (
+              <span className="cursor-not-allowed text-slate-300">
+                查看对比报告
+              </span>
+            )}
+          </div>
+        ) : null}
+        {currentRecord?.confirmed_by && (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">操作人：</span>
+            <span>{currentRecord.confirmed_by}</span>
+          </div>
+        )}
+        {currentRecord?.confirmed_at && (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">操作时间：</span>
+            <span>{formatStatusTime(currentRecord.confirmed_at)}</span>
+          </div>
+        )}
+        <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-6 text-amber-800">
+          说明：该痛点已被归档，将不在总览看板中单独统计，仅在详细报告中记录，请关注新报告中的对应痛点。
+        </div>
       </div>
     </div>
   );
@@ -621,7 +735,7 @@ export const RetestingFormItems: React.FC<{
   return (
     <div className="rounded-md bg-amber-50 p-4 text-center">
       <Text type="warning" strong>
-        等待复测中，系统检测到最新报告后将自动进入待确认
+        等待复测中，检测到最新报告后可直接提交复测结论
       </Text>
     </div>
   );
@@ -696,7 +810,7 @@ export const FixedPendingRetestInfo: React.FC = () => (
       等待复测中
     </Text>
     <div className="mt-1 text-xs text-slate-500">
-      检测到最新报告更新后会自动进入已复测待确认
+      检测到最新报告后可直接提交复测结论
     </div>
   </div>
 );
@@ -718,9 +832,8 @@ const shouldShowConfirmedPendingFixForm = ({
 }: PainConfirmationFormVisibilityArgs) =>
   isReviewingHistoryStep
     ? activeDisplayStep === PainStatus.CONFIRMED_PENDING_FIX
-    : (!isCurrentNonProjectIssue &&
-        currentStatus === PainStatus.CONFIRMED_PENDING_FIX) ||
-      currentStatus === PainStatus.RETESTED_FAILED;
+    : !isCurrentNonProjectIssue &&
+      currentStatus === PainStatus.CONFIRMED_PENDING_FIX;
 
 const shouldShowFixedPendingRetestInfo = ({
   isReviewingHistoryStep,
@@ -748,9 +861,8 @@ const shouldShowConfirmedByField = ({
 }: PainConfirmationFormVisibilityArgs) =>
   isReviewingHistoryStep
     ? activeDisplayStep <= PainStatus.CONFIRMED_PENDING_FIX
-    : (!isCurrentNonProjectIssue &&
-        currentStatus <= PainStatus.CONFIRMED_PENDING_FIX) ||
-      currentStatus === PainStatus.RETESTED_FAILED;
+    : !isCurrentNonProjectIssue &&
+      currentStatus <= PainStatus.CONFIRMED_PENDING_FIX;
 
 export const PainConfirmationForm: React.FC<{
   form: FormInstance<FormValues>;
@@ -802,10 +914,13 @@ export const PainConfirmationForm: React.FC<{
     shouldShowConfirmedPendingFixForm(visibilityArgs);
   const showFixedPendingRetestInfo =
     shouldShowFixedPendingRetestInfo(visibilityArgs);
-  const showRetestingForm = shouldShowRetestingForm(visibilityArgs);
+  const showRetestingForm =
+    showRetestDecision || shouldShowRetestingForm(visibilityArgs);
   const showConfirmedByField = shouldShowConfirmedByField(visibilityArgs);
   const showNonProjectIssueInfo =
     !isReviewingHistoryStep && isCurrentNonProjectIssue;
+  const showRetestFailedInfo =
+    !isReviewingHistoryStep && currentStatus === PainStatus.RETESTED_FAILED;
   const showRetestPassedInfo =
     !isReviewingHistoryStep && currentStatus === PainStatus.RETESTED_PASSED;
   const retestingFormShowRetestDecision = isReviewingHistoryStep
@@ -858,9 +973,21 @@ export const PainConfirmationForm: React.FC<{
         <NonProjectIssueInfo currentRecord={currentRecord} />
       )}
 
+      {showRetestFailedInfo && (
+        <RetestFailedInfo
+          currentRecord={currentRecord}
+          fileKey={fileKey}
+          focusTaskId={focusTaskId}
+          versionOptions={versionOptions}
+        />
+      )}
+
       {showRetestPassedInfo && (
         <RetestPassedInfo
           currentRecord={currentRecord}
+          fileKey={fileKey}
+          focusTaskId={focusTaskId}
+          versionOptions={versionOptions}
           parentPainRemark={parentPainRemark}
         />
       )}
@@ -952,6 +1079,14 @@ export const ModalFooter: React.FC<{
           关闭
         </Button>
       </div>
+    );
+  }
+
+  if (currentStatus === PainStatus.RETESTED_FAILED) {
+    return (
+      <Button key="close-retest-failed" onClick={onCancel}>
+        关闭
+      </Button>
     );
   }
 

@@ -11,9 +11,12 @@ import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
 import { IssueProgressBar } from './ProgressComponents';
 import CloseRateTrendModal from './CloseRateTrendModal';
-import { CloseRateSparkline } from './CloseRateTrendChart';
+import ScoreTrendModal from './ScoreTrendModal';
+import { CloseRateSparkline, ScoreSparkline } from './CloseRateTrendChart';
 import { buildCloseRateTrend } from './closeRateTrend';
 import type { CloseRateTrendPoint } from './closeRateTrend';
+import { buildScoreTrend, buildTeamScoreTrend } from './scoreTrend';
+import type { ScoreTrendPoint } from './scoreTrend';
 import type {
   DashboardIssue,
   IssueBucket,
@@ -317,7 +320,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rw(40, 30),
       rw(80, 70),
       rw(60, 50),
-      rw(70, 60),
+      rw(96, 84),
       rw(70, 60),
       rw(70, 60),
       rw(160, 140),
@@ -333,7 +336,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rw(40, 30),
       rw(80, 70),
       rw(60, 50),
-      rw(70, 60),
+      rw(96, 84),
       rw(70, 60),
       rw(70, 60),
       rw(160, 140),
@@ -353,6 +356,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     open: boolean;
     title: string;
     points: CloseRateTrendPoint[];
+  }>({ open: false, title: '', points: [] });
+  const [scoreTrendModal, setScoreTrendModal] = useState<{
+    open: boolean;
+    title: string;
+    points: ScoreTrendPoint[];
   }>({ open: false, title: '', points: [] });
 
   const [severityFilters, setSeverityFilters] = useState<KnownSeverity[]>(() =>
@@ -386,6 +394,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         issues: DashboardIssue[];
         metrics: MetricSummary;
         trend: CloseRateTrendPoint[];
+        scoreTrend: ScoreTrendPoint[];
       }
     >();
     repoRows.forEach((row) => {
@@ -394,6 +403,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         issues,
         metrics: buildMetricSummaryFromPainRows(issues),
         trend: buildCloseRateTrend(issues, 7),
+        scoreTrend: buildScoreTrend(row.scoreHistory, 7),
       });
     });
     return map;
@@ -406,6 +416,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         issues: DashboardIssue[];
         metrics: MetricSummary;
         trend: CloseRateTrendPoint[];
+        scoreTrend: ScoreTrendPoint[];
       }
     >();
     teamRows.forEach((row) => {
@@ -414,6 +425,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         issues,
         metrics: buildMetricSummaryFromPainRows(issues),
         trend: buildCloseRateTrend(issues, 7),
+        scoreTrend: buildTeamScoreTrend(row.repos, 7),
       });
     });
     return map;
@@ -485,20 +497,52 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     />
   );
 
-  const renderMetricBar = (
-    value: number | null,
-    formatter: (next: number | null) => string,
-    colorClassName: string
-  ) => (
-    <div className="overview-bar-cell">
-      <span className="overview-bar-value">{formatter(value)}</span>
-      <div className="overview-bar-track" style={{ maxWidth: 44 }}>
-        <span
-          className={`overview-bar-fill ${colorClassName}`}
-          style={{ width: `${Math.max(0, Math.min(value ?? 0, 100))}%` }}
-        />
-      </div>
-    </div>
+  const getScoreTrendPoints = useCallback(
+    (score: number | null, points?: ScoreTrendPoint[]) => {
+      if (points?.length) return points;
+      if (score == null) return [];
+      return [
+        {
+          key: 'current',
+          date: '当前',
+          label: '当前',
+          score,
+        },
+      ];
+    },
+    []
+  );
+
+  const renderScoreTrendCell = useCallback(
+    (name: string, score: number | null, points?: ScoreTrendPoint[]) => {
+      const trendPoints = getScoreTrendPoints(score, points);
+      const sparkValues = trendPoints.slice(-5).map((point) => point.score);
+      return (
+        <div className="overview-close-rate-cell">
+          <button
+            type="button"
+            className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+            title="查看综合体验评分趋势"
+            disabled={!trendPoints.length}
+            onClick={(event) => {
+              event.stopPropagation();
+              if (!trendPoints.length) return;
+              setScoreTrendModal({
+                open: true,
+                title: `${name} · 综合体验评分趋势`,
+                points: trendPoints,
+              });
+            }}
+          >
+            <ScoreSparkline values={sparkValues} />
+          </button>
+          <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+            {formatScore(score)}
+          </span>
+        </div>
+      );
+    },
+    [getScoreTrendPoints]
   );
 
   const renderDetailLink = (record: RepoProgressRow) => {
@@ -586,12 +630,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('综合体验评分', repoSortArrow('score')),
         key: 'score',
         width: repoColumnWidths[3],
-        render: (_value, record) =>
-          isBeatRepo(record.id) ? (
-            <span className="text-slate-400">-</span>
-          ) : (
-            renderMetricBar(record.score, formatScore, 'overview-bar-blue')
-          ),
+        render: (_value, record) => {
+          if (isBeatRepo(record.id)) {
+            return <span className="text-slate-400">-</span>;
+          }
+          const scoreTrend = repoDerived.get(record.id)?.scoreTrend;
+          return renderScoreTrendCell(record.name, record.score, scoreTrend);
+        },
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('score'),
           className: 'sortable-col',
@@ -744,6 +789,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       repoSortArrow,
       progressHeaderTitle,
       repoDerived,
+      renderScoreTrendCell,
     ]
   );
 
@@ -797,8 +843,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: sortableTitle('综合体验评分', teamSortArrow('score')),
         key: 'score',
         width: teamColumnWidths[3],
-        render: (_value, record) =>
-          renderMetricBar(record.score, formatScore, 'overview-bar-blue'),
+        render: (_value, record) => {
+          const scoreTrend = teamDerived.get(record.id)?.scoreTrend;
+          return renderScoreTrendCell(record.name, record.score, scoreTrend);
+        },
         onHeaderCell: () => ({
           onClick: () => handleTeamSortWithReset('score'),
           className: 'sortable-col',
@@ -933,6 +981,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       teamSortArrow,
       progressHeaderTitle,
       teamDerived,
+      renderScoreTrendCell,
     ]
   );
 
@@ -1151,10 +1200,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                     {isBeatRepo(repo.id) ? (
                       <span className="text-slate-400">-</span>
                     ) : (
-                      renderMetricBar(
+                      renderScoreTrendCell(
+                        repo.name,
                         repo.score,
-                        formatScore,
-                        'overview-bar-blue'
+                        repoDerived.get(repo.id)?.scoreTrend
                       )
                     )}
                   </td>
@@ -1287,6 +1336,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       getRepoSortValueWithMetrics,
       onOpenRepoIssues,
       repoDerived,
+      renderScoreTrendCell,
       sortedByProgressMetric,
       teamColumnWidths,
       teamScrollX,
@@ -1516,6 +1566,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         points={closeRateModal.points}
         onClose={() =>
           setCloseRateModal({ open: false, title: '', points: [] })
+        }
+      />
+      <ScoreTrendModal
+        open={scoreTrendModal.open}
+        title={scoreTrendModal.title}
+        points={scoreTrendModal.points}
+        onClose={() =>
+          setScoreTrendModal({ open: false, title: '', points: [] })
         }
       />
     </>

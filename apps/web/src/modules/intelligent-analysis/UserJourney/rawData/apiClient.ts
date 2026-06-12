@@ -24,9 +24,12 @@ export const compassApiUrl = (path: string): string => {
 /**
  * 通用 JSON 请求，抛出带状态码的错误
  */
-export const compassApiFetch = async <T>(path: string): Promise<T> => {
+export const compassApiFetch = async <T>(
+  path: string,
+  init?: RequestInit
+): Promise<T> => {
   const url = compassApiUrl(path);
-  const res = await fetch(url, { cache: 'no-store' });
+  const res = await fetch(url, { cache: 'no-store', ...(init ?? {}) });
 
   if (!res.ok) {
     throw new Error(`[CompassAPI] ${res.status} ${res.statusText} — ${url}`);
@@ -278,6 +281,17 @@ export type OverviewCardsResponse = {
   items: OverviewCardItem[];
 };
 
+export type OverviewParentChildPain = {
+  id: string;
+  file_key: string;
+  task_id?: string;
+  pain_index?: number;
+  pain_text: string;
+  status?: string;
+  report_generated_at?: string;
+  updated_at?: string;
+};
+
 export type OverviewSigConfig = {
   sig: string;
   projects: string[];
@@ -395,6 +409,21 @@ export const fetchOverviewCards = async (params: {
   search.set('size', String(params.size ?? 20));
   return compassApiFetch<OverviewCardsResponse>(
     `/overview/cards?${search.toString()}`
+  );
+};
+
+export const fetchOverviewParentChildren = async (
+  parentId: string,
+  params?: {
+    size?: number;
+  }
+): Promise<{ items: OverviewParentChildPain[] }> => {
+  const search = new URLSearchParams();
+  search.set('size', String(params?.size ?? 200));
+  return compassApiFetch<{ items: OverviewParentChildPain[] }>(
+    `/overview/parent-pains/${encodeURIComponent(
+      parentId
+    )}/children?${search.toString()}`
   );
 };
 

@@ -24,13 +24,17 @@ export const buildConfirmationMap = (
 /**
  * 加载并缓存某个报告的所有痛点确认记录。
  */
-export const usePainConfirmations = (fileKey: string | undefined) => {
+export const usePainConfirmations = (
+  fileKey: string | undefined,
+  options?: { enabled?: boolean }
+) => {
   const queryClient = useQueryClient();
+  const enabled = (options?.enabled ?? true) && !!fileKey;
 
   const query = useQuery({
     queryKey: QUERY_KEY(fileKey ?? ''),
     queryFn: () => fetchPainConfirmations(fileKey!),
-    enabled: !!fileKey,
+    enabled,
     staleTime: 0,
     retry: 1,
   });

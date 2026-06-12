@@ -19,6 +19,8 @@ import {
 } from './components';
 import { STATUS_LABELS } from './constants';
 import {
+  DISPLAY_STEP_SEQUENCE,
+  RETEST_FAILED_STEP_SEQUENCE,
   useModalSessionState,
   usePainConfirmationForm,
   useStepsItems,
@@ -86,6 +88,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     latestFileKey,
     showRetestDecision,
   } = getModalStatusState(modalRecord);
+  const isCurrentRetestFailed = currentStatus === PainStatus.RETESTED_FAILED;
 
   const { handleOk, submitting } = usePainConfirmationForm({
     stepId,
@@ -139,6 +142,8 @@ const PainLevelConfirmModal: React.FC<Props> = ({
 
   const displayedStepStatus = isCurrentNonProjectIssue
     ? PainStatus.NO_FIX_NEEDED
+    : isCurrentRetestFailed
+    ? PainStatus.RETESTED_FAILED
     : getDisplayedStepStatus(currentStatus);
 
   const reviewStepSnapshotMap = useMemo(() => {
@@ -147,7 +152,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       PainStatus.TO_BE_CONFIRMED,
       PainStatus.CONFIRMED_PENDING_FIX,
       PainStatus.FIXED_PENDING_RETEST,
-      PainStatus.RETESTING,
+      PainStatus.RETESTED_PASSED,
     ];
 
     return new Map(
@@ -190,6 +195,10 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     ).trim();
   }, [activeReviewSnapshot, latestFileKey]);
 
+  const stepSequence = isCurrentRetestFailed
+    ? RETEST_FAILED_STEP_SEQUENCE
+    : DISPLAY_STEP_SEQUENCE;
+
   const normalStepsItems = useStepsItems({
     displayedStepStatus,
     isReviewingHistoryStep,
@@ -197,6 +206,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     currentRecord: modalRecord,
     reviewStepSnapshotMap,
     setSelectedStep,
+    stepSequence,
   });
 
   const stepsItems = isCurrentNonProjectIssue
@@ -217,6 +227,9 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         },
       ]
     : normalStepsItems;
+  const currentStepIndex = isCurrentNonProjectIssue
+    ? 0
+    : Math.max(stepSequence.indexOf(displayedStepStatus), 0);
 
   const openRollback = useCallback((target: PainStatus) => {
     setRollbackTarget(target);
@@ -443,7 +456,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       <div className="space-y-6">
         <div className="rounded-lg bg-slate-50 p-4">
           <Steps
-            current={isCurrentNonProjectIssue ? 0 : displayedStepStatus - 1}
+            current={currentStepIndex}
             items={stepsItems}
             size="small"
             className="pain-steps"
