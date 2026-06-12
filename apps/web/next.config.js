@@ -53,12 +53,19 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    return [
+    const rules = [
       {
         source: '/compare/:path*',
         destination: '/analyze/:path*',
       },
     ];
+    if (process.env.NODE_ENV === 'development') {
+      rules.push({
+        source: '/user-journey-api/:path*',
+        destination: 'http://127.0.0.1:8099/user-journey-api/:path*',
+      });
+    }
+    return rules;
   },
   async redirects() {
     return [

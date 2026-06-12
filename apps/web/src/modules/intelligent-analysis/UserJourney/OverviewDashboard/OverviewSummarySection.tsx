@@ -2,6 +2,8 @@ import React from 'react';
 import { Checkbox, Segmented, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
 import ExperienceScoreRulePopoverTrigger from '../components/ExperienceScoreRulePopoverTrigger';
+import { ScoreSparkline } from './CloseRateTrendChart';
+import ScoreTrendModal from './ScoreTrendModal';
 import type {
   CommonIssueGroup,
   DashboardIssue,
@@ -12,6 +14,7 @@ import type {
   TrendWindow,
   WeeklyCloseRateTrendPoint,
 } from './types';
+import type { ScoreTrendPoint } from './scoreTrend';
 import { formatPercent, formatScore } from './utils';
 
 const { Title } = Typography;
@@ -30,6 +33,8 @@ type OverviewSummarySectionProps = {
   overviewIssues: DashboardIssue[];
   summaryScore: number | null;
   summarySuccessRate: number | null;
+  summaryScoreTrend: ScoreTrendPoint[];
+  summarySuccessRateTrend: ScoreTrendPoint[];
   summaryAvgExecutionTime: number | null;
   repoCount: number;
   titleExtra?: React.ReactNode;
@@ -53,6 +58,8 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   overviewIssues,
   summaryScore,
   summarySuccessRate,
+  summaryScoreTrend,
+  summarySuccessRateTrend,
   summaryAvgExecutionTime,
   repoCount,
   titleExtra,
@@ -71,6 +78,90 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
     effectiveMode === 'common'
       ? '仅展示已标记为共性问题且严重程度P0-P3的问题'
       : '含严重程度P0-P3的所有问题';
+  const [trendModal, setTrendModal] = React.useState<{
+    open: boolean;
+    title: string;
+    points: ScoreTrendPoint[];
+    legendLabel: string;
+    axisTitle: string;
+    tooltipLabel: string;
+    valueType: 'score' | 'percent';
+  }>({
+    open: false,
+    title: '',
+    points: [],
+    legendLabel: '综合体验评分',
+    axisTitle: '综合体验评分',
+    tooltipLabel: '周度评分',
+    valueType: 'score',
+  });
+
+  const getAlignedTrendPoints = React.useCallback(
+    (points: ScoreTrendPoint[], currentValue: number | null) => {
+      if (!points.length || currentValue == null) return points;
+      const lastPoint = points[points.length - 1];
+      const today = new Date();
+      const todayText = `${today.getFullYear()}-${`${
+        today.getMonth() + 1
+      }`.padStart(2, '0')}-${`${today.getDate()}`.padStart(2, '0')}`;
+      const todayLabel = `${today.getMonth() + 1}/${today.getDate()}`;
+      if (
+        lastPoint?.score === currentValue &&
+        lastPoint?.date === todayText &&
+        lastPoint?.label === todayLabel
+      ) {
+        return points;
+      }
+      return [
+        ...points.slice(0, -1),
+        {
+          ...lastPoint,
+          score: currentValue,
+          date: todayText,
+          label: todayLabel,
+          weekStart: todayText,
+          weekEnd: todayText,
+        },
+      ];
+    },
+    []
+  );
+
+  const renderTrendTrigger = (
+    title: string,
+    points: ScoreTrendPoint[],
+    currentValue: number | null,
+    legendLabel: string,
+    axisTitle: string,
+    tooltipLabel: string,
+    valueType: 'score' | 'percent'
+  ) => {
+    const alignedPoints = getAlignedTrendPoints(points, currentValue);
+    return (
+      <button
+        type="button"
+        className="bm-trend-sparkline"
+        title={`查看${title}`}
+        disabled={!alignedPoints.length}
+        onClick={() =>
+          setTrendModal({
+            open: true,
+            title,
+            points: alignedPoints,
+            legendLabel,
+            axisTitle,
+            tooltipLabel,
+            valueType,
+          })
+        }
+      >
+        <ScoreSparkline
+          values={alignedPoints.slice(-7).map((point) => point.score)}
+        />
+      </button>
+    );
+  };
+
   return (
     <>
       <div className="overview-summary-title-row">
@@ -101,14 +192,34 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
                   <span className="bm-value-suffix">/100</span>
                 </>
               )}
+              {renderTrendTrigger(
+                '总览 · 综合体验评分趋势',
+                summaryScoreTrend,
+                summaryScore,
+                '综合体验评分',
+                '综合体验评分',
+                '周度评分',
+                'score'
+              )}
             </div>
           </div>
           <div className="bottom-metric">
-            <div className="bm-label">端到端成功率</div>
+            <div className="bm-label inline-flex items-center justify-center gap-1">
+              端到端成功率
+            </div>
             <div className="bm-value">
               <span className="bm-value-main">
                 {formatPercent(summarySuccessRate)}
               </span>
+              {renderTrendTrigger(
+                '总览 · 端到端成功率趋势',
+                summarySuccessRateTrend,
+                summarySuccessRate,
+                '端到端成功率',
+                '端到端成功率',
+                '周度成功率',
+                'percent'
+              )}
             </div>
           </div>
           <div className="bottom-metric">
@@ -169,6 +280,26 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           }
         />
       </div>
+      <ScoreTrendModal
+        open={trendModal.open}
+        title={trendModal.title}
+        points={trendModal.points}
+        legendLabel={trendModal.legendLabel}
+        axisTitle={trendModal.axisTitle}
+        tooltipLabel={trendModal.tooltipLabel}
+        valueType={trendModal.valueType}
+        onClose={() =>
+          setTrendModal({
+            open: false,
+            title: '',
+            points: [],
+            legendLabel: '综合体验评分',
+            axisTitle: '综合体验评分',
+            tooltipLabel: '周度评分',
+            valueType: 'score',
+          })
+        }
+      />
     </>
   );
 };

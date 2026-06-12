@@ -40,6 +40,7 @@ import {
   isKeyIssue,
   toDashboardIssue,
 } from './utils';
+import { buildTeamScoreTrend, buildTeamSuccessRateTrend } from './scoreTrend';
 
 type OverviewDashboardProps = {
   org?: string;
@@ -401,6 +402,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     () => closeRateTrendsResp?.overall ?? [],
     [closeRateTrendsResp]
   );
+  const summaryScoreTrend = useMemo(
+    () => buildTeamScoreTrend(repoRows, 7),
+    [repoRows]
+  );
+  const summarySuccessRateTrend = useMemo(
+    () => buildTeamSuccessRateTrend(repoRows, 7),
+    [repoRows]
+  );
   const keyIssueTrend = useMemo(
     () => closeRateTrendsResp?.key ?? [],
     [closeRateTrendsResp]
@@ -591,6 +600,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           overviewIssues={summaryIssues}
           summaryScore={summaryScore}
           summarySuccessRate={summarySuccessRate}
+          summaryScoreTrend={summaryScoreTrend}
+          summarySuccessRateTrend={summarySuccessRateTrend}
           summaryAvgExecutionTime={summaryAvgExecutionTime}
           repoCount={summaryRepoCount}
           issueSourceMode={issueSourceMode}

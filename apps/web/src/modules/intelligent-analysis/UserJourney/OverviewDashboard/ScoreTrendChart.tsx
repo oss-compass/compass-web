@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ScoreTrendPoint } from './scoreTrend';
-import { formatScore } from './utils';
+import { formatPercent, formatScore } from './utils';
 
 const SCORE_VIEWBOX_W = 600;
 const SCORE_VIEWBOX_H = 196;
@@ -20,6 +20,9 @@ const SCORE_BLUE_SHADOW = 'rgba(37, 99, 235, 0.18)';
 type ScoreTrendChartProps = {
   points: ScoreTrendPoint[];
   height?: number;
+  axisTitle?: string;
+  tooltipLabel?: string;
+  valueType?: 'score' | 'percent';
 };
 
 const getFiveScaleRange = (minScore: number, maxScore: number) => {
@@ -67,6 +70,9 @@ const getScoreRange = (scores: number[]) => {
 export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   points,
   height = 260,
+  axisTitle = '综合体验评分',
+  tooltipLabel = '周度评分',
+  valueType = 'score',
 }) => {
   const chartId = React.useId();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -85,6 +91,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   const plotW = SCORE_PLOT_RIGHT - SCORE_PLOT_LEFT;
   const step = n > 1 ? plotW / (n - 1) : 0;
   const { lower, upper, usingFiveScale } = getScoreRange(validScores);
+  const formatValue = valueType === 'percent' ? formatPercent : formatScore;
   const range = Math.max(upper - lower, 1);
   const yForScore = (value: number) =>
     SCORE_PLOT_BOTTOM - ((value - lower) / range) * plotH;
@@ -247,7 +254,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
             y={yForScore(tick) + 4}
             textAnchor="end"
           >
-            {formatScore(tick)}
+            {formatValue(tick)}
           </text>
         ))}
 
@@ -257,7 +264,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
           y={16}
           textAnchor="end"
         >
-          综合体验评分
+          {axisTitle}
         </text>
 
         {areaPoints ? (
@@ -324,7 +331,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
                   strokeLinejoin: 'round',
                 }}
               >
-                {formatScore(point.score)}
+                {formatValue(point.score)}
               </text>
             </g>
           );
@@ -374,10 +381,10 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
                     background: `linear-gradient(90deg, ${SCORE_BLUE_START} 0%, ${SCORE_BLUE_END} 100%)`,
                   }}
                 />
-                周度评分
+                {tooltipLabel}
               </span>
               <span className="oj-trend-tooltip-value">
-                {formatScore(activePoint.score)}
+                {formatValue(activePoint.score)}
               </span>
             </div>
             {activePoint.sampleCount ? (

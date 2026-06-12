@@ -85,6 +85,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .bm-value-suffix {
       font-size: 13px !important;
       line-height: 18px !important;
+      align-self: flex-end !important;
+      padding-bottom: 4px !important;
     }
 
     .overview-summary-stack {
@@ -1363,17 +1365,48 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       line-height: 18px;
     }
 
+    .bm-trend-sparkline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      height: 24px;
+      padding: 1px 3px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #2563eb;
+      box-shadow: none;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+
+    .bm-trend-sparkline:hover {
+      background: #f8fafc;
+      color: #1d4ed8;
+    }
+
+    .bm-trend-sparkline:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .bm-trend-sparkline svg {
+      display: block;
+    }
+
     .bm-value {
       display: inline-flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 8px;
       margin-top: 10px;
       font-size: 36px;
       font-weight: 700;
       color: #0f172a;
       font-variant-numeric: tabular-nums;
       line-height: 44px;
+      flex-wrap: wrap;
     }
 
     .bm-value-main {
@@ -1385,6 +1418,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       font-weight: 600;
       color: #94a3b8;
       line-height: 20px;
+      align-self: flex-end;
+      padding-bottom: 5px;
     }
 
     .tab-bar {
@@ -1680,7 +1715,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .overview-close-rate-value {
-      min-width: 36px;
+      min-width: 40px;
       text-align: left;
       font-variant-numeric: tabular-nums;
     }

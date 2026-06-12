@@ -9,6 +9,10 @@ type ScoreTrendModalProps = {
   open: boolean;
   title: string;
   points: ScoreTrendPoint[];
+  legendLabel?: string;
+  axisTitle?: string;
+  tooltipLabel?: string;
+  valueType?: 'score' | 'percent';
   onClose: () => void;
 };
 
@@ -16,6 +20,10 @@ const ScoreTrendModal: React.FC<ScoreTrendModalProps> = ({
   open,
   title,
   points,
+  legendLabel = '综合体验评分',
+  axisTitle = '综合体验评分',
+  tooltipLabel = '周度评分',
+  valueType = 'score',
   onClose,
 }) => {
   return (
@@ -32,7 +40,12 @@ const ScoreTrendModal: React.FC<ScoreTrendModalProps> = ({
           {title}
         </Title>
       </div>
-      <ScoreTrendChart points={points} />
+      <ScoreTrendChart
+        points={points}
+        axisTitle={axisTitle}
+        tooltipLabel={tooltipLabel}
+        valueType={valueType}
+      />
       <div className="oj-trend-legend">
         <span className="oj-trend-legend-item">
           <span
@@ -41,7 +54,7 @@ const ScoreTrendModal: React.FC<ScoreTrendModalProps> = ({
               background: 'linear-gradient(90deg, #60a5fa 0%, #2563eb 100%)',
             }}
           />
-          综合体验评分
+          {legendLabel}
         </span>
       </div>
     </Modal>
