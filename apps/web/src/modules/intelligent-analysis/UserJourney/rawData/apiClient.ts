@@ -14,6 +14,7 @@ const getApiBase = (): string => {
 };
 
 const API_PREFIX = '/user-journey-api/user-journey';
+const COMPASS_OPERATOR_TOKEN_KEY = 'compass:user-journey:operator-token';
 
 export const compassApiUrl = (path: string): string => {
   const base = getApiBase();
@@ -36,6 +37,195 @@ export const compassApiFetch = async <T>(
   }
 
   return res.json() as Promise<T>;
+};
+
+export type CompassOperatorRole = 'admin' | 'team_lead';
+
+export type CompassOperatorUser = {
+  user_id: string;
+  username: string;
+  display_name: string;
+  role: CompassOperatorRole;
+  team_names: string[];
+  enabled: boolean;
+  created_at?: string | null;
+  updated_at?: string | null;
+  last_login_at?: string | null;
+};
+
+export type CompassOperatorLoginResponse = {
+  access_token: string;
+  token_type: 'bearer';
+  expires_in_seconds: number;
+  user: CompassOperatorUser;
+};
+
+export type RepoRerunJob = {
+  job_id: string;
+  project_key: string;
+  repo_name: string;
+  repo_url?: string;
+  team_name: string;
+  file_key: string;
+  report_id: string;
+  branch?: string;
+  requested_by: string;
+  requested_by_role: CompassOperatorRole;
+  status:
+    | 'queued'
+    | 'pending'
+    | 'running'
+    | 'completed'
+    | 'failed'
+    | 'cancelled'
+    | 'timeout';
+  message: string;
+  third_party_task_id?: string;
+  third_party_status?: string;
+  third_party_hardware?: string;
+  progress_current_phase?: string;
+  progress_completed_phases?: string[];
+  error_message?: string;
+  worker_node?: string;
+  retry_count?: number;
+  report_json_url?: string;
+  report_md_url?: string;
+  log_json_url?: string;
+  container_log_url?: string;
+  sdx_score?: number | null;
+  log_items?: RepoRerunLogItem[];
+  sync_error?: string;
+  last_synced_at?: string;
+  started_at?: string | null;
+  completed_at?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type RepoRerunLogItem = {
+  timestamp?: string;
+  time?: string;
+  created_at?: string;
+  level?: string;
+  status?: string;
+  phase?: string;
+  step?: string;
+  message?: string;
+  detail?: string;
+  output?: string;
+  output_summary?: string;
+  [key: string]: unknown;
+};
+
+export const getCompassOperatorToken = (): string => {
+  if (typeof window === 'undefined') return '';
+  return window.localStorage.getItem(COMPASS_OPERATOR_TOKEN_KEY) || '';
+};
+
+export const setCompassOperatorToken = (token: string) => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(COMPASS_OPERATOR_TOKEN_KEY, token);
+};
+
+export const clearCompassOperatorToken = () => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.removeItem(COMPASS_OPERATOR_TOKEN_KEY);
+};
+
+const compassApiAuthedFetch = async <T>(
+  path: string,
+  token: string,
+  init?: RequestInit
+): Promise<T> => {
+  const headers = new Headers(init?.headers ?? {});
+  headers.set('Authorization', `Bearer ${token}`);
+  const url = compassApiUrl(path);
+  const res = await fetch(url, {
+    cache: 'no-store',
+    ...(init ?? {}),
+    headers,
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    const detail = (errBody as { detail?: string }).detail;
+    throw new Error(detail || `[CompassAPI] ${res.status} ${res.statusText}`);
+  }
+
+  return res.json() as Promise<T>;
+};
+
+export const loginCompassOperator = async (payload: {
+  username: string;
+  password: string;
+}): Promise<CompassOperatorLoginResponse> => {
+  const url = compassApiUrl('/auth/login');
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error((errBody as { detail?: string }).detail || '登录失败');
+  }
+  return res.json();
+};
+
+export const fetchCompassOperatorMe = async (
+  token = getCompassOperatorToken()
+): Promise<CompassOperatorUser> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  return compassApiAuthedFetch<CompassOperatorUser>('/auth/me', token);
+};
+
+export const triggerOverviewRepoRerun = async (
+  projectKey: string,
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: RepoRerunJob }> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  return compassApiAuthedFetch<{ message: string; data: RepoRerunJob }>(
+    `/overview/repos/${encodeURIComponent(projectKey)}/rerun`,
+    token,
+    { method: 'POST' }
+  );
+};
+
+export const fetchOverviewRepoRerunStatuses = async (
+  projectKeys: string[]
+): Promise<{
+  items: RepoRerunJob[];
+  by_project_key: Record<string, RepoRerunJob>;
+}> => {
+  const keys = projectKeys
+    .map((item) => String(item || '').trim())
+    .filter(Boolean);
+  if (!keys.length) {
+    return { items: [], by_project_key: {} };
+  }
+  const search = new URLSearchParams();
+  search.set('project_keys', keys.join(','));
+  return compassApiFetch<{
+    items: RepoRerunJob[];
+    by_project_key: Record<string, RepoRerunJob>;
+  }>(`/overview/repos/rerun-statuses?${search.toString()}`);
+};
+
+export const fetchOverviewRepoRerunRecords = async (
+  projectKey: string,
+  size = 10
+): Promise<{ items: RepoRerunJob[] }> => {
+  const search = new URLSearchParams();
+  search.set('size', String(size));
+  return compassApiFetch<{ items: RepoRerunJob[] }>(
+    `/overview/repos/${encodeURIComponent(
+      projectKey
+    )}/rerun-records?${search.toString()}`
+  );
 };
 
 // ---------- 痛点确认 ----------

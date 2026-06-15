@@ -1,27 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal, Tooltip } from 'antd';
 import { ActionDetailRecord, ActionStatus } from '../types';
 import { getActionStatusClasses } from '../helpers';
-import taskDefinitions from '../rawData/task_definitions.json';
-import useLogData, {
-  LogCommand,
-  LogTask,
-  useCommandOutput,
-} from '../hooks/useLogData';
+import useLogData, { LogCommand, useCommandOutput } from '../hooks/useLogData';
 import EvidencePanel, { EvidenceIcon } from './EvidencePanel';
-
-/* ─── 类型 ─── */
-type TaskDefinition = {
-  task_id: string;
-  name: string;
-  phase: string;
-  description: string;
-  task_type?: string;
-  optional?: boolean;
-  expected_outcome?: string;
-  success_indicators?: string[];
-  failure_indicators?: string[];
-};
+import TaskCardShell, { TaskCardTab } from './TaskCardShell';
+import SharedSearchEngineTabs from './SharedSearchEngineTabs';
+import {
+  ActionTaskGroup,
+  getSharedSearchEngineOptions,
+  groupActionItemsByTask,
+} from '../taskMeta';
 
 type KeyActionsSectionProps = {
   currentStepKey: string;
@@ -40,11 +29,6 @@ type KeyActionsSectionProps = {
   versionOptions?: Array<{ value: string; label: string }>;
   previewMode?: boolean;
 };
-
-/* ─── 静态 task 定义 map ─── */
-const TASK_DEF_MAP = (
-  taskDefinitions as { tasks: Record<string, TaskDefinition> }
-).tasks as Record<string, TaskDefinition>;
 
 /* ─── 图标 ─── */
 const ChevronIcon: React.FC<{ expanded: boolean; className?: string }> = ({
@@ -124,28 +108,6 @@ const normalizeLogStatus = (s: string | undefined): ActionStatus => {
     return 'failed';
   if (lower === 'warning' || lower === 'warn') return 'warning';
   return 'neutral';
-};
-
-/* ─── 按 taskId 分组 ─── */
-const groupByTaskId = (
-  items: ActionDetailRecord[]
-): {
-  taskId: string | undefined;
-  rows: { item: ActionDetailRecord; globalIndex: number }[];
-}[] => {
-  const orderMap = new Map<
-    string | undefined,
-    { item: ActionDetailRecord; globalIndex: number }[]
-  >();
-  items.forEach((item, index) => {
-    const key = item.taskId;
-    if (!orderMap.has(key)) orderMap.set(key, []);
-    orderMap.get(key)!.push({ item, globalIndex: index });
-  });
-  return Array.from(orderMap.entries()).map(([taskId, rows]) => ({
-    taskId,
-    rows,
-  }));
 };
 
 /* ─── Task 状态徽章 ─── */
@@ -249,6 +211,8 @@ const EvidenceInline: React.FC<{
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  legacyStepIds?: string[];
+  highlightTaskId?: string;
   onStepClick?: (toolIds: string[]) => void;
   painFocusTarget?: {
     painId: string;
@@ -266,6 +230,8 @@ const EvidenceInline: React.FC<{
   fileKey,
   stepId,
   legacyStepId,
+  legacyStepIds,
+  highlightTaskId,
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
@@ -297,6 +263,8 @@ const EvidenceInline: React.FC<{
         fileKey={fileKey}
         stepId={stepId}
         legacyStepId={legacyStepId}
+        legacyStepIds={legacyStepIds}
+        highlightTaskId={highlightTaskId}
         onStepClick={onStepClick}
         painFocusTarget={painFocusTarget}
         onPainFocusHandled={onPainFocusHandled}
@@ -317,6 +285,8 @@ const EvidenceBlock: React.FC<{
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  legacyStepIds?: string[];
+  highlightTaskId?: string;
   onStepClick?: (toolIds: string[]) => void;
   painFocusTarget?: {
     painId: string;
@@ -334,6 +304,8 @@ const EvidenceBlock: React.FC<{
   fileKey,
   stepId,
   legacyStepId,
+  legacyStepIds,
+  highlightTaskId,
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
@@ -384,6 +356,8 @@ const EvidenceBlock: React.FC<{
             fileKey={fileKey}
             stepId={stepId}
             legacyStepId={legacyStepId}
+            legacyStepIds={legacyStepIds}
+            highlightTaskId={highlightTaskId}
             onStepClick={onStepClick}
             painFocusTarget={painFocusTarget}
             onPainFocusHandled={onPainFocusHandled}
@@ -757,14 +731,15 @@ const LegacyActionsTable: React.FC<{
 
 /* ─── 单个 Task 卡片 ─── */
 const TaskCard: React.FC<{
-  taskId: string | undefined;
-  rows: { item: ActionDetailRecord; globalIndex: number }[];
+  group: ActionTaskGroup;
   currentStepKey: string;
-  logTask?: LogTask;
   cardIndex: number;
   projectFileKey?: string;
   stepCode?: string;
   isLatestReport?: boolean;
+  activeVariantTaskId: string;
+  onActiveVariantTaskIdChange: (taskId: string) => void;
+  hideTabs?: boolean;
   highlightedIndices?: number[];
   onStepClick?: (toolIds: string[]) => void;
   painFocusTarget?: {
@@ -775,14 +750,15 @@ const TaskCard: React.FC<{
   versionOptions?: Array<{ value: string; label: string }>;
   previewMode?: boolean;
 }> = ({
-  taskId,
-  rows,
+  group,
   currentStepKey,
-  logTask,
   cardIndex,
   projectFileKey,
   stepCode,
   isLatestReport = false,
+  activeVariantTaskId,
+  onActiveVariantTaskIdChange,
+  hideTabs = false,
   highlightedIndices,
   onStepClick,
   painFocusTarget,
@@ -791,130 +767,120 @@ const TaskCard: React.FC<{
   previewMode = false,
 }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
+  const activeVariant =
+    group.variants.find(
+      (variant) => (variant.taskId || '__no_task__') === activeVariantTaskId
+    ) ?? group.variants[0];
+  const activeTaskId = activeVariant?.taskId;
+  const rows = activeVariant?.rows ?? [];
+  const logTask = activeVariant?.logTask;
 
-  const def = taskId ? TASK_DEF_MAP[taskId] : undefined;
-  const displayName = def?.name ?? taskId ?? '未分组';
-
-  // 优先使用 log 数据，否则 fallback 到原始 rows 的数量
   const actionCount = logTask?.commands ? logTask.commands.length : rows.length;
   const taskStatus = logTask ? normalizeLogStatus(logTask.status) : undefined;
   const evidence = logTask?.evidence;
-
-  const tableKey = `${currentStepKey}-${taskId ?? 'no_task'}`;
+  const tableKey = `${currentStepKey}-${activeTaskId ?? 'no_task'}`;
+  const tabs = useMemo<TaskCardTab[]>(
+    () =>
+      group.variants.map((variant) => ({
+        key: variant.taskId || '__no_task__',
+        label: variant.searchEngineLabel || '默认',
+        description: variant.description || group.description,
+      })),
+    [group.description, group.variants]
+  );
 
   return (
-    <div
-      id={`task-card-${tableKey}`}
-      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
-    >
-      {/* 卡片头 */}
-      <div className="flex items-center gap-0 border-b border-slate-100">
-        {/* 左侧序号 */}
-        <div className="flex w-14 shrink-0 flex-col items-center justify-center self-stretch border-r border-slate-100 bg-slate-50 py-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-600">
-            {cardIndex}
+    <TaskCardShell
+      cardId={`task-card-${currentStepKey}-${group.groupKey}`}
+      cardIndex={cardIndex}
+      title={group.displayName}
+      description={group.description}
+      tabs={hideTabs ? [] : tabs}
+      activeTabKey={activeVariant?.taskId || '__no_task__'}
+      onTabChange={onActiveVariantTaskIdChange}
+      headerMeta={
+        <>
+          <TaskStatusBadge status={taskStatus} />
+          <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
+            {actionCount} 个动作
           </span>
-        </div>
-
-        {/* 中间：标题 + 描述 */}
-        <div className="min-w-0 flex-1 px-4 py-3.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-base font-semibold text-slate-900">
-              {displayName}
-            </span>
-            <TaskStatusBadge status={taskStatus} />
-            <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
-              {actionCount} 个动作
-            </span>
-            {/* log 数据来源标识 */}
-            {/* {logTask && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-500 ring-1 ring-indigo-100">
-                <LogIcon className="h-3 w-3" />
-                LOG
-              </span>
-            )} */}
-          </div>
-          {def?.description && (
-            <Tooltip
-              title={def.description}
-              placement="bottomLeft"
-              styles={{ root: { maxWidth: 520 } }}
-            >
-              <p className="mt-2 line-clamp-2 cursor-default text-xs leading-relaxed text-slate-500">
-                {def.description}
-              </p>
-            </Tooltip>
-          )}
-        </div>
-
-        {/* 右侧：折叠按钮 */}
+        </>
+      }
+      headerAction={
         <button
           type="button"
           onClick={() => setTableExpanded((v) => !v)}
-          className="mr-4 inline-flex shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
+          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
         >
           <ChevronIcon expanded={tableExpanded} className="h-3 w-3" />
           {tableExpanded ? '收起' : '展开'}
         </button>
-      </div>
+      }
+    >
+      <>
+        {tableExpanded &&
+        logTask &&
+        (evidence?.observations?.length || evidence?.pain_points?.length) ? (
+          <div className="border-b border-slate-100 px-5 py-4">
+            <EvidenceInline
+              observations={evidence?.observations}
+              pain_points={evidence?.pain_points}
+              observations_tool_nums={evidence?.observations_tool_nums}
+              pain_points_tool_nums={evidence?.pain_points_tool_nums}
+              fileKey={projectFileKey}
+              stepId={group.groupKey}
+              legacyStepId={activeTaskId}
+              legacyStepIds={
+                [activeTaskId, stepCode].filter(Boolean) as string[]
+              }
+              highlightTaskId={activeTaskId}
+              onStepClick={onStepClick}
+              painFocusTarget={painFocusTarget}
+              onPainFocusHandled={onPainFocusHandled}
+              isLatestReport={isLatestReport}
+              versionOptions={versionOptions}
+              previewMode={previewMode}
+            />
+          </div>
+        ) : null}
 
-      {/* 有 log 时：总结 & 痛点置于表格上方 */}
-      {tableExpanded &&
-      logTask &&
-      (evidence?.observations?.length || evidence?.pain_points?.length) ? (
-        <div className="border-b border-slate-100 px-5 py-4">
-          <EvidenceInline
-            observations={evidence?.observations}
-            pain_points={evidence?.pain_points}
-            observations_tool_nums={evidence?.observations_tool_nums}
-            pain_points_tool_nums={evidence?.pain_points_tool_nums}
-            fileKey={projectFileKey}
-            stepId={taskId}
-            legacyStepId={stepCode}
-            onStepClick={onStepClick}
-            painFocusTarget={painFocusTarget}
-            onPainFocusHandled={onPainFocusHandled}
-            isLatestReport={isLatestReport}
-            versionOptions={versionOptions}
-            previewMode={previewMode}
-          />
-        </div>
-      ) : null}
+        {tableExpanded &&
+          (logTask?.commands ? (
+            <LogCommandsTable
+              commands={logTask.commands}
+              tableKey={tableKey}
+              projectFileKey={projectFileKey}
+              highlightedIndices={highlightedIndices}
+            />
+          ) : (
+            <LegacyActionsTable rows={rows} tableKey={tableKey} />
+          ))}
 
-      {/* 动作表格 */}
-      {tableExpanded &&
-        (logTask?.commands ? (
-          <LogCommandsTable
-            commands={logTask.commands}
-            tableKey={tableKey}
-            projectFileKey={projectFileKey}
-            highlightedIndices={highlightedIndices}
-          />
-        ) : (
-          <LegacyActionsTable rows={rows} tableKey={tableKey} />
-        ))}
-
-      {/* 无 log 时：观测 & 痛点保留在表格下方（折叠块） */}
-      {!logTask && tableExpanded && (
-        <div className="border-t border-slate-100 px-5 py-4">
-          <EvidenceBlock
-            observations={evidence?.observations}
-            pain_points={evidence?.pain_points}
-            observations_tool_nums={evidence?.observations_tool_nums}
-            pain_points_tool_nums={evidence?.pain_points_tool_nums}
-            fileKey={projectFileKey}
-            stepId={taskId}
-            legacyStepId={stepCode}
-            onStepClick={onStepClick}
-            painFocusTarget={painFocusTarget}
-            onPainFocusHandled={onPainFocusHandled}
-            isLatestReport={isLatestReport}
-            versionOptions={versionOptions}
-            previewMode={previewMode}
-          />
-        </div>
-      )}
-    </div>
+        {!logTask && tableExpanded && (
+          <div className="border-t border-slate-100 px-5 py-4">
+            <EvidenceBlock
+              observations={evidence?.observations}
+              pain_points={evidence?.pain_points}
+              observations_tool_nums={evidence?.observations_tool_nums}
+              pain_points_tool_nums={evidence?.pain_points_tool_nums}
+              fileKey={projectFileKey}
+              stepId={group.groupKey}
+              legacyStepId={activeTaskId}
+              legacyStepIds={
+                [activeTaskId, stepCode].filter(Boolean) as string[]
+              }
+              highlightTaskId={activeTaskId}
+              onStepClick={onStepClick}
+              painFocusTarget={painFocusTarget}
+              onPainFocusHandled={onPainFocusHandled}
+              isLatestReport={isLatestReport}
+              versionOptions={versionOptions}
+              previewMode={previewMode}
+            />
+          </div>
+        )}
+      </>
+    </TaskCardShell>
   );
 };
 
@@ -936,8 +902,19 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
     indices: number[];
   } | null>(null);
   const [handledPainFocusKey, setHandledPainFocusKey] = useState<string>('');
-
-  const groups = groupByTaskId(executionPathItems);
+  const [activeVariantByGroup, setActiveVariantByGroup] = useState<
+    Record<string, string>
+  >({});
+  const [sharedSearchEngine, setSharedSearchEngine] = useState<string>('');
+  const groups = useMemo(
+    () => groupActionItemsByTask(executionPathItems, logData),
+    [executionPathItems, logData]
+  );
+  const sharedSearchEngineOptions = useMemo(
+    () =>
+      stepCode?.startsWith('S0') ? getSharedSearchEngineOptions(groups) : [],
+    [groups, stepCode]
+  );
   const normalizedTaskId = painFocusTarget?.taskId?.trim() || '';
   const normalizedPainId = painFocusTarget?.painId?.trim() || '';
   const normalizedPainFocus = useMemo(
@@ -954,6 +931,29 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   const painFocusKey = normalizedPainFocus
     ? `${normalizedPainFocus.taskId}#${normalizedPainFocus.painId}`
     : '';
+  useEffect(() => {
+    setSharedSearchEngine(sharedSearchEngineOptions[0]?.value || '');
+  }, [sharedSearchEngineOptions, stepCode]);
+  const getVariantTaskId = useCallback(
+    (group: ActionTaskGroup) =>
+      (sharedSearchEngine
+        ? group.variants.find(
+            (variant) => variant.searchEngine === sharedSearchEngine
+          )?.taskId
+        : undefined) ||
+      activeVariantByGroup[group.groupKey] ||
+      group.variants[0]?.taskId ||
+      '__no_task__',
+    [activeVariantByGroup, sharedSearchEngine]
+  );
+  const setActiveVariantTaskId = useCallback(
+    (groupKey: string, taskId: string) => {
+      setActiveVariantByGroup((prev) =>
+        prev[groupKey] === taskId ? prev : { ...prev, [groupKey]: taskId }
+      );
+    },
+    []
+  );
 
   const handleStepClick = (toolIds: string[], tableKey: string) => {
     const indices = toolIds
@@ -972,22 +972,43 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   };
 
   useEffect(() => {
+    const focusGroupTask = (taskId?: string) => {
+      if (!taskId) return undefined;
+      return groups.find(
+        (group) =>
+          group.groupKey === taskId ||
+          group.variants.some((variant) => variant.taskId === taskId)
+      );
+    };
+
     const handleGlobalHighlight = (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail && detail.toolIds) {
         const targetTaskId =
           typeof detail.taskId === 'string' ? detail.taskId : undefined;
-        const targetGroup = targetTaskId
-          ? groups.find((g) => g.taskId === targetTaskId)
-          : undefined;
+        const targetGroup = focusGroupTask(targetTaskId) || groups[0];
+        const targetVariant = targetGroup?.variants.find(
+          (variant) => variant.taskId === targetTaskId
+        );
+        const targetTaskKey =
+          targetVariant?.taskId ||
+          (targetGroup ? getVariantTaskId(targetGroup) : undefined) ||
+          targetGroup?.variants[0]?.taskId ||
+          'no_task';
+        if (targetVariant?.searchEngine) {
+          setSharedSearchEngine(targetVariant.searchEngine);
+        }
+        if (targetGroup) {
+          setActiveVariantTaskId(targetGroup.groupKey, targetTaskKey);
+        }
         const targetTableKey = targetGroup
-          ? `${currentStepKey}-${targetGroup.taskId ?? 'no_task'}`
-          : groups[0]
-          ? `${currentStepKey}-${groups[0].taskId ?? 'no_task'}`
+          ? `${currentStepKey}-${targetTaskKey}`
           : null;
 
         if (targetTableKey) {
-          handleStepClick(detail.toolIds, targetTableKey);
+          window.setTimeout(() => {
+            handleStepClick(detail.toolIds, targetTableKey);
+          }, 0);
         }
       }
     };
@@ -1002,7 +1023,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
         handleGlobalHighlight
       );
     };
-  }, [currentStepKey, groups]); // 当步骤切换或数据变化时重新绑定逻辑
+  }, [currentStepKey, getVariantTaskId, groups, setActiveVariantTaskId]); // 当步骤切换或数据变化时重新绑定逻辑
 
   useEffect(() => {
     if (!painFocusKey) {
@@ -1020,14 +1041,42 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
       return;
     }
 
-    const targetTaskTableKey = `${currentStepKey}-${
-      normalizedPainFocus.taskId || 'no_task'
-    }`;
-    const taskCard = document.getElementById(`task-card-${targetTaskTableKey}`);
+    const targetGroup = groups.find(
+      (group) =>
+        group.groupKey === normalizedPainFocus.taskId ||
+        group.variants.some(
+          (variant) => variant.taskId === normalizedPainFocus.taskId
+        )
+    );
+    const targetVariant = targetGroup?.variants.find(
+      (variant) => variant.taskId === normalizedPainFocus.taskId
+    );
+    if (targetVariant?.searchEngine) {
+      setSharedSearchEngine(targetVariant.searchEngine);
+    }
+    if (targetGroup) {
+      setActiveVariantTaskId(
+        targetGroup.groupKey,
+        targetVariant?.taskId || getVariantTaskId(targetGroup)
+      );
+    }
+    const taskCard = document.getElementById(
+      `task-card-${currentStepKey}-${
+        targetGroup?.groupKey || normalizedPainFocus.taskId || 'no_task'
+      }`
+    );
     if (taskCard) {
       taskCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [currentStepKey, handledPainFocusKey, normalizedPainFocus, painFocusKey]);
+  }, [
+    currentStepKey,
+    groups,
+    handledPainFocusKey,
+    normalizedPainFocus,
+    painFocusKey,
+    getVariantTaskId,
+    setActiveVariantTaskId,
+  ]);
 
   return (
     <div className="mt-6">
@@ -1037,24 +1086,31 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
 
       {executionPathItems.length ? (
         <div className="mt-4 space-y-4">
-          {groups.map(({ taskId, rows }, idx) => {
-            const logTask =
-              logData && taskId
-                ? (logData[taskId] as LogTask | undefined)
-                : undefined;
-            const tableKey = `${currentStepKey}-${taskId ?? 'no_task'}`;
+          {sharedSearchEngineOptions.length > 1 ? (
+            <SharedSearchEngineTabs
+              options={sharedSearchEngineOptions}
+              value={sharedSearchEngine}
+              onChange={setSharedSearchEngine}
+            />
+          ) : null}
+          {groups.map((group, idx) => {
+            const activeTaskId = getVariantTaskId(group);
+            const tableKey = `${currentStepKey}-${activeTaskId}`;
             return (
               <TaskCard
-                key={taskId ?? '__no_task__'}
-                taskId={taskId}
-                rows={rows}
+                key={group.groupKey}
+                group={group}
                 currentStepKey={currentStepKey}
-                logTask={logTask}
                 cardIndex={idx + 1}
                 projectFileKey={projectFileKey}
                 stepCode={stepCode}
                 isLatestReport={isLatestReport}
                 previewMode={previewMode}
+                activeVariantTaskId={activeTaskId}
+                onActiveVariantTaskIdChange={(taskId) =>
+                  setActiveVariantTaskId(group.groupKey, taskId)
+                }
+                hideTabs={sharedSearchEngineOptions.length > 1}
                 highlightedIndices={
                   highlightedInfo?.tableKey === tableKey
                     ? highlightedInfo.indices
@@ -1063,7 +1119,8 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                 onStepClick={(ids) => handleStepClick(ids, tableKey)}
                 painFocusTarget={
                   normalizedPainFocus &&
-                  taskId === normalizedPainFocus.taskId &&
+                  (activeTaskId === normalizedPainFocus.taskId ||
+                    group.groupKey === normalizedPainFocus.taskId) &&
                   handledPainFocusKey !== painFocusKey
                     ? {
                         painId: normalizedPainFocus.painId,

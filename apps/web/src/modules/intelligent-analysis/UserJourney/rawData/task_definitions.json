@@ -53,6 +53,120 @@
         "仓库地址与'任务完成判断标准'中的'期望地址'不一致"
       ]
     },
+    "discovery_doc_baidu": {
+      "step_id": "S0_DISCOVERY",
+      "task_id": "discovery_doc_baidu",
+      "base_task_id": "discovery_doc",
+      "search_engine": "baidu",
+      "name": "搜索并验证官方文档（百度）",
+      "phase": "discovery",
+      "task_type": "search",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "使用百度搜索开源项目的官方开发文档（搜索关键词不超过3个词，如 'cann ops-math quick_start'），找到文档链接后立即访问验证页面可访问性与内容完整性，确认包含开发指南或 quick start 内容",
+      "expected_outcome": "找到并访问官方文档/入门教程链接，确认页面可访问且内容有效",
+      "tool_hint": "web_search, browser_navigate",
+      "success_indicators": [
+        "搜索结果包含官方文档链接",
+        "找到官方 quick start 或入门教程链接",
+        "页面加载成功，文档内容清晰",
+        "包含开发指南或者quick_start内容"
+      ],
+      "failure_indicators": [
+        "无相关结果",
+        "全是第三方内容",
+        "找不到官方文档链接",
+        "页面404",
+        "内容为空",
+        "文档内容不包含开发指南或quick_start内容"
+      ]
+    },
+    "discovery_doc_google": {
+      "step_id": "S0_DISCOVERY",
+      "task_id": "discovery_doc_google",
+      "base_task_id": "discovery_doc",
+      "search_engine": "google",
+      "name": "搜索并验证官方文档（Google）",
+      "phase": "discovery",
+      "task_type": "search",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "使用 Google 搜索开源项目的官方开发文档（搜索关键词不超过3个词，如 'cann ops-math quick_start'），找到文档链接后立即访问验证页面可访问性与内容完整性，确认包含开发指南或 quick start 内容",
+      "expected_outcome": "找到并访问官方文档/入门教程链接，确认页面可访问且内容有效",
+      "tool_hint": "web_search, browser_navigate",
+      "success_indicators": [
+        "搜索结果包含官方文档链接",
+        "找到官方 quick start 或入门教程链接",
+        "页面加载成功，文档内容清晰",
+        "包含开发指南或者quick_start内容"
+      ],
+      "failure_indicators": [
+        "无相关结果",
+        "全是第三方内容",
+        "找不到官方文档链接",
+        "页面404",
+        "内容为空",
+        "文档内容不包含开发指南或quick_start内容"
+      ]
+    },
+    "discovery_repo_baidu": {
+      "step_id": "S0_DISCOVERY",
+      "task_id": "discovery_repo_baidu",
+      "base_task_id": "discovery_repo",
+      "search_engine": "baidu",
+      "name": "搜索并验证源码仓库（百度）",
+      "phase": "discovery",
+      "task_type": "search",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "使用百度搜索开源项目的官方源码仓库（搜索关键词不超过3个词，如 'cann ops-math repo'），找到仓库链接后立即访问验证页面可访问性，确认仓库存在且包含实际代码内容（代码文件、README、提交记录等）。注意：不允许直接git clone",
+      "expected_outcome": "找到并访问官方源码仓库链接，确认仓库可正常访问且内容有效",
+      "tool_hint": "web_search, browser_navigate",
+      "success_indicators": [
+        "仓库页面加载成功",
+        "仓库存在且包含代码文件",
+        "可见README或提交记录",
+        "找到的仓库地址与'任务完成判断标准'中的'期望地址'一致"
+      ],
+      "failure_indicators": [
+        "找不到官方源码仓库",
+        "仓库页面404或无法访问",
+        "仓库为空或已删除",
+        "搜索结果全是第三方镜像",
+        "仓库地址与'任务完成判断标准'中的'期望地址'不一致"
+      ]
+    },
+    "discovery_repo_google": {
+      "step_id": "S0_DISCOVERY",
+      "task_id": "discovery_repo_google",
+      "base_task_id": "discovery_repo",
+      "search_engine": "google",
+      "name": "搜索并验证源码仓库（Google）",
+      "phase": "discovery",
+      "task_type": "search",
+      "optional": false,
+      "timeout_sec": 120,
+      "retry_limit": 3,
+      "description": "使用 Google 搜索开源项目的官方源码仓库（搜索关键词不超过3个词，如 'cann ops-math repo'），找到仓库链接后立即访问验证页面可访问性，确认仓库存在且包含实际代码内容（代码文件、README、提交记录等）。注意：不允许直接git clone",
+      "expected_outcome": "找到并访问官方源码仓库链接，确认仓库可正常访问且内容有效",
+      "tool_hint": "web_search, browser_navigate",
+      "success_indicators": [
+        "仓库页面加载成功",
+        "仓库存在且包含代码文件",
+        "可见README或提交记录",
+        "找到的仓库地址与'任务完成判断标准'中的'期望地址'一致"
+      ],
+      "failure_indicators": [
+        "找不到官方源码仓库",
+        "仓库页面404或无法访问",
+        "仓库为空或已删除",
+        "搜索结果全是第三方镜像",
+        "仓库地址与'任务完成判断标准'中的'期望地址'不一致"
+      ]
+    },
     "setup_clone": {
       "step_id": "S1_SETUP",
       "task_id": "setup_clone",

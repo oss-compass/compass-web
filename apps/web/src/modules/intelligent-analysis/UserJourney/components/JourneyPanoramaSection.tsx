@@ -1,19 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import { Tooltip } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
 import JourneyPanoramaFlow, { StepStats } from './JourneyPanoramaFlow';
 import { JourneyStep } from '../types';
-import taskDefinitions from '../rawData/task_definitions.json';
-import useLogData, { LogTask } from '../hooks/useLogData';
-import EvidencePanel from './EvidencePanel';
+import useLogData from '../hooks/useLogData';
 import { usePainConfirmations } from '../hooks/usePainConfirmations';
-
-/* ─── 类型 ─── */
-type TaskDefinition = {
-  task_id: string;
-  name: string;
-  phase: string;
-  description: string;
-};
+import JourneyTaskEvidenceCard from './JourneyTaskEvidenceCard';
+import {
+  getOrderedUniqueTaskIds,
+  getSharedSearchEngineOptions,
+  groupStepTasks,
+} from '../taskMeta';
+import SharedSearchEngineTabs from './SharedSearchEngineTabs';
 
 type JourneyPanoramaSectionProps = {
   projectName: string;
@@ -23,101 +19,6 @@ type JourneyPanoramaSectionProps = {
   activeStepKey?: string;
   onStepChange?: (stepKey: string) => void;
   previewMode?: boolean;
-};
-
-/* ─── 静态 task 定义 map ─── */
-const TASK_DEF_MAP = (
-  taskDefinitions as { tasks: Record<string, TaskDefinition> }
-).tasks as Record<string, TaskDefinition>;
-
-/* ─── 单个任务的观点 & 痛点卡片 ─── */
-const TaskEvidenceCard: React.FC<{
-  taskId: string;
-  cardIndex: number;
-  logTask?: LogTask;
-  fileKey?: string;
-  stepId?: string;
-  isLatestReport?: boolean;
-  previewMode?: boolean;
-  onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
-}> = ({
-  taskId,
-  cardIndex,
-  logTask,
-  fileKey,
-  stepId,
-  isLatestReport = false,
-  previewMode = false,
-  onStepClick,
-}) => {
-  const def = TASK_DEF_MAP[taskId];
-  const displayName = def?.name ?? taskId;
-  const description = def?.description ?? logTask?.name ?? '';
-
-  const observations = logTask?.evidence?.observations ?? [];
-  const painPoints = logTask?.evidence?.pain_points ?? [];
-  const observationsToolNums = logTask?.evidence?.observations_tool_nums;
-  const painPointsToolNums = logTask?.evidence?.pain_points_tool_nums;
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
-      {/* 卡片头 */}
-      <div className="flex items-center gap-0 border-b border-slate-100">
-        {/* 左侧序号 */}
-        <div className="flex w-14 shrink-0 flex-col items-center justify-center self-stretch border-r border-slate-100 bg-slate-50 py-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-600">
-            {cardIndex}
-          </span>
-        </div>
-        {/* 标题 + 描述 */}
-        <div className="min-w-0 flex-1 px-4 py-2.5">
-          <span className="text-base font-semibold text-slate-900">
-            {displayName}
-          </span>
-          {description && (
-            <Tooltip
-              title={description}
-              placement="bottomLeft"
-              styles={{ root: { maxWidth: 520 } }}
-            >
-              <p className="mt-0.5 line-clamp-1 cursor-default text-xs leading-relaxed text-slate-500">
-                {description}
-              </p>
-            </Tooltip>
-          )}
-        </div>
-      </div>
-
-      {/* 总结 & 痛点内容 */}
-      <div className="px-5 py-4">
-        <EvidencePanel
-          observations={observations}
-          pain_points={painPoints}
-          observations_tool_nums={observationsToolNums}
-          pain_points_tool_nums={painPointsToolNums}
-          fileKey={fileKey}
-          stepId={taskId}
-          legacyStepId={stepId}
-          onStepClick={onStepClick}
-          isLatestReport={isLatestReport}
-          previewMode={previewMode}
-        />
-      </div>
-    </div>
-  );
-};
-
-/* ─── 按 taskId 分组，保持顺序去重 ─── */
-const getUniqueTaskIds = (step: JourneyStep): string[] => {
-  const seen = new Set<string>();
-  const ids: string[] = [];
-  (step.executionPath ?? []).forEach((action) => {
-    if (action.taskId && !seen.has(action.taskId)) {
-      seen.add(action.taskId);
-      ids.push(action.taskId);
-    }
-  });
-  return ids;
 };
 
 /* ─── 主组件 ─── */
@@ -131,6 +32,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
   previewMode = false,
 }) => {
   const [detailExpanded, setDetailExpanded] = useState(true);
+  const [sharedSearchEngine, setSharedSearchEngine] = useState<string>('');
   const logData = useLogData(projectFileKey);
   const { overviewPains } = usePainConfirmations(projectFileKey, {
     enabled: !previewMode,
@@ -153,13 +55,40 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
 
   // 当前选中 step 的任务列表
   const activeStep = panoramaActiveStep;
-  const taskIds = activeStep ? getUniqueTaskIds(activeStep) : [];
+  const taskGroups = useMemo(
+    () =>
+      activeStep
+        ? groupStepTasks(getOrderedUniqueTaskIds(activeStep), logData)
+        : [],
+    [activeStep, logData]
+  );
+  const sharedSearchEngineOptions = useMemo(
+    () =>
+      activeStep?.code?.startsWith('S0')
+        ? getSharedSearchEngineOptions(taskGroups)
+        : [],
+    [activeStep?.code, taskGroups]
+  );
+
+  useEffect(() => {
+    setSharedSearchEngine(sharedSearchEngineOptions[0]?.value || '');
+  }, [activeStepKey, sharedSearchEngineOptions]);
 
   // 每个 step 的统计数（任务数、痛点数、观点数）
   const stepStats = useMemo(() => {
     const map: Record<string, StepStats> = {};
     for (const step of steps) {
-      const ids = getUniqueTaskIds(step);
+      const groupedTasks = groupStepTasks(
+        getOrderedUniqueTaskIds(step),
+        logData
+      );
+      const ids = groupedTasks.flatMap((group) =>
+        group.variants.map((variant) => variant.taskId)
+      );
+      const matchIds = new Set<string>([
+        ...ids,
+        ...groupedTasks.map((group) => group.groupKey),
+      ]);
       let painCount = 0;
       let obsCount = 0;
 
@@ -168,7 +97,7 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
         const stepCode = step.code;
         painCount = overviewPains.filter((p: any) => {
           const pid = p.task_id || p.step_id;
-          return pid === stepCode || ids.includes(pid);
+          return pid === stepCode || matchIds.has(pid);
         }).length;
       }
 
@@ -184,10 +113,14 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
         }
         obsCount += logTask?.evidence?.observations?.length ?? 0;
       }
-      map[step.key] = { taskCount: ids.length, painCount, obsCount };
+      map[step.key] = {
+        taskCount: groupedTasks.length,
+        painCount,
+        obsCount,
+      };
     }
     return map;
-  }, [steps, logData, overviewPains]);
+  }, [steps, logData, overviewPains, previewMode]);
 
   return (
     <div className="mt-2 border-slate-100 pt-5">
@@ -263,35 +196,36 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
 
           {detailExpanded &&
             (activeStep ? (
-              taskIds.length > 0 ? (
+              taskGroups.length > 0 ? (
                 <div className="mt-4 space-y-4">
-                  {taskIds.map((taskId, idx) => {
-                    const logTask = logData
-                      ? (logData[taskId] as LogTask | undefined)
-                      : undefined;
-                    return (
-                      <TaskEvidenceCard
-                        key={taskId}
-                        taskId={taskId}
-                        cardIndex={idx + 1}
-                        logTask={logTask}
-                        fileKey={projectFileKey}
-                        stepId={activeStep?.code}
-                        isLatestReport={isLatestReport}
-                        previewMode={previewMode}
-                        onStepClick={(toolIds, ctx) => {
-                          // 1. 切换主视图步骤
-                          onStepChange?.(activeStep.key);
-                          // 2. 发送全局高亮事件
-                          window.dispatchEvent(
-                            new CustomEvent('user-journey:highlight-steps', {
-                              detail: { toolIds, taskId: ctx?.taskId },
-                            })
-                          );
-                        }}
-                      />
-                    );
-                  })}
+                  {sharedSearchEngineOptions.length > 1 ? (
+                    <SharedSearchEngineTabs
+                      options={sharedSearchEngineOptions}
+                      value={sharedSearchEngine}
+                      onChange={setSharedSearchEngine}
+                    />
+                  ) : null}
+                  {taskGroups.map((group, idx) => (
+                    <JourneyTaskEvidenceCard
+                      key={group.groupKey}
+                      group={group}
+                      cardIndex={idx + 1}
+                      fileKey={projectFileKey}
+                      stepId={activeStep?.code}
+                      isLatestReport={isLatestReport}
+                      previewMode={previewMode}
+                      sharedSearchEngine={sharedSearchEngine || undefined}
+                      hideTabs={sharedSearchEngineOptions.length > 1}
+                      onStepClick={(toolIds, ctx) => {
+                        onStepChange?.(activeStep.key);
+                        window.dispatchEvent(
+                          new CustomEvent('user-journey:highlight-steps', {
+                            detail: { toolIds, taskId: ctx?.taskId },
+                          })
+                        );
+                      }}
+                    />
+                  ))}
                 </div>
               ) : (
                 <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-500">

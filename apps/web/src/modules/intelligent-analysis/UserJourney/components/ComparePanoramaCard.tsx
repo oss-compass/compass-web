@@ -1,95 +1,16 @@
-import React, { useMemo } from 'react';
-import { Card, Tooltip } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Card } from 'antd';
 import JourneyPanoramaFlow, { StepStats } from './JourneyPanoramaFlow';
-import { JourneyStep, UserJourneyProjectView } from '../types';
-import taskDefinitions from '../rawData/task_definitions.json';
+import { UserJourneyProjectView } from '../types';
 import useLogData, { LogTask } from '../hooks/useLogData';
-import EvidencePanel from './EvidencePanel';
 import { usePainConfirmations } from '../hooks/usePainConfirmations';
-
-/* ─── 类型 ─── */
-type TaskDefinition = {
-  task_id: string;
-  name: string;
-  phase: string;
-  description: string;
-};
-
-const TASK_DEF_MAP = (
-  taskDefinitions as { tasks: Record<string, TaskDefinition> }
-).tasks as Record<string, TaskDefinition>;
-
-/* ─── 单个任务的总结 & 痛点卡片 ─── */
-const TaskEvidenceCard: React.FC<{
-  taskId: string;
-  cardIndex: number;
-  logTask?: LogTask;
-  fileKey?: string;
-  stepId?: string;
-}> = ({ taskId, cardIndex, logTask, fileKey, stepId }) => {
-  const def = TASK_DEF_MAP[taskId];
-  const displayName = def?.name ?? taskId;
-  const description = def?.description ?? logTask?.name ?? '';
-
-  const observations = logTask?.evidence?.observations ?? [];
-  const painPoints = logTask?.evidence?.pain_points ?? [];
-  const observationsToolNums = logTask?.evidence?.observations_tool_nums;
-  const painPointsToolNums = logTask?.evidence?.pain_points_tool_nums;
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
-      <div className="flex items-center gap-0 border-b border-slate-100">
-        <div className="flex w-14 shrink-0 flex-col items-center justify-center self-stretch border-r border-slate-100 bg-slate-50 py-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-sm font-bold text-slate-600">
-            {cardIndex}
-          </span>
-        </div>
-        <div className="min-w-0 flex-1 px-4 py-3.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-base font-semibold text-slate-900">
-              {displayName}
-            </span>
-          </div>
-          {description && (
-            <Tooltip
-              title={description}
-              placement="bottomLeft"
-              styles={{ root: { maxWidth: 520 } }}
-            >
-              <p className="mt-1.5 line-clamp-2 cursor-default text-xs leading-relaxed text-slate-500">
-                {description}
-              </p>
-            </Tooltip>
-          )}
-        </div>
-      </div>
-      <div className="px-5 py-4">
-        <EvidencePanel
-          observations={observations}
-          pain_points={painPoints}
-          observations_tool_nums={observationsToolNums}
-          pain_points_tool_nums={painPointsToolNums}
-          fileKey={fileKey}
-          stepId={taskId}
-          legacyStepId={stepId}
-        />
-      </div>
-    </div>
-  );
-};
-
-/* ─── 按 taskId 去重保序 ─── */
-const getUniqueTaskIds = (step: JourneyStep): string[] => {
-  const seen = new Set<string>();
-  const ids: string[] = [];
-  (step.executionPath ?? []).forEach((action) => {
-    if (action.taskId && !seen.has(action.taskId)) {
-      seen.add(action.taskId);
-      ids.push(action.taskId);
-    }
-  });
-  return ids;
-};
+import JourneyTaskEvidenceCard from './JourneyTaskEvidenceCard';
+import {
+  getOrderedUniqueTaskIds,
+  getSharedSearchEngineOptions,
+  groupStepTasks,
+} from '../taskMeta';
+import SharedSearchEngineTabs from './SharedSearchEngineTabs';
 
 /* ─── 单个项目的全景图 + 任务总结痛点 ─── */
 const ProjectPanoramaBlock: React.FC<{
@@ -100,6 +21,7 @@ const ProjectPanoramaBlock: React.FC<{
 }> = ({ project, hasBorderTop, activeStepKey, onStepChange }) => {
   const { data, queryKey } = project;
   const steps = data.journeySteps;
+  const [sharedSearchEngine, setSharedSearchEngine] = useState<string>('');
 
   const logData = useLogData(queryKey);
   const { overviewPains } = usePainConfirmations(queryKey);
@@ -108,7 +30,17 @@ const ProjectPanoramaBlock: React.FC<{
   const stepStats = useMemo(() => {
     const map: Record<string, StepStats> = {};
     for (const step of steps) {
-      const ids = getUniqueTaskIds(step);
+      const groupedTasks = groupStepTasks(
+        getOrderedUniqueTaskIds(step),
+        logData
+      );
+      const ids = groupedTasks.flatMap((group) =>
+        group.variants.map((variant) => variant.taskId)
+      );
+      const matchIds = new Set<string>([
+        ...ids,
+        ...groupedTasks.map((group) => group.groupKey),
+      ]);
       let painCount = 0;
       let obsCount = 0;
       const stepCode = step.code;
@@ -116,7 +48,7 @@ const ProjectPanoramaBlock: React.FC<{
       if (overviewPains && overviewPains.length > 0) {
         painCount = overviewPains.filter((p: any) => {
           const pid = p.task_id || p.step_id;
-          return pid === stepCode || ids.includes(pid);
+          return pid === stepCode || matchIds.has(pid);
         }).length;
       }
 
@@ -130,7 +62,11 @@ const ProjectPanoramaBlock: React.FC<{
         obsCount += logTask?.evidence?.observations?.length ?? 0;
       }
 
-      map[step.key] = { taskCount: ids.length, painCount, obsCount };
+      map[step.key] = {
+        taskCount: groupedTasks.length,
+        painCount,
+        obsCount,
+      };
     }
     return map;
   }, [steps, logData, overviewPains]);
@@ -145,7 +81,24 @@ const ProjectPanoramaBlock: React.FC<{
     }
   };
 
-  const taskIds = activeStep ? getUniqueTaskIds(activeStep) : [];
+  const taskGroups = useMemo(
+    () =>
+      activeStep
+        ? groupStepTasks(getOrderedUniqueTaskIds(activeStep), logData)
+        : [],
+    [activeStep, logData]
+  );
+  const sharedSearchEngineOptions = useMemo(
+    () =>
+      activeStep?.code?.startsWith('S0')
+        ? getSharedSearchEngineOptions(taskGroups)
+        : [],
+    [activeStep?.code, taskGroups]
+  );
+
+  useEffect(() => {
+    setSharedSearchEngine(sharedSearchEngineOptions[0]?.value || '');
+  }, [activeStepKey, sharedSearchEngineOptions]);
 
   return (
     <div className={hasBorderTop ? 'border-t border-slate-100 pt-7' : ''}>
@@ -190,23 +143,26 @@ const ProjectPanoramaBlock: React.FC<{
         </div>
 
         {activeStep ? (
-          taskIds.length > 0 ? (
+          taskGroups.length > 0 ? (
             <div className="mt-4 space-y-4">
-              {taskIds.map((taskId, idx) => {
-                const logTask = logData
-                  ? (logData[taskId] as LogTask | undefined)
-                  : undefined;
-                return (
-                  <TaskEvidenceCard
-                    key={taskId}
-                    taskId={taskId}
-                    cardIndex={idx + 1}
-                    logTask={logTask}
-                    fileKey={queryKey}
-                    stepId={activeStep?.code}
-                  />
-                );
-              })}
+              {sharedSearchEngineOptions.length > 1 ? (
+                <SharedSearchEngineTabs
+                  options={sharedSearchEngineOptions}
+                  value={sharedSearchEngine}
+                  onChange={setSharedSearchEngine}
+                />
+              ) : null}
+              {taskGroups.map((group, idx) => (
+                <JourneyTaskEvidenceCard
+                  key={group.groupKey}
+                  group={group}
+                  cardIndex={idx + 1}
+                  fileKey={queryKey}
+                  stepId={activeStep?.code}
+                  sharedSearchEngine={sharedSearchEngine || undefined}
+                  hideTabs={sharedSearchEngineOptions.length > 1}
+                />
+              ))}
             </div>
           ) : (
             <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-500">

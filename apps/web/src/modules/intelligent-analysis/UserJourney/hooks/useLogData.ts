@@ -5,6 +5,7 @@ import { compassApiFetch } from '../rawData/apiClient';
 export type LogCommand = {
   id: string;
   name: string;
+  search_engine?: string;
   status: string;
   args?: string;
   output?: string;
@@ -18,6 +19,8 @@ export type LogCommand = {
 export type LogTask = {
   name: string;
   id: string;
+  base_task_id?: string;
+  search_engine?: string;
   belong_to_phase?: string;
   status: string;
   evidence?: {

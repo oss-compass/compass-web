@@ -18,6 +18,14 @@ export const DISPLAY_STEP_SEQUENCE: PainStatus[] = [
   PainStatus.RETESTED_PASSED,
 ];
 
+export const LEGACY_RETESTING_STEP_SEQUENCE: PainStatus[] = [
+  PainStatus.TO_BE_CONFIRMED,
+  PainStatus.CONFIRMED_PENDING_FIX,
+  PainStatus.FIXED_PENDING_RETEST,
+  PainStatus.RETESTING,
+  PainStatus.RETESTED_PASSED,
+];
+
 export const RETEST_FAILED_STEP_SEQUENCE: PainStatus[] = [
   PainStatus.TO_BE_CONFIRMED,
   PainStatus.CONFIRMED_PENDING_FIX,

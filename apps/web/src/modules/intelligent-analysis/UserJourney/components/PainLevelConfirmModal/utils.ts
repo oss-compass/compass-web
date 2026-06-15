@@ -141,9 +141,6 @@ export const getDisplayedStepStatus = (status: PainStatus): PainStatus => {
   if (status === PainStatus.NO_FIX_NEEDED) {
     return PainStatus.CONFIRMED_PENDING_FIX;
   }
-  if (status === PainStatus.RETESTING) {
-    return PainStatus.FIXED_PENDING_RETEST;
-  }
   return Math.min(status, PainStatus.RETESTED_PASSED) as PainStatus;
 };
 
@@ -669,7 +666,8 @@ export const enrichPayloadByStatus = (
 };
 
 export const getModalStatusState = (
-  modalRecord?: PainConfirmationRecord
+  modalRecord?: PainConfirmationRecord,
+  fileKey?: string
 ): {
   currentStatus: PainStatus;
   isCurrentNonProjectIssue: boolean;
@@ -682,6 +680,9 @@ export const getModalStatusState = (
     (currentStatus === PainStatus.CONFIRMED_PENDING_FIX &&
       isNonProjectSeverity(modalRecord?.severity));
   const latestFileKey = String(modalRecord?.latest_file_key || '').trim();
+  const currentFileKey = String(fileKey || '').trim();
+  const hasNewerReport =
+    !!latestFileKey && (!currentFileKey || latestFileKey !== currentFileKey);
 
   return {
     currentStatus,
@@ -689,8 +690,8 @@ export const getModalStatusState = (
     latestFileKey,
     showRetestDecision:
       !isCurrentNonProjectIssue &&
-      currentStatus === PainStatus.FIXED_PENDING_RETEST &&
-      !!latestFileKey,
+      currentStatus === PainStatus.RETESTING &&
+      hasNewerReport,
   };
 };
 

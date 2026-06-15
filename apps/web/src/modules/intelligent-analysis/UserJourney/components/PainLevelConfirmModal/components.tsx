@@ -735,8 +735,11 @@ export const RetestingFormItems: React.FC<{
   return (
     <div className="rounded-md bg-amber-50 p-4 text-center">
       <Text type="warning" strong>
-        等待复测中，检测到最新报告后可直接提交复测结论
+        等待复测中
       </Text>
+      <div className="mt-1 text-xs text-slate-500">
+        检测到最新报告后可直接提交复测结论
+      </div>
     </div>
   );
 };
@@ -914,8 +917,9 @@ export const PainConfirmationForm: React.FC<{
     shouldShowConfirmedPendingFixForm(visibilityArgs);
   const showFixedPendingRetestInfo =
     shouldShowFixedPendingRetestInfo(visibilityArgs);
-  const showRetestingForm =
-    showRetestDecision || shouldShowRetestingForm(visibilityArgs);
+  const showRetestingForm = isReviewingHistoryStep
+    ? shouldShowRetestingForm(visibilityArgs)
+    : showRetestDecision || shouldShowRetestingForm(visibilityArgs);
   const showConfirmedByField = shouldShowConfirmedByField(visibilityArgs);
   const showNonProjectIssueInfo =
     !isReviewingHistoryStep && isCurrentNonProjectIssue;
@@ -923,9 +927,8 @@ export const PainConfirmationForm: React.FC<{
     !isReviewingHistoryStep && currentStatus === PainStatus.RETESTED_FAILED;
   const showRetestPassedInfo =
     !isReviewingHistoryStep && currentStatus === PainStatus.RETESTED_PASSED;
-  const retestingFormShowRetestDecision = isReviewingHistoryStep
-    ? true
-    : showRetestDecision;
+  const retestingFormShowRetestDecision =
+    !isReviewingHistoryStep && showRetestDecision;
   const retestingFormLatestFileKey = isReviewingHistoryStep
     ? reviewLatestFileKey
     : latestFileKey;

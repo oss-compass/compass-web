@@ -89,6 +89,8 @@ export type EvidencePanelProps = {
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  legacyStepIds?: string[];
+  highlightTaskId?: string;
   /**
    * 点击关联步骤 ID 时的回调
    */
@@ -428,6 +430,7 @@ const getExistingPainConfirmation = ({
   fileKey,
   stepId,
   legacyStepId,
+  legacyStepIds,
   painIndex,
   text,
 }: {
@@ -436,30 +439,37 @@ const getExistingPainConfirmation = ({
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  legacyStepIds?: string[];
   painIndex: number;
   text: string;
 }): PainConfirmationRecord | undefined => {
   if (!canConfirm || !fileKey || !stepId) return undefined;
 
+  const candidateStepIds = Array.from(
+    new Set(
+      [stepId, legacyStepId, ...(legacyStepIds ?? [])]
+        .map((value) => String(value || '').trim())
+        .filter(Boolean)
+    )
+  );
+
   const record =
     confirmationMap.get(`${fileKey}#${stepId}#${painIndex}`) ??
-    (legacyStepId
-      ? confirmationMap.get(`${fileKey}#${legacyStepId}#${painIndex}`)
-      : undefined);
+    candidateStepIds
+      .filter((candidateStepId) => candidateStepId !== stepId)
+      .map((candidateStepId) =>
+        confirmationMap.get(`${fileKey}#${candidateStepId}#${painIndex}`)
+      )
+      .find(Boolean);
 
   if (record) {
     return record;
   }
 
-  const candidateStepIds = new Set<string>(
-    [stepId, legacyStepId]
-      .map((value) => String(value || '').trim())
-      .filter(Boolean)
-  );
-
   return Array.from(confirmationMap.values()).find((item) => {
     if (String(item.file_key || '').trim() !== fileKey) return false;
-    if (!candidateStepIds.has(String(item.step_id || '').trim())) return false;
+    if (!candidateStepIds.includes(String(item.step_id || '').trim()))
+      return false;
     return isSamePainText(String(item.pain_text || ''), text);
   });
 };
@@ -771,15 +781,10 @@ const derivePainDisplayState = ({
     isLatestReport,
     shouldUseHistoricalTerminalStatus,
   });
-  const statusWithoutLegacyRetesting =
-    effectiveStatusRaw === PainStatus.RETESTING
-      ? PainStatus.FIXED_PENDING_RETEST
-      : effectiveStatusRaw;
   const normalizedEffectiveStatus =
-    isLatestReport &&
-    statusWithoutLegacyRetesting === PainStatus.RETESTED_FAILED
+    isLatestReport && effectiveStatusRaw === PainStatus.RETESTED_FAILED
       ? PainStatus.CONFIRMED_PENDING_FIX
-      : statusWithoutLegacyRetesting;
+      : effectiveStatusRaw;
   const effectiveSeverity = getEffectivePainSeverity({
     parentPain,
     childSeverity,
@@ -1006,11 +1011,13 @@ const PainPointItem: React.FC<{
   fileKey?: string;
   stepId?: string;
   legacyStepId?: string;
+  legacyStepIds?: string[];
   parentPain?: OverviewPainPointRow;
   isLatestReport?: boolean;
   compact?: boolean;
   toolIds?: string[];
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
+  highlightTaskId?: string;
   shouldAutoOpen?: boolean;
   onAutoOpenHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
@@ -1025,11 +1032,13 @@ const PainPointItem: React.FC<{
   fileKey,
   stepId,
   legacyStepId,
+  legacyStepIds,
   parentPain,
   isLatestReport = false,
   compact = false,
   toolIds,
   onStepClick,
+  highlightTaskId,
   shouldAutoOpen = false,
   onAutoOpenHandled,
   versionOptions,
@@ -1073,6 +1082,7 @@ const PainPointItem: React.FC<{
     fileKey,
     stepId,
     legacyStepId,
+    legacyStepIds,
     painIndex: index,
     text,
   });
@@ -1148,7 +1158,7 @@ const PainPointItem: React.FC<{
           <div className="flex shrink-0 items-center gap-1.5">
             <LinkStepsButton
               toolIds={toolIds}
-              taskId={stepId}
+              taskId={highlightTaskId || stepId}
               onClick={onStepClick}
             />
             <PainPointBadge
@@ -1573,11 +1583,7 @@ const HistoryPainTable: React.FC<{
                 item,
                 entries
               );
-              const statusWithoutLegacyRetesting =
-                rawStatus === PainStatus.RETESTING
-                  ? PainStatus.FIXED_PENDING_RETEST
-                  : rawStatus;
-              const normalizedStatus = statusWithoutLegacyRetesting;
+              const normalizedStatus = rawStatus;
               const statusLabel = STATUS_LABELS[normalizedStatus] || '--';
 
               return (
@@ -1750,6 +1756,8 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   fileKey,
   stepId,
   legacyStepId,
+  legacyStepIds,
+  highlightTaskId,
   onStepClick,
   painFocusTarget,
   onPainFocusHandled,
@@ -1759,6 +1767,18 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
 }) => {
   const [obsExpanded, setObsExpanded] = useState(false);
   const canConfirm = !!(fileKey && stepId) && !previewMode;
+  const candidateTaskIds = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          [stepId, legacyStepId, ...(legacyStepIds ?? [])]
+            .map((value) => String(value || '').trim())
+            .filter(Boolean)
+        )
+      ),
+    [legacyStepId, legacyStepIds, stepId]
+  );
+  const linkTaskId = highlightTaskId || stepId;
   const { overviewPains } = usePainConfirmations(
     canConfirm ? fileKey : undefined,
     { enabled: canConfirm }
@@ -1772,11 +1792,11 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
       }));
     }
     if (fileKey && stepId && overviewPains && overviewPains.length > 0) {
-      // 从 overviewPains 中过滤出属于当前任务的痛点，包含对 legacyStepId 的兼容
+      // 从 overviewPains 中过滤出属于当前任务的痛点，包含对旧 step_id 的兼容
       return overviewPains
         .filter((p: any) => {
           const pid = p.task_id || p.step_id;
-          if (!(pid === stepId || (legacyStepId && pid === legacyStepId)))
+          if (!candidateTaskIds.includes(String(pid || '').trim()))
             return false;
           return !!String(p.id || '').trim();
         })
@@ -1794,7 +1814,14 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     }
     // 不再自动降级为原来的 pain_points prop
     return [];
-  }, [fileKey, stepId, legacyStepId, overviewPains, pain_points, previewMode]);
+  }, [
+    candidateTaskIds,
+    fileKey,
+    overviewPains,
+    pain_points,
+    previewMode,
+    stepId,
+  ]);
 
   const hasPain = displayPainPoints.length > 0;
   const hasObs = !!observations && observations.length > 0;
@@ -1802,12 +1829,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     () => deriveProjectKeyFromFileKey(fileKey),
     [fileKey]
   );
-  const targetTaskIds = useMemo(() => {
-    const ids = new Set<string>();
-    if (stepId?.trim()) ids.add(stepId.trim());
-    if (legacyStepId?.trim()) ids.add(legacyStepId.trim());
-    return ids;
-  }, [legacyStepId, stepId]);
+  const targetTaskIds = useMemo(
+    () => new Set(candidateTaskIds),
+    [candidateTaskIds]
+  );
 
   const { data: overviewCardResp, isFetching: parentPainsLoading } = useQuery({
     queryKey: ['userJourneyParentPainsByProject', projectKey],
@@ -1942,10 +1967,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     fileKey={fileKey}
                     stepId={stepId}
                     legacyStepId={legacyStepId}
+                    legacyStepIds={legacyStepIds}
                     parentPain={findParentPainForPain({ id, index })}
                     isLatestReport={isLatestReport}
                     toolIds={pain_points_tool_nums?.[index]}
                     onStepClick={onStepClick}
+                    highlightTaskId={linkTaskId}
                     compact
                     shouldAutoOpen={shouldAutoOpenForPainId(id)}
                     onAutoOpenHandled={onPainFocusHandled}
@@ -1977,7 +2004,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   order={i + 1}
                   text={obs}
                   toolIds={observations_tool_nums?.[i]}
-                  taskId={stepId}
+                  taskId={linkTaskId}
                   onStepClick={onStepClick}
                   compact
                 />
@@ -2019,10 +2046,12 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   fileKey={fileKey}
                   stepId={stepId}
                   legacyStepId={legacyStepId}
+                  legacyStepIds={legacyStepIds}
                   parentPain={findParentPainForPain({ id, index })}
                   isLatestReport={isLatestReport}
                   toolIds={pain_points_tool_nums?.[index]}
                   onStepClick={onStepClick}
+                  highlightTaskId={linkTaskId}
                   shouldAutoOpen={shouldAutoOpenForPainId(id)}
                   onAutoOpenHandled={onPainFocusHandled}
                   versionOptions={versionOptions}
@@ -2073,7 +2102,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   order={i + 1}
                   text={obs}
                   toolIds={observations_tool_nums?.[i]}
-                  taskId={stepId}
+                  taskId={linkTaskId}
                   onStepClick={onStepClick}
                 />
               ))}

@@ -20,6 +20,7 @@ import {
 import { STATUS_LABELS } from './constants';
 import {
   DISPLAY_STEP_SEQUENCE,
+  LEGACY_RETESTING_STEP_SEQUENCE,
   RETEST_FAILED_STEP_SEQUENCE,
   useModalSessionState,
   usePainConfirmationForm,
@@ -87,7 +88,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
     isCurrentNonProjectIssue,
     latestFileKey,
     showRetestDecision,
-  } = getModalStatusState(modalRecord);
+  } = getModalStatusState(modalRecord, fileKey);
   const isCurrentRetestFailed = currentStatus === PainStatus.RETESTED_FAILED;
 
   const { handleOk, submitting } = usePainConfirmationForm({
@@ -197,6 +198,8 @@ const PainLevelConfirmModal: React.FC<Props> = ({
 
   const stepSequence = isCurrentRetestFailed
     ? RETEST_FAILED_STEP_SEQUENCE
+    : currentStatus === PainStatus.RETESTING
+    ? LEGACY_RETESTING_STEP_SEQUENCE
     : DISPLAY_STEP_SEQUENCE;
 
   const normalStepsItems = useStepsItems({
