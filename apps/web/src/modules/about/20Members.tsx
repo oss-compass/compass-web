@@ -7,6 +7,7 @@ import Partners from './23Partners';
 
 const Members = () => {
   const { t } = useTranslation();
+
   return (
     <div className="mb-20">
       <Title>{t('about:members')}</Title>
