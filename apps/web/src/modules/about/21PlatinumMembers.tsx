@@ -78,6 +78,7 @@ const PlatinumMembers = () => {
       width: 120,
       height: 56,
     },
+
     {
       name: 'OpenI',
       logo: '/images/about/OpenI@2x.png',
