@@ -37,6 +37,42 @@ const PlatinumMembers = () => {
       height: 36,
     },
     {
+      name: '中国科学院软件研究所',
+      logo: '/images/about/软件所.jpg',
+      width: 164,
+      height: 48,
+    },
+    {
+      name: 'copu',
+      logo: '/images/about/copu.png',
+      width: 104,
+      height: 46,
+    },
+    {
+      name: '信通院',
+      logo: '/images/about/xty.png',
+      width: 100,
+      height: 56,
+    },
+    {
+      name: '中山大学',
+      logo: '/images/about/zsdx.png',
+      width: 140,
+      height: 56,
+    },
+    {
+      name: 'cesi2',
+      logo: '/images/about/cesi.png',
+      width: 66,
+      height: 66,
+    },
+    {
+      name: '浙江大学',
+      logo: '/images/about/zjdx2.png',
+      width: 150,
+      height: 66,
+    },
+    {
       name: 'OpenI',
       logo: '/images/about/OpenI@2x.png',
       width: 121,
@@ -54,23 +90,11 @@ const PlatinumMembers = () => {
       width: 164,
       height: 46,
     },
-    {
-      name: '中国科学院软件研究所',
-      logo: '/images/about/软件所.jpg',
-      width: 164,
-      height: 48,
-    },
-    {
-      name: 'copu',
-      logo: '/images/about/copu.png',
-      width: 104,
-      height: 46,
-    },
   ];
   return (
     <>
       <div className="mb-6 font-medium">{t('about:platinum_members')}</div>
-      <Grid className="mb-10 grid-cols-4 bg-[#fafafa] py-10 px-16">
+      <Grid className="mb-10 grid-cols-4 bg-[#fafafa] px-16 py-10">
         {data.map((item) => {
           return (
             <div
