@@ -73,6 +73,12 @@ const PlatinumMembers = () => {
       height: 66,
     },
     {
+      name: 'openuk',
+      logo: '/images/about/openuk.png',
+      width: 120,
+      height: 56,
+    },
+    {
       name: 'OpenI',
       logo: '/images/about/OpenI@2x.png',
       width: 121,
