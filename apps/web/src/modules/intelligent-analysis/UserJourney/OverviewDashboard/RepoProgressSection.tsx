@@ -5,8 +5,29 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Grid, Segmented, Select, Table, Typography } from 'antd';
-import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
+import {
+  Alert,
+  Button,
+  Grid,
+  Input,
+  Modal,
+  Segmented,
+  Select,
+  Table,
+  Tag,
+  Typography,
+  message,
+} from 'antd';
+import {
+  CheckCircleOutlined,
+  CheckOutlined,
+  ClockCircleOutlined,
+  ExclamationCircleOutlined,
+  FilterFilled,
+  LoadingOutlined,
+  RightOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
 import { IssueProgressBar } from './ProgressComponents';
@@ -34,13 +55,25 @@ import type {
   TeamProgressRow,
   TeamSortKey,
 } from './types';
-import { compassApiUrl } from '../rawData/apiClient';
+import {
+  clearCompassOperatorToken,
+  compassApiUrl,
+  fetchCompassOperatorMe,
+  fetchOverviewRepoRerunRecords,
+  fetchOverviewRepoRerunStatuses,
+  getCompassOperatorToken,
+  loginCompassOperator,
+  setCompassOperatorToken,
+  triggerOverviewRepoRerun,
+} from '../rawData/apiClient';
+import type { CompassOperatorUser, RepoRerunJob } from '../rawData/apiClient';
 import {
   buildMetricSummaryFromPainRows,
   compareTeamNames,
   formatExecutionTime,
   formatPercent,
   formatScore,
+  getReportDisplayText,
   normalizeSeverity,
   toSuccessRate,
 } from './utils';
@@ -80,6 +113,154 @@ const compareBeatLast = (leftId: unknown, rightId: unknown) => {
   const rightBeat = isBeatRepo(rightId);
   if (leftBeat === rightBeat) return 0;
   return leftBeat ? 1 : -1;
+};
+
+const NON_TERMINAL_RERUN_STATUSES = new Set(['queued', 'pending', 'running']);
+
+const getRerunStatusMeta = (status?: string) => {
+  switch (status) {
+    case 'queued':
+    case 'pending':
+      return {
+        label: '排队中',
+        color: 'processing' as const,
+        icon: <ClockCircleOutlined />,
+      };
+    case 'running':
+      return {
+        label: '重跑中',
+        color: 'processing' as const,
+        icon: <LoadingOutlined />,
+      };
+    case 'completed':
+      return {
+        label: '已完成',
+        color: 'success' as const,
+        icon: <CheckCircleOutlined />,
+      };
+    case 'failed':
+      return {
+        label: '失败',
+        color: 'error' as const,
+        icon: <ExclamationCircleOutlined />,
+      };
+    case 'timeout':
+      return {
+        label: '已超时',
+        color: 'warning' as const,
+        icon: <ExclamationCircleOutlined />,
+      };
+    case 'cancelled':
+      return {
+        label: '已取消',
+        color: 'default' as const,
+        icon: <ClockCircleOutlined />,
+      };
+    default:
+      return {
+        label: '重跑',
+        color: 'default' as const,
+        icon: <SyncOutlined />,
+      };
+  }
+};
+
+const isActiveRerunJob = (job?: RepoRerunJob | null) =>
+  !!job && NON_TERMINAL_RERUN_STATUSES.has(String(job.status || '').trim());
+
+const formatRerunDateTime = (value: unknown) => {
+  const text = String(value || '').trim();
+  if (!text) return '--';
+  const parsed = new Date(text);
+  if (Number.isNaN(parsed.getTime())) return text;
+  return parsed.toLocaleString('zh-CN', {
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
+
+const getRerunJobRowKey = (job: RepoRerunJob) =>
+  String(
+    job.job_id ||
+      job.third_party_task_id ||
+      `${job.project_key || 'repo'}-${
+        job.created_at || job.updated_at || Math.random()
+      }`
+  );
+
+type RerunRecordsTableProps = {
+  records: RepoRerunJob[];
+  loading?: boolean;
+  emptyText?: string;
+};
+
+const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
+  records,
+  loading = false,
+  emptyText = '暂无重跑记录',
+}) => {
+  const columns = useMemo<TableProps<RepoRerunJob>['columns']>(
+    () => [
+      {
+        title: '操作人',
+        dataIndex: 'requested_by',
+        key: 'requested_by',
+        width: 120,
+        render: (value) => value || '--',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        width: 170,
+        render: (value) => formatRerunDateTime(value),
+      },
+      {
+        title: '完成时间',
+        dataIndex: 'completed_at',
+        key: 'completed_at',
+        width: 170,
+        render: (value) => formatRerunDateTime(value),
+      },
+      {
+        title: '任务状态',
+        dataIndex: 'status',
+        key: 'status',
+        width: 120,
+        render: (value) => {
+          const meta = getRerunStatusMeta(String(value || '').trim());
+          return (
+            <Tag color={meta.color as any}>
+              <span className="inline-flex items-center gap-1">
+                {meta.icon}
+                <span>{meta.label}</span>
+              </span>
+            </Tag>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  return (
+    <Table<RepoRerunJob>
+      className="overview-ant-table"
+      rowKey={getRerunJobRowKey}
+      dataSource={records}
+      columns={columns}
+      loading={loading}
+      pagination={false}
+      size="middle"
+      tableLayout="fixed"
+      locale={{ emptyText }}
+    />
+  );
 };
 
 const PROGRESS_METRIC_OPTIONS: Array<{
@@ -261,6 +442,9 @@ type RepoProgressSectionProps = {
   teamFilter: string;
   teamOptions: string[];
   onTeamFilterChange: (team: string) => void;
+  hardwareEnvFilter: string;
+  hardwareEnvOptions: string[];
+  onHardwareEnvFilterChange: (hardwareEnv: string) => void;
   isLoading: boolean;
   teamRows: TeamProgressRow[];
   repoRows: RepoProgressRow[];
@@ -297,6 +481,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   teamFilter,
   teamOptions,
   onTeamFilterChange,
+  hardwareEnvFilter,
+  hardwareEnvOptions,
+  onHardwareEnvFilterChange,
   isLoading,
   teamRows,
   repoRows,
@@ -312,6 +499,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   onOpenTeamIssues,
 }) => {
   const screens = Grid.useBreakpoint();
+  const isCompactTable = !screens.xl;
+  const showActionColumn = false;
   const repoWidthScale = screens.xxl
     ? 1
     : screens.xl
@@ -322,35 +511,71 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const rw = (base: number, min: number) =>
     Math.max(min, Math.round(base * repoWidthScale));
   const repoColumnWidths = useMemo<number[]>(
-    () => [
-      rw(40, 30),
-      rw(80, 70),
-      rw(60, 50),
-      rw(96, 84),
-      rw(70, 60),
-      rw(70, 60),
-      rw(160, 140),
-      rw(40, 30),
-      rw(80, 70),
-      rw(110, 96),
-    ],
-    [repoWidthScale]
+    () =>
+      isCompactTable
+        ? [
+            rw(36, 28),
+            rw(72, 62),
+            rw(52, 44),
+            rw(88, 74),
+            rw(62, 54),
+            rw(62, 54),
+            rw(132, 112),
+            rw(36, 28),
+            rw(70, 58),
+            rw(68, 56),
+            rw(76, 64),
+            rw(58, 50),
+          ]
+        : [
+            rw(40, 30),
+            rw(80, 70),
+            rw(60, 50),
+            rw(96, 84),
+            rw(70, 60),
+            rw(70, 60),
+            rw(160, 140),
+            rw(40, 30),
+            rw(80, 70),
+            rw(86, 72),
+            rw(100, 86),
+            rw(72, 64),
+          ],
+    [isCompactTable, repoWidthScale]
   );
   const repoScrollX = repoColumnWidths.reduce((sum, w) => sum + w, 0);
   const teamColumnWidths = useMemo<number[]>(
-    () => [
-      rw(40, 30),
-      rw(80, 70),
-      rw(60, 50),
-      rw(96, 84),
-      rw(70, 60),
-      rw(70, 60),
-      rw(160, 140),
-      rw(40, 30),
-      rw(80, 70),
-      rw(110, 96),
-    ],
-    [repoWidthScale]
+    () =>
+      isCompactTable
+        ? [
+            rw(36, 28),
+            rw(72, 62),
+            rw(52, 44),
+            rw(88, 74),
+            rw(62, 54),
+            rw(62, 54),
+            rw(132, 112),
+            rw(36, 28),
+            rw(70, 58),
+            rw(68, 56),
+            rw(76, 64),
+            rw(58, 50),
+          ]
+        : [
+            rw(40, 30),
+            rw(80, 70),
+            rw(60, 50),
+            rw(96, 84),
+            rw(70, 60),
+            rw(70, 60),
+            rw(160, 140),
+            rw(40, 30),
+            rw(80, 70),
+            rw(86, 72),
+            rw(100, 86),
+            rw(72, 64),
+          ],
+    [isCompactTable, repoWidthScale]
   );
   const teamScrollX = teamColumnWidths.reduce((sum, w) => sum + w, 0);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
@@ -387,6 +612,233 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       : ['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR', 'P3_MINOR']
   );
   const [exportingCsv, setExportingCsv] = useState(false);
+  const [messageApi, messageContextHolder] = message.useMessage();
+  const [operatorUser, setOperatorUser] = useState<CompassOperatorUser | null>(
+    null
+  );
+  const [authChecking, setAuthChecking] = useState(false);
+  const [authSubmitting, setAuthSubmitting] = useState(false);
+  const [rerunning, setRerunning] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [rerunModal, setRerunModal] = useState<{
+    open: boolean;
+    repo: RepoProgressRow | null;
+  }>({
+    open: false,
+    repo: null,
+  });
+  const [rerunStatusMap, setRerunStatusMap] = useState<
+    Record<string, RepoRerunJob>
+  >({});
+  const [rerunStatusLoading, setRerunStatusLoading] = useState(false);
+  const [rerunRecordsModal, setRerunRecordsModal] = useState<{
+    open: boolean;
+    repo: RepoProgressRow | null;
+  }>({
+    open: false,
+    repo: null,
+  });
+  const [rerunRecordsLoading, setRerunRecordsLoading] = useState(false);
+  const [rerunRecordsError, setRerunRecordsError] = useState('');
+  const [rerunRecords, setRerunRecords] = useState<RepoRerunJob[]>([]);
+
+  const loadOperatorUser = useCallback(async () => {
+    const token = getCompassOperatorToken();
+    if (!token) {
+      setOperatorUser(null);
+      return null;
+    }
+    setAuthChecking(true);
+    try {
+      const user = await fetchCompassOperatorMe(token);
+      setOperatorUser(user);
+      return user;
+    } catch (_error) {
+      clearCompassOperatorToken();
+      setOperatorUser(null);
+      return null;
+    } finally {
+      setAuthChecking(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadOperatorUser();
+  }, [loadOperatorUser]);
+
+  const canOperateRepo = useCallback(
+    (user: CompassOperatorUser | null, row: RepoProgressRow | null) => {
+      if (!user || !row || !user.enabled) return false;
+      if (user.role === 'admin') return true;
+      return (
+        user.role === 'team_lead' &&
+        user.team_names.includes(String(row.team || '').trim())
+      );
+    },
+    []
+  );
+
+  const closeRerunModal = useCallback(() => {
+    setRerunModal({ open: false, repo: null });
+    setLoginError('');
+    setLoginForm((prev) => ({ ...prev, password: '' }));
+  }, []);
+
+  const loadRerunRecords = useCallback(
+    async (projectKey: string, options?: { silent?: boolean }) => {
+      const silent = options?.silent ?? false;
+      if (!silent) {
+        setRerunRecordsLoading(true);
+        setRerunRecordsError('');
+      }
+      try {
+        const result = await fetchOverviewRepoRerunRecords(projectKey, 10);
+        setRerunRecords(result.items || []);
+        if (result.items?.length) {
+          setRerunStatusMap((prev) => ({
+            ...prev,
+            [projectKey]: result.items[0],
+          }));
+        }
+      } catch (error) {
+        if (!silent) {
+          setRerunRecordsError(
+            error instanceof Error ? error.message : '获取重跑记录失败'
+          );
+        }
+      } finally {
+        if (!silent) {
+          setRerunRecordsLoading(false);
+        }
+      }
+    },
+    []
+  );
+
+  const openRerunModal = useCallback(
+    async (row: RepoProgressRow) => {
+      const currentJob = rerunStatusMap[row.id];
+      setLoginError('');
+      if (currentJob) {
+        setRerunRecords([currentJob]);
+        setRerunRecordsLoading(false);
+      } else {
+        setRerunRecords([]);
+        setRerunRecordsLoading(true);
+      }
+      setRerunRecordsError('');
+      setRerunModal({ open: true, repo: row });
+      void loadRerunRecords(row.id, { silent: !!currentJob });
+      if (getCompassOperatorToken() && !operatorUser) {
+        await loadOperatorUser();
+      }
+    },
+    [loadOperatorUser, loadRerunRecords, operatorUser, rerunStatusMap]
+  );
+
+  const handleOperatorLogin = useCallback(async () => {
+    const username = loginForm.username.trim();
+    const password = loginForm.password;
+    if (!username || !password) {
+      setLoginError('请输入账号和密码');
+      return;
+    }
+
+    setAuthSubmitting(true);
+    setLoginError('');
+    try {
+      const result = await loginCompassOperator({ username, password });
+      setCompassOperatorToken(result.access_token);
+      setOperatorUser(result.user);
+      setLoginForm((prev) => ({ ...prev, password: '' }));
+      messageApi.success(`已登录为 ${result.user.display_name}`);
+    } catch (error) {
+      setLoginError(
+        error instanceof Error ? error.message : '登录失败，请稍后重试'
+      );
+    } finally {
+      setAuthSubmitting(false);
+    }
+  }, [loginForm.password, loginForm.username, messageApi]);
+
+  const handleOperatorLogout = useCallback(() => {
+    clearCompassOperatorToken();
+    setOperatorUser(null);
+    setLoginError('');
+    setLoginForm((prev) => ({ ...prev, password: '' }));
+  }, []);
+
+  const handleConfirmRerun = useCallback(async () => {
+    if (!rerunModal.repo) return;
+    if (!operatorUser) {
+      setLoginError('请先登录后再操作');
+      return;
+    }
+    if (!canOperateRepo(operatorUser, rerunModal.repo)) {
+      messageApi.error('当前账号无权操作该仓库');
+      return;
+    }
+
+    setRerunning(true);
+    setLoginError('');
+    try {
+      const result = await triggerOverviewRepoRerun(rerunModal.repo.id);
+      const repoId = rerunModal.repo.id;
+      const targetRepo = rerunModal.repo;
+      setRerunStatusMap((prev) => ({
+        ...prev,
+        [repoId]: result.data,
+      }));
+      setRerunRecords([result.data]);
+      setRerunRecordsError('');
+      setRerunRecordsLoading(false);
+      messageApi.success(result.message || '已触发重跑');
+      closeRerunModal();
+      setRerunRecordsModal({ open: true, repo: targetRepo });
+      void loadRerunRecords(repoId);
+    } catch (error) {
+      const text =
+        error instanceof Error ? error.message : '重跑失败，请稍后重试';
+      if (/token|未登录|过期/i.test(text)) {
+        clearCompassOperatorToken();
+        setOperatorUser(null);
+      }
+      setLoginError(text);
+    } finally {
+      setRerunning(false);
+    }
+  }, [
+    canOperateRepo,
+    closeRerunModal,
+    loadRerunRecords,
+    messageApi,
+    operatorUser,
+    rerunModal.repo,
+  ]);
+
+  const closeRerunRecordsModal = useCallback(() => {
+    setRerunRecordsModal({ open: false, repo: null });
+    setRerunRecords([]);
+    setRerunRecordsError('');
+  }, []);
+
+  const openRerunRecordsModal = useCallback(
+    async (row: RepoProgressRow) => {
+      const currentJob = rerunStatusMap[row.id];
+      if (currentJob) {
+        setRerunRecords([currentJob]);
+        setRerunRecordsError('');
+        setRerunRecordsLoading(false);
+      } else {
+        setRerunRecords([]);
+        setRerunRecordsLoading(true);
+      }
+      setRerunRecordsModal({ open: true, repo: row });
+      await loadRerunRecords(row.id);
+    },
+    [loadRerunRecords, rerunStatusMap]
+  );
 
   const severityFilterSet = useMemo(
     () => new Set(severityFilters),
@@ -636,14 +1088,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           fileKey
         )}`
       : '';
-    const displayText = (() => {
-      if (!fileKey) return '';
-      const last = fileKey.lastIndexOf('_');
-      if (last <= 0) return fileKey;
-      const prev = fileKey.lastIndexOf('_', last - 1);
-      if (prev < 0 || prev + 1 >= fileKey.length) return fileKey;
-      return fileKey.slice(prev + 1);
-    })();
+    const displayText = getReportDisplayText(fileKey);
 
     return fileKey ? (
       <Link href={reportUrl} className="overview-table-link">
@@ -653,6 +1098,37 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       <span className="text-slate-300">--</span>
     );
   };
+
+  const renderRerunAction = useCallback(
+    (record: RepoProgressRow) => {
+      const job = rerunStatusMap[record.id];
+      const meta = getRerunStatusMeta(job?.status);
+      const active = isActiveRerunJob(job);
+      const buttonText = active ? meta.label : '重跑';
+      const buttonIcon = active ? meta.icon : <SyncOutlined />;
+      return (
+        <Button
+          type="link"
+          size="small"
+          className="!px-0"
+          loading={rerunStatusLoading && !job}
+          onClick={() => {
+            if (active) {
+              void openRerunRecordsModal(record);
+              return;
+            }
+            void openRerunModal(record);
+          }}
+        >
+          <span className="inline-flex items-center gap-1">
+            {buttonIcon}
+            <span>{buttonText}</span>
+          </span>
+        </Button>
+      );
+    },
+    [openRerunModal, openRerunRecordsModal, rerunStatusLoading, rerunStatusMap]
+  );
 
   const sortableTitle = (
     label: string,
@@ -866,10 +1342,28 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: '详细报告',
-        key: 'detail',
+        title: '硬件环境',
+        dataIndex: 'hardwareEnv',
+        key: 'hardwareEnv',
         width: repoColumnWidths[9],
+        ellipsis: true,
+        render: (value) => value || '-',
+      },
+      {
+        title: sortableTitle('详细报告', repoSortArrow('detail')),
+        key: 'detail',
+        width: repoColumnWidths[10],
         render: (_value, record) => renderDetailLink(record),
+        onHeaderCell: () => ({
+          onClick: () => handleRepoSortWithReset('detail'),
+          className: 'sortable-col',
+        }),
+      },
+      {
+        title: '操作',
+        key: 'actions',
+        width: repoColumnWidths[11],
+        render: (_value, record) => renderRerunAction(record),
       },
     ],
     [
@@ -879,9 +1373,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       repoSortArrow,
       progressHeaderTitle,
       repoDerived,
+      renderRerunAction,
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
     ]
+  );
+  const visibleRepoColumns = useMemo(
+    () =>
+      (repoColumns || []).filter((column) =>
+        showActionColumn ? true : column?.key !== 'actions'
+      ),
+    [repoColumns, showActionColumn]
+  );
+  const visibleRepoScrollX = useMemo(
+    () =>
+      showActionColumn
+        ? repoScrollX
+        : repoScrollX - (repoColumnWidths[11] ?? 0),
+    [showActionColumn, repoColumnWidths, repoScrollX]
   );
 
   const teamColumns = useMemo<TableProps<TeamProgressRow>['columns']>(
@@ -1066,9 +1575,21 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
+        title: '硬件环境',
+        key: 'hardwareEnv',
+        width: teamColumnWidths[9],
+        render: () => <span className="text-slate-400">-</span>,
+      },
+      {
         title: '最新报告',
         key: 'detail',
-        width: teamColumnWidths[9],
+        width: teamColumnWidths[10],
+        render: () => <span className="text-slate-400">-</span>,
+      },
+      {
+        title: '操作',
+        key: 'actions',
+        width: teamColumnWidths[11],
         render: () => <span className="text-slate-400">-</span>,
       },
     ],
@@ -1083,6 +1604,20 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
     ]
+  );
+  const visibleTeamColumns = useMemo(
+    () =>
+      (teamColumns || []).filter((column) =>
+        showActionColumn ? true : column?.key !== 'actions'
+      ),
+    [showActionColumn, teamColumns]
+  );
+  const visibleTeamScrollX = useMemo(
+    () =>
+      showActionColumn
+        ? teamScrollX
+        : teamScrollX - (teamColumnWidths[11] ?? 0),
+    [showActionColumn, teamColumnWidths, teamScrollX]
   );
 
   const getRepoSortValueWithMetrics = useCallback(
@@ -1104,6 +1639,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           return beat ? -1 : metrics.total;
         case 'closeRate':
           return beat ? -1 : metrics.total === 0 ? 100 : metrics.closeRate;
+        case 'detail':
+          return getReportDisplayText(row.latestReportId);
         default:
           return row.name;
       }
@@ -1221,6 +1758,58 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   );
 
   useEffect(() => {
+    const projectKeys = displayedRepoRowsForTable
+      .map((row) => row.id)
+      .filter((item) => !isBeatRepo(item));
+    if (!projectKeys.length) {
+      setRerunStatusMap({});
+      return;
+    }
+
+    let alive = true;
+    const loadStatuses = async (options?: { silent?: boolean }) => {
+      const silent = options?.silent ?? false;
+      if (!silent) {
+        setRerunStatusLoading(true);
+      }
+      try {
+        const result = await fetchOverviewRepoRerunStatuses(projectKeys);
+        if (!alive) return;
+        setRerunStatusMap(result.by_project_key || {});
+      } catch (_error) {
+        if (!alive) return;
+      } finally {
+        if (alive && !silent) setRerunStatusLoading(false);
+      }
+    };
+
+    void loadStatuses();
+    const timer = window.setInterval(() => {
+      void loadStatuses({ silent: true });
+    }, 60000);
+
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+    };
+  }, [displayedRepoRowsForTable]);
+
+  useEffect(() => {
+    if (!rerunRecordsModal.open || !rerunRecordsModal.repo) return undefined;
+    const hasActiveJob = rerunRecords.some((item) => isActiveRerunJob(item));
+    if (!hasActiveJob) return undefined;
+    const timer = window.setInterval(() => {
+      void loadRerunRecords(rerunRecordsModal.repo!.id, { silent: true });
+    }, 30000);
+    return () => window.clearInterval(timer);
+  }, [
+    loadRerunRecords,
+    rerunRecords,
+    rerunRecordsModal.open,
+    rerunRecordsModal.repo,
+  ]);
+
+  useEffect(() => {
     if (!autoExpandAllTeams || progressView !== 'team') return;
     const nextKeys = displayedTeamRowsForTable.map((row) => row.id);
     setExpandedRowKeys((prev) => {
@@ -1266,12 +1855,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         <div className="overview-expanded-rows">
           <table
             className="overview-expanded-table"
-            style={{ minWidth: teamScrollX }}
+            style={{ minWidth: visibleRepoScrollX }}
           >
             <colgroup>
-              {teamColumnWidths.map((width, index) => (
-                <col key={index} style={{ width }} />
-              ))}
+              {repoColumnWidths
+                .filter((_, index) => showActionColumn || index !== 11)
+                .map((width, index) => (
+                  <col key={index} style={{ width }} />
+                ))}
             </colgroup>
             <tbody>
               {visibleRepos.map((repo, index) => (
@@ -1427,8 +2018,27 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                     })()}
                   </td>
                   <td className="overview-expanded-cell">
+                    {repo.hardwareEnv || (
+                      <span className="text-slate-400">-</span>
+                    )}
+                  </td>
+                  <td className="overview-expanded-cell">
                     {renderDetailLink(repo)}
                   </td>
+                  {showActionColumn ? (
+                    <td className="overview-expanded-cell">
+                      <Button
+                        type="link"
+                        size="small"
+                        className="!px-0"
+                        onClick={() => {
+                          void openRerunModal(repo);
+                        }}
+                      >
+                        重跑
+                      </Button>
+                    </td>
+                  ) : null}
                 </tr>
               ))}
             </tbody>
@@ -1444,10 +2054,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
       sortedByProgressMetric,
-      teamColumnWidths,
-      teamScrollX,
+      repoColumnWidths,
+      repoScrollX,
       teamSortKey,
       teamSortAsc,
+      openRerunModal,
     ]
   );
 
@@ -1520,6 +2131,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       }
       if (teamFilter) search.set('team', teamFilter);
       if (repoFilter) search.set('repo', repoFilter);
+      if (hardwareEnvFilter) {
+        search.set('hardware_env', hardwareEnvFilter);
+      }
       search.set('view', progressView);
 
       severityFilters.forEach((sev) => search.append('severity', sev));
@@ -1551,13 +2165,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         parseFilenameFromDisposition(res.headers.get('content-disposition')) ||
         `progress_${progressView}.csv`;
       downloadBlob(blob, filename);
+    } catch (error) {
+      messageApi.error(
+        error instanceof Error ? error.message : '导出失败，请稍后重试'
+      );
     } finally {
       setExportingCsv(false);
     }
   };
 
+  const rerunTargetRepo = rerunModal.repo;
+  const canCurrentUserOperate = canOperateRepo(operatorUser, rerunTargetRepo);
+  const rerunRecordsTargetRepo = rerunRecordsModal.repo;
+  const shouldShowRerunRecordsTableInRerunModal =
+    rerunRecordsLoading || !!rerunRecordsError || rerunRecords.length > 0;
+
   return (
     <>
+      {messageContextHolder}
       <Title level={4} className="oj-section-title">
         进展
       </Title>
@@ -1607,6 +2232,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               />
             </div>
             <div className="flex items-center">
+              <FilterLabelTag text="硬件环境" />
+              <Select
+                value={hardwareEnvFilter || undefined}
+                onChange={(value) => onHardwareEnvFilterChange(value ?? '')}
+                allowClear
+                placeholder="全部环境"
+                style={{ height: SUMMARY_SELECT_H }}
+                className={`${filterSelectCls} min-w-[140px]`}
+                popupMatchSelectWidth={false}
+                popupClassName="overview-select-dropdown"
+                getPopupContainer={(node) => node.parentElement ?? node}
+                options={hardwareEnvOptions.map((hardwareEnv) => ({
+                  value: hardwareEnv,
+                  label: hardwareEnv,
+                }))}
+              />
+            </div>
+            <div className="flex items-center">
               <FilterLabelTag text="严重程度" />
               <Select
                 mode="multiple"
@@ -1644,10 +2287,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             className="overview-ant-table"
             loading={isLoading}
             dataSource={displayedTeamRowsForTable}
-            columns={teamColumns}
+            columns={visibleTeamColumns}
             rowKey="id"
             pagination={false}
-            scroll={{ x: teamScrollX }}
+            scroll={{ x: visibleTeamScrollX }}
             tableLayout="fixed"
             locale={{ emptyText }}
             expandable={teamExpandable}
@@ -1657,10 +2300,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             className="overview-ant-table"
             loading={isLoading}
             dataSource={displayedRepoRowsForTable}
-            columns={repoColumns}
+            columns={visibleRepoColumns}
             rowKey="id"
             pagination={false}
-            scroll={{ x: repoScrollX }}
+            scroll={{ x: visibleRepoScrollX }}
             tableLayout="fixed"
             locale={{ emptyText }}
           />
@@ -1694,6 +2337,202 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           })
         }
       />
+      <Modal
+        open={rerunModal.open}
+        title={rerunTargetRepo ? `${rerunTargetRepo.name} · 重跑` : '仓库重跑'}
+        onCancel={closeRerunModal}
+        destroyOnHidden
+        width={960}
+        footer={
+          operatorUser
+            ? [
+                <Button key="logout" onClick={handleOperatorLogout}>
+                  切换账号
+                </Button>,
+                <Button key="cancel" onClick={closeRerunModal}>
+                  取消
+                </Button>,
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={rerunning}
+                  disabled={!canCurrentUserOperate}
+                  onClick={() => {
+                    void handleConfirmRerun();
+                  }}
+                >
+                  确认重跑
+                </Button>,
+              ]
+            : [
+                <Button key="cancel" onClick={closeRerunModal}>
+                  取消
+                </Button>,
+                <Button
+                  key="login"
+                  type="primary"
+                  loading={authSubmitting}
+                  onClick={() => {
+                    void handleOperatorLogin();
+                  }}
+                >
+                  登录并继续
+                </Button>,
+              ]
+        }
+      >
+        <div className="flex flex-col gap-4">
+          {rerunTargetRepo ? (
+            <Alert
+              type="info"
+              showIcon
+              message="重跑说明"
+              description={
+                <div className="text-sm leading-6">
+                  <div>仓库：{rerunTargetRepo.name}</div>
+                  <div>责任团队：{rerunTargetRepo.team || '未分配团队'}</div>
+                </div>
+              }
+            />
+          ) : null}
+
+          {shouldShowRerunRecordsTableInRerunModal ? (
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <div className="mb-3 text-sm font-medium text-slate-900">
+                重跑记录
+              </div>
+              {rerunRecordsError ? (
+                <Alert
+                  className="mb-3"
+                  type="error"
+                  showIcon
+                  message={rerunRecordsError}
+                />
+              ) : null}
+              <RerunRecordsTable
+                records={rerunRecords}
+                loading={rerunRecordsLoading}
+              />
+            </div>
+          ) : null}
+
+          {operatorUser ? (
+            <>
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                <div className="mb-2 font-medium text-slate-900">
+                  当前账号：{operatorUser.username}
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Tag color={operatorUser.role === 'admin' ? 'red' : 'blue'}>
+                    {operatorUser.role === 'admin' ? '管理员' : '团队负责人'}
+                  </Tag>
+                  {operatorUser.team_names.length ? (
+                    <span>负责团队：{operatorUser.team_names.join('、')}</span>
+                  ) : (
+                    <span>负责团队：全部</span>
+                  )}
+                </div>
+                <div
+                  className={`mt-3 rounded-md px-3 py-2 ${
+                    canCurrentUserOperate
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'bg-rose-50 text-rose-700'
+                  }`}
+                >
+                  {canCurrentUserOperate
+                    ? '当前账号具备重跑权限'
+                    : '当前账号无权操作该仓库，管理员可操作全部仓库；团队负责人只能操作自己团队下的仓库。'}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Alert type="warning" showIcon message="请先登录操作账号" />
+              <Input
+                value={loginForm.username}
+                placeholder="请输入账号"
+                onChange={(event) =>
+                  setLoginForm((prev) => ({
+                    ...prev,
+                    username: event.target.value,
+                  }))
+                }
+              />
+              <Input.Password
+                value={loginForm.password}
+                placeholder="请输入密码"
+                onChange={(event) =>
+                  setLoginForm((prev) => ({
+                    ...prev,
+                    password: event.target.value,
+                  }))
+                }
+                onPressEnter={() => {
+                  void handleOperatorLogin();
+                }}
+              />
+            </>
+          )}
+
+          {authChecking ? (
+            <div className="text-sm text-slate-500">
+              正在校验当前登录状态...
+            </div>
+          ) : null}
+
+          {loginError ? (
+            <Alert type="error" showIcon message={loginError} />
+          ) : null}
+        </div>
+      </Modal>
+      <Modal
+        open={rerunRecordsModal.open}
+        title={
+          rerunRecordsTargetRepo
+            ? `${rerunRecordsTargetRepo.name} · 重跑记录`
+            : '重跑记录'
+        }
+        onCancel={closeRerunRecordsModal}
+        destroyOnHidden
+        footer={[
+          <Button key="close" onClick={closeRerunRecordsModal}>
+            关闭
+          </Button>,
+        ]}
+        width={1120}
+      >
+        <div className="flex max-h-[72vh] flex-col gap-4 overflow-y-auto pr-1">
+          {rerunRecordsTargetRepo ? (
+            <Alert
+              type="info"
+              showIcon
+              message="仓库信息"
+              description={
+                <div className="text-sm leading-6">
+                  <div>仓库：{rerunRecordsTargetRepo.name}</div>
+                  <div>
+                    责任团队：{rerunRecordsTargetRepo.team || '未分配团队'}
+                  </div>
+                </div>
+              }
+            />
+          ) : null}
+
+          {rerunRecordsError ? (
+            <Alert type="error" showIcon message={rerunRecordsError} />
+          ) : null}
+
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <div className="mb-3 text-sm font-medium text-slate-900">
+              重跑记录
+            </div>
+            <RerunRecordsTable
+              records={rerunRecords}
+              loading={rerunRecordsLoading}
+            />
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };

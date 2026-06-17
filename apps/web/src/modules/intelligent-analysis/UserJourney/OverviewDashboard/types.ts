@@ -12,7 +12,8 @@ export type RepoSortKey =
   | 'successRate'
   | 'executionTime'
   | 'total'
-  | 'closeRate';
+  | 'closeRate'
+  | 'detail';
 export type TeamSortKey =
   | 'name'
   | 'repoCount'
@@ -71,6 +72,7 @@ export type RepoProgressRow = {
   id: string;
   name: string;
   team: string;
+  hardwareEnv: string;
   score: number | null;
   successRate: number | null;
   executionTime: number | null;

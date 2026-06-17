@@ -1884,6 +1884,63 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       white-space: nowrap;
     }
 
+    @media (max-width: 1199px) {
+      .overview-ant-table .ant-table-thead > tr > th {
+        padding: 8px 8px;
+        font-size: 11px;
+      }
+
+      .overview-ant-table .ant-table-tbody > tr > td,
+      .overview-ant-table .ant-table-summary td,
+      .overview-expanded-cell {
+        padding: 8px 8px;
+        font-size: 12px;
+      }
+
+      .sortable-col-title {
+        gap: 4px;
+      }
+
+      .sort-arrow {
+        font-size: 10px;
+      }
+
+      .overview-progress-cell {
+        gap: 6px;
+      }
+
+      .overview-progress-bar {
+        min-width: 148px;
+        height: 7px;
+      }
+
+      .overview-progress-meta {
+        gap: 6px;
+        font-size: 11px;
+        line-height: 16px;
+      }
+
+      .overview-close-rate-cell {
+        gap: 6px;
+      }
+
+      .overview-close-rate-value {
+        min-width: 34px;
+        font-size: 12px;
+      }
+
+      .overview-ant-table .overview-table-link,
+      .overview-ant-table .overview-table-link-muted,
+      .overview-ant-table .ant-btn-link {
+        font-size: 12px;
+      }
+
+      .overview-expanded-repo-name {
+        padding-left: 10px;
+        font-size: 12px;
+      }
+    }
+
     @media (max-width: 1024px) {
       .detail-panel-body {
         padding: 16px;

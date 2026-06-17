@@ -42,6 +42,26 @@ export const normalizeSeverity = (severity: unknown): Severity => {
 
 export const normalizeText = (text: string) => text.trim().replace(/\s+/g, ' ');
 
+export const normalizeHardwareEnv = (value: unknown): string => {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  const normalized = text.toLowerCase();
+  if (normalized === 'ascend 910c' || normalized === '910c') {
+    return '910C';
+  }
+  return text;
+};
+
+export const getReportDisplayText = (value: unknown): string => {
+  const fileKey = String(value || '').trim();
+  if (!fileKey) return '';
+  const last = fileKey.lastIndexOf('_');
+  if (last <= 0) return fileKey;
+  const prev = fileKey.lastIndexOf('_', last - 1);
+  if (prev < 0 || prev + 1 >= fileKey.length) return fileKey;
+  return fileKey.slice(prev + 1);
+};
+
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
 
 const isOtherTeam = (teamName: string): boolean => {
@@ -246,6 +266,8 @@ export const getRepoSortValue = (
       return metrics.total;
     case 'closeRate':
       return metrics.total === 0 ? 100 : metrics.closeRate;
+    case 'detail':
+      return getReportDisplayText(row.latestReportId);
     default:
       return row.name;
   }

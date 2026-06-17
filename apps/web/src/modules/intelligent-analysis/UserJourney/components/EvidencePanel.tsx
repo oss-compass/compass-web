@@ -578,12 +578,14 @@ const getEffectiveLinks = ({
 
 const getEffectiveActionReason = ({
   existing,
+  historicalParentConfirmation,
   parentPain,
   parentStatus,
   latestParentStatusHistory,
   shouldUseHistoricalTerminalStatus,
 }: {
   existing?: PainConfirmationRecord;
+  historicalParentConfirmation?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
   parentStatus?: number;
   latestParentStatusHistory?: ReturnType<typeof getLatestParentStatusHistory>;
@@ -591,6 +593,8 @@ const getEffectiveActionReason = ({
 }) =>
   (shouldUseHistoricalTerminalStatus ? getActionReasonText(existing) : '') ||
   getActionReasonText(existing) ||
+  getActionReasonText(historicalParentConfirmation) ||
+  String(parentPain?.actionReason || '').trim() ||
   (parentStatus === PainStatus.RETESTED_FAILED
     ? String(
         latestParentStatusHistory?.reason || parentPain?.remark || ''
@@ -599,12 +603,14 @@ const getEffectiveActionReason = ({
 
 const getEffectiveConfirmedBy = ({
   existing,
+  historicalParentConfirmation,
   parentPain,
   latestParentStatusHistory,
   childMatched,
   shouldUseHistoricalTerminalStatus,
 }: {
   existing?: PainConfirmationRecord;
+  historicalParentConfirmation?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
   latestParentStatusHistory?: ReturnType<typeof getLatestParentStatusHistory>;
   childMatched: boolean;
@@ -615,17 +621,21 @@ const getEffectiveConfirmedBy = ({
     : '') ||
   String(latestParentStatusHistory?.by || '').trim() ||
   (childMatched ? existing?.confirmed_by : '') ||
+  String(historicalParentConfirmation?.confirmed_by || '').trim() ||
+  String(parentPain?.confirmedBy || '').trim() ||
   String(parentPain?.owner || '').trim() ||
   '--';
 
 const getEffectiveConfirmedAt = ({
   existing,
+  historicalParentConfirmation,
   parentPain,
   latestParentStatusHistory,
   childMatched,
   shouldUseHistoricalTerminalStatus,
 }: {
   existing?: PainConfirmationRecord;
+  historicalParentConfirmation?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
   latestParentStatusHistory?: ReturnType<typeof getLatestParentStatusHistory>;
   childMatched: boolean;
@@ -641,16 +651,20 @@ const getEffectiveConfirmedAt = ({
       : '') ||
     String(latestParentStatusHistory?.at || '').trim() ||
     (childMatched ? existing?.confirmed_at || '' : '') ||
+    String(historicalParentConfirmation?.confirmed_at || '').trim() ||
+    String(parentPain?.confirmedAt || '').trim() ||
     parentCreatedAt
   );
 };
 
 const getEffectiveRetestPassedFileKey = ({
   existing,
+  historicalParentConfirmation,
   parentPain,
   shouldUseHistoricalTerminalStatus,
 }: {
   existing?: PainConfirmationRecord;
+  historicalParentConfirmation?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
   shouldUseHistoricalTerminalStatus: boolean;
 }) =>
@@ -659,6 +673,8 @@ const getEffectiveRetestPassedFileKey = ({
     : undefined) ||
   existing?.retest_passed_file_key ||
   existing?.latest_file_key ||
+  historicalParentConfirmation?.retest_passed_file_key ||
+  historicalParentConfirmation?.latest_file_key ||
   String(parentPain?.retestReportId || '').trim() ||
   undefined;
 
@@ -727,6 +743,7 @@ const getMergedStatusInheritedHint = ({
 
 const derivePainDisplayState = ({
   existing,
+  historicalParentConfirmation,
   parentPain,
   fileKey,
   childPainId,
@@ -736,6 +753,7 @@ const derivePainDisplayState = ({
   isLatestReport,
 }: {
   existing?: PainConfirmationRecord;
+  historicalParentConfirmation?: PainConfirmationRecord;
   parentPain?: OverviewPainPointRow;
   fileKey?: string;
   childPainId?: string;
@@ -768,6 +786,7 @@ const derivePainDisplayState = ({
   });
   const effectiveActionReason = getEffectiveActionReason({
     existing,
+    historicalParentConfirmation,
     parentPain,
     parentStatus,
     latestParentStatusHistory,
@@ -799,6 +818,7 @@ const derivePainDisplayState = ({
     : normalizedEffectiveStatus;
   const effectiveConfirmedBy = getEffectiveConfirmedBy({
     existing,
+    historicalParentConfirmation,
     parentPain,
     latestParentStatusHistory,
     childMatched,
@@ -806,6 +826,7 @@ const derivePainDisplayState = ({
   });
   const effectiveConfirmedAt = getEffectiveConfirmedAt({
     existing,
+    historicalParentConfirmation,
     parentPain,
     latestParentStatusHistory,
     childMatched,
@@ -813,6 +834,7 @@ const derivePainDisplayState = ({
   });
   const effectiveRetestPassedFileKey = getEffectiveRetestPassedFileKey({
     existing,
+    historicalParentConfirmation,
     parentPain,
     shouldUseHistoricalTerminalStatus,
   });
@@ -1000,6 +1022,50 @@ function deriveProjectKeyFromFileKey(value?: string): string {
   return fileKey;
 }
 
+const pickLatestHistoricalConfirmation = ({
+  parentPain,
+  currentFileKey,
+  currentPainId,
+  confirmationMapByFileKey,
+}: {
+  parentPain?: OverviewPainPointRow;
+  currentFileKey?: string;
+  currentPainId?: string;
+  confirmationMapByFileKey?: Map<string, Map<string, PainConfirmationRecord>>;
+}): PainConfirmationRecord | undefined => {
+  if (
+    !parentPain ||
+    !confirmationMapByFileKey ||
+    confirmationMapByFileKey.size === 0
+  ) {
+    return undefined;
+  }
+
+  const currentFileKeyValue = String(currentFileKey || '').trim();
+  const currentPainIdValue = String(currentPainId || '').trim();
+  const candidates: PainConfirmationRecord[] = [];
+
+  (parentPain.childIds ?? []).forEach((rawId) => {
+    const parsed = parseChildId(rawId);
+    if (!parsed) return;
+    if (currentPainIdValue && parsed.painId === currentPainIdValue) return;
+    if (currentFileKeyValue && parsed.fileKey === currentFileKeyValue) return;
+
+    const fileMap = confirmationMapByFileKey.get(parsed.fileKey);
+    const record = fileMap?.get(parsed.painId);
+    if (record) {
+      candidates.push(record);
+    }
+  });
+
+  candidates.sort((left, right) =>
+    String(right.confirmed_at || '').localeCompare(
+      String(left.confirmed_at || '')
+    )
+  );
+  return candidates[0];
+};
+
 /* ─── 单条痛点行（含确认交互） ─── */
 const PainPointItem: React.FC<{
   painId?: string;
@@ -1013,6 +1079,10 @@ const PainPointItem: React.FC<{
   legacyStepId?: string;
   legacyStepIds?: string[];
   parentPain?: OverviewPainPointRow;
+  historicalParentConfirmationMapByFileKey?: Map<
+    string,
+    Map<string, PainConfirmationRecord>
+  >;
   isLatestReport?: boolean;
   compact?: boolean;
   toolIds?: string[];
@@ -1034,6 +1104,7 @@ const PainPointItem: React.FC<{
   legacyStepId,
   legacyStepIds,
   parentPain,
+  historicalParentConfirmationMapByFileKey,
   isLatestReport = false,
   compact = false,
   toolIds,
@@ -1090,8 +1161,19 @@ const PainPointItem: React.FC<{
     parentPain?.parentId || parentPain?.id || ''
   ).trim();
   const parentStatusValue = String(parentPain?.status ?? '').trim();
+  const historicalParentConfirmation = useMemo(
+    () =>
+      pickLatestHistoricalConfirmation({
+        parentPain,
+        currentFileKey: fileKey,
+        currentPainId: painId,
+        confirmationMapByFileKey: historicalParentConfirmationMapByFileKey,
+      }),
+    [fileKey, historicalParentConfirmationMapByFileKey, painId, parentPain]
+  );
   const displayState = derivePainDisplayState({
     existing,
+    historicalParentConfirmation,
     parentPain,
     fileKey,
     childPainId: painId,
@@ -1219,6 +1301,26 @@ type DisplayPainPoint = {
   index: number;
   status?: number;
   severity?: string;
+};
+
+const getHistoryTaskIdsForEvidencePanel = (
+  stepId?: string,
+  candidateTaskIds: string[] = []
+) => {
+  const currentTaskId = String(stepId || '').trim();
+  if (
+    currentTaskId === 'discovery_doc_google' ||
+    currentTaskId === 'discovery_repo_google'
+  ) {
+    return new Set<string>();
+  }
+  if (currentTaskId === 'discovery_doc_baidu') {
+    return new Set<string>(['discovery_doc_baidu', 'discovery_doc']);
+  }
+  if (currentTaskId === 'discovery_repo_baidu') {
+    return new Set<string>(['discovery_repo_baidu', 'discovery_repo']);
+  }
+  return new Set(candidateTaskIds);
 };
 
 const HistoryPainTable: React.FC<{
@@ -1833,6 +1935,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     () => new Set(candidateTaskIds),
     [candidateTaskIds]
   );
+  const historyTaskIds = useMemo(
+    () => getHistoryTaskIdsForEvidencePanel(stepId, candidateTaskIds),
+    [candidateTaskIds, stepId]
+  );
 
   const { data: overviewCardResp, isFetching: parentPainsLoading } = useQuery({
     queryKey: ['userJourneyParentPainsByProject', projectKey],
@@ -1851,7 +1957,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   });
 
   const taskParentPains = useMemo(() => {
-    if (!fileKey || targetTaskIds.size === 0)
+    if (!fileKey || historyTaskIds.size === 0)
       return [] as OverviewPainPointRow[];
 
     const card = overviewCardResp?.items?.[0];
@@ -1866,13 +1972,13 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
         const parsed = parseChildId(rawId);
         if (!parsed) return false;
         if (parsed.fileKey !== fileKey) return false;
-        return targetTaskIds.has(parsed.taskId);
+        return historyTaskIds.has(parsed.taskId);
       });
     });
-  }, [fileKey, overviewCardResp?.items, targetTaskIds]);
+  }, [fileKey, historyTaskIds, overviewCardResp?.items]);
 
   const historyParentPains = useMemo(() => {
-    if (targetTaskIds.size === 0) return [] as OverviewPainPointRow[];
+    if (historyTaskIds.size === 0) return [] as OverviewPainPointRow[];
 
     const card = overviewCardResp?.items?.[0];
     const rows = card?.painPoints ?? [];
@@ -1887,7 +1993,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
 
       for (const rawId of childIds) {
         const parsed = parseChildId(rawId);
-        if (!parsed || !targetTaskIds.has(parsed.taskId)) continue;
+        if (!parsed || !historyTaskIds.has(parsed.taskId)) continue;
 
         hasTaskMatch = true;
         if (!fileKey || parsed.fileKey !== fileKey) {
@@ -1898,7 +2004,43 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
 
       return hasTaskMatch && hasHistoricalEntry;
     });
-  }, [fileKey, overviewCardResp?.items, targetTaskIds]);
+  }, [fileKey, historyTaskIds, overviewCardResp?.items]);
+
+  const taskParentHistoricalFileKeys = useMemo(() => {
+    const result = new Set<string>();
+    taskParentPains.forEach((row) => {
+      (row.childIds ?? []).forEach((rawId) => {
+        const parsed = parseChildId(rawId);
+        if (!parsed) return;
+        if (fileKey && parsed.fileKey === fileKey) return;
+        result.add(parsed.fileKey);
+      });
+    });
+    return Array.from(result);
+  }, [fileKey, taskParentPains]);
+  const { data: taskParentConfirmationMapByFileKey } = useQuery({
+    queryKey: ['taskParentPainConfirmations', taskParentHistoricalFileKeys],
+    enabled: taskParentHistoricalFileKeys.length > 0,
+    queryFn: async () => {
+      const results = await Promise.all(
+        taskParentHistoricalFileKeys.map(async (historicalFileKey) => {
+          const resp = await fetchPainConfirmations(historicalFileKey);
+          const map = new Map<string, PainConfirmationRecord>();
+          (resp.confirmations || []).forEach((record) => {
+            map.set(
+              `${record.file_key}#${record.step_id}#${record.pain_index}`,
+              record
+            );
+          });
+          return [historicalFileKey, map] as const;
+        })
+      );
+      return new Map<string, Map<string, PainConfirmationRecord>>(results);
+    },
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
 
   const hasHistoryPain = historyParentPains.length > 0 || parentPainsLoading;
 
@@ -1921,11 +2063,17 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   const findParentPainForPain = (
     pain: Pick<DisplayPainPoint, 'id' | 'index'>
   ): OverviewPainPointRow | undefined => {
-    if (!fileKey || targetTaskIds.size === 0) return undefined;
+    if (!fileKey || historyTaskIds.size === 0) return undefined;
 
-    if (!pain.id) return undefined;
     return taskParentPains.find((row) =>
-      (row.childIds ?? []).includes(pain.id!)
+      (row.childIds ?? []).some((rawId) => {
+        if (pain.id && rawId === pain.id) return true;
+        const parsed = parseChildId(rawId);
+        if (!parsed) return false;
+        if (parsed.fileKey !== fileKey) return false;
+        if (!historyTaskIds.has(parsed.taskId)) return false;
+        return parsed.painIndex === pain.index;
+      })
     );
   };
 
@@ -1969,6 +2117,9 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     legacyStepId={legacyStepId}
                     legacyStepIds={legacyStepIds}
                     parentPain={findParentPainForPain({ id, index })}
+                    historicalParentConfirmationMapByFileKey={
+                      taskParentConfirmationMapByFileKey
+                    }
                     isLatestReport={isLatestReport}
                     toolIds={pain_points_tool_nums?.[index]}
                     onStepClick={onStepClick}
@@ -2048,6 +2199,9 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                   legacyStepId={legacyStepId}
                   legacyStepIds={legacyStepIds}
                   parentPain={findParentPainForPain({ id, index })}
+                  historicalParentConfirmationMapByFileKey={
+                    taskParentConfirmationMapByFileKey
+                  }
                   isLatestReport={isLatestReport}
                   toolIds={pain_points_tool_nums?.[index]}
                   onStepClick={onStepClick}

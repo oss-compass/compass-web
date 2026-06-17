@@ -382,6 +382,9 @@ export type OverviewPainPointRow = {
   retestReportId: string;
   retestReportScore: number | null;
   agentScoreAfterRetest: number | null;
+  actionReason?: string;
+  confirmedBy?: string;
+  confirmedAt?: string;
   statusHistory?: Array<{
     from_status?: string;
     to_status?: string;
@@ -399,6 +402,7 @@ export type OverviewCardItem = {
   team?: string;
   teamOwner?: string;
   repoCount?: number;
+  hardwareEnv?: string;
   latestReportId?: string;
   detailReportUrl?: string;
   latestScore?: number | null;
@@ -468,6 +472,7 @@ export type OverviewCardsResponse = {
   size: number;
   teamOptions?: string[];
   repoOptions?: Array<{ value: string; label: string }>;
+  hardwareOptions?: string[];
   items: OverviewCardItem[];
 };
 
@@ -577,6 +582,7 @@ export const fetchOverviewCards = async (params: {
   commonOnly?: boolean | null;
   team?: string;
   repo?: string;
+  hardwareEnv?: string;
   sig?: string;
   keyword?: string;
   page?: number;
@@ -593,6 +599,7 @@ export const fetchOverviewCards = async (params: {
     search.set('common_only', String(params.commonOnly));
   if (params.team) search.set('team', params.team);
   if (params.repo) search.set('repo', params.repo);
+  if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   search.set('page', String(params.page ?? 1));

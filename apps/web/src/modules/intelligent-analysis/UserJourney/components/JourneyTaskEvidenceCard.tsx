@@ -71,15 +71,18 @@ const JourneyTaskEvidenceCard: React.FC<JourneyTaskEvidenceCardProps> = ({
     >
       <div className="px-5 py-4">
         <EvidencePanel
+          key={activeVariant?.taskId || group.groupKey}
           observations={observations}
           pain_points={painPoints}
           observations_tool_nums={observationsToolNums}
           pain_points_tool_nums={painPointsToolNums}
           fileKey={fileKey}
-          stepId={group.groupKey}
-          legacyStepId={activeVariant?.taskId}
+          stepId={activeVariant?.taskId || group.groupKey}
+          legacyStepId={group.groupKey}
           legacyStepIds={
-            [activeVariant?.taskId, stepId].filter(Boolean) as string[]
+            [activeVariant?.taskId, group.groupKey, stepId].filter(
+              Boolean
+            ) as string[]
           }
           highlightTaskId={activeVariant?.taskId}
           onStepClick={onStepClick}

@@ -36,6 +36,7 @@ import {
   getRepoSortValue,
   getTeamSortValue,
   mergeMetricSummaries,
+  normalizeHardwareEnv,
   normalizeSeverity,
   isKeyIssue,
   toDashboardIssue,
@@ -64,6 +65,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   });
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
+  const [hardwareEnvFilter, setHardwareEnvFilter] = useState('');
   const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('closeRate');
   const [repoSortAsc, setRepoSortAsc] = useState(true);
   const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('closeRate');
@@ -94,6 +96,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       currentTab,
       repoFilter,
       teamFilter,
+      hardwareEnvFilter,
       issueSourceMode,
       includeCommonIssues,
     ],
@@ -113,6 +116,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             : false,
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
+        hardwareEnv: hardwareEnvFilter || undefined,
         page: 1,
         size: 200,
       }),
@@ -125,6 +129,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       'overall',
       repoFilter,
       teamFilter,
+      hardwareEnvFilter,
       issueSourceMode,
       includeCommonIssues,
     ],
@@ -144,6 +149,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             : false,
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
+        hardwareEnv: hardwareEnvFilter || undefined,
         page: 1,
         size: 200,
       }),
@@ -220,6 +226,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         id: card.id,
         name: card.name,
         team: card.team || card.sig,
+        hardwareEnv: normalizeHardwareEnv(
+          card.hardwareEnv || issues[0]?.chipModel || ''
+        ),
         score: card.latestScore ?? issues[0]?.score ?? null,
         successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
         executionTime: card.latestExecutionTime ?? null,
@@ -312,6 +321,24 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             .sort((a, b) => a.label.localeCompare(b.label)),
     [cardsResp, repoRows]
   );
+
+  const hardwareEnvOptions = useMemo(() => {
+    const fromApi = Array.from(
+      new Set(
+        (cardsResp?.hardwareOptions ?? [])
+          .map((item) => normalizeHardwareEnv(item))
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b));
+    if (fromApi.length) return fromApi;
+    return Array.from(
+      new Set(
+        repoRows
+          .map((row) => normalizeHardwareEnv(row.hardwareEnv))
+          .filter(Boolean)
+      )
+    ).sort((a, b) => a.localeCompare(b));
+  }, [cardsResp, repoRows]);
 
   const cachedRepoOptions = useRef<Array<{ value: string; label: string }>>([]);
   useEffect(() => {
@@ -628,6 +655,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           teamFilter={teamFilter}
           teamOptions={teamOptions}
           onTeamFilterChange={setTeamFilter}
+          hardwareEnvFilter={hardwareEnvFilter}
+          hardwareEnvOptions={hardwareEnvOptions}
+          onHardwareEnvFilterChange={setHardwareEnvFilter}
           isLoading={isLoading}
           teamRows={sortedTeamRows}
           repoRows={sortedRepoRows}
