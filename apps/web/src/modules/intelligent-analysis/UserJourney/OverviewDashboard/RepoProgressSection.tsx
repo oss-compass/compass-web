@@ -31,6 +31,7 @@ import {
 import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
 import { IssueProgressBar } from './ProgressComponents';
+import CapabilityBenchmarkModal from './CapabilityBenchmarkModal';
 import CloseRateTrendModal from './CloseRateTrendModal';
 import ScoreTrendModal from './ScoreTrendModal';
 import { CloseRateSparkline, ScoreSparkline } from './CloseRateTrendChart';
@@ -642,6 +643,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [rerunRecordsLoading, setRerunRecordsLoading] = useState(false);
   const [rerunRecordsError, setRerunRecordsError] = useState('');
   const [rerunRecords, setRerunRecords] = useState<RepoRerunJob[]>([]);
+  const [benchmarkModal, setBenchmarkModal] = useState<{
+    open: boolean;
+    repo: RepoProgressRow | null;
+  }>({
+    open: false,
+    repo: null,
+  });
 
   const loadOperatorUser = useCallback(async () => {
     const token = getCompassOperatorToken();
@@ -1099,6 +1107,22 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     );
   };
 
+  const renderBenchmarkTag = useCallback((record: RepoProgressRow) => {
+    if (!record.benchmark?.repoName) return null;
+    return (
+      <Tag
+        color="purple"
+        className="overview-benchmark-tag"
+        onClick={(event) => {
+          event.stopPropagation();
+          setBenchmarkModal({ open: true, repo: record });
+        }}
+      >
+        竞品
+      </Tag>
+    );
+  }, []);
+
   const renderRerunAction = useCallback(
     (record: RepoProgressRow) => {
       const job = rerunStatusMap[record.id];
@@ -1162,8 +1186,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[1],
         ellipsis: true,
         render: (value, record) => (
-          <span className="inline-flex flex-col">
+          <span className="overview-repo-name-cell">
             <span>{value}</span>
+            {renderBenchmarkTag(record)}
             {isBeatRepo(record.id) ? (
               <span className="text-slate-400">(仅支持950，内测中)</span>
             ) : null}
@@ -1374,6 +1399,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       progressHeaderTitle,
       repoDerived,
       renderRerunAction,
+      renderBenchmarkTag,
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
     ]
@@ -1874,8 +1900,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   <td className="overview-expanded-cell overview-expanded-cell-index" />
                   <td className="overview-expanded-cell overview-expanded-cell-name">
                     <span className="overview-expanded-repo-name">
-                      <span className="inline-flex flex-col">
+                      <span className="overview-repo-name-cell">
                         <span>{repo.name}</span>
+                        {renderBenchmarkTag(repo)}
                         {isBeatRepo(repo.id) ? (
                           <span className="text-slate-400">
                             （仅支持950，内测中）
@@ -2336,6 +2363,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             valueType: 'score',
           })
         }
+      />
+      <CapabilityBenchmarkModal
+        open={benchmarkModal.open}
+        repo={benchmarkModal.repo}
+        onClose={() => setBenchmarkModal({ open: false, repo: null })}
       />
       <Modal
         open={rerunModal.open}

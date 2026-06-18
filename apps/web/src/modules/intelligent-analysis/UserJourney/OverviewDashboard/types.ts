@@ -68,6 +68,25 @@ export type ScoreHistoryEntry = {
   score: number;
 };
 
+export type CapabilityBenchmarkScoreItem = {
+  key: string;
+  label: string;
+  cannScore: number | null;
+  benchmarkScore: number | null;
+};
+
+export type CapabilityBenchmarkData = {
+  repoKey: string;
+  repoName: string;
+  latestReportId?: string;
+  detailReportUrl?: string;
+  latestScore?: number | null;
+  latestSuccessRate?: number | null;
+  latestExecutionTime?: number | null;
+  hardwareEnv?: string;
+  scoreBreakdown: CapabilityBenchmarkScoreItem[];
+};
+
 export type RepoProgressRow = {
   id: string;
   name: string;
@@ -82,6 +101,7 @@ export type RepoProgressRow = {
   overall: MetricSummary;
   key: MetricSummary;
   issues: DashboardIssue[];
+  benchmark?: CapabilityBenchmarkData | null;
 };
 
 export type TeamProgressRow = {

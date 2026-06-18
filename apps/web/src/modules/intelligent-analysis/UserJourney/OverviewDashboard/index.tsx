@@ -238,6 +238,28 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         overall: metrics,
         key: metrics,
         issues,
+        benchmark: card.benchmark
+          ? {
+              repoKey: card.benchmark.repoKey,
+              repoName: card.benchmark.repoName,
+              latestReportId: card.benchmark.latestReportId,
+              detailReportUrl: card.benchmark.detailReportUrl,
+              latestScore: card.benchmark.latestScore ?? null,
+              latestSuccessRate: card.benchmark.latestSuccessRate ?? null,
+              latestExecutionTime: card.benchmark.latestExecutionTime ?? null,
+              hardwareEnv: normalizeHardwareEnv(
+                card.benchmark.hardwareEnv || ''
+              ),
+              scoreBreakdown: (card.benchmark.scoreBreakdown ?? []).map(
+                (item) => ({
+                  key: item.key,
+                  label: item.label,
+                  cannScore: item.cannScore ?? null,
+                  benchmarkScore: item.benchmarkScore ?? null,
+                })
+              ),
+            }
+          : null,
       };
     });
   }, [cardsResp]);

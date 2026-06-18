@@ -1875,6 +1875,367 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       font-weight: 600;
     }
 
+    .overview-benchmark-tag.ant-tag {
+      margin-inline-end: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 0 8px;
+      line-height: 20px;
+      border-color: rgba(147, 51, 234, 0.22);
+      background: rgba(147, 51, 234, 0.08);
+      color: #7e22ce;
+      transition: all 0.18s ease;
+    }
+
+    .overview-benchmark-tag.ant-tag:hover {
+      background: rgba(147, 51, 234, 0.14);
+      border-color: rgba(147, 51, 234, 0.32);
+      color: #6b21a8;
+    }
+
+    .overview-repo-name-cell {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      max-width: 100%;
+    }
+
+    .overview-repo-name-cell .overview-benchmark-tag.ant-tag {
+      align-self: center;
+    }
+
+    .benchmark-repo-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .benchmark-inline-tag {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .benchmark-modal-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .benchmark-modal-subtitle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .benchmark-modal-subtitle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .benchmark-modal-subtitle strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .benchmark-modal-subtitle-vs {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .benchmark-subtitle-link {
+      color: #1677ff;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      white-space: nowrap;
+    }
+
+    .benchmark-subtitle-link:hover {
+      color: #0958d9;
+    }
+
+    .benchmark-modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .benchmark-summary-shell {
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      border-radius: 16px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .benchmark-summary-table.overview-ant-table {
+      margin-top: 0;
+    }
+
+    .benchmark-summary-table.overview-ant-table .ant-table-container {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .benchmark-chart-card {
+      border: 1px solid rgba(226, 232, 240, 0.92);
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 20px 22px 18px;
+      overflow: hidden;
+    }
+
+    .benchmark-chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .benchmark-chart-score-hint {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 500;
+    }
+
+    .benchmark-chart-score-hint strong {
+      color: #64748b;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 700;
+    }
+
+    .benchmark-chart-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 600;
+    }
+
+    .benchmark-chart-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .benchmark-chart-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
+    }
+
+    .benchmark-chart-dot-cann {
+      background: #2070f3;
+    }
+
+    .benchmark-chart-dot-benchmark {
+      background: #bf68fa;
+    }
+
+    .benchmark-chart {
+      --benchmark-top-offset: 0px;
+      --benchmark-bars-height: 236px;
+      --benchmark-label-height: 44px;
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 14px;
+      min-height: calc(
+        var(--benchmark-top-offset) + var(--benchmark-bars-height) +
+          var(--benchmark-label-height)
+      );
+    }
+
+    .benchmark-chart-y {
+      position: relative;
+      padding-top: var(--benchmark-top-offset);
+      padding-bottom: var(--benchmark-label-height);
+    }
+
+    .benchmark-chart-y-row {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    .benchmark-chart-y-label {
+      font-size: 13px;
+      line-height: 18px;
+      color: #64748b;
+      font-variant-numeric: tabular-nums;
+      transform: translateY(-50%);
+    }
+
+    .benchmark-chart-plot {
+      position: relative;
+      min-height: 0;
+      padding-top: var(--benchmark-top-offset);
+    }
+
+    .benchmark-chart-plot::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: var(--benchmark-label-height);
+      border-top: 2px solid rgba(148, 163, 184, 0.46);
+      z-index: 1;
+    }
+
+    .benchmark-chart-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: var(--benchmark-label-height);
+      z-index: 0;
+    }
+
+    .benchmark-chart-grid-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid rgba(226, 232, 240, 0.72);
+      transform: translateY(-50%);
+    }
+
+    .benchmark-chart-groups {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+
+    .benchmark-chart-group {
+      height: 100%;
+      display: grid;
+      grid-template-rows: var(--benchmark-bars-height) var(
+          --benchmark-label-height
+        );
+      align-items: start;
+      gap: 0;
+    }
+
+    .benchmark-chart-slot {
+      height: var(--benchmark-bars-height);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 10px;
+    }
+
+    .benchmark-chart-bars {
+      position: relative;
+      height: var(--benchmark-bars-height);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+      padding: 0 4px;
+      width: 100%;
+    }
+
+    .benchmark-chart-bar-placeholder {
+      width: 30px;
+      flex: 0 0 30px;
+    }
+
+    .benchmark-chart-bar {
+      position: relative;
+      z-index: 2;
+      width: 30px;
+      min-height: 0;
+      border-radius: 12px 12px 0 0;
+      box-shadow: none;
+      overflow: visible;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .benchmark-chart-bar::before {
+      content: '';
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 4px;
+      border-radius: 999px;
+      box-shadow: none;
+      z-index: 3;
+    }
+
+    .benchmark-chart-bar-cann {
+      background: #d6e4fd;
+    }
+
+    .benchmark-chart-bar-cann::before {
+      background: #2070f3;
+    }
+
+    .benchmark-chart-bar-benchmark {
+      background: #efd8ff;
+    }
+
+    .benchmark-chart-bar-benchmark::before {
+      background: #bf68fa;
+    }
+
+    .benchmark-chart-bar-value {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 8px;
+      color: #2070f3;
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .benchmark-chart-bar-benchmark .benchmark-chart-bar-value {
+      color: #715afb;
+    }
+
+    .benchmark-chart-label {
+      text-align: center;
+      color: #64748b;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      padding-top: 10px;
+    }
+
     .nowrap-tag {
       white-space: nowrap;
       word-break: keep-all;

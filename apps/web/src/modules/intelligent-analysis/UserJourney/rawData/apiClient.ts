@@ -416,6 +416,22 @@ export type OverviewCardItem = {
   naPainPoints: number;
   closeRate: number;
   painPoints: OverviewPainPointRow[];
+  benchmark?: {
+    repoKey: string;
+    repoName: string;
+    latestReportId?: string;
+    detailReportUrl?: string;
+    latestScore?: number | null;
+    latestSuccessRate?: number | null;
+    latestExecutionTime?: number | null;
+    hardwareEnv?: string;
+    scoreBreakdown: Array<{
+      key: string;
+      label: string;
+      cannScore?: number | null;
+      benchmarkScore?: number | null;
+    }>;
+  } | null;
 };
 
 export type OverviewMetricSummary = {
