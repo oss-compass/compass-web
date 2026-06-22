@@ -368,6 +368,7 @@ export type OverviewPainPointRow = {
   teamOwner?: string;
   createdAt?: string;
   created_at?: string;
+  report_generated_at?: string;
   isCommonIssue?: boolean;
   commonIssueType?: string;
   childIds?: string[];

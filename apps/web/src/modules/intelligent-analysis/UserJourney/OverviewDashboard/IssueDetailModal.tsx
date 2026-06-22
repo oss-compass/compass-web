@@ -125,6 +125,12 @@ const formatDateTime = (raw: string) => {
   return formatLocalDateTime(raw, { emptyText: '--' });
 };
 
+const getIssueFoundAt = (issue: DashboardIssue): string => {
+  return String(
+    issue.report_generated_at || issue.created_at || issue.createdAt || ''
+  ).trim();
+};
+
 const parseDateToMs = (raw: unknown): number | null => {
   const text = String(raw ?? '').trim();
   if (!text) return null;
@@ -301,7 +307,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         SEVERITY_RANK[issue.severity as Exclude<Severity, ''>] ?? 0;
       const statusLabel =
         PAIN_STATUS_CFG[String(issue.status || '')]?.label || '';
-      const createdAtMs = parseDateToMs(issue.createdAt || issue.created_at);
+      const createdAtMs = parseDateToMs(getIssueFoundAt(issue));
 
       return {
         issue,
@@ -475,9 +481,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
       const reportText = reportEntries.length
         ? reportEntries.map((e) => getReportDisplayText(e.fileKey)).join(' | ')
         : '--';
-      const createdText = String(
-        issue.createdAt || issue.created_at || ''
-      ).trim();
+      const createdText = getIssueFoundAt(issue);
       const cells = [
         String(index + 1),
         getRepoName(issue),
@@ -858,9 +862,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         if (!cfg)
                           return <span className="text-slate-300">--</span>;
                         const status = String(issue.status || '').trim();
+                        const confirmedAt = String(
+                          issue.confirmedAt || ''
+                        ).trim();
                         const retestReportId = String(
                           issue.retestReportId || ''
                         ).trim();
+                        const shouldShowRetestPassedAt =
+                          status === '5' && !!confirmedAt;
                         const shouldShowRetestReportId =
                           !!retestReportId &&
                           (status === '4' || status === '5' || status === '7');
@@ -871,7 +880,15 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                           : '';
                         return (
                           <div className="flex flex-col items-center gap-1">
-                            <Tooltip title="请点击相关报告处理痛点">
+                            <Tooltip
+                              title={
+                                shouldShowRetestPassedAt
+                                  ? `复测通过时间：${formatDateTime(
+                                      confirmedAt
+                                    )}`
+                                  : null
+                              }
+                            >
                               <span className="inline-flex cursor-help">
                                 <Tag
                                   className="overview-ant-tag"
@@ -903,9 +920,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     </td>
                     <td className="whitespace-nowrap px-2 py-2 text-center text-slate-600 md:px-3 md:py-3">
                       {(() => {
-                        const createdText = String(
-                          issue.createdAt || issue.created_at || ''
-                        ).trim();
+                        const createdText = getIssueFoundAt(issue);
                         const displayTime = formatDateTime(createdText);
                         return (
                           <Tooltip title={displayTime}>
