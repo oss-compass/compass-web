@@ -18,7 +18,7 @@ import { Button } from '@oss-compass/ui';
 import SelectDrowBox from './SelectDrowBox';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { myPermisssion } from './type';
+import { myPermissions } from './type';
 import { useRouter } from 'next/router';
 import { useUserInfo } from '@modules/auth';
 
@@ -140,7 +140,7 @@ const QuitModel = ({ modelId, memberId }) => {
 const FormUsersItem = (props: {
   user: UserItem;
   modelId: number;
-  permission: myPermisssion;
+  permission: myPermissions;
   event$: EventEmitter<string>;
 }) => {
   const { providerUser: loginUser } = useUserInfo();

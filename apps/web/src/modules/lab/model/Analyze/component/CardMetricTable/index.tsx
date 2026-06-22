@@ -9,7 +9,7 @@ import client from '@common/gqlClient';
 import MyTable from '@common/components/Table';
 import classnames from 'classnames';
 import {
-  useContributionTypeLsit,
+  useContributionTypeList,
   useEcologicalType,
   useMileageOptions,
 } from '../contribution';
@@ -152,7 +152,7 @@ const MetricTable: React.FC<{
       sortOpts = sorter.order && {
         type:
           sorter.field === 'contribution'
-            ? 'contribution_filterd'
+            ? 'contribution_filtered'
             : sorter.field,
         direction: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
@@ -237,7 +237,7 @@ const MetricTable: React.FC<{
           />
         );
       },
-      filters: useContributionTypeLsit(),
+      filters: useContributionTypeList(),
       defaultFilteredValue:
         defaultFilterOpts.find((i) => i.type === 'contribution_type')?.values ||
         null,

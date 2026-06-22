@@ -1,6 +1,6 @@
 import React from 'react';
 import FormUsersItem from './FormUsersItem';
-import { UserItem, myPermisssion } from './type';
+import { UserItem, myPermissions } from './type';
 import { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +8,7 @@ const FormUsers = (props: {
   items: UserItem[];
   count: number;
   modelId: number;
-  permission: myPermisssion;
+  permission: myPermissions;
   event$: EventEmitter<string>;
 }) => {
   const { t } = useTranslation();
