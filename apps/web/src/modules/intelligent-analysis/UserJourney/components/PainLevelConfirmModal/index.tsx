@@ -316,13 +316,23 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   ]);
 
   const resetFormToCurrent = useCallback(() => {
+    const currentIsCommon =
+      modalRecord?.is_common_issue === true ||
+      !!String(modalRecord?.common_issue_type || '').trim();
+    const safeCommonIssueType = currentIsCommon
+      ? getSafeCommonIssueType(
+          modalRecord?.common_issue_type,
+          commonIssueTypeOptions
+        )
+      : undefined;
+
     if (modalRecord?.status === PainStatus.TO_BE_CONFIRMED) {
       form.setFieldsValue({
         status: PainStatus.TO_BE_CONFIRMED,
         severity: (modalRecord?.severity as PainLevel) || 'P1_CRITICAL',
         non_project_reason: getActionReasonText(modalRecord),
-        is_common: undefined,
-        common_issue_type: undefined,
+        is_common: currentIsCommon,
+        common_issue_type: safeCommonIssueType,
         confirmed_by: '',
         issue_link: '',
         pr_link: '',
@@ -335,16 +345,6 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       return;
     }
 
-    const currentIsCommon =
-      modalRecord?.is_common_issue === true ||
-      !!String(modalRecord?.common_issue_type || '').trim();
-    const safeCommonIssueType = currentIsCommon
-      ? getSafeCommonIssueType(
-          modalRecord?.common_issue_type,
-          commonIssueTypeOptions
-        )
-      : undefined;
-
     form.setFieldsValue({
       status: currentStatus,
       severity: modalRecord?.severity
@@ -353,7 +353,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
       non_project_reason: getActionReasonText(modalRecord),
       is_common:
         currentStatus === PainStatus.TO_BE_CONFIRMED && !modalRecord
-          ? undefined
+          ? false
           : currentIsCommon,
       common_issue_type: safeCommonIssueType,
       confirmed_by:
