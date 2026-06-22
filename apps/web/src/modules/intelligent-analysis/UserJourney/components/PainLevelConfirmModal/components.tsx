@@ -53,13 +53,37 @@ export const NonProjectIssueInfo: React.FC<{
   currentRecord?: PainConfirmationRecord | null;
 }> = ({ currentRecord }) => {
   const reason = getActionReasonText(currentRecord) || FALLBACK_LINK_TEXT;
+  const reviewStatus = String(
+    currentRecord?.non_project_review_status || ''
+  ).trim();
+  const reviewStatusLabel =
+    reviewStatus === 'pending'
+      ? '待审核'
+      : reviewStatus === 'approved'
+      ? '已通过'
+      : reviewStatus === 'rejected'
+      ? '已拒绝'
+      : '--';
+  const reviewReason =
+    String(currentRecord?.non_project_review_reason || '').trim() ||
+    FALLBACK_LINK_TEXT;
+  const hasNonProjectReviewInfo = Boolean(
+    reviewStatus ||
+      String(currentRecord?.non_project_review_reason || '').trim() ||
+      String(currentRecord?.non_project_reviewed_by || '').trim() ||
+      String(currentRecord?.non_project_reviewed_at || '').trim()
+  );
+  const title =
+    reviewStatus === 'rejected' || hasNonProjectReviewInfo
+      ? '非项目本身问题审核'
+      : '非项目本身问题';
 
   return (
     <div className="space-y-3 rounded-md border border-emerald-200 bg-emerald-50 p-4">
       <div className="flex items-center gap-2">
         <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
         <Text strong className="!text-emerald-700">
-          非项目本身问题
+          {title}
         </Text>
       </div>
       <div className="space-y-1.5 text-sm text-slate-600">
@@ -69,6 +93,38 @@ export const NonProjectIssueInfo: React.FC<{
             {reason}
           </div>
         </div>
+        {reviewStatus ? (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">审核状态：</span>
+            <span>
+              {reviewStatus === 'rejected'
+                ? '已拒绝并回退到待确认'
+                : reviewStatusLabel}
+            </span>
+          </div>
+        ) : null}
+        {reviewStatus === 'rejected' ? (
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-slate-400">拒绝理由</span>
+            <div className="rounded-md bg-white/80 px-3 py-2 leading-6 text-amber-700">
+              {reviewReason}
+            </div>
+          </div>
+        ) : null}
+        {currentRecord?.non_project_reviewed_by ? (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">审核人：</span>
+            <span>{currentRecord.non_project_reviewed_by}</span>
+          </div>
+        ) : null}
+        {currentRecord?.non_project_reviewed_at ? (
+          <div className="flex items-center gap-2">
+            <span className="shrink-0 text-xs text-slate-400">审核时间：</span>
+            <span>
+              {formatStatusTime(currentRecord.non_project_reviewed_at)}
+            </span>
+          </div>
+        ) : null}
         {currentRecord?.confirmed_by && (
           <div className="flex items-center gap-2">
             <span className="shrink-0 text-xs text-slate-400">操作人：</span>
@@ -570,7 +626,7 @@ export const ToBeConfirmedFormItems: React.FC<{
           rows={3}
           maxLength={500}
           showCount
-          placeholder="请补充说明为什么该问题不属于项目本身问题"
+          placeholder="非项目本身问题提交后需要管理员审核，请补充判断原因。"
           allowClear
         />
       </Form.Item>
@@ -906,6 +962,7 @@ export const PainConfirmationForm: React.FC<{
   currentRecord,
   parentPainRemark,
 }) => {
+  const selectedSeverity = Form.useWatch('severity', form);
   const visibilityArgs = {
     isReviewingHistoryStep,
     isCurrentNonProjectIssue,
@@ -921,8 +978,20 @@ export const PainConfirmationForm: React.FC<{
     ? shouldShowRetestingForm(visibilityArgs)
     : showRetestDecision || shouldShowRetestingForm(visibilityArgs);
   const showConfirmedByField = shouldShowConfirmedByField(visibilityArgs);
+  const hasNonProjectReviewInfo = Boolean(
+    currentRecord?.non_project_review_status ||
+      currentRecord?.non_project_review_reason ||
+      currentRecord?.non_project_reviewed_by ||
+      currentRecord?.non_project_reviewed_at
+  );
+  const hasReselectedNonProjectSeverity =
+    isNonProjectSeverity(selectedSeverity) &&
+    (form.isFieldTouched('severity') ||
+      form.isFieldTouched('non_project_reason'));
   const showNonProjectIssueInfo =
-    !isReviewingHistoryStep && isCurrentNonProjectIssue;
+    !isReviewingHistoryStep &&
+    (isCurrentNonProjectIssue ||
+      (hasNonProjectReviewInfo && hasReselectedNonProjectSeverity));
   const showRetestFailedInfo =
     !isReviewingHistoryStep && currentStatus === PainStatus.RETESTED_FAILED;
   const showRetestPassedInfo =

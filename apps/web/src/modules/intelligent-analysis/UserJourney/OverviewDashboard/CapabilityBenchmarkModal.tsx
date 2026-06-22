@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 import { Alert, Modal, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
-import type {
-  CapabilityBenchmarkData,
-  CapabilityBenchmarkScoreItem,
-  RepoProgressRow,
-} from './types';
+import type { RepoProgressRow } from './types';
+import CapabilityBenchmarkChartCard from './CapabilityBenchmarkChartCard';
 import {
   formatExecutionTime,
   formatPercent,
@@ -50,8 +47,6 @@ const buildCompareReportUrl = (
     primaryReportId
   )}&project=${encodeURIComponent(benchmarkReportId)}`;
 };
-
-const CHART_BARS_HEIGHT_PX = 236;
 
 const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
   open,
@@ -161,13 +156,6 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
       buildCompareReportUrl(repo?.latestReportId, benchmark?.latestReportId),
     [benchmark?.latestReportId, repo?.latestReportId]
   );
-  const maxScore = useMemo(() => {
-    const values = chartRows.flatMap((item) => [
-      item.cannScore ?? 0,
-      item.benchmarkScore ?? 0,
-    ]);
-    return Math.max(100, ...values);
-  }, [chartRows]);
 
   return (
     <Modal
@@ -219,126 +207,12 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
               message="已配置对标仓库，但暂未查询到竞品最新报告，已保留能力对标入口。"
             />
           ) : null}
-          <div className="benchmark-chart-card">
-            <div className="benchmark-chart-header">
-              <div className="benchmark-chart-score-hint">
-                <span>满分</span>
-                <strong>{maxScore}</strong>
-              </div>
-            </div>
-            <div className="benchmark-chart">
-              <div className="benchmark-chart-y">
-                {[100, 80, 60, 40, 20, 0].map((value) => (
-                  <div
-                    key={value}
-                    className="benchmark-chart-y-row"
-                    style={{
-                      top: `${((100 - value) / 100) * CHART_BARS_HEIGHT_PX}px`,
-                    }}
-                  >
-                    <span className="benchmark-chart-y-label">{value}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="benchmark-chart-plot">
-                <div className="benchmark-chart-grid">
-                  {[100, 80, 60, 40, 20, 0].map((value) => (
-                    <span
-                      key={value}
-                      className="benchmark-chart-grid-line"
-                      style={{
-                        top: `${
-                          ((100 - value) / 100) * CHART_BARS_HEIGHT_PX
-                        }px`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <div className="benchmark-chart-groups">
-                  {chartRows.map((item: CapabilityBenchmarkScoreItem) => {
-                    const showCannBar =
-                      typeof item.cannScore === 'number' && item.cannScore > 0;
-                    const showBenchmarkBar =
-                      typeof item.benchmarkScore === 'number' &&
-                      item.benchmarkScore > 0;
-                    const cannHeight = !showCannBar
-                      ? 0
-                      : Math.max(
-                          14,
-                          Math.min(
-                            100,
-                            Number(
-                              (
-                                ((item.cannScore ?? 0) / maxScore) *
-                                100
-                              ).toFixed(2)
-                            )
-                          )
-                        );
-                    const benchmarkHeight = !showBenchmarkBar
-                      ? 0
-                      : Math.max(
-                          14,
-                          Math.min(
-                            100,
-                            Number(
-                              (
-                                ((item.benchmarkScore ?? 0) / maxScore) *
-                                100
-                              ).toFixed(2)
-                            )
-                          )
-                        );
-                    return (
-                      <div key={item.key} className="benchmark-chart-group">
-                        <div className="benchmark-chart-slot">
-                          <div className="benchmark-chart-bars">
-                            {showCannBar ? (
-                              <div
-                                className="benchmark-chart-bar benchmark-chart-bar-cann"
-                                style={{ height: `${cannHeight}%` }}
-                              >
-                                <span className="benchmark-chart-bar-value">
-                                  {item.cannScore}
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="benchmark-chart-bar-placeholder" />
-                            )}
-                            {showBenchmarkBar ? (
-                              <div
-                                className="benchmark-chart-bar benchmark-chart-bar-benchmark"
-                                style={{ height: `${benchmarkHeight}%` }}
-                              >
-                                <span className="benchmark-chart-bar-value">
-                                  {item.benchmarkScore}
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="benchmark-chart-bar-placeholder" />
-                            )}
-                          </div>
-                        </div>
-                        <div className="benchmark-chart-label">
-                          {item.label}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-            <div className="benchmark-chart-legend">
-              <span className="benchmark-chart-legend-item">
-                <span className="benchmark-chart-dot benchmark-chart-dot-cann" />
-                {repo.name}
-              </span>
-              <span className="benchmark-chart-legend-item">
-                <span className="benchmark-chart-dot benchmark-chart-dot-benchmark" />
-                {benchmark.repoName}
-              </span>
-            </div>
-          </div>
+          <CapabilityBenchmarkChartCard
+            rows={chartRows}
+            primaryLegend={repo.name}
+            secondaryLegend={benchmark.repoName}
+            emptyText="暂无能力对比数据"
+          />
         </div>
       )}
     </Modal>

@@ -1,12 +1,15 @@
 import React from 'react';
-import { Checkbox, Segmented, Typography } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Checkbox, Popover, Segmented, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
 import ExperienceScoreRulePopoverTrigger from '../components/ExperienceScoreRulePopoverTrigger';
 import { ScoreSparkline } from './CloseRateTrendChart';
 import ScoreTrendModal from './ScoreTrendModal';
+import CapabilityBenchmarkChartCard from './CapabilityBenchmarkChartCard';
 import type {
   CommonIssueGroup,
   DashboardIssue,
+  OverviewCapabilityBenchmarkSummary,
   IssueBucket,
   IssueSourceMode,
   MetricSummary,
@@ -41,6 +44,7 @@ type OverviewSummarySectionProps = {
   issueSourceMode: IssueSourceMode;
   includeCommonIssues: boolean;
   commonIssues: CommonIssueGroup[];
+  capabilityBenchmark?: OverviewCapabilityBenchmarkSummary | null;
   trendWindow: TrendWindow;
   onTrendWindowChange: (next: TrendWindow) => void;
   onIssueSourceModeChange: (mode: IssueSourceMode) => void;
@@ -66,6 +70,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   issueSourceMode,
   includeCommonIssues,
   commonIssues,
+  capabilityBenchmark,
   trendWindow,
   onTrendWindowChange,
   onIssueSourceModeChange,
@@ -161,6 +166,53 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
       </button>
     );
   };
+
+  const includedCapabilityPairs = capabilityBenchmark?.includedPairs ?? [];
+  const capabilityBenchmarkTitle = (
+    <div className="benchmark-chart-title-copy">
+      <span>能力对标-社区入门体验</span>
+      {includedCapabilityPairs.length ? (
+        <Popover
+          trigger="hover"
+          placement="topLeft"
+          content={
+            <div className="benchmark-chart-title-popover">
+              <div className="benchmark-chart-title-popover-heading">
+                已纳入 {includedCapabilityPairs.length} 个对标项目
+              </div>
+              <div className="benchmark-chart-title-popover-table">
+                <div className="benchmark-chart-title-popover-table-head">
+                  <span>CANN 项目</span>
+                  <span>对标项目</span>
+                </div>
+                {includedCapabilityPairs.map((pair) => (
+                  <div
+                    key={`${pair.cannRepoName}-${pair.benchmarkRepoName}`}
+                    className="benchmark-chart-title-popover-row"
+                  >
+                    <span className="benchmark-chart-title-popover-cell">
+                      {pair.cannRepoName}
+                    </span>
+                    <span className="benchmark-chart-title-popover-cell">
+                      {pair.benchmarkRepoName}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          }
+        >
+          <button
+            type="button"
+            className="benchmark-chart-title-info-trigger"
+            aria-label="查看纳入的对标项目"
+          >
+            <InfoCircleOutlined />
+          </button>
+        </Popover>
+      ) : null}
+    </div>
+  );
 
   return (
     <>
@@ -278,6 +330,14 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           onPriorityBucketClick={(severity, bucket) =>
             onOpenIssues?.('primary', bucket, severity)
           }
+        />
+        <CapabilityBenchmarkChartCard
+          className="overview-capability-chart-card"
+          title={capabilityBenchmarkTitle}
+          rows={capabilityBenchmark?.scoreBreakdown ?? []}
+          primaryLegend="CANN"
+          secondaryLegend="CUDA"
+          emptyText="暂无已配置对标项目的总体步骤得分数据"
         />
       </div>
       <ScoreTrendModal

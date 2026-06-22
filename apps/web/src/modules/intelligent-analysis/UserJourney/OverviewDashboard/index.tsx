@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import {
   fetchOverviewCards,
+  fetchOverviewCapabilityBenchmark,
   fetchOverviewCloseRateTrends,
   fetchOverviewCommonIssues,
   fetchOverviewSummary,
@@ -216,6 +217,33 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       fetchOverviewCommonIssues({
         org,
       }),
+  });
+
+  const { data: capabilityBenchmarkResp } = useQuery({
+    queryKey: ['overview-capability-benchmark', org],
+    queryFn: async () => {
+      try {
+        return await fetchOverviewCapabilityBenchmark();
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          (error.message.includes('404') ||
+            error.message.includes('Failed to fetch'))
+        ) {
+          return {
+            pairCount: 0,
+            includedPairs: [],
+            summaryScore: null,
+            summarySuccessRate: null,
+            summaryAvgExecutionTime: null,
+            closureRate: 0,
+            teamSummaries: [],
+            scoreBreakdown: [],
+          };
+        }
+        throw error;
+      }
+    },
   });
 
   const repoRows = useMemo<RepoProgressRow[]>(() => {
@@ -656,6 +684,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           issueSourceMode={issueSourceMode}
           includeCommonIssues={includeCommonIssues}
           commonIssues={commonIssues}
+          capabilityBenchmark={capabilityBenchmarkResp ?? null}
           trendWindow={trendWindow}
           onTrendWindowChange={setTrendWindow}
           onIssueSourceModeChange={setIssueSourceMode}

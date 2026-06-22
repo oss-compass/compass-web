@@ -248,6 +248,10 @@ export type PainConfirmationRecord = {
   retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
   retest_passed_file_key?: string | null;
   latest_file_key?: string | null;
+  non_project_review_status?: 'pending' | 'approved' | 'rejected' | null;
+  non_project_review_reason?: string | null;
+  non_project_reviewed_by?: string | null;
+  non_project_reviewed_at?: string | null;
   confirmed_by: string;
   confirmed_at: string;
   history?: PainHistoryItem[];
@@ -272,6 +276,10 @@ export type PainHistoryItem = {
   actual_close_time?: string | null;
   retest_decision?: 'passed' | 'failed' | 'not_detected' | null;
   retest_passed_file_key?: string | null;
+  non_project_review_status?: 'pending' | 'approved' | 'rejected' | null;
+  non_project_review_reason?: string | null;
+  non_project_reviewed_by?: string | null;
+  non_project_reviewed_at?: string | null;
   confirmed_by: string | null;
   confirmed_at: string;
 };
@@ -482,6 +490,31 @@ export type OverviewSummary = {
   closureRate: number;
 };
 
+export type OverviewCapabilityBenchmark = {
+  pairCount: number;
+  includedPairs: Array<{
+    cannRepoName: string;
+    benchmarkRepoName: string;
+  }>;
+  summaryScore: number | null;
+  summarySuccessRate: number | null;
+  summaryAvgExecutionTime: number | null;
+  closureRate: number;
+  teamSummaries: Array<{
+    teamName: string;
+    summaryScore: number | null;
+    summarySuccessRate: number | null;
+    summaryAvgExecutionTime: number | null;
+    closureRate: number;
+  }>;
+  scoreBreakdown: Array<{
+    key: string;
+    label: string;
+    cannScore: number | null;
+    benchmarkScore: number | null;
+  }>;
+};
+
 export type OverviewCardsResponse = {
   total: number;
   page: number;
@@ -590,6 +623,12 @@ export const fetchOverviewCloseRateTrends = async (params: {
     `/overview/close-rate-trends${query ? `?${query}` : ''}`
   );
 };
+
+export const fetchOverviewCapabilityBenchmark =
+  async (): Promise<OverviewCapabilityBenchmark> =>
+    compassApiFetch<OverviewCapabilityBenchmark>(
+      '/overview/capability-benchmark'
+    );
 
 export const fetchOverviewCards = async (params: {
   viewType: 'repo' | 'team' | 'sig';

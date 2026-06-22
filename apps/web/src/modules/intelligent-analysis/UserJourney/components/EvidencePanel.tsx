@@ -169,90 +169,128 @@ const UnconfirmedBadge: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   </button>
 );
 
-/* ─── 状态 Badge（可再次点击修改） ─── */
-const StatusBadge: React.FC<{
+const getStatusBadgeBaseLabel = (
+  status: number,
+  normalizedReviewStatus: string
+) => {
+  if (status !== PainStatus.NO_FIX_NEEDED) {
+    return STATUS_LABELS[status] || '待确认';
+  }
+  if (normalizedReviewStatus === 'pending') {
+    return '非项目本身问题（待审核）';
+  }
+  if (normalizedReviewStatus === 'rejected') {
+    return '非项目本身问题已拒绝';
+  }
+  return '非项目本身问题';
+};
+
+const getStatusBadgeLabel = ({
+  status,
+  normalizedReviewStatus,
+  mergedStatusInheritedHint,
+  isCommonIssue,
+}: {
+  status: number;
+  normalizedReviewStatus: string;
+  mergedStatusInheritedHint?: string;
+  isCommonIssue: boolean;
+}) =>
+  `${getStatusBadgeBaseLabel(status, normalizedReviewStatus)}${
+    mergedStatusInheritedHint ? '（已合并）' : ''
+  }${isCommonIssue ? '（共性问题）' : ''}`;
+
+const getStatusBadgeStyle = (status: number, severity: string) => {
+  const style = getPainLevelStyle(severity);
+  const styleMap: Record<number, { pill: string; dot: string }> = {
+    [PainStatus.TO_BE_CONFIRMED]: {
+      pill: 'border-amber-300 bg-amber-100 text-amber-700',
+      dot: 'bg-amber-500',
+    },
+    [PainStatus.CONFIRMED_PENDING_FIX]: {
+      pill: 'border-rose-300 bg-rose-100 text-rose-700',
+      dot: 'bg-rose-500',
+    },
+    [PainStatus.FIXED_PENDING_RETEST]: {
+      pill: 'border-indigo-300 bg-indigo-100 text-indigo-700',
+      dot: 'bg-indigo-500',
+    },
+    [PainStatus.RETESTING]: {
+      pill: 'border-violet-300 bg-violet-100 text-violet-700',
+      dot: 'bg-violet-500',
+    },
+    [PainStatus.RETESTED_PASSED]: {
+      pill: 'border-emerald-300 bg-emerald-100 text-emerald-700',
+      dot: 'bg-emerald-500',
+    },
+    [PainStatus.RETESTED_FAILED]: {
+      pill: 'border-rose-300 bg-rose-100 text-rose-700',
+      dot: 'bg-rose-500',
+    },
+    [PainStatus.NO_FIX_NEEDED]: {
+      pill: 'border-slate-300 bg-slate-100 text-slate-700',
+      dot: 'bg-slate-500',
+    },
+  };
+  return (
+    styleMap[status] || {
+      pill: `${style.bg} ${style.text} ${style.border}`,
+      dot: style.dot,
+    }
+  );
+};
+
+const hasNonProjectReviewMetadata = ({
+  normalizedReviewStatus,
+  nonProjectReviewReason,
+  nonProjectReviewedBy,
+  nonProjectReviewedAt,
+}: {
+  normalizedReviewStatus: string;
+  nonProjectReviewReason?: string | null;
+  nonProjectReviewedBy?: string | null;
+  nonProjectReviewedAt?: string | null;
+}) =>
+  Boolean(
+    normalizedReviewStatus ||
+      String(nonProjectReviewReason || '').trim() ||
+      String(nonProjectReviewedBy || '').trim() ||
+      String(nonProjectReviewedAt || '').trim()
+  );
+
+const StatusBadgePopoverContent: React.FC<{
   status: number;
   severity: string;
   actionReason?: string;
+  normalizedReviewStatus: string;
+  hasNonProjectReviewInfo: boolean;
+  nonProjectReviewReason?: string | null;
+  nonProjectReviewedBy?: string | null;
+  nonProjectReviewedAt?: string | null;
   mergedStatusInheritedHint?: string;
   commonIssueType?: string | null;
-  isCommonIssue?: boolean;
   confirmedBy: string;
   confirmedAt: string;
   prLink?: string | null;
   retestPassedFileKey?: string | null;
-  onClick: () => void;
 }> = ({
   status,
   severity,
   actionReason,
+  normalizedReviewStatus,
+  hasNonProjectReviewInfo,
+  nonProjectReviewReason,
+  nonProjectReviewedBy,
+  nonProjectReviewedAt,
   mergedStatusInheritedHint,
   commonIssueType,
-  isCommonIssue = false,
   confirmedBy,
   confirmedAt,
   prLink,
   retestPassedFileKey,
-  onClick,
 }) => {
   const style = getPainLevelStyle(severity);
-  const baseLabel =
-    status === PainStatus.NO_FIX_NEEDED
-      ? '非项目本身问题'
-      : STATUS_LABELS[status] || '待确认';
-  const label = `${baseLabel}${mergedStatusInheritedHint ? '（已合并）' : ''}${
-    isCommonIssue ? '（共性问题）' : ''
-  }`;
-  const statusStyle = (() => {
-    if (status === PainStatus.TO_BE_CONFIRMED) {
-      return {
-        pill: 'border-amber-300 bg-amber-100 text-amber-700',
-        dot: 'bg-amber-500',
-      };
-    }
-    if (status === PainStatus.CONFIRMED_PENDING_FIX) {
-      return {
-        pill: 'border-rose-300 bg-rose-100 text-rose-700',
-        dot: 'bg-rose-500',
-      };
-    }
-    if (status === PainStatus.FIXED_PENDING_RETEST) {
-      return {
-        pill: 'border-indigo-300 bg-indigo-100 text-indigo-700',
-        dot: 'bg-indigo-500',
-      };
-    }
-    if (status === PainStatus.RETESTING) {
-      return {
-        pill: 'border-violet-300 bg-violet-100 text-violet-700',
-        dot: 'bg-violet-500',
-      };
-    }
-    if (status === PainStatus.RETESTED_PASSED) {
-      return {
-        pill: 'border-emerald-300 bg-emerald-100 text-emerald-700',
-        dot: 'bg-emerald-500',
-      };
-    }
-    if (status === PainStatus.RETESTED_FAILED) {
-      return {
-        pill: 'border-rose-300 bg-rose-100 text-rose-700',
-        dot: 'bg-rose-500',
-      };
-    }
-    if (status === PainStatus.NO_FIX_NEEDED) {
-      return {
-        pill: 'border-slate-300 bg-slate-100 text-slate-700',
-        dot: 'bg-slate-500',
-      };
-    }
-    return {
-      pill: `${style.bg} ${style.text} ${style.border}`,
-      dot: style.dot,
-    };
-  })();
-
-  const popoverContent = (
+  return (
     <div className="max-w-xs space-y-2 text-sm">
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">严重程度：</span>
@@ -268,7 +306,7 @@ const StatusBadge: React.FC<{
           </span>
         </div>
       ) : null}
-      {status === PainStatus.RETESTED_PASSED && prLink && (
+      {status === PainStatus.RETESTED_PASSED && prLink ? (
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
           <span className="font-medium text-slate-600">PR 链接：</span>
           <a
@@ -281,8 +319,8 @@ const StatusBadge: React.FC<{
             {prLink}
           </a>
         </div>
-      )}
-      {status === PainStatus.RETESTED_PASSED && retestPassedFileKey && (
+      ) : null}
+      {status === PainStatus.RETESTED_PASSED && retestPassedFileKey ? (
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
           <span className="font-medium text-slate-600">通过报告：</span>
           <a
@@ -295,7 +333,7 @@ const StatusBadge: React.FC<{
             {retestPassedFileKey}
           </a>
         </div>
-      )}
+      ) : null}
       {(status === PainStatus.NO_FIX_NEEDED ||
         status === PainStatus.RETESTED_FAILED) &&
       actionReason ? (
@@ -316,6 +354,45 @@ const StatusBadge: React.FC<{
           </div>
         </div>
       ) : null}
+      {hasNonProjectReviewInfo ? (
+        <div className="space-y-2 rounded border border-slate-200 bg-slate-50 p-2">
+          <div className="text-xs font-medium text-slate-600">
+            非项目本身问题审核
+          </div>
+          {normalizedReviewStatus ? (
+            <div className="space-y-1 text-xs text-slate-500">
+              <span className="font-medium text-slate-600">审核状态：</span>
+              <div className="rounded bg-white px-2 py-1 leading-5 text-slate-600">
+                {normalizedReviewStatus === 'pending'
+                  ? '待审核'
+                  : normalizedReviewStatus === 'approved'
+                  ? '已通过'
+                  : '已拒绝并回退到待确认'}
+              </div>
+            </div>
+          ) : null}
+          {actionReason && normalizedReviewStatus === 'rejected' ? (
+            <div className="space-y-1 text-xs text-slate-500">
+              <span className="font-medium text-slate-600">判断原因：</span>
+              <div className="rounded bg-emerald-50 px-2 py-1 leading-5 text-emerald-700">
+                {actionReason}
+              </div>
+            </div>
+          ) : null}
+          {nonProjectReviewReason ? (
+            <div className="space-y-1 text-xs text-slate-500">
+              <span className="font-medium text-slate-600">
+                {normalizedReviewStatus === 'rejected'
+                  ? '拒绝理由：'
+                  : '审核说明：'}
+              </span>
+              <div className="rounded bg-amber-50 px-2 py-1 leading-5 text-amber-700">
+                {nonProjectReviewReason}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
       <div className="flex items-center gap-1.5 text-xs text-slate-500">
         <span className="font-medium text-slate-600">操作人：</span>
         {confirmedBy}
@@ -324,6 +401,18 @@ const StatusBadge: React.FC<{
         <span className="font-medium text-slate-600">操作时间：</span>
         {formatLocalDateTime(confirmedAt)}
       </div>
+      {hasNonProjectReviewInfo && nonProjectReviewedBy ? (
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">审核人：</span>
+          {nonProjectReviewedBy}
+        </div>
+      ) : null}
+      {hasNonProjectReviewInfo && nonProjectReviewedAt ? (
+        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+          <span className="font-medium text-slate-600">审核时间：</span>
+          {formatLocalDateTime(nonProjectReviewedAt)}
+        </div>
+      ) : null}
       {mergedStatusInheritedHint ? (
         <div className="space-y-1 text-xs text-slate-500">
           <span className="font-medium text-slate-600">状态说明：</span>
@@ -337,10 +426,77 @@ const StatusBadge: React.FC<{
       </div>
     </div>
   );
+};
+
+/* ─── 状态 Badge（可再次点击修改） ─── */
+const StatusBadge: React.FC<{
+  status: number;
+  severity: string;
+  actionReason?: string;
+  nonProjectReviewStatus?: string | null;
+  nonProjectReviewReason?: string | null;
+  nonProjectReviewedBy?: string | null;
+  nonProjectReviewedAt?: string | null;
+  mergedStatusInheritedHint?: string;
+  commonIssueType?: string | null;
+  isCommonIssue?: boolean;
+  confirmedBy: string;
+  confirmedAt: string;
+  prLink?: string | null;
+  retestPassedFileKey?: string | null;
+  onClick: () => void;
+}> = ({
+  status,
+  severity,
+  actionReason,
+  nonProjectReviewStatus,
+  nonProjectReviewReason,
+  nonProjectReviewedBy,
+  nonProjectReviewedAt,
+  mergedStatusInheritedHint,
+  commonIssueType,
+  isCommonIssue = false,
+  confirmedBy,
+  confirmedAt,
+  prLink,
+  retestPassedFileKey,
+  onClick,
+}) => {
+  const normalizedReviewStatus = String(nonProjectReviewStatus || '').trim();
+  const hasNonProjectReviewInfo = hasNonProjectReviewMetadata({
+    normalizedReviewStatus,
+    nonProjectReviewReason,
+    nonProjectReviewedBy,
+    nonProjectReviewedAt,
+  });
+  const label = getStatusBadgeLabel({
+    status,
+    normalizedReviewStatus,
+    mergedStatusInheritedHint,
+    isCommonIssue,
+  });
+  const statusStyle = getStatusBadgeStyle(status, severity);
 
   return (
     <Popover
-      content={popoverContent}
+      content={
+        <StatusBadgePopoverContent
+          status={status}
+          severity={severity}
+          actionReason={actionReason}
+          normalizedReviewStatus={normalizedReviewStatus}
+          hasNonProjectReviewInfo={hasNonProjectReviewInfo}
+          nonProjectReviewReason={nonProjectReviewReason}
+          nonProjectReviewedBy={nonProjectReviewedBy}
+          nonProjectReviewedAt={nonProjectReviewedAt}
+          mergedStatusInheritedHint={mergedStatusInheritedHint}
+          commonIssueType={commonIssueType}
+          confirmedBy={confirmedBy}
+          confirmedAt={confirmedAt}
+          prLink={prLink}
+          retestPassedFileKey={retestPassedFileKey}
+        />
+      }
       title={null}
       trigger="hover"
       placement="top"
@@ -372,6 +528,10 @@ type DerivedPainDisplayState = {
   effectiveIssueLink?: string | null;
   effectivePrLink?: string | null;
   effectiveRetestPassedFileKey?: string | null;
+  effectiveNonProjectReviewStatus?: 'pending' | 'approved' | 'rejected' | null;
+  effectiveNonProjectReviewReason?: string | null;
+  effectiveNonProjectReviewedBy?: string | null;
+  effectiveNonProjectReviewedAt?: string | null;
   isNonProjectIssue: boolean;
   mergedStatusInheritedHint?: string;
 };
@@ -575,6 +735,40 @@ const getEffectiveLinks = ({
     parentPain?.issueOrPrLink ||
     undefined,
 });
+
+const getEffectiveNonProjectReviewState = ({
+  existing,
+  historicalParentConfirmation,
+}: {
+  existing?: PainConfirmationRecord;
+  historicalParentConfirmation?: PainConfirmationRecord;
+}) => {
+  const rawStatus =
+    existing?.non_project_review_status ||
+    historicalParentConfirmation?.non_project_review_status ||
+    undefined;
+  const reviewStatus =
+    rawStatus === 'pending' ||
+    rawStatus === 'approved' ||
+    rawStatus === 'rejected'
+      ? rawStatus
+      : undefined;
+  return {
+    reviewStatus,
+    reviewReason:
+      existing?.non_project_review_reason ||
+      historicalParentConfirmation?.non_project_review_reason ||
+      undefined,
+    reviewedBy:
+      existing?.non_project_reviewed_by ||
+      historicalParentConfirmation?.non_project_reviewed_by ||
+      undefined,
+    reviewedAt:
+      existing?.non_project_reviewed_at ||
+      historicalParentConfirmation?.non_project_reviewed_at ||
+      undefined,
+  };
+};
 
 const getEffectiveActionReason = ({
   existing,
@@ -784,6 +978,10 @@ const derivePainDisplayState = ({
     parentPain,
     existing,
   });
+  const nonProjectReviewState = getEffectiveNonProjectReviewState({
+    existing,
+    historicalParentConfirmation,
+  });
   const effectiveActionReason = getEffectiveActionReason({
     existing,
     historicalParentConfirmation,
@@ -851,6 +1049,10 @@ const derivePainDisplayState = ({
     effectiveIssueLink: issueLink,
     effectivePrLink: prLink,
     effectiveRetestPassedFileKey,
+    effectiveNonProjectReviewStatus: nonProjectReviewState.reviewStatus,
+    effectiveNonProjectReviewReason: nonProjectReviewState.reviewReason,
+    effectiveNonProjectReviewedBy: nonProjectReviewState.reviewedBy,
+    effectiveNonProjectReviewedAt: nonProjectReviewState.reviewedAt,
     isNonProjectIssue,
     mergedStatusInheritedHint: getMergedStatusInheritedHint({
       isLatestReport,
@@ -890,53 +1092,112 @@ const buildModalCurrentRecord = ({
       : existing?.status ?? PainStatus.TO_BE_CONFIRMED;
 
   if (existing && displayState.childMatched) {
-    return {
-      ...existing,
-      status: effectiveStatus,
-      severity: displayState.effectiveSeverity || existing.severity,
-      action_reason:
-        displayState.effectiveActionReason || existing.action_reason,
-      reason: displayState.effectiveActionReason || existing.reason,
-      is_common_issue: displayState.effectiveIsCommonIssue,
-      common_issue_type:
-        displayState.effectiveCommonIssueType ??
-        existing.common_issue_type ??
-        null,
-      issue_link: getFallbackModalLinkValue(
-        existing.issue_link || displayState.effectiveIssueLink
-      ),
-      pr_link: getFallbackModalLinkValue(
-        existing.pr_link || displayState.effectivePrLink
-      ),
-      confirmed_by:
-        displayState.effectiveConfirmedBy === '--'
-          ? existing.confirmed_by
-          : displayState.effectiveConfirmedBy,
-      confirmed_at: displayState.effectiveConfirmedAt || existing.confirmed_at,
-    };
+    return mergeExistingModalCurrentRecord({
+      existing,
+      effectiveStatus,
+      displayState,
+    });
   }
 
-  return {
-    file_key: fileKey,
-    step_id: stepId,
-    pain_index: index,
-    pain_text: text,
-    status: effectiveStatus,
-    severity: displayState.effectiveSeverity || 'P1_CRITICAL',
-    action_reason: displayState.effectiveActionReason || null,
-    reason: displayState.effectiveActionReason || null,
-    is_common_issue: displayState.effectiveIsCommonIssue,
-    common_issue_type: displayState.effectiveCommonIssueType ?? null,
-    issue_link: getFallbackModalLinkValue(displayState.effectiveIssueLink),
-    pr_link: getFallbackModalLinkValue(displayState.effectivePrLink),
-    confirmed_by:
-      displayState.effectiveConfirmedBy === '--'
-        ? ''
-        : displayState.effectiveConfirmedBy,
-    confirmed_at: displayState.effectiveConfirmedAt || '',
-    latest_file_key: existing?.latest_file_key || fileKey || null,
-  };
+  return createModalCurrentRecord({
+    fileKey,
+    stepId,
+    index,
+    text,
+    existing,
+    effectiveStatus,
+    displayState,
+  });
 };
+
+const mergeExistingModalCurrentRecord = ({
+  existing,
+  effectiveStatus,
+  displayState,
+}: {
+  existing: PainConfirmationRecord;
+  effectiveStatus: number;
+  displayState: DerivedPainDisplayState;
+}): PainConfirmationRecord => ({
+  ...existing,
+  status: effectiveStatus,
+  severity: displayState.effectiveSeverity || existing.severity,
+  action_reason: displayState.effectiveActionReason || existing.action_reason,
+  reason: displayState.effectiveActionReason || existing.reason,
+  is_common_issue: displayState.effectiveIsCommonIssue,
+  common_issue_type:
+    displayState.effectiveCommonIssueType ?? existing.common_issue_type ?? null,
+  issue_link: getFallbackModalLinkValue(
+    existing.issue_link || displayState.effectiveIssueLink
+  ),
+  pr_link: getFallbackModalLinkValue(
+    existing.pr_link || displayState.effectivePrLink
+  ),
+  confirmed_by:
+    displayState.effectiveConfirmedBy === '--'
+      ? existing.confirmed_by
+      : displayState.effectiveConfirmedBy,
+  confirmed_at: displayState.effectiveConfirmedAt || existing.confirmed_at,
+  non_project_review_status:
+    displayState.effectiveNonProjectReviewStatus ??
+    existing.non_project_review_status ??
+    null,
+  non_project_review_reason:
+    displayState.effectiveNonProjectReviewReason ??
+    existing.non_project_review_reason ??
+    null,
+  non_project_reviewed_by:
+    displayState.effectiveNonProjectReviewedBy ??
+    existing.non_project_reviewed_by ??
+    null,
+  non_project_reviewed_at:
+    displayState.effectiveNonProjectReviewedAt ??
+    existing.non_project_reviewed_at ??
+    null,
+});
+
+const createModalCurrentRecord = ({
+  fileKey,
+  stepId,
+  index,
+  text,
+  existing,
+  effectiveStatus,
+  displayState,
+}: {
+  fileKey: string;
+  stepId: string;
+  index: number;
+  text: string;
+  existing?: PainConfirmationRecord;
+  effectiveStatus: number;
+  displayState: DerivedPainDisplayState;
+}): PainConfirmationRecord => ({
+  file_key: fileKey,
+  step_id: stepId,
+  pain_index: index,
+  pain_text: text,
+  status: effectiveStatus,
+  severity: displayState.effectiveSeverity || 'P1_CRITICAL',
+  action_reason: displayState.effectiveActionReason || null,
+  reason: displayState.effectiveActionReason || null,
+  is_common_issue: displayState.effectiveIsCommonIssue,
+  common_issue_type: displayState.effectiveCommonIssueType ?? null,
+  issue_link: getFallbackModalLinkValue(displayState.effectiveIssueLink),
+  pr_link: getFallbackModalLinkValue(displayState.effectivePrLink),
+  confirmed_by:
+    displayState.effectiveConfirmedBy === '--'
+      ? ''
+      : displayState.effectiveConfirmedBy,
+  confirmed_at: displayState.effectiveConfirmedAt || '',
+  non_project_review_status:
+    displayState.effectiveNonProjectReviewStatus ?? null,
+  non_project_review_reason:
+    displayState.effectiveNonProjectReviewReason ?? null,
+  non_project_reviewed_by: displayState.effectiveNonProjectReviewedBy ?? null,
+  non_project_reviewed_at: displayState.effectiveNonProjectReviewedAt ?? null,
+  latest_file_key: existing?.latest_file_key || fileKey || null,
+});
 
 const PainPointBadge: React.FC<{
   canConfirm: boolean;
@@ -953,6 +1214,10 @@ const PainPointBadge: React.FC<{
         status={displayState.effectiveStatus}
         severity={displayState.effectiveSeverity || 'P4_TRIVIAL'}
         actionReason={displayState.effectiveActionReason}
+        nonProjectReviewStatus={displayState.effectiveNonProjectReviewStatus}
+        nonProjectReviewReason={displayState.effectiveNonProjectReviewReason}
+        nonProjectReviewedBy={displayState.effectiveNonProjectReviewedBy}
+        nonProjectReviewedAt={displayState.effectiveNonProjectReviewedAt}
         mergedStatusInheritedHint={displayState.mergedStatusInheritedHint}
         commonIssueType={displayState.effectiveCommonIssueType}
         isCommonIssue={displayState.effectiveIsCommonIssue}

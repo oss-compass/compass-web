@@ -87,6 +87,26 @@ export type CapabilityBenchmarkData = {
   scoreBreakdown: CapabilityBenchmarkScoreItem[];
 };
 
+export type OverviewCapabilityBenchmarkSummary = {
+  pairCount: number;
+  includedPairs: Array<{
+    cannRepoName: string;
+    benchmarkRepoName: string;
+  }>;
+  summaryScore: number | null;
+  summarySuccessRate: number | null;
+  summaryAvgExecutionTime: number | null;
+  closureRate: number;
+  teamSummaries: Array<{
+    teamName: string;
+    summaryScore: number | null;
+    summarySuccessRate: number | null;
+    summaryAvgExecutionTime: number | null;
+    closureRate: number;
+  }>;
+  scoreBreakdown: CapabilityBenchmarkScoreItem[];
+};
+
 export type RepoProgressRow = {
   id: string;
   name: string;
