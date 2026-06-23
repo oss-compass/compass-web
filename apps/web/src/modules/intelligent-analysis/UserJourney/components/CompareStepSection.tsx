@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Card, Tabs } from 'antd';
 import StepDetailCard from './StepDetailCard';
 import {
@@ -48,6 +48,84 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
   stickyTop = 0,
 }) => {
   const baseSteps = projects[0]?.data.journeySteps ?? [];
+  const columnRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useLayoutEffect(() => {
+    const containers = projects
+      .map((project) => columnRefs.current[project.queryKey])
+      .filter((container): container is HTMLDivElement => !!container);
+
+    if (containers.length < 2) {
+      return;
+    }
+
+    let frameId = 0;
+
+    const syncTaskCardHeights = () => {
+      cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(() => {
+        const syncGroupedHeights = (selector: string) => {
+          const elementLists = containers.map((container) =>
+            Array.from(container.querySelectorAll<HTMLElement>(selector))
+          );
+
+          elementLists.flat().forEach((element) => {
+            element.style.minHeight = '';
+          });
+
+          const maxElementCount = Math.max(
+            ...elementLists.map((elements) => elements.length),
+            0
+          );
+
+          for (let index = 0; index < maxElementCount; index += 1) {
+            const rowElements = elementLists
+              .map((elements) => elements[index])
+              .filter((element): element is HTMLElement => !!element);
+
+            if (rowElements.length < 2) {
+              continue;
+            }
+
+            const maxHeight = Math.max(
+              ...rowElements.map(
+                (element) => element.getBoundingClientRect().height
+              ),
+              0
+            );
+
+            rowElements.forEach((element) => {
+              element.style.minHeight = `${Math.ceil(maxHeight)}px`;
+            });
+          }
+        };
+
+        syncGroupedHeights('[data-compare-pre-tasks]');
+        syncGroupedHeights(`[id^="task-card-${activeStepKey}-"]`);
+      });
+    };
+
+    syncTaskCardHeights();
+
+    if (typeof ResizeObserver === 'undefined') {
+      return () => {
+        cancelAnimationFrame(frameId);
+      };
+    }
+
+    const observer = new ResizeObserver(() => {
+      syncTaskCardHeights();
+    });
+
+    containers.forEach((container) => {
+      observer.observe(container);
+    });
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      observer.disconnect();
+    };
+  }, [activeStepKey, projects]);
 
   return (
     <div className="rounded-3xl border border-white/80 bg-white shadow-[0_20px_48px_rgba(15,23,42,0.08)]">
@@ -88,6 +166,9 @@ const CompareStepSection: React.FC<CompareStepSectionProps> = ({
             return (
               <div
                 key={project.queryKey}
+                ref={(node) => {
+                  columnRefs.current[project.queryKey] = node;
+                }}
                 className="flex min-w-[625px] flex-1 flex-col self-stretch"
               >
                 <div className="mb-3 px-1">

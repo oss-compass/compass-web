@@ -27,11 +27,9 @@ type BenchmarkSummaryRow = {
   executionTime: number | null;
   hardwareEnv: string;
   latestReportId?: string;
-  detailReportUrl?: string;
 };
 
-const buildReportUrl = (detailReportUrl?: string, latestReportId?: string) => {
-  if (detailReportUrl) return detailReportUrl;
+const buildReportUrl = (latestReportId?: string) => {
   if (!latestReportId) return '';
   return `/intelligent-analysis/community-experience?project=${encodeURIComponent(
     latestReportId
@@ -66,7 +64,6 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
         executionTime: repo.executionTime,
         hardwareEnv: repo.hardwareEnv || '--',
         latestReportId: repo.latestReportId,
-        detailReportUrl: repo.detailReportUrl,
       },
       {
         key: 'benchmark',
@@ -77,7 +74,6 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
         executionTime: benchmark.latestExecutionTime ?? null,
         hardwareEnv: benchmark.hardwareEnv || '--',
         latestReportId: benchmark.latestReportId,
-        detailReportUrl: benchmark.detailReportUrl,
       },
     ];
   }, [benchmark, repo]);
@@ -133,10 +129,7 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
         key: 'detailReport',
         width: 130,
         render: (_value, record) => {
-          const href = buildReportUrl(
-            record.detailReportUrl,
-            record.latestReportId
-          );
+          const href = buildReportUrl(record.latestReportId);
           const displayText = getReportDisplayText(record.latestReportId);
           if (!href) return <span className="text-slate-300">--</span>;
           return (

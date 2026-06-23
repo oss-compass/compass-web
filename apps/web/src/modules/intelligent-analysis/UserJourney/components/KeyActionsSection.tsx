@@ -399,12 +399,12 @@ const LogCommandsTable: React.FC<{
       <div className="overflow-x-auto">
         <table className="w-full table-fixed">
           <colgroup>
-            <col style={{ width: '40px' }} />
-            <col style={{ width: '120px' }} />
-            <col style={{ width: '220px' }} />
+            <col style={{ width: '20px' }} />
+            <col style={{ minWidth: '82px' }} />
+            <col style={{ width: '136px' }} />
             <col />
-            <col style={{ width: '90px' }} />
-            <col style={{ width: '76px' }} />
+            <col style={{ width: '80px' }} />
+            <col style={{ width: '72px' }} />
             <col style={{ width: '68px' }} />
           </colgroup>
           <thead>
@@ -412,35 +412,38 @@ const LogCommandsTable: React.FC<{
               <th className="px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
                 #
               </th>
-              <th className="px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
+              <th
+                className="whitespace-nowrap px-4 py-2.5 text-left text-sm font-semibold text-slate-700"
+                style={{ minWidth: 82 }}
+              >
                 工具名称
               </th>
-              <th className="px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
+              <th className="whitespace-nowrap px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
                 参数
               </th>
               <th className="px-3 py-2 text-left text-sm font-semibold text-slate-700">
-                <div className="flex items-center gap-2">
-                  <span>日志摘要</span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="whitespace-nowrap">摘要</span>
                   <button
                     type="button"
                     onClick={toggleAll}
-                    className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
+                    className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
                   >
                     <ChevronIcon
                       expanded={allExpanded}
                       className="h-2.5 w-2.5"
                     />
-                    {allExpanded ? '收起全部' : '展开全部'}
+                    {allExpanded ? '收起' : '展开'}
                   </button>
                 </div>
               </th>
-              <th className="px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
-                日志详情
+              <th className="whitespace-nowrap px-3 py-2.5 text-left text-sm font-semibold text-slate-700">
+                详情
               </th>
-              <th className="px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
+              <th className="whitespace-nowrap px-3 py-2.5 text-left text-sm font-semibold text-slate-700">
                 结果
               </th>
-              <th className="px-4 py-2.5 text-left text-sm font-semibold text-slate-700">
+              <th className="whitespace-nowrap px-3 py-2.5 text-left text-sm font-semibold text-slate-700">
                 耗时
               </th>
             </tr>
@@ -488,10 +491,15 @@ const LogCommandsTable: React.FC<{
                     {i + 1}
                   </td>
                   {/* 工具名 */}
-                  <td className="px-4 py-3.5 align-top">
-                    <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700">
-                      {cmd.name}
-                    </code>
+                  <td
+                    className="overflow-hidden px-4 py-3.5 align-top"
+                    style={{ minWidth: 82 }}
+                  >
+                    <Tooltip title={cmd.name}>
+                      <code className="inline-block max-w-full truncate rounded bg-slate-100 px-1.5 py-0.5 align-top font-mono text-xs text-slate-700">
+                        {cmd.name}
+                      </code>
+                    </Tooltip>
                   </td>
                   {/* 参数 */}
                   <td className="px-4 py-3.5 align-top text-xs text-slate-500">
@@ -544,7 +552,7 @@ const LogCommandsTable: React.FC<{
                     )}
                   </td>
                   {/* 日志详情按钮 */}
-                  <td className="whitespace-nowrap px-4 py-3.5 align-top">
+                  <td className="whitespace-nowrap px-3 py-3.5 align-top">
                     {hasOutput ? (
                       <button
                         type="button"
@@ -559,7 +567,7 @@ const LogCommandsTable: React.FC<{
                     )}
                   </td>
                   {/* 结果 */}
-                  <td className="px-4 py-3.5 align-top">
+                  <td className="px-3 py-3.5 align-top">
                     <span
                       className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold ${getActionStatusClasses(
                         status
@@ -569,7 +577,7 @@ const LogCommandsTable: React.FC<{
                     </span>
                   </td>
                   {/* 耗时 */}
-                  <td className="px-4 py-3.5 align-top text-xs font-semibold text-slate-700">
+                  <td className="px-3 py-3.5 align-top text-xs font-semibold text-slate-700">
                     {cmd.duration_time ?? '-'}
                   </td>
                 </tr>
@@ -616,10 +624,10 @@ const LegacyActionsTable: React.FC<{
       <table className="w-full table-fixed">
         <colgroup>
           <col style={{ width: '40px' }} />
-          <col style={{ width: '108px' }} />
+          <col style={{ width: '96px' }} />
           <col />
-          <col style={{ width: '80px' }} />
-          <col style={{ width: '68px' }} />
+          <col style={{ width: '72px' }} />
+          <col style={{ width: '64px' }} />
         </colgroup>
         <thead>
           <tr className="border-b border-slate-100 bg-slate-50/60">
@@ -630,18 +638,18 @@ const LegacyActionsTable: React.FC<{
               动作类型
             </th>
             <th className="px-3 py-2 text-left text-sm font-semibold text-slate-700">
-              <div className="flex items-center gap-2">
-                <span>详情</span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="whitespace-nowrap">详情</span>
                 <button
                   type="button"
                   onClick={toggleAll}
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
+                  className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-500 transition-colors hover:border-slate-300 hover:text-slate-700"
                 >
                   <ChevronIcon
                     expanded={tableAllExpanded}
                     className="h-2.5 w-2.5"
                   />
-                  {tableAllExpanded ? '收起全部' : '展开全部'}
+                  {tableAllExpanded ? '收起' : '展开'}
                 </button>
               </div>
             </th>

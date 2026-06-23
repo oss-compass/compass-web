@@ -10,6 +10,11 @@ type CapabilityBenchmarkChartCardProps = {
   secondaryLegend: string;
   emptyText?: string;
   className?: string;
+  getRowClassName?: (
+    item: CapabilityBenchmarkScoreItem,
+    index: number
+  ) => string | undefined;
+  onRowClick?: (item: CapabilityBenchmarkScoreItem, index: number) => void;
 };
 
 const formatChartValue = (value: number | null | undefined) => {
@@ -27,6 +32,8 @@ const CapabilityBenchmarkChartCard: React.FC<
   secondaryLegend,
   emptyText = '暂无能力对比数据',
   className,
+  getRowClassName,
+  onRowClick,
 }) => {
   const hasData = useMemo(
     () =>
@@ -84,7 +91,7 @@ const CapabilityBenchmarkChartCard: React.FC<
                 ))}
               </div>
               <div className="benchmark-chart-groups">
-                {rows.map((item) => {
+                {rows.map((item, index) => {
                   const showCannBar =
                     typeof item.cannScore === 'number' && item.cannScore > 0;
                   const showBenchmarkBar =
@@ -117,8 +124,31 @@ const CapabilityBenchmarkChartCard: React.FC<
                           )
                         )
                       );
+                  const extraRowClassName = getRowClassName?.(item, index);
+                  const groupClassName = `benchmark-chart-group${
+                    onRowClick ? ' benchmark-chart-group-clickable' : ''
+                  }${extraRowClassName ? ` ${extraRowClassName}` : ''}`;
+
                   return (
-                    <div key={item.key} className="benchmark-chart-group">
+                    <div
+                      key={item.key}
+                      className={groupClassName}
+                      role={onRowClick ? 'button' : undefined}
+                      tabIndex={onRowClick ? 0 : undefined}
+                      onClick={
+                        onRowClick ? () => onRowClick(item, index) : undefined
+                      }
+                      onKeyDown={
+                        onRowClick
+                          ? (event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                onRowClick(item, index);
+                              }
+                            }
+                          : undefined
+                      }
+                    >
                       <div className="benchmark-chart-slot">
                         <div className="benchmark-chart-bars">
                           {showCannBar ? (

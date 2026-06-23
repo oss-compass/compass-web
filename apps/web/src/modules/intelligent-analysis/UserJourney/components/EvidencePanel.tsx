@@ -104,6 +104,10 @@ export type EvidencePanelProps = {
   /** 可选：版本选项（file_key → label），用于复测通过时选择通过报告 */
   versionOptions?: Array<{ value: string; label: string }>;
   previewMode?: boolean;
+  summaryExpanded?: boolean;
+  onSummaryExpandedChange?: (expanded: boolean) => void;
+  painExpanded?: boolean;
+  onPainExpandedChange?: (expanded: boolean) => void;
 };
 
 /* ─── 关联步骤按钮 ─── */
@@ -2131,8 +2135,27 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
   isLatestReport = false,
   versionOptions,
   previewMode = false,
+  summaryExpanded,
+  onSummaryExpandedChange,
+  painExpanded,
+  onPainExpandedChange,
 }) => {
-  const [obsExpanded, setObsExpanded] = useState(false);
+  const [localObsExpanded, setLocalObsExpanded] = useState(false);
+  const [localPainExpanded, setLocalPainExpanded] = useState(true);
+  const obsExpanded = summaryExpanded ?? localObsExpanded;
+  const resolvedPainExpanded = painExpanded ?? localPainExpanded;
+  const handleObsExpandedChange = (expanded: boolean) => {
+    if (summaryExpanded === undefined) {
+      setLocalObsExpanded(expanded);
+    }
+    onSummaryExpandedChange?.(expanded);
+  };
+  const handlePainExpandedChange = (expanded: boolean) => {
+    if (painExpanded === undefined) {
+      setLocalPainExpanded(expanded);
+    }
+    onPainExpandedChange?.(expanded);
+  };
   const canConfirm = !!(fileKey && stepId) && !previewMode;
   const candidateTaskIds = useMemo(
     () =>
@@ -2307,7 +2330,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     retry: false,
   });
 
-  const hasHistoryPain = historyParentPains.length > 0 || parentPainsLoading;
+  const hasHistoryPain = historyParentPains.length > 0;
 
   const autoOpenPainId = useMemo(() => {
     const target = String(painFocusTarget?.painId || '').trim();
@@ -2437,48 +2460,66 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     <div className="flex flex-col gap-3">
       {hasPain && (
         <div className="rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
-          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600">
+          <button
+            type="button"
+            className="flex w-full items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600"
+            onClick={() => handlePainExpandedChange(!resolvedPainExpanded)}
+          >
             <PainIcon className="h-3 w-3" />
             痛点
             <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
               {displayPainPoints.length}
             </span>
-          </div>
-          <ul className="space-y-1.5">
-            {displayPainPoints.map(
-              ({ id, text, index, status, severity }, i) => (
-                <PainPointItem
-                  painId={id}
-                  key={id || index}
-                  order={i + 1}
-                  text={text}
-                  index={index}
-                  childStatus={
-                    typeof status === 'number' && !Number.isNaN(status)
-                      ? status
-                      : undefined
-                  }
-                  childSeverity={severity}
-                  fileKey={fileKey}
-                  stepId={stepId}
-                  legacyStepId={legacyStepId}
-                  legacyStepIds={legacyStepIds}
-                  parentPain={findParentPainForPain({ id, index })}
-                  historicalParentConfirmationMapByFileKey={
-                    taskParentConfirmationMapByFileKey
-                  }
-                  isLatestReport={isLatestReport}
-                  toolIds={pain_points_tool_nums?.[index]}
-                  onStepClick={onStepClick}
-                  highlightTaskId={linkTaskId}
-                  shouldAutoOpen={shouldAutoOpenForPainId(id)}
-                  onAutoOpenHandled={onPainFocusHandled}
-                  versionOptions={versionOptions}
-                  previewMode={previewMode}
-                />
-              )
-            )}
-          </ul>
+            <svg
+              className={`ml-auto h-3.5 w-3.5 transition-transform ${
+                resolvedPainExpanded ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="4,6 8,10 12,6" />
+            </svg>
+          </button>
+          {resolvedPainExpanded && (
+            <ul className="mt-2 space-y-1.5">
+              {displayPainPoints.map(
+                ({ id, text, index, status, severity }, i) => (
+                  <PainPointItem
+                    painId={id}
+                    key={id || index}
+                    order={i + 1}
+                    text={text}
+                    index={index}
+                    childStatus={
+                      typeof status === 'number' && !Number.isNaN(status)
+                        ? status
+                        : undefined
+                    }
+                    childSeverity={severity}
+                    fileKey={fileKey}
+                    stepId={stepId}
+                    legacyStepId={legacyStepId}
+                    legacyStepIds={legacyStepIds}
+                    parentPain={findParentPainForPain({ id, index })}
+                    historicalParentConfirmationMapByFileKey={
+                      taskParentConfirmationMapByFileKey
+                    }
+                    isLatestReport={isLatestReport}
+                    toolIds={pain_points_tool_nums?.[index]}
+                    onStepClick={onStepClick}
+                    highlightTaskId={linkTaskId}
+                    shouldAutoOpen={shouldAutoOpenForPainId(id)}
+                    onAutoOpenHandled={onPainFocusHandled}
+                    versionOptions={versionOptions}
+                    previewMode={previewMode}
+                  />
+                )
+              )}
+            </ul>
+          )}
         </div>
       )}
       {hasHistoryPain && (
@@ -2493,7 +2534,7 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
           <button
             type="button"
             className="mb-1 flex w-full items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-sky-600"
-            onClick={() => setObsExpanded((v) => !v)}
+            onClick={() => handleObsExpandedChange(!obsExpanded)}
           >
             <EvidenceIcon className="h-3 w-3" />
             总结

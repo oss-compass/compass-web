@@ -8,6 +8,11 @@ type JourneyTaskEvidenceCardProps = {
   cardIndex: number;
   fileKey?: string;
   stepId?: string;
+  cardId?: string;
+  summaryExpanded?: boolean;
+  onSummaryExpandedChange?: (expanded: boolean) => void;
+  painExpanded?: boolean;
+  onPainExpandedChange?: (expanded: boolean) => void;
   isLatestReport?: boolean;
   previewMode?: boolean;
   onStepClick?: (toolIds: string[], ctx?: { taskId?: string }) => void;
@@ -20,6 +25,11 @@ const JourneyTaskEvidenceCard: React.FC<JourneyTaskEvidenceCardProps> = ({
   cardIndex,
   fileKey,
   stepId,
+  cardId,
+  summaryExpanded,
+  onSummaryExpandedChange,
+  painExpanded,
+  onPainExpandedChange,
   isLatestReport = false,
   previewMode = false,
   onStepClick,
@@ -65,6 +75,7 @@ const JourneyTaskEvidenceCard: React.FC<JourneyTaskEvidenceCardProps> = ({
       cardIndex={cardIndex}
       title={group.displayName}
       description={group.description}
+      cardId={cardId}
       tabs={hideTabs ? [] : tabs}
       activeTabKey={activeVariant?.taskId}
       onTabChange={setActiveTaskId}
@@ -84,6 +95,10 @@ const JourneyTaskEvidenceCard: React.FC<JourneyTaskEvidenceCardProps> = ({
               Boolean
             ) as string[]
           }
+          summaryExpanded={summaryExpanded}
+          onSummaryExpandedChange={onSummaryExpandedChange}
+          painExpanded={painExpanded}
+          onPainExpandedChange={onPainExpandedChange}
           highlightTaskId={activeVariant?.taskId}
           onStepClick={onStepClick}
           isLatestReport={isLatestReport}
