@@ -178,7 +178,7 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
       onCancel={onClose}
       footer={null}
       width={1080}
-      destroyOnHidden
+      destroyOnClose
     >
       {!repo || !benchmark ? null : (
         <div className="benchmark-modal-body">

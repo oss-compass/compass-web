@@ -1223,7 +1223,7 @@ export const RollbackConfirmModal: React.FC<{
         ? `回退到${STATUS_LABELS[rollbackTarget] || rollbackTarget}`
         : '回退'
     }
-    destroyOnHidden
+    destroyOnClose
   >
     <div className="space-y-3">
       <div>

@@ -53,7 +53,7 @@ const PainEditModal: React.FC<PainEditModalProps> = ({
       }}
       title="编辑痛点"
       width={720}
-      destroyOnHidden
+      destroyOnClose
     >
       <div className="grid grid-cols-2 gap-3">
         <Input

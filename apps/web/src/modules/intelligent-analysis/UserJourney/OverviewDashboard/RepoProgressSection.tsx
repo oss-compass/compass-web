@@ -2373,7 +2373,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         open={rerunModal.open}
         title={rerunTargetRepo ? `${rerunTargetRepo.name} · 重跑` : '仓库重跑'}
         onCancel={closeRerunModal}
-        destroyOnHidden
+        destroyOnClose
         width={960}
         footer={
           operatorUser
@@ -2525,7 +2525,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             : '重跑记录'
         }
         onCancel={closeRerunRecordsModal}
-        destroyOnHidden
+        destroyOnClose
         footer={[
           <Button key="close" onClick={closeRerunRecordsModal}>
             关闭

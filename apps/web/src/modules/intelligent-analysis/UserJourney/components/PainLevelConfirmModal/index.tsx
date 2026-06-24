@@ -439,7 +439,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
           paddingRight: '8px',
         },
       }}
-      destroyOnHidden
+      destroyOnClose
       footer={
         useCustomFooter ? (
           <ModalFooter
