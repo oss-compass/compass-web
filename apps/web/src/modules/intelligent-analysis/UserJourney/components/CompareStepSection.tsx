@@ -31,7 +31,7 @@ const EmptyStepCard: React.FC<{ projectName: string }> = ({ projectName }) => {
     <Card
       bordered={false}
       className="h-full w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
-      bodyStyle={{ padding: 24 }}
+      styles={{ body: { padding: 24 } }}
     >
       <div className="text-xl font-semibold text-slate-900">开发旅程</div>
       <div className="mt-6 rounded-[28px] border border-dashed border-slate-200 bg-slate-50/80 px-6 py-12 text-center text-sm text-slate-500">

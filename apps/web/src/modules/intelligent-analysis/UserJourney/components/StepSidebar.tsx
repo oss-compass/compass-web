@@ -19,7 +19,7 @@ const StepSidebar: React.FC<StepSidebarProps> = ({
     <Card
       bordered={false}
       className="w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_20px_48px_rgba(15,23,42,0.08)]"
-      bodyStyle={{ padding: 16 }}
+      styles={{ body: { padding: 16 } }}
     >
       <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
         步骤名称

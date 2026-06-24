@@ -900,10 +900,12 @@ const GovernanceTabPanel: React.FC<{
         style={{ top: 20 }}
         footer={null}
         destroyOnClose
-        bodyStyle={{
-          maxHeight: 'calc(100vh - 140px)',
-          overflow: 'auto',
-          padding: 24,
+        styles={{
+          body: {
+            maxHeight: 'calc(100vh - 140px)',
+            overflow: 'auto',
+            padding: 24,
+          },
         }}
       >
         {tableModal?.type === 'organization' ? (
@@ -944,10 +946,12 @@ const GovernanceTabPanel: React.FC<{
         style={{ top: 20 }}
         footer={null}
         destroyOnClose
-        bodyStyle={{
-          padding: 0,
-          maxHeight: 'calc(100vh - 120px)',
-          overflow: 'auto',
+        styles={{
+          body: {
+            padding: 0,
+            maxHeight: 'calc(100vh - 120px)',
+            overflow: 'auto',
+          },
         }}
       >
         {selectedDetailUser ? (

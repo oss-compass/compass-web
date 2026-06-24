@@ -123,10 +123,12 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
         style={{ top: 20 }}
         footer={null}
         destroyOnClose
-        bodyStyle={{
-          padding: 0,
-          maxHeight: 'calc(100vh - 120px)',
-          overflow: 'auto',
+        styles={{
+          body: {
+            padding: 0,
+            maxHeight: 'calc(100vh - 120px)',
+            overflow: 'auto',
+          },
         }}
       >
         <DetailPage

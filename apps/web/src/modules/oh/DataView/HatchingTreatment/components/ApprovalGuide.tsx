@@ -125,7 +125,7 @@ const ApprovalGuide: React.FC<ApprovalGuideProps> = ({
         ]}
         width={1000}
         destroyOnClose
-        bodyStyle={{ maxHeight: '70vh', overflowY: 'auto', padding: '24px' }}
+        styles={{ body: { maxHeight: '70vh', overflowY: 'auto', padding: '24px' } }}
       >
         {/* 说明文字 */}
         <div className="mb-6 rounded-lg bg-blue-50 p-4">
