@@ -61,6 +61,11 @@ export type CompassOperatorLoginResponse = {
   user: CompassOperatorUser;
 };
 
+export type CompassOperatorChangePasswordResponse = {
+  message: string;
+  user: CompassOperatorUser;
+};
+
 const toStringArray = (value: unknown): string[] => {
   if (!Array.isArray(value)) return [];
   return value.map((item) => String(item || '').trim()).filter(Boolean);
@@ -230,6 +235,32 @@ export const fetchCompassOperatorMe = async (
     token
   );
   return normalizeCompassOperatorUser(user);
+};
+
+export const changeCompassOperatorPassword = async (
+  payload: {
+    current_password: string;
+    new_password: string;
+  },
+  token = getCompassOperatorToken()
+): Promise<CompassOperatorChangePasswordResponse> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  const result =
+    await compassApiAuthedFetch<CompassOperatorChangePasswordResponse>(
+      '/auth/change-password',
+      token,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
+  return {
+    ...result,
+    user: normalizeCompassOperatorUser(result.user),
+  };
 };
 
 export const triggerOverviewRepoRerun = async (

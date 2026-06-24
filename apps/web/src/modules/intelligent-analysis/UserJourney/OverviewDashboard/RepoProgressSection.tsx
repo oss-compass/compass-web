@@ -8,6 +8,8 @@ import React, {
 import {
   Button,
   Grid,
+  Input,
+  Modal,
   Segmented,
   Select,
   Table,
@@ -58,6 +60,7 @@ import type {
 } from './types';
 import {
   cancelOverviewRepoRerun,
+  changeCompassOperatorPassword,
   clearCompassOperatorToken,
   compassApiUrl,
   fetchCompassOperatorMe,
@@ -511,6 +514,15 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [cancelingRerunJobId, setCancelingRerunJobId] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [changePasswordSubmitting, setChangePasswordSubmitting] =
+    useState(false);
+  const [changePasswordError, setChangePasswordError] = useState('');
+  const [changePasswordForm, setChangePasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
   const [rerunModal, setRerunModal] = useState<{
     open: boolean;
     repo: RepoProgressRow | null;
@@ -687,12 +699,77 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     clearCompassOperatorToken();
     setOperatorUser(null);
     setLoginError('');
+    setChangePasswordModalOpen(false);
+    setChangePasswordError('');
+    setChangePasswordForm({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
     setRerunNodes([]);
     setRerunNodesError('');
     setRerunNodesLoading(false);
     setSelectedRerunNodeKey('');
     setLoginForm((prev) => ({ ...prev, password: '' }));
   }, []);
+
+  const closeChangePasswordModal = useCallback(() => {
+    setChangePasswordModalOpen(false);
+    setChangePasswordError('');
+    setChangePasswordForm({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+  }, []);
+
+  const handleChangePassword = useCallback(async () => {
+    if (!operatorUser) {
+      setChangePasswordError('请先登录后再修改密码');
+      return;
+    }
+    const currentPassword = changePasswordForm.currentPassword;
+    const newPassword = changePasswordForm.newPassword;
+    const confirmPassword = changePasswordForm.confirmPassword;
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setChangePasswordError('请完整填写当前密码、新密码和确认密码');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setChangePasswordError('两次输入的新密码不一致');
+      return;
+    }
+
+    setChangePasswordSubmitting(true);
+    setChangePasswordError('');
+    try {
+      const result = await changeCompassOperatorPassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
+      setOperatorUser(result.user);
+      messageApi.success(result.message || '密码修改成功');
+      closeChangePasswordModal();
+    } catch (error) {
+      const text =
+        error instanceof Error ? error.message : '修改密码失败，请稍后重试';
+      if (/token|未登录|过期/i.test(text)) {
+        clearCompassOperatorToken();
+        setOperatorUser(null);
+        setChangePasswordModalOpen(false);
+      }
+      setChangePasswordError(text);
+    } finally {
+      setChangePasswordSubmitting(false);
+    }
+  }, [
+    changePasswordForm.confirmPassword,
+    changePasswordForm.currentPassword,
+    changePasswordForm.newPassword,
+    closeChangePasswordModal,
+    messageApi,
+    operatorUser,
+  ]);
 
   useEffect(() => {
     const shouldLoadRerunNodes =
@@ -2506,6 +2583,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         onToggleRerunRecords={() => {
           setRerunRecordsExpanded((prev) => !prev);
         }}
+        onOpenChangePassword={() => {
+          setChangePasswordError('');
+          setChangePasswordModalOpen(true);
+        }}
         canCancelRecord={(record) =>
           !!operatorUser &&
           canCurrentUserOperate &&
@@ -2558,6 +2639,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         onLogin={() => {
           void handleOperatorLogin();
         }}
+        onOpenChangePassword={() => {
+          setChangePasswordError('');
+          setChangePasswordModalOpen(true);
+        }}
         canCancelRecord={(record) =>
           !!operatorUser &&
           canOperateRepo(operatorUser, rerunRecordsTargetRepo) &&
@@ -2568,6 +2653,66 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           void handleCancelRerunJob(rerunRecordsTargetRepo, record);
         }}
       />
+      <Modal
+        open={changePasswordModalOpen}
+        title="修改密码"
+        onCancel={closeChangePasswordModal}
+        destroyOnHidden
+        footer={[
+          <Button key="cancel" onClick={closeChangePasswordModal}>
+            取消
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={changePasswordSubmitting}
+            onClick={() => {
+              void handleChangePassword();
+            }}
+          >
+            确认修改
+          </Button>,
+        ]}
+      >
+        <div className="flex flex-col gap-3">
+          <Input.Password
+            value={changePasswordForm.currentPassword}
+            placeholder="请输入当前密码"
+            onChange={(event) =>
+              setChangePasswordForm((prev) => ({
+                ...prev,
+                currentPassword: event.target.value,
+              }))
+            }
+          />
+          <Input.Password
+            value={changePasswordForm.newPassword}
+            placeholder="请输入新密码"
+            onChange={(event) =>
+              setChangePasswordForm((prev) => ({
+                ...prev,
+                newPassword: event.target.value,
+              }))
+            }
+          />
+          <Input.Password
+            value={changePasswordForm.confirmPassword}
+            placeholder="请再次输入新密码"
+            onChange={(event) =>
+              setChangePasswordForm((prev) => ({
+                ...prev,
+                confirmPassword: event.target.value,
+              }))
+            }
+            onPressEnter={() => {
+              void handleChangePassword();
+            }}
+          />
+          {changePasswordError ? (
+            <div className="text-sm text-rose-600">{changePasswordError}</div>
+          ) : null}
+        </div>
+      </Modal>
     </>
   );
 };

@@ -311,6 +311,7 @@ type RepoRerunInfoCardProps = {
   operatorUser: CompassOperatorUser | null;
   canOperate: boolean;
   loginHint: string;
+  onOpenChangePassword?: () => void;
   nodeSectionTitle?: string;
   nodeStatuses?: DevxNodeStatus[];
   nodeStatusesLoading?: boolean;
@@ -326,6 +327,7 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
   operatorUser,
   canOperate,
   loginHint,
+  onOpenChangePassword,
   nodeSectionTitle = '节点状态',
   nodeStatuses = [],
   nodeStatusesLoading = false,
@@ -382,6 +384,16 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                     <Tag color={operatorUser.role === 'admin' ? 'red' : 'blue'}>
                       {operatorUser.role === 'admin' ? '管理员' : '仓库负责人'}
                     </Tag>
+                    {onOpenChangePassword ? (
+                      <Button
+                        size="small"
+                        type="link"
+                        className="!px-0"
+                        onClick={onOpenChangePassword}
+                      >
+                        修改密码
+                      </Button>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -412,8 +424,20 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
           ) : (
             <div className="space-y-3">
               <div className="text-sm font-medium text-slate-900">账户信息</div>
-              <div className="h-full rounded-lg bg-amber-50 px-3 py-2.5 text-sm leading-6 text-amber-700">
-                {loginHint}
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start gap-3">
+                  <div className="w-16 shrink-0 text-slate-500">当前账号</div>
+                  <div className="min-w-0 flex-1 text-slate-400">未登录</div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-16 shrink-0 text-slate-500">负责仓库</div>
+                  <div className="min-w-0 flex-1 text-slate-400">
+                    登录后可查看
+                  </div>
+                </div>
+                <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+                  {loginHint || '请先登录操作账号'}
+                </div>
               </div>
             </div>
           )}
@@ -562,6 +586,7 @@ type RepoRerunModalProps = {
   onSelectNode?: (nodeKey: string, node: DevxNodeStatus) => void;
   rerunRecordsExpanded: boolean;
   onToggleRerunRecords: () => void;
+  onOpenChangePassword?: () => void;
 };
 
 export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
@@ -596,6 +621,7 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
   onSelectNode,
   rerunRecordsExpanded,
   onToggleRerunRecords,
+  onOpenChangePassword,
 }) => (
   <Modal
     open={open}
@@ -650,6 +676,7 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
         operatorUser={operatorUser}
         canOperate={canCurrentUserOperate}
         loginHint=""
+        onOpenChangePassword={onOpenChangePassword}
         nodeSectionTitle="选择节点"
         nodeStatuses={nodeStatuses}
         nodeStatusesLoading={nodeStatusesLoading}
@@ -751,6 +778,7 @@ type RepoRerunRecordsModalProps = {
   onLogin: () => void;
   onCancelRecord: (record: RepoRerunJob) => void;
   canCancelRecord: (record: RepoRerunJob) => boolean;
+  onOpenChangePassword?: () => void;
 };
 
 export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
@@ -780,6 +808,7 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
   onLogin,
   onCancelRecord,
   canCancelRecord,
+  onOpenChangePassword,
 }) => (
   <Modal
     open={open}
@@ -819,6 +848,7 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
         operatorUser={operatorUser}
         canOperate={canCurrentUserOperate}
         loginHint="如需撤销任务，请先登录操作账号"
+        onOpenChangePassword={onOpenChangePassword}
         nodeSectionTitle="节点状态"
         nodeStatuses={nodeStatuses}
         nodeStatusesLoading={nodeStatusesLoading}
