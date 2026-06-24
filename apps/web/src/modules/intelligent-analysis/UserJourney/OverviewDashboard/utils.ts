@@ -47,7 +47,7 @@ export const normalizeHardwareEnv = (value: unknown): string => {
   if (!text) return '';
   const normalized = text.toLowerCase();
   if (normalized === 'ascend 910c' || normalized === '910c') {
-    return '910C';
+    return 'ascend-910c';
   }
   return text;
 };
