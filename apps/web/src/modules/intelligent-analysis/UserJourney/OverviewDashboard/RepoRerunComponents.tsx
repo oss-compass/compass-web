@@ -158,6 +158,53 @@ type RerunRecordsTableProps = {
   onCancelRecord?: (record: RepoRerunJob) => void;
 };
 
+type RerunActionButtonProps = {
+  job?: RepoRerunJob | null;
+  loading?: boolean;
+  onOpenRerun: () => void;
+  onOpenRecords: () => void;
+};
+
+export const RerunActionButton: React.FC<RerunActionButtonProps> = ({
+  job,
+  loading = false,
+  onOpenRerun,
+  onOpenRecords,
+}) => {
+  const meta = getRerunStatusMeta(
+    job?.status,
+    job?.generated_report_review_status
+  );
+  const active = isActiveRerunJob(job);
+  const reviewPending =
+    String(job?.status || '')
+      .trim()
+      .toLowerCase() === 'completed' && meta.label === '报告审核中';
+  const buttonText = active ? meta.label : reviewPending ? '审核中' : '重跑';
+  const buttonIcon = active || reviewPending ? meta.icon : <SyncOutlined />;
+
+  return (
+    <Button
+      type="link"
+      size="small"
+      className="!px-0"
+      loading={loading}
+      onClick={() => {
+        if (active) {
+          onOpenRecords();
+          return;
+        }
+        onOpenRerun();
+      }}
+    >
+      <span className="inline-flex items-center gap-1">
+        {buttonIcon}
+        <span>{buttonText}</span>
+      </span>
+    </Button>
+  );
+};
+
 export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
   records,
   loading = false,

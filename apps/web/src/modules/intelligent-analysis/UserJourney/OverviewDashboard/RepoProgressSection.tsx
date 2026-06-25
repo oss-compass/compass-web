@@ -17,18 +17,13 @@ import {
   Typography,
   message,
 } from 'antd';
-import {
-  CheckOutlined,
-  FilterFilled,
-  RightOutlined,
-  SyncOutlined,
-} from '@ant-design/icons';
+import { CheckOutlined, FilterFilled, RightOutlined } from '@ant-design/icons';
 import type { TableProps } from 'antd';
 import { SEVERITY_CFG } from './constants';
 import {
   getDevxNodeKey,
-  getRerunStatusMeta,
   isActiveRerunJob,
+  RerunActionButton,
   RepoRerunModal,
   RepoRerunRecordsModal,
 } from './RepoRerunComponents';
@@ -1260,40 +1255,17 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const renderRerunAction = useCallback(
     (record: RepoProgressRow) => {
       const job = rerunStatusMap[record.id];
-      const meta = getRerunStatusMeta(
-        job?.status,
-        job?.generated_report_review_status
-      );
-      const active = isActiveRerunJob(job);
-      const reviewPending =
-        String(job?.status || '')
-          .trim()
-          .toLowerCase() === 'completed' && meta.label === '报告审核中';
-      const buttonText = active
-        ? meta.label
-        : reviewPending
-        ? '审核中'
-        : '重跑';
-      const buttonIcon = active || reviewPending ? meta.icon : <SyncOutlined />;
       return (
-        <Button
-          type="link"
-          size="small"
-          className="!px-0"
+        <RerunActionButton
+          job={job}
           loading={rerunStatusLoading && !job}
-          onClick={() => {
-            if (active) {
-              void openRerunRecordsModal(record);
-              return;
-            }
+          onOpenRecords={() => {
+            void openRerunRecordsModal(record);
+          }}
+          onOpenRerun={() => {
             void openRerunModal(record);
           }}
-        >
-          <span className="inline-flex items-center gap-1">
-            {buttonIcon}
-            <span>{buttonText}</span>
-          </span>
-        </Button>
+        />
       );
     },
     [openRerunModal, openRerunRecordsModal, rerunStatusLoading, rerunStatusMap]
@@ -2208,16 +2180,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   </td>
                   {showActionColumn ? (
                     <td className="overview-expanded-cell">
-                      <Button
-                        type="link"
-                        size="small"
-                        className="!px-0"
-                        onClick={() => {
+                      <RerunActionButton
+                        job={rerunStatusMap[repo.id]}
+                        loading={rerunStatusLoading && !rerunStatusMap[repo.id]}
+                        onOpenRecords={() => {
+                          void openRerunRecordsModal(repo);
+                        }}
+                        onOpenRerun={() => {
                           void openRerunModal(repo);
                         }}
-                      >
-                        重跑
-                      </Button>
+                      />
                     </td>
                   ) : null}
                 </tr>
@@ -2240,6 +2212,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       teamSortKey,
       teamSortAsc,
       openRerunModal,
+      openRerunRecordsModal,
+      rerunStatusLoading,
+      rerunStatusMap,
     ]
   );
 
