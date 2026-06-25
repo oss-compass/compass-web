@@ -197,7 +197,7 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
             <Alert
               type="info"
               showIcon
-              message="已配置对标仓库，但暂未查询到竞品最新报告，已保留能力对标入口。"
+              message="已配置对标仓库，但暂未查询到竞品最新报告。"
             />
           ) : null}
           <CapabilityBenchmarkChartCard
