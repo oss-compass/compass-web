@@ -110,6 +110,15 @@ const normalizeLogStatus = (s: string | undefined): ActionStatus => {
   return 'neutral';
 };
 
+const formatArgValue = (value: unknown) => {
+  if (typeof value === 'string') return value;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+};
+
 /* ─── Task 状态徽章 ─── */
 const TaskStatusBadge: React.FC<{ status?: ActionStatus }> = ({ status }) => {
   if (!status) return null;
@@ -397,15 +406,15 @@ const LogCommandsTable: React.FC<{
   return (
     <>
       <div className="overflow-x-auto">
-        <table className="w-full table-fixed">
+        <table className="w-full min-w-[760px] table-fixed">
           <colgroup>
-            <col style={{ width: '20px' }} />
-            <col style={{ minWidth: '82px' }} />
-            <col style={{ width: '136px' }} />
+            <col style={{ width: '36px' }} />
+            <col style={{ width: 'clamp(88px, 14vw, 112px)' }} />
+            <col style={{ width: 'clamp(120px, 22vw, 180px)' }} />
             <col />
-            <col style={{ width: '80px' }} />
             <col style={{ width: '72px' }} />
-            <col style={{ width: '68px' }} />
+            <col style={{ width: '76px' }} />
+            <col style={{ width: '72px' }} />
           </colgroup>
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/60">
@@ -414,7 +423,7 @@ const LogCommandsTable: React.FC<{
               </th>
               <th
                 className="whitespace-nowrap px-4 py-2.5 text-left text-sm font-semibold text-slate-700"
-                style={{ minWidth: 82 }}
+                style={{ width: 'clamp(88px, 14vw, 112px)' }}
               >
                 工具名称
               </th>
@@ -462,15 +471,20 @@ const LogCommandsTable: React.FC<{
 
               // 参数格式化（简短展示）
               let argsDisplay = '';
+              let argsEntries: Array<{ key: string; value: string }> = [];
               if (cmd.args && cmd.args !== '{}') {
                 try {
                   const parsed = JSON.parse(cmd.args) as Record<
                     string,
                     unknown
                   >;
-                  argsDisplay = Object.entries(parsed)
-                    .map(([k, v]) => `${k}: ${String(v)}`)
-                    .join(' · ');
+                  argsEntries = Object.entries(parsed).map(([k, v]) => ({
+                    key: k,
+                    value: formatArgValue(v),
+                  }));
+                  argsDisplay = argsEntries
+                    .map(({ key, value }) => `${key}: ${value}`)
+                    .join('\n');
                 } catch {
                   argsDisplay = cmd.args;
                 }
@@ -493,10 +507,10 @@ const LogCommandsTable: React.FC<{
                   {/* 工具名 */}
                   <td
                     className="overflow-hidden px-4 py-3.5 align-top"
-                    style={{ minWidth: 82 }}
+                    style={{ width: 'clamp(88px, 14vw, 112px)' }}
                   >
                     <Tooltip title={cmd.name}>
-                      <code className="inline-block max-w-full truncate rounded bg-slate-100 px-1.5 py-0.5 align-top font-mono text-xs text-slate-700">
+                      <code className="block w-full overflow-hidden truncate whitespace-nowrap rounded bg-slate-100 px-1.5 py-0.5 align-top font-mono text-xs text-slate-700">
                         {cmd.name}
                       </code>
                     </Tooltip>
@@ -505,12 +519,47 @@ const LogCommandsTable: React.FC<{
                   <td className="px-4 py-3.5 align-top text-xs text-slate-500">
                     {argsDisplay ? (
                       <Tooltip
-                        title={argsDisplay}
+                        title={
+                          argsEntries.length ? (
+                            <div className="max-w-[560px] space-y-1 overflow-x-auto">
+                              {argsEntries.map(({ key, value }) => (
+                                <div key={key} className="whitespace-nowrap">
+                                  <span className="font-medium text-slate-200">
+                                    {key}
+                                  </span>
+                                  {': '}
+                                  <span>{value}</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            argsDisplay
+                          )
+                        }
                         styles={{ root: { maxWidth: 400 } }}
                       >
-                        <span className="line-clamp-2 cursor-default break-all">
-                          {argsDisplay}
-                        </span>
+                        {argsEntries.length ? (
+                          <div className="cursor-default space-y-1">
+                            {argsEntries.map(({ key, value }) => (
+                              <div
+                                key={key}
+                                className="flex items-start gap-1 overflow-hidden whitespace-nowrap"
+                              >
+                                <span className="shrink-0 font-medium text-slate-600">
+                                  {key}
+                                </span>
+                                <span className="shrink-0">:</span>
+                                <span className="min-w-0 truncate">
+                                  {value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="line-clamp-2 cursor-default break-words [word-break:break-word]">
+                            {argsDisplay}
+                          </span>
+                        )}
                       </Tooltip>
                     ) : (
                       <span className="text-slate-300">—</span>
@@ -557,10 +606,12 @@ const LogCommandsTable: React.FC<{
                       <button
                         type="button"
                         onClick={() => setModalCmd(cmd)}
-                        className="inline-flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-500 transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600"
+                        aria-label="查看详情"
+                        title="查看详情"
+                        className="inline-flex items-center justify-center gap-1 rounded border border-slate-200 bg-white px-1.5 py-1 text-[11px] font-medium text-slate-500 transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 lg:px-2"
                       >
                         <LogIcon className="h-3 w-3" />
-                        详情
+                        <span className="hidden lg:inline">详情</span>
                       </button>
                     ) : (
                       <span className="text-xs text-slate-300">—</span>
