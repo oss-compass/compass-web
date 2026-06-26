@@ -7,7 +7,7 @@ const useCheckRiskState = (shortCode, mertic) => {
   const riskFill = useMemo(() => {
     if (metricState && metricState.length > 0) {
       const leaderState = metricState.filter((item) => item.memberType === 1);
-      const commiterState = metricState.filter((item) => item.memberType === 0);
+      const committerState = metricState.filter((item) => item.memberType === 0);
       const legalState = metricState.filter((item) => item.memberType === 2);
       const complianceState = metricState.filter(
         (item) => item.memberType === 3
@@ -17,7 +17,7 @@ const useCheckRiskState = (shortCode, mertic) => {
       } else {
         return (
           leaderState.length > 0 &&
-          commiterState.length > 0 &&
+          committerState.length > 0 &&
           complianceState.length > 0
         );
       }

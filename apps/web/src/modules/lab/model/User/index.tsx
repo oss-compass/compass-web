@@ -33,10 +33,10 @@ const UserManage = () => {
   const items = data?.memberOverview?.items || [];
   const name = data?.memberOverview.model.name;
 
-  const myPermisssion = useMyMemberPermissionQuery(gqlClient, {
+  const myPermissions = useMyMemberPermissionQuery(gqlClient, {
     modelId,
   });
-  const permission = myPermisssion.data?.myMemberPermission;
+  const permission = myPermissions.data?.myMemberPermission;
 
   const inviteUsers = useRef(null);
   const event$ = useEventEmitter<string>();

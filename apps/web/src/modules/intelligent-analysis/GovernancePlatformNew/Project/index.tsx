@@ -890,7 +890,7 @@ const GovernanceTabPanel: React.FC<{
       <div className="mb-6 mt-4 flex items-center gap-2 text-xl font-semibold text-gray-900">
         <span>{techStackName} - 仓库贡献排名</span>
       </div>
-      <RepoTable projectType={projectType} shwoTitle={false} />
+      <RepoTable projectType={projectType} showTitle={false} />
 
       <Modal
         title={tableModal?.title}

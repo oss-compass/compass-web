@@ -70,7 +70,7 @@ const ArchiveDownload = ({ category = 'insight' }) => {
       <DataSourceSelector
         defaultValue={apiBaseUrl}
         onChange={(value) => setBaseUrl(value)}
-        hideenCompass={true}
+        hiddenCompass={true}
       />
       <DateSelect onChange={setSelectedDate} />
       <div className="overflow-x-auto">
