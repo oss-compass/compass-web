@@ -478,13 +478,13 @@ const LogCommandsTable: React.FC<{
                     string,
                     unknown
                   >;
-                  argsEntries = Object.entries(parsed).map(([k, v]) => ({
-                    key: k,
-                    value: formatArgValue(v),
+                  argsEntries = Object.entries(parsed).map(([key, value]) => ({
+                    key,
+                    value: formatArgValue(value),
                   }));
                   argsDisplay = argsEntries
                     .map(({ key, value }) => `${key}: ${value}`)
-                    .join('\n');
+                    .join('；');
                 } catch {
                   argsDisplay = cmd.args;
                 }
@@ -520,23 +520,11 @@ const LogCommandsTable: React.FC<{
                     {argsDisplay ? (
                       <Tooltip
                         title={
-                          argsEntries.length ? (
-                            <div className="max-w-[560px] space-y-1 overflow-x-auto">
-                              {argsEntries.map(({ key, value }) => (
-                                <div key={key} className="whitespace-nowrap">
-                                  <span className="font-medium text-slate-200">
-                                    {key}
-                                  </span>
-                                  {': '}
-                                  <span>{value}</span>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            argsDisplay
-                          )
+                          <div className="max-w-[560px] whitespace-normal break-words leading-relaxed [word-break:break-word]">
+                            {argsDisplay}
+                          </div>
                         }
-                        styles={{ root: { maxWidth: 400 } }}
+                        styles={{ root: { maxWidth: 600 } }}
                       >
                         {argsEntries.length ? (
                           <div className="cursor-default space-y-1">
@@ -556,7 +544,7 @@ const LogCommandsTable: React.FC<{
                             ))}
                           </div>
                         ) : (
-                          <span className="line-clamp-2 cursor-default break-words [word-break:break-word]">
+                          <span className="line-clamp-2 cursor-default break-words leading-relaxed [word-break:break-word]">
                             {argsDisplay}
                           </span>
                         )}

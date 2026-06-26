@@ -114,6 +114,8 @@ const normalizeRepoId = (value: unknown) =>
 const isBeatRepo = (value: unknown) =>
   BEAT_REPO_IDS.has(normalizeRepoId(value));
 
+const supportsRepoRerun = (value: unknown) => !isBeatRepo(value);
+
 const getPreferredRerunNodeKey = (nodes: DevxNodeStatus[]) => {
   const preferredIndex = nodes.findIndex(
     (node) => normalizeHardwareEnv(node.hardware) === 'ascend-910c'
@@ -1254,6 +1256,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
 
   const renderRerunAction = useCallback(
     (record: RepoProgressRow) => {
+      if (!supportsRepoRerun(record.id)) {
+        return <span className="text-slate-400">-</span>;
+      }
       const job = rerunStatusMap[record.id];
       return (
         <RerunActionButton
@@ -2180,16 +2185,22 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                   </td>
                   {showActionColumn ? (
                     <td className="overview-expanded-cell">
-                      <RerunActionButton
-                        job={rerunStatusMap[repo.id]}
-                        loading={rerunStatusLoading && !rerunStatusMap[repo.id]}
-                        onOpenRecords={() => {
-                          void openRerunRecordsModal(repo);
-                        }}
-                        onOpenRerun={() => {
-                          void openRerunModal(repo);
-                        }}
-                      />
+                      {supportsRepoRerun(repo.id) ? (
+                        <RerunActionButton
+                          job={rerunStatusMap[repo.id]}
+                          loading={
+                            rerunStatusLoading && !rerunStatusMap[repo.id]
+                          }
+                          onOpenRecords={() => {
+                            void openRerunRecordsModal(repo);
+                          }}
+                          onOpenRerun={() => {
+                            void openRerunModal(repo);
+                          }}
+                        />
+                      ) : (
+                        <span className="text-slate-400">-</span>
+                      )}
                     </td>
                   ) : null}
                 </tr>
