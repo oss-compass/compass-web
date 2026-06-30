@@ -2,6 +2,7 @@
   "extends": "tsconfig/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "paths": {
       "@oss-compass/graphql": ["../../packages/graphql/src/index"],

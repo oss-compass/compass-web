@@ -693,6 +693,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         />
 
         <RepoProgressSection
+          captureMode={captureMode}
           progressView={progressView}
           onProgressViewChange={setProgressView}
           currentTab={currentTab}

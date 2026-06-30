@@ -66,6 +66,55 @@ export type CompassOperatorChangePasswordResponse = {
   user: CompassOperatorUser;
 };
 
+export type RepoManagementItem = {
+  id: string;
+  seq_no: number;
+  repo_name: string;
+  community_name?: string;
+  project_key: string;
+  owner: string | string[];
+  owner_email: string | string[];
+  team_no?: number | null;
+  team_name: string;
+  hardware_env: string;
+  hardware_envs?: string[];
+  benchmark_repo_name: string;
+  benchmark_project_key: string;
+  overview_enabled?: boolean;
+  latest_report_id?: string;
+  latestReportId?: string;
+  latest_report_detail_url?: string;
+  latestReportDetailUrl?: string;
+  remark: string;
+  updated_at?: string | null;
+  updated_by?: string | null;
+};
+
+export type RepoManagementListResponse = {
+  total: number;
+  page: number;
+  size: number;
+  items: RepoManagementItem[];
+  team_options?: string[];
+  owner_options?: string[];
+  hardware_options?: string[];
+  all_team_options?: string[];
+  all_hardware_options?: string[];
+  all_owner_options?: Array<{ name: string; email?: string }>;
+};
+
+export type RepoManagementRegisterOption = {
+  value: string;
+  label: string;
+  repo_name?: string;
+  community_name?: string;
+};
+
+export type RepoManagementRegisterOptionsResponse = {
+  total: number;
+  items: RepoManagementRegisterOption[];
+};
+
 const toStringArray = (value: unknown): string[] => {
   if (!Array.isArray(value)) return [];
   return value.map((item) => String(item || '').trim()).filter(Boolean);
@@ -224,6 +273,42 @@ export const loginCompassOperator = async (payload: {
   };
 };
 
+export const registerCompassOperator = async (payload: {
+  username: string;
+  password: string;
+  repo_keys: string[];
+  repo_names: string[];
+}): Promise<CompassOperatorLoginResponse> => {
+  const url = compassApiUrl('/auth/register');
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error((errBody as { detail?: string }).detail || '注册失败');
+  }
+  const data = (await res.json()) as CompassOperatorLoginResponse;
+  return {
+    ...data,
+    user: normalizeCompassOperatorUser(data.user),
+  };
+};
+
+export const fetchRepoManagementRegisterOptions =
+  async (): Promise<RepoManagementRegisterOptionsResponse> => {
+    const url = compassApiUrl('/auth/register-repo-options');
+    const res = await fetch(url);
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(
+        (errBody as { detail?: string }).detail || '获取负责仓库列表失败'
+      );
+    }
+    return (await res.json()) as RepoManagementRegisterOptionsResponse;
+  };
+
 export const fetchCompassOperatorMe = async (
   token = getCompassOperatorToken()
 ): Promise<CompassOperatorUser> => {
@@ -261,6 +346,78 @@ export const changeCompassOperatorPassword = async (
     ...result,
     user: normalizeCompassOperatorUser(result.user),
   };
+};
+
+export const fetchRepoManagementRepos = async (
+  params: {
+    keyword?: string;
+    teamName?: string;
+    owner?: string;
+    hardwareEnv?: string;
+    page?: number;
+    size?: number;
+  },
+  token = getCompassOperatorToken()
+): Promise<RepoManagementListResponse> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  const search = new URLSearchParams();
+  if (params.keyword) search.set('keyword', params.keyword);
+  if (params.teamName) search.set('team_name', params.teamName);
+  if (params.owner) search.set('owner', params.owner);
+  if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
+  search.set('page', String(params.page ?? 1));
+  search.set('size', String(params.size ?? 20));
+  return compassApiAuthedFetch<RepoManagementListResponse>(
+    `/repo-management/repos?${search.toString()}`,
+    token
+  );
+};
+
+export const upsertRepoManagementRepo = async (
+  payload: {
+    repo_name: string;
+    community_name?: string;
+    owner?: string | string[];
+    owner_email?: string | string[];
+    team_no?: number | null;
+    team_name?: string;
+    hardware_env?: string;
+    hardware_envs?: string[];
+    benchmark_repo_name?: string;
+    overview_enabled?: boolean;
+    remark?: string;
+  },
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: RepoManagementItem }> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  return compassApiAuthedFetch<{ message: string; data: RepoManagementItem }>(
+    '/repo-management/repos',
+    token,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }
+  );
+};
+
+export const deleteRepoManagementRepo = async (
+  repoName: string,
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: { repo_name: string } }> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  return compassApiAuthedFetch<{
+    message: string;
+    data: { repo_name: string };
+  }>(`/repo-management/repos/${encodeURIComponent(repoName)}`, token, {
+    method: 'DELETE',
+  });
 };
 
 export const triggerOverviewRepoRerun = async (

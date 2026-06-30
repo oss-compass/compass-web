@@ -613,17 +613,9 @@ type RepoRerunModalProps = {
   cancelingJobId: string;
   shouldShowRerunRecordsTable: boolean;
   rerunning: boolean;
-  authSubmitting: boolean;
-  authChecking: boolean;
-  loginError: string;
-  loginUsername: string;
-  loginPassword: string;
-  onLoginUsernameChange: (value: string) => void;
-  onLoginPasswordChange: (value: string) => void;
   onCancel: () => void;
-  onLogout: () => void;
+  onSwitchAccount: () => void;
   onConfirmRerun: () => void;
-  onLogin: () => void;
   onCancelRecord: (record: RepoRerunJob) => void;
   canCancelRecord: (record: RepoRerunJob) => boolean;
   nodeStatuses?: DevxNodeStatus[];
@@ -648,17 +640,9 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
   cancelingJobId,
   shouldShowRerunRecordsTable,
   rerunning,
-  authSubmitting,
-  authChecking,
-  loginError,
-  loginUsername,
-  loginPassword,
-  onLoginUsernameChange,
-  onLoginPasswordChange,
   onCancel,
-  onLogout,
+  onSwitchAccount,
   onConfirmRerun,
-  onLogin,
   onCancelRecord,
   canCancelRecord,
   nodeStatuses,
@@ -676,45 +660,29 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
     onCancel={onCancel}
     destroyOnHidden
     width="80vw"
-    footer={
-      operatorUser
-        ? [
-            <Button key="logout" onClick={onLogout}>
-              切换账号
-            </Button>,
-            <Button key="cancel" onClick={onCancel}>
-              取消
-            </Button>,
-            <Tooltip
-              key="submit"
-              title={!canCurrentUserOperate ? '当前账号无权操作该仓库！' : ''}
-            >
-              <span className="inline-flex">
-                <Button
-                  type="primary"
-                  loading={rerunning}
-                  disabled={!canCurrentUserOperate}
-                  onClick={onConfirmRerun}
-                >
-                  确认重跑
-                </Button>
-              </span>
-            </Tooltip>,
-          ]
-        : [
-            <Button key="cancel" onClick={onCancel}>
-              取消
-            </Button>,
-            <Button
-              key="login"
-              type="primary"
-              loading={authSubmitting}
-              onClick={onLogin}
-            >
-              登录并继续
-            </Button>,
-          ]
-    }
+    footer={[
+      <Button key="switch" onClick={onSwitchAccount}>
+        切换账号
+      </Button>,
+      <Button key="cancel" onClick={onCancel}>
+        取消
+      </Button>,
+      <Tooltip
+        key="submit"
+        title={!canCurrentUserOperate ? '当前账号无权操作该仓库！' : ''}
+      >
+        <span className="inline-flex">
+          <Button
+            type="primary"
+            loading={rerunning}
+            disabled={!canCurrentUserOperate}
+            onClick={onConfirmRerun}
+          >
+            确认重跑
+          </Button>
+        </span>
+      </Tooltip>,
+    ]}
   >
     <div className="flex flex-col gap-4">
       <RepoRerunInfoCard
@@ -767,33 +735,6 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
           ) : null}
         </div>
       ) : null}
-
-      {!operatorUser ? (
-        <>
-          <Alert type="warning" showIcon message="请先登录操作账号" />
-          <Input
-            value={loginUsername}
-            placeholder="请输入账号"
-            onChange={(event) => {
-              onLoginUsernameChange(event.target.value);
-            }}
-          />
-          <Input.Password
-            value={loginPassword}
-            placeholder="请输入密码"
-            onChange={(event) => {
-              onLoginPasswordChange(event.target.value);
-            }}
-            onPressEnter={onLogin}
-          />
-        </>
-      ) : null}
-
-      {authChecking ? (
-        <div className="text-sm text-slate-500">正在校验当前登录状态...</div>
-      ) : null}
-
-      {loginError ? <Alert type="error" showIcon message={loginError} /> : null}
     </div>
   </Modal>
 );

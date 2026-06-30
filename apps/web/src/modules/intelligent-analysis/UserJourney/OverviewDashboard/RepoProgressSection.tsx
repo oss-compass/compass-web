@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useRouter } from 'next/router';
 import {
   Button,
   Grid,
@@ -62,8 +63,10 @@ import {
   fetchOverviewRepoRerunRecords,
   fetchOverviewRerunNodes,
   fetchOverviewRepoRerunStatuses,
+  fetchRepoManagementRegisterOptions,
   getCompassOperatorToken,
   loginCompassOperator,
+  registerCompassOperator,
   setCompassOperatorToken,
   triggerOverviewRepoRerun,
 } from '../rawData/apiClient';
@@ -72,6 +75,9 @@ import type {
   DevxNodeStatus,
   RepoRerunJob,
 } from '../rawData/apiClient';
+import OperatorAccessModal, {
+  type OperatorRegisterValues,
+} from './OperatorAccessModal';
 import {
   buildMetricSummaryFromPainRows,
   compareTeamNames,
@@ -317,6 +323,7 @@ const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
 };
 
 type RepoProgressSectionProps = {
+  captureMode?: boolean;
   progressView: ProgressView;
   onProgressViewChange: (view: ProgressView) => void;
   currentTab: ProgressTab;
@@ -356,6 +363,7 @@ type RepoProgressSectionProps = {
 };
 
 const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
+  captureMode,
   progressView,
   onProgressViewChange,
   currentTab,
@@ -387,6 +395,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   onOpenRepoIssues,
   onOpenTeamIssues,
 }) => {
+  const router = useRouter();
   const screens = Grid.useBreakpoint();
   const isCompactTable = !screens.xl;
   const showActionColumn = true;
@@ -555,6 +564,46 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     open: false,
     repo: null,
   });
+  const [repoManagementAccessModal, setRepoManagementAccessModal] = useState<{
+    open: boolean;
+    repo: RepoProgressRow | null;
+  }>({
+    open: false,
+    repo: null,
+  });
+  const [rerunAccessModal, setRerunAccessModal] = useState<{
+    open: boolean;
+    repo: RepoProgressRow | null;
+  }>({
+    open: false,
+    repo: null,
+  });
+  const [registerRepoOptions, setRegisterRepoOptions] = useState<
+    Array<{ value: string; label: string }>
+  >([]);
+
+  useEffect(() => {
+    let alive = true;
+    fetchRepoManagementRegisterOptions()
+      .then((result) => {
+        if (!alive) return;
+        setRegisterRepoOptions(
+          (result.items || []).map((item) => ({
+            value: item.value,
+            label: item.label,
+          }))
+        );
+      })
+      .catch(() => {
+        if (alive) setRegisterRepoOptions([]);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  const effectiveRegisterRepoOptions = registerRepoOptions.length
+    ? registerRepoOptions
+    : repoOptions;
 
   const loadOperatorUser = useCallback(async () => {
     const token = getCompassOperatorToken();
@@ -644,10 +693,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     []
   );
 
-  const openRerunModal = useCallback(
-    async (row: RepoProgressRow) => {
+  const prepareRerunModal = useCallback(
+    (row: RepoProgressRow) => {
       const currentJob = rerunStatusMap[row.id];
-      setLoginError('');
       if (currentJob) {
         setRerunRecords([currentJob]);
         setRerunRecordsLoading(false);
@@ -660,11 +708,27 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       setRerunRecordsExpanded(false);
       setRerunModal({ open: true, repo: row });
       void loadRerunRecords(row.id, { silent: !!currentJob });
-      if (getCompassOperatorToken() && !operatorUser) {
-        await loadOperatorUser();
-      }
     },
-    [loadOperatorUser, loadRerunRecords, operatorUser, rerunStatusMap]
+    [loadRerunRecords, rerunStatusMap]
+  );
+
+  const openRerunModal = useCallback(
+    async (row: RepoProgressRow) => {
+      setLoginError('');
+      if (getCompassOperatorToken() && !operatorUser) {
+        const nextUser = await loadOperatorUser();
+        if (nextUser) {
+          prepareRerunModal(row);
+          return;
+        }
+      }
+      if (!operatorUser) {
+        setRerunAccessModal({ open: true, repo: row });
+        return;
+      }
+      prepareRerunModal(row);
+    },
+    [loadOperatorUser, operatorUser, prepareRerunModal]
   );
 
   const handleOperatorLogin = useCallback(async () => {
@@ -672,7 +736,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     const password = loginForm.password;
     if (!username || !password) {
       setLoginError('请输入账号和密码');
-      return;
+      return null;
     }
 
     setAuthSubmitting(true);
@@ -683,6 +747,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       setOperatorUser(result.user);
       setLoginForm((prev) => ({ ...prev, password: '' }));
       messageApi.success(`已登录为 ${result.user.display_name}`);
+      return result.user;
     } catch (error) {
       setLoginError(
         error instanceof Error ? error.message : '登录失败，请稍后重试'
@@ -691,6 +756,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       setAuthSubmitting(false);
     }
   }, [loginForm.password, loginForm.username, messageApi]);
+
+  const getRegisterRepoNames = useCallback(
+    (repoKeys: string[]) => {
+      const labelMap = new Map(
+        effectiveRegisterRepoOptions.map((item) => [item.value, item.label])
+      );
+      return repoKeys.map((key) => labelMap.get(key) || key);
+    },
+    [effectiveRegisterRepoOptions]
+  );
 
   const handleOperatorLogout = useCallback(() => {
     clearCompassOperatorToken();
@@ -709,6 +784,150 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     setSelectedRerunNodeKey('');
     setLoginForm((prev) => ({ ...prev, password: '' }));
   }, []);
+
+  const getRepoManagementHref = useCallback(
+    (row: RepoProgressRow | null) => {
+      const path =
+        typeof org === 'string' && org
+          ? `/intelligent-analysis/${encodeURIComponent(
+              org
+            )}/community-experience/repo-management`
+          : '/intelligent-analysis/community-experience/repo-management';
+      const repoName = String(row?.name || '').trim();
+      if (!repoName) return path;
+      return `${path}?repo=${encodeURIComponent(repoName)}`;
+    },
+    [org]
+  );
+
+  const openRepoManagementAccess = useCallback(
+    async (row: RepoProgressRow | null) => {
+      setLoginError('');
+      const href = getRepoManagementHref(row);
+      if (operatorUser) {
+        await router.push(href);
+        return;
+      }
+
+      if (getCompassOperatorToken()) {
+        const nextUser = await loadOperatorUser();
+        if (nextUser) {
+          await router.push(href);
+          return;
+        }
+      }
+
+      setRepoManagementAccessModal({ open: true, repo: row });
+    },
+    [getRepoManagementHref, loadOperatorUser, operatorUser, router]
+  );
+
+  const closeRepoManagementAccess = useCallback(() => {
+    setRepoManagementAccessModal({ open: false, repo: null });
+    setLoginError('');
+    setLoginForm((prev) => ({ ...prev, password: '' }));
+  }, []);
+
+  const closeRerunAccess = useCallback(() => {
+    setRerunAccessModal({ open: false, repo: null });
+    setLoginError('');
+    setLoginForm((prev) => ({ ...prev, password: '' }));
+  }, []);
+
+  const handleEnterRepoManagement = useCallback(async () => {
+    const nextUser = operatorUser ?? (await handleOperatorLogin());
+    if (!nextUser) return;
+    const href = getRepoManagementHref(repoManagementAccessModal.repo);
+    closeRepoManagementAccess();
+    await router.push(href);
+  }, [
+    closeRepoManagementAccess,
+    getRepoManagementHref,
+    handleOperatorLogin,
+    operatorUser,
+    repoManagementAccessModal.repo,
+    router,
+  ]);
+
+  const handleEnterRerun = useCallback(async () => {
+    const targetRepo = rerunAccessModal.repo;
+    if (!targetRepo) return;
+    const nextUser = operatorUser ?? (await handleOperatorLogin());
+    if (!nextUser) return;
+    closeRerunAccess();
+    prepareRerunModal(targetRepo);
+  }, [
+    closeRerunAccess,
+    handleOperatorLogin,
+    operatorUser,
+    prepareRerunModal,
+    rerunAccessModal.repo,
+  ]);
+
+  const handleOperatorRegister = useCallback(
+    async (values: OperatorRegisterValues) => {
+      const username = values.username.trim();
+      const password = values.password;
+      const repoKeys = values.repoKeys.filter(Boolean);
+      if (!username || !password) {
+        setLoginError('请输入账号和密码');
+        return null;
+      }
+      if (password.length < 6) {
+        setLoginError('密码至少 6 位');
+        return null;
+      }
+      if (!repoKeys.length) {
+        setLoginError('请选择负责仓库');
+        return null;
+      }
+
+      setAuthSubmitting(true);
+      setLoginError('');
+      try {
+        const result = await registerCompassOperator({
+          username,
+          password,
+          repo_keys: repoKeys,
+          repo_names: getRegisterRepoNames(repoKeys),
+        });
+        setCompassOperatorToken(result.access_token);
+        setOperatorUser(result.user);
+        setLoginForm({ username: result.user.username, password: '' });
+        messageApi.success(`已注册并登录为 ${result.user.display_name}`);
+        if (rerunAccessModal.open && rerunAccessModal.repo) {
+          const targetRepo = rerunAccessModal.repo;
+          closeRerunAccess();
+          prepareRerunModal(targetRepo);
+        } else if (repoManagementAccessModal.open) {
+          const href = getRepoManagementHref(repoManagementAccessModal.repo);
+          closeRepoManagementAccess();
+          await router.push(href);
+        }
+        return result.user;
+      } catch (error) {
+        setLoginError(
+          error instanceof Error ? error.message : '注册失败，请稍后重试'
+        );
+        return null;
+      } finally {
+        setAuthSubmitting(false);
+      }
+    },
+    [
+      closeRepoManagementAccess,
+      closeRerunAccess,
+      getRegisterRepoNames,
+      getRepoManagementHref,
+      messageApi,
+      prepareRerunModal,
+      repoManagementAccessModal.open,
+      repoManagementAccessModal.repo,
+      rerunAccessModal.open,
+      rerunAccessModal.repo,
+      router,
+    ]
+  );
 
   const closeChangePasswordModal = useCallback(() => {
     setChangePasswordModalOpen(false);
@@ -1256,21 +1475,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
 
   const renderRerunAction = useCallback(
     (record: RepoProgressRow) => {
-      if (!supportsRepoRerun(record.id)) {
-        return <span className="text-slate-400">-</span>;
-      }
       const job = rerunStatusMap[record.id];
       return (
-        <RerunActionButton
-          job={job}
-          loading={rerunStatusLoading && !job}
-          onOpenRecords={() => {
-            void openRerunRecordsModal(record);
-          }}
-          onOpenRerun={() => {
-            void openRerunModal(record);
-          }}
-        />
+        <div className="flex flex-col items-start gap-1">
+          {supportsRepoRerun(record.id) ? (
+            <RerunActionButton
+              job={job}
+              loading={rerunStatusLoading && !job}
+              onOpenRecords={() => {
+                void openRerunRecordsModal(record);
+              }}
+              onOpenRerun={() => {
+                void openRerunModal(record);
+              }}
+            />
+          ) : (
+            <span className="text-slate-400">-</span>
+          )}
+        </div>
       );
     },
     [openRerunModal, openRerunRecordsModal, rerunStatusLoading, rerunStatusMap]
@@ -1739,14 +1961,19 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: teamColumnWidths[10],
         render: () => <span className="text-slate-400">-</span>,
       },
-      {
-        title: '操作',
-        key: 'actions',
-        width: teamColumnWidths[11],
-        render: () => <span className="text-slate-400">-</span>,
-      },
+      ...(captureMode
+        ? []
+        : [
+            {
+              title: '操作',
+              key: 'actions',
+              width: teamColumnWidths[11],
+              render: () => <span className="text-slate-400">-</span>,
+            },
+          ]),
     ],
     [
+      captureMode,
       expandedRowKeys,
       teamColumnWidths,
       onOpenTeamIssues,
@@ -2451,6 +2678,15 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             </div>
             <button
               type="button"
+              className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50"
+              onClick={() => {
+                void openRepoManagementAccess(null);
+              }}
+            >
+              仓库管理
+            </button>
+            <button
+              type="button"
               disabled={exportingCsv}
               className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
               onClick={handleExportCsv}
@@ -2532,30 +2768,17 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         cancelingJobId={cancelingRerunJobId}
         shouldShowRerunRecordsTable={shouldShowRerunRecordsTableInRerunModal}
         rerunning={rerunning}
-        authSubmitting={authSubmitting}
-        authChecking={authChecking}
-        loginError={loginError}
-        loginUsername={loginForm.username}
-        loginPassword={loginForm.password}
-        onLoginUsernameChange={(value) =>
-          setLoginForm((prev) => ({
-            ...prev,
-            username: value,
-          }))
-        }
-        onLoginPasswordChange={(value) =>
-          setLoginForm((prev) => ({
-            ...prev,
-            password: value,
-          }))
-        }
         onCancel={closeRerunModal}
-        onLogout={handleOperatorLogout}
+        onSwitchAccount={() => {
+          const targetRepo = rerunModal.repo;
+          handleOperatorLogout();
+          closeRerunModal();
+          if (targetRepo) {
+            setRerunAccessModal({ open: true, repo: targetRepo });
+          }
+        }}
         onConfirmRerun={() => {
           void handleConfirmRerun();
-        }}
-        onLogin={() => {
-          void handleOperatorLogin();
         }}
         nodeStatuses={rerunNodes}
         nodeStatusesLoading={rerunNodesLoading}
@@ -2581,6 +2804,41 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }
         onCancelRecord={(record) => {
           void handleCancelRerunJob(rerunTargetRepo, record);
+        }}
+      />
+      <OperatorAccessModal
+        open={rerunAccessModal.open}
+        title="重跑访问校验"
+        confirmText="继续重跑"
+        operatorUser={operatorUser}
+        authSubmitting={authSubmitting}
+        authChecking={authChecking}
+        loginError={loginError}
+        loginUsername={loginForm.username}
+        loginPassword={loginForm.password}
+        repoOptions={effectiveRegisterRepoOptions}
+        onLoginUsernameChange={(value) =>
+          setLoginForm((prev) => ({
+            ...prev,
+            username: value,
+          }))
+        }
+        onLoginPasswordChange={(value) =>
+          setLoginForm((prev) => ({
+            ...prev,
+            password: value,
+          }))
+        }
+        onCancel={closeRerunAccess}
+        onLogout={handleOperatorLogout}
+        onLogin={() => {
+          void handleEnterRerun();
+        }}
+        onRegister={(values) => {
+          void handleOperatorRegister(values);
+        }}
+        onConfirm={() => {
+          void handleEnterRerun();
         }}
       />
       <RepoRerunRecordsModal
@@ -2637,6 +2895,41 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }
         onCancelRecord={(record) => {
           void handleCancelRerunJob(rerunRecordsTargetRepo, record);
+        }}
+      />
+      <OperatorAccessModal
+        open={repoManagementAccessModal.open}
+        title="仓库管理访问校验"
+        confirmText="进入仓库管理"
+        operatorUser={operatorUser}
+        authSubmitting={authSubmitting}
+        authChecking={authChecking}
+        loginError={loginError}
+        loginUsername={loginForm.username}
+        loginPassword={loginForm.password}
+        repoOptions={effectiveRegisterRepoOptions}
+        onLoginUsernameChange={(value) =>
+          setLoginForm((prev) => ({
+            ...prev,
+            username: value,
+          }))
+        }
+        onLoginPasswordChange={(value) =>
+          setLoginForm((prev) => ({
+            ...prev,
+            password: value,
+          }))
+        }
+        onCancel={closeRepoManagementAccess}
+        onLogout={handleOperatorLogout}
+        onLogin={() => {
+          void handleEnterRepoManagement();
+        }}
+        onRegister={(values) => {
+          void handleOperatorRegister(values);
+        }}
+        onConfirm={() => {
+          void handleEnterRepoManagement();
         }}
       />
       <Modal
