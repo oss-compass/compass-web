@@ -398,7 +398,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const router = useRouter();
   const screens = Grid.useBreakpoint();
   const isCompactTable = !screens.xl;
-  const showActionColumn = true;
+  const showActionColumn = captureMode ? false : true;
   const repoWidthScale = screens.xxl
     ? 1
     : screens.xl
@@ -1733,14 +1733,19 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           className: 'sortable-col',
         }),
       },
-      {
-        title: '操作',
-        key: 'actions',
-        width: repoColumnWidths[11],
-        render: (_value, record) => renderRerunAction(record),
-      },
+      ...(captureMode
+        ? []
+        : [
+            {
+              title: '操作',
+              key: 'actions',
+              width: repoColumnWidths[11],
+              render: (_value, record) => renderRerunAction(record),
+            },
+          ]),
     ],
     [
+      captureMode,
       repoColumnWidths,
       onOpenRepoIssues,
       handleRepoSortWithReset,
