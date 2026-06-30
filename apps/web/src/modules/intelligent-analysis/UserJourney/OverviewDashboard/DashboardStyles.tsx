@@ -1896,13 +1896,17 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-repo-name-cell {
       display: inline-flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 6px;
+      width: 100%;
       max-width: 100%;
+      text-align: center;
     }
 
     .overview-repo-name-cell .overview-benchmark-tag.ant-tag {
       align-self: center;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .benchmark-repo-cell {

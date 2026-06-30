@@ -18,6 +18,7 @@ import type {
   RepoRerunJob,
 } from '../rawData/apiClient';
 import type { RepoProgressRow } from './types';
+import { getReportDisplayText } from './utils';
 
 export const NON_TERMINAL_RERUN_STATUSES = new Set([
   'queued',
@@ -33,6 +34,20 @@ export const isRerunReviewCompleted = (job?: RepoRerunJob | null) =>
       .trim()
       .toLowerCase()
   );
+
+export const isRerunReviewPending = (job?: RepoRerunJob | null) => {
+  const status = String(job?.status || '')
+    .trim()
+    .toLowerCase();
+  const reviewStatus = String(job?.generated_report_review_status || '')
+    .trim()
+    .toLowerCase();
+  return (
+    status === 'completed' &&
+    reviewStatus !== 'rejected' &&
+    !FINAL_REVIEW_STATUSES.has(reviewStatus)
+  );
+};
 
 export const getRerunStatusMeta = (status?: string, reviewStatus?: string) => {
   const normalizedReviewStatus = String(reviewStatus || '')
@@ -176,10 +191,7 @@ export const RerunActionButton: React.FC<RerunActionButtonProps> = ({
     job?.generated_report_review_status
   );
   const active = isActiveRerunJob(job);
-  const reviewPending =
-    String(job?.status || '')
-      .trim()
-      .toLowerCase() === 'completed' && meta.label === '报告审核中';
+  const reviewPending = isRerunReviewPending(job);
   const buttonText = active ? meta.label : reviewPending ? '审核中' : '重跑';
   const buttonIcon = active || reviewPending ? meta.icon : <SyncOutlined />;
 
@@ -190,7 +202,7 @@ export const RerunActionButton: React.FC<RerunActionButtonProps> = ({
       className="!px-0"
       loading={loading}
       onClick={() => {
-        if (active) {
+        if (active || reviewPending) {
           onOpenRecords();
           return;
         }
@@ -290,15 +302,16 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
         render: (_value: unknown, record: RepoRerunJob) => {
           const reportId = getRerunGeneratedReportId(record);
           const href = getRerunDetailReportHref(record);
+          const displayText = getReportDisplayText(reportId);
           if (!reportId) {
             return <span className="text-slate-400">--</span>;
           }
           return href ? (
             <Link href={href} className="overview-table-link">
-              {reportId}
+              {displayText || reportId}
             </Link>
           ) : (
-            <span>{reportId}</span>
+            <span>{displayText || reportId}</span>
           );
         },
       },

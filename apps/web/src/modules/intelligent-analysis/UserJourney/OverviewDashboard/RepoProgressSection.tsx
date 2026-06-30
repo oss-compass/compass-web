@@ -24,6 +24,7 @@ import { SEVERITY_CFG } from './constants';
 import {
   getDevxNodeKey,
   isActiveRerunJob,
+  isRerunReviewPending,
   RerunActionButton,
   RepoRerunModal,
   RepoRerunRecordsModal,
@@ -705,7 +706,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       }
       setRerunRecordsError('');
       setSelectedRerunNodeKey('');
-      setRerunRecordsExpanded(false);
+      setRerunRecordsExpanded(
+        isActiveRerunJob(currentJob) || isRerunReviewPending(currentJob)
+      );
       setRerunModal({ open: true, repo: row });
       void loadRerunRecords(row.id, { silent: !!currentJob });
     },
@@ -1477,7 +1480,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     (record: RepoProgressRow) => {
       const job = rerunStatusMap[record.id];
       return (
-        <div className="flex flex-col items-start gap-1">
+        <div className="flex flex-col gap-1">
           {supportsRepoRerun(record.id) ? (
             <RerunActionButton
               job={job}
