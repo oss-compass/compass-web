@@ -676,7 +676,7 @@ const ComparePanoramaCard: React.FC<ComparePanoramaCardProps> = ({
     <Card
       bordered={false}
       className="rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
-      bodyStyle={{ padding: 24 }}
+      styles={{ body: { padding: 24 } }}
     >
       <div className="flex flex-col gap-6">
         <div>

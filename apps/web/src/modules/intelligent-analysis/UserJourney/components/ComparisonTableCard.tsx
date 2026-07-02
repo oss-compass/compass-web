@@ -48,7 +48,7 @@ const ComparisonTableCard: React.FC<ComparisonTableCardProps> = ({
     <Card
       bordered={false}
       className="h-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
-      bodyStyle={{ padding: 24, height: '100%' }}
+      styles={{ body: { padding: 24, height: '100%' } }}
     >
       <div className="flex h-full flex-col">
         <div className="mb-4 flex min-h-[28px] items-center text-base font-semibold text-slate-800">

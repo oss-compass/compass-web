@@ -61,7 +61,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
       style={
         hideTitle ? { boxShadow: 'none', background: 'transparent' } : undefined
       }
-      bodyStyle={{ padding: hideTitle ? 0 : 24 }}
+      styles={{ body: { padding: hideTitle ? 0 : 24 } }}
     >
       {!hideTitle && (
         <div className="mb-5">
