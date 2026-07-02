@@ -168,6 +168,26 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   };
 
   const includedCapabilityPairs = capabilityBenchmark?.includedPairs ?? [];
+  const averageCapabilityPairScores = React.useMemo(() => {
+    const average = (
+      values: Array<number | null | undefined>
+    ): number | null => {
+      const validValues = values.filter(
+        (value): value is number => typeof value === 'number'
+      );
+      if (!validValues.length) return null;
+      return (
+        validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+      );
+    };
+
+    return {
+      cannScore: average(includedCapabilityPairs.map((pair) => pair.cannScore)),
+      benchmarkScore: average(
+        includedCapabilityPairs.map((pair) => pair.benchmarkScore)
+      ),
+    };
+  }, [includedCapabilityPairs]);
   const capabilityBenchmarkTitle = (
     <div className="benchmark-chart-title-copy">
       <span>能力对标-社区入门体验</span>
@@ -180,10 +200,26 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
               <div className="benchmark-chart-title-popover-heading">
                 已纳入 {includedCapabilityPairs.length} 个对标项目
               </div>
+              <div className="benchmark-chart-title-popover-summary">
+                <span>
+                  CANN 项目平均分
+                  <strong>
+                    {formatScore(averageCapabilityPairScores.cannScore)}
+                  </strong>
+                </span>
+                <span>
+                  对标项目平均分
+                  <strong>
+                    {formatScore(averageCapabilityPairScores.benchmarkScore)}
+                  </strong>
+                </span>
+              </div>
               <div className="benchmark-chart-title-popover-table">
                 <div className="benchmark-chart-title-popover-table-head">
                   <span>CANN 项目</span>
+                  <span>综合体验评分</span>
                   <span>对标项目</span>
+                  <span>综合体验评分</span>
                 </div>
                 {includedCapabilityPairs.map((pair) => (
                   <div
@@ -193,8 +229,14 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
                     <span className="benchmark-chart-title-popover-cell">
                       {pair.cannRepoName}
                     </span>
+                    <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
+                      {formatScore(pair.cannScore ?? null)}
+                    </span>
                     <span className="benchmark-chart-title-popover-cell">
                       {pair.benchmarkRepoName}
+                    </span>
+                    <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
+                      {formatScore(pair.benchmarkScore ?? null)}
                     </span>
                   </div>
                 ))}

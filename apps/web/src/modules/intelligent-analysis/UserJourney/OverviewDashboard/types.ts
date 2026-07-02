@@ -92,6 +92,8 @@ export type OverviewCapabilityBenchmarkSummary = {
   includedPairs: Array<{
     cannRepoName: string;
     benchmarkRepoName: string;
+    cannScore?: number | null;
+    benchmarkScore?: number | null;
   }>;
   summaryScore: number | null;
   summarySuccessRate: number | null;
@@ -145,6 +147,8 @@ export type CommonIssueGroup = {
   severity: Severity;
   severities?: Severity[];
   repoCount: number;
+  parentPainCount?: number;
+  duplicateParentPainCount?: number;
   status: IssueBucket;
   items: DashboardIssue[];
 };

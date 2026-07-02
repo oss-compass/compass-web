@@ -748,6 +748,8 @@ export type OverviewCommonIssueGroup = {
   severity: OverviewPainPointRow['severity'] | string;
   severities?: Array<OverviewPainPointRow['severity'] | string>;
   repoCount: number;
+  parentPainCount?: number;
+  duplicateParentPainCount?: number;
   status: OverviewIssueBucket;
   items: OverviewCommonIssueItem[];
 };
@@ -773,6 +775,8 @@ export type OverviewCapabilityBenchmark = {
   includedPairs: Array<{
     cannRepoName: string;
     benchmarkRepoName: string;
+    cannScore?: number | null;
+    benchmarkScore?: number | null;
   }>;
   summaryScore: number | null;
   summarySuccessRate: number | null;

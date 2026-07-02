@@ -2053,7 +2053,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .benchmark-chart-title-popover {
-      width: min(480px, calc(100vw - 48px));
+      width: min(760px, calc(100vw - 32px));
     }
 
     .benchmark-chart-title-popover-heading {
@@ -2062,6 +2062,37 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       line-height: 20px;
       font-weight: 600;
       margin-bottom: 8px;
+    }
+
+    .benchmark-chart-title-popover-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .benchmark-chart-title-popover-summary span {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 8px 10px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 500;
+    }
+
+    .benchmark-chart-title-popover-summary strong {
+      color: #0f172a;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
     .benchmark-chart-title-popover-table {
@@ -2074,7 +2105,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .benchmark-chart-title-popover-table-head,
     .benchmark-chart-title-popover-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.5fr) 116px minmax(0, 1.5fr) 116px;
     }
 
     .benchmark-chart-title-popover-table-head {
@@ -2106,6 +2137,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .benchmark-chart-title-popover-cell + .benchmark-chart-title-popover-cell,
     .benchmark-chart-title-popover-table-head span + span {
       border-left: 1px solid #f1f5f9;
+    }
+
+    .benchmark-chart-title-popover-score {
+      color: #0f172a;
+      font-weight: 600;
+      text-align: left;
+      white-space: nowrap;
     }
 
     .benchmark-chart-score-hint {

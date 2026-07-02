@@ -131,6 +131,21 @@ const getIssueFoundAt = (issue: DashboardIssue): string => {
   ).trim();
 };
 
+const STATUS_TIME_LABEL: Record<string, string> = {
+  '2': '已确认待修复时间',
+  '3': '已修复待复测时间',
+  '4': '已复测待确认时间',
+  '5': '复测通过时间',
+  '6': '标记不需要修复时间',
+  '7': '复测不通过时间',
+};
+
+const getStatusTimeTooltip = (status: string, confirmedAt: string) => {
+  const label = STATUS_TIME_LABEL[status];
+  if (!label || !confirmedAt) return null;
+  return `${label}：${formatDateTime(confirmedAt)}`;
+};
+
 const parseDateToMs = (raw: unknown): number | null => {
   const text = String(raw ?? '').trim();
   if (!text) return null;
@@ -868,8 +883,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         const retestReportId = String(
                           issue.retestReportId || ''
                         ).trim();
-                        const shouldShowRetestPassedAt =
-                          status === '5' && !!confirmedAt;
+                        const statusTimeTooltip = getStatusTimeTooltip(
+                          status,
+                          confirmedAt
+                        );
                         const shouldShowRetestReportId =
                           !!retestReportId &&
                           (status === '4' || status === '5' || status === '7');
@@ -880,16 +897,12 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                           : '';
                         return (
                           <div className="flex flex-col items-center gap-1">
-                            <Tooltip
-                              title={
-                                shouldShowRetestPassedAt
-                                  ? `复测通过时间：${formatDateTime(
-                                      confirmedAt
-                                    )}`
-                                  : null
-                              }
-                            >
-                              <span className="inline-flex cursor-help">
+                            <Tooltip title={statusTimeTooltip}>
+                              <span
+                                className={`inline-flex ${
+                                  statusTimeTooltip ? 'cursor-help' : ''
+                                }`}
+                              >
                                 <Tag
                                   className="overview-ant-tag"
                                   style={{
