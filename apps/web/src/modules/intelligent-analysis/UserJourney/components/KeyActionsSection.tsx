@@ -188,7 +188,7 @@ const LogOutputModal: React.FC<{
       width={'80vw'}
       footer={null}
       styles={{ body: { padding: 0 } }}
-      destroyOnHidden
+      destroyOnClose
     >
       <div className="max-h-[70vh] overflow-y-auto">
         {loading ? (

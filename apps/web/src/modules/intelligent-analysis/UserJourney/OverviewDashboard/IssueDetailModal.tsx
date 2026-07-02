@@ -543,7 +543,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           </button>
         </div>
       }
-      destroyOnHidden
+      destroyOnClose
     >
       <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
         <table className="w-full table-fixed border-collapse text-center text-[12px] text-slate-700 md:text-[13px]">

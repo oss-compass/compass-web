@@ -25,7 +25,7 @@ const DataView = () => {
     {
       key: '2',
       label: t('os-selection:tabs.my_reports'),
-      destroyOnHidden: true,
+      destroyOnClose: true,
       children: activeKey === '2' ? <MyReports /> : '', // 我的报告
     },
   ];

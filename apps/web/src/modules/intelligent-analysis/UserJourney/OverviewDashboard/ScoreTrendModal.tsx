@@ -33,7 +33,7 @@ const ScoreTrendModal: React.FC<ScoreTrendModalProps> = ({
       footer={null}
       onCancel={onClose}
       width={860}
-      destroyOnHidden
+      destroyOnClose
     >
       <div className="mb-3">
         <Title level={5} style={{ margin: 0 }}>
