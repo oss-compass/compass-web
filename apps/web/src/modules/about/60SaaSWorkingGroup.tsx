@@ -14,7 +14,7 @@ const SaaSWorkingGroup = () => {
     {
       avatar: '/images/about/赖兴友@2x.png',
       name: '赖兴友',
-      intro: '开源前端开发',
+      intro: '开源软件工程师',
     },
     {
       avatar: '/images/about/李升保.png',
@@ -54,7 +54,7 @@ const SaaSWorkingGroup = () => {
     <div>
       <Title>{t('about:saas_working_group')}</Title>
 
-      <Grid className=" bg-[#fafafa] py-10 px-16">
+      <Grid className=" bg-[#fafafa] px-16 py-10">
         {data.map((item) => {
           return (
             <div className="flex" key={item.name}>

@@ -29,6 +29,11 @@ const data = [
     name: '王雷',
     intro: '中国科学技术大学信息学院研究生',
   },
+  {
+    avatar: '/images/about/马麟.png',
+    name: '马麟',
+    intro: '2012 实验室软件与开源',
+  },
 ];
 
 const AIWorkingGroup = () => {

@@ -25,6 +25,11 @@ const data = [
     intro: '华为 2012 实验室 开源管理中心',
   },
   {
+    avatar: '/images/about/朱乃盘.png',
+    name: '朱乃盘',
+    intro: '华为 2012 实验室',
+  },
+  {
     avatar: '/images/about/钟君@2x.png',
     name: '钟君',
     intro: 'CHAOSS Metrics Model Working Group Maintainer',
@@ -41,7 +46,7 @@ const AssessmentModelWorkingGroup = () => {
     <div className="mb-20">
       <Title>{t('about:assessment_model_working_group')}</Title>
 
-      <Grid className="bg-[#fafafa] py-10 px-16">
+      <Grid className="bg-[#fafafa] px-16 py-10">
         {data.map((item) => {
           return <MemberCard key={item.name} {...item} />;
         })}
