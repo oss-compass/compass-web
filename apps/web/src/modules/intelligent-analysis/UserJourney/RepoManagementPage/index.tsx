@@ -28,7 +28,7 @@ import {
   Typography,
   message,
 } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import type { ColumnsType, TableProps } from 'antd/es/table';
 import {
   ArrowLeftOutlined,
   CheckOutlined,
@@ -86,6 +86,9 @@ const nativeButtonClassName =
   'inline-flex h-8 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 transition-colors hover:border-blue-300 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-60';
 const nativePrimaryButtonClassName =
   'inline-flex h-8 items-center justify-center rounded-xl border border-blue-600 bg-blue-600 px-4 text-sm text-white transition-colors hover:border-blue-500 hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60';
+
+type RepoManagementServerSortKey = 'benchmark_repo_name' | 'overview_enabled';
+type RepoManagementServerSortOrder = 'ascend' | 'descend';
 
 type NativeInputProps = {
   value?: string;
@@ -427,6 +430,10 @@ const RepoManagementPage: React.FC = () => {
   const [hardwareFilter, setHardwareFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [serverSort, setServerSort] = useState<{
+    key?: RepoManagementServerSortKey;
+    order?: RepoManagementServerSortOrder;
+  }>({});
   const [operatorUser, setOperatorUser] = useState<CompassOperatorUser | null>(
     null
   );
@@ -578,6 +585,8 @@ const RepoManagementPage: React.FC = () => {
       teamFilter,
       ownerFilter,
       hardwareFilter,
+      serverSort.key,
+      serverSort.order,
       page,
       pageSize,
     ],
@@ -587,6 +596,8 @@ const RepoManagementPage: React.FC = () => {
         teamName: teamFilter || undefined,
         owner: ownerFilter || undefined,
         hardwareEnv: hardwareFilter || undefined,
+        sortKey: serverSort.key,
+        sortOrder: serverSort.order,
         page,
         size: pageSize,
       }),
@@ -1315,6 +1326,33 @@ const RepoManagementPage: React.FC = () => {
     ),
     []
   );
+  const handleTableChange = useCallback<
+    NonNullable<TableProps<RepoManagementItem>['onChange']>
+  >(
+    (pagination, _filters, sorter, extra) => {
+      const isSortAction = extra.action === 'sort';
+      setPage(isSortAction ? 1 : pagination.current ?? 1);
+      setPageSize(pagination.pageSize ?? pageSize);
+
+      const activeSorter = Array.isArray(sorter)
+        ? sorter.find((item) => item.order)
+        : sorter;
+      const columnKey = activeSorter?.columnKey;
+      const order = activeSorter?.order;
+
+      if (
+        (columnKey === 'benchmark_repo_name' ||
+          columnKey === 'overview_enabled') &&
+        (order === 'ascend' || order === 'descend')
+      ) {
+        setServerSort({ key: columnKey, order });
+        return;
+      }
+
+      setServerSort({});
+    },
+    [pageSize]
+  );
   const ownerHeaderOptions = useMemo(
     () => ownerOptions.map((item) => ({ value: item, label: item })),
     [ownerOptions]
@@ -1347,10 +1385,14 @@ const RepoManagementPage: React.FC = () => {
             'zh-CN'
           ),
         sortDirections: ['ascend', 'descend'],
-        ellipsis: true,
         render: (_value: string, record) => (
-          <span className="overview-repo-name-cell" title={record.project_key}>
-            <span>{getRepoDisplayName(record)}</span>
+          <span
+            className="overview-repo-name-cell"
+            title={getRepoDisplayName(record)}
+          >
+            <span className="max-w-full whitespace-normal break-words leading-relaxed [word-break:break-word]">
+              {getRepoDisplayName(record)}
+            </span>
           </span>
         ),
         onHeaderCell: () => ({
@@ -1452,17 +1494,28 @@ const RepoManagementPage: React.FC = () => {
         }),
       },
       {
-        title: '竞品',
+        title: sortableTitle('竞品'),
         dataIndex: 'benchmark_repo_name',
         key: 'benchmark_repo_name',
         width: 220,
+        sorter: true,
+        sortOrder:
+          serverSort.key === 'benchmark_repo_name' ? serverSort.order : null,
+        sortDirections: ['ascend', 'descend'],
         render: (value: string) => value || '-',
+        onHeaderCell: () => ({
+          className: 'sortable-col',
+        }),
       },
       {
-        title: '总览看板',
+        title: sortableTitle('总览看板'),
         dataIndex: 'overview_enabled',
         key: 'overview_enabled',
         width: 120,
+        sorter: true,
+        sortOrder:
+          serverSort.key === 'overview_enabled' ? serverSort.order : null,
+        sortDirections: ['ascend', 'descend'],
         render: (value: boolean | undefined, record) => {
           const checked = !!value;
           const switchNode = (
@@ -1498,6 +1551,9 @@ const RepoManagementPage: React.FC = () => {
             </Popconfirm>
           );
         },
+        onHeaderCell: () => ({
+          className: 'sortable-col',
+        }),
       },
       {
         title: '备注',
@@ -1572,6 +1628,8 @@ const RepoManagementPage: React.FC = () => {
       rerunStatusLoading,
       rerunStatusMap,
       screens.xl,
+      serverSort.key,
+      serverSort.order,
       handleDelete,
       handleOpenEdit,
       hardwareFilter,
@@ -1718,6 +1776,7 @@ const RepoManagementPage: React.FC = () => {
                 columns={columns}
                 dataSource={repoItems}
                 scroll={{ x: '100%' }}
+                onChange={handleTableChange}
                 pagination={{
                   current: page,
                   pageSize,
@@ -1737,10 +1796,6 @@ const RepoManagementPage: React.FC = () => {
                     next_5: '向后 5 页',
                     prev_3: '向前 3 页',
                     next_3: '向后 3 页',
-                  },
-                  onChange: (nextPage, nextPageSize) => {
-                    setPage(nextPage);
-                    setPageSize(nextPageSize);
                   },
                 }}
                 locale={{ emptyText: '暂无可管理的仓库' }}

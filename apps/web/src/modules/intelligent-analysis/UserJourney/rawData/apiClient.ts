@@ -354,6 +354,8 @@ export const fetchRepoManagementRepos = async (
     teamName?: string;
     owner?: string;
     hardwareEnv?: string;
+    sortKey?: 'benchmark_repo_name' | 'overview_enabled';
+    sortOrder?: 'ascend' | 'descend';
     page?: number;
     size?: number;
   },
@@ -367,6 +369,8 @@ export const fetchRepoManagementRepos = async (
   if (params.teamName) search.set('team_name', params.teamName);
   if (params.owner) search.set('owner', params.owner);
   if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
+  if (params.sortKey) search.set('sort_key', params.sortKey);
+  if (params.sortOrder) search.set('sort_order', params.sortOrder);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiAuthedFetch<RepoManagementListResponse>(
