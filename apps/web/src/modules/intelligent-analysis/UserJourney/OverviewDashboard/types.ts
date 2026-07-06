@@ -94,6 +94,7 @@ export type OverviewCapabilityBenchmarkSummary = {
     benchmarkRepoName: string;
     cannScore?: number | null;
     benchmarkScore?: number | null;
+    scoreBreakdown?: CapabilityBenchmarkScoreItem[];
   }>;
   summaryScore: number | null;
   summarySuccessRate: number | null;

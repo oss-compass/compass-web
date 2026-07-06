@@ -188,6 +188,28 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
       ),
     };
   }, [includedCapabilityPairs]);
+  const capabilityBenchmarkStepColumns = React.useMemo(() => {
+    if (capabilityBenchmark?.scoreBreakdown?.length) {
+      return capabilityBenchmark.scoreBreakdown;
+    }
+    return (
+      includedCapabilityPairs.find((pair) => pair.scoreBreakdown?.length)
+        ?.scoreBreakdown ?? []
+    );
+  }, [capabilityBenchmark?.scoreBreakdown, includedCapabilityPairs]);
+
+  const getPairStepScore = (
+    scoreBreakdown:
+      | NonNullable<
+          OverviewCapabilityBenchmarkSummary['includedPairs'][number]['scoreBreakdown']
+        >
+      | undefined,
+    stepKey: string,
+    scoreKey: 'cannScore' | 'benchmarkScore'
+  ) =>
+    (scoreBreakdown ?? []).find((item) => item.key === stepKey)?.[scoreKey] ??
+    null;
+
   const capabilityBenchmarkTitle = (
     <div className="benchmark-chart-title-copy">
       <span>能力对标-社区入门体验</span>
@@ -214,30 +236,69 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
                   </strong>
                 </span>
               </div>
-              <div className="benchmark-chart-title-popover-table">
-                <div className="benchmark-chart-title-popover-table-head">
-                  <span>CANN 项目</span>
-                  <span>综合体验评分</span>
-                  <span>对标项目</span>
-                  <span>综合体验评分</span>
+              <div className="benchmark-chart-title-popover-pairs">
+                <div className="benchmark-chart-title-popover-table-head benchmark-chart-title-popover-table-head-common">
+                  <span>仓库名</span>
+                  <span>总分</span>
+                  {capabilityBenchmarkStepColumns.map((item) => (
+                    <span key={item.key} title={item.label}>
+                      {item.label.split(/\s+/)[0] || item.key}
+                    </span>
+                  ))}
                 </div>
                 {includedCapabilityPairs.map((pair) => (
                   <div
                     key={`${pair.cannRepoName}-${pair.benchmarkRepoName}`}
-                    className="benchmark-chart-title-popover-row"
+                    className="benchmark-chart-title-popover-pair-table"
                   >
-                    <span className="benchmark-chart-title-popover-cell">
-                      {pair.cannRepoName}
-                    </span>
-                    <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
-                      {formatScore(pair.cannScore ?? null)}
-                    </span>
-                    <span className="benchmark-chart-title-popover-cell">
-                      {pair.benchmarkRepoName}
-                    </span>
-                    <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
-                      {formatScore(pair.benchmarkScore ?? null)}
-                    </span>
+                    <div className="benchmark-chart-title-popover-row benchmark-chart-title-popover-row-cann">
+                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-repo">
+                        <span className="benchmark-chart-title-popover-repo-name">
+                          {pair.cannRepoName}
+                        </span>
+                      </span>
+                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
+                        {formatScore(pair.cannScore ?? null)}
+                      </span>
+                      {capabilityBenchmarkStepColumns.map((item) => (
+                        <span
+                          key={`${item.key}-cann`}
+                          className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-step-value"
+                        >
+                          {formatScore(
+                            getPairStepScore(
+                              pair.scoreBreakdown,
+                              item.key,
+                              'cannScore'
+                            )
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="benchmark-chart-title-popover-row benchmark-chart-title-popover-row-benchmark">
+                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-repo">
+                        <span className="benchmark-chart-title-popover-repo-name">
+                          {pair.benchmarkRepoName}
+                        </span>
+                      </span>
+                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
+                        {formatScore(pair.benchmarkScore ?? null)}
+                      </span>
+                      {capabilityBenchmarkStepColumns.map((item) => (
+                        <span
+                          key={`${item.key}-benchmark`}
+                          className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-step-value"
+                        >
+                          {formatScore(
+                            getPairStepScore(
+                              pair.scoreBreakdown,
+                              item.key,
+                              'benchmarkScore'
+                            )
+                          )}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>

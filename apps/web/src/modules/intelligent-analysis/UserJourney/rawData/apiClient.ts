@@ -781,6 +781,12 @@ export type OverviewCapabilityBenchmark = {
     benchmarkRepoName: string;
     cannScore?: number | null;
     benchmarkScore?: number | null;
+    scoreBreakdown?: Array<{
+      key: string;
+      label: string;
+      cannScore: number | null;
+      benchmarkScore: number | null;
+    }>;
   }>;
   summaryScore: number | null;
   summarySuccessRate: number | null;

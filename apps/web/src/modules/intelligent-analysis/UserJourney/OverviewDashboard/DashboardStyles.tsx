@@ -2053,7 +2053,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .benchmark-chart-title-popover {
-      width: min(760px, calc(100vw - 32px));
+      width: min(720px, calc(100vw - 32px));
+      max-height: min(770px, calc(100vh - 120px));
+      overflow: auto;
     }
 
     .benchmark-chart-title-popover-heading {
@@ -2095,17 +2097,28 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       white-space: nowrap;
     }
 
-    .benchmark-chart-title-popover-table {
+    .benchmark-chart-title-popover-pairs {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .benchmark-chart-title-popover-pair-table {
+      min-width: 640px;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow: hidden;
       background: #ffffff;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     }
 
     .benchmark-chart-title-popover-table-head,
     .benchmark-chart-title-popover-row {
       display: grid;
-      grid-template-columns: minmax(0, 1.5fr) 116px minmax(0, 1.5fr) 116px;
+      grid-template-columns: minmax(150px, 1.7fr) 58px repeat(
+          5,
+          minmax(48px, 1fr)
+        );
     }
 
     .benchmark-chart-title-popover-table-head {
@@ -2116,21 +2129,55 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       font-weight: 600;
     }
 
+    .benchmark-chart-title-popover-table-head-common {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      min-width: 640px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+    }
+
     .benchmark-chart-title-popover-row {
+      position: relative;
       color: #475569;
       font-size: 12px;
       line-height: 18px;
       background: #ffffff;
     }
 
-    .benchmark-chart-title-popover-row + .benchmark-chart-title-popover-row {
-      border-top: 1px solid #f1f5f9;
+    .benchmark-chart-title-popover-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 4px;
+    }
+
+    .benchmark-chart-title-popover-row-cann {
+      background: #f3f7ff;
+    }
+
+    .benchmark-chart-title-popover-row-cann::before {
+      background: #2070f3;
+    }
+
+    .benchmark-chart-title-popover-row-benchmark {
+      background: #fbf5ff;
+      border-top: 1px solid #ead5ff;
+    }
+
+    .benchmark-chart-title-popover-row-benchmark::before {
+      background: #bf68fa;
     }
 
     .benchmark-chart-title-popover-cell,
     .benchmark-chart-title-popover-table-head span {
       min-width: 0;
-      padding: 9px 12px;
+      padding: 7px 8px;
       word-break: break-word;
     }
 
@@ -2142,8 +2189,32 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .benchmark-chart-title-popover-score {
       color: #0f172a;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
       white-space: nowrap;
+    }
+
+    .benchmark-chart-title-popover-repo {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .benchmark-chart-title-popover-repo-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .benchmark-chart-title-popover-step-value,
+    .benchmark-chart-title-popover-table-head span:not(:first-child) {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .benchmark-chart-title-popover-step-value {
+      color: #0f172a;
+      font-weight: 600;
     }
 
     .benchmark-chart-score-hint {
