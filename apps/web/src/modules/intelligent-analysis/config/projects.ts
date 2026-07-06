@@ -350,6 +350,30 @@ export const PROJECTS_CONFIG: ProjectConfig[] = [
     organizations: 9,
     folderName: 'opentenbase-github',
   },
+  {
+    slug: 'OpenHarmonyPC_Gitcode',
+    name: 'OpenHarmonyPC_Gitcode',
+    displayName: 'opentenbase-gitcode',
+    developers: 5705,
+    organizations: 47,
+    folderName: 'OpenHarmonyPC_Gitcode',
+  },
+  {
+    slug: 'OpenHarmonyPC_Gitee',
+    name: 'OpenHarmonyPC_Gitee',
+    displayName: 'OpenHarmonyPC-gitee',
+    developers: 2,
+    organizations: 1,
+    folderName: 'OpenHarmonyPC_Gitee',
+  },
+  {
+    slug: 'OpenHarmonyPC_Github',
+    name: 'OpenHarmonyPC_Github',
+    displayName: 'OpenHarmonyPC-github',
+    developers: 126,
+    organizations: 10,
+    folderName: 'OpenHarmonyPC_Github',
+  },
 ];
 
 // 导出便捷的映射对象
