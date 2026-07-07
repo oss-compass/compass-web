@@ -23,6 +23,7 @@ import {
   Spin,
   Switch,
   Table,
+  Tabs,
   Tag,
   Tooltip,
   Typography,
@@ -89,6 +90,7 @@ const nativePrimaryButtonClassName =
 
 type RepoManagementServerSortKey = 'benchmark_repo_name' | 'overview_enabled';
 type RepoManagementServerSortOrder = 'ascend' | 'descend';
+type RepoManagementStatusFilter = 'all' | 'online' | 'registered' | 'offline';
 
 type NativeInputProps = {
   value?: string;
@@ -428,6 +430,8 @@ const RepoManagementPage: React.FC = () => {
   const [teamFilter, setTeamFilter] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('');
   const [hardwareFilter, setHardwareFilter] = useState('');
+  const [statusFilter, setStatusFilter] =
+    useState<RepoManagementStatusFilter>('all');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [serverSort, setServerSort] = useState<{
@@ -585,6 +589,7 @@ const RepoManagementPage: React.FC = () => {
       teamFilter,
       ownerFilter,
       hardwareFilter,
+      statusFilter,
       serverSort.key,
       serverSort.order,
       page,
@@ -596,6 +601,7 @@ const RepoManagementPage: React.FC = () => {
         teamName: teamFilter || undefined,
         owner: ownerFilter || undefined,
         hardwareEnv: hardwareFilter || undefined,
+        status: statusFilter === 'all' ? undefined : statusFilter,
         sortKey: serverSort.key,
         sortOrder: serverSort.order,
         page,
@@ -613,6 +619,53 @@ const RepoManagementPage: React.FC = () => {
     () => repoListResp?.items ?? [],
     [repoListResp?.items]
   );
+  const statusTabItems = useMemo(() => {
+    const counts = repoListResp?.status_counts ?? {};
+    const buildLabel = (
+      label: string,
+      value: number | undefined,
+      badgeClassName: string
+    ) => (
+      <span className="inline-flex items-center gap-2">
+        <span>{label}</span>
+        <span
+          className={`inline-flex min-w-[28px] justify-center rounded-full px-2 py-0.5 text-xs font-semibold leading-5 ${badgeClassName}`}
+        >
+          {(value ?? 0).toLocaleString('en-US')}
+        </span>
+      </span>
+    );
+    return [
+      {
+        key: 'all',
+        label: buildLabel('全部', counts.all, 'bg-blue-100 text-blue-700'),
+      },
+      {
+        key: 'online',
+        label: buildLabel(
+          '已上线',
+          counts.online,
+          'bg-green-100 text-green-700'
+        ),
+      },
+      {
+        key: 'registered',
+        label: buildLabel(
+          '已备案',
+          counts.registered,
+          'bg-violet-100 text-violet-700'
+        ),
+      },
+      {
+        key: 'offline',
+        label: buildLabel(
+          '未上线',
+          counts.offline,
+          'bg-slate-100 text-slate-600'
+        ),
+      },
+    ];
+  }, [repoListResp?.status_counts]);
   const teamOptions = useMemo(
     () => repoListResp?.team_options ?? [],
     [repoListResp?.team_options]
@@ -1765,6 +1818,16 @@ const RepoManagementPage: React.FC = () => {
                   ) : null}
                 </Space>
               </div>
+
+              <Tabs
+                activeKey={statusFilter}
+                items={statusTabItems}
+                className="repo-management-status-tabs -mb-2"
+                onChange={(nextKey) => {
+                  setStatusFilter(nextKey as RepoManagementStatusFilter);
+                  setPage(1);
+                }}
+              />
             </div>
 
             <div className="w-full">

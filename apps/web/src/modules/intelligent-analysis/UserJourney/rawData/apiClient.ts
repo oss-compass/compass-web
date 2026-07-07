@@ -81,6 +81,7 @@ export type RepoManagementItem = {
   benchmark_repo_name: string;
   benchmark_project_key: string;
   overview_enabled?: boolean;
+  repo_status?: 'online' | 'registered' | 'offline';
   latest_report_id?: string;
   latestReportId?: string;
   latest_report_detail_url?: string;
@@ -95,6 +96,12 @@ export type RepoManagementListResponse = {
   page: number;
   size: number;
   items: RepoManagementItem[];
+  status_counts?: {
+    all?: number;
+    online?: number;
+    registered?: number;
+    offline?: number;
+  };
   team_options?: string[];
   owner_options?: string[];
   hardware_options?: string[];
@@ -354,6 +361,7 @@ export const fetchRepoManagementRepos = async (
     teamName?: string;
     owner?: string;
     hardwareEnv?: string;
+    status?: 'online' | 'registered' | 'offline';
     sortKey?: 'benchmark_repo_name' | 'overview_enabled';
     sortOrder?: 'ascend' | 'descend';
     page?: number;
@@ -369,6 +377,7 @@ export const fetchRepoManagementRepos = async (
   if (params.teamName) search.set('team_name', params.teamName);
   if (params.owner) search.set('owner', params.owner);
   if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
+  if (params.status) search.set('status', params.status);
   if (params.sortKey) search.set('sort_key', params.sortKey);
   if (params.sortOrder) search.set('sort_order', params.sortOrder);
   search.set('page', String(params.page ?? 1));

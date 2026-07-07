@@ -2187,7 +2187,6 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .benchmark-chart-title-popover-score {
-      color: #0f172a;
       font-weight: 600;
       text-align: center;
       white-space: nowrap;
@@ -2213,7 +2212,6 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .benchmark-chart-title-popover-step-value {
-      color: #0f172a;
       font-weight: 600;
     }
 
