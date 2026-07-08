@@ -366,6 +366,13 @@ const getRecordHardwareEnvs = (
     : [];
 };
 
+const getRerunMissingConfigLabels = (record: RepoManagementItem) => {
+  const missing: string[] = [];
+  if (!parseTextListInput(record.owner).length) missing.push('责任人');
+  if (!getRecordHardwareEnvs(record).length) missing.push('硬件环境');
+  return missing;
+};
+
 const getRepoDisplayName = (
   record: Pick<RepoManagementItem, 'repo_name' | 'community_name'>
 ) => {
@@ -939,8 +946,23 @@ const RepoManagementPage: React.FC = () => {
 
   const openRerunModal = useCallback(
     async (record: RepoManagementItem) => {
-      if (!getRecordHardwareEnvs(record).length) {
-        messageApi.warning('请先配置硬件环境后再进行重跑');
+      const missingConfigLabels = getRerunMissingConfigLabels(record);
+      if (missingConfigLabels.length) {
+        messageApi.warning(
+          `请先配置该仓库${missingConfigLabels.join('和')}后再进行重跑`
+        );
+        setEditingRecord(record);
+        setEditorOwnerContacts(
+          buildOwnerContacts(record.owner, record.owner_email)
+        );
+        form.setFieldsValue({
+          repo_name: record.repo_name,
+          team_name: record.team_name,
+          hardware_env: getRecordHardwareEnvs(record)[0] || '',
+          benchmark_repo_name: record.benchmark_repo_name,
+          remark: record.remark,
+        });
+        setEditorModalOpen(true);
         return;
       }
       setLoginError('');
@@ -957,7 +979,7 @@ const RepoManagementPage: React.FC = () => {
       }
       prepareRerunModal(record);
     },
-    [loadOperatorUser, messageApi, operatorUser, prepareRerunModal]
+    [form, loadOperatorUser, messageApi, operatorUser, prepareRerunModal]
   );
 
   const openRerunRecordsModal = useCallback(
@@ -1101,9 +1123,13 @@ const RepoManagementPage: React.FC = () => {
       messageApi.error('当前账号无权操作该仓库');
       return;
     }
-    if (!getRecordHardwareEnvs(rerunModal.repo).length) {
-      setLoginError('请先配置硬件环境后再进行重跑');
-      messageApi.warning('请先配置硬件环境后再进行重跑');
+    const missingConfigLabels = getRerunMissingConfigLabels(rerunModal.repo);
+    if (missingConfigLabels.length) {
+      const text = `请先编辑该仓库并配置${missingConfigLabels.join(
+        '和'
+      )}后再进行重跑`;
+      setLoginError(text);
+      messageApi.warning(text);
       return;
     }
     if (rerunNodesLoading) {
@@ -1375,6 +1401,8 @@ const RepoManagementPage: React.FC = () => {
 
   const controlClassName =
     'h-8 !rounded-2xl border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-sm shadow-[0_2px_6px_rgba(15,23,42,0.06)]';
+  const headerButtonClassName =
+    'group inline-flex h-9 flex-shrink-0 items-center gap-2 !rounded-full border border-white/80 bg-white px-3.5 text-sm font-semibold text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:!-translate-y-0.5 hover:!border-sky-200 hover:!bg-white hover:!text-sky-700 hover:!shadow-[0_16px_36px_rgba(59,130,246,0.18)]';
   const filterSelectClassName =
     '[&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selector]:!h-8 [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-placeholder]:!text-sm';
   const searchClassName =
@@ -1762,19 +1790,30 @@ const RepoManagementPage: React.FC = () => {
         ) : (
           <Card className="rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
             <div className="mb-5 flex flex-col gap-4">
-              <div className="flex flex-col gap-3 border-b border-slate-100 pb-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div className="min-w-0">
-                  <div className="mb-1 flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <Button
                       type="text"
                       icon={
                         <ArrowLeftOutlined className="text-xs transition-transform group-hover:-translate-x-0.5" />
                       }
-                      className="group inline-flex h-9 flex-shrink-0 items-center gap-2 !rounded-full border border-white/80 bg-white px-3.5 text-sm font-semibold text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:!-translate-y-0.5 hover:!border-sky-200 hover:!bg-white hover:!text-sky-700 hover:!shadow-[0_16px_36px_rgba(59,130,246,0.18)]"
+                      className={headerButtonClassName}
                       onClick={() => router.back()}
                     >
                       返回看板
                     </Button>
+                    {isAdmin ? (
+                      <Button
+                        type="text"
+                        className={headerButtonClassName}
+                        onClick={() => {
+                          window.location.href = '/pain-admin/#/report-reviews';
+                        }}
+                      >
+                        去后台审核
+                      </Button>
+                    ) : null}
                     <Title level={4} className="!mb-0 !mt-0">
                       仓库管理
                     </Title>

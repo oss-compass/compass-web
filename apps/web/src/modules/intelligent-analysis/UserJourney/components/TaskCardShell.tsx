@@ -5,6 +5,7 @@ export type TaskCardTab = {
   key: string;
   label: string;
   description?: string;
+  score?: number | null;
 };
 
 type TaskCardShellProps = {
@@ -78,13 +79,28 @@ const TaskCardShell: React.FC<TaskCardShellProps> = ({
                     key={tab.key}
                     type="button"
                     onClick={() => onTabChange?.(tab.key)}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
                       active
                         ? 'border-slate-300 bg-slate-900 text-white'
                         : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700'
                     }`}
                   >
-                    {tab.label}
+                    <span>{tab.label}</span>
+                    {typeof tab.score === 'number' ? (
+                      <span
+                        className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${
+                          active
+                            ? 'bg-white/15 text-white'
+                            : tab.score >= 80
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : tab.score >= 60
+                            ? 'bg-amber-50 text-amber-700'
+                            : 'bg-red-50 text-red-600'
+                        }`}
+                      >
+                        {tab.score}分
+                      </span>
+                    ) : null}
                   </button>
                 );
               })}

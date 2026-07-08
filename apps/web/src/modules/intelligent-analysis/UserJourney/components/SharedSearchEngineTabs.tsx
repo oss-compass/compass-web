@@ -26,13 +26,28 @@ const SharedSearchEngineTabs: React.FC<SharedSearchEngineTabsProps> = ({
             key={option.value}
             type="button"
             onClick={() => onChange(option.value)}
-            className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
               active
                 ? 'border-slate-300 bg-slate-900 text-white'
                 : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700'
             }`}
           >
-            {option.label}
+            <span>{option.label}</span>
+            {typeof option.score === 'number' ? (
+              <span
+                className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${
+                  active
+                    ? 'bg-white/15 text-white'
+                    : option.score >= 80
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : option.score >= 60
+                    ? 'bg-amber-50 text-amber-700'
+                    : 'bg-red-50 text-red-600'
+                }`}
+              >
+                {option.score}分
+              </span>
+            ) : null}
           </button>
         );
       })}

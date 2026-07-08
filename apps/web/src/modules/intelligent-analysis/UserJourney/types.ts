@@ -118,6 +118,7 @@ export type JourneyStep = {
   painPoints?: string[];
   recommendation: string;
   metrics: StepMetric[];
+  engineScores?: Record<string, BackendJourneyEngineScore>;
 };
 
 export type ProjectInfo = {
@@ -239,6 +240,14 @@ export type BackendJourneyMapEntry = {
   icon: string | null;
   summary: string;
   task_achievement_rate?: number | null;
+  engine_scores?: Record<string, BackendJourneyEngineScore>;
+};
+
+export type BackendJourneyEngineScore = {
+  score: number | null;
+  pain_count?: number;
+  task_ids?: string[];
+  failed?: boolean;
 };
 
 export type BackendReportData = {

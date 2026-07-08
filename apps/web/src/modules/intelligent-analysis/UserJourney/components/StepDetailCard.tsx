@@ -235,6 +235,7 @@ const StepDetailCard: React.FC<StepDetailCardProps> = ({
           onPainFocusHandled={onPainFocusHandled}
           versionOptions={versionOptions}
           previewMode={previewMode}
+          engineScores={currentStep.engineScores}
         />
       </div>
 

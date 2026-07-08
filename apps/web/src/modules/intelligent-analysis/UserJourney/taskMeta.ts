@@ -47,6 +47,7 @@ export type ActionTaskGroup = {
 export type SearchEngineOption = {
   value: string;
   label: string;
+  score?: number | null;
 };
 
 const TASK_DEF_MAP = (

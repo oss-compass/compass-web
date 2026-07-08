@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal, Tooltip } from 'antd';
-import { ActionDetailRecord, ActionStatus } from '../types';
+import {
+  ActionDetailRecord,
+  ActionStatus,
+  BackendJourneyEngineScore,
+} from '../types';
 import { getActionStatusClasses } from '../helpers';
 import useLogData, { LogCommand, useCommandOutput } from '../hooks/useLogData';
 import EvidencePanel, { EvidenceIcon } from './EvidencePanel';
@@ -28,6 +32,7 @@ type KeyActionsSectionProps = {
   onPainFocusHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
   previewMode?: boolean;
+  engineScores?: Record<string, BackendJourneyEngineScore>;
 };
 
 /* ─── 图标 ─── */
@@ -796,6 +801,7 @@ const TaskCard: React.FC<{
   onPainFocusHandled?: () => void;
   versionOptions?: Array<{ value: string; label: string }>;
   previewMode?: boolean;
+  engineScores?: Record<string, BackendJourneyEngineScore>;
 }> = ({
   group,
   currentStepKey,
@@ -812,6 +818,7 @@ const TaskCard: React.FC<{
   onPainFocusHandled,
   versionOptions,
   previewMode = false,
+  engineScores,
 }) => {
   const [tableExpanded, setTableExpanded] = useState(true);
   const activeVariant =
@@ -832,8 +839,11 @@ const TaskCard: React.FC<{
         key: variant.taskId || '__no_task__',
         label: variant.searchEngineLabel || '默认',
         description: variant.description || group.description,
+        score: variant.searchEngine
+          ? engineScores?.[variant.searchEngine]?.score
+          : undefined,
       })),
-    [group.description, group.variants]
+    [engineScores, group.description, group.variants]
   );
 
   return (
@@ -942,6 +952,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   onPainFocusHandled,
   versionOptions,
   previewMode = false,
+  engineScores,
 }) => {
   const logData = useLogData(projectFileKey);
   const [highlightedInfo, setHighlightedInfo] = useState<{
@@ -959,8 +970,13 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
   );
   const sharedSearchEngineOptions = useMemo(
     () =>
-      stepCode?.startsWith('S0') ? getSharedSearchEngineOptions(groups) : [],
-    [groups, stepCode]
+      stepCode?.startsWith('S0')
+        ? getSharedSearchEngineOptions(groups).map((option) => ({
+            ...option,
+            score: engineScores?.[option.value]?.score,
+          }))
+        : [],
+    [engineScores, groups, stepCode]
   );
   const normalizedTaskId = painFocusTarget?.taskId?.trim() || '';
   const normalizedPainId = painFocusTarget?.painId?.trim() || '';
@@ -1182,6 +1198,7 @@ const KeyActionsSection: React.FC<KeyActionsSectionProps> = ({
                   onPainFocusHandled?.();
                 }}
                 versionOptions={versionOptions}
+                engineScores={engineScores}
               />
             );
           })}

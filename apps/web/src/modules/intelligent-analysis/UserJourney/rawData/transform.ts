@@ -572,6 +572,18 @@ const getBackendStepScore = (
   return null;
 };
 
+const getBackendStepEngineScores = (
+  report: BackendReportData,
+  step: BackendJourneyStep
+) => {
+  const engineScores = report.journey_map?.[step.step_id]?.engine_scores;
+  if (!engineScores || typeof engineScores !== 'object') {
+    return undefined;
+  }
+
+  return engineScores;
+};
+
 const buildJourneyStep = (
   step: BackendJourneyStep,
   report: BackendReportData,
@@ -589,6 +601,7 @@ const buildJourneyStep = (
   const metricIds = subjectiveMetrics.map((metric) => metric.metric_id);
 
   const panoramaScore = getBackendStepScore(report, step);
+  const engineScores = getBackendStepEngineScores(report, step);
   const narrative = normalizeText(assessment?.subjective.narrative);
   const shortPainSummary = normalizeText(assessment?.subjective.pain_summary);
   const painLevel = getPainLevelFromScore(panoramaScore);
@@ -668,6 +681,7 @@ const buildJourneyStep = (
       assessment?.actual_path.retry_count ?? 0,
       subjectiveMetrics
     ),
+    engineScores,
   };
 };
 
