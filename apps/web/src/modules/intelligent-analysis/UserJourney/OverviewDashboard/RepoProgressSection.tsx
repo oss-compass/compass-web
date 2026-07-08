@@ -572,6 +572,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     open: false,
     repo: null,
   });
+  const [taskManagementAccessModal, setTaskManagementAccessModal] = useState<{
+    open: boolean;
+    repo: RepoProgressRow | null;
+  }>({
+    open: false,
+    repo: null,
+  });
   const [rerunAccessModal, setRerunAccessModal] = useState<{
     open: boolean;
     repo: RepoProgressRow | null;
@@ -803,6 +810,21 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     [org]
   );
 
+  const getTaskManagementHref = useCallback(
+    (row: RepoProgressRow | null) => {
+      const path =
+        typeof org === 'string' && org
+          ? `/intelligent-analysis/${encodeURIComponent(
+              org
+            )}/community-experience/task-management`
+          : '/intelligent-analysis/community-experience/task-management';
+      const repoName = String(row?.name || '').trim();
+      if (!repoName) return path;
+      return `${path}?repo=${encodeURIComponent(repoName)}`;
+    },
+    [org]
+  );
+
   const openRepoManagementAccess = useCallback(
     async (row: RepoProgressRow | null) => {
       setLoginError('');
@@ -825,8 +847,36 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     [getRepoManagementHref, loadOperatorUser, operatorUser, router]
   );
 
+  const openTaskManagementAccess = useCallback(
+    async (row: RepoProgressRow | null) => {
+      setLoginError('');
+      const href = getTaskManagementHref(row);
+      if (operatorUser) {
+        await router.push(href);
+        return;
+      }
+
+      if (getCompassOperatorToken()) {
+        const nextUser = await loadOperatorUser();
+        if (nextUser) {
+          await router.push(href);
+          return;
+        }
+      }
+
+      setTaskManagementAccessModal({ open: true, repo: row });
+    },
+    [getTaskManagementHref, loadOperatorUser, operatorUser, router]
+  );
+
   const closeRepoManagementAccess = useCallback(() => {
     setRepoManagementAccessModal({ open: false, repo: null });
+    setLoginError('');
+    setLoginForm((prev) => ({ ...prev, password: '' }));
+  }, []);
+
+  const closeTaskManagementAccess = useCallback(() => {
+    setTaskManagementAccessModal({ open: false, repo: null });
     setLoginError('');
     setLoginForm((prev) => ({ ...prev, password: '' }));
   }, []);
@@ -850,6 +900,21 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     operatorUser,
     repoManagementAccessModal.repo,
     router,
+  ]);
+
+  const handleEnterTaskManagement = useCallback(async () => {
+    const nextUser = operatorUser ?? (await handleOperatorLogin());
+    if (!nextUser) return;
+    const href = getTaskManagementHref(taskManagementAccessModal.repo);
+    closeTaskManagementAccess();
+    await router.push(href);
+  }, [
+    closeTaskManagementAccess,
+    getTaskManagementHref,
+    handleOperatorLogin,
+    operatorUser,
+    router,
+    taskManagementAccessModal.repo,
   ]);
 
   const handleEnterRerun = useCallback(async () => {
@@ -906,6 +971,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const href = getRepoManagementHref(repoManagementAccessModal.repo);
           closeRepoManagementAccess();
           await router.push(href);
+        } else if (taskManagementAccessModal.open) {
+          const href = getTaskManagementHref(taskManagementAccessModal.repo);
+          closeTaskManagementAccess();
+          await router.push(href);
         }
         return result.user;
       } catch (error) {
@@ -920,8 +989,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     [
       closeRepoManagementAccess,
       closeRerunAccess,
+      closeTaskManagementAccess,
       getRegisterRepoNames,
       getRepoManagementHref,
+      getTaskManagementHref,
       messageApi,
       prepareRerunModal,
       repoManagementAccessModal.open,
@@ -929,6 +1000,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       rerunAccessModal.open,
       rerunAccessModal.repo,
       router,
+      taskManagementAccessModal.open,
+      taskManagementAccessModal.repo,
     ]
   );
 
@@ -2695,6 +2768,15 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             </button>
             <button
               type="button"
+              className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50"
+              onClick={() => {
+                void openTaskManagementAccess(null);
+              }}
+            >
+              任务管理
+            </button>
+            <button
+              type="button"
               disabled={exportingCsv}
               className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
               onClick={handleExportCsv}
@@ -2938,6 +3020,41 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }}
         onConfirm={() => {
           void handleEnterRepoManagement();
+        }}
+      />
+      <OperatorAccessModal
+        open={taskManagementAccessModal.open}
+        title="任务管理访问校验"
+        confirmText="进入任务管理"
+        operatorUser={operatorUser}
+        authSubmitting={authSubmitting}
+        authChecking={authChecking}
+        loginError={loginError}
+        loginUsername={loginForm.username}
+        loginPassword={loginForm.password}
+        repoOptions={effectiveRegisterRepoOptions}
+        onLoginUsernameChange={(value) =>
+          setLoginForm((prev) => ({
+            ...prev,
+            username: value,
+          }))
+        }
+        onLoginPasswordChange={(value) =>
+          setLoginForm((prev) => ({
+            ...prev,
+            password: value,
+          }))
+        }
+        onCancel={closeTaskManagementAccess}
+        onLogout={handleOperatorLogout}
+        onLogin={() => {
+          void handleEnterTaskManagement();
+        }}
+        onRegister={(values) => {
+          void handleOperatorRegister(values);
+        }}
+        onConfirm={() => {
+          void handleEnterTaskManagement();
         }}
       />
       <Modal

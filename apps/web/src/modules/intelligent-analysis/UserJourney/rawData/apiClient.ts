@@ -193,6 +193,13 @@ export type RepoRerunJob = {
   updated_at: string;
 };
 
+export type RepoRerunJobListResponse = {
+  total: number;
+  page: number;
+  size: number;
+  items: RepoRerunJob[];
+};
+
 export type RepoRerunLogItem = {
   timestamp?: string;
   time?: string;
@@ -503,6 +510,33 @@ export const fetchOverviewRepoRerunRecords = async (
     `/overview/repos/${encodeURIComponent(
       projectKey
     )}/rerun-records?${search.toString()}`
+  );
+};
+
+export const fetchOverviewAllRepoRerunRecords = async (
+  params: {
+    keyword?: string;
+    status?: RepoRerunJob['status'];
+    teamName?: string;
+    repoName?: string;
+    page?: number;
+    size?: number;
+  },
+  token = getCompassOperatorToken()
+): Promise<RepoRerunJobListResponse> => {
+  if (!token) {
+    throw new Error('未登录');
+  }
+  const search = new URLSearchParams();
+  if (params.keyword) search.set('keyword', params.keyword);
+  if (params.status) search.set('status', params.status);
+  if (params.teamName) search.set('team_name', params.teamName);
+  if (params.repoName) search.set('repo_name', params.repoName);
+  search.set('page', String(params.page ?? 1));
+  search.set('size', String(params.size ?? 20));
+  return compassApiAuthedFetch<RepoRerunJobListResponse>(
+    `/overview/repos/rerun-records?${search.toString()}`,
+    token
   );
 };
 

@@ -753,6 +753,15 @@ const RepoManagementPage: React.FC = () => {
     return Array.from(values).sort((left, right) => left.localeCompare(right));
   }, [registry]);
   const isAdmin = operatorUser?.role === 'admin';
+  const taskManagementHref = useMemo(() => {
+    const org = router.query.org;
+    const orgValue = typeof org === 'string' ? org.trim() : '';
+    return orgValue
+      ? `/intelligent-analysis/${encodeURIComponent(
+          orgValue
+        )}/community-experience/task-management`
+      : '/intelligent-analysis/community-experience/task-management';
+  }, [router.query.org]);
 
   useEffect(() => {
     const projectKeys = repoItems
@@ -1799,6 +1808,14 @@ const RepoManagementPage: React.FC = () => {
                     }}
                   >
                     刷新
+                  </Button>
+                  <Button
+                    className={`${controlClassName} px-3 font-semibold text-slate-700`}
+                    onClick={() => {
+                      void router.push(taskManagementHref);
+                    }}
+                  >
+                    任务管理
                   </Button>
                   <Button
                     className={`${controlClassName} px-3 font-semibold text-slate-700`}
