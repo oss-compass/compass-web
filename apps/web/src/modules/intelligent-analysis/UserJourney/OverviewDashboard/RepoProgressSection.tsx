@@ -323,6 +323,121 @@ const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
   );
 };
 
+type HardwareEnvFilterHeaderProps = {
+  value: string;
+  options: string[];
+  onChange: (next: string) => void;
+};
+
+const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
+  value,
+  options,
+  onChange,
+}) => {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handleDocClick = (event: MouseEvent) => {
+      if (!wrapperRef.current) return;
+      if (!wrapperRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleDocClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleDocClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
+
+  const titleSuffix = value ? `当前筛选：${value}` : '筛选硬件环境';
+  const filterOptions = useMemo(
+    () => [
+      { value: '', label: '全部环境' },
+      ...options.map((item) => ({
+        value: item,
+        label: item,
+      })),
+    ],
+    [options]
+  );
+
+  return (
+    <span
+      ref={wrapperRef}
+      className="inline-flex items-center gap-1"
+      style={{ position: 'relative' }}
+      onClick={(event) => event.stopPropagation()}
+      onMouseDown={(event) => event.stopPropagation()}
+    >
+      <span>硬件环境</span>
+      <button
+        type="button"
+        aria-label="筛选硬件环境"
+        title={titleSuffix}
+        className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
+          value
+            ? 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+        }`}
+        onClick={(event) => {
+          event.stopPropagation();
+          setOpen((prev) => !prev);
+        }}
+      >
+        <FilterFilled className="text-[12px]" />
+      </button>
+      {open ? (
+        <div
+          className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            right: 0,
+            zIndex: 1050,
+            width: 220,
+          }}
+          onClick={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <div className="mb-2 text-xs font-semibold text-slate-500">
+            硬件环境
+          </div>
+          <div className="flex max-h-64 flex-col gap-1 overflow-y-auto">
+            {filterOptions.map((option) => {
+              const active = value === option.value;
+              return (
+                <button
+                  key={option.value || '__all__'}
+                  type="button"
+                  className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                    active
+                      ? 'border-blue-200 bg-blue-50 text-blue-700'
+                      : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                  }`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onChange(option.value);
+                  }}
+                >
+                  <span className="truncate">{option.label}</span>
+                  {active ? <CheckOutlined className="ml-2 text-xs" /> : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </span>
+  );
+};
+
 type RepoProgressSectionProps = {
   captureMode?: boolean;
   progressView: ProgressView;
@@ -422,7 +537,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(132, 112),
             rw(36, 28),
             rw(70, 58),
-            rw(68, 56),
+            rw(118, 104),
             rw(76, 64),
             rw(58, 50),
           ]
@@ -436,7 +551,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(160, 140),
             rw(40, 30),
             rw(80, 70),
-            rw(86, 72),
+            rw(126, 112),
             rw(100, 86),
             rw(72, 64),
           ],
@@ -456,7 +571,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(132, 112),
             rw(36, 28),
             rw(70, 58),
-            rw(68, 56),
+            rw(118, 104),
             rw(76, 64),
             rw(58, 50),
           ]
@@ -470,7 +585,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(160, 140),
             rw(40, 30),
             rw(80, 70),
-            rw(86, 72),
+            rw(126, 112),
             rw(100, 86),
             rw(72, 64),
           ],
@@ -1589,6 +1704,17 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     </span>
   );
 
+  const hardwareEnvHeaderTitle = useMemo(
+    () => (
+      <HardwareEnvFilterHeader
+        value={hardwareEnvFilter}
+        options={hardwareEnvOptions}
+        onChange={onHardwareEnvFilterChange}
+      />
+    ),
+    [hardwareEnvFilter, hardwareEnvOptions, onHardwareEnvFilterChange]
+  );
+
   const repoColumns = useMemo<TableProps<RepoProgressRow>['columns']>(
     () => [
       {
@@ -1787,7 +1913,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: '硬件环境',
+        title: hardwareEnvHeaderTitle,
         dataIndex: 'hardwareEnv',
         key: 'hardwareEnv',
         width: repoColumnWidths[9],
@@ -1832,6 +1958,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderBenchmarkTag,
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
+      hardwareEnvHeaderTitle,
     ]
   );
   const visibleRepoColumns = useMemo(
@@ -2031,7 +2158,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }),
       },
       {
-        title: '硬件环境',
+        title: hardwareEnvHeaderTitle,
         key: 'hardwareEnv',
         width: teamColumnWidths[9],
         render: () => <span className="text-slate-400">-</span>,
@@ -2064,6 +2191,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       teamDerived,
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
+      hardwareEnvHeaderTitle,
     ]
   );
   const visibleTeamColumns = useMemo(
@@ -2714,24 +2842,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                 options={teamOptions.map((team) => ({
                   value: team,
                   label: team,
-                }))}
-              />
-            </div>
-            <div className="flex items-center">
-              <FilterLabelTag text="硬件环境" />
-              <Select
-                value={hardwareEnvFilter || undefined}
-                onChange={(value) => onHardwareEnvFilterChange(value ?? '')}
-                allowClear
-                placeholder="全部环境"
-                style={{ height: SUMMARY_SELECT_H }}
-                className={`${filterSelectCls} min-w-[140px]`}
-                popupMatchSelectWidth={false}
-                popupClassName="overview-select-dropdown"
-                getPopupContainer={(node) => node.parentElement ?? node}
-                options={hardwareEnvOptions.map((hardwareEnv) => ({
-                  value: hardwareEnv,
-                  label: hardwareEnv,
                 }))}
               />
             </div>
