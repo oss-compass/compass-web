@@ -1,18 +1,27 @@
 import React from 'react';
 import { CheckOutlined, FilterFilled } from '@ant-design/icons';
-import { Table, Typography } from 'antd';
+import { Skeleton, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
-import type { OverviewCapabilityBenchmarkDashboard } from '../../rawData/apiClient';
+import type {
+  OverviewCapabilityBenchmarkDetails,
+  OverviewCapabilityBenchmarkSummary,
+} from '../../rawData/apiClient';
 import { formatScore } from '../utils';
 
 const { Link } = Typography;
 
 type CapabilityBenchmarkProps = {
-  data?: OverviewCapabilityBenchmarkDashboard | null;
+  data?: OverviewCapabilityBenchmarkSummary | null;
+  isLoading?: boolean;
+};
+
+type CapabilityBenchmarkDetailsProps = {
+  data?: OverviewCapabilityBenchmarkDetails | null;
+  isLoading?: boolean;
 };
 
 type BenchmarkDetailRow =
-  OverviewCapabilityBenchmarkDashboard['detailRows'][number];
+  OverviewCapabilityBenchmarkDetails['detailRows'][number];
 
 const STATUS_LABEL: Record<'lead' | 'tie' | 'lag', string> = {
   lead: '领先',
@@ -197,9 +206,37 @@ const EmptyState = () => (
   <div className="capability-empty">暂无已完成配对的能力对标数据</div>
 );
 
+const CapabilityLoadingState = () => (
+  <div className="capability-loading">
+    <Skeleton active paragraph={{ rows: 4 }} title={false} />
+  </div>
+);
+
 const CapabilityBenchmarkOverview: React.FC<CapabilityBenchmarkProps> = ({
   data,
+  isLoading = false,
 }) => {
+  if (isLoading) {
+    return (
+      <div className="capability-overview-grid">
+        <div className="capability-card">
+          <div className="capability-card-title">
+            <span>各仓库综合体验评分对标结果</span>
+            <Legend compact countLabel />
+          </div>
+          <CapabilityLoadingState />
+        </div>
+        <div className="capability-card">
+          <div className="capability-card-title">
+            <span>所有仓库各阶段评分对标结果</span>
+            <Legend compact countLabel />
+          </div>
+          <CapabilityLoadingState />
+        </div>
+      </div>
+    );
+  }
+
   if (!data?.pairCount) {
     return (
       <div className="capability-overview-grid">
@@ -304,14 +341,19 @@ const CapabilityBenchmarkOverview: React.FC<CapabilityBenchmarkProps> = ({
   );
 };
 
-const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkProps> = ({
+const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
   data,
+  isLoading = false,
 }) => {
   const [teamFilter, setTeamFilter] = React.useState('');
   const [stageResultSortOrder, setStageResultSortOrder] = React.useState<
     'asc' | 'desc'
   >('desc');
-  const stageColumns = data?.stageScoreResults ?? [];
+  const stageColumns = React.useMemo(
+    () =>
+      data?.detailRows.find((row) => row.stageScores.length)?.stageScores ?? [],
+    [data?.detailRows]
+  );
   const teamOptions = React.useMemo(
     () =>
       Array.from(
@@ -371,7 +413,7 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkProps> = ({
         ),
         dataIndex: 'teamName',
         key: 'teamName',
-        width: 150,
+        width: 120,
         align: 'left',
         ellipsis: true,
         render: (value) => (
@@ -381,7 +423,7 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkProps> = ({
       {
         title: '综合体验评分',
         key: 'score',
-        width: 118,
+        width: 96,
         render: (_value, record) => (
           <span className={STATUS_CLASS[record.scoreStatus]}>
             {formatPairScore(record.cannScore, record.benchmarkScore)}
@@ -396,7 +438,7 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkProps> = ({
           </span>
         ),
         key: stage.key,
-        width: 118,
+        width: 96,
         render: (_value: unknown, record: BenchmarkDetailRow) => {
           const cell = getStageCell(record, stage.key);
           return (
@@ -476,8 +518,9 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkProps> = ({
           rowKey="id"
           dataSource={displayRows}
           columns={columns}
+          loading={isLoading}
           pagination={false}
-          scroll={{ x: 1000 }}
+          scroll={{ x: 900 }}
           tableLayout="fixed"
           locale={{ emptyText: '暂无已完成配对的能力对标数据' }}
         />

@@ -906,6 +906,16 @@ export type OverviewCapabilityBenchmarkDashboard = {
   }>;
 };
 
+export type OverviewCapabilityBenchmarkSummary = Pick<
+  OverviewCapabilityBenchmarkDashboard,
+  'pairCount' | 'totalScoreResult' | 'stageScoreResults'
+>;
+
+export type OverviewCapabilityBenchmarkDetails = Pick<
+  OverviewCapabilityBenchmarkDashboard,
+  'pairCount' | 'detailRows'
+>;
+
 export type OverviewCardsResponse = {
   total: number;
   page: number;
@@ -1025,6 +1035,18 @@ export const fetchOverviewCapabilityBenchmarkDashboard =
   async (): Promise<OverviewCapabilityBenchmarkDashboard> =>
     compassApiFetch<OverviewCapabilityBenchmarkDashboard>(
       '/overview/capability-benchmark-dashboard'
+    );
+
+export const fetchOverviewCapabilityBenchmarkSummary =
+  async (): Promise<OverviewCapabilityBenchmarkSummary> =>
+    compassApiFetch<OverviewCapabilityBenchmarkSummary>(
+      '/overview/capability-benchmark-summary'
+    );
+
+export const fetchOverviewCapabilityBenchmarkDetails =
+  async (): Promise<OverviewCapabilityBenchmarkDetails> =>
+    compassApiFetch<OverviewCapabilityBenchmarkDetails>(
+      '/overview/capability-benchmark-details'
     );
 
 export const fetchOverviewCards = async (params: {

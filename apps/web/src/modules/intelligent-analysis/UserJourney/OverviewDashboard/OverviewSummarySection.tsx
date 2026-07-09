@@ -42,6 +42,7 @@ type OverviewSummarySectionProps = {
   includeCommonIssues: boolean;
   commonIssues: CommonIssueGroup[];
   trendWindow: TrendWindow;
+  isTrendLoading?: boolean;
   onTrendWindowChange: (next: TrendWindow) => void;
   onIssueSourceModeChange: (mode: IssueSourceMode) => void;
   onIncludeCommonIssuesChange: (next: boolean) => void;
@@ -67,6 +68,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   includeCommonIssues,
   commonIssues,
   trendWindow,
+  isTrendLoading = false,
   onTrendWindowChange,
   onIssueSourceModeChange,
   onIncludeCommonIssuesChange,
@@ -274,6 +276,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           commonIssues={commonIssues}
           mode={effectiveMode}
           tooltip={primaryTooltip}
+          isTrendLoading={isTrendLoading}
           onBucketClick={(bucket) => onOpenIssues?.('primary', bucket)}
           onPriorityBucketClick={(severity, bucket) =>
             onOpenIssues?.('primary', bucket, severity)

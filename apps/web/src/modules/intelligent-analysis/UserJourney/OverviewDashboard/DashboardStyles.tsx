@@ -604,6 +604,22 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       background: rgba(255, 255, 255, 0.9);
     }
 
+    .oj-trend-skeleton {
+      flex: 1 1 auto;
+      min-height: 230px;
+      display: flex;
+      align-items: center;
+      padding: 8px 14px 12px;
+    }
+
+    .oj-trend-skeleton .ant-skeleton {
+      width: 100%;
+    }
+
+    .oj-trend-skeleton .ant-skeleton-paragraph {
+      margin-block-start: 0 !important;
+    }
+
     .ov-panel-head {
       display: flex;
       align-items: flex-start;
@@ -2733,6 +2749,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       line-height: 22px;
       font-weight: 600;
       text-align: center;
+    }
+
+    .capability-loading {
+      min-height: 136px;
+      display: flex;
+      align-items: center;
+      padding: 8px 2px;
     }
 
     .capability-detail-section {

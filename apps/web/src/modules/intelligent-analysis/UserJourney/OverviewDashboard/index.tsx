@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import {
   fetchOverviewCards,
-  fetchOverviewCapabilityBenchmarkDashboard,
+  fetchOverviewCapabilityBenchmarkDetails,
+  fetchOverviewCapabilityBenchmarkSummary,
   fetchOverviewCloseRateTrends,
   fetchOverviewCommonIssues,
   fetchOverviewSummary,
@@ -188,32 +189,34 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const { data: closeRateTrendsResp } = useQuery({
-    queryKey: [
-      'overview-close-rate-trends-v2',
-      org,
-      issueSourceMode,
-      includeCommonIssues,
-      trendWindowKey,
-    ],
-    queryFn: () =>
-      fetchOverviewCloseRateTrends({
+  const { data: closeRateTrendsResp, isLoading: isCloseRateTrendsLoading } =
+    useQuery({
+      queryKey: [
+        'overview-close-rate-trends-v2',
         org,
-        includeCommonIssues: true,
-        commonOnly:
-          issueSourceMode === 'common'
-            ? true
-            : issueSourceMode === 'non-common'
-            ? false
-            : includeCommonIssues
-            ? undefined
-            : false,
-        weeks: trendWindow.kind === 'weeks' ? trendWindow.weeks : undefined,
-        startDate: trendWindow.kind === 'range' ? trendWindow.start : undefined,
-        endDate: trendWindow.kind === 'range' ? trendWindow.end : undefined,
-        countChildPains: true,
-      }),
-  });
+        issueSourceMode,
+        includeCommonIssues,
+        trendWindowKey,
+      ],
+      queryFn: () =>
+        fetchOverviewCloseRateTrends({
+          org,
+          includeCommonIssues: true,
+          commonOnly:
+            issueSourceMode === 'common'
+              ? true
+              : issueSourceMode === 'non-common'
+              ? false
+              : includeCommonIssues
+              ? undefined
+              : false,
+          weeks: trendWindow.kind === 'weeks' ? trendWindow.weeks : undefined,
+          startDate:
+            trendWindow.kind === 'range' ? trendWindow.start : undefined,
+          endDate: trendWindow.kind === 'range' ? trendWindow.end : undefined,
+          countChildPains: true,
+        }),
+    });
 
   const { data: commonIssuesResp } = useQuery({
     queryKey: ['overview-common-issues', org],
@@ -223,11 +226,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const { data: capabilityBenchmarkDashboardResp } = useQuery({
-    queryKey: ['overview-capability-benchmark-dashboard', org],
+  const {
+    data: capabilityBenchmarkSummaryResp,
+    isLoading: isBenchmarkSummaryLoading,
+  } = useQuery({
+    queryKey: ['overview-capability-benchmark-summary', org],
     queryFn: async () => {
       try {
-        return await fetchOverviewCapabilityBenchmarkDashboard();
+        return await fetchOverviewCapabilityBenchmarkSummary();
       } catch (error) {
         if (
           error instanceof Error &&
@@ -245,11 +251,30 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
               lagRepos: [],
             },
             stageScoreResults: [],
+          };
+        }
+        throw error;
+      }
+    },
+  });
+
+  const {
+    data: capabilityBenchmarkDetailsResp,
+    isLoading: isBenchmarkDetailsLoading,
+  } = useQuery({
+    queryKey: ['overview-capability-benchmark-details', org],
+    queryFn: async () => {
+      try {
+        return await fetchOverviewCapabilityBenchmarkDetails();
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          (error.message.includes('404') ||
+            error.message.includes('Failed to fetch'))
+        ) {
+          return {
+            pairCount: 0,
             detailRows: [],
-            closureRate: 0,
-            summaryScore: null,
-            summarySuccessRate: null,
-            summaryAvgExecutionTime: null,
           };
         }
         throw error;
@@ -696,6 +721,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           includeCommonIssues={includeCommonIssues}
           commonIssues={commonIssues}
           trendWindow={trendWindow}
+          isTrendLoading={isCloseRateTrendsLoading}
           onTrendWindowChange={setTrendWindow}
           onIssueSourceModeChange={setIssueSourceMode}
           onIncludeCommonIssuesChange={setIncludeCommonIssues}
@@ -703,7 +729,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         />
 
         <CapabilityBenchmarkOverview
-          data={capabilityBenchmarkDashboardResp ?? null}
+          data={capabilityBenchmarkSummaryResp ?? null}
+          isLoading={isBenchmarkSummaryLoading}
         />
 
         <RepoProgressSection
@@ -741,7 +768,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         />
 
         <CapabilityBenchmarkDetails
-          data={capabilityBenchmarkDashboardResp ?? null}
+          data={capabilityBenchmarkDetailsResp ?? null}
+          isLoading={isBenchmarkDetailsLoading}
         />
 
         <CommonIssuesSection
