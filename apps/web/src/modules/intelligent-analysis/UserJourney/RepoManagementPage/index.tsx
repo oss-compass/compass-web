@@ -744,14 +744,13 @@ const RepoManagementPage: React.FC = () => {
   }, [registerRepoOptionsResp?.items, registry]);
   const benchmarkRepoOptions = useMemo(() => {
     if (!registry) return [];
+    const excludedOrgs = new Set(['cann', 'ascend', 'mindspore']);
     const values = new Set<string>();
     Object.values(registry.entries).forEach((entry) => {
-      if (
-        String(entry.org || '')
-          .trim()
-          .toLowerCase() === 'cann'
-      )
-        return;
+      const org = String(entry.org || '')
+        .trim()
+        .toLowerCase();
+      if (excludedOrgs.has(org)) return;
       const repoName =
         String(entry.label || '').trim() ||
         String(entry.projectName || '').trim();
