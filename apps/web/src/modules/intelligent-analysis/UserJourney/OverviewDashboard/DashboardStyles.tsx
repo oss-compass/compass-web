@@ -2459,6 +2459,449 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       padding-top: 10px;
     }
 
+    .capability-overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .capability-card {
+      min-width: 0;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(248, 251, 255, 0.96) 100%
+      );
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+      padding: 18px;
+    }
+
+    .capability-card-title,
+    .capability-section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .capability-card-title {
+      color: #0f172a;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .capability-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .capability-legend.compact {
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .capability-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .capability-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+      border: 1px solid transparent;
+    }
+
+    .capability-dot-lead {
+      background: #dff4eb;
+      border-color: #b7e2d0;
+    }
+
+    .capability-dot-tie {
+      background: #e8edf4;
+      border-color: #cbd5e1;
+    }
+
+    .capability-dot-lag {
+      background: #fce4e2;
+      border-color: #f3b9b5;
+    }
+
+    .capability-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .capability-stat-card {
+      min-width: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .capability-stat-value {
+      display: block;
+      font-size: 30px;
+      line-height: 36px;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .capability-stat-label {
+      display: block;
+      margin-top: 3px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .capability-stat-lead .capability-stat-value {
+      color: #16835e;
+    }
+
+    .capability-stat-lead {
+      background: #e8f7f1;
+      border-color: #c9eadc;
+    }
+
+    .capability-stat-tie .capability-stat-value {
+      color: #607086;
+    }
+
+    .capability-stat-tie {
+      background: #f4f7fb;
+      border-color: #d7dee8;
+    }
+
+    .capability-stat-lag .capability-stat-value {
+      color: #c2413b;
+    }
+
+    .capability-stat-lag {
+      background: #fff0ee;
+      border-color: #f5c7c3;
+    }
+
+    .capability-summary-box {
+      margin-top: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: rgba(248, 250, 252, 0.92);
+      padding: 10px 12px;
+      color: #334155;
+      font-size: 13px;
+      line-height: 22px;
+      font-weight: 600;
+    }
+
+    .capability-repo-tag {
+      display: inline-flex;
+      max-width: 180px;
+      margin: 0 4px;
+      padding: 0 7px;
+      border-radius: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: bottom;
+      white-space: nowrap;
+      font-size: 12px;
+      line-height: 20px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        'Liberation Mono', 'Courier New', monospace;
+    }
+
+    .capability-repo-tag.lead {
+      color: #16835e;
+      background: #dff4eb;
+    }
+
+    .capability-repo-tag.lag {
+      color: #c2413b;
+      background: #fce4e2;
+    }
+
+    .capability-muted {
+      color: #94a3b8;
+    }
+
+    .capability-stage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .capability-stage-row {
+      display: grid;
+      grid-template-columns: 142px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .capability-stage-label {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      color: #334155;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .capability-stage-label span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+    }
+
+    .capability-stage-label strong {
+      color: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+    }
+
+    .capability-stage-track {
+      min-width: 0;
+      height: 26px;
+      display: flex;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      background: #f8fafc;
+    }
+
+    .capability-stage-segment {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #334155;
+      font-size: 12px;
+      line-height: 24px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      transition: width 0.2s ease;
+    }
+
+    .capability-stage-segment.lead {
+      color: #16835e;
+      background: #cdebdd;
+    }
+
+    .capability-stage-segment.tie {
+      color: #607086;
+      background: #e8edf4;
+    }
+
+    .capability-stage-segment.lag {
+      color: #c2413b;
+      background: #f6d4d0;
+    }
+
+    .capability-empty {
+      min-height: 136px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .capability-detail-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .capability-detail-card-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .capability-detail-table .ant-table-cell {
+      text-align: center;
+    }
+
+    .capability-detail-table .ant-table-thead {
+      position: relative;
+      z-index: 5;
+    }
+
+    .capability-detail-table .ant-table-thead > tr > th {
+      overflow: visible;
+    }
+
+    .capability-stage-head {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      line-height: 17px;
+    }
+
+    .capability-stage-head span {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: normal;
+    }
+
+    .capability-stage-result-title {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      line-height: 17px;
+    }
+
+    .capability-stage-result-title span:last-child {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .capability-repo-pair {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .capability-repo-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #0f172a;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 700;
+    }
+
+    .capability-repo-name.muted {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .capability-vs {
+      flex: 0 0 auto;
+      border-radius: 6px;
+      background: #f1f5f9;
+      padding: 0 6px;
+      color: #64748b;
+      font-size: 11px;
+      line-height: 18px;
+      font-weight: 800;
+    }
+
+    .capability-team-text {
+      display: inline-block;
+      max-width: 100%;
+      color: #475569;
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .capability-status-lead,
+    .capability-status-tie,
+    .capability-status-lag,
+    .capability-status-unknown {
+      display: inline-flex;
+      justify-content: center;
+      min-width: 64px;
+      border-radius: 7px;
+      padding: 2px 7px;
+      font-size: 12px;
+      line-height: 18px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .capability-status-lead {
+      color: #16835e;
+      background: #dff4eb;
+    }
+
+    .capability-status-tie {
+      color: #607086;
+      background: #eef2f7;
+    }
+
+    .capability-status-lag {
+      color: #c2413b;
+      background: #fce4e2;
+    }
+
+    .capability-status-unknown {
+      color: #94a3b8;
+      background: #f8fafc;
+    }
+
+    .capability-record {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #475569;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .capability-record .lead {
+      color: #16835e;
+    }
+
+    .capability-record .tie {
+      color: #607086;
+    }
+
+    .capability-record .lag {
+      color: #c2413b;
+    }
+
+    .capability-record .slash {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
     .nowrap-tag {
       white-space: nowrap;
       word-break: keep-all;
@@ -2548,6 +2991,20 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         margin-left: 0;
         width: 100%;
         justify-content: flex-start;
+      }
+
+      .capability-overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .capability-stage-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .capability-stat-value {
+        font-size: 26px;
+        line-height: 32px;
       }
 
       .ov-row {

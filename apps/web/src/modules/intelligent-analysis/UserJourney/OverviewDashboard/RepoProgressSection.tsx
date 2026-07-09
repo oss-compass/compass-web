@@ -30,7 +30,7 @@ import {
   RepoRerunRecordsModal,
 } from './RepoRerunComponents';
 import { IssueProgressBar } from './ProgressComponents';
-import CapabilityBenchmarkModal from './CapabilityBenchmarkModal';
+import CapabilityBenchmarkModal from './CapabilityBenchmark/CapabilityBenchmarkModal';
 import CloseRateTrendModal from './CloseRateTrendModal';
 import ScoreTrendModal from './ScoreTrendModal';
 import { CloseRateSparkline, ScoreSparkline } from './CloseRateTrendChart';

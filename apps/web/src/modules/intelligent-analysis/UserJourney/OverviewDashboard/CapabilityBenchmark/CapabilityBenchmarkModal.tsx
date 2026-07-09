@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import { Alert, Modal, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
-import type { RepoProgressRow } from './types';
+import type { RepoProgressRow } from '../types';
 import CapabilityBenchmarkChartCard from './CapabilityBenchmarkChartCard';
 import {
   formatExecutionTime,
   formatPercent,
   formatScore,
   getReportDisplayText,
-} from './utils';
+} from '../utils';
 
 const { Link, Text } = Typography;
 

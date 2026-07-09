@@ -1,15 +1,12 @@
 import React from 'react';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Checkbox, Popover, Segmented, Typography } from 'antd';
+import { Checkbox, Segmented, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
 import ExperienceScoreRulePopoverTrigger from '../components/ExperienceScoreRulePopoverTrigger';
 import { ScoreSparkline } from './CloseRateTrendChart';
 import ScoreTrendModal from './ScoreTrendModal';
-import CapabilityBenchmarkChartCard from './CapabilityBenchmarkChartCard';
 import type {
   CommonIssueGroup,
   DashboardIssue,
-  OverviewCapabilityBenchmarkSummary,
   IssueBucket,
   IssueSourceMode,
   MetricSummary,
@@ -44,7 +41,6 @@ type OverviewSummarySectionProps = {
   issueSourceMode: IssueSourceMode;
   includeCommonIssues: boolean;
   commonIssues: CommonIssueGroup[];
-  capabilityBenchmark?: OverviewCapabilityBenchmarkSummary | null;
   trendWindow: TrendWindow;
   onTrendWindowChange: (next: TrendWindow) => void;
   onIssueSourceModeChange: (mode: IssueSourceMode) => void;
@@ -70,7 +66,6 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   issueSourceMode,
   includeCommonIssues,
   commonIssues,
-  capabilityBenchmark,
   trendWindow,
   onTrendWindowChange,
   onIssueSourceModeChange,
@@ -166,156 +161,6 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
       </button>
     );
   };
-
-  const includedCapabilityPairs = capabilityBenchmark?.includedPairs ?? [];
-  const averageCapabilityPairScores = React.useMemo(() => {
-    const average = (
-      values: Array<number | null | undefined>
-    ): number | null => {
-      const validValues = values.filter(
-        (value): value is number => typeof value === 'number'
-      );
-      if (!validValues.length) return null;
-      return (
-        validValues.reduce((sum, value) => sum + value, 0) / validValues.length
-      );
-    };
-
-    return {
-      cannScore: average(includedCapabilityPairs.map((pair) => pair.cannScore)),
-      benchmarkScore: average(
-        includedCapabilityPairs.map((pair) => pair.benchmarkScore)
-      ),
-    };
-  }, [includedCapabilityPairs]);
-  const capabilityBenchmarkStepColumns = React.useMemo(() => {
-    if (capabilityBenchmark?.scoreBreakdown?.length) {
-      return capabilityBenchmark.scoreBreakdown;
-    }
-    return (
-      includedCapabilityPairs.find((pair) => pair.scoreBreakdown?.length)
-        ?.scoreBreakdown ?? []
-    );
-  }, [capabilityBenchmark?.scoreBreakdown, includedCapabilityPairs]);
-
-  const getPairStepScore = (
-    scoreBreakdown:
-      | NonNullable<
-          OverviewCapabilityBenchmarkSummary['includedPairs'][number]['scoreBreakdown']
-        >
-      | undefined,
-    stepKey: string,
-    scoreKey: 'cannScore' | 'benchmarkScore'
-  ) =>
-    (scoreBreakdown ?? []).find((item) => item.key === stepKey)?.[scoreKey] ??
-    null;
-
-  const capabilityBenchmarkTitle = (
-    <div className="benchmark-chart-title-copy">
-      <span>能力对标-社区入门体验</span>
-      {includedCapabilityPairs.length ? (
-        <Popover
-          trigger="hover"
-          placement="topLeft"
-          content={
-            <div className="benchmark-chart-title-popover">
-              <div className="benchmark-chart-title-popover-heading">
-                已纳入 {includedCapabilityPairs.length} 个对标项目
-              </div>
-              <div className="benchmark-chart-title-popover-summary">
-                <span>
-                  CANN 项目平均分
-                  <strong>
-                    {formatScore(averageCapabilityPairScores.cannScore)}
-                  </strong>
-                </span>
-                <span>
-                  对标项目平均分
-                  <strong>
-                    {formatScore(averageCapabilityPairScores.benchmarkScore)}
-                  </strong>
-                </span>
-              </div>
-              <div className="benchmark-chart-title-popover-pairs">
-                <div className="benchmark-chart-title-popover-table-head benchmark-chart-title-popover-table-head-common">
-                  <span>仓库名</span>
-                  <span>总分</span>
-                  {capabilityBenchmarkStepColumns.map((item) => (
-                    <span key={item.key} title={item.label}>
-                      {item.label.split(/\s+/)[0] || item.key}
-                    </span>
-                  ))}
-                </div>
-                {includedCapabilityPairs.map((pair) => (
-                  <div
-                    key={`${pair.cannRepoName}-${pair.benchmarkRepoName}`}
-                    className="benchmark-chart-title-popover-pair-table"
-                  >
-                    <div className="benchmark-chart-title-popover-row benchmark-chart-title-popover-row-cann">
-                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-repo">
-                        <span className="benchmark-chart-title-popover-repo-name">
-                          {pair.cannRepoName}
-                        </span>
-                      </span>
-                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
-                        {formatScore(pair.cannScore ?? null)}
-                      </span>
-                      {capabilityBenchmarkStepColumns.map((item) => (
-                        <span
-                          key={`${item.key}-cann`}
-                          className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-step-value"
-                        >
-                          {formatScore(
-                            getPairStepScore(
-                              pair.scoreBreakdown,
-                              item.key,
-                              'cannScore'
-                            )
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="benchmark-chart-title-popover-row benchmark-chart-title-popover-row-benchmark">
-                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-repo">
-                        <span className="benchmark-chart-title-popover-repo-name">
-                          {pair.benchmarkRepoName}
-                        </span>
-                      </span>
-                      <span className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-score">
-                        {formatScore(pair.benchmarkScore ?? null)}
-                      </span>
-                      {capabilityBenchmarkStepColumns.map((item) => (
-                        <span
-                          key={`${item.key}-benchmark`}
-                          className="benchmark-chart-title-popover-cell benchmark-chart-title-popover-step-value"
-                        >
-                          {formatScore(
-                            getPairStepScore(
-                              pair.scoreBreakdown,
-                              item.key,
-                              'benchmarkScore'
-                            )
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          }
-        >
-          <button
-            type="button"
-            className="benchmark-chart-title-info-trigger"
-            aria-label="查看纳入的对标项目"
-          >
-            <InfoCircleOutlined />
-          </button>
-        </Popover>
-      ) : null}
-    </div>
-  );
 
   return (
     <>
@@ -433,14 +278,6 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           onPriorityBucketClick={(severity, bucket) =>
             onOpenIssues?.('primary', bucket, severity)
           }
-        />
-        <CapabilityBenchmarkChartCard
-          className="overview-capability-chart-card"
-          title={capabilityBenchmarkTitle}
-          rows={capabilityBenchmark?.scoreBreakdown ?? []}
-          primaryLegend="CANN"
-          secondaryLegend="CUDA"
-          emptyText="暂无已配置对标项目的总体步骤得分数据"
         />
       </div>
       <ScoreTrendModal

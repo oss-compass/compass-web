@@ -850,6 +850,62 @@ export type OverviewCapabilityBenchmark = {
   }>;
 };
 
+export type OverviewCapabilityBenchmarkDashboard = {
+  pairCount: number;
+  summaryScore: number | null;
+  summarySuccessRate: number | null;
+  summaryAvgExecutionTime: number | null;
+  closureRate: number;
+  totalScoreResult: {
+    lead: number;
+    tie: number;
+    lag: number;
+    total: number;
+    leadRepos: string[];
+    lagRepos: string[];
+  };
+  stageScoreResults: Array<{
+    key: string;
+    label: string;
+    shortLabel: string;
+    description: string;
+    lead: number;
+    tie: number;
+    lag: number;
+    total: number;
+  }>;
+  detailRows: Array<{
+    id: string;
+    cannProjectKey: string;
+    benchmarkProjectKey: string;
+    cannRepoName: string;
+    benchmarkRepoName: string;
+    teamName: string;
+    cannScore: number | null;
+    benchmarkScore: number | null;
+    scoreDiff: number | null;
+    scoreStatus: 'lead' | 'tie' | 'lag' | 'unknown';
+    stageScores: Array<{
+      key: string;
+      label: string;
+      shortLabel: string;
+      description: string;
+      cannScore: number | null;
+      benchmarkScore: number | null;
+      diff: number | null;
+      status: 'lead' | 'tie' | 'lag' | 'unknown';
+    }>;
+    stageResult: {
+      lead: number;
+      tie: number;
+      lag: number;
+    };
+    cannReportId: string;
+    benchmarkReportId: string;
+    compareReportUrl: string;
+  }>;
+};
+
 export type OverviewCardsResponse = {
   total: number;
   page: number;
@@ -963,6 +1019,12 @@ export const fetchOverviewCapabilityBenchmark =
   async (): Promise<OverviewCapabilityBenchmark> =>
     compassApiFetch<OverviewCapabilityBenchmark>(
       '/overview/capability-benchmark'
+    );
+
+export const fetchOverviewCapabilityBenchmarkDashboard =
+  async (): Promise<OverviewCapabilityBenchmarkDashboard> =>
+    compassApiFetch<OverviewCapabilityBenchmarkDashboard>(
+      '/overview/capability-benchmark-dashboard'
     );
 
 export const fetchOverviewCards = async (params: {

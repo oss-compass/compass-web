@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import type { CapabilityBenchmarkScoreItem } from './types';
+import type { CapabilityBenchmarkScoreItem } from '../types';
 
 const CHART_BARS_HEIGHT_PX = 236;
 

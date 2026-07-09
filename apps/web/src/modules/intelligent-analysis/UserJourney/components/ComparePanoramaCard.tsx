@@ -15,7 +15,7 @@ import {
   groupStepTasks,
 } from '../taskMeta';
 import SharedSearchEngineTabs from './SharedSearchEngineTabs';
-import CapabilityBenchmarkChartCard from '../OverviewDashboard/CapabilityBenchmarkChartCard';
+import CapabilityBenchmarkChartCard from '../OverviewDashboard/CapabilityBenchmark/CapabilityBenchmarkChartCard';
 import type { CapabilityBenchmarkScoreItem } from '../OverviewDashboard/types';
 
 const projectToneClasses = [

@@ -3,11 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import {
   fetchOverviewCards,
-  fetchOverviewCapabilityBenchmark,
+  fetchOverviewCapabilityBenchmarkDashboard,
   fetchOverviewCloseRateTrends,
   fetchOverviewCommonIssues,
   fetchOverviewSummary,
 } from '../rawData/apiClient';
+import {
+  CapabilityBenchmarkDetails,
+  CapabilityBenchmarkOverview,
+} from './CapabilityBenchmark';
 import CommonIssuesSection from './CommonIssuesSection';
 import ExperienceScoreRuleQASection from './ExperienceScoreRuleQASection';
 import { SEVERITY_RANK, STATUS_RANK } from './constants';
@@ -219,11 +223,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const { data: capabilityBenchmarkResp } = useQuery({
-    queryKey: ['overview-capability-benchmark', org],
+  const { data: capabilityBenchmarkDashboardResp } = useQuery({
+    queryKey: ['overview-capability-benchmark-dashboard', org],
     queryFn: async () => {
       try {
-        return await fetchOverviewCapabilityBenchmark();
+        return await fetchOverviewCapabilityBenchmarkDashboard();
       } catch (error) {
         if (
           error instanceof Error &&
@@ -232,13 +236,20 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         ) {
           return {
             pairCount: 0,
-            includedPairs: [],
+            totalScoreResult: {
+              lead: 0,
+              tie: 0,
+              lag: 0,
+              total: 0,
+              leadRepos: [],
+              lagRepos: [],
+            },
+            stageScoreResults: [],
+            detailRows: [],
+            closureRate: 0,
             summaryScore: null,
             summarySuccessRate: null,
             summaryAvgExecutionTime: null,
-            closureRate: 0,
-            teamSummaries: [],
-            scoreBreakdown: [],
           };
         }
         throw error;
@@ -684,12 +695,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           issueSourceMode={issueSourceMode}
           includeCommonIssues={includeCommonIssues}
           commonIssues={commonIssues}
-          capabilityBenchmark={capabilityBenchmarkResp ?? null}
           trendWindow={trendWindow}
           onTrendWindowChange={setTrendWindow}
           onIssueSourceModeChange={setIssueSourceMode}
           onIncludeCommonIssuesChange={setIncludeCommonIssues}
           onOpenIssues={openSummaryIssues}
+        />
+
+        <CapabilityBenchmarkOverview
+          data={capabilityBenchmarkDashboardResp ?? null}
         />
 
         <RepoProgressSection
@@ -724,6 +738,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onTeamSort={handleTeamSort}
           onOpenRepoIssues={openRepoIssues}
           onOpenTeamIssues={openTeamIssues}
+        />
+
+        <CapabilityBenchmarkDetails
+          data={capabilityBenchmarkDashboardResp ?? null}
         />
 
         <CommonIssuesSection
