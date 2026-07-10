@@ -69,6 +69,30 @@ const compareBenchmarkRowsByStageResult = (
   return left.cannRepoName.localeCompare(right.cannRepoName);
 };
 
+const compareBenchmarkRowsByScore = (
+  left: BenchmarkDetailRow,
+  right: BenchmarkDetailRow,
+  order: 'asc' | 'desc'
+) => {
+  const priority =
+    order === 'desc'
+      ? (['lead', 'tie', 'lag', 'unknown'] as const)
+      : (['lag', 'tie', 'lead', 'unknown'] as const);
+  const leftPriority = priority.indexOf(left.scoreStatus);
+  const rightPriority = priority.indexOf(right.scoreStatus);
+
+  if (leftPriority !== rightPriority) {
+    return leftPriority - rightPriority;
+  }
+
+  const scoreDiff =
+    order === 'desc'
+      ? getScoreSortValue(right.cannScore) - getScoreSortValue(left.cannScore)
+      : getScoreSortValue(left.cannScore) - getScoreSortValue(right.cannScore);
+  if (scoreDiff !== 0) return scoreDiff;
+  return left.cannRepoName.localeCompare(right.cannRepoName);
+};
+
 const percent = (value: number, total: number) => {
   if (!total) return 0;
   return Math.max(0, Math.min(100, (value / total) * 100));
@@ -375,9 +399,10 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
   isLoading = false,
 }) => {
   const [teamFilter, setTeamFilter] = React.useState('');
-  const [stageResultSortOrder, setStageResultSortOrder] = React.useState<
-    'asc' | 'desc'
-  >('desc');
+  const [sortConfig, setSortConfig] = React.useState<{
+    key: 'stageResult' | 'score';
+    order: 'asc' | 'desc';
+  }>({ key: 'stageResult', order: 'desc' });
   const stageColumns = React.useMemo(
     () =>
       data?.detailRows.find((row) => row.stageScores.length)?.stageScores ?? [],
@@ -401,10 +426,18 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
       [...(data?.detailRows ?? [])]
         .filter((row) => !teamFilter || row.teamName === teamFilter)
         .sort((left, right) =>
-          compareBenchmarkRowsByStageResult(left, right, stageResultSortOrder)
+          sortConfig.key === 'stageResult'
+            ? compareBenchmarkRowsByStageResult(left, right, sortConfig.order)
+            : compareBenchmarkRowsByScore(left, right, sortConfig.order)
         ),
-    [data?.detailRows, stageResultSortOrder, teamFilter]
+    [data?.detailRows, sortConfig, teamFilter]
   );
+  const toggleSort = React.useCallback((key: 'stageResult' | 'score') => {
+    setSortConfig((previous) => ({
+      key,
+      order: previous.key === key && previous.order === 'desc' ? 'asc' : 'desc',
+    }));
+  }, []);
   const columns = React.useMemo<TableProps<BenchmarkDetailRow>['columns']>(
     () => [
       {
@@ -450,7 +483,16 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
         ),
       },
       {
-        title: '综合体验评分',
+        title: (
+          <span className="sortable-col-title">
+            <span>综合体验评分</span>
+            {sortConfig.key === 'score' ? (
+              <span className="sort-arrow">
+                {sortConfig.order === 'asc' ? '↑' : '↓'}
+              </span>
+            ) : null}
+          </span>
+        ),
         key: 'score',
         width: 96,
         onCell: (record) => ({
@@ -461,6 +503,10 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
             {formatPairScore(record.cannScore, record.benchmarkScore)}
           </span>
         ),
+        onHeaderCell: () => ({
+          onClick: () => toggleSort('score'),
+          className: 'sortable-col',
+        }),
       },
       ...stageColumns.map((stage) => ({
         title: (
@@ -494,9 +540,11 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
               <span>各阶段评分对标结果</span>
               <span>（领先/持平/落后）</span>
             </span>
-            <span className="sort-arrow">
-              {stageResultSortOrder === 'asc' ? '↑' : '↓'}
-            </span>
+            {sortConfig.key === 'stageResult' ? (
+              <span className="sort-arrow">
+                {sortConfig.order === 'asc' ? '↑' : '↓'}
+              </span>
+            ) : null}
           </span>
         ),
         key: 'stageResult',
@@ -511,10 +559,7 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
           </span>
         ),
         onHeaderCell: () => ({
-          onClick: () =>
-            setStageResultSortOrder((prev) =>
-              prev === 'desc' ? 'asc' : 'desc'
-            ),
+          onClick: () => toggleSort('stageResult'),
           className: 'sortable-col',
         }),
       },
@@ -535,7 +580,7 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
           ),
       },
     ],
-    [stageColumns, stageResultSortOrder, teamFilter, teamOptions]
+    [sortConfig, stageColumns, teamFilter, teamOptions, toggleSort]
   );
 
   return (

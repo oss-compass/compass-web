@@ -2903,9 +2903,10 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       align-items: center;
       gap: 6px;
       color: #475569;
-      font-size: 14px;
-      line-height: 20px;
-      font-weight: 850;
+      font-size: 13px;
+      line-height: 18px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
 
@@ -2923,8 +2924,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
     .capability-record .slash {
       color: #94a3b8;
-      font-size: 12px;
-      font-weight: 850;
+      font-size: 13px;
+      font-weight: 600;
     }
 
     .nowrap-tag {
