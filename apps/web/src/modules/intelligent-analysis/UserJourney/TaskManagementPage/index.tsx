@@ -15,9 +15,13 @@ import {
   Card,
   Grid,
   Input,
+  Popconfirm,
+  Select,
   Space,
+  Switch,
   Table,
   Tag,
+  Tabs,
   Typography,
   message,
 } from 'antd';
@@ -31,16 +35,19 @@ import {
 import {
   cancelOverviewRepoRerun,
   clearCompassOperatorToken,
+  deleteOverviewRepoRerunRecord,
   fetchCompassOperatorMe,
   fetchOverviewAllRepoRerunRecords,
   fetchOverviewRepoRerunRecords,
   fetchOverviewRerunNodes,
+  fetchRepoRerunScheduleConfig,
   fetchRepoManagementRegisterOptions,
   getCompassOperatorToken,
   loginCompassOperator,
   registerCompassOperator,
   setCompassOperatorToken,
   triggerOverviewRepoRerun,
+  updateRepoRerunScheduleConfig,
 } from '../rawData/apiClient';
 import type {
   CompassOperatorUser,
@@ -57,6 +64,7 @@ import {
   getRerunStatusMeta,
   isActiveRerunJob,
   isRerunReviewCompleted,
+  isRerunReviewPending,
   RepoRerunModal,
   RepoRerunRecordsModal,
   RerunActionButton,
@@ -472,6 +480,14 @@ const canOperateJob = (
   return false;
 };
 
+const canDeleteRerunJob = (job: RepoRerunJob) =>
+  !isRerunReviewPending(job) &&
+  ['completed', 'failed', 'cancelled', 'timeout'].includes(
+    String(job.status || '')
+      .trim()
+      .toLowerCase()
+  );
+
 const TaskManagementPage: React.FC = () => {
   const router = useRouter();
   const screens = Grid.useBreakpoint();
@@ -481,6 +497,10 @@ const TaskManagementPage: React.FC = () => {
   const [teamFilter, setTeamFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [activeTaskTab, setActiveTaskTab] = useState<'manual' | 'scheduled'>(
+    'manual'
+  );
+  const [scheduleSaving, setScheduleSaving] = useState(false);
   const [operatorUser, setOperatorUser] = useState<CompassOperatorUser | null>(
     null
   );
@@ -491,6 +511,7 @@ const TaskManagementPage: React.FC = () => {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
   const [accessModalOpen, setAccessModalOpen] = useState(false);
   const [cancelingJobId, setCancelingJobId] = useState('');
+  const [deletingJobId, setDeletingJobId] = useState('');
   const [rerunning, setRerunning] = useState(false);
   const [rerunModal, setRerunModal] = useState<{
     open: boolean;
@@ -549,6 +570,7 @@ const TaskManagementPage: React.FC = () => {
       keyword,
       statusFilter,
       teamFilter,
+      activeTaskTab,
       page,
       pageSize,
     ],
@@ -557,11 +579,66 @@ const TaskManagementPage: React.FC = () => {
         keyword: keyword || undefined,
         status: statusFilter === 'all' ? undefined : statusFilter,
         teamName: teamFilter || undefined,
+        triggerSource: activeTaskTab,
         page,
         size: pageSize,
       }),
     enabled: !!operatorUser,
   });
+
+  const {
+    data: scheduleConfig,
+    isLoading: scheduleConfigLoading,
+    refetch: refetchScheduleConfig,
+  } = useQuery({
+    queryKey: ['repo-rerun-schedule-config', operatorUser?.username],
+    queryFn: () => fetchRepoRerunScheduleConfig(),
+    enabled: operatorUser?.role === 'admin',
+  });
+
+  useEffect(() => {
+    if (operatorUser && operatorUser.role !== 'admin') {
+      setActiveTaskTab('manual');
+    }
+  }, [operatorUser]);
+
+  const handleScheduleEnabledChange = useCallback(
+    async (enabled: boolean) => {
+      setScheduleSaving(true);
+      try {
+        const result = await updateRepoRerunScheduleConfig({ enabled });
+        messageApi.success(result.message);
+        await refetchScheduleConfig();
+      } catch (error) {
+        messageApi.error(
+          error instanceof Error ? error.message : '更新定时重跑配置失败'
+        );
+      } finally {
+        setScheduleSaving(false);
+      }
+    },
+    [messageApi, refetchScheduleConfig]
+  );
+
+  const handleSchedulePeriodChange = useCallback(
+    async (schedulePeriod: 'daily' | 'weekly') => {
+      setScheduleSaving(true);
+      try {
+        const result = await updateRepoRerunScheduleConfig({
+          schedule_period: schedulePeriod,
+        });
+        messageApi.success(result.message);
+        await refetchScheduleConfig();
+      } catch (error) {
+        messageApi.error(
+          error instanceof Error ? error.message : '更新定时重跑周期失败'
+        );
+      } finally {
+        setScheduleSaving(false);
+      }
+    },
+    [messageApi, refetchScheduleConfig]
+  );
 
   const { data: registerRepoOptionsResp } = useQuery({
     queryKey: ['repo-management-register-options'],
@@ -935,6 +1012,35 @@ const TaskManagementPage: React.FC = () => {
     [loadRerunRecords, messageApi, operatorUser, refetchTaskList]
   );
 
+  const handleDeleteJob = useCallback(
+    async (job: RepoRerunJob) => {
+      if (!operatorUser || operatorUser.role !== 'admin') {
+        messageApi.error('仅管理员可删除重跑记录');
+        return;
+      }
+      if (!canDeleteRerunJob(job)) {
+        messageApi.warning('仅已完成、失败、已撤销或超时的重跑任务支持删除');
+        return;
+      }
+      setDeletingJobId(job.job_id);
+      try {
+        const result = await deleteOverviewRepoRerunRecord(job.job_id);
+        messageApi.success(result.message || '重跑记录已删除');
+        setRerunRecords((prev) =>
+          prev.filter((item) => item.job_id !== job.job_id)
+        );
+        await refetchTaskList();
+      } catch (error) {
+        messageApi.error(
+          error instanceof Error ? error.message : '删除重跑记录失败'
+        );
+      } finally {
+        setDeletingJobId('');
+      }
+    },
+    [messageApi, operatorUser, refetchTaskList]
+  );
+
   const sortableTitle = useCallback(
     (label: string) => (
       <span className="sortable-col-title">
@@ -987,7 +1093,7 @@ const TaskManagementPage: React.FC = () => {
         ),
         dataIndex: 'team_name',
         key: 'team_name',
-        width: 140,
+        width: 180,
         sorter: (left, right) => compareText(left.team_name, right.team_name),
         sortDirections: ['ascend', 'descend'],
         render: (value) => value || '--',
@@ -1151,7 +1257,7 @@ const TaskManagementPage: React.FC = () => {
         title: '操作',
         key: 'actions',
         fixed: 'right',
-        width: 140,
+        width: 180,
         render: (_value, record) => {
           const canManageRecord = canOperateJob(operatorUser, record);
           if (!canManageRecord)
@@ -1181,6 +1287,26 @@ const TaskManagementPage: React.FC = () => {
                   撤销
                 </Button>
               ) : null}
+              {operatorUser?.role === 'admin' && canDeleteRerunJob(record) ? (
+                <Popconfirm
+                  title="确认删除该重跑记录？"
+                  description="删除后无法恢复。"
+                  okText="删除"
+                  cancelText="取消"
+                  okButtonProps={{ danger: true }}
+                  onConfirm={() => handleDeleteJob(record)}
+                >
+                  <Button
+                    type="link"
+                    danger
+                    size="small"
+                    className="!px-0"
+                    loading={deletingJobId === record.job_id}
+                  >
+                    删除
+                  </Button>
+                </Popconfirm>
+              ) : null}
             </Space>
           );
         },
@@ -1188,7 +1314,9 @@ const TaskManagementPage: React.FC = () => {
     ],
     [
       cancelingJobId,
+      deletingJobId,
       handleCancelJob,
+      handleDeleteJob,
       openRerunModal,
       openRerunRecordsModal,
       operatorUser,
@@ -1284,6 +1412,86 @@ const TaskManagementPage: React.FC = () => {
             </div>
 
             <div className="mb-5">
+              {operatorUser.role === 'admin' ? (
+                <Tabs
+                  activeKey={activeTaskTab}
+                  items={[
+                    { key: 'manual', label: '手动重跑' },
+                    { key: 'scheduled', label: '定时重跑' },
+                  ]}
+                  onChange={(key) => {
+                    setActiveTaskTab(key as 'manual' | 'scheduled');
+                    setPage(1);
+                  }}
+                />
+              ) : null}
+
+              {operatorUser.role === 'admin' &&
+              activeTaskTab === 'scheduled' ? (
+                <div className="mb-5 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <div className="font-semibold text-slate-800">
+                        定时自动重跑
+                      </div>
+                      <div className="mt-1 text-sm text-slate-500">
+                        扫描总览看板中存在“已修复待复测”痛点的仓库，进行自动重跑。
+                      </div>
+                      <div className="mt-2 text-xs text-slate-500">
+                        下次触发：
+                        {scheduleConfig?.next_trigger_at
+                          ? formatDateTime(scheduleConfig.next_trigger_at)
+                          : scheduleConfig?.enabled === false
+                          ? '任务已关闭'
+                          : '--'}
+                        {scheduleConfig?.schedule_period === 'weekly'
+                          ? '（每周一 00:00）'
+                          : '（每天 00:00）'}
+                      </div>
+                      {scheduleConfig?.last_run_at ? (
+                        <div className="mt-2 text-xs text-slate-500">
+                          最近执行：{formatDateTime(scheduleConfig.last_run_at)}
+                          ；候选{' '}
+                          {scheduleConfig.last_run_result?.candidate_count ?? 0}
+                          ，已触发{' '}
+                          {scheduleConfig.last_run_result?.triggered_count ?? 0}
+                          ，失败{' '}
+                          {scheduleConfig.last_run_result?.failed_count ?? 0}
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="flex shrink-0 flex-wrap items-center gap-3 text-sm font-medium text-slate-700">
+                      <span>周期</span>
+                      <Select
+                        value={scheduleConfig?.schedule_period || 'daily'}
+                        className="[&_.ant-select-selector]:!rounded-full"
+                        options={[
+                          { value: 'daily', label: '每天' },
+                          { value: 'weekly', label: '每周' },
+                        ]}
+                        disabled={scheduleConfigLoading || scheduleSaving}
+                        style={{ width: 96 }}
+                        onChange={(value) => {
+                          void handleSchedulePeriodChange(value);
+                        }}
+                      />
+                      <span>
+                        {scheduleConfig?.enabled === false
+                          ? '已关闭'
+                          : '已开启'}
+                      </span>
+                      <Switch
+                        checked={scheduleConfig?.enabled !== false}
+                        loading={scheduleConfigLoading || scheduleSaving}
+                        onChange={(checked) => {
+                          void handleScheduleEnabledChange(checked);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
               <NodeStatusSection
                 nodes={rerunNodes}
                 loading={rerunNodesLoading}

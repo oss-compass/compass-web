@@ -153,6 +153,8 @@ export type RepoRerunJob = {
   branch?: string;
   requested_by: string;
   requested_by_role: CompassOperatorRole;
+  trigger_source?: 'manual' | 'scheduled';
+  schedule_date?: string;
   status:
     | 'queued'
     | 'pending'
@@ -198,6 +200,23 @@ export type RepoRerunJobListResponse = {
   page: number;
   size: number;
   items: RepoRerunJob[];
+};
+
+export type RepoRerunScheduleConfig = {
+  enabled: boolean;
+  schedule_period: 'daily' | 'weekly';
+  timezone: string;
+  next_trigger_at?: string | null;
+  updated_by?: string;
+  updated_at?: string | null;
+  last_run_at?: string | null;
+  last_run_date?: string;
+  last_run_result?: {
+    candidate_count?: number;
+    triggered_count?: number;
+    already_running_count?: number;
+    failed_count?: number;
+  };
 };
 
 export type RepoRerunLogItem = {
@@ -519,6 +538,7 @@ export const fetchOverviewAllRepoRerunRecords = async (
     status?: RepoRerunJob['status'];
     teamName?: string;
     repoName?: string;
+    triggerSource?: 'manual' | 'scheduled';
     page?: number;
     size?: number;
   },
@@ -532,12 +552,53 @@ export const fetchOverviewAllRepoRerunRecords = async (
   if (params.status) search.set('status', params.status);
   if (params.teamName) search.set('team_name', params.teamName);
   if (params.repoName) search.set('repo_name', params.repoName);
+  if (params.triggerSource) search.set('trigger_source', params.triggerSource);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiAuthedFetch<RepoRerunJobListResponse>(
     `/overview/repos/rerun-records?${search.toString()}`,
     token
   );
+};
+
+export const deleteOverviewRepoRerunRecord = async (
+  jobId: string,
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: RepoRerunJob }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{ message: string; data: RepoRerunJob }>(
+    `/overview/repos/rerun-records/${encodeURIComponent(jobId)}`,
+    token,
+    { method: 'DELETE' }
+  );
+};
+
+export const fetchRepoRerunScheduleConfig = async (
+  token = getCompassOperatorToken()
+): Promise<RepoRerunScheduleConfig> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<RepoRerunScheduleConfig>(
+    '/overview/repos/rerun-schedule',
+    token
+  );
+};
+
+export const updateRepoRerunScheduleConfig = async (
+  payload: {
+    enabled?: boolean;
+    schedule_period?: 'daily' | 'weekly';
+  },
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: RepoRerunScheduleConfig }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{
+    message: string;
+    data: RepoRerunScheduleConfig;
+  }>('/overview/repos/rerun-schedule', token, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
 };
 
 export const fetchOverviewRerunNodes = async (
