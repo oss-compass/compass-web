@@ -2864,34 +2864,36 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .capability-status-tie,
     .capability-status-lag,
     .capability-status-unknown {
-      display: inline-flex;
-      justify-content: center;
-      min-width: 64px;
-      border-radius: 7px;
-      padding: 2px 7px;
-      font-size: 12px;
+      color: inherit;
+    }
+
+    .capability-status-value {
+      font-size: 13px;
       line-height: 18px;
-      font-weight: 800;
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
 
-    .capability-status-lead {
+    .capability-detail-table .ant-table-tbody > tr > td.capability-status-lead {
       color: #16835e;
       background: #dff4eb;
     }
 
-    .capability-status-tie {
+    .capability-detail-table .ant-table-tbody > tr > td.capability-status-tie {
       color: #607086;
       background: #eef2f7;
     }
 
-    .capability-status-lag {
+    .capability-detail-table .ant-table-tbody > tr > td.capability-status-lag {
       color: #c2413b;
       background: #fce4e2;
     }
 
-    .capability-status-unknown {
+    .capability-detail-table
+      .ant-table-tbody
+      > tr
+      > td.capability-status-unknown {
       color: #94a3b8;
       background: #f8fafc;
     }
@@ -2901,7 +2903,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       align-items: center;
       gap: 6px;
       color: #475569;
-      font-size: 13px;
+      font-size: 14px;
       line-height: 20px;
       font-weight: 850;
       white-space: nowrap;

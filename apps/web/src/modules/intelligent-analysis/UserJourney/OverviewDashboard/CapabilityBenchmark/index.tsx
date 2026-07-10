@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { CheckOutlined, FilterFilled } from '@ant-design/icons';
 import { Skeleton, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
@@ -42,34 +43,30 @@ const formatPairScore = (left: number | null, right: number | null) =>
 const getScoreSortValue = (value: number | null | undefined) =>
   typeof value === 'number' && Number.isFinite(value) ? value : -1;
 
-const compareBenchmarkRows = (
-  left: BenchmarkDetailRow,
-  right: BenchmarkDetailRow
-) => {
-  const leftStage = left.stageResult;
-  const rightStage = right.stageResult;
-  if (leftStage.lead !== rightStage.lead) {
-    return rightStage.lead - leftStage.lead;
-  }
-  if (leftStage.tie !== rightStage.tie) {
-    return rightStage.tie - leftStage.tie;
-  }
-  if (leftStage.lag !== rightStage.lag) {
-    return rightStage.lag - leftStage.lag;
-  }
-  const scoreDiff =
-    getScoreSortValue(right.cannScore) - getScoreSortValue(left.cannScore);
-  if (scoreDiff !== 0) return scoreDiff;
-  return left.cannRepoName.localeCompare(right.cannRepoName);
-};
-
 const compareBenchmarkRowsByStageResult = (
   left: BenchmarkDetailRow,
   right: BenchmarkDetailRow,
   order: 'asc' | 'desc'
 ) => {
-  const result = compareBenchmarkRows(left, right);
-  return order === 'desc' ? result : -result;
+  const leftStage = left.stageResult;
+  const rightStage = right.stageResult;
+  const priority =
+    order === 'desc'
+      ? (['lead', 'tie', 'lag'] as const)
+      : (['lag', 'tie', 'lead'] as const);
+
+  for (const key of priority) {
+    if (leftStage[key] !== rightStage[key]) {
+      return rightStage[key] - leftStage[key];
+    }
+  }
+
+  const scoreDiff =
+    order === 'desc'
+      ? getScoreSortValue(right.cannScore) - getScoreSortValue(left.cannScore)
+      : getScoreSortValue(left.cannScore) - getScoreSortValue(right.cannScore);
+  if (scoreDiff !== 0) return scoreDiff;
+  return left.cannRepoName.localeCompare(right.cannRepoName);
 };
 
 const percent = (value: number, total: number) => {
@@ -87,12 +84,33 @@ const TeamFilterHeader: React.FC<{
 }> = ({ value, options, onChange }) => {
   const [open, setOpen] = React.useState(false);
   const wrapperRef = React.useRef<HTMLSpanElement>(null);
+  const popupRef = React.useRef<HTMLDivElement>(null);
+  const [popupStyle, setPopupStyle] = React.useState<React.CSSProperties>({});
+
+  const updatePopupPosition = React.useCallback(() => {
+    const rect = wrapperRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const width = 220;
+    setPopupStyle({
+      position: 'fixed',
+      top: rect.bottom + 4,
+      left: Math.max(
+        8,
+        Math.min(rect.right - width, window.innerWidth - width - 8)
+      ),
+      zIndex: 1050,
+      width,
+    });
+  }, []);
 
   React.useEffect(() => {
     if (!open) return undefined;
     const handleDocClick = (event: MouseEvent) => {
       if (!wrapperRef.current) return;
-      if (!wrapperRef.current.contains(event.target as Node)) {
+      if (
+        !wrapperRef.current.contains(event.target as Node) &&
+        !popupRef.current?.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -106,6 +124,17 @@ const TeamFilterHeader: React.FC<{
       document.removeEventListener('keydown', handleKey);
     };
   }, [open]);
+
+  React.useEffect(() => {
+    if (!open) return undefined;
+    updatePopupPosition();
+    window.addEventListener('resize', updatePopupPosition);
+    window.addEventListener('scroll', updatePopupPosition, true);
+    return () => {
+      window.removeEventListener('resize', updatePopupPosition);
+      window.removeEventListener('scroll', updatePopupPosition, true);
+    };
+  }, [open, updatePopupPosition]);
 
   const allOptions = [{ value: '', label: '全部团队' }, ...options];
   const currentLabel =
@@ -136,47 +165,47 @@ const TeamFilterHeader: React.FC<{
       >
         <FilterFilled className="text-[12px]" />
       </button>
-      {open ? (
-        <div
-          className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
-          style={{
-            position: 'absolute',
-            top: 'calc(100% + 4px)',
-            right: 0,
-            zIndex: 1050,
-            width: 220,
-          }}
-          onClick={(event) => event.stopPropagation()}
-          onMouseDown={(event) => event.stopPropagation()}
-        >
-          <div className="mb-2 text-xs font-semibold text-slate-500">
-            责任团队
-          </div>
-          <div className="flex max-h-72 flex-col gap-1 overflow-auto">
-            {allOptions.map((option) => {
-              const active = value === option.value;
-              return (
-                <button
-                  key={option.value || '__all__'}
-                  type="button"
-                  className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
-                    active
-                      ? 'border-blue-200 bg-blue-50 text-blue-700'
-                      : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
-                  }`}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onChange(option.value);
-                  }}
-                >
-                  <span className="min-w-0 truncate">{option.label}</span>
-                  {active ? <CheckOutlined className="ml-2 text-xs" /> : null}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ) : null}
+      {open && typeof document !== 'undefined'
+        ? createPortal(
+            <div
+              ref={popupRef}
+              className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+              style={popupStyle}
+              onClick={(event) => event.stopPropagation()}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <div className="mb-2 text-xs font-semibold text-slate-500">
+                责任团队
+              </div>
+              <div className="flex max-h-72 flex-col gap-1 overflow-auto">
+                {allOptions.map((option) => {
+                  const active = value === option.value;
+                  return (
+                    <button
+                      key={option.value || '__all__'}
+                      type="button"
+                      className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                        active
+                          ? 'border-blue-200 bg-blue-50 text-blue-700'
+                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                      }`}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onChange(option.value);
+                      }}
+                    >
+                      <span className="min-w-0 truncate">{option.label}</span>
+                      {active ? (
+                        <CheckOutlined className="ml-2 text-xs" />
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </span>
   );
 };
@@ -424,8 +453,11 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
         title: '综合体验评分',
         key: 'score',
         width: 96,
+        onCell: (record) => ({
+          className: STATUS_CLASS[record.scoreStatus],
+        }),
         render: (_value, record) => (
-          <span className={STATUS_CLASS[record.scoreStatus]}>
+          <span className="capability-status-value">
             {formatPairScore(record.cannScore, record.benchmarkScore)}
           </span>
         ),
@@ -439,10 +471,14 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
         ),
         key: stage.key,
         width: 96,
+        onCell: (record: BenchmarkDetailRow) => ({
+          className:
+            STATUS_CLASS[getStageCell(record, stage.key)?.status ?? 'unknown'],
+        }),
         render: (_value: unknown, record: BenchmarkDetailRow) => {
           const cell = getStageCell(record, stage.key);
           return (
-            <span className={STATUS_CLASS[cell?.status ?? 'unknown']}>
+            <span className="capability-status-value">
               {formatPairScore(
                 cell?.cannScore ?? null,
                 cell?.benchmarkScore ?? null
