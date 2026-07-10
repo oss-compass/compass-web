@@ -219,6 +219,36 @@ export type RepoRerunScheduleConfig = {
   };
 };
 
+export type WeeklyReportPreviewConfig = {
+  preview_enabled: boolean;
+  preview_recipients: string[];
+  timezone: string;
+  updated_by?: string;
+  updated_at?: string | null;
+  last_preview_at?: string | null;
+  last_preview_status?: 'sent' | 'failed' | '';
+  last_preview_result?: Record<string, unknown>;
+  next_preview_at?: string | null;
+};
+
+export type WeeklyReportFormalRecord = {
+  send_id: string;
+  send_type: 'formal';
+  status: 'sent' | 'failed';
+  requested_by: string;
+  recipients: string[];
+  cc_recipients: string[];
+  message?: string;
+  created_at: string;
+};
+
+export type WeeklyReportFormalRecordListResponse = {
+  page: number;
+  size: number;
+  total: number;
+  items: WeeklyReportFormalRecord[];
+};
+
 export type RepoRerunLogItem = {
   timestamp?: string;
   time?: string;
@@ -599,6 +629,55 @@ export const updateRepoRerunScheduleConfig = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
+};
+
+export const fetchWeeklyReportPreviewConfig = async (
+  token = getCompassOperatorToken()
+): Promise<WeeklyReportPreviewConfig> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<WeeklyReportPreviewConfig>(
+    '/weekly-report-management/preview-config',
+    token
+  );
+};
+
+export const updateWeeklyReportPreviewConfig = async (
+  payload: { preview_enabled?: boolean; preview_recipients?: string[] },
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: WeeklyReportPreviewConfig }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{
+    message: string;
+    data: WeeklyReportPreviewConfig;
+  }>('/weekly-report-management/preview-config', token, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+};
+
+export const sendFormalWeeklyReport = async (
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: WeeklyReportFormalRecord }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{
+    message: string;
+    data: WeeklyReportFormalRecord;
+  }>('/weekly-report-management/send-formal', token, { method: 'POST' });
+};
+
+export const fetchFormalWeeklyReportRecords = async (
+  params: { page?: number; size?: number },
+  token = getCompassOperatorToken()
+): Promise<WeeklyReportFormalRecordListResponse> => {
+  if (!token) throw new Error('未登录');
+  const search = new URLSearchParams();
+  search.set('page', String(params.page ?? 1));
+  search.set('size', String(params.size ?? 20));
+  return compassApiAuthedFetch<WeeklyReportFormalRecordListResponse>(
+    `/weekly-report-management/formal-records?${search.toString()}`,
+    token
+  );
 };
 
 export const fetchOverviewRerunNodes = async (

@@ -16,9 +16,7 @@ import {
   Grid,
   Input,
   Popconfirm,
-  Select,
   Space,
-  Switch,
   Table,
   Tag,
   Tabs,
@@ -54,6 +52,8 @@ import type {
   DevxNodeStatus,
   RepoRerunJob,
 } from '../rawData/apiClient';
+import WeeklyReportManagementSection from './WeeklyReportManagementSection';
+import ScheduledRerunConfigSection from './ScheduledRerunConfigSection';
 import DashboardStyles from '../OverviewDashboard/DashboardStyles';
 import OperatorAccessModal, {
   type OperatorRegisterValues,
@@ -497,9 +497,9 @@ const TaskManagementPage: React.FC = () => {
   const [teamFilter, setTeamFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [activeTaskTab, setActiveTaskTab] = useState<'manual' | 'scheduled'>(
-    'manual'
-  );
+  const [activeTaskTab, setActiveTaskTab] = useState<
+    'manual' | 'scheduled' | 'weekly_report'
+  >('manual');
   const [scheduleSaving, setScheduleSaving] = useState(false);
   const [operatorUser, setOperatorUser] = useState<CompassOperatorUser | null>(
     null
@@ -579,11 +579,11 @@ const TaskManagementPage: React.FC = () => {
         keyword: keyword || undefined,
         status: statusFilter === 'all' ? undefined : statusFilter,
         teamName: teamFilter || undefined,
-        triggerSource: activeTaskTab,
+        triggerSource: activeTaskTab === 'scheduled' ? 'scheduled' : 'manual',
         page,
         size: pageSize,
       }),
-    enabled: !!operatorUser,
+    enabled: !!operatorUser && activeTaskTab !== 'weekly_report',
   });
 
   const {
@@ -597,7 +597,7 @@ const TaskManagementPage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (operatorUser && operatorUser.role !== 'admin') {
+    if (operatorUser?.role !== 'admin') {
       setActiveTaskTab('manual');
     }
   }, [operatorUser]);
@@ -1418,9 +1418,12 @@ const TaskManagementPage: React.FC = () => {
                   items={[
                     { key: 'manual', label: '手动重跑' },
                     { key: 'scheduled', label: '定时重跑' },
+                    { key: 'weekly_report', label: '周报管理' },
                   ]}
                   onChange={(key) => {
-                    setActiveTaskTab(key as 'manual' | 'scheduled');
+                    setActiveTaskTab(
+                      key as 'manual' | 'scheduled' | 'weekly_report'
+                    );
                     setPage(1);
                   }}
                 />
@@ -1428,146 +1431,103 @@ const TaskManagementPage: React.FC = () => {
 
               {operatorUser.role === 'admin' &&
               activeTaskTab === 'scheduled' ? (
-                <div className="mb-5 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="font-semibold text-slate-800">
-                        定时自动重跑
-                      </div>
-                      <div className="mt-1 text-sm text-slate-500">
-                        扫描总览看板中存在“已修复待复测”痛点的仓库，进行自动重跑。
-                      </div>
-                      <div className="mt-2 text-xs text-slate-500">
-                        下次触发：
-                        {scheduleConfig?.next_trigger_at
-                          ? formatDateTime(scheduleConfig.next_trigger_at)
-                          : scheduleConfig?.enabled === false
-                          ? '任务已关闭'
-                          : '--'}
-                        {scheduleConfig?.schedule_period === 'weekly'
-                          ? '（每周一 00:00）'
-                          : '（每天 00:00）'}
-                      </div>
-                      {scheduleConfig?.last_run_at ? (
-                        <div className="mt-2 text-xs text-slate-500">
-                          最近执行：{formatDateTime(scheduleConfig.last_run_at)}
-                          ；候选{' '}
-                          {scheduleConfig.last_run_result?.candidate_count ?? 0}
-                          ，已触发{' '}
-                          {scheduleConfig.last_run_result?.triggered_count ?? 0}
-                          ，失败{' '}
-                          {scheduleConfig.last_run_result?.failed_count ?? 0}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="flex shrink-0 flex-wrap items-center gap-3 text-sm font-medium text-slate-700">
-                      <span>周期</span>
-                      <Select
-                        value={scheduleConfig?.schedule_period || 'daily'}
-                        className="[&_.ant-select-selector]:!rounded-full"
-                        options={[
-                          { value: 'daily', label: '每天' },
-                          { value: 'weekly', label: '每周' },
-                        ]}
-                        disabled={scheduleConfigLoading || scheduleSaving}
-                        style={{ width: 96 }}
-                        onChange={(value) => {
-                          void handleSchedulePeriodChange(value);
-                        }}
-                      />
-                      <span>
-                        {scheduleConfig?.enabled === false
-                          ? '已关闭'
-                          : '已开启'}
-                      </span>
-                      <Switch
-                        checked={scheduleConfig?.enabled !== false}
-                        loading={scheduleConfigLoading || scheduleSaving}
-                        onChange={(checked) => {
-                          void handleScheduleEnabledChange(checked);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <ScheduledRerunConfigSection
+                  config={scheduleConfig}
+                  loading={scheduleConfigLoading}
+                  saving={scheduleSaving}
+                  onEnabledChange={(enabled) => {
+                    void handleScheduleEnabledChange(enabled);
+                  }}
+                  onPeriodChange={(period) => {
+                    void handleSchedulePeriodChange(period);
+                  }}
+                />
               ) : null}
 
-              <NodeStatusSection
-                nodes={rerunNodes}
-                loading={rerunNodesLoading}
-                error={rerunNodesError}
-              />
+              {activeTaskTab === 'weekly_report' ? (
+                <WeeklyReportManagementSection />
+              ) : (
+                <NodeStatusSection
+                  nodes={rerunNodes}
+                  loading={rerunNodesLoading}
+                  error={rerunNodesError}
+                />
+              )}
             </div>
 
-            <div className="mb-5 flex flex-wrap items-center gap-3">
-              <Input.Search
-                allowClear
-                placeholder="搜索仓库 / 任务ID / 操作人 / 报告ID"
-                value={keyword}
-                className={searchClassName}
-                onChange={(event) => {
-                  setKeyword(event.target.value);
-                  setPage(1);
-                }}
-                style={{ width: screens.lg ? 340 : '100%' }}
-              />
-              <Space wrap className="ml-auto justify-end">
-                <Button
-                  icon={<ReloadOutlined />}
-                  className={`${controlClassName} px-3 font-semibold text-slate-700`}
-                  onClick={() => {
-                    void loadOperatorUser();
-                    void loadRerunNodes();
-                    void refetchTaskList();
+            {activeTaskTab !== 'weekly_report' ? (
+              <>
+                <div className="mb-5 flex flex-wrap items-center gap-3">
+                  <Input.Search
+                    allowClear
+                    placeholder="搜索仓库 / 任务ID / 操作人 / 报告ID"
+                    value={keyword}
+                    className={searchClassName}
+                    onChange={(event) => {
+                      setKeyword(event.target.value);
+                      setPage(1);
+                    }}
+                    style={{ width: screens.lg ? 340 : '100%' }}
+                  />
+                  <Space wrap className="ml-auto justify-end">
+                    <Button
+                      icon={<ReloadOutlined />}
+                      className={`${controlClassName} px-3 font-semibold text-slate-700`}
+                      onClick={() => {
+                        void loadOperatorUser();
+                        void loadRerunNodes();
+                        void refetchTaskList();
+                      }}
+                    >
+                      刷新
+                    </Button>
+                    <Button
+                      className={`${controlClassName} px-3 font-semibold text-slate-700`}
+                      onClick={() => setAccessModalOpen(true)}
+                    >
+                      切换操作账号
+                    </Button>
+                  </Space>
+                </div>
+
+                <Table<RepoRerunJob>
+                  className="overview-ant-table"
+                  style={{ width: '100%' }}
+                  rowKey={(record) =>
+                    record.job_id ||
+                    record.third_party_task_id ||
+                    `${record.project_key}-${record.created_at}`
+                  }
+                  loading={isLoading || authChecking}
+                  columns={columns}
+                  dataSource={taskItems}
+                  scroll={{ x: 1544 }}
+                  onChange={handleTableChange}
+                  pagination={{
+                    current: page,
+                    pageSize,
+                    total: taskListResp?.total || 0,
+                    showSizeChanger: true,
+                    showQuickJumper: true,
+                    showTotal: (total, range) =>
+                      `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+                    locale: {
+                      items_per_page: '条/页',
+                      jump_to: '跳至',
+                      jump_to_confirm: '确定',
+                      page: '页',
+                      prev_page: '上一页',
+                      next_page: '下一页',
+                      prev_5: '向前 5 页',
+                      next_5: '向后 5 页',
+                      prev_3: '向前 3 页',
+                      next_3: '向后 3 页',
+                    },
                   }}
-                >
-                  刷新
-                </Button>
-                <Button
-                  className={`${controlClassName} px-3 font-semibold text-slate-700`}
-                  onClick={() => setAccessModalOpen(true)}
-                >
-                  切换操作账号
-                </Button>
-              </Space>
-            </div>
-
-            <Table<RepoRerunJob>
-              className="overview-ant-table"
-              style={{ width: '100%' }}
-              rowKey={(record) =>
-                record.job_id ||
-                record.third_party_task_id ||
-                `${record.project_key}-${record.created_at}`
-              }
-              loading={isLoading || authChecking}
-              columns={columns}
-              dataSource={taskItems}
-              scroll={{ x: 1544 }}
-              onChange={handleTableChange}
-              pagination={{
-                current: page,
-                pageSize,
-                total: taskListResp?.total || 0,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-                locale: {
-                  items_per_page: '条/页',
-                  jump_to: '跳至',
-                  jump_to_confirm: '确定',
-                  page: '页',
-                  prev_page: '上一页',
-                  next_page: '下一页',
-                  prev_5: '向前 5 页',
-                  next_5: '向后 5 页',
-                  prev_3: '向前 3 页',
-                  next_3: '向后 3 页',
-                },
-              }}
-              locale={{ emptyText: '暂无重跑任务' }}
-            />
+                  locale={{ emptyText: '暂无重跑任务' }}
+                />
+              </>
+            ) : null}
           </Card>
         )}
       </div>
