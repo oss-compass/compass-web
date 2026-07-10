@@ -1,6 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Input, Select, Switch, Table, Tag, message } from 'antd';
+import {
+  Button,
+  Input,
+  Popconfirm,
+  Select,
+  Switch,
+  Table,
+  Tag,
+  message,
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
   fetchFormalWeeklyReportRecords,
@@ -217,17 +226,24 @@ const WeeklyReportManagementSection: React.FC = () => {
         <div>
           <div className="font-semibold text-slate-800">正式周报</div>
           <div className="mt-1 text-sm text-slate-500">
-            点击后立即发送至当前脚本配置的正式收件人，并记录发送结果。
+            点击后立即发送周报至各仓库负责人和抄送人，并记录发送结果。
           </div>
         </div>
-        <Button
-          type="primary"
-          className="rounded-full"
-          loading={sendingFormal}
-          onClick={() => void sendFormalReport()}
+        <Popconfirm
+          title="确认发送正式周报？"
+          description="将立即发送周报至各仓库负责人和抄送人。"
+          okText="确认发送"
+          cancelText="取消"
+          onConfirm={() => sendFormalReport()}
         >
-          发送正式周报
-        </Button>
+          <Button
+            type="primary"
+            className="rounded-full"
+            loading={sendingFormal}
+          >
+            发送正式周报
+          </Button>
+        </Popconfirm>
       </div>
 
       <Table<WeeklyReportFormalRecord>
