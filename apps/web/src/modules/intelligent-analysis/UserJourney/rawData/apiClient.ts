@@ -153,8 +153,6 @@ export type RepoRerunJob = {
   branch?: string;
   requested_by: string;
   requested_by_role: CompassOperatorRole;
-  trigger_source?: 'manual' | 'scheduled';
-  schedule_date?: string;
   status:
     | 'queued'
     | 'pending'
@@ -200,53 +198,6 @@ export type RepoRerunJobListResponse = {
   page: number;
   size: number;
   items: RepoRerunJob[];
-};
-
-export type RepoRerunScheduleConfig = {
-  enabled: boolean;
-  schedule_period: 'daily' | 'weekly';
-  timezone: string;
-  next_trigger_at?: string | null;
-  updated_by?: string;
-  updated_at?: string | null;
-  last_run_at?: string | null;
-  last_run_date?: string;
-  last_run_result?: {
-    candidate_count?: number;
-    triggered_count?: number;
-    already_running_count?: number;
-    failed_count?: number;
-  };
-};
-
-export type WeeklyReportPreviewConfig = {
-  preview_enabled: boolean;
-  preview_recipients: string[];
-  timezone: string;
-  updated_by?: string;
-  updated_at?: string | null;
-  last_preview_at?: string | null;
-  last_preview_status?: 'sent' | 'failed' | '';
-  last_preview_result?: Record<string, unknown>;
-  next_preview_at?: string | null;
-};
-
-export type WeeklyReportFormalRecord = {
-  send_id: string;
-  send_type: 'formal';
-  status: 'sent' | 'failed';
-  requested_by: string;
-  recipients: string[];
-  cc_recipients: string[];
-  message?: string;
-  created_at: string;
-};
-
-export type WeeklyReportFormalRecordListResponse = {
-  page: number;
-  size: number;
-  total: number;
-  items: WeeklyReportFormalRecord[];
 };
 
 export type RepoRerunLogItem = {
@@ -568,7 +519,6 @@ export const fetchOverviewAllRepoRerunRecords = async (
     status?: RepoRerunJob['status'];
     teamName?: string;
     repoName?: string;
-    triggerSource?: 'manual' | 'scheduled';
     page?: number;
     size?: number;
   },
@@ -582,100 +532,10 @@ export const fetchOverviewAllRepoRerunRecords = async (
   if (params.status) search.set('status', params.status);
   if (params.teamName) search.set('team_name', params.teamName);
   if (params.repoName) search.set('repo_name', params.repoName);
-  if (params.triggerSource) search.set('trigger_source', params.triggerSource);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiAuthedFetch<RepoRerunJobListResponse>(
     `/overview/repos/rerun-records?${search.toString()}`,
-    token
-  );
-};
-
-export const deleteOverviewRepoRerunRecord = async (
-  jobId: string,
-  token = getCompassOperatorToken()
-): Promise<{ message: string; data: RepoRerunJob }> => {
-  if (!token) throw new Error('未登录');
-  return compassApiAuthedFetch<{ message: string; data: RepoRerunJob }>(
-    `/overview/repos/rerun-records/${encodeURIComponent(jobId)}`,
-    token,
-    { method: 'DELETE' }
-  );
-};
-
-export const fetchRepoRerunScheduleConfig = async (
-  token = getCompassOperatorToken()
-): Promise<RepoRerunScheduleConfig> => {
-  if (!token) throw new Error('未登录');
-  return compassApiAuthedFetch<RepoRerunScheduleConfig>(
-    '/overview/repos/rerun-schedule',
-    token
-  );
-};
-
-export const updateRepoRerunScheduleConfig = async (
-  payload: {
-    enabled?: boolean;
-    schedule_period?: 'daily' | 'weekly';
-  },
-  token = getCompassOperatorToken()
-): Promise<{ message: string; data: RepoRerunScheduleConfig }> => {
-  if (!token) throw new Error('未登录');
-  return compassApiAuthedFetch<{
-    message: string;
-    data: RepoRerunScheduleConfig;
-  }>('/overview/repos/rerun-schedule', token, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-};
-
-export const fetchWeeklyReportPreviewConfig = async (
-  token = getCompassOperatorToken()
-): Promise<WeeklyReportPreviewConfig> => {
-  if (!token) throw new Error('未登录');
-  return compassApiAuthedFetch<WeeklyReportPreviewConfig>(
-    '/weekly-report-management/preview-config',
-    token
-  );
-};
-
-export const updateWeeklyReportPreviewConfig = async (
-  payload: { preview_enabled?: boolean; preview_recipients?: string[] },
-  token = getCompassOperatorToken()
-): Promise<{ message: string; data: WeeklyReportPreviewConfig }> => {
-  if (!token) throw new Error('未登录');
-  return compassApiAuthedFetch<{
-    message: string;
-    data: WeeklyReportPreviewConfig;
-  }>('/weekly-report-management/preview-config', token, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-};
-
-export const sendFormalWeeklyReport = async (
-  token = getCompassOperatorToken()
-): Promise<{ message: string; data: WeeklyReportFormalRecord }> => {
-  if (!token) throw new Error('未登录');
-  return compassApiAuthedFetch<{
-    message: string;
-    data: WeeklyReportFormalRecord;
-  }>('/weekly-report-management/send-formal', token, { method: 'POST' });
-};
-
-export const fetchFormalWeeklyReportRecords = async (
-  params: { page?: number; size?: number },
-  token = getCompassOperatorToken()
-): Promise<WeeklyReportFormalRecordListResponse> => {
-  if (!token) throw new Error('未登录');
-  const search = new URLSearchParams();
-  search.set('page', String(params.page ?? 1));
-  search.set('size', String(params.size ?? 20));
-  return compassApiAuthedFetch<WeeklyReportFormalRecordListResponse>(
-    `/weekly-report-management/formal-records?${search.toString()}`,
     token
   );
 };
@@ -990,72 +850,6 @@ export type OverviewCapabilityBenchmark = {
   }>;
 };
 
-export type OverviewCapabilityBenchmarkDashboard = {
-  pairCount: number;
-  summaryScore: number | null;
-  summarySuccessRate: number | null;
-  summaryAvgExecutionTime: number | null;
-  closureRate: number;
-  totalScoreResult: {
-    lead: number;
-    tie: number;
-    lag: number;
-    total: number;
-    leadRepos: string[];
-    lagRepos: string[];
-  };
-  stageScoreResults: Array<{
-    key: string;
-    label: string;
-    shortLabel: string;
-    description: string;
-    lead: number;
-    tie: number;
-    lag: number;
-    total: number;
-  }>;
-  detailRows: Array<{
-    id: string;
-    cannProjectKey: string;
-    benchmarkProjectKey: string;
-    cannRepoName: string;
-    benchmarkRepoName: string;
-    teamName: string;
-    cannScore: number | null;
-    benchmarkScore: number | null;
-    scoreDiff: number | null;
-    scoreStatus: 'lead' | 'tie' | 'lag' | 'unknown';
-    stageScores: Array<{
-      key: string;
-      label: string;
-      shortLabel: string;
-      description: string;
-      cannScore: number | null;
-      benchmarkScore: number | null;
-      diff: number | null;
-      status: 'lead' | 'tie' | 'lag' | 'unknown';
-    }>;
-    stageResult: {
-      lead: number;
-      tie: number;
-      lag: number;
-    };
-    cannReportId: string;
-    benchmarkReportId: string;
-    compareReportUrl: string;
-  }>;
-};
-
-export type OverviewCapabilityBenchmarkSummary = Pick<
-  OverviewCapabilityBenchmarkDashboard,
-  'pairCount' | 'totalScoreResult' | 'stageScoreResults'
->;
-
-export type OverviewCapabilityBenchmarkDetails = Pick<
-  OverviewCapabilityBenchmarkDashboard,
-  'pairCount' | 'detailRows'
->;
-
 export type OverviewCardsResponse = {
   total: number;
   page: number;
@@ -1169,24 +963,6 @@ export const fetchOverviewCapabilityBenchmark =
   async (): Promise<OverviewCapabilityBenchmark> =>
     compassApiFetch<OverviewCapabilityBenchmark>(
       '/overview/capability-benchmark'
-    );
-
-export const fetchOverviewCapabilityBenchmarkDashboard =
-  async (): Promise<OverviewCapabilityBenchmarkDashboard> =>
-    compassApiFetch<OverviewCapabilityBenchmarkDashboard>(
-      '/overview/capability-benchmark-dashboard'
-    );
-
-export const fetchOverviewCapabilityBenchmarkSummary =
-  async (): Promise<OverviewCapabilityBenchmarkSummary> =>
-    compassApiFetch<OverviewCapabilityBenchmarkSummary>(
-      '/overview/capability-benchmark-summary'
-    );
-
-export const fetchOverviewCapabilityBenchmarkDetails =
-  async (): Promise<OverviewCapabilityBenchmarkDetails> =>
-    compassApiFetch<OverviewCapabilityBenchmarkDetails>(
-      '/overview/capability-benchmark-details'
     );
 
 export const fetchOverviewCards = async (params: {
