@@ -11,6 +11,8 @@ import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
 import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
+import UnderAnalysis from '@modules/analyze/DataView/Status/UnderAnalysis';
+import { checkIsPending } from '@modules/analyze/constant';
 import LabelItems from '@modules/analyze/components/NavBar/LabelItems';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
@@ -29,10 +31,13 @@ const MetricDetail = () => {
   const { handleQueryParams } = useHandleQueryParams();
   const slugs = router.query.slugs;
   const queryTab = router.query?.tab as string;
-  const { isLoading, verifiedItems } = useLabelStatus();
+  const { isLoading, verifiedItems, status, notFound } = useLabelStatus();
   const [tab, setTab] = useState<string>(queryTab || 'contributor');
   if (isLoading || verifiedItems.length > 1) {
     return null;
+  }
+  if (!notFound && checkIsPending(status)) {
+    return <UnderAnalysis />;
   }
 
   const tabOptions = [

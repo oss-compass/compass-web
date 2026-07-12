@@ -15,11 +15,9 @@ import {
   Card,
   Grid,
   Input,
-  Popconfirm,
   Space,
   Table,
   Tag,
-  Tabs,
   Typography,
   message,
 } from 'antd';
@@ -33,27 +31,22 @@ import {
 import {
   cancelOverviewRepoRerun,
   clearCompassOperatorToken,
-  deleteOverviewRepoRerunRecord,
   fetchCompassOperatorMe,
   fetchOverviewAllRepoRerunRecords,
   fetchOverviewRepoRerunRecords,
   fetchOverviewRerunNodes,
-  fetchRepoRerunScheduleConfig,
   fetchRepoManagementRegisterOptions,
   getCompassOperatorToken,
   loginCompassOperator,
   registerCompassOperator,
   setCompassOperatorToken,
   triggerOverviewRepoRerun,
-  updateRepoRerunScheduleConfig,
 } from '../rawData/apiClient';
 import type {
   CompassOperatorUser,
   DevxNodeStatus,
   RepoRerunJob,
 } from '../rawData/apiClient';
-import WeeklyReportManagementSection from './WeeklyReportManagementSection';
-import ScheduledRerunConfigSection from './ScheduledRerunConfigSection';
 import DashboardStyles from '../OverviewDashboard/DashboardStyles';
 import OperatorAccessModal, {
   type OperatorRegisterValues,
@@ -64,7 +57,6 @@ import {
   getRerunStatusMeta,
   isActiveRerunJob,
   isRerunReviewCompleted,
-  isRerunReviewPending,
   RepoRerunModal,
   RepoRerunRecordsModal,
   RerunActionButton,
@@ -480,14 +472,6 @@ const canOperateJob = (
   return false;
 };
 
-const canDeleteRerunJob = (job: RepoRerunJob) =>
-  !isRerunReviewPending(job) &&
-  ['completed', 'failed', 'cancelled', 'timeout'].includes(
-    String(job.status || '')
-      .trim()
-      .toLowerCase()
-  );
-
 const TaskManagementPage: React.FC = () => {
   const router = useRouter();
   const screens = Grid.useBreakpoint();
@@ -497,10 +481,6 @@ const TaskManagementPage: React.FC = () => {
   const [teamFilter, setTeamFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [activeTaskTab, setActiveTaskTab] = useState<
-    'manual' | 'scheduled' | 'weekly_report'
-  >('manual');
-  const [scheduleSaving, setScheduleSaving] = useState(false);
   const [operatorUser, setOperatorUser] = useState<CompassOperatorUser | null>(
     null
   );
@@ -511,7 +491,6 @@ const TaskManagementPage: React.FC = () => {
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
   const [accessModalOpen, setAccessModalOpen] = useState(false);
   const [cancelingJobId, setCancelingJobId] = useState('');
-  const [deletingJobId, setDeletingJobId] = useState('');
   const [rerunning, setRerunning] = useState(false);
   const [rerunModal, setRerunModal] = useState<{
     open: boolean;
@@ -570,7 +549,6 @@ const TaskManagementPage: React.FC = () => {
       keyword,
       statusFilter,
       teamFilter,
-      activeTaskTab,
       page,
       pageSize,
     ],
@@ -579,66 +557,11 @@ const TaskManagementPage: React.FC = () => {
         keyword: keyword || undefined,
         status: statusFilter === 'all' ? undefined : statusFilter,
         teamName: teamFilter || undefined,
-        triggerSource: activeTaskTab === 'scheduled' ? 'scheduled' : 'manual',
         page,
         size: pageSize,
       }),
-    enabled: !!operatorUser && activeTaskTab !== 'weekly_report',
+    enabled: !!operatorUser,
   });
-
-  const {
-    data: scheduleConfig,
-    isLoading: scheduleConfigLoading,
-    refetch: refetchScheduleConfig,
-  } = useQuery({
-    queryKey: ['repo-rerun-schedule-config', operatorUser?.username],
-    queryFn: () => fetchRepoRerunScheduleConfig(),
-    enabled: operatorUser?.role === 'admin',
-  });
-
-  useEffect(() => {
-    if (operatorUser?.role !== 'admin') {
-      setActiveTaskTab('manual');
-    }
-  }, [operatorUser]);
-
-  const handleScheduleEnabledChange = useCallback(
-    async (enabled: boolean) => {
-      setScheduleSaving(true);
-      try {
-        const result = await updateRepoRerunScheduleConfig({ enabled });
-        messageApi.success(result.message);
-        await refetchScheduleConfig();
-      } catch (error) {
-        messageApi.error(
-          error instanceof Error ? error.message : '更新定时重跑配置失败'
-        );
-      } finally {
-        setScheduleSaving(false);
-      }
-    },
-    [messageApi, refetchScheduleConfig]
-  );
-
-  const handleSchedulePeriodChange = useCallback(
-    async (schedulePeriod: 'daily' | 'weekly') => {
-      setScheduleSaving(true);
-      try {
-        const result = await updateRepoRerunScheduleConfig({
-          schedule_period: schedulePeriod,
-        });
-        messageApi.success(result.message);
-        await refetchScheduleConfig();
-      } catch (error) {
-        messageApi.error(
-          error instanceof Error ? error.message : '更新定时重跑周期失败'
-        );
-      } finally {
-        setScheduleSaving(false);
-      }
-    },
-    [messageApi, refetchScheduleConfig]
-  );
 
   const { data: registerRepoOptionsResp } = useQuery({
     queryKey: ['repo-management-register-options'],
@@ -1012,35 +935,6 @@ const TaskManagementPage: React.FC = () => {
     [loadRerunRecords, messageApi, operatorUser, refetchTaskList]
   );
 
-  const handleDeleteJob = useCallback(
-    async (job: RepoRerunJob) => {
-      if (!operatorUser || operatorUser.role !== 'admin') {
-        messageApi.error('仅管理员可删除重跑记录');
-        return;
-      }
-      if (!canDeleteRerunJob(job)) {
-        messageApi.warning('仅已完成、失败、已撤销或超时的重跑任务支持删除');
-        return;
-      }
-      setDeletingJobId(job.job_id);
-      try {
-        const result = await deleteOverviewRepoRerunRecord(job.job_id);
-        messageApi.success(result.message || '重跑记录已删除');
-        setRerunRecords((prev) =>
-          prev.filter((item) => item.job_id !== job.job_id)
-        );
-        await refetchTaskList();
-      } catch (error) {
-        messageApi.error(
-          error instanceof Error ? error.message : '删除重跑记录失败'
-        );
-      } finally {
-        setDeletingJobId('');
-      }
-    },
-    [messageApi, operatorUser, refetchTaskList]
-  );
-
   const sortableTitle = useCallback(
     (label: string) => (
       <span className="sortable-col-title">
@@ -1093,7 +987,7 @@ const TaskManagementPage: React.FC = () => {
         ),
         dataIndex: 'team_name',
         key: 'team_name',
-        width: 180,
+        width: 140,
         sorter: (left, right) => compareText(left.team_name, right.team_name),
         sortDirections: ['ascend', 'descend'],
         render: (value) => value || '--',
@@ -1257,7 +1151,7 @@ const TaskManagementPage: React.FC = () => {
         title: '操作',
         key: 'actions',
         fixed: 'right',
-        width: 180,
+        width: 140,
         render: (_value, record) => {
           const canManageRecord = canOperateJob(operatorUser, record);
           if (!canManageRecord)
@@ -1287,26 +1181,6 @@ const TaskManagementPage: React.FC = () => {
                   撤销
                 </Button>
               ) : null}
-              {operatorUser?.role === 'admin' && canDeleteRerunJob(record) ? (
-                <Popconfirm
-                  title="确认删除该重跑记录？"
-                  description="删除后无法恢复。"
-                  okText="删除"
-                  cancelText="取消"
-                  okButtonProps={{ danger: true }}
-                  onConfirm={() => handleDeleteJob(record)}
-                >
-                  <Button
-                    type="link"
-                    danger
-                    size="small"
-                    className="!px-0"
-                    loading={deletingJobId === record.job_id}
-                  >
-                    删除
-                  </Button>
-                </Popconfirm>
-              ) : null}
             </Space>
           );
         },
@@ -1314,9 +1188,7 @@ const TaskManagementPage: React.FC = () => {
     ],
     [
       cancelingJobId,
-      deletingJobId,
       handleCancelJob,
-      handleDeleteJob,
       openRerunModal,
       openRerunRecordsModal,
       operatorUser,
@@ -1412,122 +1284,82 @@ const TaskManagementPage: React.FC = () => {
             </div>
 
             <div className="mb-5">
-              {operatorUser.role === 'admin' ? (
-                <Tabs
-                  activeKey={activeTaskTab}
-                  items={[
-                    { key: 'manual', label: '手动重跑' },
-                    { key: 'scheduled', label: '定时重跑' },
-                    { key: 'weekly_report', label: '周报管理' },
-                  ]}
-                  onChange={(key) => {
-                    setActiveTaskTab(
-                      key as 'manual' | 'scheduled' | 'weekly_report'
-                    );
-                    setPage(1);
-                  }}
-                />
-              ) : null}
-
-              {operatorUser.role === 'admin' &&
-              activeTaskTab === 'scheduled' ? (
-                <ScheduledRerunConfigSection
-                  config={scheduleConfig}
-                  loading={scheduleConfigLoading}
-                  saving={scheduleSaving}
-                  onEnabledChange={(enabled) => {
-                    void handleScheduleEnabledChange(enabled);
-                  }}
-                  onPeriodChange={(period) => {
-                    void handleSchedulePeriodChange(period);
-                  }}
-                />
-              ) : null}
-
-              {activeTaskTab === 'weekly_report' ? (
-                <WeeklyReportManagementSection />
-              ) : (
-                <NodeStatusSection
-                  nodes={rerunNodes}
-                  loading={rerunNodesLoading}
-                  error={rerunNodesError}
-                />
-              )}
+              <NodeStatusSection
+                nodes={rerunNodes}
+                loading={rerunNodesLoading}
+                error={rerunNodesError}
+              />
             </div>
 
-            {activeTaskTab !== 'weekly_report' ? (
-              <>
-                <div className="mb-5 flex flex-wrap items-center gap-3">
-                  <Input.Search
-                    allowClear
-                    placeholder="搜索仓库 / 任务ID / 操作人 / 报告ID"
-                    value={keyword}
-                    className={searchClassName}
-                    onChange={(event) => {
-                      setKeyword(event.target.value);
-                      setPage(1);
-                    }}
-                    style={{ width: screens.lg ? 340 : '100%' }}
-                  />
-                  <Space wrap className="ml-auto justify-end">
-                    <Button
-                      icon={<ReloadOutlined />}
-                      className={`${controlClassName} px-3 font-semibold text-slate-700`}
-                      onClick={() => {
-                        void loadOperatorUser();
-                        void loadRerunNodes();
-                        void refetchTaskList();
-                      }}
-                    >
-                      刷新
-                    </Button>
-                    <Button
-                      className={`${controlClassName} px-3 font-semibold text-slate-700`}
-                      onClick={() => setAccessModalOpen(true)}
-                    >
-                      切换操作账号
-                    </Button>
-                  </Space>
-                </div>
-
-                <Table<RepoRerunJob>
-                  className="overview-ant-table"
-                  style={{ width: '100%' }}
-                  rowKey={(record) =>
-                    record.job_id ||
-                    record.third_party_task_id ||
-                    `${record.project_key}-${record.created_at}`
-                  }
-                  loading={isLoading || authChecking}
-                  columns={columns}
-                  dataSource={taskItems}
-                  scroll={{ x: 1544 }}
-                  onChange={handleTableChange}
-                  pagination={{
-                    current: page,
-                    pageSize,
-                    total: taskListResp?.total || 0,
-                    showSizeChanger: true,
-                    showQuickJumper: true,
-                    showTotal: (total, range) =>
-                      `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-                    locale: {
-                      items_per_page: '条/页',
-                      jump_to: '跳至',
-                      jump_to_confirm: '确定',
-                      page: '页',
-                      prev_page: '上一页',
-                      next_page: '下一页',
-                      prev_5: '向前 5 页',
-                      next_5: '向后 5 页',
-                      prev_3: '向前 3 页',
-                      next_3: '向后 3 页',
-                    },
+            <div className="mb-5 flex flex-wrap items-center gap-3">
+              <Input.Search
+                allowClear
+                placeholder="搜索仓库 / 任务ID / 操作人 / 报告ID"
+                value={keyword}
+                className={searchClassName}
+                onChange={(event) => {
+                  setKeyword(event.target.value);
+                  setPage(1);
+                }}
+                style={{ width: screens.lg ? 340 : '100%' }}
+              />
+              <Space wrap className="ml-auto justify-end">
+                <Button
+                  icon={<ReloadOutlined />}
+                  className={`${controlClassName} px-3 font-semibold text-slate-700`}
+                  onClick={() => {
+                    void loadOperatorUser();
+                    void loadRerunNodes();
+                    void refetchTaskList();
                   }}
-                  locale={{ emptyText: '暂无重跑任务' }}
-                />
-              </>
-            ) : null}
+                >
+                  刷新
+                </Button>
+                <Button
+                  className={`${controlClassName} px-3 font-semibold text-slate-700`}
+                  onClick={() => setAccessModalOpen(true)}
+                >
+                  切换操作账号
+                </Button>
+              </Space>
+            </div>
+
+            <Table<RepoRerunJob>
+              className="overview-ant-table"
+              style={{ width: '100%' }}
+              rowKey={(record) =>
+                record.job_id ||
+                record.third_party_task_id ||
+                `${record.project_key}-${record.created_at}`
+              }
+              loading={isLoading || authChecking}
+              columns={columns}
+              dataSource={taskItems}
+              scroll={{ x: 1544 }}
+              onChange={handleTableChange}
+              pagination={{
+                current: page,
+                pageSize,
+                total: taskListResp?.total || 0,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
+                  `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+                locale: {
+                  items_per_page: '条/页',
+                  jump_to: '跳至',
+                  jump_to_confirm: '确定',
+                  page: '页',
+                  prev_page: '上一页',
+                  next_page: '下一页',
+                  prev_5: '向前 5 页',
+                  next_5: '向后 5 页',
+                  prev_3: '向前 3 页',
+                  next_3: '向后 3 页',
+                },
+              }}
+              locale={{ emptyText: '暂无重跑任务' }}
+            />
           </Card>
         )}
       </div>

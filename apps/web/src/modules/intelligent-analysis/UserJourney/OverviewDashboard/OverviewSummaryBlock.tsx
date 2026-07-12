@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfigProvider, DatePicker, Popover, Skeleton, Tooltip } from 'antd';
+import { ConfigProvider, DatePicker, Popover, Tooltip } from 'antd';
 import type { Locale } from 'antd/es/locale';
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
@@ -41,7 +41,6 @@ type OverviewSummaryBlockProps = {
   commonIssues?: CommonIssueGroup[];
   mode?: 'overall' | 'common';
   tooltip?: string;
-  isTrendLoading?: boolean;
   onTrendWindowChange?: (next: TrendWindow) => void;
   onBucketClick?: (bucket: 'total' | IssueBucket) => void;
   onPriorityBucketClick?: (
@@ -809,7 +808,6 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   commonIssues = [],
   mode = 'overall',
   tooltip,
-  isTrendLoading = false,
   onTrendWindowChange,
   onBucketClick,
   onPriorityBucketClick,
@@ -824,11 +822,6 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
     () => commonIssues.slice(0, COMMON_ISSUE_LIST_MAX),
     [commonIssues]
   );
-  const trendPoints = trend ?? [];
-  const hasTrendData = trendPoints.length > 0;
-  const shouldShowInsightGrid =
-    Boolean(visiblePriorityProgress.length) || isTrendLoading || hasTrendData;
-  const shouldShowTrendPanel = isTrendLoading || hasTrendData;
 
   const renderValue = (
     bucket: 'total' | 'pending' | 'inProgress' | 'resolved',
@@ -899,7 +892,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
         {renderMetric('已闭环', 'resolved', summary.resolved, 'ov-value-green')}
         {renderMetric('闭环率', 'closeRate', formatPercent(summary.closeRate))}
       </div>
-      {shouldShowInsightGrid ? (
+      {visiblePriorityProgress.length || (trend && trend.length) ? (
         <div className="overview-insight-grid">
           <div className="ov-panel ov-priority-panel">
             <div className="ov-panel-head">
@@ -1033,7 +1026,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
               </div>
             )}
           </div>
-          {shouldShowTrendPanel ? (
+          {trend && trend.length ? (
             <div className="ov-panel ov-trend-panel">
               <div className="ov-panel-head">
                 <div className="ov-panel-title">周度新增问题及闭环趋势</div>
@@ -1044,63 +1037,54 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
                   />
                 ) : null}
               </div>
-              {isTrendLoading ? (
-                <div className="oj-trend-skeleton">
-                  <Skeleton active title={false} paragraph={{ rows: 7 }} />
-                </div>
-              ) : (
-                <>
-                  <TrendChart points={trendPoints} mode={mode} />
-                  <div className="oj-trend-legend">
-                    {mode === 'common'
-                      ? (() => {
-                          const allIssueTypes = Array.from(
-                            new Set(
-                              trendPoints.flatMap(
-                                (p) =>
-                                  p.issueTypeCounts?.map(
-                                    (item) => item.issueType
-                                  ) || []
-                              )
-                            )
-                          );
-                          return allIssueTypes
-                            .slice()
-                            .reverse()
-                            .map((issueType) => (
-                              <span
-                                className="oj-trend-legend-item"
-                                key={issueType}
-                              >
-                                <i
-                                  className="oj-trend-dot"
-                                  style={{
-                                    background:
-                                      getIssueTypeMarkerColor(issueType),
-                                  }}
-                                />
-                                {issueType}
-                              </span>
-                            ));
-                        })()
-                      : OJ_TREND_SEVERITY_SEGMENTS.slice()
-                          .reverse()
-                          .map(({ key, label, markerColor }) => (
-                            <span className="oj-trend-legend-item" key={key}>
-                              <i
-                                className="oj-trend-dot"
-                                style={{ background: markerColor }}
-                              />
-                              {label}
-                            </span>
-                          ))}
-                    <span className="oj-trend-legend-item">
-                      <span className="oj-trend-line" />
-                      周度闭环率
-                    </span>
-                  </div>
-                </>
-              )}
+              <TrendChart points={trend} mode={mode} />
+              <div className="oj-trend-legend">
+                {mode === 'common'
+                  ? (() => {
+                      const allIssueTypes = Array.from(
+                        new Set(
+                          trend.flatMap(
+                            (p) =>
+                              p.issueTypeCounts?.map(
+                                (item) => item.issueType
+                              ) || []
+                          )
+                        )
+                      );
+                      return allIssueTypes
+                        .slice()
+                        .reverse()
+                        .map((issueType) => (
+                          <span
+                            className="oj-trend-legend-item"
+                            key={issueType}
+                          >
+                            <i
+                              className="oj-trend-dot"
+                              style={{
+                                background: getIssueTypeMarkerColor(issueType),
+                              }}
+                            />
+                            {issueType}
+                          </span>
+                        ));
+                    })()
+                  : OJ_TREND_SEVERITY_SEGMENTS.slice()
+                      .reverse()
+                      .map(({ key, label, markerColor }) => (
+                        <span className="oj-trend-legend-item" key={key}>
+                          <i
+                            className="oj-trend-dot"
+                            style={{ background: markerColor }}
+                          />
+                          {label}
+                        </span>
+                      ))}
+                <span className="oj-trend-legend-item">
+                  <span className="oj-trend-line" />
+                  周度闭环率
+                </span>
+              </div>
             </div>
           ) : null}
         </div>

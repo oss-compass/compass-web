@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { useRouter } from 'next/router';
 import {
   Button,
@@ -31,7 +30,7 @@ import {
   RepoRerunRecordsModal,
 } from './RepoRerunComponents';
 import { IssueProgressBar } from './ProgressComponents';
-import CapabilityBenchmarkModal from './CapabilityBenchmark/CapabilityBenchmarkModal';
+import CapabilityBenchmarkModal from './CapabilityBenchmarkModal';
 import CloseRateTrendModal from './CloseRateTrendModal';
 import ScoreTrendModal from './ScoreTrendModal';
 import { CloseRateSparkline, ScoreSparkline } from './CloseRateTrendChart';
@@ -202,33 +201,12 @@ const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLSpanElement>(null);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
-
-  const updatePopupPosition = useCallback(() => {
-    const rect = wrapperRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const width = 220;
-    setPopupStyle({
-      position: 'fixed',
-      top: rect.bottom + 4,
-      left: Math.max(
-        8,
-        Math.min(rect.right - width, window.innerWidth - width - 8)
-      ),
-      zIndex: 1050,
-      width,
-    });
-  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
     const handleDocClick = (event: MouseEvent) => {
       if (!wrapperRef.current) return;
-      if (
-        !wrapperRef.current.contains(event.target as Node) &&
-        !popupRef.current?.contains(event.target as Node)
-      ) {
+      if (!wrapperRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     };
@@ -242,17 +220,6 @@ const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
       document.removeEventListener('keydown', handleKey);
     };
   }, [open]);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    updatePopupPosition();
-    window.addEventListener('resize', updatePopupPosition);
-    window.addEventListener('scroll', updatePopupPosition, true);
-    return () => {
-      window.removeEventListener('resize', updatePopupPosition);
-      window.removeEventListener('scroll', updatePopupPosition, true);
-    };
-  }, [open, updatePopupPosition]);
 
   const titleSuffix =
     sortKey === 'none'
@@ -286,70 +253,72 @@ const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
       >
         <FilterFilled className="text-[12px]" />
       </button>
-      {open && typeof document !== 'undefined'
-        ? createPortal(
-            <div
-              ref={popupRef}
-              className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
-              style={popupStyle}
-              onClick={(event) => event.stopPropagation()}
-              onMouseDown={(event) => event.stopPropagation()}
-            >
-              <div className="mb-2 text-xs font-semibold text-slate-500">
-                排序指标
-              </div>
-              <div className="flex flex-col gap-1">
-                {PROGRESS_METRIC_OPTIONS.map((option) => {
-                  const active = sortKey === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
-                        active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
-                      }`}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onSortKeyChange(option.value);
-                      }}
-                    >
-                      <span>{option.label}</span>
-                      {active ? <CheckOutlined className="text-xs" /> : null}
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="mb-2 mt-3 text-xs font-semibold text-slate-500">
-                排序方向
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {PROGRESS_ORDER_OPTIONS.map((option) => {
-                  const active = sortOrder === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={`flex items-center justify-center rounded-md border px-3 py-2 text-sm transition-colors ${
-                        active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onSortOrderChange(option.value);
-                      }}
-                    >
-                      {option.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>,
-            document.body
-          )
-        : null}
+      {open ? (
+        <div
+          className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            right: 0,
+            zIndex: 1050,
+            width: 220,
+          }}
+          onClick={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <div className="mb-2 text-xs font-semibold text-slate-500">
+            排序指标
+          </div>
+          <div className="flex flex-col gap-1">
+            {PROGRESS_METRIC_OPTIONS.map((option) => {
+              const active = sortKey === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                    active
+                      ? 'border-blue-200 bg-blue-50 text-blue-700'
+                      : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                  }`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSortKeyChange(option.value);
+                  }}
+                >
+                  <span>{option.label}</span>
+                  {active ? <CheckOutlined className="text-xs" /> : null}
+                </button>
+              );
+            })}
+          </div>
+          <div className="mb-2 mt-3 text-xs font-semibold text-slate-500">
+            排序方向
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {PROGRESS_ORDER_OPTIONS.map((option) => {
+              const active = sortOrder === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`flex items-center justify-center rounded-md border px-3 py-2 text-sm transition-colors ${
+                    active
+                      ? 'border-blue-200 bg-blue-50 text-blue-700'
+                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                  }`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSortOrderChange(option.value);
+                  }}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
     </span>
   );
 };
@@ -367,33 +336,12 @@ const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLSpanElement>(null);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const [popupStyle, setPopupStyle] = useState<React.CSSProperties>({});
-
-  const updatePopupPosition = useCallback(() => {
-    const rect = wrapperRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const width = 220;
-    setPopupStyle({
-      position: 'fixed',
-      top: rect.bottom + 4,
-      left: Math.max(
-        8,
-        Math.min(rect.right - width, window.innerWidth - width - 8)
-      ),
-      zIndex: 1050,
-      width,
-    });
-  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
     const handleDocClick = (event: MouseEvent) => {
       if (!wrapperRef.current) return;
-      if (
-        !wrapperRef.current.contains(event.target as Node) &&
-        !popupRef.current?.contains(event.target as Node)
-      ) {
+      if (!wrapperRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     };
@@ -407,17 +355,6 @@ const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
       document.removeEventListener('keydown', handleKey);
     };
   }, [open]);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    updatePopupPosition();
-    window.addEventListener('resize', updatePopupPosition);
-    window.addEventListener('scroll', updatePopupPosition, true);
-    return () => {
-      window.removeEventListener('resize', updatePopupPosition);
-      window.removeEventListener('scroll', updatePopupPosition, true);
-    };
-  }, [open, updatePopupPosition]);
 
   const titleSuffix = value ? `当前筛选：${value}` : '筛选硬件环境';
   const filterOptions = useMemo(
@@ -456,47 +393,47 @@ const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
       >
         <FilterFilled className="text-[12px]" />
       </button>
-      {open && typeof document !== 'undefined'
-        ? createPortal(
-            <div
-              ref={popupRef}
-              className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
-              style={popupStyle}
-              onClick={(event) => event.stopPropagation()}
-              onMouseDown={(event) => event.stopPropagation()}
-            >
-              <div className="mb-2 text-xs font-semibold text-slate-500">
-                硬件环境
-              </div>
-              <div className="flex max-h-64 flex-col gap-1 overflow-y-auto">
-                {filterOptions.map((option) => {
-                  const active = value === option.value;
-                  return (
-                    <button
-                      key={option.value || '__all__'}
-                      type="button"
-                      className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
-                        active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
-                      }`}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onChange(option.value);
-                      }}
-                    >
-                      <span className="truncate">{option.label}</span>
-                      {active ? (
-                        <CheckOutlined className="ml-2 text-xs" />
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>,
-            document.body
-          )
-        : null}
+      {open ? (
+        <div
+          className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            right: 0,
+            zIndex: 1050,
+            width: 220,
+          }}
+          onClick={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <div className="mb-2 text-xs font-semibold text-slate-500">
+            硬件环境
+          </div>
+          <div className="flex max-h-64 flex-col gap-1 overflow-y-auto">
+            {filterOptions.map((option) => {
+              const active = value === option.value;
+              return (
+                <button
+                  key={option.value || '__all__'}
+                  type="button"
+                  className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                    active
+                      ? 'border-blue-200 bg-blue-50 text-blue-700'
+                      : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                  }`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onChange(option.value);
+                  }}
+                >
+                  <span className="truncate">{option.label}</span>
+                  {active ? <CheckOutlined className="ml-2 text-xs" /> : null}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
     </span>
   );
 };

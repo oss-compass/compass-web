@@ -3,16 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import {
   fetchOverviewCards,
-  fetchOverviewCapabilityBenchmarkDetails,
-  fetchOverviewCapabilityBenchmarkSummary,
+  fetchOverviewCapabilityBenchmark,
   fetchOverviewCloseRateTrends,
   fetchOverviewCommonIssues,
   fetchOverviewSummary,
 } from '../rawData/apiClient';
-import {
-  CapabilityBenchmarkDetails,
-  CapabilityBenchmarkOverview,
-} from './CapabilityBenchmark';
 import CommonIssuesSection from './CommonIssuesSection';
 import ExperienceScoreRuleQASection from './ExperienceScoreRuleQASection';
 import { SEVERITY_RANK, STATUS_RANK } from './constants';
@@ -189,34 +184,32 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const { data: closeRateTrendsResp, isLoading: isCloseRateTrendsLoading } =
-    useQuery({
-      queryKey: [
-        'overview-close-rate-trends-v2',
+  const { data: closeRateTrendsResp } = useQuery({
+    queryKey: [
+      'overview-close-rate-trends-v2',
+      org,
+      issueSourceMode,
+      includeCommonIssues,
+      trendWindowKey,
+    ],
+    queryFn: () =>
+      fetchOverviewCloseRateTrends({
         org,
-        issueSourceMode,
-        includeCommonIssues,
-        trendWindowKey,
-      ],
-      queryFn: () =>
-        fetchOverviewCloseRateTrends({
-          org,
-          includeCommonIssues: true,
-          commonOnly:
-            issueSourceMode === 'common'
-              ? true
-              : issueSourceMode === 'non-common'
-              ? false
-              : includeCommonIssues
-              ? undefined
-              : false,
-          weeks: trendWindow.kind === 'weeks' ? trendWindow.weeks : undefined,
-          startDate:
-            trendWindow.kind === 'range' ? trendWindow.start : undefined,
-          endDate: trendWindow.kind === 'range' ? trendWindow.end : undefined,
-          countChildPains: true,
-        }),
-    });
+        includeCommonIssues: true,
+        commonOnly:
+          issueSourceMode === 'common'
+            ? true
+            : issueSourceMode === 'non-common'
+            ? false
+            : includeCommonIssues
+            ? undefined
+            : false,
+        weeks: trendWindow.kind === 'weeks' ? trendWindow.weeks : undefined,
+        startDate: trendWindow.kind === 'range' ? trendWindow.start : undefined,
+        endDate: trendWindow.kind === 'range' ? trendWindow.end : undefined,
+        countChildPains: true,
+      }),
+  });
 
   const { data: commonIssuesResp } = useQuery({
     queryKey: ['overview-common-issues', org],
@@ -226,14 +219,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       }),
   });
 
-  const {
-    data: capabilityBenchmarkSummaryResp,
-    isLoading: isBenchmarkSummaryLoading,
-  } = useQuery({
-    queryKey: ['overview-capability-benchmark-summary', org],
+  const { data: capabilityBenchmarkResp } = useQuery({
+    queryKey: ['overview-capability-benchmark', org],
     queryFn: async () => {
       try {
-        return await fetchOverviewCapabilityBenchmarkSummary();
+        return await fetchOverviewCapabilityBenchmark();
       } catch (error) {
         if (
           error instanceof Error &&
@@ -242,39 +232,13 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         ) {
           return {
             pairCount: 0,
-            totalScoreResult: {
-              lead: 0,
-              tie: 0,
-              lag: 0,
-              total: 0,
-              leadRepos: [],
-              lagRepos: [],
-            },
-            stageScoreResults: [],
-          };
-        }
-        throw error;
-      }
-    },
-  });
-
-  const {
-    data: capabilityBenchmarkDetailsResp,
-    isLoading: isBenchmarkDetailsLoading,
-  } = useQuery({
-    queryKey: ['overview-capability-benchmark-details', org],
-    queryFn: async () => {
-      try {
-        return await fetchOverviewCapabilityBenchmarkDetails();
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          (error.message.includes('404') ||
-            error.message.includes('Failed to fetch'))
-        ) {
-          return {
-            pairCount: 0,
-            detailRows: [],
+            includedPairs: [],
+            summaryScore: null,
+            summarySuccessRate: null,
+            summaryAvgExecutionTime: null,
+            closureRate: 0,
+            teamSummaries: [],
+            scoreBreakdown: [],
           };
         }
         throw error;
@@ -720,17 +684,12 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           issueSourceMode={issueSourceMode}
           includeCommonIssues={includeCommonIssues}
           commonIssues={commonIssues}
+          capabilityBenchmark={capabilityBenchmarkResp ?? null}
           trendWindow={trendWindow}
-          isTrendLoading={isCloseRateTrendsLoading}
           onTrendWindowChange={setTrendWindow}
           onIssueSourceModeChange={setIssueSourceMode}
           onIncludeCommonIssuesChange={setIncludeCommonIssues}
           onOpenIssues={openSummaryIssues}
-        />
-
-        <CapabilityBenchmarkOverview
-          data={capabilityBenchmarkSummaryResp ?? null}
-          isLoading={isBenchmarkSummaryLoading}
         />
 
         <RepoProgressSection
@@ -765,11 +724,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           onTeamSort={handleTeamSort}
           onOpenRepoIssues={openRepoIssues}
           onOpenTeamIssues={openTeamIssues}
-        />
-
-        <CapabilityBenchmarkDetails
-          data={capabilityBenchmarkDetailsResp ?? null}
-          isLoading={isBenchmarkDetailsLoading}
         />
 
         <CommonIssuesSection
