@@ -155,6 +155,9 @@ export type RepoRerunJob = {
   requested_by_role: CompassOperatorRole;
   trigger_source?: 'manual' | 'scheduled';
   schedule_date?: string;
+  schedule_task_id?: string;
+  schedule_task_name?: string;
+  schedule_repo_scope?: 'all' | 'fixed_pending_retest';
   status:
     | 'queued'
     | 'pending'
@@ -202,13 +205,13 @@ export type RepoRerunJobListResponse = {
   items: RepoRerunJob[];
 };
 
-export type RepoRerunScheduleConfig = {
+export type RepoRerunScheduleTask = {
+  task_id: string;
+  task_name: string;
   enabled: boolean;
   schedule_period: 'daily' | 'weekly';
-  timezone: string;
+  repo_scope: 'all' | 'fixed_pending_retest';
   next_trigger_at?: string | null;
-  updated_by?: string;
-  updated_at?: string | null;
   last_run_at?: string | null;
   last_run_date?: string;
   last_run_result?: {
@@ -217,6 +220,13 @@ export type RepoRerunScheduleConfig = {
     already_running_count?: number;
     failed_count?: number;
   };
+};
+
+export type RepoRerunScheduleConfig = {
+  schedule_tasks: RepoRerunScheduleTask[];
+  timezone: string;
+  updated_by?: string;
+  updated_at?: string | null;
 };
 
 export type WeeklyReportPreviewConfig = {
@@ -615,8 +625,10 @@ export const fetchRepoRerunScheduleConfig = async (
 
 export const updateRepoRerunScheduleConfig = async (
   payload: {
+    task_id: string;
     enabled?: boolean;
     schedule_period?: 'daily' | 'weekly';
+    repo_scope?: 'all' | 'fixed_pending_retest';
   },
   token = getCompassOperatorToken()
 ): Promise<{ message: string; data: RepoRerunScheduleConfig }> => {

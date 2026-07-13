@@ -51,6 +51,7 @@ import type {
   CompassOperatorUser,
   DevxNodeStatus,
   RepoRerunJob,
+  RepoRerunScheduleTask,
 } from '../rawData/apiClient';
 import WeeklyReportManagementSection from './WeeklyReportManagementSection';
 import ScheduledRerunConfigSection from './ScheduledRerunConfigSection';
@@ -602,36 +603,27 @@ const TaskManagementPage: React.FC = () => {
     }
   }, [operatorUser]);
 
-  const handleScheduleEnabledChange = useCallback(
-    async (enabled: boolean) => {
-      setScheduleSaving(true);
-      try {
-        const result = await updateRepoRerunScheduleConfig({ enabled });
-        messageApi.success(result.message);
-        await refetchScheduleConfig();
-      } catch (error) {
-        messageApi.error(
-          error instanceof Error ? error.message : '更新定时重跑配置失败'
-        );
-      } finally {
-        setScheduleSaving(false);
-      }
-    },
-    [messageApi, refetchScheduleConfig]
-  );
-
-  const handleSchedulePeriodChange = useCallback(
-    async (schedulePeriod: 'daily' | 'weekly') => {
+  const handleScheduleTaskChange = useCallback(
+    async (
+      taskId: string,
+      patch: Partial<
+        Pick<
+          RepoRerunScheduleTask,
+          'enabled' | 'schedule_period' | 'repo_scope'
+        >
+      >
+    ) => {
       setScheduleSaving(true);
       try {
         const result = await updateRepoRerunScheduleConfig({
-          schedule_period: schedulePeriod,
+          task_id: taskId,
+          ...patch,
         });
         messageApi.success(result.message);
         await refetchScheduleConfig();
       } catch (error) {
         messageApi.error(
-          error instanceof Error ? error.message : '更新定时重跑周期失败'
+          error instanceof Error ? error.message : '更新定时重跑配置失败'
         );
       } finally {
         setScheduleSaving(false);
@@ -1115,6 +1107,19 @@ const TaskManagementPage: React.FC = () => {
         }),
       },
       {
+        title: '触发方式',
+        key: 'trigger_source',
+        width: 210,
+        render: (_value, record) => {
+          if (record.trigger_source !== 'scheduled') return '手动触发';
+          const scopeLabel =
+            record.schedule_repo_scope === 'all'
+              ? '全部上线仓库'
+              : '仅已修复待复测仓库';
+          return `${record.schedule_task_name || '定时任务'} · ${scopeLabel}`;
+        },
+      },
+      {
         title: sortableTitle('创建时间'),
         dataIndex: 'created_at',
         key: 'created_at',
@@ -1435,11 +1440,8 @@ const TaskManagementPage: React.FC = () => {
                   config={scheduleConfig}
                   loading={scheduleConfigLoading}
                   saving={scheduleSaving}
-                  onEnabledChange={(enabled) => {
-                    void handleScheduleEnabledChange(enabled);
-                  }}
-                  onPeriodChange={(period) => {
-                    void handleSchedulePeriodChange(period);
+                  onTaskChange={(taskId, patch) => {
+                    void handleScheduleTaskChange(taskId, patch);
                   }}
                 />
               ) : null}
@@ -1501,7 +1503,7 @@ const TaskManagementPage: React.FC = () => {
                   loading={isLoading || authChecking}
                   columns={columns}
                   dataSource={taskItems}
-                  scroll={{ x: 1544 }}
+                  scroll={{ x: 1754 }}
                   onChange={handleTableChange}
                   pagination={{
                     current: page,
