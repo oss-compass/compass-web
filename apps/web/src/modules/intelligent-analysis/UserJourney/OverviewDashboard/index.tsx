@@ -111,7 +111,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         viewType: 'repo',
         org,
         tab: currentTab,
-        includeCommonIssues: true,
+        includeCommonIssues,
         commonOnly:
           issueSourceMode === 'common'
             ? true
@@ -144,7 +144,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         viewType: 'repo',
         org,
         tab: 'overall',
-        includeCommonIssues: true,
+        includeCommonIssues,
         commonOnly:
           issueSourceMode === 'common'
             ? true
@@ -177,7 +177,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     queryFn: () =>
       fetchOverviewSummary({
         org,
-        includeCommonIssues: true,
+        includeCommonIssues,
         commonOnly:
           issueSourceMode === 'common'
             ? true
@@ -201,7 +201,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       queryFn: () =>
         fetchOverviewCloseRateTrends({
           org,
-          includeCommonIssues: true,
+          includeCommonIssues,
           commonOnly:
             issueSourceMode === 'common'
               ? true

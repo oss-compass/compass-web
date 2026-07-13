@@ -2791,7 +2791,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       const search = new URLSearchParams();
       if (org) search.set('org', org);
       search.set('tab', currentTab);
-      search.set('include_common_issues', 'true');
+      search.set(
+        'include_common_issues',
+        commonOnly === false ? 'false' : 'true'
+      );
       if (commonOnly !== undefined && commonOnly !== null) {
         search.set('common_only', String(commonOnly));
       }
