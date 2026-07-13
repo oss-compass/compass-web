@@ -41,6 +41,7 @@ import {
   cancelOverviewRepoRerun,
   clearCompassOperatorToken,
   deleteRepoManagementRepo,
+  fetchCompetitorRepos,
   fetchCompassOperatorMe,
   fetchOverviewRepoRerunRecords,
   fetchOverviewRepoRerunStatuses,
@@ -77,6 +78,7 @@ import type {
 } from '../OverviewDashboard/types';
 import { getReportDisplayText } from '../OverviewDashboard/utils';
 import { useRegistryData } from '../hooks/useRegistryData';
+import CompetitorRepoSection from './CompetitorRepoSection';
 
 const { Title } = Typography;
 const nativeInputClassName =
@@ -433,6 +435,9 @@ const RepoManagementPage: React.FC = () => {
   const screens = Grid.useBreakpoint();
   const queryClient = useQueryClient();
   const [messageApi, contextHolder] = message.useMessage();
+  const [repoCategory, setRepoCategory] = useState<'cann' | 'competitor'>(
+    'cann'
+  );
   const [keyword, setKeyword] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('');
@@ -621,6 +626,11 @@ const RepoManagementPage: React.FC = () => {
     queryKey: ['repo-management-register-options'],
     queryFn: fetchRepoManagementRegisterOptions,
   });
+  const { data: competitorRepoOptionsResp } = useQuery({
+    queryKey: ['competitor-repo-list', 'select-options'],
+    queryFn: () => fetchCompetitorRepos({ page: 1, size: 200 }),
+    enabled: !!operatorUser,
+  });
 
   const repoItems = useMemo(
     () => repoListResp?.items ?? [],
@@ -743,21 +753,13 @@ const RepoManagementPage: React.FC = () => {
       .sort((left, right) => left.label.localeCompare(right.label, 'zh-CN'));
   }, [registerRepoOptionsResp?.items, registry]);
   const benchmarkRepoOptions = useMemo(() => {
-    if (!registry) return [];
-    const excludedOrgs = new Set(['cann', 'ascend', 'mindspore']);
     const values = new Set<string>();
-    Object.values(registry.entries).forEach((entry) => {
-      const org = String(entry.org || '')
-        .trim()
-        .toLowerCase();
-      if (excludedOrgs.has(org)) return;
-      const repoName =
-        String(entry.label || '').trim() ||
-        String(entry.projectName || '').trim();
+    (competitorRepoOptionsResp?.items || []).forEach((item) => {
+      const repoName = String(item.repo_full_name || '').trim();
       if (repoName) values.add(repoName);
     });
     return Array.from(values).sort((left, right) => left.localeCompare(right));
-  }, [registry]);
+  }, [competitorRepoOptionsResp?.items]);
   const isAdmin = operatorUser?.role === 'admin';
   const taskManagementHref = useMemo(() => {
     const org = router.query.org;
@@ -1308,6 +1310,9 @@ const RepoManagementPage: React.FC = () => {
       await queryClient.invalidateQueries({
         queryKey: ['repo-management-list'],
       });
+      await queryClient.invalidateQueries({
+        queryKey: ['competitor-repo-list'],
+      });
     } catch (error) {
       messageApi.error(
         error instanceof Error ? error.message : '保存失败，请稍后重试'
@@ -1824,7 +1829,23 @@ const RepoManagementPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <Tabs
+                activeKey={repoCategory}
+                items={[
+                  { key: 'cann', label: 'CANN 仓库' },
+                  { key: 'competitor', label: '竞品仓库' },
+                ]}
+                className="-mb-3"
+                onChange={(key) =>
+                  setRepoCategory(key as 'cann' | 'competitor')
+                }
+              />
+
+              <div
+                className={`flex flex-wrap items-center gap-3 ${
+                  repoCategory === 'cann' ? '' : 'hidden'
+                }`}
+              >
                 <Input.Search
                   allowClear
                   placeholder="搜索仓库 / 负责人 / 竞品 / 备注"
@@ -1877,7 +1898,9 @@ const RepoManagementPage: React.FC = () => {
               <Tabs
                 activeKey={statusFilter}
                 items={statusTabItems}
-                className="repo-management-status-tabs -mb-2"
+                className={`repo-management-status-tabs -mb-2 ${
+                  repoCategory === 'cann' ? '' : 'hidden'
+                }`}
                 onChange={(nextKey) => {
                   setStatusFilter(nextKey as RepoManagementStatusFilter);
                   setPage(1);
@@ -1885,7 +1908,7 @@ const RepoManagementPage: React.FC = () => {
               />
             </div>
 
-            <div className="w-full">
+            <div className={repoCategory === 'cann' ? 'w-full' : 'hidden'}>
               <Table<RepoManagementItem>
                 className="overview-ant-table"
                 style={{ width: '100%' }}
@@ -1919,6 +1942,12 @@ const RepoManagementPage: React.FC = () => {
                 locale={{ emptyText: '暂无可管理的仓库' }}
               />
             </div>
+            {repoCategory === 'competitor' ? (
+              <CompetitorRepoSection
+                isAdmin={!!isAdmin}
+                authChecking={authChecking}
+              />
+            ) : null}
           </Card>
         )}
       </div>

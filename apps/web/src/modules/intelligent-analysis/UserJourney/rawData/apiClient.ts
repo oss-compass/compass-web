@@ -122,6 +122,46 @@ export type RepoManagementRegisterOptionsResponse = {
   items: RepoManagementRegisterOption[];
 };
 
+export type CompetitorRepoItem = {
+  repo_id: string;
+  project_key: string;
+  repo_name: string;
+  repo_full_name: string;
+  repo_url: string;
+  default_branch: string;
+  hardware_env: string;
+  benchmark_cann_repos: string[];
+  remark: string;
+  latest_rerun_job?: RepoRerunJob | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  updated_by?: string | null;
+};
+
+export type CompetitorRepoListResponse = {
+  total: number;
+  benchmark_count?: number;
+  page: number;
+  size: number;
+  items: CompetitorRepoItem[];
+};
+
+export type CompetitorRerunAllResult = {
+  summary: {
+    total: number;
+    submitted: number;
+    skipped: number;
+    failed: number;
+  };
+  items: Array<{
+    repo_id: string;
+    repo_full_name: string;
+    status: 'submitted' | 'skipped' | 'failed';
+    message: string;
+    job?: RepoRerunJob;
+  }>;
+};
+
 const toStringArray = (value: unknown): string[] => {
   if (!Array.isArray(value)) return [];
   return value.map((item) => String(item || '').trim()).filter(Boolean);
@@ -497,6 +537,76 @@ export const deleteRepoManagementRepo = async (
   }>(`/repo-management/repos/${encodeURIComponent(repoName)}`, token, {
     method: 'DELETE',
   });
+};
+
+export const fetchCompetitorRepos = async (
+  params: { keyword?: string; page?: number; size?: number },
+  token = getCompassOperatorToken()
+): Promise<CompetitorRepoListResponse> => {
+  if (!token) throw new Error('未登录');
+  const search = new URLSearchParams();
+  if (params.keyword) search.set('keyword', params.keyword);
+  search.set('page', String(params.page ?? 1));
+  search.set('size', String(params.size ?? 20));
+  return compassApiAuthedFetch<CompetitorRepoListResponse>(
+    `/repo-management/competitor-repos?${search.toString()}`,
+    token
+  );
+};
+
+export const upsertCompetitorRepo = async (
+  payload: {
+    repo_url: string;
+    default_branch?: string;
+    hardware_env?: string;
+    remark?: string;
+  },
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: CompetitorRepoItem }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{ message: string; data: CompetitorRepoItem }>(
+    '/repo-management/competitor-repos',
+    token,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }
+  );
+};
+
+export const deleteCompetitorRepo = async (
+  repoId: string,
+  token = getCompassOperatorToken()
+): Promise<{ message: string }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{ message: string }>(
+    `/repo-management/competitor-repos/${encodeURIComponent(repoId)}`,
+    token,
+    { method: 'DELETE' }
+  );
+};
+
+export const rerunAllCompetitorRepos = async (
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: CompetitorRerunAllResult }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{
+    message: string;
+    data: CompetitorRerunAllResult;
+  }>('/repo-management/competitor-repos/rerun-all', token, { method: 'POST' });
+};
+
+export const rerunCompetitorRepo = async (
+  repoId: string,
+  token = getCompassOperatorToken()
+): Promise<{ message: string; data: RepoRerunJob }> => {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{ message: string; data: RepoRerunJob }>(
+    `/repo-management/competitor-repos/${encodeURIComponent(repoId)}/rerun`,
+    token,
+    { method: 'POST' }
+  );
 };
 
 export const triggerOverviewRepoRerun = async (
