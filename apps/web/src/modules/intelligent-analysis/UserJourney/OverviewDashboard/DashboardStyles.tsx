@@ -1919,6 +1919,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       text-align: center;
     }
 
+    .overview-repo-name-cell > span:first-child {
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
     .overview-repo-name-cell .overview-benchmark-tag.ant-tag {
       align-self: center;
       margin-left: auto;

@@ -592,31 +592,31 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       isCompactTable
         ? [
             rw(36, 28),
-            rw(72, 62),
+            rw(130, 112),
             rw(52, 44),
             rw(88, 74),
             rw(62, 54),
             rw(62, 54),
-            rw(132, 112),
+            rw(130, 122),
             rw(36, 28),
             rw(70, 58),
-            rw(118, 104),
-            rw(76, 64),
-            rw(58, 50),
+            rw(90, 78),
+            rw(64, 56),
+            rw(50, 44),
           ]
         : [
             rw(40, 30),
-            rw(80, 70),
+            rw(150, 130),
             rw(60, 50),
             rw(96, 84),
             rw(70, 60),
             rw(70, 60),
-            rw(160, 140),
+            rw(150, 140),
             rw(40, 30),
             rw(80, 70),
-            rw(126, 112),
-            rw(100, 86),
-            rw(72, 64),
+            rw(96, 84),
+            rw(78, 68),
+            rw(58, 50),
           ],
     [isCompactTable, repoWidthScale]
   );
@@ -631,7 +631,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(88, 74),
             rw(62, 54),
             rw(62, 54),
-            rw(132, 112),
+            rw(132, 122),
             rw(36, 28),
             rw(70, 58),
             rw(118, 104),
@@ -645,7 +645,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(96, 84),
             rw(70, 60),
             rw(70, 60),
-            rw(160, 140),
+            rw(160, 150),
             rw(40, 30),
             rw(80, 70),
             rw(126, 112),
@@ -1793,7 +1793,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         dataIndex: 'name',
         key: 'name',
         width: repoColumnWidths[1],
-        ellipsis: true,
         render: (value, record) => (
           <span className="overview-repo-name-cell">
             <span>{value}</span>
