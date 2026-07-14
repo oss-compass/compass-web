@@ -579,7 +579,7 @@ export const deleteCompetitorRepo = async (
   repoId: string,
   token = getCompassOperatorToken()
 ): Promise<{ message: string }> => {
-  if (!token) throw new Error('未登录');
+  if (!token) throw new Error('未登录 ');
   return compassApiAuthedFetch<{ message: string }>(
     `/repo-management/competitor-repos/${encodeURIComponent(repoId)}`,
     token,
