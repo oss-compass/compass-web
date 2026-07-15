@@ -479,6 +479,20 @@ const buildActionDetailRecord = (action: BackendAction): ActionDetailRecord => {
   };
 };
 
+const HIDDEN_STEP_METRIC_IDS = new Set([
+  'SDX_NAMING_CONFUSION_COUNT',
+  'SDX_PLATFORM_MIGRATION_FRICTION',
+  'SDX_ENV_PERSISTENCE',
+  'SDX_ENV_HARDWARE_COST_USD',
+  'SDX_ENV_CLOUD_SESSION_LIMIT_SEC',
+  'SDX_DOC_SELF_CONTAINED_RATIO',
+  'SDX_BUILD_ERROR_DIAGNOSABILITY',
+  'SDX_QUICKSTART_RUN_SUCCESS',
+  'SDX_DEPLOY_VERIFY_AVAILABLE',
+  'SDX_RUN_OUTPUT_READABILITY',
+  'SDX_RUN_MODE_COMBINATIONS',
+]);
+
 const buildStepMetrics = (
   step: BackendJourneyStep,
   totalDurationSeconds: number,
@@ -486,7 +500,10 @@ const buildStepMetrics = (
   retryCount: number,
   subjectiveMetrics: BackendMetric[]
 ): StepMetric[] => {
-  const mappedMetrics = subjectiveMetrics.map((metric) => {
+  const visibleMetrics = subjectiveMetrics.filter(
+    (metric) => !HIDDEN_STEP_METRIC_IDS.has(metric.metric_id)
+  );
+  const mappedMetrics = visibleMetrics.map((metric) => {
     // 处理 true/false 值的展示
     const rawValue = metric.value;
     const displayValue =
@@ -509,7 +526,7 @@ const buildStepMetrics = (
       metricId: metric.metric_id,
     };
   });
-  const hasRichMetrics = subjectiveMetrics.some((metric) => Boolean(metric.ui));
+  const hasRichMetrics = visibleMetrics.some((metric) => Boolean(metric.ui));
   const durationMetric: StepMetric = {
     label: '\u5b9e\u9645\u8017\u65f6',
     value: formatMetricValue(totalDurationSeconds, 'seconds'),
@@ -736,7 +753,10 @@ export const buildUserJourneyProjectData = (
     projectKey: report.project.project_id,
     agentVersion: buildAgentVersionLabel(report),
     reportUpdatedAt: report.meta.generated_at,
-    reportDetailUrl: report.report_detail_url ?? '',
+    reportDetailUrl: (report.report_detail_url ?? '').replace(
+      'https://cogito.oss-compass.org',
+      'https://oss-compass.isrc.ac.cn'
+    ),
     projectInfo: {
       name: report.project.project_name,
       version: report.version,
