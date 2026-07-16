@@ -2223,7 +2223,28 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: hardwareEnvHeaderTitle,
         key: 'hardwareEnv',
         width: teamColumnWidths[9],
-        render: () => <span className="text-slate-400">-</span>,
+        ellipsis: true,
+        render: (_value, record) => {
+          const repos = hideBeatRepos
+            ? record.repos.filter((repo) => !isBeatRepo(repo.id))
+            : record.repos;
+          const hardwareEnvs = Array.from(
+            repos
+              .reduce((envs, repo) => {
+                const label = String(repo.hardwareEnv || '').trim();
+                const key = normalizeHardwareEnv(label);
+                if (label && key && !envs.has(key)) envs.set(key, label);
+                return envs;
+              }, new Map<string, string>())
+              .values()
+          );
+
+          return hardwareEnvs.length ? (
+            hardwareEnvs.join('、')
+          ) : (
+            <span className="text-slate-400">-</span>
+          );
+        },
       },
       {
         title: '最新报告',
@@ -2254,6 +2275,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
       hardwareEnvHeaderTitle,
+      hideBeatRepos,
     ]
   );
   const visibleTeamColumns = useMemo(
@@ -2506,10 +2528,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         <div className="overview-expanded-rows">
           <table
             className="overview-expanded-table"
-            style={{ minWidth: visibleRepoScrollX }}
+            style={{ minWidth: visibleTeamScrollX }}
           >
             <colgroup>
-              {repoColumnWidths
+              {teamColumnWidths
                 .filter((_, index) => showActionColumn || index !== 11)
                 .map((width, index) => (
                   <col key={index} style={{ width }} />
@@ -2716,8 +2738,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
       sortedByProgressMetric,
-      repoColumnWidths,
-      repoScrollX,
+      teamColumnWidths,
+      visibleTeamScrollX,
       teamSortKey,
       teamSortAsc,
       openRerunModal,
