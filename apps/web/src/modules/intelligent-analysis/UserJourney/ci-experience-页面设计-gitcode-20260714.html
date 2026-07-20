@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CI 体验诊断 · CANN GitCode Action — Cogito 设计稿 20260714</title>
+<style>
+/* 口径纪律:本页所有判定=报告口径(重构方案_CI体验报告_GitCodeAction_20260714.md v1.1),不引入前端第二套评分规则。
+   数据同源:全部数字来自页首唯一 DATA 常量,与《数据事实表_GitCodeAction_20260714.md v1.1》同源(2026-07-14 API 实测,经对抗校验复算)。 */
+:root{
+  --page:#eef2fa; --surface:#fff; --surface-2:#f7f9fd;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+  --series:#2a78d6; --series-soft:#cde2fb;
+  --good:#0ca30c; --good-text:#006300;
+  --warning:#fab219; --warning-text:#8a6200;
+  --serious:#ec835a; --serious-text:#a84a22;
+  --critical:#d03b3b; --critical-text:#b02a2a;
+  --banner-bg:#eef4ff; --banner-border:#c9dcf7;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --page:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+    --ink:#fff; --ink-2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+    --series:#3987e5; --series-soft:#184f95;
+    --good-text:#0ca30c; --warning-text:#f0c25a; --serious-text:#f09a75; --critical-text:#e66767;
+    --banner-bg:#16202e; --banner-border:#274063;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+  --ink:#fff; --ink-2:#c3c2b7; --grid:#2c2c2a; --border:rgba(255,255,255,.10);
+  --series:#3987e5; --series-soft:#184f95;
+  --good-text:#0ca30c; --warning-text:#f0c25a; --serious-text:#f09a75; --critical-text:#e66767;
+  --banner-bg:#16202e; --banner-border:#274063;
+}
+:root[data-theme="light"]{
+  --page:#eef2fa; --surface:#fff; --surface-2:#f7f9fd;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --border:rgba(11,11,11,.10);
+  --series:#2a78d6; --series-soft:#cde2fb;
+  --good:#0ca30c; --good-text:#006300;
+  --warning:#fab219; --warning-text:#8a6200;
+  --serious:#ec835a; --serious-text:#a84a22;
+  --critical:#d03b3b; --critical-text:#b02a2a;
+  --banner-bg:#eef4ff; --banner-border:#c9dcf7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:16px 20px 60px}
+section{margin-top:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+h2{font-size:15px;margin:0 0 10px}
+h2 .anno{font-weight:400;font-size:12px;color:var(--muted);margin-left:8px}
+h3{font-size:13.5px;margin:14px 0 8px}
+a{color:var(--series)}
+.num{font-variant-numeric:tabular-nums}
+.mini{font-size:11.5px;color:var(--muted)}
+.scroll-x{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{color:var(--ink-2);font-weight:600;font-size:12px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+/* 顶栏 */
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:15px}
+.tabs{display:flex;gap:4px}
+.tabs span{padding:5px 10px;border-radius:8px;font-size:12.5px;color:var(--ink-2)}
+.tabs span.on{background:var(--series);color:#fff;font-weight:600}
+.spacer{flex:1}
+.readonly{font-size:11.5px;color:var(--muted)}
+/* meta 带 */
+.metaband{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 12px;font-size:12.5px}
+.chip b{font-weight:700}
+.seg{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);color:var(--ink-2);padding:5px 14px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.seg button.on{background:var(--series);color:#fff;font-weight:700}
+.seg button:focus-visible{outline:3px solid var(--series-soft);outline-offset:-3px}
+.btn{border:1px solid var(--border);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:5px 12px;font-size:12.5px;cursor:pointer;font-family:inherit}
+/* 横幅 */
+.banner{background:var(--banner-bg);border:1px solid var(--banner-border);border-radius:10px;padding:9px 14px;font-size:12.5px;margin-top:12px}
+.banner+.banner{margin-top:8px}
+/* sticky 页内导航 */
+.nav{position:sticky;top:0;z-index:9;background:var(--page);padding:8px 0;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--grid)}
+.nav a{font-size:12px;color:var(--ink-2);text-decoration:none;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface)}
+.nav a:hover{border-color:var(--series)}
+/* 六灯行动板 */
+.lights{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:12px}
+@media (max-width:900px){.lights{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.lights{grid-template-columns:repeat(2,1fr)}}
+.light{display:block;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface-2);text-decoration:none;color:var(--ink)}
+.light:hover{border-color:var(--series)}
+.light .ln{font-size:12px;color:var(--ink-2);font-weight:600}
+.light .lv{display:inline-flex;align-items:center;gap:6px;margin:6px 0 4px;font-weight:800;font-size:13px}
+.dot{width:10px;height:10px;border-radius:999px;display:inline-block;flex:none}
+.s-red .dot{background:var(--critical)} .s-red .lv{color:var(--critical-text)}
+.s-yellow .dot{background:var(--warning)} .s-yellow .lv{color:var(--warning-text)}
+.s-green .dot{background:var(--good)} .s-green .lv{color:var(--good-text)}
+.s-gray .dot{background:var(--muted)} .s-gray .lv{color:var(--ink-2)}
+.light .ll{font-size:12px;color:var(--ink-2);min-height:3.2em}
+.light .lm{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.flag{display:inline-block;font-size:10.5px;background:var(--banner-bg);border:1px solid var(--banner-border);border-radius:5px;padding:1px 6px;margin-left:4px;color:var(--ink-2)}
+/* 归因分流 */
+.attrbar{display:flex;height:34px;border-radius:8px;overflow:hidden;gap:2px;background:var(--page);margin:10px 0 6px}
+.attrbar div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;min-width:2.2em}
+.attrbar .b-code{background:var(--series)} .attrbar .b-ci{background:var(--critical)}
+.attrbar .b-smoke{background:var(--warning);color:#3a2c00} .attrbar .b-un{background:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2)}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:760px){.quad{grid-template-columns:1fr}}
+.bucket{border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.bucket h4{margin:0 0 4px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.bucket .who{margin-left:auto;font-size:11px;font-weight:600;border-radius:999px;padding:2px 9px}
+.bk-code{border-top:3px solid var(--series)} .bk-code .who{background:var(--series);color:#fff}
+.bk-ci{border-top:3px solid var(--critical)} .bk-ci .who{background:var(--critical);color:#fff}
+.bk-smoke{border-top:3px solid var(--warning)} .bk-smoke .who{background:var(--warning);color:#3a2c00}
+.bk-un{border-top:3px solid var(--muted)} .bk-un .who{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--border)}
+.bucket ul{margin:8px 0 0;padding-left:0;list-style:none}
+.bucket li{padding:5px 0;border-bottom:1px dashed var(--grid);font-size:12.5px}
+.bucket li:last-child{border-bottom:0}
+.bucket li b{font-variant-numeric:tabular-nums}
+.act{color:var(--good-text);font-size:12px}
+.noact{color:var(--critical-text);font-size:12px}
+.firststep{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:12.5px;margin-top:12px}
+/* 台账 */
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
+@media (max-width:760px){.statrow{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.stat .label{font-size:12px;color:var(--ink-2)}
+.stat .val{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .sub{font-size:11.5px;color:var(--muted)}
+.cbar{display:grid;grid-template-columns:170px 1fr 150px;gap:8px;align-items:center;font-size:12.5px;padding:4px 0}
+.cbar .track{height:14px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.cbar .fill{height:100%;background:var(--critical);border-radius:4px 0 0 4px}
+.empty{border:2px dashed var(--grid);border-radius:10px;padding:14px;color:var(--muted);font-size:12.5px;text-align:center}
+.pill{display:inline-block;border:1px solid;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:600}
+.pill.hot{color:var(--critical-text);border-color:var(--critical)}
+.pill.warn{color:var(--warning-text);border-color:var(--warning)}
+.pill.ok{color:var(--good-text);border-color:var(--good)}
+.pill.na{color:var(--ink-2);border-color:var(--muted)}
+blockquote{margin:8px 0;padding:8px 12px;border-left:3px solid var(--grid);background:var(--surface-2);border-radius:0 8px 8px 0;font-size:12.5px}
+/* REC 卡 */
+.reccard{border:1px solid var(--border);border-left:4px solid var(--critical);border-radius:10px;padding:12px 14px;margin-top:10px}
+.reccard.p1{border-left-color:var(--serious)}
+.reccard .rt{font-weight:700;font-size:13.5px}
+.prio{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:800;color:#fff;background:var(--critical);margin-right:6px}
+.p1 .prio{background:var(--serious);color:#2b1500}
+.evtag{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;margin-left:6px}
+.ev-ok{background:rgba(12,163,12,.12);color:var(--good-text)}
+.ev-maybe{background:rgba(250,178,25,.15);color:var(--warning-text)}
+.qd{margin:8px 0 0;font-size:12.5px}
+.qd div{padding:2px 0}
+.qd b{color:var(--ink-2);font-weight:600;margin-right:6px}
+.state{display:inline-block;border-radius:999px;border:1px solid var(--border);padding:2px 10px;font-size:11.5px;color:var(--ink-2);background:var(--surface-2)}
+/* 附录 */
+details.about{border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:10px;background:var(--surface)}
+details.about summary{cursor:pointer;font-weight:600;font-size:13px;list-style:none}
+details.about summary::before{content:"▸ "}
+details.about[open] summary::before{content:"▾ "}
+footer{margin-top:24px;font-size:11.5px;color:var(--muted);text-align:center}
+svg text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar card">
+  <span class="brand">Cogito 智能分析</span>
+  <div class="tabs"><span>社区入门体验</span><span>Issue 贡献体验</span><span class="on">CI 体验</span></div>
+  <span class="spacer"></span>
+  <span class="readonly">设计稿 v1.1(经对抗校验) · 只读预览 · 认领/确认等操作为视觉桩</span>
+</div>
+
+<div class="metaband">
+  <span class="chip">📦 <b>gitcode · cann</b></span>
+  <div class="seg" role="tablist" aria-label="仓库切换">
+    <button id="tab-runtime" class="on" onclick="switchRepo('runtime')">runtime</button>
+    <button id="tab-opsnn" onclick="switchRepo('opsnn')">ops-nn</button>
+  </div>
+  <span class="chip" id="chip-wf">workflow: runtime_action</span>
+  <span class="chip" id="chip-window"></span>
+  <span class="chip" id="chip-n"></span>
+  <span class="chip">置信度:run 级 <b>高</b>(全量)· job 级 <b>中</b>(抽样 46 run = 26 失败 + 18 成功 + 2 取消)</span>
+  <span class="spacer"></span>
+  <button class="btn">⟳ 重新分析</button>
+  <button class="btn">导出报告 md</button>
+</div>
+
+<div class="banner">🧑‍💻 <b>给贡献者的触发提示</b>:CI 不随 push 自动跑——<b>每次改完代码,需在 PR 里重新评论一条以 <code>/compile</code> 开头的评论</b>(正则 <code>^(?:\/)?compile*</code> 锚定开头,「please /compile」不触发)。runtime 上重发会自动取消上一次 run(旧 run 显示 CANCELED 属抢占机制,<b>不是报错</b>);ops-nn 无并发限制,<b>连发会堆叠排队,请勿刷评论</b>。</div>
+<div class="banner">📋 <b>诚实声明</b>:本页为周度回溯诊断,所有判定是对 run/job/step 遥测的换算,非贡献者直接反馈;<b>本报告不打总分、不评等级</b>,只做行动状态判定。周期=观察窗(上线以来全量,2026-07-14 拉取);标 <b>*</b> 的为 job/step 级抽样计数(46 run),run 级数字为全量。⚙️ 平台语义:runtime 全局并发 5 + 同 MR 抢占,ops-nn 无并发块;stage 级 fail-fast;终点为真机 NPU 冒烟(self-hosted 池)。</div>
+
+<nav class="nav" aria-label="页内导航">
+  <a href="#verdict">30 秒判决</a><a href="#attr">归因分流</a><a href="#trackA">轨 A · 基础设施</a><a href="#trackB">轨 B · 贡献者</a><a href="#loop">改进闭环</a><a href="#gaps">诚实边界</a><a href="#appendix">附录</a>
+</nav>
+
+<section id="verdict" class="card">
+  <h2>30 秒判决 · 六灯行动板<span class="anno">每灯绑定一个决策与阈值(provisional);灯间不汇总、不加权、不排名;同源灯互相标注</span></h2>
+  <p id="verdict-line" style="margin:4px 0 0;font-size:13.5px"></p>
+  <div class="lights" id="lights"></div>
+</section>
+
+<section id="attr" class="card">
+  <h2>归因分流面板 · 报告心脏<span class="anno">每个失败 run 先过两道守卫(广度/上游产物),再按首因 job + message 劈成四桶;桶决定 owner</span></h2>
+  <div id="attr-note" class="mini"></div>
+  <div class="attrbar" id="attrbar" role="img" aria-label=""></div>
+  <div class="legend" id="attrlegend"></div>
+  <div class="quad" id="buckets"></div>
+  <div class="firststep"><b>第一步:红灯原因在哪看?</b> 打开 PR 里 CI 回帖的 run 链接(或仓库 Actions 页)→ 展开<b>失败的 stage</b> → 看<b>失败 job 的名字</b>(UT 域/编译变体写在 job 名里,如 <code>ut_test_rts_david</code>、<code>arm_compile_ubuntu24</code>;失败 message 是通用格式,不含域/变体名)→ 点进 job 看<b>失败 step 的名字</b>(如 <code>ut_acc</code>、<code>download</code>)。日志正文需登录查看。拿到「job 名 + step 名」后,查下面这张表。</div>
+  <details class="about" style="margin-top:12px" open>
+    <summary>贡献者自助查询表:拿到红灯,先查这张表</summary>
+    <div class="scroll-x"><table style="margin-top:8px">
+      <tr><th>失败特征(job 名 + step/message)</th><th>桶</th><th>你该做什么</th><th>本地可复现</th></tr>
+      <tr><td>compile 变体 job · <code>步骤*_compile_acc / verify_package执行失败</code></td><td>代码红·编译</td><td>对照 job 名找到变体(ops-nn 18 个 / runtime 4 个),参考仓库构建文档本地编译</td><td>视 SDK/硬件而定(monitor/950 类变体依赖 Ascend 环境)</td></tr>
+      <tr><td>ut_* job · <code>步骤ut_acc / ut执行失败</code></td><td>代码红·单测</td><td>对照 job 名找到 UT 域(runtime 18 域 / ops-nn 4 域),参考仓库测试文档本地跑;无本地跑法时找维护者</td><td>视 SDK 而定</td></tr>
+      <tr><td>staticcheck_* job · <code>步骤staticcheck执行失败</code></td><td>代码红·规范</td><td>看 job 名定 5 类之一:codespell→本地 codespell;markdown→本地 lint;tag_closed / resource_existence / link_validity 依赖远端状态</td><td>前两类 ✅;后三类 ❌(远端依赖)</td></tr>
+      <tr><td>任一 job · <code>步骤download执行失败</code></td><td><b>CI 自身红</b>(OBS 依赖下载)</td><td><b>勿重发</b>,等基础设施修——它出现在 compile job 里,但不是你的编译错误</td><td>❌</td></tr>
+      <tr><td><code>任务申请资源错误</code> / <code>Self-hosted的执行机未注册。</code> / image 阶段失败</td><td>CI 自身红</td><td><b>无需动作</b>,等 CI 团队修——不是你的锅</td><td>❌</td></tr>
+      <tr><td>A2_pre_smoke 失败</td><td>真机待判定</td><td>需真机 NPU(smoke=204),找维护者协助</td><td>❌</td></tr>
+    </table></div>
+    <p class="mini">同一 run 里很多 job 同时红(如十几个 UT 域同挂)? 大概率是公共原因(环境/镜像/master 回归),按归因守卫属「疑似系统性」,<b>先别改代码,等基础设施 triage</b>。</p>
+  </details>
+</section>
+
+<section id="trackA" class="card">
+  <h2>轨 A · CI 基础设施台账<span class="anno">A1 修什么 → A2 扩/调什么 → A3 减什么;红灯项默认展开</span></h2>
+  <h3>A1 修·CI 可靠性 <span class="pill" id="pill-0"></span></h3>
+  <div class="scroll-x"><table id="a1table"></table></div>
+  <div id="eventcard"></div>
+  <h3>A2 扩·稀缺资源 <span class="pill" id="pill-1"></span></h3>
+  <p class="mini" style="margin:0 0 6px">被取消前的资源占用(墙钟,上界口径);取消不计失败,但 ≥1h 长占用 = 挂起/抢占信号,白占稀缺池。</p>
+  <div id="cancelbars"></div>
+  <p class="mini" id="a2note"></p>
+  <h3>A3 减·冗余编排 <span class="pill" id="pill-2"></span></h3>
+  <div class="empty" id="a3slot"></div>
+</section>
+
+<section id="trackB" class="card">
+  <h2>轨 B · 贡献者 / 运营台账<span class="anno">B1 重试可信吗 → B2 信号看得懂吗 → B3 谁需要协助</span></h2>
+  <h3>B1 说·重试可信 <span class="pill" id="pill-3"></span></h3>
+  <div class="statrow" id="b1stats"></div>
+  <div id="histchart"></div>
+  <details class="about"><summary>时长分布数据表(图表的表格视图,绝对计数)</summary><div class="scroll-x"><table id="histtable" style="margin-top:8px"></table></div></details>
+  <h3>B2 改·信号质量 <span class="pill" id="pill-4"></span></h3>
+  <div id="b2body"></div>
+  <h3>B3 干预·反复触发与停红 <span class="pill" id="pill-5"></span> <span class="flag">运营内部视图</span></h3>
+  <p class="mini" style="margin:0 0 6px">⚠️ 口径声明:「反复触发」计数<b>未扣除 CI 自身红/取消/抢占</b>——反复触发往往是 CI 故障受害者的信号而非能力问题。<b>先归因、再联系,不作能力评判</b>;Phase 1 扣除 CI 红后再计。此清单供运营 triage,不对贡献者公示。</p>
+  <div class="statrow" id="b3stats"></div>
+  <div class="scroll-x"><table id="walltable"></table></div>
+</section>
+
+<section id="loop" class="card">
+  <h2>改进闭环 · 本周三件事<span class="anno">决策物硬门:红灯 ≥1 而 REC 为空 → 报告不合格;归因决定 owner;回验用抗 gaming 口径</span></h2>
+  <div id="recs"></div>
+  <h3>上周回验</h3>
+  <div class="empty">基线周(首期),无上期 REC 可回验;下期起逐条回填绑定指标环比(单点事件类回验须跨 ≥2 周期观察复发)。未回验的 REC 不得关闭。</div>
+</section>
+
+<section id="gaps" class="card">
+  <h2>诚实边界 · 缺口声明<span class="anno">进正文而非脚注;凡遥测拿不到的不占位、不编分</span></h2>
+  <div class="scroll-x"><table>
+    <tr><th>缺口</th><th>现状</th><th>降级处置</th></tr>
+    <tr><td>日志正文 API</td><td><code>download-log</code> 未鉴权 404,需 token 未验证</td><td>归因止步失败 step 名;token 到位后升级行级</td></tr>
+    <tr><td>队列时间</td><td><code>pause_time</code> 恒 0,无直接字段</td><td><code>min(jobs.start)−run.start</code> 近似,全程标 APPROX,不做灯;<b>看门狗须排除排队等 runner 的 run</b></td></tr>
+    <tr><td>耗时脏数据</td><td><code>execute_cost_time</code> 有负值(如 −2739877)</td><td>弃用,统一墙钟;脏遥测计数列红旗</td></tr>
+    <tr><td>池容量 / 计费</td><td>runners API 需 token;无计费 API</td><td>资源分钟只给绝对值(≠钱),不下「已饱和」结论</td></tr>
+    <tr><td>抢占判定</td><td>无独立字段</td><td>CANCELED + 同 PR 更晚 run 时序启发式,标近似</td></tr>
+    <tr><td>PR 双编号</td><td><code>pull_request_id</code> 与 head_branch 两套并存</td><td>聚合以 <b>pull_request_id</b> 为准(head_branch 多为真实分支名,不可作聚合键)</td></tr>
+    <tr><td>job 级样本</td><td>本期抽样 46 run(26 失败 + 18 成功 + 2 取消)</td><td>job 级置信度=中;Phase 1 全窗重算</td></tr>
+    <tr><td>信号可读性</td><td>父节点不透传子失败原因(104 处);<b>叶子级哑信号=0</b></td><td>列可读性改进项(非红旗);message 通用格式须配 job 名定位指引</td></tr>
+    <tr><td>冒烟分型</td><td>A2 失败未拆 CI 侧/代码侧</td><td>归「真机待判定」不强分;Phase 1 按 steps 分型</td></tr>
+    <tr><td>趋势</td><td>单周期(上线首两周)</td><td>趋势区灰化,≥3 周期激活环比</td></tr>
+    <tr><td>上线公告</td><td>org/cann/discussions/154 被 WAF/SPA 拦截</td><td>只用 API+YAML 实证,不引述公告</td></tr>
+  </table></div>
+</section>
+
+<section id="trend" class="card">
+  <h2>周度趋势<span class="anno">激活条件:≥3 个完整周期</span></h2>
+  <div class="empty">首期为基线观察窗,单点无趋势。第 3 周起在此呈现六灯状态与判定指标的周度走势;阈值(provisional)同步回测定稿。</div>
+</section>
+
+<section id="appendix">
+  <details class="about"><summary>附录 A · 指标字典(判定级+主要参考级;完整版见设计方案 §4)</summary>
+    <div class="scroll-x"><table style="margin-top:8px">
+      <tr><th>指标</th><th>ID</th><th>口径(API 字段)</th><th>级别</th><th>灯</th></tr>
+      <tr><td>CI 自身红占比</td><td>ATTR_CI_RED_RATE</td><td>首因归 CI 自身红的 FAILED run / 全部 FAILED run</td><td>判定</td><td>🔧修</td></tr>
+      <tr><td>image 首因失败数</td><td>REL_IMG_ROOT</td><td>count(FAILED run) where 首因 job ∈ stage image;<b>与资源申请失败同源时禁止叠加陈述</b></td><td>判定</td><td>🔧修</td></tr>
+      <tr><td>资源申请失败数</td><td>REL_RES_ACQUIRE</td><td>count(job) where message=='任务申请资源错误';并报<b>独立事件数</b>(按时段聚类)</td><td>判定</td><td>🔧修</td></tr>
+      <tr><td>runner 未注册数</td><td>REL_RUNNER_UNREG</td><td>count(job) where message=='Self-hosted的执行机未注册。'</td><td>参考</td><td>🔧修</td></tr>
+      <tr><td>挂起→取消占用</td><td>WASTE_CANCEL_OCC</td><td>CANCELED run 的 end−start;≥1h 列清单</td><td>判定</td><td>📈扩</td></tr>
+      <tr><td>浪费的稀缺分钟</td><td>WASTE_SCARCE_MIN</td><td>Σ job 墙钟 where resource∈{self-hosted,dedicate-hosted} 且属 CANCELED/CI 红 run</td><td>判定</td><td>📈扩</td></tr>
+      <tr><td>零独立失败冗余候选</td><td>LEAN_REDUNDANT</td><td>leaf job 独立抓获次数 × 周资源分钟(Phase 1)</td><td>参考</td><td>✂️减</td></tr>
+      <tr><td>重试再失败率</td><td>LOOP_RETRY_REFAIL</td><td>同 PR(pull_request_id)按 start_time 排序,紧跟 FAILED 的下一 run;<b>结果只计 COMPLETED/FAILED(RUNNING/CANCELED 未决不计)</b></td><td>判定</td><td>💬说</td></tr>
+      <tr><td>假红灯占比</td><td>SIG_FALSEBLAME</td><td>首因归 CI 自身红的 FAILED run / 全部 FAILED run —— <b>即 ATTR_CI_RED_RATE 的贡献者视角别名(同源同数,两灯同升同降)</b></td><td>判定</td><td>🤖改</td></tr>
+      <tr><td>哑信号率(叶子层)</td><td>SIG_MUTE</td><td><b>叶子 job</b>(有 steps)message==null 且无带名 FAILED step 的占比;父级包装节点不计</td><td>参考</td><td>🤖改</td></tr>
+      <tr><td>停红 PR 数</td><td>STUCK_RED_PR</td><td>每 PR 最新 run status=='FAILED' 的 PR 计数</td><td>判定</td><td>🧭干预</td></tr>
+      <tr><td>首红速度 / 快速失败占比</td><td>SIG_TIME_TO_RED / SIG_FAST_FAIL</td><td>首个 FAILED job end − run.start;≤300s 占比</td><td>参考</td><td>💬说</td></tr>
+      <tr><td>失败→重触发间隔</td><td>LOOP_GAP</td><td>同 PR 相邻 run 后.start − 前.end 的 median/p90</td><td>参考</td><td>💬说</td></tr>
+    </table></div>
+    <p class="mini">附录一行(明确非头条):空转率 runtime 7% / ops-nn 5%(流水线已密,无需优化);完结失败率 46.8% / 20.3%(仅框景);per-run job 数 66 / 64(嵌套复用产物,仅供内部计算)。</p>
+  </details>
+  <details class="about"><summary>附录 B · 失败归因算法(两道守卫 + 判别规则)</summary>
+    <ol style="font-size:12.5px;margin:8px 0 4px;padding-left:20px">
+      <li><b>定位首因 job</b>:FAILED run 内,取 status=='FAILED' 且失败 step 结束最早的 leaf job(排除 message==null 的父级包装节点);fail-fast 保证首因即根因位置。</li>
+      <li><b>取信号</b>:优先 job.message;为 null 则遍历 steps[] 取 FAILED step 的 name。<b>不看日志也能定位到步骤级。</b></li>
+      <li><b>广度守卫</b>:同一 run 内失败的独立 UT 域/编译变体 ≥3,或同一失败 step 短窗内横跨 ≥5 个 PR → 判「<b>疑似系统性·暂缓代码红</b>」,压住机器人代码红回帖,转基础设施 triage(实证:07-14 单 run 17/18 个 UT 域同挂)。</li>
+      <li><b>上游产物守卫</b>:download 失败先查上游产物是否成功产出——上游成功才判 OBS(CI 红),上游失败归上游因;image 阶段按 step 拆(revise_image/资源错→CI 红;get_pr 解析失败→待判定,畸形 PR 可致其失败)。</li>
+      <li><b>归类(按序命中即止)</b>:start_time==null 或 message 含「资源/内部错误/执行机未注册」或首因落 image(非 get_pr 解析类)→ <b>CI 自身红</b>;首因落 compile/ut/staticcheck/check_pr 且有带名步骤 → <b>代码红</b>;首因 resource=self-hosted → <b>真机待判定</b>。</li>
+    </ol>
+    <p class="mini">禁止把「未归因/待判定」塞进实桶充数。CANCELED 不计失败(含 by-design 抢占);INIT 是 fail-fast 正常跳过。叶子级哑信号实测=0;父节点不透传(104 处)列可读性改进项。</p>
+  </details>
+  <details class="about"><summary>附录 C · 数据来源与清洗规则</summary>
+    <p style="font-size:12.5px;margin:8px 0 4px">数据源:GitCode v8 API(<code>/repos/:o/:r/actions/runs</code> · <code>/runs/:id</code> · <code>/runs/:id/jobs</code> · <code>/jobs/:id</code>,公开仓库免鉴权,2026-07-14 拉取全量);PR 关联走 v5 <code>pulls</code>(聚合键=pull_request_id)。样例:<a href="https://gitcode.com/cann/runtime/actions/runs/a3fa001a798e43afb86ae56c30125c1f" target="_blank" rel="noopener">runtime run #477</a> · <a href="https://gitcode.com/cann/ops-nn/actions/runs/3ef52cd1f0eb4f3aa6c7afd45f16a726" target="_blank" rel="noopener">ops-nn 样例 run</a>。清洗:计时一律墙钟 end−start;execute_cost_time 弃用(负值脏数据);RUNNING/无 end_time 样本剔出时长统计;job 级统计基于抽样 46 run(26 失败+18 成功+2 取消),已对全样本重算(v1.1 订正了早期截断子样本的计数)。本页数据与《数据事实表_GitCodeAction_20260714.md v1.1》同源,并经独立数据审计对原始 JSON 复算。</p>
+  </details>
+</section>
+
+<footer>Cogito · CI 体验诊断 设计稿 v1.1 · 2026-07-14 · 主键 gitcode_cann_&lt;repo&gt;_2026W29(观察窗代周期) · 设计权威:重构方案_CI体验报告_GitCodeAction_20260714.md(v1.1,含对抗校验记录 §10.1) · 本页不打总分,只回答「本周谁该做哪件具体的事」</footer>
+</div>
+
+<script>
+/* ============ 唯一数据源(与报告 md / 数据事实表 v1.1 同源;渲染层零硬编码数字) ============ */
+const DATA = {
+  runtime: {
+    label:'cann/runtime', workflow:'runtime_action',
+    window:'2026-07-13 02:53 → 07-14 13:17 UTC(~1.5 天,上线以来全量)',
+    runs:93, prs:45, completed:42, failed:37, running:11, canceled:3, finFail:'46.8%', runsPerPR:'2.1',
+    verdict:'runtime 本周:失败的病灶偏 <b>CI 自身红</b>——07-14 一次约 30 分钟的资源池故障波及 4 个 run(10 个 job 申请不到资源),叠加两个 4.1h 长挂起与 59% 重试再失败;先修 CI 自己的欠账,再谈贡献者体验。🔧 与 🤖 两盏红灯同源于同一次池故障。',
+    lights:[
+      {icon:'🔧',name:'修·CI 可靠性',s:'red',word:'红·需行动',line:'07-14 池故障:4 个 run 的 image 阶段申请不到资源(10 job,start_time=null)',m:'RES_ACQUIRE 事件 1 起(10 job*/4 run*)',flag:'判定谨慎(抽样)',a:'#trackA'},
+      {icon:'📈',name:'扩·稀缺资源',s:'red',word:'红·需行动',line:'两个 run 各占资源 4.1h 才被取消——上「无进展检测」看门狗',m:'CANCEL_OCC max 4.1h ×2',flag:'',a:'#trackA'},
+      {icon:'✂️',name:'减·冗余编排',s:'gray',word:'待算',line:'Phase 1 判定;18 个 UT 域为候选池',m:'LEAN_REDUNDANT 待算',flag:'',a:'#trackA'},
+      {icon:'💬',name:'说·重试可信',s:'red',word:'红·需行动',line:'59.1% 重试仍失败——先告知失败归属,再让人重发',m:'RETRY_REFAIL 13/22=59.1%(未决 3)',flag:'',a:'#trackB'},
+      {icon:'🤖',name:'改·信号质量',s:'red',word:'红·需行动',line:'假红灯 ≈33%*——与 🔧 同源(同一次池故障);叶子哑信号=0(好消息)',m:'FALSEBLAME ≈4/12*(=CI红占比)',flag:'判定谨慎(抽样)',a:'#trackB'},
+      {icon:'🧭',name:'干预·停红',s:'red',word:'红·需行动',line:'12 个 PR 当前停在红灯——运营先归因再逐个 triage',m:'STUCK_RED_PR=12',flag:'',a:'#trackB'}],
+    attr:{n:12, note:'job 级归因为抽样口径:本仓抽样 12 个失败 run 归类(全窗 37 个,Phase 1 重算)。',
+      buckets:[{k:'代码红',cls:'b-code',v:8},{k:'CI 自身红',cls:'b-ci',v:4},{k:'真机待判定',cls:'b-smoke',v:0},{k:'未归因',cls:'b-un',v:0}]},
+    bucketCards:{
+      code:{title:'代码红 · 贡献者可自解',who:'贡献者',items:[
+        ['步骤 ut_acc 执行失败','41 job*','→ 对照 job 名找到 UT 域(18 域)本地复现;十几个域同挂时属疑似系统性,先别改代码'],
+        ['步骤 x86/arm_compile_acc 执行失败','8 job*','→ 对照 job 名找到编译变体本地编译'],
+        ['首因分布(抽样 12):ut 6 · compile 2','8 run','→ 失败回帖应附 job 名定位指引']]},
+      ci:{title:'CI 自身红 · 需维护者介入',who:'基础设施',items:[
+        ['07-14 池故障:任务申请资源错误(start_time=null)','10 job* / 4 run','→ image·get_pr_files·get_shell_files 集中于 12:22–12:53 一次故障;调度层欠账,贡献者勿重发'],
+        ['image 阶段首因失败','4 run*','→ 与上行完全同源(同 4 个 run),不叠加计数'],
+        ['image job 失败率','18.2%*','→ 前置作业失败殃及整条流水线']]},
+      smoke:{title:'真机待判定(A2_pre_smoke)',who:'待分型',items:[
+        ['本仓抽样未见 A2 首因失败','0 run','→ Phase 1 按 steps 分型 DEPLOY/CRUSH vs 用例']]},
+      un:{title:'信号可读性 · 改进项(不派责)',who:'改进项',items:[
+        ['父节点不透传子失败原因(workflow_call 包装节点)','49 处*','→ 叶子级哑信号=0:叶子失败 100% 可定位。改进方向:父节点透传 + message 带上域/变体名']]}},
+    event:{title:'🚨 本期事件 · 07-14 失败激增(疑似系统性,广度守卫实战案例)',
+      body:'07-13 失败 6 起 → 07-14 失败 <b>31 起</b>,横跨 <b>15 个 PR</b>;抽样内有单 run <b>17/18 个 UT 域同时失败</b>(fix-issue-720)——单一 PR 代码几乎不可能同时打挂 17 个独立 UT 域,指向环境/镜像/master 回归等公共原因。<b>广度守卫应在此触发「疑似系统性·暂缓代码红」</b>,压住机器人代码红回帖;根因需日志确认(缺 token)。在确认前,这批红灯不应让贡献者背锅。'},
+    cancels:[
+      {run:'#423',pr:'3619',h:4.1,note:'取消后同 PR 又触发 8 次',id:'b9ba950318f746ba89480d37c1e2987d'},
+      {run:'#422',pr:'2828',h:4.1,note:'',id:'00be71e477b94f06870838cbaf9f68bc'},
+      {run:'#417',pr:'3603',h:0.8,note:'',id:'01ee9e02f8bf46b7b922e7f1cf800e7b'}],
+    a2note:'成功 run 墙钟 max 仅 0.6h(2142s)——4.1h 的占用是挂起而非慢。看门狗必须用「job 级无进展检测」(N 分钟内无任何 job/step 推进才取消),排除排队等 runner 的 run,阈值分仓定且高于既有成功 max;墙钟硬上界会误杀健康 run。NPU 冒烟(A2)中位执行 223s;WASTE_SCARCE_MIN 口径已定、待算。',
+    a1rows:[
+      ['07-14 池故障(独立事件)','REL_RES_ACQUIRE','1 起(10 job*/4 run*)','🔴','message=「任务申请资源错误」且 start_time=null;12:22–12:53,PR3645–3648'],
+      ['image 首因失败数','REL_IMG_ROOT','4 run*','🔴','与池故障完全同源(同 4 个 run),禁止与上行相加'],
+      ['image job 失败率','参考','18.2%(4/22)*','🟡','前置作业失败殃及整条流水线'],
+      ['脏遥测计数','REL_DIRTY_TELEM','存在(负值)','🚩','execute_cost_time<0 → 平台数据质量 bug,本报告已弃用该字段']],
+    b1:{refail:'59.1%',refailN:'13/22(未决 3)',gapMed:'0.3 h',gapP90:'4.2 h',firstRed:'146 s',fast:'6/8*'},
+    hist:{buckets:['<5','5–15','15–30','30–60','60–120','>120'],C:[1,24,11,6,0,0],F:[20,10,4,0,0,3],
+      note:'失败 run 中位墙钟 117s(快红为主),成功 802s;失败长尾 >2h 共 3 起——快红体验好,深红+长挂起才是痛点。'},
+    b2:'<p style="font-size:12.5px;margin:6px 0">假红灯(贡献者代码没错却吃红):抽样 ≈4/12*,与 🔧 灯同源(同一次池故障),全窗占比待算;叶子级哑信号=0(叶子失败 100% 可定位)——可读性欠账在「父节点不透传」与「message 不含域/变体名」。机器人回帖模板(REC-R3 交付项,受广度守卫约束):</p><blockquote>❌ <b>CI 自身故障(资源申请失败)</b>:本次失败与你的代码无关,基础设施团队已跟进,<b>请勿重复评论 /compile</b>;修复进展将由运营在本 PR 回帖(自动通知机制落地前)。</blockquote><blockquote>🔴 <b>代码红(job:ut_test_rts_david · step:ut_acc)</b>:请按 job 名定位 UT 域,参考仓库测试文档本地复现;修复后再评论 /compile。<span class="mini">疑似系统性失败(多域同挂)时,本回帖将暂停发送,转基础设施 triage。</span></blockquote>',
+    b3:{stuck:12, stuckPct:'12/45 PR', wallTotal:3, wall:[['3619',11,'已含 1 次 4.1h 取消;11 次里有多少是 CI 红所迫,待归因'],['3584',6,''],['3645',6,'含 07-14 池故障波及']]},
+    recs:[
+      {id:'REC-2026W29-R1',p:'P0',ev:'ev-ok',evw:'可行·有据',title:'调度层修复资源申请失败:对 start_time=null 的失败做调度重试/换池;失败自动标「基础设施故障」',
+       owner:'基础设施',ev2:'07-14 池故障 1 起(4 run/10 job*,start_time=null——job 从未被调度,动作内重试无效,须修在派发层)',check:'回验(抗 gaming):独立池故障事件数与复发情况,跨 ≥2 周期;不以 job 计数达标'},
+      {id:'REC-2026W29-R2',p:'P0',ev:'ev-ok',evw:'可行·有据',title:'挂起看门狗(job 级无进展检测):N 分钟内无任何 job/step 推进才取消;排除排队等 runner 的 run;阈值高于成功 max',
+       owner:'基础设施',ev2:'#423 / #422 各占 4.1h 后才被取消(成功 max 仅 0.6h);墙钟硬上界方案已被校验否决(会误杀健康长 run)',check:'回验:触达看门狗被取消的 run 数与误杀数(不用占用时长上限——会被看门狗阈值重言封顶)'},
+      {id:'REC-2026W29-R3',p:'P1',ev:'ev-maybe',evw:'推测·需验证',title:'失败分型机器人回帖:CI 红→「勿重发」;代码红→附 job 名定位指引;疑似系统性(广度守卫)→暂停代码红回帖',
+       owner:'运营+基础设施',ev2:'重试再失败 59.1% · 07-14 单 run 17/18 UT 域同挂的集体背锅风险',check:'回验:LOOP_RETRY_REFAIL < 40% 且系统性事件零误归'}]
+  },
+  opsnn: {
+    label:'cann/ops-nn', workflow:'ops-nn_action',
+    window:'2026-07-11 15:01 → 07-14 13:21 UTC(~3 天,上线以来全量)',
+    runs:285, prs:115, completed:224, failed:57, running:3, canceled:1, finFail:'20.3%', runsPerPR:'2.5',
+    verdict:'ops-nn 本周:失败的病灶偏 <b>代码红</b>(compile 首因 7 起,verify_package 跨 5 个 run 反复出现)+ <b>停红 PR 多</b>(18 个);基础设施侧的欠账是一个 13.6h 挂起 run、NPU 执行机未注册 ×2,以及一次单 run 内 25 个 job 同挂的 OBS 下载级联。与 runtime 病灶不同——这正是不做总分的原因。',
+    lights:[
+      {icon:'🔧',name:'修·CI 可靠性',s:'yellow',word:'黄·观察',line:'资源申请失败 3、NPU 执行机未注册 2、image 首因 1——零散未成事件',m:'RES_ACQUIRE=3* · RUNNER_UNREG=2*',flag:'判定谨慎(抽样)',a:'#trackA'},
+      {icon:'📈',name:'扩·稀缺资源',s:'red',word:'红·需行动',line:'一个 run 挂 13.6h 才被取消;无并发块=无自动回收路径',m:'CANCEL_OCC max 13.6h',flag:'',a:'#trackA'},
+      {icon:'✂️',name:'减·冗余编排',s:'gray',word:'待算',line:'Phase 1 判定;18 个编译变体为候选池',m:'LEAN_REDUNDANT 待算',flag:'',a:'#trackA'},
+      {icon:'💬',name:'说·重试可信',s:'red',word:'红·需行动',line:'46.2% 重试仍失败(越过 45% 红线);重触发 p90 达 12.5h',m:'RETRY_REFAIL 18/39=46.2%',flag:'',a:'#trackB'},
+      {icon:'🤖',name:'改·信号质量',s:'yellow',word:'黄·观察',line:'download 级联易被误读为代码错误;假红灯 ≈1/14*',m:'FALSEBLAME ≈1/14*(=CI红占比)',flag:'判定谨慎(抽样)',a:'#trackB'},
+      {icon:'🧭',name:'干预·停红',s:'red',word:'红·需行动',line:'18 个 PR 停在红灯;10 个 PR 反复触发 ≥6 次',m:'STUCK_RED_PR=18',flag:'',a:'#trackB'}],
+    attr:{n:14, note:'job 级归因为抽样口径:本仓抽样 14 个失败 run 归类(全窗 57 个,Phase 1 重算)。',
+      buckets:[{k:'代码红',cls:'b-code',v:11},{k:'CI 自身红',cls:'b-ci',v:1},{k:'真机待判定',cls:'b-smoke',v:2},{k:'未归因',cls:'b-un',v:0}]},
+    bucketCards:{
+      code:{title:'代码红 · 贡献者可自解',who:'贡献者',items:[
+        ['步骤 verify_package 执行失败','31 job*','→ 跨 5 个 run 反复出现(真·高频痛点);对照 job 名找到变体本地编译+包校验'],
+        ['首因分布(抽样 14):compile 7 · ut 3 · check_pr 1','11 run','→ 编译变体(18 个)是主要落点'],
+        ['步骤 staticcheck 执行失败','3 job*','→ 看 job 名定 5 类之一;codespell/markdown 本地可拦']]},
+      ci:{title:'CI 自身红 · 需维护者介入',who:'基础设施',items:[
+        ['步骤 download 失败(OBS 依赖拉取)','25 step* / 1 run','→ 全部集中在单 run 404a82c1 的一次级联(compile 18/staticcheck 5/其他 2)——单点瞬时事件;但它发生在 compile job 内,极易被误读为编译错误'],
+        ['Self-hosted 执行机未注册','2 job*','→ NPU 冒烟池 runner 掉线'],
+        ['任务申请资源错误 3 + 内部错误类 2','5 job*','→ 零散平台侧失败']]},
+      smoke:{title:'真机待判定(A2_pre_smoke)',who:'待分型',items:[
+        ['A2 首因失败(抽样)','2 run','→ 失败率 ~10.5%(2/19)*;Phase 1 按 steps 分型 DEPLOY/CRUSH vs 用例']]},
+      un:{title:'信号可读性 · 改进项(不派责)',who:'改进项',items:[
+        ['父节点不透传子失败原因(workflow_call 包装节点)','55 处*','→ 叶子级哑信号=0:叶子失败 100% 可定位。改进方向:父节点透传 + message 带上域/变体名']]}},
+    event:{title:'🚨 本期事件 · 单 run 内 25 个 job 的 OBS 下载级联(上游产物守卫案例)',
+      body:'run 404a82c1(07-13)内 <b>25 个并行 job 同刻 download 失败</b>(compile 18/staticcheck 5/check_pr 1/precommit 1)——<b>单点瞬时事件,非跨 run 面上分布</b>;定性为一次 OBS 抖动/单点故障,而非 chronic 欠账。<b>但它发生在 compile job 内,极易被贡献者误读为自己的编译错误</b>——须按 step 名单独归因(上游产物守卫通过才判 OBS),不并入代码红;是否复发待 Phase 1 全窗观察。'},
+    cancels:[
+      {run:'#1255',pr:'6429',h:13.6,note:'无并发限制、无抢占护栏,挂起只能人工发现',id:'6e1075b2afbe4abe92cb9b7aa4ffadb6'}],
+    a2note:'成功 run 墙钟 p90 为 1.06h(3812s)、max 3.4h——且本周有 3 个 >2h 的真实成功 run,任何低于 3.4h 的墙钟硬上界都会误杀它们(2×p90=2.02h 的方案已被校验否决)。看门狗必须用「job 级无进展检测」并排除排队等 runner 的 run。#1255 的 13.6h 属异常挂起;ops-nn 无 concurrency 块,无自动回收路径。',
+    a1rows:[
+      ['download 步骤失败','参考(→REC)','25 step* / 1 run','🔴','单 run OBS 级联(compile 18/staticcheck 5/其他 2);易被误读为代码问题;是否复发待观察'],
+      ['NPU 执行机未注册','REL_RUNNER_UNREG','2 job*','🟡','message=「Self-hosted的执行机未注册。」,冒烟池 runner 掉线'],
+      ['资源申请失败','REL_RES_ACQUIRE','3 job*','🟡','message=「任务申请资源错误」,零散未成事件'],
+      ['平台内部错误类','REL_INTERNAL_ERR','2 job*','🟡','「内部错误。」/「任务执行错误」各 1'],
+      ['image 首因失败数','REL_IMG_ROOT','1 run*','🟢','抽样 14 失败 run 中占 1'],
+      ['脏遥测计数','REL_DIRTY_TELEM','存在(负值)','🚩','execute_cost_time<0,本报告已弃用该字段']],
+    b1:{refail:'46.2%',refailN:'18/39',gapMed:'0.8 h',gapP90:'12.5 h',firstRed:'138 s',fast:'7/13*'},
+    hist:{buckets:['<5','5–15','15–30','30–60','60–120','>120'],C:[0,160,31,10,20,3],F:[25,22,3,0,6,1],
+      note:'失败中位墙钟 483s,首红中位 138s(快红为主);但失败 mean 845s、max 4653s——少数深水区失败(60–120min 6 起)体验最差。'},
+    b2:'<p style="font-size:12.5px;margin:6px 0">假红灯抽样 ≈1/14*;但 download 级联(25 step,单 run)若不按上游产物守卫单独归因,会被贡献者误读为自己的编译错误;叶子级哑信号=0,可读性欠账在「父节点不透传」(55 处*)。机器人回帖模板(受广度守卫约束):</p><blockquote>❌ <b>CI 自身故障(OBS 依赖下载失败)</b>:本次 compile 失败源于制品下载,与你的代码无关,<b>请勿反复重触发</b>;修复进展将由运营在本 PR 回帖(自动通知机制落地前)。</blockquote><blockquote>🔴 <b>代码红(job:arm_compile_ubuntu24 · step:verify_package)</b>:请按 job 名定位编译变体,参考仓库构建文档本地编译与包校验;修复后再评论 /compile。<span class="mini">疑似系统性失败(多变体同挂)时,本回帖将暂停发送,转基础设施 triage。</span></blockquote>',
+    b3:{stuck:18, stuckPct:'18/115 PR', wallTotal:10, wall:[['6119',12,''],['7037',10,''],['7456',8,''],['6096',7,''],['7475',6,'另有 5 个 PR 各 6 次(共 10 个 ≥6)']]},
+    recs:[
+      {id:'REC-2026W29-O1',p:'P1',ev:'ev-maybe',evw:'推测·需验证(单点样本)',title:'OBS download 步骤加重试/就近缓存;失败按上游产物守卫单独归因,不入代码红',
+       owner:'基础设施',ev2:'25 次 download 失败集中于单 run 404a82c1 的一次级联——单点瞬时事件,待 Phase 1 全窗确认是否复发',check:'回验(抗 gaming):download 失败的独立发生 run 数,跨 ≥2 周期;禁止以 continue-on-error/重分类达标,以步骤真实成功率为准'},
+      {id:'REC-2026W29-O2',p:'P0',ev:'ev-ok',evw:'可行·有据',title:'补挂起护栏:ops-nn 无 concurrency 块——增加 job 级无进展看门狗(排除排队态,阈值高于成功 max 3.4h)',
+       owner:'基础设施',ev2:'#1255 挂起 13.6h 才被取消(成功 p90 1.06h、max 3.4h;本周有 3 个 >2h 真实成功 run,墙钟硬上界会误杀)',check:'回验:触达看门狗被取消的 run 数与误杀数(不用占用时长上限)'},
+      {id:'REC-2026W29-O3',p:'P1',ev:'ev-maybe',evw:'推测·需验证',title:'停红 PR 周度 triage:18 个停红 PR 先归因分型(剔除 CI 自身红)再联系;反复触发 ≥6 次的 10 个 PR 提供协助',
+       owner:'运营',ev2:'STUCK_RED_PR=18 · PR6119 触发 12 次 · 重触发 p90 12.5h;联系话术不作能力评判',check:'回验:STUCK_RED_PR < 10 且被联系 PR 有后续动作'}]
+  }
+};
+
+const runURL=(repo,id)=>`https://gitcode.com/cann/${repo==='opsnn'?'ops-nn':'runtime'}/actions/runs/${id}`;
+const prURL=(repo,n)=>`https://gitcode.com/cann/${repo==='opsnn'?'ops-nn':'runtime'}/merge_requests/${n}`;
+const pillCls=s=>({red:'pill hot',yellow:'pill warn',green:'pill ok',gray:'pill na'})[s]||'pill na';
+
+function render(repo){
+  const d=DATA[repo];
+  document.getElementById('chip-wf').textContent='workflow: '+d.workflow;
+  document.getElementById('chip-window').innerHTML='🗓 '+d.window;
+  document.getElementById('chip-n').innerHTML=`N=<b>${d.runs} run · ${d.prs} PR</b> · 完结失败率 <b>${d.finFail}</b>(取消/在跑不计)`;
+  document.getElementById('verdict-line').innerHTML='📌 '+d.verdict;
+  document.getElementById('lights').innerHTML=d.lights.map(l=>
+    `<a class="light s-${l.s}" href="${l.a}"><div class="ln">${l.icon} ${l.name}</div><div class="lv"><span class="dot"></span>${l.word}${l.flag?`<span class="flag">${l.flag}</span>`:''}</div><div class="ll">${l.line}</div><div class="lm">${l.m}</div></a>`).join('');
+  // 六盏灯对应的台账 pill(A1/A2/A3/B1/B2/B3)全部动态重算
+  d.lights.forEach((l,i)=>{
+    const el=document.getElementById('pill-'+i);
+    if(el){el.textContent=l.word;el.className=pillCls(l.s);}
+  });
+  // 归因分流
+  document.getElementById('attr-note').textContent=d.attr.note;
+  const total=d.attr.buckets.reduce((s,b)=>s+b.v,0);
+  const bar=document.getElementById('attrbar');
+  bar.innerHTML=d.attr.buckets.filter(b=>b.v>0).map(b=>
+    `<div class="${b.cls}" style="flex:${b.v}" title="${b.k} ${b.v}/${total}">${b.v}</div>`).join('');
+  bar.setAttribute('aria-label','失败归因分流(抽样 '+d.attr.n+' 个失败 run):'+d.attr.buckets.map(b=>`${b.k} ${b.v}`).join(','));
+  document.getElementById('attrlegend').innerHTML=d.attr.buckets.map(b=>{
+    const c={'b-code':'var(--series)','b-ci':'var(--critical)','b-smoke':'var(--warning)','b-un':'var(--muted)'}[b.cls];
+    return `<span><i style="background:${c}"></i>${b.k} <b class="num">${b.v}</b>/${total}</span>`}).join('');
+  const bc=d.bucketCards;
+  const card=(cls,o,act)=>`<div class="bucket ${cls}"><h4>${o.title}<span class="who">${o.who}</span></h4><ul>${o.items.map(i=>
+    `<li>${i[0]} — <b>${i[1]}</b><br><span class="${act}">${i[2]}</span></li>`).join('')}</ul></div>`;
+  document.getElementById('buckets').innerHTML=
+    card('bk-code',bc.code,'act')+card('bk-ci',bc.ci,'noact')+card('bk-smoke',bc.smoke,'noact')+card('bk-un',bc.un,'act');
+  // 轨A
+  document.getElementById('a1table').innerHTML='<tr><th>指标</th><th>ID</th><th class="num">本期值</th><th>灯</th><th>口径/证据</th></tr>'+
+    d.a1rows.map(r=>`<tr><td>${r[0]}</td><td class="mini">${r[1]}</td><td class="num"><b>${r[2]}</b></td><td>${r[3]}</td><td class="mini">${r[4]}</td></tr>`).join('');
+  document.getElementById('eventcard').innerHTML=`<blockquote><b>${d.event.title}</b><br>${d.event.body}</blockquote>`;
+  const maxH=Math.max(...d.cancels.map(c=>c.h),1);
+  document.getElementById('cancelbars').innerHTML=d.cancels.map(c=>
+    `<div class="cbar"><span>run <a href="${runURL(repo,c.id)}" target="_blank" rel="noopener">${c.run}</a> · <a href="${prURL(repo,c.pr)}" target="_blank" rel="noopener">PR ${c.pr}</a></span><span class="track"><span class="fill" style="display:block;width:${Math.max(c.h/maxH*100,3)}%"></span></span><span class="num"><b>${c.h} h</b> ${c.note?'<span class="mini">'+c.note+'</span>':''}</span></div>`).join('');
+  document.getElementById('a2note').textContent=d.a2note;
+  document.getElementById('a3slot').innerHTML=`LEAN_REDUNDANT(零独立失败冗余候选)与 LEAN_ORDER_PENALTY(便宜检查错序)待 Phase 1 全窗管道就绪后判定 — 不预判、不占位。线索:${repo==='runtime'?'ut_test_rts_david / rts_910b 失败率 18.2%*':'arm/x86_compile 变体失败率 20–25%*'}。`;
+  // 轨B
+  document.getElementById('b1stats').innerHTML=[
+    ['重试再失败率',d.b1.refail,d.b1.refailN+' · 紧跟失败的重跑(未决不计)'],
+    ['失败→重触发间隔',d.b1.gapMed,'median · p90 '+d.b1.gapP90+'(人肉 /compile)'],
+    ['首红速度',d.b1.firstRed,'median · 首个失败 job 结束(抽样)'],
+    ['快速失败占比',d.b1.fast,'首红 ≤5min 的失败 run(抽样)']
+  ].map(s=>`<div class="stat"><div class="label">${s[0]}</div><div class="val">${s[1]}</div><div class="sub">${s[2]}</div></div>`).join('');
+  drawHist(d.hist,d.completed,d.failed);
+  document.getElementById('histtable').innerHTML='<tr><th>墙钟(分钟)</th>'+d.hist.buckets.map(b=>`<th class="num">${b}</th>`).join('')+'<th class="num">合计</th></tr>'+
+    `<tr><td>成功 run</td>${d.hist.C.map(v=>`<td class="num">${v}</td>`).join('')}<td class="num"><b>${d.completed}</b></td></tr>`+
+    `<tr><td>失败 run</td>${d.hist.F.map(v=>`<td class="num">${v}</td>`).join('')}<td class="num"><b>${d.failed}</b></td></tr>`;
+  document.getElementById('b2body').innerHTML=d.b2;
+  document.getElementById('b3stats').innerHTML=[
+    ['停红 PR 数',d.b3.stuck,'最新 run 是失败 · '+d.b3.stuckPct],
+    ['反复触发 PR 数',d.b3.wallTotal,'单 PR 触发 ≥6 次 run(未扣 CI 红)'],
+    ['run/PR 均值',d.runsPerPR,'评论 /compile 的人肉重试'],
+    ['在跑/取消',`${d.running} / ${d.canceled}`,'不计入失败率']
+  ].map(s=>`<div class="stat"><div class="label">${s[0]}</div><div class="val num">${s[1]}</div><div class="sub">${s[2]}</div></div>`).join('');
+  document.getElementById('walltable').innerHTML='<tr><th>反复触发·需协助 PR(≥6 次 run)</th><th class="num">run 数</th><th>备注</th></tr>'+
+    d.b3.wall.map(w=>`<tr><td><a href="${prURL(repo,w[0])}" target="_blank" rel="noopener">PR ${w[0]}</a></td><td class="num"><b>${w[1]}</b></td><td class="mini">${w[2]}</td></tr>`).join('');
+  // REC
+  document.getElementById('recs').innerHTML=d.recs.map(r=>
+    `<div class="reccard ${r.p==='P1'?'p1':''}"><div class="rt"><span class="prio">${r.p}</span>${r.id} · ${r.title}<span class="evtag ${r.ev}">${r.evw}</span></div>
+     <div class="qd"><div><b>Owner</b>${r.owner}</div><div><b>证据</b>${r.ev2}</div><div><b>回验</b>${r.check}</div></div>
+     <div style="margin-top:8px"><button class="btn">认领</button> <span class="state">已提出 → 待确认(权威状态在后端)</span></div></div>`).join('');
+  // tab 状态
+  document.getElementById('tab-runtime').className=repo==='runtime'?'on':'';
+  document.getElementById('tab-opsnn').className=repo==='opsnn'?'on':'';
+}
+
+/* 直方图:各系列按自身总数归一(百分比轴),柱上标绝对计数——
+   避免 ops-nn 成功桶 160 把失败分布压扁;绝对计数见下方表格视图 */
+function drawHist(h,totC,totF){
+  const W=920,H=240,padL=44,padB=44,padT=26,n=h.buckets.length;
+  const pC=h.C.map(v=>v/totC*100), pF=h.F.map(v=>v/totF*100);
+  const maxV=Math.max(...pC,...pF);
+  const gw=(W-padL-16)/n, bw=Math.min(34,gw/2-8);
+  const y=v=>padT+(H-padT-padB)*(1-v/maxV);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="成功与失败 run 的墙钟时长分布(各占本系列百分比)" style="width:100%;height:auto">`;
+  s+=`<text x="${padL}" y="14" font-size="12" fill="var(--ink-2)" font-weight="600">run 墙钟分布 — 纵轴为各系列自身占比%(柱上数字=绝对计数);失败为主角:快红多、深红少但最痛</text>`;
+  for(const t of [0,Math.round(maxV/2),Math.round(maxV)]){
+    s+=`<line x1="${padL}" y1="${y(t)}" x2="${W-8}" y2="${y(t)}" stroke="var(--grid)" stroke-width="1"/><text x="${padL-6}" y="${y(t)+4}" font-size="10" fill="var(--muted)" text-anchor="end">${t}%</text>`;
+  }
+  h.buckets.forEach((b,i)=>{
+    const x0=padL+i*gw+gw/2;
+    s+=`<rect x="${x0-bw-2}" y="${y(pC[i])}" width="${bw}" height="${H-padB-y(pC[i])}" rx="4" fill="var(--series-soft)" stroke="var(--series)" stroke-width="1"><title>成功 ${b}min:${h.C[i]}(${pC[i].toFixed(1)}%)</title></rect>`;
+    if(h.C[i]>0)s+=`<text x="${x0-bw/2-2}" y="${y(pC[i])-4}" font-size="10.5" fill="var(--ink-2)" text-anchor="middle">${h.C[i]}</text>`;
+    s+=`<rect x="${x0+2}" y="${y(pF[i])}" width="${bw}" height="${H-padB-y(pF[i])}" rx="4" fill="var(--critical)"><title>失败 ${b}min:${h.F[i]}(${pF[i].toFixed(1)}%)</title></rect>`;
+    if(h.F[i]>0)s+=`<text x="${x0+bw/2+2}" y="${y(pF[i])-4}" font-size="10.5" fill="var(--critical-text)" font-weight="700" text-anchor="middle">${h.F[i]}</text>`;
+    s+=`<text x="${x0}" y="${H-padB+16}" font-size="11" fill="var(--muted)" text-anchor="middle">${b}</text>`;
+  });
+  s+=`<text x="${padL}" y="${H-6}" font-size="11" fill="var(--ink-2)">▮ <tspan fill="var(--critical-text)" font-weight="700">失败 run(n=${totF})</tspan> · ▯ 成功 run(n=${totC},底景) — ${h.note}</text></svg>`;
+  document.getElementById('histchart').innerHTML=s;
+}
+
+function switchRepo(r){render(r);}
+render('runtime');
+</script>
+</body>
+</html>

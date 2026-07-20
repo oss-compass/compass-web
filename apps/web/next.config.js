@@ -73,6 +73,27 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/intelligent-analysis/community-experience/overview',
+        destination: '/intelligent-analysis/experience/overview',
+        permanent: false,
+      },
+      {
+        source: '/intelligent-analysis/:org/community-experience/overview',
+        destination: '/intelligent-analysis/:org/experience/overview',
+        permanent: false,
+      },
+      {
+        source: '/intelligent-analysis/community-experience',
+        destination: '/intelligent-analysis/experience/community-onboarding',
+        permanent: false,
+      },
+      {
+        source: '/intelligent-analysis/:org/community-experience',
+        destination:
+          '/intelligent-analysis/:org/experience/community-onboarding',
+        permanent: false,
+      },
+      {
         source: '/lab/model',
         destination: '/lab/model/my',
         permanent: false,

@@ -365,12 +365,14 @@ const useUserJourneySelectionState = (
 
 type UserJourneyProps = {
   hidePageHeaderDeveloperControls?: boolean;
+  hidePageHeaderOverviewLink?: boolean;
   transparentPageHeader?: boolean;
   org?: string;
 };
 
 const UserJourney: React.FC<UserJourneyProps> = ({
   hidePageHeaderDeveloperControls = false,
+  hidePageHeaderOverviewLink = false,
   transparentPageHeader = false,
   org,
 }) => {
@@ -698,7 +700,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
         hideDeveloperControls={hidePageHeaderDeveloperControls}
         transparent={transparentPageHeader}
         org={org}
-        overviewHref={overviewHref}
+        overviewHref={hidePageHeaderOverviewLink ? undefined : overviewHref}
       />
 
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">

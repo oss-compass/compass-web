@@ -1,0 +1,5450 @@
+{
+  "schema_version": "issue_experience_report_data_v1",
+  "generated_at": "2026-07-17T08:43:40.705798+00:00",
+  "community_name": "cann/cann-samples",
+  "platform": "gitcode",
+  "period": "2026_w28",
+  "since": "2026-07-06",
+  "until": "2026-07-12",
+  "report_md_file": "issue_experience_report_v3.md",
+  "stage_scores_csv_file": "issue_stage_scores.csv",
+  "report_context": {
+    "project": {
+      "org": "cann",
+      "repo": "cann-samples",
+      "platform": "gitcode"
+    },
+    "period": "2026_w28",
+    "prev_period": "—",
+    "period_label": "2026-07-06 至 2026-07-12",
+    "prev_period_label": "—",
+    "report_id": "cann_cann-samples_2026_w28_v3",
+    "n_total": 5,
+    "n_open": 2,
+    "n_closed": 3,
+    "close_rate": 60.0,
+    "confidence": "低",
+    "idx_total": 47.7,
+    "grade": "D",
+    "prev_idx_total": null,
+    "delta_total": "首期基线",
+    "delta_total_plain": "首期基线",
+    "comparability": "comparable",
+    "prev_n": 0,
+    "biggest_change": {
+      "desc": "首期基线，无上期可比"
+    },
+    "cadence": "自然周",
+    "render_mode": "demo",
+    "rubric_version": "v0.2-draft",
+    "data_completeness": 84.5,
+    "platform_limitations": "GitCode API 不返回 author_association 与关联 PR，维护者识别与关联 PR 率不可信，已从对比剔除；无 closed_by / closed 事件，自关闭无法判定",
+    "json_path": "outputs/2026_w28/issue_experience_report_data.json",
+    "type_breakdown": "缺陷 3 / 需求 1 / 其他 1",
+    "short_stage_rows": [
+      {
+        "prio": "P1",
+        "stage": "I4 · 关闭沉淀",
+        "score": 38.1,
+        "problem": "关闭原因标注不准确，知识沉淀缺失"
+      },
+      {
+        "prio": "P0",
+        "stage": "I2 · 讨论",
+        "score": 39.9,
+        "problem": "Issue讨论深度严重不足，技术交流几乎缺失"
+      },
+      {
+        "prio": "P2",
+        "stage": "I3 · 解决",
+        "score": 41.5,
+        "problem": "存在中度痛点，80%的Issue解决证据不足，开放Issue无解决…"
+      }
+    ],
+    "short_board_primary": {
+      "id": "I4",
+      "name": "关闭沉淀",
+      "icon": "📦",
+      "is_lens": false,
+      "weight": 0.2,
+      "mixed": 38.1,
+      "obj": 25.6,
+      "subj": 56.8,
+      "stars": "★★☆☆☆",
+      "grade": "F",
+      "flag_emoji": "🔴",
+      "pain_count": 4,
+      "pain_pct": 80.0,
+      "delta": "首期基线",
+      "incomparable": false,
+      "confidence": "低",
+      "best_metric": {
+        "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+        "name_cn": "过早关闭风险反向分",
+        "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+        "value": 81.0
+      },
+      "worst_metric": {
+        "code": "OBJ_CLOSURE_REUSABILITY",
+        "name_cn": "关闭说明可复用性",
+        "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+        "value": 11.2
+      },
+      "distribution": "<40:3 ｜ 40-60:1 ｜ 60-80:1 ｜ ≥80:0",
+      "metrics_obj": [
+        {
+          "code": "OBJ_CLOSURE_REUSABILITY",
+          "name_cn": "关闭说明可复用性",
+          "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+          "mean": 11.2,
+          "median": 0.0,
+          "flag": "🔴",
+          "cover": 5,
+          "evidence": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5",
+          "_mean": 11.25
+        },
+        {
+          "code": "OBJ_DECISION_TRACEABILITY",
+          "name_cn": "处理留痕完整度",
+          "display_name": "OBJ_DECISION_TRACEABILITY（处理留痕完整度）",
+          "mean": 57.0,
+          "median": 75.0,
+          "flag": "🟡",
+          "cover": 5,
+          "evidence": "OBJ_DECISION_TRACEABILITY：均值 57.0，低分 2/5",
+          "_mean": 57.0
+        },
+        {
+          "code": "OBJ_SOLUTION_EVIDENCE",
+          "name_cn": "解决证据完整度",
+          "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+          "mean": 23.1,
+          "median": 15.4,
+          "flag": "🔴",
+          "cover": 5,
+          "evidence": "OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5",
+          "_mean": 23.076923076923077
+        }
+      ],
+      "metrics_sub": [
+        {
+          "code": "SUB_CLOSE_QUALITY",
+          "name_cn": "关闭质量",
+          "display_name": "SUB_CLOSE_QUALITY（关闭质量）",
+          "mean": 44.4,
+          "median": 55.0,
+          "cover": 5,
+          "main_reason": "SUB_CLOSE_QUALITY：bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…",
+          "_mean": 44.4
+        },
+        {
+          "code": "SUB_KNOWLEDGE_RETENTION",
+          "name_cn": "知识留存",
+          "display_name": "SUB_KNOWLEDGE_RETENTION（知识留存）",
+          "mean": 45.4,
+          "median": 50.0,
+          "cover": 5,
+          "main_reason": "SUB_KNOWLEDGE_RETENTION：MR描述有技术说明，但issue评论区无总结性结论，后来者需跳转MR才能了解。",
+          "_mean": 45.4
+        },
+        {
+          "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+          "name_cn": "过早关闭风险反向分",
+          "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+          "mean": 81.0,
+          "median": 85.0,
+          "cover": 5,
+          "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR已合并且通过编译验证，关闭有实质修复支撑，不存在过早关闭风险。",
+          "_mean": 81.0
+        }
+      ],
+      "low_issues": [
+        {
+          "no": "#221",
+          "url": "https://gitcode.com/cann/cann-samples/issues/221",
+          "score": 20,
+          "title": "cann-samples Development Roadmap (2026 Q3)",
+          "desc": ""
+        },
+        {
+          "no": "#220",
+          "url": "https://gitcode.com/cann/cann-samples/issues/220",
+          "score": 22,
+          "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+          "desc": ""
+        },
+        {
+          "no": "#222",
+          "url": "https://gitcode.com/cann/cann-samples/issues/222",
+          "score": 39,
+          "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+          "desc": ""
+        }
+      ],
+      "root_cause": "Bot关闭时close_reason配置与实际状态不匹配，且关闭流程缺乏总结要求",
+      "is_short_board": true,
+      "pain": {
+        "prio": "P1",
+        "id": "PP-03"
+      },
+      "pain_title": "关闭原因标注不准确，知识沉淀缺失",
+      "judgment": "P1",
+      "core_problem": "关闭原因标注不准确，知识沉淀缺失",
+      "brief_metrics": [
+        {
+          "code": "OBJ_CLOSURE_REUSABILITY",
+          "metric": "`OBJ_CLOSURE_REUSABILITY`",
+          "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+          "score": 11.2,
+          "reason": "均值 11.2，低分 5/5",
+          "expected": "关闭时沉淀原因、结论和可复用摘要"
+        },
+        {
+          "code": "OBJ_SOLUTION_EVIDENCE",
+          "metric": "`OBJ_SOLUTION_EVIDENCE`",
+          "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+          "score": 23.1,
+          "reason": "均值 23.1，低分 5/5",
+          "expected": "补充修改内容、关联变更和影响范围"
+        },
+        {
+          "code": "SUB_CLOSE_QUALITY",
+          "metric": "`SUB_CLOSE_QUALITY`",
+          "display_name": "SUB_CLOSE_QUALITY（关闭质量）",
+          "score": 44.4,
+          "reason": "bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…",
+          "expected": "让关闭动作清晰、合理、可解释"
+        },
+        {
+          "code": "SUB_KNOWLEDGE_RETENTION",
+          "metric": "`SUB_KNOWLEDGE_RETENTION`",
+          "display_name": "SUB_KNOWLEDGE_RETENTION（知识留存）",
+          "score": 45.4,
+          "reason": "MR描述有技术说明，但issue评论区无总结性结论，后来者需跳转MR才能了解。",
+          "expected": "让后来者可直接复用处理结论"
+        }
+      ],
+      "intro": "本阶段是本周短板之一，主要问题是：关闭原因标注不准确，知识沉淀缺失。"
+    },
+    "short_board_secondary": {
+      "id": "I2",
+      "name": "讨论",
+      "icon": "💬",
+      "is_lens": false,
+      "weight": 0.2,
+      "mixed": 39.9,
+      "obj": 37.5,
+      "subj": 44.3,
+      "stars": "★★☆☆☆",
+      "grade": "F",
+      "flag_emoji": "🔴",
+      "pain_count": 4,
+      "pain_pct": 80.0,
+      "delta": "首期基线",
+      "incomparable": false,
+      "confidence": "低",
+      "best_metric": {
+        "code": "OBJ_INPUT_QUALITY",
+        "name_cn": "首帖信息完整度",
+        "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+        "value": 74.0
+      },
+      "worst_metric": {
+        "code": "OBJ_DISCUSSION_ACTIVITY",
+        "name_cn": "有效评论与往返数",
+        "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+        "value": 22.0
+      },
+      "distribution": "<40:3 ｜ 40-60:1 ｜ 60-80:1 ｜ ≥80:0",
+      "metrics_obj": [
+        {
+          "code": "OBJ_DISCUSSION_ACTIVITY",
+          "name_cn": "有效评论与往返数",
+          "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+          "mean": 22.0,
+          "median": 15.0,
+          "flag": "🔴",
+          "cover": 5,
+          "evidence": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5",
+          "_mean": 22.0
+        },
+        {
+          "code": "OBJ_INPUT_QUALITY",
+          "name_cn": "首帖信息完整度",
+          "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+          "mean": 74.0,
+          "median": 100.0,
+          "flag": "🟢",
+          "cover": 5,
+          "evidence": "OBJ_INPUT_QUALITY：均值 74.0，低分 2/5",
+          "_mean": 74.0
+        },
+        {
+          "code": "OBJ_FIRST_RESPONSE_TIME",
+          "name_cn": "首次人工响应时间",
+          "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+          "mean": 56.0,
+          "median": 60.0,
+          "flag": "🟡",
+          "cover": 5,
+          "evidence": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5",
+          "_mean": 56.0
+        }
+      ],
+      "metrics_sub": [
+        {
+          "code": "SUB_DISCUSSION_DEPTH",
+          "name_cn": "讨论深度",
+          "display_name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+          "mean": 35.6,
+          "median": 30.0,
+          "cover": 5,
+          "main_reason": "SUB_DISCUSSION_DEPTH：issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。",
+          "_mean": 35.6
+        },
+        {
+          "code": "SUB_DISCUSSION_FOCUS",
+          "name_cn": "讨论聚焦度",
+          "display_name": "SUB_DISCUSSION_FOCUS（讨论聚焦度）",
+          "mean": 51.6,
+          "median": 50.0,
+          "cover": 5,
+          "main_reason": "SUB_DISCUSSION_FOCUS：仅有的评论未跑题，但讨论内容极少，无法充分评估聚焦度。",
+          "_mean": 51.6
+        },
+        {
+          "code": "SUB_DISCUSSION_PROGRESS",
+          "name_cn": "讨论推进性",
+          "display_name": "SUB_DISCUSSION_PROGRESS（讨论推进性）",
+          "mean": 46.0,
+          "median": 45.0,
+          "cover": 5,
+          "main_reason": "SUB_DISCUSSION_PROGRESS：从表态回复到创建MR有推进，但issue讨论区本身未形成排查方向或下一步动作。",
+          "_mean": 46.0
+        }
+      ],
+      "low_issues": [
+        {
+          "no": "#221",
+          "url": "https://gitcode.com/cann/cann-samples/issues/221",
+          "score": 17,
+          "title": "cann-samples Development Roadmap (2026 Q3)",
+          "desc": ""
+        },
+        {
+          "no": "#220",
+          "url": "https://gitcode.com/cann/cann-samples/issues/220",
+          "score": 28,
+          "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+          "desc": ""
+        },
+        {
+          "no": "#222",
+          "url": "https://gitcode.com/cann/cann-samples/issues/222",
+          "score": 38,
+          "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+          "desc": ""
+        }
+      ],
+      "root_cause": "处理者倾向直接创建MR修复而非在Issue内进行技术讨论，缺乏讨论引导规范",
+      "is_short_board": true,
+      "pain": {
+        "prio": "P0",
+        "id": "PP-02"
+      },
+      "pain_title": "Issue讨论深度严重不足，技术交流几乎缺失",
+      "judgment": "P0",
+      "core_problem": "Issue讨论深度严重不足，技术交流几乎缺失",
+      "brief_metrics": [
+        {
+          "code": "OBJ_DISCUSSION_ACTIVITY",
+          "metric": "`OBJ_DISCUSSION_ACTIVITY`",
+          "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+          "score": 22.0,
+          "reason": "均值 22.0，低分 5/5",
+          "expected": "增加有效评论、技术讨论和往返轮次"
+        },
+        {
+          "code": "OBJ_FIRST_RESPONSE_TIME",
+          "metric": "`OBJ_FIRST_RESPONSE_TIME`",
+          "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+          "score": 56.0,
+          "reason": "均值 56.0，低分 2/5",
+          "expected": "缩短首次人工响应时间，提高 7 天响应率"
+        },
+        {
+          "code": "SUB_DISCUSSION_DEPTH",
+          "metric": "`SUB_DISCUSSION_DEPTH`",
+          "display_name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+          "score": 35.6,
+          "reason": "issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。",
+          "expected": "补齐问题拆解、技术分析和判断依据"
+        },
+        {
+          "code": "SUB_DISCUSSION_PROGRESS",
+          "metric": "`SUB_DISCUSSION_PROGRESS`",
+          "display_name": "SUB_DISCUSSION_PROGRESS（讨论推进性）",
+          "score": 46.0,
+          "reason": "从表态回复到创建MR有推进，但issue讨论区本身未形成排查方向或下一步动作。",
+          "expected": "明确下一步动作、阶段结论和推进记录"
+        }
+      ],
+      "intro": "本阶段是本周短板之一，主要问题是：Issue讨论深度严重不足，技术交流几乎缺失。"
+    },
+    "suggested_pair": "catlass↔cutlass / hccl↔nccl",
+    "benchmark": null,
+    "stage_ids": [
+      "I0",
+      "I1",
+      "I2",
+      "I3",
+      "I4",
+      "G"
+    ],
+    "stage_align": [
+      "----:",
+      "----:",
+      "----:",
+      "----:",
+      "----:",
+      "----:"
+    ],
+    "trend": [
+      {
+        "period": "2026_w28",
+        "n": 5,
+        "idx": 47.7,
+        "period_label": "2026-07-06 至 2026-07-12",
+        "delta": "首期基线",
+        "stage_scores": [
+          80.7,
+          47.9,
+          39.9,
+          41.5,
+          38.1,
+          64.3
+        ],
+        "incomparable": false
+      }
+    ],
+    "trend_summary": "本期作为首期基线，后续周报会基于同一口径展示趋势变化。",
+    "prev_recs": [],
+    "top_pains": [
+      {
+        "prio": "P0",
+        "id": "PP-01",
+        "title": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+        "evidence": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5；OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+        "impact": "责任归属模糊，Issue难以按领域或优先级检索，后续跟进缺乏明确owner。",
+        "action": "配置Bot自动添加类型标签并通知领域负责人",
+        "rec_id": "REC-01",
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P0",
+        "id": "PP-02",
+        "title": "Issue讨论深度严重不足，技术交流几乎缺失",
+        "evidence": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5；OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5",
+        "impact": "后来者无法从Issue了解排查过程和决策依据，社区知识沉淀在MR而非Issue中。",
+        "action": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+        "rec_id": "REC-02",
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P1",
+        "id": "PP-03",
+        "title": "关闭原因标注不准确，知识沉淀缺失",
+        "evidence": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5；OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5",
+        "impact": "Issue状态元数据失真，无法通过close_reason筛选已解决问题，后来者需跳转MR才能了解方案。",
+        "action": "修正Bot close_reason配置，确保标注为resolved或fixed",
+        "rec_id": "REC-03",
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P1",
+        "id": "PP-04",
+        "title": "非Bug类Issue Bot缺位，关闭原因配置不当",
+        "evidence": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5；OBJ_PROCESS_TRACEABILITY：均值 36.0，低分 4/5",
+        "impact": "Feature Request和Roadmap类Issue缺乏自动化支持，分流和跟进依赖人工；已关闭Issue状态元数据失真。",
+        "action": "扩展Bot覆盖范围，为非Bug类Issue添加自动标签和响应",
+        "rec_id": "REC-04",
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P1",
+        "id": "PP-05",
+        "title": "响应速度极不均匀，部分Issue长时间无响应",
+        "evidence": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5；OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+        "impact": "高价值Feature Request和Roadmap Issue被忽视，社区贡献者积极性受挫。",
+        "action": "配置Bot自动提醒assignee或领域负责人",
+        "rec_id": "REC-05",
+        "state": "新增（待跟踪）"
+      }
+    ],
+    "recs": [
+      {
+        "id": "REC-01",
+        "title": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+        "action_title": "提升分流响应",
+        "prio": "P0",
+        "stage_name": "分流响应",
+        "pp_id": "PP-01",
+        "stage_key": "triage",
+        "owner_team": "社区维护者",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue创建时",
+        "action": "配置Bot自动添加类型标签并通知领域负责人",
+        "goal": "`OBJ_TRIAGE_QUALITY` 和 `OBJ_BOT_GOVERNANCE` 提升至 90 以上",
+        "action_short": "配置Bot自动添加类型标签并通知领域负责人",
+        "metric_evidence": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5；OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "SUB_RESPONSE_EFFECTIVENESS：首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_TRIAGE_QUALITY",
+            "metric": "`OBJ_TRIAGE_QUALITY`",
+            "display_name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "均值 30.0，低分 5/5",
+            "expected": "提升标签、指派和分流记录完整度"
+          },
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE`",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "均值 32.0，低分 3/5",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "SUB_RESPONSE_EFFECTIVENESS",
+            "metric": "`SUB_RESPONSE_EFFECTIVENESS`",
+            "display_name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。",
+            "expected": "让首次响应真正推动问题进入处理"
+          }
+        ],
+        "baseline_score": 47.9,
+        "baseline_value": "分流响应阶段分 47.9"
+      },
+      {
+        "id": "REC-02",
+        "title": "Issue讨论深度严重不足，技术交流几乎缺失",
+        "action_title": "补齐技术讨论",
+        "prio": "P0",
+        "stage_name": "讨论",
+        "pp_id": "PP-02",
+        "stage_key": "discussion",
+        "owner_team": "Issue处理者",
+        "owner_candidate": "songkai111",
+        "trigger": "接手Issue后",
+        "action": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+        "goal": "`OBJ_DISCUSSION_ACTIVITY` 和 `OBJ_FIRST_RESPONSE_TIME` 提升；平均评论数提升至 2 以上",
+        "action_short": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+        "metric_evidence": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5；OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+            "score": 22.0,
+            "reason": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+            "score": 74.0,
+            "reason": "OBJ_INPUT_QUALITY：均值 74.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+            "score": 35.6,
+            "reason": "SUB_DISCUSSION_DEPTH：issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_DISCUSSION_ACTIVITY",
+            "metric": "`OBJ_DISCUSSION_ACTIVITY`",
+            "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+            "score": 22.0,
+            "reason": "均值 22.0，低分 5/5",
+            "expected": "增加有效评论、技术讨论和往返轮次"
+          },
+          {
+            "code": "OBJ_FIRST_RESPONSE_TIME",
+            "metric": "`OBJ_FIRST_RESPONSE_TIME`",
+            "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "均值 56.0，低分 2/5",
+            "expected": "缩短首次人工响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_DISCUSSION_DEPTH",
+            "metric": "`SUB_DISCUSSION_DEPTH`",
+            "display_name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+            "score": 35.6,
+            "reason": "issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。",
+            "expected": "补齐问题拆解、技术分析和判断依据"
+          }
+        ],
+        "baseline_score": 39.9,
+        "baseline_value": "讨论阶段分 39.9"
+      },
+      {
+        "id": "REC-03",
+        "title": "关闭原因标注不准确，知识沉淀缺失",
+        "action_title": "规范关闭原因和关闭摘要",
+        "prio": "P1",
+        "stage_name": "关闭沉淀",
+        "pp_id": "PP-03",
+        "stage_key": "closure",
+        "owner_team": "Bot配置维护者",
+        "owner_candidate": "songkai111",
+        "trigger": "MR合并触发Issue关闭时",
+        "action": "修正Bot close_reason配置，确保标注为resolved或fixed",
+        "goal": "`OBJ_CLOSURE_REUSABILITY` 和 `OBJ_SOLUTION_EVIDENCE` 提升至 100 以上",
+        "action_short": "修正Bot close_reason配置，确保标注为resolved或fixed",
+        "metric_evidence": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5；OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+            "score": 11.2,
+            "reason": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "score": 23.1,
+            "reason": "OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_DECISION_TRACEABILITY（处理留痕完整度）",
+            "score": 57.0,
+            "reason": "OBJ_DECISION_TRACEABILITY：均值 57.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_CLOSE_QUALITY（关闭质量）",
+            "score": 44.4,
+            "reason": "SUB_CLOSE_QUALITY：bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_CLOSURE_REUSABILITY",
+            "metric": "`OBJ_CLOSURE_REUSABILITY`",
+            "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+            "score": 11.2,
+            "reason": "均值 11.2，低分 5/5",
+            "expected": "关闭时沉淀原因、结论和可复用摘要"
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "metric": "`OBJ_SOLUTION_EVIDENCE`",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "score": 23.1,
+            "reason": "均值 23.1，低分 5/5",
+            "expected": "补充修改内容、关联变更和影响范围"
+          },
+          {
+            "code": "SUB_CLOSE_QUALITY",
+            "metric": "`SUB_CLOSE_QUALITY`",
+            "display_name": "SUB_CLOSE_QUALITY（关闭质量）",
+            "score": 44.4,
+            "reason": "bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…",
+            "expected": "让关闭动作清晰、合理、可解释"
+          }
+        ],
+        "baseline_score": 38.1,
+        "baseline_value": "关闭沉淀阶段分 38.1"
+      },
+      {
+        "id": "REC-04",
+        "title": "非Bug类Issue Bot缺位，关闭原因配置不当",
+        "action_title": "提升 Bot 治理覆盖",
+        "prio": "P1",
+        "stage_name": "Bot/Agent 治理",
+        "pp_id": "PP-04",
+        "stage_key": "bot-agent",
+        "owner_team": "Bot配置维护者",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue创建时",
+        "action": "扩展Bot覆盖范围，为非Bug类Issue添加自动标签和响应",
+        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_PROCESS_TRACEABILITY` 提升至 10 以上",
+        "action_short": "扩展Bot覆盖范围，为非Bug类Issue添加自动标签和响应",
+        "metric_evidence": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5；OBJ_PROCESS_TRACEABILITY：均值 36.0，低分 4/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+            "score": 36.0,
+            "reason": "OBJ_PROCESS_TRACEABILITY：均值 36.0，低分 4/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_AGENT_NOISE_REVERSE（重复/噪声风险反向分）",
+            "score": 88.0,
+            "reason": "OBJ_AGENT_NOISE_REVERSE：均值 88.0，低分 0/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误操作反向分）",
+            "score": 100.0,
+            "reason": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_BOT_HELPFULNESS（Bot介入有益性）",
+            "score": 63.4,
+            "reason": "SUB_BOT_HELPFULNESS：bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE`",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "均值 32.0，低分 3/5",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "OBJ_PROCESS_TRACEABILITY",
+            "metric": "`OBJ_PROCESS_TRACEABILITY`",
+            "display_name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+            "score": 36.0,
+            "reason": "均值 36.0，低分 4/5",
+            "expected": "让处理链路从创建到关闭可追溯"
+          },
+          {
+            "code": "SUB_BOT_HELPFULNESS",
+            "metric": "`SUB_BOT_HELPFULNESS`",
+            "display_name": "SUB_BOT_HELPFULNESS（Bot介入有益性）",
+            "score": 63.4,
+            "reason": "bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。",
+            "expected": "让 Bot 介入对分流和推进有实际帮助"
+          }
+        ],
+        "baseline_score": 64.3,
+        "baseline_value": "Bot/Agent 治理阶段分 64.3"
+      },
+      {
+        "id": "REC-05",
+        "title": "响应速度极不均匀，部分Issue长时间无响应",
+        "action_title": "提升分流响应",
+        "prio": "P1",
+        "stage_name": "分流响应",
+        "pp_id": "PP-05",
+        "stage_key": "triage",
+        "owner_team": "社区维护者",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue创建后24小时未响应",
+        "action": "配置Bot自动提醒assignee或领域负责人",
+        "goal": "`OBJ_TRIAGE_QUALITY` 和 `OBJ_BOT_GOVERNANCE` 提升；7 天响应率提升至 0% 以上",
+        "action_short": "配置Bot自动提醒assignee或领域负责人",
+        "metric_evidence": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5；OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "SUB_RESPONSE_EFFECTIVENESS：首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_TRIAGE_QUALITY",
+            "metric": "`OBJ_TRIAGE_QUALITY`",
+            "display_name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "均值 30.0，低分 5/5",
+            "expected": "提升标签、指派和分流记录完整度"
+          },
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE`",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "均值 32.0，低分 3/5",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "SUB_RESPONSE_EFFECTIVENESS",
+            "metric": "`SUB_RESPONSE_EFFECTIVENESS`",
+            "display_name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。",
+            "expected": "让首次响应真正推动问题进入处理"
+          }
+        ],
+        "baseline_score": 47.9,
+        "baseline_value": "分流响应阶段分 47.9"
+      }
+    ],
+    "top_recs": [
+      {
+        "id": "REC-01",
+        "title": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+        "action_title": "提升分流响应",
+        "prio": "P0",
+        "stage_name": "分流响应",
+        "pp_id": "PP-01",
+        "stage_key": "triage",
+        "owner_team": "社区维护者",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue创建时",
+        "action": "配置Bot自动添加类型标签并通知领域负责人",
+        "goal": "`OBJ_TRIAGE_QUALITY` 和 `OBJ_BOT_GOVERNANCE` 提升至 90 以上",
+        "action_short": "配置Bot自动添加类型标签并通知领域负责人",
+        "metric_evidence": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5；OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "SUB_RESPONSE_EFFECTIVENESS：首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_TRIAGE_QUALITY",
+            "metric": "`OBJ_TRIAGE_QUALITY`",
+            "display_name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "均值 30.0，低分 5/5",
+            "expected": "提升标签、指派和分流记录完整度"
+          },
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE`",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "均值 32.0，低分 3/5",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "SUB_RESPONSE_EFFECTIVENESS",
+            "metric": "`SUB_RESPONSE_EFFECTIVENESS`",
+            "display_name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。",
+            "expected": "让首次响应真正推动问题进入处理"
+          }
+        ],
+        "baseline_score": 47.9,
+        "baseline_value": "分流响应阶段分 47.9"
+      },
+      {
+        "id": "REC-02",
+        "title": "Issue讨论深度严重不足，技术交流几乎缺失",
+        "action_title": "补齐技术讨论",
+        "prio": "P0",
+        "stage_name": "讨论",
+        "pp_id": "PP-02",
+        "stage_key": "discussion",
+        "owner_team": "Issue处理者",
+        "owner_candidate": "songkai111",
+        "trigger": "接手Issue后",
+        "action": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+        "goal": "`OBJ_DISCUSSION_ACTIVITY` 和 `OBJ_FIRST_RESPONSE_TIME` 提升；平均评论数提升至 2 以上",
+        "action_short": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+        "metric_evidence": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5；OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+            "score": 22.0,
+            "reason": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+            "score": 74.0,
+            "reason": "OBJ_INPUT_QUALITY：均值 74.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+            "score": 35.6,
+            "reason": "SUB_DISCUSSION_DEPTH：issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_DISCUSSION_ACTIVITY",
+            "metric": "`OBJ_DISCUSSION_ACTIVITY`",
+            "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+            "score": 22.0,
+            "reason": "均值 22.0，低分 5/5",
+            "expected": "增加有效评论、技术讨论和往返轮次"
+          },
+          {
+            "code": "OBJ_FIRST_RESPONSE_TIME",
+            "metric": "`OBJ_FIRST_RESPONSE_TIME`",
+            "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "均值 56.0，低分 2/5",
+            "expected": "缩短首次人工响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_DISCUSSION_DEPTH",
+            "metric": "`SUB_DISCUSSION_DEPTH`",
+            "display_name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+            "score": 35.6,
+            "reason": "issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。",
+            "expected": "补齐问题拆解、技术分析和判断依据"
+          }
+        ],
+        "baseline_score": 39.9,
+        "baseline_value": "讨论阶段分 39.9"
+      },
+      {
+        "id": "REC-03",
+        "title": "关闭原因标注不准确，知识沉淀缺失",
+        "action_title": "规范关闭原因和关闭摘要",
+        "prio": "P1",
+        "stage_name": "关闭沉淀",
+        "pp_id": "PP-03",
+        "stage_key": "closure",
+        "owner_team": "Bot配置维护者",
+        "owner_candidate": "songkai111",
+        "trigger": "MR合并触发Issue关闭时",
+        "action": "修正Bot close_reason配置，确保标注为resolved或fixed",
+        "goal": "`OBJ_CLOSURE_REUSABILITY` 和 `OBJ_SOLUTION_EVIDENCE` 提升至 100 以上",
+        "action_short": "修正Bot close_reason配置，确保标注为resolved或fixed",
+        "metric_evidence": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5；OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+            "score": 11.2,
+            "reason": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "score": 23.1,
+            "reason": "OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_DECISION_TRACEABILITY（处理留痕完整度）",
+            "score": 57.0,
+            "reason": "OBJ_DECISION_TRACEABILITY：均值 57.0，低分 2/5"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_CLOSE_QUALITY（关闭质量）",
+            "score": 44.4,
+            "reason": "SUB_CLOSE_QUALITY：bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_CLOSURE_REUSABILITY",
+            "metric": "`OBJ_CLOSURE_REUSABILITY`",
+            "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+            "score": 11.2,
+            "reason": "均值 11.2，低分 5/5",
+            "expected": "关闭时沉淀原因、结论和可复用摘要"
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "metric": "`OBJ_SOLUTION_EVIDENCE`",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "score": 23.1,
+            "reason": "均值 23.1，低分 5/5",
+            "expected": "补充修改内容、关联变更和影响范围"
+          },
+          {
+            "code": "SUB_CLOSE_QUALITY",
+            "metric": "`SUB_CLOSE_QUALITY`",
+            "display_name": "SUB_CLOSE_QUALITY（关闭质量）",
+            "score": 44.4,
+            "reason": "bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…",
+            "expected": "让关闭动作清晰、合理、可解释"
+          }
+        ],
+        "baseline_score": 38.1,
+        "baseline_value": "关闭沉淀阶段分 38.1"
+      }
+    ],
+    "ref_metrics": [
+      {
+        "name_cn": "首次响应时间",
+        "median": "22.7h",
+        "mean": "1.7天",
+        "caliber_note": "首个非作者评论距创建；无响应不计入中位"
+      },
+      {
+        "name_cn": "关闭周期",
+        "median": "1.2天",
+        "mean": "2.7天",
+        "caliber_note": "closed_at−created_at；仅已关闭 Issue"
+      },
+      {
+        "name_cn": "7天响应率",
+        "median": "—",
+        "mean": "80.0%",
+        "caliber_note": "168h 内出现非作者评论的占比"
+      },
+      {
+        "name_cn": "评论数/Issue",
+        "median": "—",
+        "mean": "1.00",
+        "caliber_note": "含 bot 评论；均值"
+      },
+      {
+        "name_cn": "标签覆盖率",
+        "median": "—",
+        "mean": "60.0%",
+        "caliber_note": "至少 1 个标签的 Issue 占比"
+      },
+      {
+        "name_cn": "指派覆盖率",
+        "median": "—",
+        "mean": "40.0%",
+        "caliber_note": "有 assignee 的 Issue 占比"
+      }
+    ],
+    "stages": [
+      {
+        "id": "I0",
+        "name": "创建",
+        "icon": "📝",
+        "is_lens": false,
+        "weight": 0.15,
+        "mixed": 80.7,
+        "obj": 77.5,
+        "subj": 88.2,
+        "stars": "★★★★☆",
+        "grade": "B",
+        "flag_emoji": "🟢",
+        "pain_count": 2,
+        "pain_pct": 40.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "SUB_CREATION_CLARITY",
+          "name_cn": "问题表达清晰度",
+          "display_name": "SUB_CREATION_CLARITY（问题表达清晰度）",
+          "value": 89.4
+        },
+        "worst_metric": {
+          "code": "OBJ_INPUT_QUALITY",
+          "name_cn": "首帖信息完整度",
+          "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+          "value": 74.0
+        },
+        "distribution": "<40:0 ｜ 40-60:2 ｜ 60-80:0 ｜ ≥80:3",
+        "metrics_obj": [
+          {
+            "code": "OBJ_INPUT_QUALITY",
+            "name_cn": "首帖信息完整度",
+            "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+            "mean": 74.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 5,
+            "evidence": "OBJ_INPUT_QUALITY：均值 74.0，低分 2/5",
+            "_mean": 74.0
+          },
+          {
+            "code": "OBJ_AGENT_NOISE_REVERSE",
+            "name_cn": "重复/噪声风险反向分",
+            "display_name": "OBJ_AGENT_NOISE_REVERSE（重复/噪声风险反向分）",
+            "mean": 88.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 5,
+            "evidence": "OBJ_AGENT_NOISE_REVERSE：均值 88.0，低分 0/5",
+            "_mean": 88.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_CREATION_CLARITY",
+            "name_cn": "问题表达清晰度",
+            "display_name": "SUB_CREATION_CLARITY（问题表达清晰度）",
+            "mean": 89.4,
+            "median": 90.0,
+            "cover": 5,
+            "main_reason": "SUB_CREATION_CLARITY：标题明确指出编包失败，正文含截图、重现步骤和环境信息，核心诉求清晰。",
+            "_mean": 89.4
+          },
+          {
+            "code": "SUB_CONTEXT_SUFFICIENCY",
+            "name_cn": "上下文充分性",
+            "display_name": "SUB_CONTEXT_SUFFICIENCY（上下文充分性）",
+            "mean": 87.0,
+            "median": 85.0,
+            "cover": 5,
+            "main_reason": "SUB_CONTEXT_SUFFICIENCY：提供了硬件型号、CANN版本、操作系统、完整重现命令和报错截图，上下文充足。",
+            "_mean": 87.0
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#220",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 54,
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "desc": ""
+          },
+          {
+            "no": "#221",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 59,
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "desc": ""
+          }
+        ],
+        "root_cause": "存在轻度痛点，开放Issue创建得分偏低且缺乏标签元数据，但已关闭Issue输入质量较高",
+        "is_short_board": false,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "相对可控",
+        "core_problem": "存在轻度痛点，开放Issue创建得分偏低且缺乏标签元数据，但已关闭…",
+        "brief_metrics": [
+          {
+            "code": "OBJ_INPUT_QUALITY",
+            "metric": "`OBJ_INPUT_QUALITY`",
+            "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+            "score": 74.0,
+            "reason": "均值 74.0，低分 2/5",
+            "expected": "补齐标题、正文、环境、复现步骤和预期结果"
+          },
+          {
+            "code": "SUB_CONTEXT_SUFFICIENCY",
+            "metric": "`SUB_CONTEXT_SUFFICIENCY`",
+            "display_name": "SUB_CONTEXT_SUFFICIENCY（上下文充分性）",
+            "score": 87.0,
+            "reason": "提供了硬件型号、CANN版本、操作系统、完整重现命令和报错截图，上下文充足。",
+            "expected": "补齐定位所需上下文"
+          },
+          {
+            "code": "SUB_CREATION_CLARITY",
+            "metric": "`SUB_CREATION_CLARITY`",
+            "display_name": "SUB_CREATION_CLARITY（问题表达清晰度）",
+            "score": 89.4,
+            "reason": "标题明确指出编包失败，正文含截图、重现步骤和环境信息，核心诉求清晰。",
+            "expected": "让问题表达更清楚，减少二次追问"
+          }
+        ],
+        "intro": "整体相对可控，但仍需关注：存在轻度痛点，开放Issue创建得分偏低且缺乏标签元数据，但已关闭…。"
+      },
+      {
+        "id": "I1",
+        "name": "分流响应",
+        "icon": "🏷️",
+        "is_lens": false,
+        "weight": 0.2,
+        "mixed": 47.9,
+        "obj": 38.3,
+        "subj": 65.6,
+        "stars": "★★☆☆☆",
+        "grade": "D",
+        "flag_emoji": "🟡",
+        "pain_count": 5,
+        "pain_pct": 100.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "SUB_OWNER_CLARITY",
+          "name_cn": "责任归属清晰度",
+          "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+          "value": 67.0
+        },
+        "worst_metric": {
+          "code": "OBJ_TRIAGE_QUALITY",
+          "name_cn": "标签与指派完整度",
+          "display_name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+          "value": 30.0
+        },
+        "distribution": "<40:1 ｜ 40-60:4 ｜ 60-80:0 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_TRIAGE_QUALITY",
+            "name_cn": "标签与指派完整度",
+            "display_name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "mean": 30.0,
+            "median": 30.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_TRIAGE_QUALITY：均值 30.0，低分 5/5",
+            "_mean": 30.0
+          },
+          {
+            "code": "OBJ_FIRST_RESPONSE_TIME",
+            "name_cn": "首次人工响应时间",
+            "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "mean": 56.0,
+            "median": 60.0,
+            "flag": "🟡",
+            "cover": 5,
+            "evidence": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5",
+            "_mean": 56.0
+          },
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "name_cn": "Bot治理覆盖",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "mean": 32.0,
+            "median": 20.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+            "_mean": 32.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_ROUTING_CORRECTNESS",
+            "name_cn": "分流正确性",
+            "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+            "mean": 66.4,
+            "median": 70.0,
+            "cover": 5,
+            "main_reason": "SUB_ROUTING_CORRECTNESS：仅有作者自加的bug-report标签，无维护者分流或重定向动作，路由证据不足。",
+            "_mean": 66.4
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "name_cn": "责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "mean": 67.0,
+            "median": 65.0,
+            "cover": 5,
+            "main_reason": "SUB_OWNER_CLARITY：songkai111回复将安排同事分析并后续创建MR，但无正式assignee…",
+            "_mean": 67.0
+          },
+          {
+            "code": "SUB_RESPONSE_EFFECTIVENESS",
+            "name_cn": "首响有效性",
+            "display_name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "mean": 63.4,
+            "median": 55.0,
+            "cover": 5,
+            "main_reason": "SUB_RESPONSE_EFFECTIVENESS：首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。",
+            "_mean": 63.4
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#222",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 34,
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "desc": ""
+          },
+          {
+            "no": "#221",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 43,
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "desc": ""
+          },
+          {
+            "no": "#219",
+            "url": "https://gitcode.com/cann/cann-samples/issues/219",
+            "score": 49,
+            "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…",
+            "desc": ""
+          }
+        ],
+        "root_cause": "缺乏标准化分流流程和自动化标签/指派机制，依赖人工informally接手",
+        "is_short_board": true,
+        "pain": {
+          "prio": "P0",
+          "id": "PP-01"
+        },
+        "pain_title": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+        "judgment": "P0",
+        "core_problem": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+        "brief_metrics": [
+          {
+            "code": "OBJ_TRIAGE_QUALITY",
+            "metric": "`OBJ_TRIAGE_QUALITY`",
+            "display_name": "OBJ_TRIAGE_QUALITY（标签与指派完整度）",
+            "score": 30.0,
+            "reason": "均值 30.0，低分 5/5",
+            "expected": "提升标签、指派和分流记录完整度"
+          },
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE`",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "均值 32.0，低分 3/5",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "SUB_RESPONSE_EFFECTIVENESS",
+            "metric": "`SUB_RESPONSE_EFFECTIVENESS`",
+            "display_name": "SUB_RESPONSE_EFFECTIVENESS（首响有效性）",
+            "score": 63.4,
+            "reason": "首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。",
+            "expected": "让首次响应真正推动问题进入处理"
+          },
+          {
+            "code": "SUB_ROUTING_CORRECTNESS",
+            "metric": "`SUB_ROUTING_CORRECTNESS`",
+            "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+            "score": 66.4,
+            "reason": "仅有作者自加的bug-report标签，无维护者分流或重定向动作，路由证据不足。",
+            "expected": "让 Issue 进入正确处理路径"
+          }
+        ],
+        "intro": "本阶段需要改进，主要问题是：Triage流程全面缺失，Issue缺乏正式标签与指派。"
+      },
+      {
+        "id": "I2",
+        "name": "讨论",
+        "icon": "💬",
+        "is_lens": false,
+        "weight": 0.2,
+        "mixed": 39.9,
+        "obj": 37.5,
+        "subj": 44.3,
+        "stars": "★★☆☆☆",
+        "grade": "F",
+        "flag_emoji": "🔴",
+        "pain_count": 4,
+        "pain_pct": 80.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "OBJ_INPUT_QUALITY",
+          "name_cn": "首帖信息完整度",
+          "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+          "value": 74.0
+        },
+        "worst_metric": {
+          "code": "OBJ_DISCUSSION_ACTIVITY",
+          "name_cn": "有效评论与往返数",
+          "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+          "value": 22.0
+        },
+        "distribution": "<40:3 ｜ 40-60:1 ｜ 60-80:1 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_DISCUSSION_ACTIVITY",
+            "name_cn": "有效评论与往返数",
+            "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+            "mean": 22.0,
+            "median": 15.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_DISCUSSION_ACTIVITY：均值 22.0，低分 5/5",
+            "_mean": 22.0
+          },
+          {
+            "code": "OBJ_INPUT_QUALITY",
+            "name_cn": "首帖信息完整度",
+            "display_name": "OBJ_INPUT_QUALITY（首帖信息完整度）",
+            "mean": 74.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 5,
+            "evidence": "OBJ_INPUT_QUALITY：均值 74.0，低分 2/5",
+            "_mean": 74.0
+          },
+          {
+            "code": "OBJ_FIRST_RESPONSE_TIME",
+            "name_cn": "首次人工响应时间",
+            "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "mean": 56.0,
+            "median": 60.0,
+            "flag": "🟡",
+            "cover": 5,
+            "evidence": "OBJ_FIRST_RESPONSE_TIME：均值 56.0，低分 2/5",
+            "_mean": 56.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_DISCUSSION_DEPTH",
+            "name_cn": "讨论深度",
+            "display_name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+            "mean": 35.6,
+            "median": 30.0,
+            "cover": 5,
+            "main_reason": "SUB_DISCUSSION_DEPTH：issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。",
+            "_mean": 35.6
+          },
+          {
+            "code": "SUB_DISCUSSION_FOCUS",
+            "name_cn": "讨论聚焦度",
+            "display_name": "SUB_DISCUSSION_FOCUS（讨论聚焦度）",
+            "mean": 51.6,
+            "median": 50.0,
+            "cover": 5,
+            "main_reason": "SUB_DISCUSSION_FOCUS：仅有的评论未跑题，但讨论内容极少，无法充分评估聚焦度。",
+            "_mean": 51.6
+          },
+          {
+            "code": "SUB_DISCUSSION_PROGRESS",
+            "name_cn": "讨论推进性",
+            "display_name": "SUB_DISCUSSION_PROGRESS（讨论推进性）",
+            "mean": 46.0,
+            "median": 45.0,
+            "cover": 5,
+            "main_reason": "SUB_DISCUSSION_PROGRESS：从表态回复到创建MR有推进，但issue讨论区本身未形成排查方向或下一步动作。",
+            "_mean": 46.0
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#221",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 17,
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "desc": ""
+          },
+          {
+            "no": "#220",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 28,
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "desc": ""
+          },
+          {
+            "no": "#222",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 38,
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "desc": ""
+          }
+        ],
+        "root_cause": "处理者倾向直接创建MR修复而非在Issue内进行技术讨论，缺乏讨论引导规范",
+        "is_short_board": true,
+        "pain": {
+          "prio": "P0",
+          "id": "PP-02"
+        },
+        "pain_title": "Issue讨论深度严重不足，技术交流几乎缺失",
+        "judgment": "P0",
+        "core_problem": "Issue讨论深度严重不足，技术交流几乎缺失",
+        "brief_metrics": [
+          {
+            "code": "OBJ_DISCUSSION_ACTIVITY",
+            "metric": "`OBJ_DISCUSSION_ACTIVITY`",
+            "display_name": "OBJ_DISCUSSION_ACTIVITY（有效评论与往返数）",
+            "score": 22.0,
+            "reason": "均值 22.0，低分 5/5",
+            "expected": "增加有效评论、技术讨论和往返轮次"
+          },
+          {
+            "code": "OBJ_FIRST_RESPONSE_TIME",
+            "metric": "`OBJ_FIRST_RESPONSE_TIME`",
+            "display_name": "OBJ_FIRST_RESPONSE_TIME（首次人工响应时间）",
+            "score": 56.0,
+            "reason": "均值 56.0，低分 2/5",
+            "expected": "缩短首次人工响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_DISCUSSION_DEPTH",
+            "metric": "`SUB_DISCUSSION_DEPTH`",
+            "display_name": "SUB_DISCUSSION_DEPTH（讨论深度）",
+            "score": 35.6,
+            "reason": "issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。",
+            "expected": "补齐问题拆解、技术分析和判断依据"
+          },
+          {
+            "code": "SUB_DISCUSSION_PROGRESS",
+            "metric": "`SUB_DISCUSSION_PROGRESS`",
+            "display_name": "SUB_DISCUSSION_PROGRESS（讨论推进性）",
+            "score": 46.0,
+            "reason": "从表态回复到创建MR有推进，但issue讨论区本身未形成排查方向或下一步动作。",
+            "expected": "明确下一步动作、阶段结论和推进记录"
+          }
+        ],
+        "intro": "本阶段是本周短板之一，主要问题是：Issue讨论深度严重不足，技术交流几乎缺失。"
+      },
+      {
+        "id": "I3",
+        "name": "解决",
+        "icon": "🛠️",
+        "is_lens": false,
+        "weight": 0.25,
+        "mixed": 41.5,
+        "obj": 33.3,
+        "subj": 53.9,
+        "stars": "★★☆☆☆",
+        "grade": "D",
+        "flag_emoji": "🟡",
+        "pain_count": 4,
+        "pain_pct": 80.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "SUB_SOLUTION_CLARITY",
+          "name_cn": "方案清晰度",
+          "display_name": "SUB_SOLUTION_CLARITY（方案清晰度）",
+          "value": 59.0
+        },
+        "worst_metric": {
+          "code": "OBJ_RESOLUTION_VERIFICATION",
+          "name_cn": "验证闭环完整度",
+          "display_name": "OBJ_RESOLUTION_VERIFICATION（验证闭环完整度）",
+          "value": 22.2
+        },
+        "distribution": "<40:2 ｜ 40-60:2 ｜ 60-80:1 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "name_cn": "解决证据完整度",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "mean": 23.1,
+            "median": 15.4,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5",
+            "_mean": 23.076923076923077
+          },
+          {
+            "code": "OBJ_DECISION_TRACEABILITY",
+            "name_cn": "处理留痕完整度",
+            "display_name": "OBJ_DECISION_TRACEABILITY（处理留痕完整度）",
+            "mean": 57.0,
+            "median": 75.0,
+            "flag": "🟡",
+            "cover": 5,
+            "evidence": "OBJ_DECISION_TRACEABILITY：均值 57.0，低分 2/5",
+            "_mean": 57.0
+          },
+          {
+            "code": "OBJ_RESOLUTION_VERIFICATION",
+            "name_cn": "验证闭环完整度",
+            "display_name": "OBJ_RESOLUTION_VERIFICATION（验证闭环完整度）",
+            "mean": 22.2,
+            "median": 22.2,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_RESOLUTION_VERIFICATION：均值 22.2，低分 5/5",
+            "_mean": 22.22222222222222
+          },
+          {
+            "code": "OBJ_PROCESS_TRACEABILITY",
+            "name_cn": "处理链路完整度",
+            "display_name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+            "mean": 36.0,
+            "median": 25.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_PROCESS_TRACEABILITY：均值 36.0，低分 4/5",
+            "_mean": 36.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_SOLUTION_CLARITY",
+            "name_cn": "方案清晰度",
+            "display_name": "SUB_SOLUTION_CLARITY（方案清晰度）",
+            "mean": 59.0,
+            "median": 80.0,
+            "cover": 5,
+            "main_reason": "SUB_SOLUTION_CLARITY：MR#336清楚说明根因是kernel_event.h转为内部头文件，修复方法…",
+            "_mean": 59.0
+          },
+          {
+            "code": "SUB_RESOLUTION_CONFIDENCE",
+            "name_cn": "解决可信度",
+            "display_name": "SUB_RESOLUTION_CONFIDENCE（解决可信度）",
+            "mean": 53.0,
+            "median": 80.0,
+            "cover": 5,
+            "main_reason": "SUB_RESOLUTION_CONFIDENCE：MR已合并且描述编译验证通过，bot因MR合并关闭，解决可信度较高。",
+            "_mean": 53.0
+          },
+          {
+            "code": "SUB_DECISION_RATIONALE",
+            "name_cn": "决策理由充分性",
+            "display_name": "SUB_DECISION_RATIONALE（决策理由充分性）",
+            "mean": 49.4,
+            "median": 60.0,
+            "cover": 5,
+            "main_reason": "SUB_DECISION_RATIONALE：MR描述解释了修复理由，但issue关闭原由标注为'进行中'不够准确。",
+            "_mean": 49.4
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#221",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 18,
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "desc": ""
+          },
+          {
+            "no": "#220",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 26,
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "desc": ""
+          },
+          {
+            "no": "#222",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 51,
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "desc": ""
+          }
+        ],
+        "root_cause": "存在中度痛点，80%的Issue解决证据不足，开放Issue无解决路径，已关闭Issue关闭原因标注矛盾",
+        "is_short_board": true,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "需改进",
+        "core_problem": "存在中度痛点，80%的Issue解决证据不足，开放Issue无解决…",
+        "brief_metrics": [
+          {
+            "code": "OBJ_RESOLUTION_VERIFICATION",
+            "metric": "`OBJ_RESOLUTION_VERIFICATION`",
+            "display_name": "OBJ_RESOLUTION_VERIFICATION（验证闭环完整度）",
+            "score": 22.2,
+            "reason": "均值 22.2，低分 5/5",
+            "expected": "补充验证方式、测试结果和验收结论"
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "metric": "`OBJ_SOLUTION_EVIDENCE`",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "score": 23.1,
+            "reason": "均值 23.1，低分 5/5",
+            "expected": "补充修改内容、关联变更和影响范围"
+          },
+          {
+            "code": "SUB_DECISION_RATIONALE",
+            "metric": "`SUB_DECISION_RATIONALE`",
+            "display_name": "SUB_DECISION_RATIONALE（决策理由充分性）",
+            "score": 49.4,
+            "reason": "MR描述解释了修复理由，但issue关闭原由标注为'进行中'不够准确。",
+            "expected": "说明关闭、延期或转交的理由"
+          },
+          {
+            "code": "SUB_RESOLUTION_CONFIDENCE",
+            "metric": "`SUB_RESOLUTION_CONFIDENCE`",
+            "display_name": "SUB_RESOLUTION_CONFIDENCE（解决可信度）",
+            "score": 53.0,
+            "reason": "MR已合并且描述编译验证通过，bot因MR合并关闭，解决可信度较高。",
+            "expected": "提升解决结论可信度"
+          }
+        ],
+        "intro": "本阶段需要改进，主要问题是：存在中度痛点，80%的Issue解决证据不足，开放Issue无解决…。"
+      },
+      {
+        "id": "I4",
+        "name": "关闭沉淀",
+        "icon": "📦",
+        "is_lens": false,
+        "weight": 0.2,
+        "mixed": 38.1,
+        "obj": 25.6,
+        "subj": 56.8,
+        "stars": "★★☆☆☆",
+        "grade": "F",
+        "flag_emoji": "🔴",
+        "pain_count": 4,
+        "pain_pct": 80.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+          "name_cn": "过早关闭风险反向分",
+          "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+          "value": 81.0
+        },
+        "worst_metric": {
+          "code": "OBJ_CLOSURE_REUSABILITY",
+          "name_cn": "关闭说明可复用性",
+          "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+          "value": 11.2
+        },
+        "distribution": "<40:3 ｜ 40-60:1 ｜ 60-80:1 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_CLOSURE_REUSABILITY",
+            "name_cn": "关闭说明可复用性",
+            "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+            "mean": 11.2,
+            "median": 0.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_CLOSURE_REUSABILITY：均值 11.2，低分 5/5",
+            "_mean": 11.25
+          },
+          {
+            "code": "OBJ_DECISION_TRACEABILITY",
+            "name_cn": "处理留痕完整度",
+            "display_name": "OBJ_DECISION_TRACEABILITY（处理留痕完整度）",
+            "mean": 57.0,
+            "median": 75.0,
+            "flag": "🟡",
+            "cover": 5,
+            "evidence": "OBJ_DECISION_TRACEABILITY：均值 57.0，低分 2/5",
+            "_mean": 57.0
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "name_cn": "解决证据完整度",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "mean": 23.1,
+            "median": 15.4,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_SOLUTION_EVIDENCE：均值 23.1，低分 5/5",
+            "_mean": 23.076923076923077
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_CLOSE_QUALITY",
+            "name_cn": "关闭质量",
+            "display_name": "SUB_CLOSE_QUALITY（关闭质量）",
+            "mean": 44.4,
+            "median": 55.0,
+            "cover": 5,
+            "main_reason": "SUB_CLOSE_QUALITY：bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…",
+            "_mean": 44.4
+          },
+          {
+            "code": "SUB_KNOWLEDGE_RETENTION",
+            "name_cn": "知识留存",
+            "display_name": "SUB_KNOWLEDGE_RETENTION（知识留存）",
+            "mean": 45.4,
+            "median": 50.0,
+            "cover": 5,
+            "main_reason": "SUB_KNOWLEDGE_RETENTION：MR描述有技术说明，但issue评论区无总结性结论，后来者需跳转MR才能了解。",
+            "_mean": 45.4
+          },
+          {
+            "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+            "name_cn": "过早关闭风险反向分",
+            "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+            "mean": 81.0,
+            "median": 85.0,
+            "cover": 5,
+            "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR已合并且通过编译验证，关闭有实质修复支撑，不存在过早关闭风险。",
+            "_mean": 81.0
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#221",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 20,
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "desc": ""
+          },
+          {
+            "no": "#220",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 22,
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "desc": ""
+          },
+          {
+            "no": "#222",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 39,
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "desc": ""
+          }
+        ],
+        "root_cause": "Bot关闭时close_reason配置与实际状态不匹配，且关闭流程缺乏总结要求",
+        "is_short_board": true,
+        "pain": {
+          "prio": "P1",
+          "id": "PP-03"
+        },
+        "pain_title": "关闭原因标注不准确，知识沉淀缺失",
+        "judgment": "P1",
+        "core_problem": "关闭原因标注不准确，知识沉淀缺失",
+        "brief_metrics": [
+          {
+            "code": "OBJ_CLOSURE_REUSABILITY",
+            "metric": "`OBJ_CLOSURE_REUSABILITY`",
+            "display_name": "OBJ_CLOSURE_REUSABILITY（关闭说明可复用性）",
+            "score": 11.2,
+            "reason": "均值 11.2，低分 5/5",
+            "expected": "关闭时沉淀原因、结论和可复用摘要"
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "metric": "`OBJ_SOLUTION_EVIDENCE`",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据完整度）",
+            "score": 23.1,
+            "reason": "均值 23.1，低分 5/5",
+            "expected": "补充修改内容、关联变更和影响范围"
+          },
+          {
+            "code": "SUB_CLOSE_QUALITY",
+            "metric": "`SUB_CLOSE_QUALITY`",
+            "display_name": "SUB_CLOSE_QUALITY（关闭质量）",
+            "score": 44.4,
+            "reason": "bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一…",
+            "expected": "让关闭动作清晰、合理、可解释"
+          },
+          {
+            "code": "SUB_KNOWLEDGE_RETENTION",
+            "metric": "`SUB_KNOWLEDGE_RETENTION`",
+            "display_name": "SUB_KNOWLEDGE_RETENTION（知识留存）",
+            "score": 45.4,
+            "reason": "MR描述有技术说明，但issue评论区无总结性结论，后来者需跳转MR才能了解。",
+            "expected": "让后来者可直接复用处理结论"
+          }
+        ],
+        "intro": "本阶段是本周短板之一，主要问题是：关闭原因标注不准确，知识沉淀缺失。"
+      },
+      {
+        "id": "G",
+        "name": "Bot/Agent 治理",
+        "icon": "🤖",
+        "is_lens": true,
+        "weight": 0.0,
+        "mixed": 64.3,
+        "obj": 64.0,
+        "subj": 65.0,
+        "stars": "★★★☆☆",
+        "grade": "C",
+        "flag_emoji": "🟢",
+        "pain_count": 1,
+        "pain_pct": 20.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "OBJ_BOT_MISCLOSE_REVERSE",
+          "name_cn": "Bot误操作反向分",
+          "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误操作反向分）",
+          "value": 100.0
+        },
+        "worst_metric": {
+          "code": "OBJ_BOT_GOVERNANCE",
+          "name_cn": "Bot治理覆盖",
+          "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+          "value": 32.0
+        },
+        "distribution": "<40:0 ｜ 40-60:1 ｜ 60-80:4 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "name_cn": "Bot治理覆盖",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "mean": 32.0,
+            "median": 20.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+            "_mean": 32.0
+          },
+          {
+            "code": "OBJ_BOT_MISCLOSE_REVERSE",
+            "name_cn": "Bot误操作反向分",
+            "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误操作反向分）",
+            "mean": 100.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 5,
+            "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/5",
+            "_mean": 100.0
+          },
+          {
+            "code": "OBJ_AGENT_NOISE_REVERSE",
+            "name_cn": "重复/噪声风险反向分",
+            "display_name": "OBJ_AGENT_NOISE_REVERSE（重复/噪声风险反向分）",
+            "mean": 88.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 5,
+            "evidence": "OBJ_AGENT_NOISE_REVERSE：均值 88.0，低分 0/5",
+            "_mean": 88.0
+          },
+          {
+            "code": "OBJ_PROCESS_TRACEABILITY",
+            "name_cn": "处理链路完整度",
+            "display_name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+            "mean": 36.0,
+            "median": 25.0,
+            "flag": "🔴",
+            "cover": 5,
+            "evidence": "OBJ_PROCESS_TRACEABILITY：均值 36.0，低分 4/5",
+            "_mean": 36.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_BOT_HELPFULNESS",
+            "name_cn": "Bot介入有益性",
+            "display_name": "SUB_BOT_HELPFULNESS（Bot介入有益性）",
+            "mean": 63.4,
+            "median": 70.0,
+            "cover": 5,
+            "main_reason": "SUB_BOT_HELPFULNESS：bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。",
+            "_mean": 63.4
+          },
+          {
+            "code": "SUB_BOT_INTERVENTION_QUALITY",
+            "name_cn": "Bot介入质量",
+            "display_name": "SUB_BOT_INTERVENTION_QUALITY（Bot介入质量）",
+            "mean": 66.0,
+            "median": 75.0,
+            "cover": 5,
+            "main_reason": "SUB_BOT_INTERVENTION_QUALITY：bot关闭动作时机准确（MR合并后），动作合规，未误关或错误阻断。",
+            "_mean": 66.0
+          },
+          {
+            "code": "SUB_BOT_HANDOFF_QUALITY",
+            "name_cn": "人机交接质量",
+            "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+            "mean": 65.6,
+            "median": 75.0,
+            "cover": 5,
+            "main_reason": "SUB_BOT_HANDOFF_QUALITY：bot关闭前songkai111已完成MR创建与合并，人工处理到位，bot仅执…",
+            "_mean": 65.6
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#222",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 60,
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "desc": ""
+          }
+        ],
+        "root_cause": "Bot仅配置了MR合并后关闭动作，未覆盖标签自动添加、分流辅助和close_reason正确映射",
+        "is_short_board": false,
+        "pain": {
+          "prio": "P1",
+          "id": "PP-04"
+        },
+        "pain_title": "非Bug类Issue Bot缺位，关闭原因配置不当",
+        "judgment": "参考项",
+        "core_problem": "非Bug类Issue Bot缺位，关闭原因配置不当",
+        "brief_metrics": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE`",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+            "score": 32.0,
+            "reason": "均值 32.0，低分 3/5",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "OBJ_PROCESS_TRACEABILITY",
+            "metric": "`OBJ_PROCESS_TRACEABILITY`",
+            "display_name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+            "score": 36.0,
+            "reason": "均值 36.0，低分 4/5",
+            "expected": "让处理链路从创建到关闭可追溯"
+          },
+          {
+            "code": "SUB_BOT_HELPFULNESS",
+            "metric": "`SUB_BOT_HELPFULNESS`",
+            "display_name": "SUB_BOT_HELPFULNESS（Bot介入有益性）",
+            "score": 63.4,
+            "reason": "bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。",
+            "expected": "让 Bot 介入对分流和推进有实际帮助"
+          },
+          {
+            "code": "SUB_BOT_HANDOFF_QUALITY",
+            "metric": "`SUB_BOT_HANDOFF_QUALITY`",
+            "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+            "score": 65.6,
+            "reason": "bot关闭前songkai111已完成MR创建与合并，人工处理到位，bot仅执…",
+            "expected": "改善 Bot 到人工处理的交接质量"
+          }
+        ],
+        "intro": "仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。"
+      }
+    ],
+    "lens_g": {
+      "id": "G",
+      "name": "Bot/Agent 治理",
+      "icon": "🤖",
+      "is_lens": true,
+      "weight": 0.0,
+      "mixed": 64.3,
+      "obj": 64.0,
+      "subj": 65.0,
+      "stars": "★★★☆☆",
+      "grade": "C",
+      "flag_emoji": "🟢",
+      "pain_count": 1,
+      "pain_pct": 20.0,
+      "delta": "首期基线",
+      "incomparable": false,
+      "confidence": "低",
+      "best_metric": {
+        "code": "OBJ_BOT_MISCLOSE_REVERSE",
+        "name_cn": "Bot误操作反向分",
+        "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误操作反向分）",
+        "value": 100.0
+      },
+      "worst_metric": {
+        "code": "OBJ_BOT_GOVERNANCE",
+        "name_cn": "Bot治理覆盖",
+        "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+        "value": 32.0
+      },
+      "distribution": "<40:0 ｜ 40-60:1 ｜ 60-80:4 ｜ ≥80:0",
+      "metrics_obj": [
+        {
+          "code": "OBJ_BOT_GOVERNANCE",
+          "name_cn": "Bot治理覆盖",
+          "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+          "mean": 32.0,
+          "median": 20.0,
+          "flag": "🔴",
+          "cover": 5,
+          "evidence": "OBJ_BOT_GOVERNANCE：均值 32.0，低分 3/5",
+          "_mean": 32.0
+        },
+        {
+          "code": "OBJ_BOT_MISCLOSE_REVERSE",
+          "name_cn": "Bot误操作反向分",
+          "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误操作反向分）",
+          "mean": 100.0,
+          "median": 100.0,
+          "flag": "🟢",
+          "cover": 5,
+          "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/5",
+          "_mean": 100.0
+        },
+        {
+          "code": "OBJ_AGENT_NOISE_REVERSE",
+          "name_cn": "重复/噪声风险反向分",
+          "display_name": "OBJ_AGENT_NOISE_REVERSE（重复/噪声风险反向分）",
+          "mean": 88.0,
+          "median": 100.0,
+          "flag": "🟢",
+          "cover": 5,
+          "evidence": "OBJ_AGENT_NOISE_REVERSE：均值 88.0，低分 0/5",
+          "_mean": 88.0
+        },
+        {
+          "code": "OBJ_PROCESS_TRACEABILITY",
+          "name_cn": "处理链路完整度",
+          "display_name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+          "mean": 36.0,
+          "median": 25.0,
+          "flag": "🔴",
+          "cover": 5,
+          "evidence": "OBJ_PROCESS_TRACEABILITY：均值 36.0，低分 4/5",
+          "_mean": 36.0
+        }
+      ],
+      "metrics_sub": [
+        {
+          "code": "SUB_BOT_HELPFULNESS",
+          "name_cn": "Bot介入有益性",
+          "display_name": "SUB_BOT_HELPFULNESS（Bot介入有益性）",
+          "mean": 63.4,
+          "median": 70.0,
+          "cover": 5,
+          "main_reason": "SUB_BOT_HELPFULNESS：bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。",
+          "_mean": 63.4
+        },
+        {
+          "code": "SUB_BOT_INTERVENTION_QUALITY",
+          "name_cn": "Bot介入质量",
+          "display_name": "SUB_BOT_INTERVENTION_QUALITY（Bot介入质量）",
+          "mean": 66.0,
+          "median": 75.0,
+          "cover": 5,
+          "main_reason": "SUB_BOT_INTERVENTION_QUALITY：bot关闭动作时机准确（MR合并后），动作合规，未误关或错误阻断。",
+          "_mean": 66.0
+        },
+        {
+          "code": "SUB_BOT_HANDOFF_QUALITY",
+          "name_cn": "人机交接质量",
+          "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+          "mean": 65.6,
+          "median": 75.0,
+          "cover": 5,
+          "main_reason": "SUB_BOT_HANDOFF_QUALITY：bot关闭前songkai111已完成MR创建与合并，人工处理到位，bot仅执…",
+          "_mean": 65.6
+        }
+      ],
+      "low_issues": [
+        {
+          "no": "#222",
+          "url": "https://gitcode.com/cann/cann-samples/issues/222",
+          "score": 60,
+          "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+          "desc": ""
+        }
+      ],
+      "root_cause": "Bot仅配置了MR合并后关闭动作，未覆盖标签自动添加、分流辅助和close_reason正确映射",
+      "is_short_board": false,
+      "pain": {
+        "prio": "P1",
+        "id": "PP-04"
+      },
+      "pain_title": "非Bug类Issue Bot缺位，关闭原因配置不当",
+      "judgment": "参考项",
+      "core_problem": "非Bug类Issue Bot缺位，关闭原因配置不当",
+      "brief_metrics": [
+        {
+          "code": "OBJ_BOT_GOVERNANCE",
+          "metric": "`OBJ_BOT_GOVERNANCE`",
+          "display_name": "OBJ_BOT_GOVERNANCE（Bot治理覆盖）",
+          "score": 32.0,
+          "reason": "均值 32.0，低分 3/5",
+          "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+        },
+        {
+          "code": "OBJ_PROCESS_TRACEABILITY",
+          "metric": "`OBJ_PROCESS_TRACEABILITY`",
+          "display_name": "OBJ_PROCESS_TRACEABILITY（处理链路完整度）",
+          "score": 36.0,
+          "reason": "均值 36.0，低分 4/5",
+          "expected": "让处理链路从创建到关闭可追溯"
+        },
+        {
+          "code": "SUB_BOT_HELPFULNESS",
+          "metric": "`SUB_BOT_HELPFULNESS`",
+          "display_name": "SUB_BOT_HELPFULNESS（Bot介入有益性）",
+          "score": 63.4,
+          "reason": "bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。",
+          "expected": "让 Bot 介入对分流和推进有实际帮助"
+        },
+        {
+          "code": "SUB_BOT_HANDOFF_QUALITY",
+          "metric": "`SUB_BOT_HANDOFF_QUALITY`",
+          "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+          "score": 65.6,
+          "reason": "bot关闭前songkai111已完成MR创建与合并，人工处理到位，bot仅执…",
+          "expected": "改善 Bot 到人工处理的交接质量"
+        }
+      ],
+      "intro": "仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。",
+      "suspected_agent_pct": 0.0,
+      "bot_pct": 0.0
+    },
+    "participants": {
+      "summary": "分析期共 1 位社区响应者贡献 5 次评论响应",
+      "responder_count": 1,
+      "response_count": 5,
+      "top_responders": [
+        {
+          "name": "songkai111",
+          "count": 5
+        }
+      ],
+      "top1_concentration": 100.0,
+      "_top1_name": "songkai111"
+    }
+  },
+  "state": {
+    "period": "2026_w28",
+    "n_total": 5,
+    "idx_total": 47.7,
+    "stage_mixed": {
+      "creation": 80.7,
+      "triage": 47.9,
+      "discussion": 39.9,
+      "resolution": 41.5,
+      "closure": 38.1,
+      "bot-agent": 64.3
+    },
+    "recs": [
+      {
+        "id": "REC-01",
+        "title": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+        "prio": "P0",
+        "stage_key": "triage",
+        "stage_name": "分流响应",
+        "pp_id": "PP-01",
+        "action": "配置Bot自动添加类型标签并通知领域负责人",
+        "goal": "`OBJ_TRIAGE_QUALITY` 和 `OBJ_BOT_GOVERNANCE` 提升至 90 以上",
+        "baseline_score": 47.9,
+        "baseline_value": "分流响应阶段分 47.9",
+        "state": "待跟踪"
+      },
+      {
+        "id": "REC-02",
+        "title": "Issue讨论深度严重不足，技术交流几乎缺失",
+        "prio": "P0",
+        "stage_key": "discussion",
+        "stage_name": "讨论",
+        "pp_id": "PP-02",
+        "action": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+        "goal": "`OBJ_DISCUSSION_ACTIVITY` 和 `OBJ_FIRST_RESPONSE_TIME` 提升；平均评论数提升至 2 以上",
+        "baseline_score": 39.9,
+        "baseline_value": "讨论阶段分 39.9",
+        "state": "待跟踪"
+      },
+      {
+        "id": "REC-03",
+        "title": "关闭原因标注不准确，知识沉淀缺失",
+        "prio": "P1",
+        "stage_key": "closure",
+        "stage_name": "关闭沉淀",
+        "pp_id": "PP-03",
+        "action": "修正Bot close_reason配置，确保标注为resolved或fixed",
+        "goal": "`OBJ_CLOSURE_REUSABILITY` 和 `OBJ_SOLUTION_EVIDENCE` 提升至 100 以上",
+        "baseline_score": 38.1,
+        "baseline_value": "关闭沉淀阶段分 38.1",
+        "state": "待跟踪"
+      },
+      {
+        "id": "REC-04",
+        "title": "非Bug类Issue Bot缺位，关闭原因配置不当",
+        "prio": "P1",
+        "stage_key": "bot-agent",
+        "stage_name": "Bot/Agent 治理",
+        "pp_id": "PP-04",
+        "action": "扩展Bot覆盖范围，为非Bug类Issue添加自动标签和响应",
+        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_PROCESS_TRACEABILITY` 提升至 10 以上",
+        "baseline_score": 64.3,
+        "baseline_value": "Bot/Agent 治理阶段分 64.3",
+        "state": "待跟踪"
+      },
+      {
+        "id": "REC-05",
+        "title": "响应速度极不均匀，部分Issue长时间无响应",
+        "prio": "P1",
+        "stage_key": "triage",
+        "stage_name": "分流响应",
+        "pp_id": "PP-05",
+        "action": "配置Bot自动提醒assignee或领域负责人",
+        "goal": "`OBJ_TRIAGE_QUALITY` 和 `OBJ_BOT_GOVERNANCE` 提升；7 天响应率提升至 0% 以上",
+        "baseline_score": 47.9,
+        "baseline_value": "分流响应阶段分 47.9",
+        "state": "待跟踪"
+      }
+    ]
+  },
+  "source_data": {
+    "community_metrics": {
+      "platform": "gitcode",
+      "total_issues": 5,
+      "open_issues": 2,
+      "closed_issues": 3,
+      "close_rate": 0.6,
+      "close_rate_30d": 1.0,
+      "avg_first_response_hours": 41.544444444444444,
+      "median_first_response_hours": 22.694166666666668,
+      "response_rate_7d": 0.8,
+      "no_response_rate": 0.2,
+      "avg_resolution_hours": 65.78777777777778,
+      "median_resolution_hours": 28.694166666666668,
+      "reopen_rate": 0.0,
+      "label_rate": 0.6,
+      "assignee_rate": 0.4,
+      "linked_pr_rate": 0.6,
+      "avg_comments": 1.0,
+      "bot_involvement_rate": 0.0,
+      "bot_absence_rate": 0.4,
+      "bot_low_eff_rate": 0.0,
+      "bot_misclose_rate": 0.4,
+      "agent_noise_rate": 0.0,
+      "agent_filter_gap_rate": 0.0,
+      "has_human_response_rate": 0.8,
+      "has_maintainer_response_rate": 0.0,
+      "has_traceable_artifact_rate": 0.8,
+      "automation_only_rate": 0.0,
+      "avg_overall_score": 74.0,
+      "avg_data_completeness": 84.5,
+      "community_name": "cann/cann-samples"
+    },
+    "stage_data": {
+      "creation": {
+        "label": "Creation",
+        "avg_score": 80.7,
+        "objective_avg_score": 77.5,
+        "subjective_avg_score": 88.2,
+        "pain_point_count": 2,
+        "total_count": 5,
+        "pain_point_ratio": 0.4,
+        "pain_point_issues": [
+          {
+            "issue_number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 53.6,
+            "objective_score": 41.2,
+            "subjective_score": 82.5,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "221",
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 58.6,
+            "objective_score": 46.2,
+            "subjective_score": 87.5,
+            "state": "open",
+            "labels": []
+          }
+        ]
+      },
+      "triage": {
+        "label": "Triage & Response",
+        "avg_score": 47.9,
+        "objective_avg_score": 38.3,
+        "subjective_avg_score": 65.6,
+        "pain_point_count": 5,
+        "total_count": 5,
+        "pain_point_ratio": 1.0,
+        "pain_point_issues": [
+          {
+            "issue_number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 34.1,
+            "objective_score": 25.5,
+            "subjective_score": 50.1,
+            "state": "closed",
+            "labels": [
+              "bug-report"
+            ]
+          },
+          {
+            "issue_number": "221",
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 43.0,
+            "objective_score": 28.5,
+            "subjective_score": 70.0,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "219",
+            "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+            "url": "https://gitcode.com/cann/cann-samples/issues/219",
+            "score": 48.8,
+            "objective_score": 36.5,
+            "subjective_score": 71.7,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          },
+          {
+            "issue_number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 56.3,
+            "objective_score": 52.5,
+            "subjective_score": 63.3,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "218",
+            "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+            "url": "https://gitcode.com/cann/cann-samples/issues/218",
+            "score": 57.1,
+            "objective_score": 48.5,
+            "subjective_score": 73.0,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      "discussion": {
+        "label": "Discussion",
+        "avg_score": 39.9,
+        "objective_avg_score": 37.5,
+        "subjective_avg_score": 44.3,
+        "pain_point_count": 4,
+        "total_count": 5,
+        "pain_point_ratio": 0.8,
+        "pain_point_issues": [
+          {
+            "issue_number": "221",
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 17.3,
+            "objective_score": 16.8,
+            "subjective_score": 18.3,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 28.0,
+            "objective_score": 28.8,
+            "subjective_score": 26.6,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 37.8,
+            "objective_score": 35.8,
+            "subjective_score": 41.6,
+            "state": "closed",
+            "labels": [
+              "bug-report"
+            ]
+          },
+          {
+            "issue_number": "219",
+            "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+            "url": "https://gitcode.com/cann/cann-samples/issues/219",
+            "score": 43.2,
+            "objective_score": 38.8,
+            "subjective_score": 51.5,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      "resolution": {
+        "label": "Resolution",
+        "avg_score": 41.5,
+        "objective_avg_score": 33.3,
+        "subjective_avg_score": 53.9,
+        "pain_point_count": 4,
+        "total_count": 5,
+        "pain_point_ratio": 0.8,
+        "pain_point_issues": [
+          {
+            "issue_number": "221",
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 18.1,
+            "objective_score": 14.6,
+            "subjective_score": 23.4,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 25.5,
+            "objective_score": 33.6,
+            "subjective_score": 13.4,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 51.4,
+            "objective_score": 33.4,
+            "subjective_score": 78.4,
+            "state": "closed",
+            "labels": [
+              "bug-report"
+            ]
+          },
+          {
+            "issue_number": "218",
+            "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+            "url": "https://gitcode.com/cann/cann-samples/issues/218",
+            "score": 52.4,
+            "objective_score": 33.4,
+            "subjective_score": 80.8,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      "closure": {
+        "label": "Closure",
+        "avg_score": 38.1,
+        "objective_avg_score": 25.6,
+        "subjective_avg_score": 56.8,
+        "pain_point_count": 4,
+        "total_count": 5,
+        "pain_point_ratio": 0.8,
+        "pain_point_issues": [
+          {
+            "issue_number": "221",
+            "title": "cann-samples Development Roadmap (2026 Q3)",
+            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "score": 20.4,
+            "objective_score": 7.5,
+            "subjective_score": 39.7,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 22.4,
+            "objective_score": 15.2,
+            "subjective_score": 33.1,
+            "state": "open",
+            "labels": []
+          },
+          {
+            "issue_number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 38.9,
+            "objective_score": 22.6,
+            "subjective_score": 63.2,
+            "state": "closed",
+            "labels": [
+              "bug-report"
+            ]
+          },
+          {
+            "issue_number": "218",
+            "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+            "url": "https://gitcode.com/cann/cann-samples/issues/218",
+            "score": 45.4,
+            "objective_score": 22.6,
+            "subjective_score": 79.6,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      "bot-agent": {
+        "label": "Bot/Agent Governance",
+        "avg_score": 64.3,
+        "objective_avg_score": 64.0,
+        "subjective_avg_score": 65.0,
+        "pain_point_count": 1,
+        "total_count": 5,
+        "pain_point_ratio": 0.2,
+        "pain_point_issues": [
+          {
+            "issue_number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 59.7,
+            "objective_score": 52.5,
+            "subjective_score": 76.7,
+            "state": "closed",
+            "labels": [
+              "bug-report"
+            ]
+          }
+        ]
+      }
+    },
+    "llm_diagnoses": {
+      "stage_diagnoses": {
+        "creation": {
+          "diagnosis": "存在轻度痛点，开放Issue创建得分偏低且缺乏标签元数据，但已关闭Issue输入质量较高",
+          "pain_level": "mild",
+          "evidence": [
+            "40%的Issue为创建阶段痛点（2/5），均为开放状态",
+            "开放Issue #220创建得分53.6、#221得分58.6，远低于已关闭Issue的95+"
+          ],
+          "unlisted_issue": "Issue正文内容质量较高但客观元数据（标签、里程碑）普遍缺失",
+          "confidence": "high"
+        },
+        "triage": {
+          "diagnosis": "存在严重痛点，100%的Issue分流不达标，缺乏正式标签、指派和路由流程",
+          "pain_level": "severe",
+          "evidence": [
+            "Triage阶段痛点比例100%（5/5），平均分仅47.9",
+            "label_rate仅60%，assignee_rate仅40%，客观均分仅38.3"
+          ],
+          "unlisted_issue": "处理者通过评论informally接手而非正式指派，责任边界模糊",
+          "confidence": "high"
+        },
+        "discussion": {
+          "diagnosis": "存在严重痛点，80%的Issue讨论深度不足，平均仅1条评论，技术交流几乎缺失",
+          "pain_level": "severe",
+          "evidence": [
+            "Discussion阶段痛点比例80%（4/5），平均分仅39.9",
+            "avg_comments仅1.0，多数Issue仅一条确认评论无技术讨论",
+            "开放Issue #221评论数为0，#220讨论深度评分仅20"
+          ],
+          "unlisted_issue": "解决方案直接在MR中给出，Issue讨论区未形成排查方向或方案对比",
+          "confidence": "high"
+        },
+        "resolution": {
+          "diagnosis": "存在中度痛点，80%的Issue解决证据不足，开放Issue无解决路径，已关闭Issue关闭原因标注矛盾",
+          "pain_level": "moderate",
+          "evidence": [
+            "Resolution阶段痛点比例80%（4/5），平均分41.5",
+            "已关闭Issue虽有MR修复但close_reason标注为'进行中'与实际矛盾",
+            "开放Issue #220解决得分25.5、#221解决得分18.1"
+          ],
+          "unlisted_issue": "Issue内解决过程记录缺失，根因分析沉淀在MR描述而非Issue评论区",
+          "confidence": "high"
+        },
+        "closure": {
+          "diagnosis": "存在中度痛点，关闭原因标注不准确，知识沉淀缺失，后来者需跳转MR才能了解方案",
+          "pain_level": "moderate",
+          "evidence": [
+            "Closure阶段痛点比例80%（4/5），平均分38.1，客观均分仅25.6",
+            "已关闭Issue的close_reason标注为'进行中'而非resolved",
+            "Issue评论区无总结性结论，知识保留评分偏低"
+          ],
+          "unlisted_issue": "Bot关闭时close_reason配置与实际状态不匹配，状态元数据失真",
+          "confidence": "high"
+        },
+        "bot-agent": {
+          "diagnosis": "存在轻度痛点，40%的Issue Bot缺位无自动标签或响应，40%的Issue Bot关闭原因配置不当",
+          "pain_level": "mild",
+          "evidence": [
+            "bot_absence_rate为40%（#220和#221无Bot参与）",
+            "bot_misclose_rate为40%（#219和#218关闭原因标注不当）"
+          ],
+          "unlisted_issue": "Bot仅覆盖MR合并后关闭，未覆盖标签自动添加和分流辅助",
+          "confidence": "medium"
+        }
+      },
+      "pain_points": [
+        {
+          "id": "PP-01",
+          "priority": "P0",
+          "dimension": "分流质量",
+          "title": "Triage流程全面缺失，Issue缺乏正式标签与指派",
+          "phenomenon": "100%的Issue在分流阶段为痛点，平均分仅47.9。Issue缺乏正式标签分类和assignee指派，处理者通过评论informally接手而非走标准分流流程。",
+          "impact": "责任归属模糊，Issue难以按领域或优先级检索，后续跟进缺乏明确owner。",
+          "metric_evidence": [
+            "Triage阶段痛点比例100%（5/5）",
+            "label_rate仅60%，assignee_rate仅40%",
+            "Triage客观均分仅38.3"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "222",
+              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+              "url": "https://gitcode.com/cann/cann-samples/issues/222",
+              "reason": "仅有作者自加bug-report标签，无维护者分流或assignee指派，首次响应延迟5天"
+            },
+            {
+              "issue_number": "219",
+              "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+              "url": "https://gitcode.com/cann/cann-samples/issues/219",
+              "reason": "songkai111回复并创建PR但issue无assignee指派，无标签分类流程"
+            }
+          ],
+          "root_cause": "缺乏标准化分流流程和自动化标签/指派机制，依赖人工informally接手",
+          "actions": [
+            {
+              "owner": "社区维护者",
+              "trigger": "Issue创建时",
+              "action": "配置Bot自动添加类型标签并通知领域负责人",
+              "target_metric": "label_rate提升至90%+，assignee_rate提升至80%+"
+            },
+            {
+              "owner": "社区维护者",
+              "trigger": "Issue创建后24小时内",
+              "action": "建立分流SLA，要求24小时内完成正式标签和指派",
+              "target_metric": "Triage阶段平均分提升至70+"
+            }
+          ]
+        },
+        {
+          "id": "PP-02",
+          "priority": "P0",
+          "dimension": "讨论推进",
+          "title": "Issue讨论深度严重不足，技术交流几乎缺失",
+          "phenomenon": "80%的Issue在讨论阶段为痛点，平均分仅39.9，avg_comments仅1.0。多数Issue仅有一条确认评论，无技术分析或方案讨论，解决方案直接在MR中给出。",
+          "impact": "后来者无法从Issue了解排查过程和决策依据，社区知识沉淀在MR而非Issue中。",
+          "metric_evidence": [
+            "Discussion阶段痛点比例80%（4/5）",
+            "avg_comments仅1.0",
+            "Discussion平均分39.9，客观均分37.5"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "221",
+              "title": "cann-samples Development Roadmap (2026 Q3)",
+              "url": "https://gitcode.com/cann/cann-samples/issues/221",
+              "reason": "评论数为0，完全无讨论互动，路线图Issue未收集社区反馈"
+            },
+            {
+              "issue_number": "220",
+              "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+              "url": "https://gitcode.com/cann/cann-samples/issues/220",
+              "reason": "仅一条维护者确认评论，未进入任何技术讨论或方案分析，讨论深度评分20"
+            }
+          ],
+          "root_cause": "处理者倾向直接创建MR修复而非在Issue内进行技术讨论，缺乏讨论引导规范",
+          "actions": [
+            {
+              "owner": "Issue处理者",
+              "trigger": "接手Issue后",
+              "action": "在Issue评论区记录根因分析和方案选择理由，再创建MR",
+              "target_metric": "avg_comments提升至2.0+，Discussion平均分提升至60+"
+            },
+            {
+              "owner": "社区维护者",
+              "trigger": "Roadmap类Issue创建后",
+              "action": "主动在评论区发起讨论引导社区反馈",
+              "target_metric": "开放Issue评论数从0提升至3+"
+            }
+          ]
+        },
+        {
+          "id": "PP-03",
+          "priority": "P1",
+          "dimension": "关闭沉淀",
+          "title": "关闭原因标注不准确，知识沉淀缺失",
+          "phenomenon": "80%的Issue在关闭阶段为痛点，平均分38.1。已关闭Issue的close_reason标注为'进行中'而非resolved，与实际修复状态矛盾，Issue评论区无总结性结论。",
+          "impact": "Issue状态元数据失真，无法通过close_reason筛选已解决问题，后来者需跳转MR才能了解方案。",
+          "metric_evidence": [
+            "Closure阶段痛点比例80%（4/5）",
+            "Closure客观均分仅25.6",
+            "已关闭Issue #218和#222的close_reason标注为'进行中'"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "218",
+              "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+              "url": "https://gitcode.com/cann/cann-samples/issues/218",
+              "reason": "MR已合并且标记resolved，但close_reason标记为'进行中'与实际状态矛盾，关闭质量评分72"
+            },
+            {
+              "issue_number": "222",
+              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+              "url": "https://gitcode.com/cann/cann-samples/issues/222",
+              "reason": "MR已合并且编译验证通过，但close_reason标注'进行中'不准确，评论区无总结性结论"
+            }
+          ],
+          "root_cause": "Bot关闭时close_reason配置与实际状态不匹配，且关闭流程缺乏总结要求",
+          "actions": [
+            {
+              "owner": "Bot配置维护者",
+              "trigger": "MR合并触发Issue关闭时",
+              "action": "修正Bot close_reason配置，确保标注为resolved或fixed",
+              "target_metric": "close_reason准确率提升至100%"
+            },
+            {
+              "owner": "Issue处理者",
+              "trigger": "关闭Issue前",
+              "action": "在评论区添加总结性结论说明根因和修复方案",
+              "target_metric": "Closure知识保留评分提升至70+"
+            }
+          ]
+        },
+        {
+          "id": "PP-04",
+          "priority": "P1",
+          "dimension": "Bot治理",
+          "title": "非Bug类Issue Bot缺位，关闭原因配置不当",
+          "phenomenon": "40%的Issue存在Bot缺位（#220和#221），无自动标签或响应。40%的Issue存在Bot关闭原因配置不当（#219和#218），close_reason标注与实际状态矛盾。",
+          "impact": "Feature Request和Roadmap类Issue缺乏自动化支持，分流和跟进依赖人工；已关闭Issue状态元数据失真。",
+          "metric_evidence": [
+            "bot_absence_rate为40%（2/5）",
+            "bot_misclose_rate为40%（2/5）",
+            "Bot/Agent治理平均分64.3"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "220",
+              "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+              "url": "https://gitcode.com/cann/cann-samples/issues/220",
+              "reason": "Bot缺位，无自动标签或响应，Feature Request类Issue缺乏自动化分流支持"
+            },
+            {
+              "issue_number": "218",
+              "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+              "url": "https://gitcode.com/cann/cann-samples/issues/218",
+              "reason": "Bot在MR合并后关闭时机正确，但close_reason配置为'进行中'与实际已修复状态矛盾"
+            }
+          ],
+          "root_cause": "Bot仅配置了MR合并后关闭动作，未覆盖标签自动添加、分流辅助和close_reason正确映射",
+          "actions": [
+            {
+              "owner": "Bot配置维护者",
+              "trigger": "Issue创建时",
+              "action": "扩展Bot覆盖范围，为非Bug类Issue添加自动标签和响应",
+              "target_metric": "bot_absence_rate降低至10%以下"
+            },
+            {
+              "owner": "Bot配置维护者",
+              "trigger": "MR合并关闭Issue时",
+              "action": "修正close_reason映射配置确保标注为resolved",
+              "target_metric": "bot_misclose_rate降低至0%"
+            }
+          ]
+        },
+        {
+          "id": "PP-05",
+          "priority": "P1",
+          "dimension": "响应效率",
+          "title": "响应速度极不均匀，部分Issue长时间无响应",
+          "phenomenon": "首次响应时间从0.36小时到120.4小时不等，差距超300倍。20%的Issue完全无响应（#221），avg_first_response达41.5小时。",
+          "impact": "高价值Feature Request和Roadmap Issue被忽视，社区贡献者积极性受挫。",
+          "metric_evidence": [
+            "avg_first_response_hours 41.5，median 22.7",
+            "no_response_rate 20%（1/5）",
+            "Issue #222首次响应延迟120.4小时（约5天）"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "221",
+              "title": "cann-samples Development Roadmap (2026 Q3)",
+              "url": "https://gitcode.com/cann/cann-samples/issues/221",
+              "reason": "创建于2026-07-10，至今0条评论无任何响应，first_response_hours为null"
+            },
+            {
+              "issue_number": "222",
+              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+              "url": "https://gitcode.com/cann/cann-samples/issues/222",
+              "reason": "首次响应延迟120.4小时约5天，虽后续有MR修复但响应本身未实质推动分析"
+            }
+          ],
+          "root_cause": "缺乏响应SLA和自动提醒机制，高优先级Issue未被识别和优先处理",
+          "actions": [
+            {
+              "owner": "社区维护者",
+              "trigger": "Issue创建后24小时未响应",
+              "action": "配置Bot自动提醒assignee或领域负责人",
+              "target_metric": "no_response_rate降低至0%，avg_first_response降低至12小时以内"
+            },
+            {
+              "owner": "社区维护者",
+              "trigger": "Roadmap或Feature类Issue创建时",
+              "action": "自动标记为高优先级并通知维护者团队",
+              "target_metric": "高价值Issue 24小时内响应率100%"
+            }
+          ]
+        }
+      ],
+      "community_summary": {
+        "top_pain_points": [
+          "Triage流程全面缺失，Issue缺乏正式标签与指派",
+          "Issue讨论深度严重不足，技术交流几乎缺失",
+          "关闭原因标注不准确，知识沉淀缺失",
+          "非Bug类Issue Bot缺位，关闭原因配置不当",
+          "响应速度极不均匀，部分Issue长时间无响应"
+        ],
+        "structural_issues": [
+          "Issue处理依赖个人informally接手而非标准分流流程，责任边界模糊",
+          "解决方案沉淀在MR描述中而非Issue讨论区，Issue失去知识载体功能",
+          "开放Issue（#220 Feature Request、#221 Roadmap）缺乏定期review和推进机制"
+        ],
+        "automation_issues": [
+          "Bot仅覆盖MR合并后关闭，未覆盖标签自动添加、分流辅助和首次响应提醒",
+          "Bot close_reason配置与实际状态不匹配，导致状态元数据失真",
+          "非Bug类Issue完全无Bot参与，自动化治理覆盖面不足"
+        ],
+        "data_uncertainty": [
+          "由于GitCode API限制，linked_pr_rate数据不可用，无法评估PR关联完整度",
+          "has_maintainer_response_rate=0为数据缺失而非真实信号，无法判断维护者参与度",
+          "样本量仅5个Issue，统计结论的代表性有限"
+        ],
+        "priority_recommendations": [
+          "建立标准化Triage流程：配置Bot自动添加类型标签、通知领域负责人、24小时内完成正式指派",
+          "制定Issue讨论规范：要求处理者在Issue评论区记录根因分析和方案选择理由再创建MR",
+          "修正Bot close_reason映射配置：确保MR合并关闭时标注为resolved，并在关闭前要求添加总结性评论"
+        ]
+      }
+    },
+    "scored_issues": [
+      {
+        "issue_number": "222",
+        "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+        "body": "\n\nThanks for sending an issue! Please fill in the following template to help quickly solve your problem.\n\n\n\n####  一、问题描述 （必填）\n<!-- 可粘贴错误日志或描述截图 -->\n用7月8日最新的社区toolkit包编包失败，有头文件找不到\n报错![image.png](https://raw.gitcode.com/user-images/assets/8788227/555a28d4-dbea-493e-8ec1-23a2175794dd/image.png 'image.png')\n\n####  二、环境信息 （可选）\n<!--\n• 昇腾硬件型号：Ascend950\n• CANN版本:7月8日社区包\n• 操作系统：x86_64\n• 其他相关软件版本：\n -->\n\n####  三、重现步骤 （可选）\n<!-- 提供尽可能多的信息描述如何重现该缺陷 -->\nwget -c https://ascend.devcloud.huaweicloud.com/artifactory/cann-run-mirror/software/legacy/20260708000326093/Ascend-cann-toolkit_9.1.0~weekly.20260708.01_linux-x86_64.run --no-check-certificate\n\nbash Ascend-cann-toolkit_9.1.0~weekly.20260708.01_linux-x86_64.run --install --install-path=/usr/local/Ascend\n\n根据主页提示编译用例报错\n####  四、预期结果 （可选）\n<!-- 描述预期的行为应该是什么样子的 -->\n编译成功\n\n💡 备注（选填）\n\n",
+        "state": "closed",
+        "labels": [
+          "bug-report"
+        ],
+        "created_at": "2026-07-10T07:34:27Z",
+        "closed_at": "2026-07-17T06:52:41Z",
+        "author": "huangkejie1647",
+        "comments_data": [
+          {
+            "author": "songkai111",
+            "author_association": "",
+            "created_at": "2026-07-15T08:00:16Z",
+            "body": "你好，我们将尽快安排同事分析"
+          }
+        ],
+        "events_data": [
+          {
+            "id": 180486071,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue222",
+            "created_at": "2026-07-17T14:52:41+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-17T14:52:41+08:00",
+            "issue_id": "4156549",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 180301379,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "Create issue mr links: **fix(fia): remove internal kernel_event.h include to fix compilation on toolkit 9.0+** #336",
+            "created_at": "2026-07-16T14:42:54+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-16T14:42:54+08:00",
+            "title": "fix(fia): 移除内部头文件 kernel_event.h 引用，修复 toolkit 9.0+ 编译兼容性",
+            "body": "## 描述\ntoolkit 9.0+ 中 `kernel_event.h` 已改为内部头文件，无法被用户代码直接引用，导致 `full_quant_fused_infer_attention_score_story` 示例编译失败。该头文件被移除后，文件中使用的 `CrossCoreWaitFlag`/`CrossCoreSetFlag` 等 API 已由 `kernel_common.h` 和 `kernel_tpipe.h` 等标准头文件提供，不影响功能。\n\n### 改动方法\n- 移除 `buffer.h` 中对 `kernel_event.h` 的 `#include` 引用（1 行）\n\n### 涉及文件\n- `Samples/2_Performance/full_quant_fused_infer_attention_score_story/include/memcopy/buffer.h`\n\n## 关联的Issue\n<!-- 无 -->\n\n## 测试\n- [x] 编译验证通过（toolkit 9.0+）\n\n## 文档更新\n<!-- 无需更新文档 -->\n\n## 类型标签\n- [x] Bug修复\n- [ ] 新特性\n- [ ] 性能优化\n- [ ] 文档更新\n- [ ] 其他，请描述：",
+            "head": {
+              "ref": "master",
+              "sha": "029cb4c2ee295694cd9b74ee6e3aa8efc7c7c0b6",
+              "repo": {
+                "path": "cann-samples_6772",
+                "name": "cann-samples_6772",
+                "full_name": "songkai111/cann-samples_6772"
+              },
+              "assigner": {
+                "login": "songkai111",
+                "name": "songkai111"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "616786279932e4809208a776e285ab07251f5fd0",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4156549",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179469252,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/dc/da/d7c565d6af8aac97c1bb3fc56c2b8e72c54ddb9684882e05d6bf79f8153240e0.jpg",
+              "html_url": "https://gitcode.com/huangkejie1647",
+              "id": "665856e4b5984e78df81a5ea",
+              "login": "huangkejie1647",
+              "name": "link164735"
+            },
+            "content": "add label bug-report",
+            "created_at": "2026-07-10T15:34:28+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-10T15:34:28+08:00",
+            "issue_id": "4156549",
+            "event": "labeled",
+            "actor": {
+              "login": "huangkejie1647",
+              "id": "665856e4b5984e78df81a5ea",
+              "name": "link164735",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 180486071,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue222",
+            "created_at": "2026-07-17T14:52:41+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-17T14:52:41+08:00",
+            "issue_id": "4156549",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 180301379,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "Create issue mr links: **fix(fia): remove internal kernel_event.h include to fix compilation on toolkit 9.0+** #336",
+            "created_at": "2026-07-16T14:42:54+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-16T14:42:54+08:00",
+            "title": "fix(fia): 移除内部头文件 kernel_event.h 引用，修复 toolkit 9.0+ 编译兼容性",
+            "body": "## 描述\ntoolkit 9.0+ 中 `kernel_event.h` 已改为内部头文件，无法被用户代码直接引用，导致 `full_quant_fused_infer_attention_score_story` 示例编译失败。该头文件被移除后，文件中使用的 `CrossCoreWaitFlag`/`CrossCoreSetFlag` 等 API 已由 `kernel_common.h` 和 `kernel_tpipe.h` 等标准头文件提供，不影响功能。\n\n### 改动方法\n- 移除 `buffer.h` 中对 `kernel_event.h` 的 `#include` 引用（1 行）\n\n### 涉及文件\n- `Samples/2_Performance/full_quant_fused_infer_attention_score_story/include/memcopy/buffer.h`\n\n## 关联的Issue\n<!-- 无 -->\n\n## 测试\n- [x] 编译验证通过（toolkit 9.0+）\n\n## 文档更新\n<!-- 无需更新文档 -->\n\n## 类型标签\n- [x] Bug修复\n- [ ] 新特性\n- [ ] 性能优化\n- [ ] 文档更新\n- [ ] 其他，请描述：",
+            "head": {
+              "ref": "master",
+              "sha": "029cb4c2ee295694cd9b74ee6e3aa8efc7c7c0b6",
+              "repo": {
+                "path": "cann-samples_6772",
+                "name": "cann-samples_6772",
+                "full_name": "songkai111/cann-samples_6772"
+              },
+              "assigner": {
+                "login": "songkai111",
+                "name": "songkai111"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "616786279932e4809208a776e285ab07251f5fd0",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4156549",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179469252,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/dc/da/d7c565d6af8aac97c1bb3fc56c2b8e72c54ddb9684882e05d6bf79f8153240e0.jpg",
+              "html_url": "https://gitcode.com/huangkejie1647",
+              "id": "665856e4b5984e78df81a5ea",
+              "login": "huangkejie1647",
+              "name": "link164735"
+            },
+            "content": "add label bug-report",
+            "created_at": "2026-07-10T15:34:28+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-10T15:34:28+08:00",
+            "issue_id": "4156549",
+            "event": "labeled",
+            "actor": {
+              "login": "huangkejie1647",
+              "id": "665856e4b5984e78df81a5ea",
+              "name": "link164735",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [
+          {
+            "type": "pr",
+            "url": "https://gitcode.com/cann/cann-samples/merge_requests/336",
+            "state": "merged",
+            "number": 336,
+            "created_at": "2026-07-16T14:42:53.124+08:00",
+            "merged_at": "2026-07-17T14:52:41.095+08:00",
+            "match_source": null,
+            "confidence": null
+          }
+        ],
+        "close_reason": "进行中",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/222",
+        "features": {
+          "has_body": true,
+          "body_length": 822,
+          "has_repro": true,
+          "has_env": true,
+          "has_expected": true,
+          "has_logs": true,
+          "has_sections": true,
+          "first_response_hours": 120.43027777777777,
+          "first_responder": "songkai111",
+          "comment_count": 1,
+          "maintainer_comment_count": 0,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": false,
+          "has_code_in_comments": false,
+          "has_resolution_kw": false,
+          "days_since_last_activity": 2,
+          "has_labels": true,
+          "label_count": 1,
+          "has_assignee": false,
+          "has_milestone": false,
+          "has_linked_pr": true,
+          "linked_artifact_types": [
+            "pr"
+          ],
+          "has_commit_ref": false,
+          "has_doc_link": false,
+          "has_release_ref": true,
+          "is_closed": true,
+          "resolution_hours": 167.30388888888888,
+          "has_close_comment": true,
+          "close_comment_length": 14,
+          "close_reason": "进行中",
+          "reopened_count": 0,
+          "is_self_closed": false,
+          "self_close_data_available": true,
+          "closure_disposition": "fix",
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": true,
+          "bot_labeled": false,
+          "bot_misclose_signal": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": false,
+          "is_task_type": true,
+          "has_internal_design": false,
+          "mentions_ai": false,
+          "long_body_no_logs": false,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": false,
+          "req_fields_present": 5,
+          "imp_fields_present": 3,
+          "opt_fields_present": 3,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4
+        },
+        "metric_scores": {
+          "obj-input-quality": 100.0,
+          "obj-response-speed": 40.0,
+          "obj-triage-quality": 30.0,
+          "obj-discussion-quality": 15.0,
+          "obj-decision-transparency": 75.0,
+          "obj-solution-evidence": 15.384615384615385,
+          "obj-verification": 22.22222222222222,
+          "obj-closure-reuse": 0.0,
+          "obj-lightweight-actor": 25.0,
+          "obj-bot-governance": 0.0,
+          "obj-bot-misclose-risk": 0.0,
+          "obj-agent-noise-risk": 0.0,
+          "obj-data-completeness": 90.0,
+          "obj-agent-noise-reverse": 100.0,
+          "obj-bot-misclose-reverse": 100.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 100.0,
+            "subjective_score": 0.0,
+            "score": 70.0,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 25.5,
+            "subjective_score": 0.0,
+            "score": 16.6,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 35.8,
+            "subjective_score": 0.0,
+            "score": 23.2,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 33.4,
+            "subjective_score": 0.0,
+            "score": 20.1,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 22.6,
+            "subjective_score": 0.0,
+            "score": 13.6,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 52.5,
+            "subjective_score": 0.0,
+            "score": 36.8,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 100.0,
+            "subjective_score": 85.0,
+            "score": 95.5,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 25.5,
+            "subjective_score": 50.1,
+            "score": 34.1,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 35.8,
+            "subjective_score": 41.6,
+            "score": 37.8,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 33.4,
+            "subjective_score": 78.4,
+            "score": 51.4,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 22.6,
+            "subjective_score": 63.2,
+            "score": 38.9,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 52.5,
+            "subjective_score": 76.7,
+            "score": 59.7,
+            "is_pain_point": true
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": false,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": false,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "无明显bot/agent治理风险"
+        },
+        "actor": {
+          "issue_author_type": "unknown",
+          "has_human_response": true,
+          "has_maintainer_response": false,
+          "has_traceable_artifact": true,
+          "linked_artifact_types": [
+            "pr",
+            "release"
+          ],
+          "closer_type": "bot",
+          "automation_only_flow": false,
+          "lightweight_actor_summary": "社区成员已响应，无维护者；处理产物：pr/release"
+        },
+        "subjective_metric_scores": {
+          "sub-creation-clarity": {
+            "score": 85.0,
+            "reason": "标题明确指出编包失败，正文含截图、重现步骤和环境信息，核心诉求清晰。"
+          },
+          "sub-creation-context-sufficiency": {
+            "score": 85.0,
+            "reason": "提供了硬件型号、CANN版本、操作系统、完整重现命令和报错截图，上下文充足。"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 55.0,
+            "reason": "仅有作者自加的bug-report标签，无维护者分流或重定向动作，路由证据不足。"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 50.0,
+            "reason": "songkai111回复将安排同事分析并后续创建MR，但无正式assignee，责任归属不够明确。"
+          },
+          "sub-triage-response-effectiveness": {
+            "score": 45.0,
+            "reason": "首次回复仅泛泛表态且延迟5天，虽后续有MR修复，但响应本身未实质推动分析。"
+          },
+          "sub-discussion-depth": {
+            "score": 30.0,
+            "reason": "issue内仅一条表态评论，无技术分析交互；MR描述有技术细节但不在讨论区。"
+          },
+          "sub-discussion-focus": {
+            "score": 50.0,
+            "reason": "仅有的评论未跑题，但讨论内容极少，无法充分评估聚焦度。"
+          },
+          "sub-discussion-progression": {
+            "score": 45.0,
+            "reason": "从表态回复到创建MR有推进，但issue讨论区本身未形成排查方向或下一步动作。"
+          },
+          "sub-resolution-solution-clarity": {
+            "score": 85.0,
+            "reason": "MR#336清楚说明根因是kernel_event.h转为内部头文件，修复方法为移除该引用。"
+          },
+          "sub-resolution-resolution-confidence": {
+            "score": 80.0,
+            "reason": "MR已合并且描述编译验证通过，bot因MR合并关闭，解决可信度较高。"
+          },
+          "sub-resolution-decision-rationale": {
+            "score": 70.0,
+            "reason": "MR描述解释了修复理由，但issue关闭原由标注为'进行中'不够准确。"
+          },
+          "sub-closure-close-quality": {
+            "score": 55.0,
+            "reason": "bot因MR合并关闭时机正确，但关闭原因标注'进行中'与实际已修复矛盾，质量一般。"
+          },
+          "sub-closure-knowledge-retention": {
+            "score": 50.0,
+            "reason": "MR描述有技术说明，但issue评论区无总结性结论，后来者需跳转MR才能了解。"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 85.0,
+            "reason": "MR已合并且通过编译验证，关闭有实质修复支撑，不存在过早关闭风险。"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 75.0,
+            "reason": "bot在MR合并后自动关闭issue，正确执行流程闭环，对处理流程有正向帮助。"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 80.0,
+            "reason": "bot关闭动作时机准确（MR合并后），动作合规，未误关或错误阻断。"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 75.0,
+            "reason": "bot关闭前songkai111已完成MR创建与合并，人工处理到位，bot仅执行收尾闭环。"
+          }
+        }
+      },
+      {
+        "issue_number": "221",
+        "title": "cann-samples Development Roadmap (2026 Q3)",
+        "body": "[Roadmap] cann-samples 2026Q3 roadmap\n---\n\n2026年Q3 roadmap 持续更新中！\n\n本季度，cann-samples 仓将围绕高性能样例、访存优化、片上互联与性能分析工具链持续演进，进一步补齐 CV 融合通路、离散小数据访问、UB 互联、CCU 集合通信、NDDMA、MC2、AIV 数据格式转换等典型实践样例，并完善 PMU/计数器字典与 profiling/msprof 工作流，帮助开发者更高效地开展昇腾算子开发、性能分析与系统级优化。\n\n对 roadmap 有任何意见和建议，欢迎在评论区或 SIG 例会上交流反馈。后续我们也会逐步标注需要社区贡献的特性和样例，欢迎开发者共同参与建设。\n\n---\n\n# Focus\n融合通路建设：补齐 CV 场景融合通路样例，沉淀端到端算子融合实践参考\n访存优化建设：完善离散小数据访问、NDDMA 数据访问等典型优化样例\n片上互联与通信建设：补齐 UB 互联、CCU 集合通信、MC2 等通信与协同计算样例\n\n---\n\n# [Features]\n• CV融合通路样例\nGoal: 补齐 CV 场景下融合通路的端到端样例，沉淀从数据流设计、算子编排到性能验证的实践路径\nOwner:  [@songkai111](https://gitcode.com/songkai111)\n\n• UB互联样例\nGoal: 提供 UB 互联能力的参考样例，帮助开发者理解片上数据交互方式与适用场景\nOwner:  [@wang-minbo](https://gitcode.com/wang-minbo)\n\n• CCU集合通信样例\nGoal: 补齐 CCU 集合通信相关样例，支撑多核协同与通信优化场景的实践参考\nOwner:  [@wang-minbo](https://gitcode.com/wang-minbo)\n\n• MC2样例\nGoal: 建设 MC2 相关开发样例，帮助开发者理解通信计算融合场景下的实现方式与优化路径\nOwner: [@wang-minbo](https://gitcode.com/wang-minbo)\n\n---\n\n# [Performance]\n• 离散小数据访问优化样例\nGoal: 沉淀离散小数据访问场景下的数据组织、访存合并与指令选择优化方法，提升典型不连续访存场景性能\nOwner: [@songkai111](https://gitcode.com/songkai111)\n\n• NDDMA数据访问优化样例\nGoal: 提供 NDDMA 数据访问优化样例，帮助开发者掌握高效数据搬运、地址组织与流水并行优化方法\nOwner: [@songkai111](https://gitcode.com/songkai111)\n\n• AIV上cast+ND2NZ的实践样例\nGoal: 补齐 AIV 上 cast 与 ND2NZ 组合转换的实践样例，沉淀数据类型转换与格式转换融合优化经验\nOwner: [@shi-rui](https://gitcode.com/shi-rui)\n\n",
+        "state": "open",
+        "labels": [],
+        "created_at": "2026-07-10T01:10:59Z",
+        "closed_at": null,
+        "author": "yangyang016",
+        "comments_data": [],
+        "events_data": [
+          {
+            "id": 179415322,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T11:36:07+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T11:36:07+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179415266,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T11:35:57+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T11:35:57+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179405313,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T11:08:27+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T11:08:27+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179403753,
+            "user": {
+              "avatar_url": "",
+              "html_url": "https://gitcode.com/zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "login": "zhangzijie",
+              "name": "zhangzijie"
+            },
+            "content": "assigned to @yangyang016",
+            "created_at": "2026-07-10T11:03:41+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-10T11:03:41+08:00",
+            "issue_id": "4155414",
+            "event": "assigned",
+            "actor": {
+              "login": "zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "name": "zhangzijie",
+              "type": null
+            }
+          },
+          {
+            "id": 179403528,
+            "user": {
+              "avatar_url": "",
+              "html_url": "https://gitcode.com/zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "login": "zhangzijie",
+              "name": "zhangzijie"
+            },
+            "content": "pinned the issue",
+            "created_at": "2026-07-10T11:03:03+08:00",
+            "action_type": "pin_issue",
+            "update_at": "2026-07-10T11:03:03+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "name": "zhangzijie",
+              "type": null
+            }
+          },
+          {
+            "id": 179394737,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:35:06+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:35:06+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          },
+          {
+            "id": 179393775,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:32:35+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:32:35+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179393563,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:31:56+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:31:56+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179390873,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:22:43+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:22:43+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          },
+          {
+            "id": 179369293,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T09:15:14+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T09:15:14+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 179415322,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T11:36:07+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T11:36:07+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179415266,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T11:35:57+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T11:35:57+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179405313,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T11:08:27+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T11:08:27+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179403753,
+            "user": {
+              "avatar_url": "",
+              "html_url": "https://gitcode.com/zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "login": "zhangzijie",
+              "name": "zhangzijie"
+            },
+            "content": "assigned to @yangyang016",
+            "created_at": "2026-07-10T11:03:41+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-10T11:03:41+08:00",
+            "issue_id": "4155414",
+            "event": "assigned",
+            "actor": {
+              "login": "zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "name": "zhangzijie",
+              "type": null
+            }
+          },
+          {
+            "id": 179403528,
+            "user": {
+              "avatar_url": "",
+              "html_url": "https://gitcode.com/zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "login": "zhangzijie",
+              "name": "zhangzijie"
+            },
+            "content": "pinned the issue",
+            "created_at": "2026-07-10T11:03:03+08:00",
+            "action_type": "pin_issue",
+            "update_at": "2026-07-10T11:03:03+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "zhangzijie",
+              "id": "682accc0a6508e17e040cd22",
+              "name": "zhangzijie",
+              "type": null
+            }
+          },
+          {
+            "id": 179394737,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:35:06+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:35:06+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          },
+          {
+            "id": 179393775,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:32:35+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:32:35+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179393563,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:31:56+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:31:56+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          },
+          {
+            "id": 179390873,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T10:22:43+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T10:22:43+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          },
+          {
+            "id": 179369293,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "changed the description",
+            "created_at": "2026-07-10T09:15:14+08:00",
+            "action_type": "description",
+            "update_at": "2026-07-10T09:15:14+08:00",
+            "issue_id": "4155414",
+            "event": "operate_log",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [],
+        "close_reason": "进行中",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/221",
+        "features": {
+          "has_body": true,
+          "body_length": 1301,
+          "has_repro": false,
+          "has_env": true,
+          "has_expected": false,
+          "has_logs": false,
+          "has_sections": false,
+          "first_response_hours": null,
+          "first_responder": null,
+          "comment_count": 0,
+          "maintainer_comment_count": 0,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": false,
+          "has_code_in_comments": false,
+          "has_resolution_kw": false,
+          "days_since_last_activity": 7,
+          "has_labels": false,
+          "label_count": 0,
+          "has_assignee": true,
+          "has_milestone": false,
+          "has_linked_pr": false,
+          "linked_artifact_types": [],
+          "has_commit_ref": false,
+          "has_doc_link": false,
+          "has_release_ref": false,
+          "is_closed": false,
+          "resolution_hours": null,
+          "has_close_comment": false,
+          "close_comment_length": 0,
+          "close_reason": "进行中",
+          "reopened_count": 0,
+          "is_self_closed": false,
+          "self_close_data_available": false,
+          "closure_disposition": "open",
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": false,
+          "bot_labeled": false,
+          "bot_misclose_signal": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": true,
+          "is_task_type": true,
+          "has_internal_design": false,
+          "mentions_ai": false,
+          "long_body_no_logs": true,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": false,
+          "req_fields_present": 5,
+          "imp_fields_present": 1,
+          "opt_fields_present": 2,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4
+        },
+        "metric_scores": {
+          "obj-input-quality": 35.0,
+          "obj-response-speed": 0.0,
+          "obj-triage-quality": 30.0,
+          "obj-discussion-quality": 15.0,
+          "obj-decision-transparency": 30.0,
+          "obj-solution-evidence": 0.0,
+          "obj-verification": 22.22222222222222,
+          "obj-closure-reuse": 0.0,
+          "obj-lightweight-actor": 10.0,
+          "obj-bot-governance": 60.0,
+          "obj-bot-misclose-risk": 0.0,
+          "obj-agent-noise-risk": 20.0,
+          "obj-data-completeness": 72.5,
+          "obj-agent-noise-reverse": 80.0,
+          "obj-bot-misclose-reverse": 100.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 46.2,
+            "subjective_score": 0.0,
+            "score": 32.4,
+            "is_pain_point": true
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 28.5,
+            "subjective_score": 0.0,
+            "score": 18.5,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 16.8,
+            "subjective_score": 0.0,
+            "score": 10.9,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 14.6,
+            "subjective_score": 0.0,
+            "score": 8.7,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 7.5,
+            "subjective_score": 0.0,
+            "score": 4.5,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 71.0,
+            "subjective_score": 0.0,
+            "score": 49.7,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 46.2,
+            "subjective_score": 87.5,
+            "score": 58.6,
+            "is_pain_point": true
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 28.5,
+            "subjective_score": 70.0,
+            "score": 43.0,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 16.8,
+            "subjective_score": 18.3,
+            "score": 17.3,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 14.6,
+            "subjective_score": 23.4,
+            "score": 18.1,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 7.5,
+            "subjective_score": 39.7,
+            "score": 20.4,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 71.0,
+            "subjective_score": 50.0,
+            "score": 64.7,
+            "is_pain_point": false
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": true,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": false,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "bot缺位（无标签或无响应）"
+        },
+        "actor": {
+          "issue_author_type": "unknown",
+          "has_human_response": false,
+          "has_maintainer_response": false,
+          "has_traceable_artifact": false,
+          "linked_artifact_types": [],
+          "closer_type": "unknown",
+          "automation_only_flow": false,
+          "lightweight_actor_summary": "无人响应；无可追踪处理产物"
+        },
+        "subjective_metric_scores": {
+          "sub-creation-clarity": {
+            "score": 90.0,
+            "reason": "路线图结构清晰，功能、目标和负责人均明确列出，读者可快速理解。"
+          },
+          "sub-creation-context-sufficiency": {
+            "score": 85.0,
+            "reason": "提供了充分的背景、重点领域和各特性负责人，上下文支撑良好。"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 70.0,
+            "reason": "被置顶并分配，对路线图issue属正确处理路径，但无标签分类。"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 85.0,
+            "reason": "有明确assignee且每个特性均标注负责人，责任归属清晰。"
+          },
+          "sub-triage-response-effectiveness": {
+            "score": 55.0,
+            "reason": "被置顶和分配表明已进入处理，但无评论响应，推动力有限。"
+          },
+          "sub-discussion-depth": {
+            "score": 15.0,
+            "reason": "无任何评论，未进入实质技术讨论，深度不足。"
+          },
+          "sub-discussion-focus": {
+            "score": 20.0,
+            "reason": "无讨论发生，但issue本身内容聚焦，未跑题。"
+          },
+          "sub-discussion-progression": {
+            "score": 20.0,
+            "reason": "仅有描述编辑更新，无评论讨论形成下一步动作或结论。"
+          },
+          "sub-resolution-solution-clarity": {
+            "score": 25.0,
+            "reason": "路线图仍在进行中，尚未给出具体解决方案或可执行结论。"
+          },
+          "sub-resolution-resolution-confidence": {
+            "score": 15.0,
+            "reason": "issue仍open且无解决证据，无法确认任何问题已被解决。"
+          },
+          "sub-resolution-decision-rationale": {
+            "score": 30.0,
+            "reason": "路线图说明了方向和目标，但无处理决策背后的理由解释。"
+          },
+          "sub-closure-close-quality": {
+            "score": 10.0,
+            "reason": "issue未关闭，无关闭动作质量可评价。"
+          },
+          "sub-closure-knowledge-retention": {
+            "score": 25.0,
+            "reason": "路线图本身有参考价值，但未关闭沉淀，无总结性产出。"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 85.0,
+            "reason": "正确保持开放状态，无过早关闭迹象，符合进行中定位。"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 50.0,
+            "reason": "无bot介入记录，信息不足，给中性保守分。"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 50.0,
+            "reason": "无bot介入记录，信息不足，给中性保守分。"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 50.0,
+            "reason": "无bot介入，但有人工置顶和分配，信息不足给中性分。"
+          }
+        }
+      },
+      {
+        "issue_number": "220",
+        "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+        "body": "看了 #216 说的 MC2 样例需求，很赞同。实际做 LLM 并行推理时 Matmul + AllReduce 融合（MC2）是必须的，分开做的话 intermediate buffer 要多占 2x 显存。\n\n我补充一下具体的技术路线参考：\n\nCANN 上实现 MC2 有两种主流方式：\n1. **通信算子级融合**：matmul 算到一半时就把 partial sum 通过 HCCL 发出去，其他 rank 边收边算。这种方案对 910B 的 HCCL 带宽利用率最高，因为计算和通信可以流水。\n2. **算子外融合**：把 matmul 的 output 暂存到 L1 buffer，直接喂给 allreduce 的 reduce-scatter 阶段，省掉 global memory 的读写。\n\n建议样例覆盖：\n- 单机 8卡 + TP 场景\n- 用 Matmul + AllReduce（尽量是 half 入参，减少通信量）\n- 跟分开实现做性能对比（profiling 截图）\n\n如果已经有 MC2 的 reference 但没公开的话，希望可以放出来。社区开发者在 #216 也在问这个。\n",
+        "state": "open",
+        "labels": [],
+        "created_at": "2026-07-08T13:42:42Z",
+        "closed_at": null,
+        "author": "jiangzeyu-2026",
+        "comments_data": [
+          {
+            "author": "songkai111",
+            "author_association": "",
+            "created_at": "2026-07-09T06:42:21Z",
+            "body": "感谢您的建议，我们将指定mc2领域的committer来关注该建议"
+          }
+        ],
+        "events_data": [
+          {
+            "id": 179239051,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "assigned to @wang-minbo",
+            "created_at": "2026-07-09T14:42:30+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-09T14:42:30+08:00",
+            "issue_id": "4152180",
+            "event": "assigned",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 179239051,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "assigned to @wang-minbo",
+            "created_at": "2026-07-09T14:42:30+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-09T14:42:30+08:00",
+            "issue_id": "4152180",
+            "event": "assigned",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [],
+        "close_reason": "进行中",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/220",
+        "features": {
+          "has_body": true,
+          "body_length": 505,
+          "has_repro": false,
+          "has_env": false,
+          "has_expected": true,
+          "has_logs": false,
+          "has_sections": false,
+          "first_response_hours": 16.99416666666667,
+          "first_responder": "songkai111",
+          "comment_count": 1,
+          "maintainer_comment_count": 0,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": false,
+          "has_code_in_comments": false,
+          "has_resolution_kw": false,
+          "days_since_last_activity": 8,
+          "has_labels": false,
+          "label_count": 0,
+          "has_assignee": true,
+          "has_milestone": false,
+          "has_linked_pr": false,
+          "linked_artifact_types": [],
+          "has_commit_ref": true,
+          "has_doc_link": false,
+          "has_release_ref": false,
+          "is_closed": false,
+          "resolution_hours": null,
+          "has_close_comment": false,
+          "close_comment_length": 0,
+          "close_reason": "进行中",
+          "reopened_count": 0,
+          "is_self_closed": false,
+          "self_close_data_available": false,
+          "closure_disposition": "open",
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": false,
+          "bot_labeled": false,
+          "bot_misclose_signal": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": false,
+          "is_task_type": true,
+          "has_internal_design": false,
+          "mentions_ai": false,
+          "long_body_no_logs": true,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": true,
+          "req_fields_present": 5,
+          "imp_fields_present": 2,
+          "opt_fields_present": 2,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4
+        },
+        "metric_scores": {
+          "obj-input-quality": 35.0,
+          "obj-response-speed": 80.0,
+          "obj-triage-quality": 30.0,
+          "obj-discussion-quality": 15.0,
+          "obj-decision-transparency": 30.0,
+          "obj-solution-evidence": 30.76923076923077,
+          "obj-verification": 22.22222222222222,
+          "obj-closure-reuse": 0.0,
+          "obj-lightweight-actor": 65.0,
+          "obj-bot-governance": 60.0,
+          "obj-bot-misclose-risk": 0.0,
+          "obj-agent-noise-risk": 40.0,
+          "obj-data-completeness": 80.0,
+          "obj-agent-noise-reverse": 60.0,
+          "obj-bot-misclose-reverse": 100.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 41.2,
+            "subjective_score": 0.0,
+            "score": 28.9,
+            "is_pain_point": true
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 52.5,
+            "subjective_score": 0.0,
+            "score": 34.1,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 28.8,
+            "subjective_score": 0.0,
+            "score": 18.7,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 33.6,
+            "subjective_score": 0.0,
+            "score": 20.1,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 15.2,
+            "subjective_score": 0.0,
+            "score": 9.1,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 72.5,
+            "subjective_score": 0.0,
+            "score": 50.8,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 41.2,
+            "subjective_score": 82.5,
+            "score": 53.6,
+            "is_pain_point": true
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 52.5,
+            "subjective_score": 63.3,
+            "score": 56.3,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 28.8,
+            "subjective_score": 26.6,
+            "score": 28.0,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 33.6,
+            "subjective_score": 13.4,
+            "score": 25.5,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 15.2,
+            "subjective_score": 33.1,
+            "score": 22.4,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 72.5,
+            "subjective_score": 50.0,
+            "score": 65.8,
+            "is_pain_point": false
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": true,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": false,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "bot缺位（无标签或无响应）"
+        },
+        "actor": {
+          "issue_author_type": "unknown",
+          "has_human_response": true,
+          "has_maintainer_response": false,
+          "has_traceable_artifact": true,
+          "linked_artifact_types": [
+            "commit"
+          ],
+          "closer_type": "unknown",
+          "automation_only_flow": false,
+          "lightweight_actor_summary": "社区成员已响应，无维护者；处理产物：commit"
+        },
+        "subjective_metric_scores": {
+          "sub-creation-clarity": {
+            "score": 85.0,
+            "reason": "标题明确，正文结构清晰，列出两种技术路线和具体样例需求，读者能快速理解核心诉求。"
+          },
+          "sub-creation-context-sufficiency": {
+            "score": 80.0,
+            "reason": "提供了技术背景、CANN实现方案、硬件场景和性能对比需求，上下文较充分支撑后续分流。"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 60.0,
+            "reason": "已assign给mc2领域committer，路由方向正确，但未添加标签或里程碑辅助分类。"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 75.0,
+            "reason": "评论明确提到指定mc2 committer关注，且实际assign到@wang-minbo，责任归属清楚。"
+          },
+          "sub-triage-response-effectiveness": {
+            "score": 55.0,
+            "reason": "首次响应及时并完成assign，但仅停留在确认层面，未给出处理计划或时间预期。"
+          },
+          "sub-discussion-depth": {
+            "score": 20.0,
+            "reason": "仅有一条维护者确认评论，未进入任何技术讨论或方案分析，深度不足。"
+          },
+          "sub-discussion-focus": {
+            "score": 35.0,
+            "reason": "唯一评论与主题相关，但讨论实质内容极少，无法评估聚焦持续性。"
+          },
+          "sub-discussion-progression": {
+            "score": 25.0,
+            "reason": "assign后无后续技术讨论或下一步动作，讨论未形成明确推进方向。"
+          },
+          "sub-resolution-solution-clarity": {
+            "score": 15.0,
+            "reason": "issue仍处于open状态，无解决方案或处理结论说明，信息不足。"
+          },
+          "sub-resolution-resolution-confidence": {
+            "score": 10.0,
+            "reason": "尚无任何解决证据，仅完成assign，问题远未解决。"
+          },
+          "sub-resolution-decision-rationale": {
+            "score": 15.0,
+            "reason": "无处理决策或理由说明，issue仍在进行中，信息不足。"
+          },
+          "sub-closure-close-quality": {
+            "score": 10.0,
+            "reason": "issue尚未关闭，无法评估关闭质量，保守给低分。"
+          },
+          "sub-closure-knowledge-retention": {
+            "score": 10.0,
+            "reason": "未关闭，无总结或结论沉淀，知识保留无法评估。"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 80.0,
+            "reason": "issue仍open且close_reason为进行中，不存在过早关闭风险。"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 50.0,
+            "reason": "无bot介入记录，无法评估帮助性，给中性分。"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 50.0,
+            "reason": "无bot动作可观察，中性评分，未出现错误干预。"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 50.0,
+            "reason": "无bot介入，人工已assign接手，但与bot交接无关，中性分。"
+          }
+        }
+      },
+      {
+        "issue_number": "219",
+        "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+        "body": "#### 一、问题描述\n\n在 `tests/ci_functional_test.yaml` 第 27-38 行的 `matmul_basic` 用例中，`pass_criteria.stdout_contains` 配置的检查字符串为 `matmul run successfully!`，但 matmul 程序实际运行后并不会打印该字符串，导致该 CI 用例的通过条件永远无法满足，测试失去意义。\n\n同时，`stdout_not_contains` 配置的 `matmul run failed!` 在程序实际输出中也不存在，真实失败输出为 `[ERROR] NPU results differ from CPU.`。\n\n当前配置：\n```yaml\n  - id: matmul_basic\n    setup: []\n    steps:\n      - name: run_case_128_256_512\n        cwd: build_out/0_Introduction/matmul\n        cmd: [\"./matmul\", \"128\", \"256\", \"512\"]\n    pass_criteria:\n      exit_code: 0\n      stdout_contains:\n        - \"matmul run successfully!\"\n      stdout_not_contains:\n        - \"matmul run failed!\"\n```\n\n#### 二、疑问\n\n1. 这个 `matmul run successfully!` 字符串是从哪里来的？在 matmul 源码（`Samples/0_Introduction/matmul/main.asc`）及脚本（`gen_data.py`、`verify_result.py`）中均不存在打印该字符串的语句，程序运行后 stdout 也不会出现该串。\n2. `.ci/` 与 `tests/` 在仓库内只有手动执行入口（`.ci/run_ci_functional.sh`），未发现仓库内有 CI 触发配置文件（如 `.gitlab-ci.yml`、`.gitcode-ci.yml` 等）。请问该测试清单是否真的在每次 PR 时被自动执行？若被自动执行，则该用例会每次必 FAIL；若只是手动跑，则该检查项同样会误导手动测试者。希望维护者确认。\n\n#### 三、测试方法\n\n环境：Ascend950（dav-3510），CANN Toolkit 9.1.0-beta.1\n\n**步骤1：构建并安装 matmul 样例**\n```bash\ncd <仓库根目录>\ncmake -S . -B build -DNPU_ARCH=dav-3510\ncmake --build build --target matmul --parallel\nmkdir -p build_out/0_Introduction/matmul\ncp build/Samples/0_Introduction/matmul/matmul build_out/0_Introduction/matmul/\ncp Samples/0_Introduction/matmul/scripts/* build_out/0_Introduction/matmul/\n```\n\n**步骤2：按 CI 清单同款参数运行，捕获 stdout**\n```bash\ncd build_out/0_Introduction/matmul\n./matmul 128 256 512 > /tmp/out.txt 2>&1\necho \"退出码: $?\"    # 实际输出: 0\n```\n\n**步骤3：在运行输出中检查 yaml 配置的字符串是否出现**\n```bash\n# 检查 yaml 要求的 stdout_contains 字符串\ngrep -c \"matmul run successfully\" /tmp/out.txt\n# 实际输出: 0  （不出现，pass_criteria 永远不满足）\n\n# 检查程序真实打印的成功字符串\ngrep -c \"\\[PASS\\] NPU results are consistent with CPU.\" /tmp/out.txt\n# 实际输出: 1  （这才是真实输出）\n```\n\n**步骤4：查看完整真实输出**\n```\nData generated successfully!\n\n[verify] shape=(128, 512), elements=65536 - summary (large matrix, full tensors omitted)\n  abs_err: max=0.000000e+00, mean=0.000000e+00, rmse=0.000000e+00\n  rel_err: max=0.000000e+00\n  count(|abs_err| > 0.001): 0 / 65536\n  ...\nmax abs diff: 0.0\npoint error count(>0.1): 0/65536\nratio error count(>0.001): 0/65536, error ratio: 0.000000\n[PASS] NPU results are consistent with CPU.\n```\n\n程序实际的成功输出由脚本产生：\n- `gen_data.py:57` 打印 `Data generated successfully!`\n- `verify_result.py:127` 打印 `[PASS] NPU results are consistent with CPU.`\n\n#### 四、影响\n\n- `matmul_basic` 用例的 `stdout_contains` 检查字符串永不匹配，pass_criteria 实际是坏的\n- 若该清单被 CI 自动执行，则每次 PR 都会因该用例误判失败\n- 若为手动执行，则该检查项会误导手动测试者\n\n#### 五、修复建议\n\n将 `pass_criteria` 改为匹配程序真实输出：\n```yaml\n    pass_criteria:\n      exit_code: 0\n      stdout_contains:\n        - \"[PASS] NPU results are consistent with CPU.\"\n      stdout_not_contains:\n        - \"[ERROR] NPU results differ from CPU.\"\n```\n\n其中：\n- `stdout_contains` 改为 `verify_result.py` 实际打印的 `[PASS] NPU results are consistent with CPU.`\n- `stdout_not_contains` 改为 `verify_result.py` 在精度校验失败时实际打印的 `[ERROR] NPU results differ from CPU.`",
+        "state": "closed",
+        "labels": [
+          "resolved"
+        ],
+        "created_at": "2026-07-08T02:45:08Z",
+        "closed_at": "2026-07-09T07:26:47Z",
+        "author": "m0_61099165",
+        "comments_data": [
+          {
+            "author": "songkai111",
+            "author_association": "",
+            "created_at": "2026-07-09T07:08:47Z",
+            "body": "该文件 tests/ci_functional_test.yaml 是早期添加的最小功能测试清单原型，其中的样例句柄和路径引用已与实际工程结构不匹配，导致 CI 功能测试无法正确执行。该文件当前处于无效状态，因此将其删除以保持仓库整洁。\n\n已在 PR #332 中处理。"
+          }
+        ],
+        "events_data": [
+          {
+            "id": 179271025,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "add label resolved",
+            "created_at": "2026-07-09T16:28:29+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-09T16:28:29+08:00",
+            "issue_id": "4150315",
+            "event": "labeled",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 179252185,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue219",
+            "created_at": "2026-07-09T15:26:47+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-09T15:26:47+08:00",
+            "issue_id": "4150315",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 179246323,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "Create issue mr links: **fix: 删除无效的 CI 功能测试清单文件 tests/ci_functional_test.yaml** #332",
+            "created_at": "2026-07-09T15:08:25+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-09T15:08:25+08:00",
+            "title": "fix: 删除无效的 CI 功能测试清单文件 tests/ci_functional_test.yaml",
+            "body": "该清单文件中的样例句柄和路径引用已与实际工程结构不匹配，导致 CI 功能测试无法正确执行。删除该无效文件以保持仓库整洁。\n\n关联 issue #219",
+            "head": {
+              "ref": "fix/delete-invalid-ci-manifest-219",
+              "sha": "ca0303914b7848f7b456837820d0a1bdd80d5f13",
+              "repo": {
+                "path": "cann-samples_6772",
+                "name": "cann-samples_6772",
+                "full_name": "songkai111/cann-samples_6772"
+              },
+              "assigner": {
+                "login": "songkai111",
+                "name": "songkai111"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "bf8603698697d31a8b107b485641b4595ee93eca",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4150315",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 179271025,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "add label resolved",
+            "created_at": "2026-07-09T16:28:29+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-09T16:28:29+08:00",
+            "issue_id": "4150315",
+            "event": "labeled",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 179252185,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue219",
+            "created_at": "2026-07-09T15:26:47+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-09T15:26:47+08:00",
+            "issue_id": "4150315",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 179246323,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "Create issue mr links: **fix: 删除无效的 CI 功能测试清单文件 tests/ci_functional_test.yaml** #332",
+            "created_at": "2026-07-09T15:08:25+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-09T15:08:25+08:00",
+            "title": "fix: 删除无效的 CI 功能测试清单文件 tests/ci_functional_test.yaml",
+            "body": "该清单文件中的样例句柄和路径引用已与实际工程结构不匹配，导致 CI 功能测试无法正确执行。删除该无效文件以保持仓库整洁。\n\n关联 issue #219",
+            "head": {
+              "ref": "fix/delete-invalid-ci-manifest-219",
+              "sha": "ca0303914b7848f7b456837820d0a1bdd80d5f13",
+              "repo": {
+                "path": "cann-samples_6772",
+                "name": "cann-samples_6772",
+                "full_name": "songkai111/cann-samples_6772"
+              },
+              "assigner": {
+                "login": "songkai111",
+                "name": "songkai111"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "bf8603698697d31a8b107b485641b4595ee93eca",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4150315",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [
+          {
+            "type": "pr",
+            "url": "https://gitcode.com/cann/cann-samples/merge_requests/332",
+            "state": "merged",
+            "number": 332,
+            "created_at": "2026-07-09T15:08:23.427+08:00",
+            "merged_at": "2026-07-09T15:26:47.310+08:00",
+            "match_source": null,
+            "confidence": null
+          }
+        ],
+        "close_reason": "进行中",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/219",
+        "features": {
+          "has_body": true,
+          "body_length": 3020,
+          "has_repro": true,
+          "has_env": true,
+          "has_expected": true,
+          "has_logs": true,
+          "has_sections": true,
+          "first_response_hours": 28.394166666666667,
+          "first_responder": "songkai111",
+          "comment_count": 1,
+          "maintainer_comment_count": 0,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": false,
+          "has_code_in_comments": false,
+          "has_resolution_kw": false,
+          "days_since_last_activity": 8,
+          "has_labels": true,
+          "label_count": 1,
+          "has_assignee": false,
+          "has_milestone": false,
+          "has_linked_pr": true,
+          "linked_artifact_types": [
+            "pr"
+          ],
+          "has_commit_ref": true,
+          "has_doc_link": false,
+          "has_release_ref": false,
+          "is_closed": true,
+          "resolution_hours": 28.694166666666668,
+          "has_close_comment": true,
+          "close_comment_length": 135,
+          "close_reason": "进行中",
+          "reopened_count": 0,
+          "is_self_closed": false,
+          "self_close_data_available": true,
+          "closure_disposition": "fix",
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": true,
+          "bot_labeled": true,
+          "bot_misclose_signal": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": false,
+          "is_task_type": true,
+          "has_internal_design": false,
+          "mentions_ai": false,
+          "long_body_no_logs": false,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": false,
+          "req_fields_present": 5,
+          "imp_fields_present": 3,
+          "opt_fields_present": 3,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4
+        },
+        "metric_scores": {
+          "obj-input-quality": 100.0,
+          "obj-response-speed": 60.0,
+          "obj-triage-quality": 30.0,
+          "obj-discussion-quality": 15.0,
+          "obj-decision-transparency": 75.0,
+          "obj-solution-evidence": 53.84615384615385,
+          "obj-verification": 22.22222222222222,
+          "obj-closure-reuse": 56.25,
+          "obj-lightweight-actor": 55.00000000000001,
+          "obj-bot-governance": 20.0,
+          "obj-bot-misclose-risk": 0.0,
+          "obj-agent-noise-risk": 0.0,
+          "obj-data-completeness": 90.0,
+          "obj-agent-noise-reverse": 100.0,
+          "obj-bot-misclose-reverse": 100.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 100.0,
+            "subjective_score": 0.0,
+            "score": 70.0,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 36.5,
+            "subjective_score": 0.0,
+            "score": 23.7,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 38.8,
+            "subjective_score": 0.0,
+            "score": 25.2,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 51.4,
+            "subjective_score": 0.0,
+            "score": 30.8,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 60.3,
+            "subjective_score": 0.0,
+            "score": 36.2,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 63.5,
+            "subjective_score": 0.0,
+            "score": 44.5,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 100.0,
+            "subjective_score": 95.0,
+            "score": 98.5,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 36.5,
+            "subjective_score": 71.7,
+            "score": 48.8,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 38.8,
+            "subjective_score": 51.5,
+            "score": 43.2,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 51.4,
+            "subjective_score": 73.4,
+            "score": 60.2,
+            "is_pain_point": false
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 60.3,
+            "subjective_score": 68.4,
+            "score": 63.6,
+            "is_pain_point": false
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 63.5,
+            "subjective_score": 73.3,
+            "score": 66.4,
+            "is_pain_point": false
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": false,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": true,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "bot疑似误关闭（关闭后重开或维护者继续讨论）"
+        },
+        "actor": {
+          "issue_author_type": "unknown",
+          "has_human_response": true,
+          "has_maintainer_response": false,
+          "has_traceable_artifact": true,
+          "linked_artifact_types": [
+            "close_comment",
+            "pr"
+          ],
+          "closer_type": "bot",
+          "automation_only_flow": false,
+          "lightweight_actor_summary": "社区成员已响应，无维护者；处理产物：close_comment/pr"
+        },
+        "subjective_metric_scores": {
+          "sub-creation-clarity": {
+            "score": 95.0,
+            "reason": "标题精准定位问题，正文含复现步骤、实际输出和修复建议，极为清晰。"
+          },
+          "sub-creation-context-sufficiency": {
+            "score": 95.0,
+            "reason": "提供环境、步骤、源码行号引用、完整输出对比，上下文非常充分。"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 75.0,
+            "reason": "issue 被正确承接并创建修复 PR，但无标签分类或重定向流程。"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 60.0,
+            "reason": "songkai111 回复并创建 PR，但 issue 本身无 assignee 指派。"
+          },
+          "sub-triage-response-effectiveness": {
+            "score": 80.0,
+            "reason": "首次回复直接给出解决方案并关联 PR，有效推动处理。"
+          },
+          "sub-discussion-depth": {
+            "score": 35.0,
+            "reason": "仅一条维护者评论直接给结论，无技术讨论或方案对比。"
+          },
+          "sub-discussion-focus": {
+            "score": 65.0,
+            "reason": "评论聚焦问题本身，但未回应用户提出的修复建议。"
+          },
+          "sub-discussion-progression": {
+            "score": 55.0,
+            "reason": "有明确 PR 动作推进，但未讨论为何删除而非修复 yaml。"
+          },
+          "sub-resolution-solution-clarity": {
+            "score": 80.0,
+            "reason": "明确说明删除无效文件，PR 已合并，方案可执行。"
+          },
+          "sub-resolution-resolution-confidence": {
+            "score": 80.0,
+            "reason": "PR 已合并且标记 resolved，问题可信已解决。"
+          },
+          "sub-resolution-decision-rationale": {
+            "score": 60.0,
+            "reason": "解释了文件历史背景和删除原因，但未回应为何不采用用户修复建议。"
+          },
+          "sub-closure-close-quality": {
+            "score": 75.0,
+            "reason": "bot 在 MR 合并后关闭，维护者评论有解释，闭环有据。"
+          },
+          "sub-closure-knowledge-retention": {
+            "score": 60.0,
+            "reason": "维护者评论说明了文件历史和无效原因，有一定知识沉淀。"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 70.0,
+            "reason": "PR 已合并且有解释，但用户未确认解决，略有不足。"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 70.0,
+            "reason": "bot 正确完成标签添加和 MR 合并后关闭，自动化闭环有效。"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 75.0,
+            "reason": "bot 动作准确、时机合适，在 MR 合并后关闭并加标签，无误操作。"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 75.0,
+            "reason": "维护者已先回复并创建 PR，bot 完成闭环，交接顺畅。"
+          }
+        }
+      },
+      {
+        "issue_number": "218",
+        "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+        "body": "\n\nThanks for sending an issue! Please fill in the following template to help quickly solve your problem.\n\n\n\n####  一、问题描述 （必填）\n<!-- 可粘贴错误日志或描述截图 -->\n在Ascend950环境下，按照tileSize的申请大小，UB尾地址自动对齐，最后一块可能会超过248KB\n![image.png](https://raw.gitcode.com/user-images/assets/8788227/b555a3c2-69b2-4b15-90f2-1a65a9d641fd/image.png 'image.png')\n0x14ac0  + 0x29580 = 0x3E040 = 254,016 = 248.0625KB\n####  二、环境信息 （可选）\n<!--\n• 昇腾硬件型号：Ascend950\n• CANN版本:9.1.0\n• 操作系统：linux\n• 其他相关软件版本：\n -->\n\n####  三、重现步骤 （可选）\n<!-- 提供尽可能多的信息描述如何重现该缺陷 -->\n核数改成1或者把数据量放大64倍\n####  四、预期结果 （可选）\n<!-- 描述预期的行为应该是什么样子的 -->\n向下取整TileSize，控制UB不超过248KB\n\n💡 备注（选填）\n\n",
+        "state": "closed",
+        "labels": [
+          "resolved"
+        ],
+        "created_at": "2026-07-06T12:18:36Z",
+        "closed_at": "2026-07-06T13:40:31Z",
+        "author": "pandeng01",
+        "comments_data": [
+          {
+            "author": "songkai111",
+            "author_association": "",
+            "created_at": "2026-07-06T13:19:16Z",
+            "body": "已在 `Samples/0_Introduction/vector_add/main.asc` 的 `calc_tiling_params` 函数中修复此问题。在计算 tileSize 后增加 32 字节对齐向下取整，确保 UB 分配总量不超过 248KB 限制。\n\n修改内容：\n- `tileSize = ubSize / PIPELINE_DEPTH / BUFFER_NUM` 计算后，额外执行 `tileSize = (tileSize / 32) * 32` 进行向下对齐\n\n修复效果（以 248KB UB 为例）：\n- 原值：tileSize = 42325，每块实际占用 42336（32 字节对齐），6 块合计 254016 > 248KB\n- 修复后：tileSize = 42304，每块实际占用 42304（已对齐），6 块合计 253824 < 248KB"
+          },
+          {
+            "author": "songkai111",
+            "author_association": "",
+            "created_at": "2026-07-06T12:40:09Z",
+            "body": "已收到您的反馈，我们正在处理中"
+          }
+        ],
+        "events_data": [
+          {
+            "id": 178810789,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "add label resolved",
+            "created_at": "2026-07-06T22:47:19+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-06T22:47:19+08:00",
+            "issue_id": "4146370",
+            "event": "labeled",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 178803466,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue218",
+            "created_at": "2026-07-06T21:40:31+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-06T21:40:31+08:00",
+            "issue_id": "4146370",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 178800505,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "Create issue mr links: **fix(vector_add): round down tileSize to avoid UB out-of-bounds** #330",
+            "created_at": "2026-07-06T21:22:50+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-06T21:22:50+08:00",
+            "title": "fix(vector_add): round down tileSize to avoid UB out-of-bounds",
+            "body": "## Summary\n\nFix issue #218 where `vector_add` operator has potential UB (Unified Buffer) out-of-bounds access on Ascend950.\n\n## Root Cause\n\n`tileSize = ubSize / 2 / 3 = 42325` (for 248KB UB). AscendC internal allocator aligns each buffer to 32 bytes, making each buffer actually occupy 42336 bytes. With 6 buffers total: `42336 × 6 = 254016 > 253952 (248KB)`.\n\n## Fix\n\nRound down `tileSize` to 32-byte alignment after computing from `ubSize`:\n```cpp\nconstexpr int64_t ALIGN_SIZE = 32;\ntileSize = (tileSize / ALIGN_SIZE) * ALIGN_SIZE;\n```\n\nAfter fix: `tileSize = 42304` (already 32-byte aligned), 6 buffers total `42304 × 6 = 253824 < 248KB`.",
+            "head": {
+              "ref": "fix/vector-add-ub-oob-218",
+              "sha": "bf9a9c864818cf27866b62b5720f030ab49bde1f",
+              "repo": {
+                "path": "cann-samples_6772",
+                "name": "cann-samples_6772",
+                "full_name": "songkai111/cann-samples_6772"
+              },
+              "assigner": {
+                "login": "songkai111",
+                "name": "songkai111"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "989629cfbb3b0319d28d9194796c63c281071329",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4146370",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 178810789,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "add label resolved",
+            "created_at": "2026-07-06T22:47:19+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-06T22:47:19+08:00",
+            "issue_id": "4146370",
+            "event": "labeled",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 178803466,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue218",
+            "created_at": "2026-07-06T21:40:31+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-06T21:40:31+08:00",
+            "issue_id": "4146370",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 178800505,
+            "user": {
+              "html_url": "https://gitcode.com/songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "login": "songkai111",
+              "name": "songkai111"
+            },
+            "content": "Create issue mr links: **fix(vector_add): round down tileSize to avoid UB out-of-bounds** #330",
+            "created_at": "2026-07-06T21:22:50+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-06T21:22:50+08:00",
+            "title": "fix(vector_add): round down tileSize to avoid UB out-of-bounds",
+            "body": "## Summary\n\nFix issue #218 where `vector_add` operator has potential UB (Unified Buffer) out-of-bounds access on Ascend950.\n\n## Root Cause\n\n`tileSize = ubSize / 2 / 3 = 42325` (for 248KB UB). AscendC internal allocator aligns each buffer to 32 bytes, making each buffer actually occupy 42336 bytes. With 6 buffers total: `42336 × 6 = 254016 > 253952 (248KB)`.\n\n## Fix\n\nRound down `tileSize` to 32-byte alignment after computing from `ubSize`:\n```cpp\nconstexpr int64_t ALIGN_SIZE = 32;\ntileSize = (tileSize / ALIGN_SIZE) * ALIGN_SIZE;\n```\n\nAfter fix: `tileSize = 42304` (already 32-byte aligned), 6 buffers total `42304 × 6 = 253824 < 248KB`.",
+            "head": {
+              "ref": "fix/vector-add-ub-oob-218",
+              "sha": "bf9a9c864818cf27866b62b5720f030ab49bde1f",
+              "repo": {
+                "path": "cann-samples_6772",
+                "name": "cann-samples_6772",
+                "full_name": "songkai111/cann-samples_6772"
+              },
+              "assigner": {
+                "login": "songkai111",
+                "name": "songkai111"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "989629cfbb3b0319d28d9194796c63c281071329",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4146370",
+            "event": "operate_log",
+            "actor": {
+              "login": "songkai111",
+              "id": "68777000fc42115893ad8b8c",
+              "name": "songkai111",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [
+          {
+            "type": "pr",
+            "url": "https://gitcode.com/cann/cann-samples/merge_requests/330",
+            "state": "merged",
+            "number": 330,
+            "created_at": "2026-07-06T21:22:48.969+08:00",
+            "merged_at": "2026-07-06T21:40:31.779+08:00",
+            "match_source": null,
+            "confidence": null
+          }
+        ],
+        "close_reason": "进行中",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/218",
+        "features": {
+          "has_body": true,
+          "body_length": 610,
+          "has_repro": true,
+          "has_env": true,
+          "has_expected": true,
+          "has_logs": true,
+          "has_sections": true,
+          "first_response_hours": 0.3591666666666667,
+          "first_responder": "songkai111",
+          "comment_count": 2,
+          "maintainer_comment_count": 0,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": false,
+          "has_code_in_comments": false,
+          "has_resolution_kw": true,
+          "days_since_last_activity": 10,
+          "has_labels": true,
+          "label_count": 1,
+          "has_assignee": false,
+          "has_milestone": false,
+          "has_linked_pr": true,
+          "linked_artifact_types": [
+            "pr"
+          ],
+          "has_commit_ref": false,
+          "has_doc_link": false,
+          "has_release_ref": true,
+          "is_closed": true,
+          "resolution_hours": 1.3652777777777778,
+          "has_close_comment": true,
+          "close_comment_length": 15,
+          "close_reason": "进行中",
+          "reopened_count": 0,
+          "is_self_closed": false,
+          "self_close_data_available": true,
+          "closure_disposition": "fix",
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": true,
+          "bot_labeled": true,
+          "bot_misclose_signal": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": false,
+          "is_task_type": true,
+          "has_internal_design": false,
+          "mentions_ai": false,
+          "long_body_no_logs": false,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": false,
+          "req_fields_present": 5,
+          "imp_fields_present": 3,
+          "opt_fields_present": 3,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4
+        },
+        "metric_scores": {
+          "obj-input-quality": 100.0,
+          "obj-response-speed": 100.0,
+          "obj-triage-quality": 30.0,
+          "obj-discussion-quality": 50.0,
+          "obj-decision-transparency": 75.0,
+          "obj-solution-evidence": 15.384615384615385,
+          "obj-verification": 22.22222222222222,
+          "obj-closure-reuse": 0.0,
+          "obj-lightweight-actor": 25.0,
+          "obj-bot-governance": 20.0,
+          "obj-bot-misclose-risk": 0.0,
+          "obj-agent-noise-risk": 0.0,
+          "obj-data-completeness": 90.0,
+          "obj-agent-noise-reverse": 100.0,
+          "obj-bot-misclose-reverse": 100.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 100.0,
+            "subjective_score": 0.0,
+            "score": 70.0,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 48.5,
+            "subjective_score": 0.0,
+            "score": 31.5,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 67.5,
+            "subjective_score": 0.0,
+            "score": 43.9,
+            "is_pain_point": true
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 33.4,
+            "subjective_score": 0.0,
+            "score": 20.1,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 22.6,
+            "subjective_score": 0.0,
+            "score": 13.6,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 60.5,
+            "subjective_score": 0.0,
+            "score": 42.4,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 100.0,
+            "subjective_score": 91.0,
+            "score": 97.3,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 48.5,
+            "subjective_score": 73.0,
+            "score": 57.1,
+            "is_pain_point": true
+          },
+          "discussion": {
+            "label": "Discussion",
+            "objective_score": 67.5,
+            "subjective_score": 83.6,
+            "score": 73.1,
+            "is_pain_point": false
+          },
+          "resolution": {
+            "label": "Resolution",
+            "objective_score": 33.4,
+            "subjective_score": 80.8,
+            "score": 52.4,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 22.6,
+            "subjective_score": 79.6,
+            "score": 45.4,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 60.5,
+            "subjective_score": 75.0,
+            "score": 64.8,
+            "is_pain_point": false
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": false,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": true,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "bot疑似误关闭（关闭后重开或维护者继续讨论）"
+        },
+        "actor": {
+          "issue_author_type": "unknown",
+          "has_human_response": true,
+          "has_maintainer_response": false,
+          "has_traceable_artifact": true,
+          "linked_artifact_types": [
+            "close_comment",
+            "pr",
+            "release"
+          ],
+          "closer_type": "bot",
+          "automation_only_flow": false,
+          "lightweight_actor_summary": "社区成员已响应，无维护者；处理产物：close_comment/pr/release"
+        },
+        "subjective_metric_scores": {
+          "sub-creation-clarity": {
+            "score": 92.0,
+            "reason": "问题描述清晰，含具体地址计算和截图，核心故障点一目了然"
+          },
+          "sub-creation-context-sufficiency": {
+            "score": 90.0,
+            "reason": "提供环境信息、重现步骤和预期结果，上下文充分支撑后续处理"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 72.0,
+            "reason": "处理路径正确且有人接手，但缺少显式标签分类或路由操作"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 65.0,
+            "reason": "songkai111实际处理并创建MR，但无正式assignee指派"
+          },
+          "sub-triage-response-effectiveness": {
+            "score": 82.0,
+            "reason": "首次响应迅速且后续有实质修复跟进，有效推动问题进入处理"
+          },
+          "sub-discussion-depth": {
+            "score": 78.0,
+            "reason": "回复含根因分析和修复效果对比，技术深度较好"
+          },
+          "sub-discussion-focus": {
+            "score": 88.0,
+            "reason": "讨论完全聚焦于UB越界问题本身，无跑题或漂移"
+          },
+          "sub-discussion-progression": {
+            "score": 85.0,
+            "reason": "从确认收到到给出修复方案到创建MR，推进路径清晰"
+          },
+          "sub-resolution-solution-clarity": {
+            "score": 90.0,
+            "reason": "修复方案明确说明根因、修改内容和修复前后数值对比"
+          },
+          "sub-resolution-resolution-confidence": {
+            "score": 80.0,
+            "reason": "MR已合并且有resolved标签，但close_reason标记为进行中不准确"
+          },
+          "sub-resolution-decision-rationale": {
+            "score": 72.0,
+            "reason": "因MR合并而关闭有合理关联，但close_reason与实际状态不符"
+          },
+          "sub-closure-close-quality": {
+            "score": 72.0,
+            "reason": "bot因MR合并自动关闭有触发依据，但close_reason设置不当"
+          },
+          "sub-closure-knowledge-retention": {
+            "score": 82.0,
+            "reason": "评论和MR描述保留了根因分析与修复方案，对后来者有参考价值"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 85.0,
+            "reason": "MR已合并且修复方案已实施，不存在过早关闭风险"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 72.0,
+            "reason": "bot在MR合并后自动关闭并加标签，属于有效流程收尾自动化"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 75.0,
+            "reason": "bot动作时机准确，MR合并后关闭并加resolved标签，无误操作"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 78.0,
+            "reason": "人工已完成修复和MR创建，bot仅做收尾关闭，交接顺畅"
+          }
+        }
+      }
+    ],
+    "suspicious_cases": [
+      {
+        "issue_number": "219",
+        "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+        "url": "https://gitcode.com/cann/cann-samples/issues/219",
+        "risk_type": "bot_misclose",
+        "bot_agent_diagnosis": "bot疑似误关闭（关闭后重开或维护者继续讨论）"
+      },
+      {
+        "issue_number": "218",
+        "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+        "url": "https://gitcode.com/cann/cann-samples/issues/218",
+        "risk_type": "bot_misclose",
+        "bot_agent_diagnosis": "bot疑似误关闭（关闭后重开或维护者继续讨论）"
+      }
+    ],
+    "review_cases": [
+      {
+        "issue_number": "222",
+        "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+        "url": "https://gitcode.com/cann/cann-samples/issues/222",
+        "risk_type": "Triage & Response得分极低(34)",
+        "stage": "Triage & Response",
+        "evidence": "无明显bot/agent治理风险",
+        "reason": "风险分 3，Triage & Response得分极低(34)",
+        "action": "建议人工审查流程处理记录"
+      },
+      {
+        "issue_number": "221",
+        "title": "cann-samples Development Roadmap (2026 Q3)",
+        "url": "https://gitcode.com/cann/cann-samples/issues/221",
+        "risk_type": "Discussion得分极低(17)",
+        "stage": "Discussion",
+        "evidence": "bot缺位（无标签或无响应）",
+        "reason": "风险分 3，Discussion得分极低(17)",
+        "action": "建议人工审查流程处理记录"
+      },
+      {
+        "issue_number": "220",
+        "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+        "url": "https://gitcode.com/cann/cann-samples/issues/220",
+        "risk_type": "Closure得分极低(22)",
+        "stage": "Closure",
+        "evidence": "bot缺位（无标签或无响应）",
+        "reason": "风险分 3，Closure得分极低(22)",
+        "action": "建议人工审查流程处理记录"
+      },
+      {
+        "issue_number": "219",
+        "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+        "url": "https://gitcode.com/cann/cann-samples/issues/219",
+        "risk_type": "bot疑似误关闭",
+        "stage": "多阶段",
+        "evidence": "bot疑似误关闭（关闭后重开或维护者继续讨论）",
+        "reason": "风险分 2，bot疑似误关闭",
+        "action": "建议人工审查流程处理记录"
+      },
+      {
+        "issue_number": "218",
+        "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+        "url": "https://gitcode.com/cann/cann-samples/issues/218",
+        "risk_type": "bot疑似误关闭",
+        "stage": "多阶段",
+        "evidence": "bot疑似误关闭（关闭后重开或维护者继续讨论）",
+        "reason": "风险分 2，bot疑似误关闭",
+        "action": "建议人工审查流程处理记录"
+      }
+    ],
+    "duplicate_clusters": []
+  }
+}

@@ -777,6 +777,7 @@ type RepoRerunRecordsModalProps = {
   onClose: () => void;
   onLogout: () => void;
   onLogin: () => void;
+  onRerun: () => void;
   onCancelRecord: (record: RepoRerunJob) => void;
   canCancelRecord: (record: RepoRerunJob) => boolean;
   onOpenChangePassword?: () => void;
@@ -807,6 +808,7 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
   onClose,
   onLogout,
   onLogin,
+  onRerun,
   onCancelRecord,
   canCancelRecord,
   onOpenChangePassword,
@@ -825,6 +827,16 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
             <Button key="close" onClick={onClose}>
               关闭
             </Button>,
+            rerunRecords.some(isRerunReviewPending) ? (
+              <Button
+                key="rerun"
+                type="primary"
+                disabled={!canCurrentUserOperate}
+                onClick={onRerun}
+              >
+                再次重跑
+              </Button>
+            ) : null,
           ]
         : [
             <Button

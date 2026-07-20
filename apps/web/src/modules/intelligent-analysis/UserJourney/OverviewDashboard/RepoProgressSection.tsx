@@ -3167,6 +3167,12 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         onLogin={() => {
           void handleOperatorLogin();
         }}
+        onRerun={() => {
+          if (!rerunRecordsTargetRepo) return;
+          const targetRepo = rerunRecordsTargetRepo;
+          closeRerunRecordsModal();
+          void openRerunModal(targetRepo);
+        }}
         onOpenChangePassword={() => {
           setChangePasswordError('');
           setChangePasswordModalOpen(true);
