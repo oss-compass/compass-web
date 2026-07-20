@@ -7,9 +7,6 @@ import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
 import IssueExecutiveSummary from './components/IssueExecutiveSummary';
 import IssueExperiencePath from './components/IssueExperiencePath';
-import IssueProblems from './components/IssueProblems';
-import IssueActions from './components/IssueActions';
-import IssueReportSignals from './components/IssueReportSignals';
 
 type IssueContributionProps = {
   org?: string;
@@ -205,24 +202,13 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
               <IssueExperiencePath
                 projectName={report.data.community_name}
                 stages={report.data.report_context.stages}
+                pains={report.data.report_context.top_pains}
+                recommendations={report.data.report_context.top_recs}
                 sampleSize={report.data.report_context.n_total}
                 activeStageId={activeStageId}
                 onStageChange={setActiveStageId}
               />
             </IssueReportOverview>
-
-            <div className="flex min-w-0 flex-col gap-5">
-              <IssueProblems
-                pains={report.data.report_context.top_pains}
-                recommendationIds={report.data.report_context.top_recs.map(
-                  (recommendation) => recommendation.id
-                )}
-              />
-              <IssueActions
-                recommendations={report.data.report_context.top_recs}
-              />
-              {/* <IssueReportSignals context={report.data.report_context} /> */}
-            </div>
 
             <footer className="px-1 pb-2 text-[11px] leading-5 text-slate-500">
               Cogito · Issue 贡献体验 · {report.periodLabel}

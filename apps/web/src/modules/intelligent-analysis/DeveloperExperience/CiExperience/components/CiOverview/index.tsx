@@ -77,7 +77,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const base =
     'flex h-full flex-col justify-between rounded-2xl border bg-white/90 px-4 py-3 text-left shadow-[0_12px_32px_rgba(15,23,42,0.05)] transition-all duration-150';
   const tone = selected
-    ? 'border-sky-300 ring-2 ring-sky-400'
+    ? 'border-slate-200/80 ring-2 ring-violet-400'
     : selectable
     ? 'border-slate-200/80 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]'
     : 'border-slate-200/80';

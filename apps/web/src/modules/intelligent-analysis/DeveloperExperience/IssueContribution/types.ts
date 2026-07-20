@@ -65,6 +65,8 @@ export type IssueReportPain = {
   prio: string;
   id: string;
   title: string;
+  stage_id: string;
+  stage_name: string;
   evidence: string;
   impact: string;
   action: string;
@@ -88,7 +90,7 @@ export type IssueReportRecommendation = {
   action_short: string;
   metric_evidence: string;
   improvement_basis: IssueReportBriefMetric[];
-  baseline_score: number;
+  baseline_score: number | null;
   baseline_value: string;
 };
 

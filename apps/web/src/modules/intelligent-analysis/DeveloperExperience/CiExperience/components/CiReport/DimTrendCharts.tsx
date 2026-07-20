@@ -44,17 +44,17 @@ const MiniChart: React.FC<{ chart: CiMiniChart; days: string[] }> = ({
   return (
     <div className="rounded-xl border border-slate-200 bg-white px-3 pb-1.5 pt-2.5">
       <div className="flex items-baseline justify-between gap-2">
-        <span className="text-[12.5px] font-semibold text-slate-700">
+        <span className="text-[11.5px] font-semibold text-slate-700">
           {title}
         </span>
-        <span className="text-[16px] font-extrabold tabular-nums text-slate-900">
+        <span className="text-[14px] font-extrabold tabular-nums text-slate-900">
           {now}
-          <span className="ml-0.5 text-[11px] font-normal text-slate-400">
+          <span className="ml-0.5 text-[10px] font-normal text-slate-400">
             {unit}
           </span>
         </span>
       </div>
-      <div className="mb-0.5 mt-0.5 text-[10.5px] leading-snug text-slate-400">
+      <div className="mb-0.5 mt-0.5 text-[9.5px] leading-snug text-slate-400">
         {meaning}
       </div>
       <svg
@@ -70,7 +70,7 @@ const MiniChart: React.FC<{ chart: CiMiniChart; days: string[] }> = ({
           </linearGradient>
         </defs>
         <path d={area} fill={`url(#${gid})`} />
-        <path d={line} fill="none" stroke={color} strokeWidth={2} />
+        <path d={line} fill="none" stroke={color} strokeWidth={1.25} />
         <circle
           cx={x(pts.length - 1)}
           cy={y(last == null ? mn : last)}
@@ -82,7 +82,7 @@ const MiniChart: React.FC<{ chart: CiMiniChart; days: string[] }> = ({
             key={`${d}-${i}`}
             x={x(i)}
             y={H - 4}
-            fontSize={8.5}
+            fontSize={7.5}
             fill="#94a3b8"
             textAnchor={
               i === 0 ? 'start' : i === days.length - 1 ? 'end' : 'middle'
@@ -92,7 +92,7 @@ const MiniChart: React.FC<{ chart: CiMiniChart; days: string[] }> = ({
           </text>
         ))}
       </svg>
-      <div className="text-right text-[11px] text-slate-400">
+      <div className="text-right text-[10px] text-slate-400">
         较窗口初{' '}
         <span className={`font-semibold ${DELTA_CLS[di.cls]}`}>
           {di.arrow} {di.txt ? `${di.txt} ` : ''}

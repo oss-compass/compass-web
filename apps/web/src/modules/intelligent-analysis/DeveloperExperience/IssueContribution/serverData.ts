@@ -1,4 +1,4 @@
-import rawIssueReport from './issue_experience_report_data(1).json';
+import rawIssueReport from './report_cann-cann-samples_2026-07-01_to_2026-07-18(3).json';
 import type {
   IssueExperienceReportData,
   IssueReportCatalogRecord,

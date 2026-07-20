@@ -1,5 +1,13 @@
 import React from 'react';
-import { DownOutlined } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  DollarOutlined,
+  DownOutlined,
+  ExclamationCircleFilled,
+  InteractionOutlined,
+  SafetyCertificateOutlined,
+  ThunderboltOutlined,
+} from '@ant-design/icons';
 import type {
   CiDim,
   CiDimCmpRow,
@@ -7,14 +15,7 @@ import type {
   CiRepoData,
   CiStatus,
 } from '../../types';
-import {
-  DIM_KEYS,
-  DIM_NAME,
-  delta,
-  num,
-  statusDotClass,
-  statusWordClass,
-} from '../../helpers';
+import { DIM_KEYS, DIM_NAME, delta, num, statusWordClass } from '../../helpers';
 import { ValText } from '../shared';
 
 export type CiGrain = 'daily' | 'weekly';
@@ -39,10 +40,36 @@ const DIM_ASK: Record<CiDimKey, string> = {
   cost: '算力花得值吗?',
 };
 
+const DIM_META: Record<
+  CiDimKey,
+  { code: string; icon: React.ReactNode; iconClassName: string }
+> = {
+  stability: {
+    code: 'STABILITY',
+    icon: <SafetyCertificateOutlined />,
+    iconClassName: 'bg-sky-50 text-sky-600',
+  },
+  efficiency: {
+    code: 'EFFICIENCY',
+    icon: <ThunderboltOutlined />,
+    iconClassName: 'bg-amber-50 text-amber-600',
+  },
+  interaction: {
+    code: 'INTERACTION',
+    icon: <InteractionOutlined />,
+    iconClassName: 'bg-violet-50 text-violet-600',
+  },
+  cost: {
+    code: 'COST',
+    icon: <DollarOutlined />,
+    iconClassName: 'bg-emerald-50 text-emerald-600',
+  },
+};
+
 const CARD_TONE: Record<CiStatus, string> = {
-  red: 'border-rose-200 bg-rose-50/30',
-  yellow: 'border-amber-200 bg-amber-50/30',
-  green: 'border-emerald-200 bg-emerald-50/30',
+  red: 'border-rose-300 bg-white',
+  yellow: 'border-amber-200 bg-white',
+  green: 'border-emerald-200 bg-white',
 };
 
 const DELTA_TONE: Record<'good' | 'bad' | 'flat', string> = {
@@ -50,6 +77,47 @@ const DELTA_TONE: Record<'good' | 'bad' | 'flat', string> = {
   bad: 'text-rose-600',
   flat: 'text-slate-400',
 };
+
+const getWeeklyDelta = (row?: CiDimCmpRow) =>
+  row ? delta(num(row[3]), num(row[2]), true) : null;
+
+const getWeeklyStatus = (row?: CiDimCmpRow): CiStatus | undefined => {
+  const di = getWeeklyDelta(row);
+  return di
+    ? di.cls === 'bad'
+      ? 'red'
+      : di.cls === 'good'
+      ? 'green'
+      : 'yellow'
+    : undefined;
+};
+
+const DimCardHeader: React.FC<{ dim: CiDimKey; title: string }> = ({
+  dim,
+  title,
+}) => {
+  const meta = DIM_META[dim];
+  return (
+    <div className="flex min-h-[40px] items-center justify-center gap-3">
+      <span
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-base ${meta.iconClassName}`}
+      >
+        {meta.icon}
+      </span>
+      <div className="min-w-0 text-left">
+        <div className="text-[10.5px] font-semibold tracking-[0.14em] text-slate-400">
+          {meta.code}
+        </div>
+        <div className="truncate text-[17px] font-semibold text-slate-900">
+          {title}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StatusIcon: React.FC<{ status: CiStatus }> = ({ status }) =>
+  status === 'green' ? <CheckCircleFilled /> : <ExclamationCircleFilled />;
 
 /** 日级/周级分段开关 */
 const GrainToggle: React.FC<{
@@ -74,7 +142,7 @@ const GrainToggle: React.FC<{
   </span>
 );
 
-/** 卡片外壳（旅程全景图交互：选中环，占满栅格列） */
+/** 卡片外壳（旅程全景图交互：固定卡宽 + 选中环） */
 const CardShell: React.FC<{
   active: boolean;
   status?: CiStatus;
@@ -88,12 +156,12 @@ const CardShell: React.FC<{
     aria-selected={active}
     onClick={onClick}
     title={ask}
-    className={`flex h-full w-full flex-col rounded-2xl border px-4 py-3.5 text-left shadow-[0_12px_32px_rgba(15,23,42,0.05)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
+    className={`flex min-h-[260px] w-[258px] flex-none flex-col rounded-[20px] border px-4 pb-3 pt-4 text-left shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
       status ? CARD_TONE[status] : 'border-slate-200/80 bg-white/90'
     } ${
       active
         ? 'ring-2 ring-violet-400'
-        : 'hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(15,23,42,0.08)]'
+        : 'hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)]'
     }`}
   >
     {children}
@@ -103,41 +171,49 @@ const CardShell: React.FC<{
 /** 日级维度卡内容 */
 const DailyCard: React.FC<{ d: CiDim }> = ({ d }) => (
   <>
-    <div className="flex flex-wrap items-center gap-2">
-      <span className={`h-2.5 w-2.5 rounded-full ${statusDotClass[d.s]}`} />
-      <span className="text-[15px] font-semibold text-slate-900">{d.name}</span>
-      {d.probn ? (
-        <span className="inline-flex items-center rounded-md border border-rose-200 bg-rose-50 px-1.5 py-0.5 text-[10.5px] font-semibold text-rose-700">
-          {d.toppri ? `${d.toppri}·` : ''}
-          {d.probn} 问题
-        </span>
-      ) : null}
-      <span
-        className={`ml-auto text-[12px] font-semibold ${statusWordClass[d.s]}`}
-      >
-        {d.word}
-      </span>
+    <DimCardHeader dim={d.key} title={d.name} />
+    <div className="mt-1.5 text-center text-[11.5px] text-slate-400">
+      {DIM_ASK[d.key]}
     </div>
-    <div className="mt-1 text-[11.5px] text-slate-400">{DIM_ASK[d.key]}</div>
-    <ul className="mt-2.5 flex flex-col gap-1.5">
-      {d.vals.slice(0, 3).map((v, i) => (
-        <li
-          key={`${v[0]}-${i}`}
-          className="flex items-center justify-between gap-2 text-[12.5px]"
-        >
-          <span className="min-w-0 truncate text-slate-500">{v[0]}</span>
-          <ValText
-            value={v[1]}
-            className="shrink-0 font-semibold tabular-nums text-slate-800"
-          />
-        </li>
-      ))}
-    </ul>
-    {d.note ? (
-      <div className="mt-2 text-[11px] leading-relaxed text-slate-400">
-        ⚠ {d.note}
-      </div>
-    ) : null}
+    <div
+      className={`mt-3 flex items-center justify-center gap-1.5 text-[14px] font-semibold ${
+        statusWordClass[d.s]
+      }`}
+    >
+      <StatusIcon status={d.s} />
+      <span>{d.word}</span>
+    </div>
+    <div className="mt-3 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-1.5">
+      <ul className="flex flex-col divide-y divide-slate-100">
+        {d.vals.slice(0, 3).map((v, i) => (
+          <li
+            key={`${v[0]}-${i}`}
+            className="flex items-center justify-between gap-2 py-1.5 text-[12.5px]"
+          >
+            <span className="min-w-0 truncate text-slate-500">{v[0]}</span>
+            <ValText
+              value={v[1]}
+              className="shrink-0 font-semibold tabular-nums text-slate-800"
+            />
+          </li>
+        ))}
+      </ul>
+      {d.probn || d.note ? (
+        <div className="mt-auto flex items-start gap-1.5 border-t border-slate-100 pt-2 text-[10.5px] leading-relaxed text-slate-400">
+          {d.probn ? (
+            <span className="inline-flex shrink-0 items-center rounded-md border border-rose-200 bg-rose-50 px-1.5 py-0.5 font-semibold text-rose-700">
+              {d.toppri ? `${d.toppri} · ` : ''}
+              {d.probn} 问题
+            </span>
+          ) : null}
+          {d.note ? (
+            <span className="line-clamp-2" title={d.note}>
+              ⚠ {d.note}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
   </>
 );
 
@@ -149,63 +225,59 @@ const WeeklyCard: React.FC<{ k: CiDimKey; row?: CiDimCmpRow }> = ({
   if (!row) {
     return (
       <>
-        <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
-          <span className="text-[15px] font-semibold text-slate-900">
-            {DIM_NAME[k]}
-          </span>
+        <DimCardHeader dim={k} title={DIM_NAME[k]} />
+        <div className="mt-1.5 text-center text-[11.5px] text-slate-400">
+          {DIM_ASK[k]}
         </div>
-        <div className="mt-1 text-[11.5px] text-slate-400">{DIM_ASK[k]}</div>
-        <div className="mt-3 rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-3 py-4 text-center text-[12px] text-slate-400">
-          本周无对比数据
+        <div className="mt-3 flex flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-3 py-4 text-center text-[12px] text-slate-400">
+          <span>本周无对比数据</span>
         </div>
       </>
     );
   }
-  const di = delta(num(row[3]), num(row[2]), true);
+  const di = getWeeklyDelta(row)!;
+  const status = getWeeklyStatus(row)!;
   return (
     <>
-      <div className="flex items-center gap-2">
-        <span
-          className={`h-2.5 w-2.5 rounded-full ${
-            di.cls === 'bad'
-              ? 'bg-rose-500'
-              : di.cls === 'good'
-              ? 'bg-emerald-500'
-              : 'bg-amber-500'
-          }`}
-        />
-        <span className="text-[15px] font-semibold text-slate-900">
-          {DIM_NAME[k]}
-        </span>
-        <span
-          className={`ml-auto text-[12px] font-semibold ${DELTA_TONE[di.cls]}`}
-        >
+      <DimCardHeader dim={k} title={DIM_NAME[k]} />
+      <div className="mt-1.5 text-center text-[11.5px] text-slate-400">
+        {DIM_ASK[k]}
+      </div>
+      <div
+        className={`mt-3 flex items-center justify-center gap-1.5 text-[14px] font-semibold ${
+          DELTA_TONE[di.cls]
+        }`}
+      >
+        <StatusIcon status={status} />
+        <span>
           {di.arrow} {di.word}
         </span>
       </div>
-      <div className="mt-1 text-[11.5px] text-slate-400">{DIM_ASK[k]}</div>
-      <ul className="mt-2.5 flex flex-col gap-1.5 text-[12.5px]">
-        <li className="flex items-center justify-between gap-2">
-          <span className="min-w-0 truncate text-slate-500">{row[1]}</span>
-          <ValText
-            value={row[2]}
-            className="shrink-0 font-semibold tabular-nums text-slate-800"
-          />
-        </li>
-        <li className="flex items-center justify-between gap-2">
-          <span className="text-slate-500">上周</span>
-          <ValText
-            value={row[3]}
-            className="shrink-0 tabular-nums text-slate-500"
-          />
-        </li>
-        {row[4] ? (
-          <li className="text-[11px] leading-relaxed text-slate-400">
-            {row[4]}
+      <div className="mt-3 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-1.5">
+        <ul className="flex flex-col divide-y divide-slate-100 text-[12.5px]">
+          <li className="flex items-center justify-between gap-2 py-1.5">
+            <span className="min-w-0 truncate text-slate-500">{row[1]}</span>
+            <ValText
+              value={row[2]}
+              className="shrink-0 font-semibold tabular-nums text-slate-800"
+            />
           </li>
+          <li className="flex items-center justify-between gap-2 py-1.5">
+            <span className="text-slate-500">上周</span>
+            <ValText
+              value={row[3]}
+              className="shrink-0 tabular-nums text-slate-500"
+            />
+          </li>
+        </ul>
+        {row[4] ? (
+          <div className="mt-auto border-t border-slate-100 pt-2 text-[10.5px] leading-relaxed text-slate-400">
+            <span className="line-clamp-2" title={row[4]}>
+              {row[4]}
+            </span>
+          </div>
         ) : null}
-      </ul>
+      </div>
     </>
   );
 };
@@ -299,34 +371,37 @@ const ScoreCards: React.FC<ScoreCardsProps> = ({
         </div>
       ) : null}
 
-      {/* 四维度卡（占满整行） */}
-      <div
-        role="tablist"
-        aria-label="维度得分卡"
-        className="grid grid-cols-4 gap-3"
-      >
-        {grain === 'daily'
-          ? dims.map((d) => (
-              <CardShell
-                key={d.key}
-                active={dim === d.key}
-                status={d.s}
-                ask={DIM_ASK[d.key]}
-                onClick={() => onSelectDim(d.key)}
-              >
-                <DailyCard d={d} />
-              </CardShell>
-            ))
-          : DIM_KEYS.map((k) => (
-              <CardShell
-                key={k}
-                active={dim === k}
-                ask={DIM_ASK[k]}
-                onClick={() => onSelectDim(k)}
-              >
-                <WeeklyCard k={k} row={cmpByKey[k]} />
-              </CardShell>
-            ))}
+      {/* 四维度卡（固定卡宽，整体居中；窄屏横向滚动） */}
+      <div className="overflow-x-auto pb-2 pt-1">
+        <div
+          role="tablist"
+          aria-label="维度得分卡"
+          className="flex w-max min-w-full items-stretch justify-center gap-3 px-2"
+        >
+          {grain === 'daily'
+            ? dims.map((d) => (
+                <CardShell
+                  key={d.key}
+                  active={dim === d.key}
+                  status={d.s}
+                  ask={DIM_ASK[d.key]}
+                  onClick={() => onSelectDim(d.key)}
+                >
+                  <DailyCard d={d} />
+                </CardShell>
+              ))
+            : DIM_KEYS.map((k) => (
+                <CardShell
+                  key={k}
+                  active={dim === k}
+                  status={getWeeklyStatus(cmpByKey[k])}
+                  ask={DIM_ASK[k]}
+                  onClick={() => onSelectDim(k)}
+                >
+                  <WeeklyCard k={k} row={cmpByKey[k]} />
+                </CardShell>
+              ))}
+        </div>
       </div>
 
       {/* 得分卡与联动详情之间的可收缩连接按钮（对齐社区入门体验旅程全景图） */}

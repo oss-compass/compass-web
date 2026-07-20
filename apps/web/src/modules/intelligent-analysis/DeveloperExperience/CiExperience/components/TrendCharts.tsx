@@ -35,13 +35,7 @@ const CiTrendChart: React.FC<{ t: CiTrend }> = ({ t }) => {
         aria-label={t.title}
         style={{ width: '100%', height: 'auto' }}
       >
-        <text
-          x={padL}
-          y={14}
-          fontSize={12.5}
-          fontWeight={600}
-          fill={INK2}
-        >
+        <text x={padL} y={14} fontSize={11} fontWeight={600} fill={INK2}>
           {t.title}
           {t.demo ? ' 〔示〕' : ''}
         </text>
@@ -52,7 +46,7 @@ const CiTrendChart: React.FC<{ t: CiTrend }> = ({ t }) => {
             <text
               x={padL - 6}
               y={y(g) + 4}
-              fontSize={10}
+              fontSize={9}
               fill={MUTED}
               textAnchor="end"
             >
@@ -75,7 +69,7 @@ const CiTrendChart: React.FC<{ t: CiTrend }> = ({ t }) => {
             <text
               x={Math.min(x(t.anno.i) + 6, W - 330)}
               y={padT + 12}
-              fontSize={11}
+              fontSize={10}
               fill={GOOD_TEXT}
               fontWeight={600}
             >
@@ -84,7 +78,7 @@ const CiTrendChart: React.FC<{ t: CiTrend }> = ({ t }) => {
           </g>
         ) : null}
 
-        <path d={path} fill="none" stroke={SERIES} strokeWidth={2.5} />
+        <path d={path} fill="none" stroke={SERIES} strokeWidth={1.5} />
 
         {pts.map((v, i) => (
           <g key={`pt-${i}`}>
@@ -92,7 +86,7 @@ const CiTrendChart: React.FC<{ t: CiTrend }> = ({ t }) => {
             <text
               x={x(i)}
               y={y(v) - 8}
-              fontSize={10.5}
+              fontSize={9.5}
               fill={INK2}
               textAnchor="middle"
             >
@@ -101,7 +95,7 @@ const CiTrendChart: React.FC<{ t: CiTrend }> = ({ t }) => {
             <text
               x={x(i)}
               y={H - padB + 16}
-              fontSize={10.5}
+              fontSize={9.5}
               fill={MUTED}
               textAnchor="middle"
             >

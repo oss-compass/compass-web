@@ -1,17 +1,32 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  AimOutlined,
   ArrowRightOutlined,
   BulbOutlined,
   DownOutlined,
+  FlagOutlined,
   LinkOutlined,
+  RocketOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
-import { getScoreTone, stripMetricCode } from '../presentation';
-import type { IssueReportStage } from '../types';
+import {
+  cleanReportText,
+  getPriorityTone,
+  getScoreTone,
+  normalizeGoal,
+  stripMetricCode,
+} from '../presentation';
+import type {
+  IssueReportPain,
+  IssueReportRecommendation,
+  IssueReportStage,
+} from '../types';
 
 type IssueExperiencePathProps = {
   projectName: string;
   stages: IssueReportStage[];
+  pains: IssueReportPain[];
+  recommendations: IssueReportRecommendation[];
   sampleSize: number;
   activeStageId: string;
   onStageChange: (stageId: string) => void;
@@ -20,6 +35,8 @@ type IssueExperiencePathProps = {
 const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   projectName,
   stages,
+  pains,
+  recommendations,
   sampleSize,
   activeStageId,
   onStageChange,
@@ -82,6 +99,25 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
       reason: stripMetricCode(metric.main_reason ?? ''),
     })),
   ];
+
+  const matchesStage = (stageId: string, stageName: string) => {
+    if (stageId) return stageId === activeStage.id;
+    const normalizedName = stageName.trim();
+    return (
+      normalizedName === activeStage.name ||
+      activeStage.name.includes(normalizedName) ||
+      normalizedName.includes(activeStage.name)
+    );
+  };
+  const stagePains = pains.filter((pain) =>
+    matchesStage(pain.stage_id, pain.stage_name)
+  );
+  const stagePainIds = new Set(stagePains.map((pain) => pain.id));
+  const stageRecommendations = recommendations.filter(
+    (recommendation) =>
+      stagePainIds.has(recommendation.pp_id) ||
+      matchesStage('', recommendation.stage_name)
+  );
 
   return (
     <section
@@ -477,6 +513,152 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     ) : null}
                   </div>
                 </div>
+
+                {stagePains.length || stageRecommendations.length ? (
+                  <div className="border-t border-slate-200 pt-6">
+                    <div className="flex flex-wrap items-end justify-between gap-3">
+                      <div>
+                        <h4 className="text-base font-semibold text-slate-900">
+                          阶段改进闭环
+                        </h4>
+                        <p className="mt-1 text-xs leading-5 text-slate-500">
+                          将本阶段的主要问题与可执行行动放在一起，便于从诊断直接进入改进。
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] font-semibold">
+                        <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-rose-600">
+                          {stagePains.length} 个问题
+                        </span>
+                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-emerald-700">
+                          {stageRecommendations.length} 项行动
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`mt-4 grid grid-cols-1 gap-4 ${
+                        stagePains.length && stageRecommendations.length
+                          ? '>xl:grid-cols-2'
+                          : ''
+                      }`}
+                    >
+                      {stagePains.length ? (
+                        <div className="overflow-hidden rounded-2xl border border-rose-200/70 bg-white">
+                          <div className="flex items-center gap-2 border-b border-rose-100 bg-rose-50/70 px-4 py-3">
+                            <FlagOutlined className="text-rose-500" />
+                            <span className="text-sm font-semibold text-slate-800">
+                              主要问题
+                            </span>
+                          </div>
+                          <div className="divide-y divide-slate-100">
+                            {stagePains.map((pain) => {
+                              const tone = getPriorityTone(pain.prio);
+                              return (
+                                <article key={pain.id} className="p-4">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span
+                                      className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
+                                    >
+                                      {pain.prio}
+                                    </span>
+                                    <span className="font-mono text-[11px] font-semibold text-slate-400">
+                                      {pain.id}
+                                    </span>
+                                    <span className="text-[10px] text-slate-400">
+                                      {pain.state}
+                                    </span>
+                                  </div>
+                                  <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
+                                    {pain.title}
+                                  </h5>
+                                  <div className="mt-3 grid gap-2 text-xs leading-5">
+                                    <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600">
+                                      <span className="font-semibold text-slate-400">
+                                        关键证据 ·{' '}
+                                      </span>
+                                      {pain.evidence}
+                                    </p>
+                                    <p className="px-1 text-slate-600">
+                                      <span className="font-semibold text-slate-400">
+                                        体验影响 ·{' '}
+                                      </span>
+                                      {pain.impact}
+                                    </p>
+                                  </div>
+                                </article>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {stageRecommendations.length ? (
+                        <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-white">
+                          <div className="flex items-center gap-2 border-b border-emerald-100 bg-emerald-50/70 px-4 py-3">
+                            <RocketOutlined className="text-emerald-600" />
+                            <span className="text-sm font-semibold text-slate-800">
+                              本周行动清单
+                            </span>
+                          </div>
+                          <div className="divide-y divide-slate-100">
+                            {stageRecommendations.map((recommendation) => {
+                              const tone = getPriorityTone(recommendation.prio);
+                              return (
+                                <article
+                                  key={recommendation.id}
+                                  className="p-4"
+                                >
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span
+                                      className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
+                                    >
+                                      {recommendation.prio}
+                                    </span>
+                                    <span className="font-mono text-[11px] font-semibold text-emerald-600">
+                                      {recommendation.id}
+                                    </span>
+                                    <span className="text-[10px] text-slate-400">
+                                      对应 {recommendation.pp_id}
+                                    </span>
+                                  </div>
+                                  <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
+                                    {recommendation.action_title}
+                                  </h5>
+                                  <p className="mt-1 text-xs leading-5 text-slate-600">
+                                    {cleanReportText(recommendation.action)}
+                                  </p>
+                                  <div className="mt-3 rounded-xl bg-emerald-50/60 px-3 py-2 text-[11px] leading-5 text-slate-600">
+                                    <div>
+                                      <span className="font-semibold text-slate-400">
+                                        承接 ·{' '}
+                                      </span>
+                                      {recommendation.owner_team}
+                                      {recommendation.owner_candidate
+                                        ? ` / 候选 ${recommendation.owner_candidate}`
+                                        : ''}
+                                    </div>
+                                    <div>
+                                      <span className="font-semibold text-slate-400">
+                                        触发 ·{' '}
+                                      </span>
+                                      {recommendation.trigger}
+                                    </div>
+                                  </div>
+                                  <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-5 text-slate-600">
+                                    <AimOutlined className="mt-1 shrink-0 text-emerald-600" />
+                                    <span>
+                                      {normalizeGoal(recommendation.goal)}
+                                    </span>
+                                  </p>
+                                </article>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               {activeStage.low_issues.length ? (
