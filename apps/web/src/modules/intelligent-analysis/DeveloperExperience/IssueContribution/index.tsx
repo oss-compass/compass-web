@@ -10,7 +10,6 @@ import IssueExperiencePath from './components/IssueExperiencePath';
 import IssueProblems from './components/IssueProblems';
 import IssueActions from './components/IssueActions';
 import IssueReportSignals from './components/IssueReportSignals';
-import IssueReportNotes from './components/IssueReportNotes';
 
 type IssueContributionProps = {
   org?: string;
@@ -222,13 +221,11 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
               <IssueActions
                 recommendations={report.data.report_context.top_recs}
               />
-              <IssueReportSignals context={report.data.report_context} />
-              <IssueReportNotes report={report} />
+              {/* <IssueReportSignals context={report.data.report_context} /> */}
             </div>
 
             <footer className="px-1 pb-2 text-[11px] leading-5 text-slate-500">
-              Cogito · Issue 贡献体验 · {report.periodLabel} ·
-              本页结论用于发现协作改进线索，不替代维护者复核。
+              Cogito · Issue 贡献体验 · {report.periodLabel}
             </footer>
           </>
         ) : (

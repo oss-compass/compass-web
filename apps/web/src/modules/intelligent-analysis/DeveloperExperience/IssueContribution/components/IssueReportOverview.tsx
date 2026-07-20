@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Card, Tooltip } from 'antd';
+import { Card, Descriptions, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { IssueReportRecord } from '../types';
 import { formatGeneratedAt } from '../presentation';
@@ -26,18 +26,12 @@ const OverviewMetricCard: React.FC<OverviewMetricCardProps> = ({
   badge,
   accent = false,
 }) => (
-  <div className="flex min-w-0 flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
-    <div className="flex items-start justify-between gap-2">
+  <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
+    <div className="flex items-center justify-between gap-2">
       <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-slate-500">
         <span className="truncate">{label}</span>
         <Tooltip title={description}>
-          <button
-            type="button"
-            aria-label={`查看${label}口径：${description}`}
-            className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
-          >
-            <InfoCircleOutlined />
-          </button>
+          <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
         </Tooltip>
       </div>
       {badge ? (
@@ -54,17 +48,13 @@ const OverviewMetricCard: React.FC<OverviewMetricCardProps> = ({
     </div>
 
     <div className="mt-3 flex items-baseline gap-1.5">
-      <span className="text-2xl font-semibold leading-none text-slate-900">
+      <div className="text-2xl font-semibold leading-none text-slate-900">
         {value}
-      </span>
+      </div>
       {suffix ? (
-        <span className="text-sm font-medium text-slate-500">{suffix}</span>
+        <div className="text-sm font-medium text-slate-500">{suffix}</div>
       ) : null}
     </div>
-
-    <p className="mt-2 line-clamp-1 text-[11px] leading-5 text-slate-400">
-      {description}
-    </p>
   </div>
 );
 
@@ -90,19 +80,17 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
       : firstResponseMetric.caliber_note
     : '当前报告暂无首次响应时间数据';
   const metadataItems = [
-    { label: '社区', value: data.community_name },
-    { label: '平台', value: data.platform, mono: true },
-    { label: '报告周期', value: context.period_label },
-    { label: '样本数量', value: `${context.n_total} 个 Issue` },
-    { label: '报告版本', value: version, mono: true },
-    { label: '评分规则', value: context.rubric_version, mono: true },
-    { label: '数据结构', value: data.schema_version, mono: true },
-    { label: '报告频率', value: context.cadence },
+    { key: 'community', label: '社区', value: data.community_name },
+    { key: 'platform', label: '平台', value: data.platform, mono: true },
+    { key: 'sample', label: '样本数量', value: `${context.n_total} 个 Issue` },
+    { key: 'version', label: '报告版本', value: version, mono: true },
     {
-      label: '数据完整性',
-      value: `${context.data_completeness.toFixed(1)} / 100`,
+      key: 'rubric',
+      label: '评分规则',
+      value: context.rubric_version,
+      mono: true,
     },
-    { label: '结论置信度', value: context.confidence },
+    { key: 'cadence', label: '报告频率', value: context.cadence },
   ];
 
   return (
@@ -112,28 +100,17 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
       bodyStyle={{ padding: 24 }}
     >
       <div className=">lg:flex-row >lg:items-stretch flex flex-col gap-5">
-        <section
-          aria-labelledby="issue-report-overview-title"
-          className=">lg:w-1/2 flex w-full min-w-0 flex-col"
-        >
-          <div className="mb-2 flex min-h-6 items-center justify-between gap-3">
-            <h1
-              id="issue-report-overview-title"
-              className="text-base font-semibold text-slate-800"
-            >
-              报告总览
-            </h1>
-            <span className=">sm:inline hidden truncate text-xs text-slate-400">
-              {data.community_name}
-            </span>
+        {/* ── 左侧：报告总览（50%）── */}
+        <div className=">lg:w-1/2 flex w-full min-w-0 flex-col">
+          <div className="mb-2 text-base font-semibold text-slate-800">
+            报告总览
           </div>
-
-          <div className=">sm:grid-cols-2 grid flex-1 grid-cols-1 gap-4">
+          <div className="grid flex-1 grid-cols-2 gap-4">
             <OverviewMetricCard
               label="总体体验分"
               value={context.idx_total}
               suffix="/ 100"
-              badge={context.grade}
+              badge={`评级：${context.grade}`}
               description={context.delta_total}
               accent
             />
@@ -155,48 +132,45 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
               description={firstResponseDescription}
             />
           </div>
-        </section>
+        </div>
 
-        <section
-          aria-labelledby="issue-report-metadata-title"
-          className=">lg:w-1/2 flex w-full min-w-0 flex-col"
-        >
-          <div className="mb-2 flex min-h-6 items-center justify-between gap-3">
-            <h2
-              id="issue-report-metadata-title"
-              className="text-base font-semibold text-slate-800"
-            >
+        {/* ── 右侧：本周关键数据（50%）── */}
+        <div className=">lg:w-1/2 flex w-full min-w-0 flex-col">
+          {/* 标题行 */}
+          <div className="mb-2 flex items-center justify-between">
+            <div className="text-base font-semibold text-slate-800">
               本周关键数据
-            </h2>
-            <span className=">sm:inline hidden whitespace-nowrap text-xs text-slate-400">
+            </div>
+            <span className="whitespace-nowrap text-xs text-slate-400">
               更新于：{formatGeneratedAt(data.generated_at)}
             </span>
           </div>
-
-          <div className="flex min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-white/90 px-5 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
-            <dl className=">sm:grid-cols-2 grid w-full grid-cols-1 gap-x-8">
-              {metadataItems.map((item) => (
-                <div
-                  key={item.label}
-                  className="flex min-w-0 items-center justify-between gap-3 border-b border-slate-100 py-3"
-                >
-                  <dt className="shrink-0 text-xs font-medium text-slate-400">
-                    {item.label}
-                  </dt>
-                  <dd
-                    className={`min-w-0 truncate text-right text-sm font-medium text-slate-700 ${
-                      item.mono ? 'font-mono' : ''
-                    }`}
-                  >
-                    <Tooltip title={item.value}>
-                      <span className="block truncate">{item.value}</span>
-                    </Tooltip>
-                  </dd>
-                </div>
-              ))}
-            </dl>
+          {/* 内容区 */}
+          <div className="flex min-w-0 flex-1 flex-col rounded-2xl border border-slate-200/80 bg-white/90 px-6 py-6 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
+            <Descriptions
+              size="small"
+              column={2}
+              colon
+              labelStyle={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+              className="[&_.ant-descriptions-item-content]:!overflow-hidden [&_.ant-descriptions-item-content]:!whitespace-nowrap [&_.ant-descriptions-item-content]:!align-middle [&_.ant-descriptions-item-content]:!text-[15px] [&_.ant-descriptions-item-content]:!leading-10 [&_.ant-descriptions-item-content]:!text-slate-700 [&_.ant-descriptions-item-label]:!align-middle [&_.ant-descriptions-item-label]:!text-sm [&_.ant-descriptions-item-label]:!font-medium [&_.ant-descriptions-item-label]:!leading-10 [&_.ant-descriptions-item-label]:!text-slate-400 [&_.ant-descriptions-item]:!pb-1"
+              items={metadataItems.map((item) => ({
+                key: item.key,
+                label: item.label,
+                children: (
+                  <Tooltip title={item.value}>
+                    <span
+                      className={`block truncate text-[15px] leading-10 ${
+                        item.mono ? 'font-mono' : 'font-medium'
+                      }`}
+                    >
+                      {item.value}
+                    </span>
+                  </Tooltip>
+                ),
+              }))}
+            />
           </div>
-        </section>
+        </div>
       </div>
 
       {children}

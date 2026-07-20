@@ -22,7 +22,7 @@ const noteCls = 'mt-2 text-[11.5px] leading-relaxed text-slate-400';
 const heatClass = (kind: 'hot' | 'warm' | 'cool' | '') => {
   if (kind === 'hot') return 'bg-rose-50 font-semibold text-rose-700';
   if (kind === 'warm') return 'bg-amber-50 text-amber-700';
-  if (kind === 'cool') return 'bg-blue-50 text-blue-700';
+  if (kind === 'cool') return 'bg-sky-50 text-sky-700';
   return '';
 };
 

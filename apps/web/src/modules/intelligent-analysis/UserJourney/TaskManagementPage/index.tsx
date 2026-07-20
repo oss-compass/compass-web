@@ -1614,6 +1614,12 @@ const TaskManagementPage: React.FC = () => {
         onLogin={() => {
           void handleOperatorLogin();
         }}
+        onRerun={() => {
+          const targetJob = rerunRecordsModal.job;
+          if (!targetJob) return;
+          closeRerunRecordsModal();
+          openRerunModal(targetJob);
+        }}
         canCancelRecord={(record) =>
           !!operatorUser &&
           canOperateJob(operatorUser, rerunRecordsModal.job) &&

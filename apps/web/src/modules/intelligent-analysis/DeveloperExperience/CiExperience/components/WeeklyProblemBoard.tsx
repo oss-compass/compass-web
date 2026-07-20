@@ -15,7 +15,7 @@ const MiniTrend: React.FC<{ trend: number[]; tdays: string[] }> = ({
         <span
           key={i}
           title={`${tdays[i]}：${v}`}
-          className={`w-1.5 rounded-sm ${v ? 'bg-blue-500' : 'bg-slate-200'}`}
+          className={`w-1.5 rounded-sm ${v ? 'bg-sky-500' : 'bg-slate-200'}`}
           style={{ height: v ? Math.max(3, Math.round((v / mx) * 24)) : 2 }}
         />
       ))}

@@ -2319,6 +2319,12 @@ const RepoManagementPage: React.FC = () => {
         onLogin={() => {
           void handleOperatorLogin();
         }}
+        onRerun={() => {
+          const targetRepo = rerunRecordsModal.repo;
+          if (!targetRepo) return;
+          closeRerunRecordsModal();
+          void openRerunModal(targetRepo);
+        }}
         canCancelRecord={(record) =>
           !!operatorUser &&
           canOperateRepo(operatorUser, rerunRecordsModal.repo) &&

@@ -1,7 +1,7 @@
 import type { IssueReportApiResponse, IssueReportFilters } from './types';
 
 const REPORT_API_PATH =
-  '/api/intelligent-analysis/experience/issue-contribution/reports';
+  '/dev/api/intelligent-analysis/experience/issue-contribution/reports';
 
 export const fetchIssueReportData = async (
   filters: IssueReportFilters,
