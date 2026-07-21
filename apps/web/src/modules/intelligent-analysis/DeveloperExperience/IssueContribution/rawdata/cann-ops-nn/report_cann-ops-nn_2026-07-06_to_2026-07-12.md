@@ -1,0 +1,4395 @@
+# Issue 贡献体验周报 · cann/ops-nn
+
+**周期：2026-07-06_to_2026-07-12**
+
+> 本报告基于本周期内创建的 Issue 历史记录生成。体验判断来自模型对 Issue 线程的代读，不代表用户访谈或真实上手测试结果。
+
+## 1. 执行摘要
+
++ 本周 `cann/ops-nn` 共收到 **188** 个 Issue
++ **Open 50 / Closed 138**，关闭率 **73.4%**。
++ 总体体验分为 **44.7/100（D）**，本期作为首期基线。
+
+当前主要短板集中在三个环节：
+
+| 优先级 | 环节 | 分数 | 核心问题 |
+| ------ | ---- | ----: | -------- |
+| P0 | I3 · 总结与关闭 | 40.2 | 关闭阶段缺乏解决证据与知识沉淀 |
+| P0 | I2 · 讨论与解决 | 51.3 | 半数Issue零评论无技术讨论推进 |
+| P1 | I1 · 分配与首次响应 | 59.9 | 分流阶段客观指标偏低缺乏优先级判定 |
+
+本周建议 3 个 REC：
+
+| REC-ID | 优先级 | 行动 |
+| ------ | ------ | ---- |
+| REC-01 | P0 | 维护者主动发起技术讨论或提供排查方向 |
+| REC-02 | P0 | 强制填写解决总结（根因、方案、影响范围）方可关闭 |
+| REC-03 | P1 | 在现有标签基础上增加优先级（P0/P1/P2）和模块标签 |
+
+## 2. 本周关键数据
+
+| 指标 | 结果 |
+| ---- | ---- |
+| Issue 总数 | 188 |
+| Open / Closed | 50 / 138 |
+| 关闭率 | 73.4% |
+| 类型构成 | 缺陷 95 / 需求 48 / 咨询 2 / 其他 43 |
+| 总体体验分 | 44.7/100（D） |
+| 首次响应时间 | 中位 0.5h；均值 11.6h |
+| 关闭周期 | 中位 17.3h；均值 2.3天 |
+| 7天响应率 | 91.5% |
+| 评论数/Issue | 0.71 |
+| 标签覆盖率 | 82.4% |
+| 指派覆盖率 | 92.0% |
+| 数据完整性 | 89.3/100 |
+| 置信度 | 高 |
+
+## 3. 体验路径总览
+
+| 阶段 | 分数 | 痛点 Issue | 判断 | 主要拖累指标 |
+| ---- | ----: | ---------- | ---- | ------------ |
+| I0 · 创建 | 79.3 | 9/188（4.8%） | 相对可控 | `SUB_INPUT_QUALITY` 70.0 |
+| I1 · 分配与首次响应 | 59.9 | 61/188（32.4%） | 需改进 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 12.3 |
+| I2 · 讨论与解决 | 51.3 | 95/188（50.5%） | P0 | `OBJ_SOLUTION_EVIDENCE` 19.1 |
+| I3 · 总结与关闭 | 40.2 | 161/188（85.6%） | P0 | `OBJ_CLOSURE_REUSE` 6.6 |
+| G · Bot/Agent 治理（参考） | 65.4 | 32/188（17.0%） | 参考项 | `OBJ_BOT_GOVERNANCE` 30.8 |
+
+## 4. 主要问题
+
+| PP-ID | 优先级 | 阶段 | 问题 | 关键指标 | 影响 |
+| ----- | ------ | ---- | ---- | -------- | ---- |
+| PP-01 | P0 | I2 · 讨论与解决 | 半数Issue零评论无技术讨论推进 | OBJ_SOLUTION_EVIDENCE：均值 19.1，低分 182/188；OBJ_RESULT_FORMATION_TIMELINESS：均值 71.1，低分 45/188 | Issue长期停滞无进展，问题无法得到有效解决，贡献者体验差 |
+| PP-02 | P0 | I3 · 总结与关闭 | 关闭阶段缺乏解决证据与知识沉淀 | OBJ_CLOSURE_REUSE：均值 6.6，低分 187/188；OBJ_DECISION_TRANSPARENCY：均值 44.4，低分 128/188 | 社区无法复用解决经验，类似问题重复提交，知识资产流失 |
+| PP-03 | P1 | I1 · 分配与首次响应 | 分流阶段客观指标偏低缺乏优先级判定 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 12.3，低分 166/188；OBJ_RESPONSE_SPEED：均值 84.0，低分 18/188 | Issue无法按优先级有效排序，高优先级问题可能被淹没，处理效率低 |
+| PP-04 | P1 | G · Bot/Agent 治理 | Bot缺位与误关闭风险并存覆盖率不足 | OBJ_BOT_GOVERNANCE：均值 30.8，低分 137/188；OBJ_BOT_MISCLOSE_REVERSE：均值 96.1，低分 0/188 | 无Bot介入的Issue缺乏自动化分流和跟进，误关闭风险导致有效Issue被错误关闭 |
+| PP-05 | P1 | I2 · 讨论与解决 | 开启Issue长期停滞缺乏跟进机制 | OBJ_SOLUTION_EVIDENCE：均值 19.1，低分 182/188；OBJ_RESULT_FORMATION_TIMELINESS：均值 71.1，低分 45/188 | 开启Issue积压，贡献者无法得知进展，社区活跃度下降 |
+| PP-06 | P2 | I2 · 讨论与解决 | 需求类Issue评审路径断裂无闭环 | OBJ_SOLUTION_EVIDENCE：均值 19.1，低分 182/188；OBJ_RESULT_FORMATION_TIMELINESS：均值 71.1，低分 45/188 | 需求提交者无法得知评审结果和后续计划，需求评审过程不透明 |
+
+### 4.1 低分 Issue 明细
+
+#### PP-01 半数Issue零评论无技术讨论推进（I2 · 讨论与解决）
+
+- **[#4044](https://gitcode.com/cann/ops-nn/issues/4044) [Bug-Report|缺陷反馈]: 修复proto文件注释** — 0分
+  - 痛点原因：仅靠机器人自动关闭并加标签，无人工修复说明，且缺乏commit、文档或release等强证据链接。
+  - 原文依据：
+    - [关联PR #7415（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7415)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4044    - `yiqiao-wjp`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp
+- **[#4040](https://gitcode.com/cann/ops-nn/issues/4040) [Bug-Report|缺陷反馈]: classify_rule补充缺失文件目录** — 0分
+  - 痛点原因：仅靠机器人自动关闭和打标签，无commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7410（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7410)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4040    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4037](https://gitcode.com/cann/ops-nn/issues/4037) [Requirement|需求建议]: CANNBot项目AdvanceStep算子新增支持A5** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏人工关闭评论、文档链接或release等明确的解决说明。
+  - 原文依据：
+    - [关联PR #7405（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7405)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4037    - `cann-robot`：add label resolved    - `yolic`：assigned to @Almost_CANN
+- **[#4035](https://gitcode.com/cann/ops-nn/issues/4035) [Bug-Report|缺陷反馈]: ops-nn 仓 执行example命令指定芯片时，反馈和其他仓不一致** — 0分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，无commit引用、文档链接及人工关闭评论，缺乏具体解决说明。
+  - 原文依据：
+    - [关联PR #7402（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7402)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4035    - `cann-robot`：add label resolved    - `yolic`：assigned to @magicjason0007
+- **[#4028](https://gitcode.com/cann/ops-nn/issues/4028) [Bug-Report|缺陷反馈]: nn仓 安全告警修改** — 0分
+  - 痛点原因：虽有关联PR，但无commit、文档及release引用，且关闭时无总结评论，无法证明问题已实质解决。
+  - 原文依据：
+    - [关联PR #7344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7344)    - [关联PR #7351（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7351)    - `sunchun`：/assign    - `sunchun`：add label bug-report    - `cann-robot`：assigned to @sunchun
+- **[#4025](https://gitcode.com/cann/ops-nn/issues/4025) [Requirement|需求建议]: 950新增dequantize算子** — 0分
+  - 痛点原因：解决证据强度得分0，低于合格线 60
+  - 原文依据：
+    - [关联PR #7037（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7037)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4025    - `cann-robot`：add label resolved    - `yolic`：assigned to @h1234515
+- **[#4023](https://gitcode.com/cann/ops-nn/issues/4023) [Bug-Report|缺陷反馈]: foreach_asin arch35 tiling 添加 GetPlatformInfoFallback逻辑，解决 G…** — 0分
+  - 痛点原因：仅依赖机器人自动关闭与打标签，缺乏commit、文档、release及人工关闭评论等有效解决证据。
+  - 原文依据：
+    - [关联PR #7339（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7339)    - [关联PR #7358（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7358)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4023    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz
+- **[#4022](https://gitcode.com/cann/ops-nn/issues/4022) [Requirement|需求建议]: Relu6D 算子支持 Ascend950 ascendc 实现** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档及release链接等直接解决证据，仅靠外部状态变更关闭。
+  - 原文依据：
+    - [关联PR #7375（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7375)    - [关联PR #7444（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7444)    - `zhongheng`：closed from codehub    - `zhongheng`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhongheng
+- **[#4021](https://gitcode.com/cann/ops-nn/issues/4021) [Bug-Report|缺陷反馈]: max_pool3d_grad_with_argmax aclnn接口内存检测时发生oom** — 0分
+  - 痛点原因：虽关联了已合并的PR，但无commit引用、关闭评论等直接说明修复情况的证据。
+  - 原文依据：
+    - [关联PR #7361（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7361)    - [关联PR #7378（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7378)    - [关联PR #7380（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7380)    - `dong-yanrong`：、assign    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report
+- **[#4016](https://gitcode.com/cann/ops-nn/issues/4016) [Bug-Report|缺陷反馈]: sparse_apply_adagrad_v2的golden需要与tf对比** — 0分
+  - 痛点原因：仅靠机器人因PR合并自动关闭并加标签，缺乏commit引用、文档链接及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #7331（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7331)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4016    - `cann-robot`：add label resolved
+- **[#4015](https://gitcode.com/cann/ops-nn/issues/4015) [Requirement|需求建议]: arch35: DataCopyParams迁移为DataCopyExtParams及C-style cast修复** — 0分
+  - 痛点原因：缺乏commit引用、文档链接、release引用及关闭评论，仅靠关联PR和状态变更关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7464（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7464)    - [关联PR #7482（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7482)    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac
+- **[#4014](https://gitcode.com/cann/ops-nn/issues/4014) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：仅由系统直接关闭，未关联任何PR、commit或文档链接等实质性解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4012](https://gitcode.com/cann/ops-nn/issues/4012) test** — 0分
+  - 痛点原因：关闭时未关联任何 PR、commit 或文档链接，也无关闭评论说明，缺乏实质解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4011](https://gitcode.com/cann/ops-nn/issues/4011) test** — 0分
+  - 痛点原因：仅被直接关闭，未关联任何 PR、commit 或文档链接，缺乏实质性的解决证据留存。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4009](https://gitcode.com/cann/ops-nn/issues/4009) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：直接通过codehub关闭，未关联PR、commit或文档链接等任何可追溯证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4006](https://gitcode.com/cann/ops-nn/issues/4006) [Bug-Report|缺陷反馈]: scatterupdate算子开启确定性计算越界检查会出现oom报错** — 0分
+  - 痛点原因：虽有关联PR合并并由机器人关闭，但缺乏commit引用、文档链接及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7323（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7323)    - [关联PR #7333（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7333)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4006    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666
+- **[#4004](https://gitcode.com/cann/ops-nn/issues/4004) test-ignore** — 0分
+  - 痛点原因：关闭时未提供任何PR、commit、文档或release等实质性解决证据，仅有一句无链接的关闭说明。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4003](https://gitcode.com/cann/ops-nn/issues/4003) test-pls-ignore-123** — 0分
+  - 痛点原因：关闭时未关联任何PR、commit或文档链接，仅凭一句无实质内容的评论关闭，缺乏解决证据。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4001](https://gitcode.com/cann/ops-nn/issues/4001) [Bug-Report|缺陷反馈]: dynamic_mx_quant跑oom报错，请确认** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档链接及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7291（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7291)    - [关联PR #7325（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7325)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4001    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1
+- **[#4000](https://gitcode.com/cann/ops-nn/issues/4000) [Bug-Report|缺陷反馈]: 商分FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7324（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7324)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4000    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yushan-kite`：assigned to @yushan-kite
+- **[#3998](https://gitcode.com/cann/ops-nn/issues/3998) [Bug-Report|缺陷反馈]: MaxPool3DGradWithArgmax算子在执行geir时，部分用例执行二进制失败core** — 0分
+  - 痛点原因：仅关联已关闭PR，但无commit引用、release引用及关闭评论，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #7095（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7095)    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report    - `cann-robot`：assigned to @dong-yanrong
+- **[#3997](https://gitcode.com/cann/ops-nn/issues/3997) [Bug-Report|缺陷反馈]:** — 0分
+  - 痛点原因：仅关联了未合并的open状态PR，无commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7313（open）](https://gitcode.com/cann/ops-nn/merge_requests/7313)    - `weiyan_hw`：add label bug-report    - `yolic`：assigned to @weiyan_hw
+- **[#3996](https://gitcode.com/cann/ops-nn/issues/3996) [Requirement|需求建议]: Ascend950支持apply_power_sign算子** — 0分
+  - 痛点原因：虽关联PR已合并，但缺乏commit引用、文档链接、release引用及关闭评论等明确解决证据。
+  - 原文依据：
+    - [关联PR #6827（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6827)    - [关联PR #7409（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7409)    - `yolic`：assigned to @niukang_hw
+- **[#3995](https://gitcode.com/cann/ops-nn/issues/3995) 【Ascend950适配】dynamic_rnn 与 single_layer_lstm_grad 需支持 Ascend950** — 0分
+  - 痛点原因：关联的PR未合并且无关闭评论，缺乏commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7310（open）](https://gitcode.com/cann/ops-nn/merge_requests/7310)    - `chenxingyu18`：closed from codehub    - `yolic`：assigned to @chenxingyu18
+- **[#3994](https://gitcode.com/cann/ops-nn/issues/3994) [Requirement|需求建议]: foreach系列算子支持非连续输入和输出** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit、文档、release引用及关闭评论，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #6980（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6980)    - [关联PR #7475（open）](https://gitcode.com/cann/ops-nn/merge_requests/7475)    - [关联PR #7495（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7495)    - `yolic`：assigned to @luoyufan7
+- **[#3988](https://gitcode.com/cann/ops-nn/issues/3988) [Bug-Report|缺陷反馈]: 16in32out场景mm接口性能劣化严重** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，证据不足。
+  - 原文依据：
+    - [关联PR #7296（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7296)    - [关联PR #7297（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7297)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3988    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @HuangKun8682
+- **[#3987](https://gitcode.com/cann/ops-nn/issues/3987) [Bug-Report|缺陷反馈]: 卷积反向 dw 邮件问题代码排查** — 0分
+  - 痛点原因：关联PR仍为open未合并，且无commit、文档或release引用，仅完成指派，缺乏实际解决证据。
+  - 原文依据：
+    - [关联PR #7289（open）](https://gitcode.com/cann/ops-nn/merge_requests/7289)    - `zhouxuan78`：/assign    - `cann-robot`：assigned to @zhouxuan78
+- **[#3984](https://gitcode.com/cann/ops-nn/issues/3984) [Requirement|需求建议]: 支持QuantMatmul+Gelu+DynamicMxQuant融合算子ascend950** — 0分
+  - 痛点原因：关联PR未合并且无提交、文档及版本引用，仅分配负责人，缺乏问题已解决的闭环证据。
+  - 原文依据：
+    - [关联PR #7272（open）](https://gitcode.com/cann/ops-nn/merge_requests/7272)    - `yolic`：assigned to @zhuoyunhang
+- **[#3983](https://gitcode.com/cann/ops-nn/issues/3983) [Bug-Report|缺陷反馈]: fixpipe场景切tensor api部分场景拦截失败** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit、release引用及关闭评论，仅靠机器人
+  - 原文依据：
+    - [关联PR #7278（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7278)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3983    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647
+- **[#3981](https://gitcode.com/cann/ops-nn/issues/3981) glu_grad & grouped_dynamic_block_quant modify suggestion** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及人工关闭评论等明确的解决证据。
+  - 原文依据：
+    - [关联PR #7238（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7238)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3981    - `cann-robot`：add label resolved    - `yolic`：assigned to @ASCEND222
+- **[#3979](https://gitcode.com/cann/ops-nn/issues/3979) [Bug-Report|缺陷反馈]: Conv2DBackpropInput等算子融合Pass整改** — 0分
+  - 痛点原因：仅由机器人关联PR自动关闭并打标签，缺乏commit引用、文档链接及人工关闭说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #6081（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6081)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3979    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao
+- **[#3977](https://gitcode.com/cann/ops-nn/issues/3977) [Bug-Report|缺陷反馈]: matmul代码clean code告警** — 0分
+  - 痛点原因：关联的PR已关闭未合并，且无commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7212（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7212)    - `wuyufei`：add label bug-report    - `yolic`：assigned to @wuyufei
+- **[#3973](https://gitcode.com/cann/ops-nn/issues/3973) [Question|问题咨询]: BaddbmmMatmulGraph impl函数过大，建议拆分优化** — 0分
+  - 痛点原因：虽有关联PR被合并，但issue内无commit引用、文档链接及人工确认解决的关闭评论，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7230（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7230)    - [关联PR #7254（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7254)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3973    - `HuangKun8682`：add label question    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682
+- **[#3972](https://gitcode.com/cann/ops-nn/issues/3972) [Bug-Report|缺陷反馈]: 910C环境 aclnnAddmm 16in32out场景 报错，MatMulV3 部分 kernel未找到** — 0分
+  - 痛点原因：虽关联多个PR且部分已合并，但缺乏commit引用、文档链接及关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7202（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7202)    - [关联PR #7248（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7248)    - [关联PR #7253（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7253)    - [关联PR #7264（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7264)    - [关联PR #7275（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7275)    - [关联PR #7277（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7277)
+- **[#3970](https://gitcode.com/cann/ops-nn/issues/3970) [Bug-Report|缺陷反馈]: Conv2DTranspose算子增加Bias类型校验导致量化功能失败** — 0分
+  - 痛点原因：仅靠机器人关联合并PR自动关闭，缺乏commit引用、文档链接、release引用及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7218（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7218)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3970    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao
+- **[#3969](https://gitcode.com/cann/ops-nn/issues/3969) [Bug-Report|缺陷反馈]: slice高精度拦截** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，缺乏明确的修复证据。
+  - 原文依据：
+    - [关联PR #7161（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7161)    - [关联PR #7255（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7255)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3969    - `szhexin`：add label bug-report    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin
+- **[#3967](https://gitcode.com/cann/ops-nn/issues/3967) [Bug-Report] masked_fill 在 input tensor 有 NaN/Inf 时的处理行为未定义——用 NaN 替换有限值到底算不算 m…** — 0分
+  - 痛点原因：缺乏关联PR、commit引用及文档等任何解决证据，且处于等待反馈状态，无实质性解决进展。
+  - 原文依据：
+    - `yolic`：您好，我看到#3954也是您提出的，目前未关联pr，请在原issue上进行建议。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @jiangzeyu-2026
+- **[#3965](https://gitcode.com/cann/ops-nn/issues/3965) [Bug-Report] celuV2 alpha 很大时的精度问题本质是 float16 下 log1p(x) 在 x>65504 时溢出 inf 而非 e…** — 0分
+  - 痛点原因：仅停留在受理与分配阶段，无关联PR、代码提交或关闭说明等实质性解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，正在处理。    - `yolic`：assigned to @Coder_Nerd
+- **[#3959](https://gitcode.com/cann/ops-nn/issues/3959) [Requirement|需求建议]: 新增 one_hot 独热编码算子** — 0分
+  - 痛点原因：仅停留在需求收集与分配阶段，未关联PR、commit或文档等任何实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `jiangzeyu-2026`：add label requirement    - `yolic`：assigned to @yolic
+- **[#3952](https://gitcode.com/cann/ops-nn/issues/3952) [Bug-Report|缺陷反馈]: softplusv2grad原型宏定义应和legacy保持一致** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接及人工关闭评论等具体解决说明，证据不足。
+  - 原文依据：
+    - [关联PR #7241（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7241)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3952    - `Hana77`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @Hana77
+- **[#3946](https://gitcode.com/cann/ops-nn/issues/3946) [Bug-Report|缺陷反馈]: 修改确定性场景下的aicpu cast逻辑** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #7223（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7223)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3946    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz
+- **[#3945](https://gitcode.com/cann/ops-nn/issues/3945) [Bug-Report|缺陷反馈]: cross_entropy_loss算子，ProcessFp32未初始化castTmpBuf大小** — 0分
+  - 痛点原因：关联的两个PR均处于open未合并状态，无commit引用和关闭评论，缺乏已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7219（open）](https://gitcode.com/cann/ops-nn/merge_requests/7219)    - [关联PR #7220（open）](https://gitcode.com/cann/ops-nn/merge_requests/7220)    - `kdy18482276080`：add label bug-report    - `kdy18482276080`：assigned to @kdy18482276080
+- **[#3936](https://gitcode.com/cann/ops-nn/issues/3936) [Requirement|需求建议]: GlobalLpPool算子950实现** — 0分
+  - 痛点原因：仅靠机器人关闭和关联PR，无人工确认解决的评论，且缺少commit、文档等具体解决证据链接。
+  - 原文依据：
+    - [关联PR #6398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6398)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3936    - `cann-robot`：add label resolved    - `yolic`：assigned to @weixin_51153241
+- **[#3931](https://gitcode.com/cann/ops-nn/issues/3931) [Bug-Report|缺陷反馈]: IndexPutWithSortV2算子SIMD/SIMT模板计算逻辑修复** — 0分
+  - 痛点原因：虽关联PR已合并，但缺少commit引用、文档及release链接，且无关闭评论说明，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7039（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7039)    - [关联PR #7250（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7250)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3931    - `cann-robot`：add label resolved
+- **[#3930](https://gitcode.com/cann/ops-nn/issues/3930) [Bug-Report|缺陷反馈]: 修复了 NHWC 布局下 conv2d_v2 算子在加载 AL1 数据时后半段数据加载异常** — 0分
+  - 痛点原因：仅有关联PR被合并及机器人自动关闭，缺乏commit引用、文档链接和人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7030（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7030)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3930    - `cann-robot`：add label resolved    - `yolic`：assigned to @yangyang4536
+- **[#3925](https://gitcode.com/cann/ops-nn/issues/3925) [Bug-Report|缺陷反馈]: FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7116（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7116)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3925    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yushan-kite
+- **[#3924](https://gitcode.com/cann/ops-nn/issues/3924) [Requirement|需求建议]: Conv2d小kernel模板支持分组卷积** — 0分
+  - 痛点原因：关联PR均已关闭或未合并，且无commit、文档及release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7154（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7154)    - [关联PR #7317（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7317)    - [关联PR #7710（open）](https://gitcode.com/cann/ops-nn/merge_requests/7710)    - `Mrxxx7`：add label requirement    - `yolic`：assigned to @Mrxxx7
+- **[#3923](https://gitcode.com/cann/ops-nn/issues/3923) [Bug-Report|缺陷反馈]: bmmv3 vector不支持transA = 1，需要拦截** — 0分
+  - 痛点原因：关联PR仅被关闭未明确合并，且无commit、文档、release引用及关闭评论等实质解决证据。
+  - 原文依据：
+    - [关联PR #7178（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7178)    - `hid54649903`：add label bug-report    - `hid54649903`：assigned to @hid54649903
+- **[#3922](https://gitcode.com/cann/ops-nn/issues/3922) [Bug-Report|缺陷反馈]: DS红线网络用例AIC_ERR** — 0分
+  - 痛点原因：仅靠机器人自动关闭并关联PR，缺乏commit引用、文档链接及人工关闭评论等具体解决证据说明。
+  - 原文依据：
+    - [关联PR #7174（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7174)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3922    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl
+- **[#3921](https://gitcode.com/cann/ops-nn/issues/3921) [Bug-Report|缺陷反馈]: Matmul部分算子中对寄存器做初始化，在算子执行完成之后未还原** — 0分
+  - 痛点原因：关联PR未合并且无commit引用、文档链接及关闭评论等已解决证据。
+  - 原文依据：
+    - [关联PR #7262（open）](https://gitcode.com/cann/ops-nn/merge_requests/7262)    - `wangwei_mayday`：/assign    - `cann-robot`：assigned to @wangwei_mayday
+- **[#3920](https://gitcode.com/cann/ops-nn/issues/3920) [Bug-Report|缺陷反馈]: 个别网络在910B图模式8卡训练编译卡住** — 0分
+  - 痛点原因：虽关联PR已合并，但无commit引用、关闭评论及文档链接，仅靠机器人自动关闭，缺乏实质性解决说明。
+  - 原文依据：
+    - [关联PR #81980（merged）](https://gitcode.com/cann/canndev/merge_requests/81980)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-nn#issue3920    - `Jiaxin_001`：add label bug-report    - `cann-robot`：add label resolved    - `Jiaxin_001`：assigned to @Jiaxin_001
+- **[#3907](https://gitcode.com/cann/ops-nn/issues/3907) [Requirement|需求建议]: 部分参数提前到tiling阶段计算** — 0分
+  - 痛点原因：仅靠机器人关联已合并PR自动关闭，缺乏commit、文档及release等直接解决证据，无人工关闭评论说明。
+  - 原文依据：
+    - [关联PR #7069（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7069)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3907    - `zhaozhoujun520`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520
+- **[#3905](https://gitcode.com/cann/ops-nn/issues/3905) [Bug-Report|缺陷反馈]: QuantBatchMatmulV3和FusedQuantMatmul的tiling拦截有漏洞** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7110（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7110)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3905    - `lifei265`：add label bug-report    - `cann-robot`：add label resolved    - `lifei265`：assigned to @lifei265
+- **[#3902](https://gitcode.com/cann/ops-nn/issues/3902) [Bug-Report|缺陷反馈]: aclnnConvolutionBackward异常场景用例报错有误** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档说明及人工确认等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7127（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7127)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3902    - `zhaozhoujun520`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520
+- **[#3900](https://gitcode.com/cann/ops-nn/issues/3900) [Bug-Report|缺陷反馈]: celuV2算子alpha取值比较大的时候，精度问题** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7106（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7106)    - [关联PR #7130（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7130)    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @gcw_YBIAEfqJ
+- **[#3894](https://gitcode.com/cann/ops-nn/issues/3894) [Requirement|需求建议]: aclnn_convert_to_int4_pack接口runtime整改** — 0分
+  - 痛点原因：仅靠机器人自动关闭并加标签，缺乏人工关闭说明、文档链接及release记录等实质性证据支撑。
+  - 原文依据：
+    - [关联PR #7013（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7013)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3894    - `zhangquanxin`：add label requirement    - `cann-robot`：add label resolved
+- **[#3890](https://gitcode.com/cann/ops-nn/issues/3890) [Requirement|需求建议]: 添加bmm/mm b全载+fixpipe优化模板** — 0分
+  - 痛点原因：虽有关联PR，但缺乏commit、文档或release等直接证据链接，且无人工关闭评论说明具体解决情况。
+  - 原文依据：
+    - [关联PR #5452（merged）](https://gitcode.com/cann/ops-nn/merge_requests/5452)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3890    - `huangkejie1647`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647
+- **[#3888](https://gitcode.com/cann/ops-nn/issues/3888) [Requirement|需求建议]: QuantBatchMatmul 算子 FP8-Pertile 支持 WeightNZ** — 0分
+  - 痛点原因：仅凭机器人因关联PR合并自动关闭，缺乏commit、文档和release等直接解决证据，也无人工确认解决的评论。
+  - 原文依据：
+    - [关联PR #7104（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7104)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3888    - `cann-robot`：add label resolved    - `yolic`：assigned to @Nam_John
+- **[#3885](https://gitcode.com/cann/ops-nn/issues/3885) [Bug-Report|缺陷反馈]: swiglu_group_quant quant mode==2 out y origin在输入为fp32精度问题** — 0分
+  - 痛点原因：仅由机器人自动关闭并打标签，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7094（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7094)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3885    - `cann-robot`：add label resolved
+- **[#3881](https://gitcode.com/cann/ops-nn/issues/3881) [Bug-Report|缺陷反馈]: ExtendConvTranspose算子A16W8，Group>1的部分场景拦截缺失** — 0分
+  - 痛点原因：关联的PR仍为open状态未合并，且无commit、文档或release引用等实际解决证据。
+  - 原文依据：
+    - [关联PR #6850（open）](https://gitcode.com/cann/ops-nn/merge_requests/6850)    - `YuanTianyi`：add label bug-report    - `YuanTianyi`：assigned to @YuanTianyi
+- **[#3879](https://gitcode.com/cann/ops-nn/issues/3879) [Bug-Report|缺陷反馈]: addmm和baddbmm接口支持支持混合精度计算输入，当前16in32out场景被拦截** — 0分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit、文档及release引用，且仅由机器人自动关闭，无人工解决说明。
+  - 原文依据：
+    - [关联PR #6862（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6862)    - [关联PR #7091（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7091)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3879    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3875](https://gitcode.com/cann/ops-nn/issues/3875) [Requirement|需求建议]: 精简Index算子tiling构建配置并统一op_host目录编译** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及关闭评论等直接证明问题解决的证据。
+  - 原文依据：
+    - [关联PR #7058（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7058)    - [关联PR #7072（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7072)    - `tieyutong`：/assign    - `cann-robot`：assigned to @tieyutong
+- **[#3869](https://gitcode.com/cann/ops-nn/issues/3869) [Requirement|需求建议]: mm/bmm算子A全载模板kernel实现切换tensorApi** — 0分
+  - 痛点原因：关联PR处于未合并的关闭状态，且无commit、文档及release引用，关闭时无任何说明评论。
+  - 原文依据：
+    - [关联PR #6610（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6610)    - `AlbertYoung192`：add label requirement    - `AlbertYoung192`：assigned to @AlbertYoung192
+- **[#3860](https://gitcode.com/cann/ops-nn/issues/3860) [Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确** — 0分
+  - 痛点原因：虽有关联PR合并及机器人自动关闭，但缺乏人工确认解决的评论、commit引用或文档说明等实质证据。
+  - 原文依据：
+    - [关联PR #7024（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7024)    - [关联PR #7224（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7224)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3860    - `wuyufei`：add label bug-report    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei
+- **[#3857](https://gitcode.com/cann/ops-nn/issues/3857) [Bug-Report|缺陷反馈]: sparsesegmentmeangrad的网络用例性能优化，核上开多个线程处理indices每次循环的多个segment** — 0分
+  - 痛点原因：虽有关联PR被合并，但缺少commit引用、文档及release链接，且无人工关闭说明，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7044（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7044)    - [关联PR #7064（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7064)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3857    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666
+- **[#3855](https://gitcode.com/cann/ops-nn/issues/3855) [Requirement|需求建议]:【QBMM】新增scale支持batch维度** — 0分
+  - 痛点原因：虽有合并的关联PR，但仅由机器人自动关闭，缺乏人工关闭评论及commit、文档、release等具体解决证据支撑。
+  - 原文依据：
+    - [关联PR #6344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6344)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3855    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp
+- **[#4041](https://gitcode.com/cann/ops-nn/issues/4041) [Question|问题咨询]: 代码上库最新规范资料** — 15分
+  - 痛点原因：仅停留在问题受理和分配阶段，缺乏关联PR、commit引用等实质性解决证据。
+  - 原文依据：
+    - `yolic`：你好，感谢反馈，问题已收到，当前 [@caiwenwen](https://gitcode.com/caiwenwen) 正在跟踪处理。    - `weixin_51153241`：add label question    - `yolic`：assigned to @caiwenwen
+- **[#4038](https://gitcode.com/cann/ops-nn/issues/4038) [Documentation|文档反馈][CANN SUMMER CAMPS 2026][NPU]: Requirement Issue 模板中 Backgr…** — 15分
+  - 痛点原因：关联PR仍处于open未合并状态，且无commit引用与关闭评论，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #7407（open）](https://gitcode.com/cann/ops-nn/merge_requests/7407)    - `yolic`：assigned to @Quirkybrain
+- **[#4034](https://gitcode.com/cann/ops-nn/issues/4034) FusedSgd算子支持Ascend 950平台** — 15分
+  - 痛点原因：关联PR #7400仍处于open状态未合并，且无commit或release引用，缺乏问题已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7400（open）](https://gitcode.com/cann/ops-nn/merge_requests/7400)    - `yolic`：assigned to @raoliang_sac
+- **[#4029](https://gitcode.com/cann/ops-nn/issues/4029) [Documentation|文档反馈]: aclnnDynamicMxQuantV2文档缺少scaleAlg=2时blocksize=32的约束** — 15分
+  - 痛点原因：仅靠机器人标签和PR关联证明解决，无commit引用、release引用或关闭评论佐证，证据强度不足。
+  - 原文依据：
+    - [关联PR #7381（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7381)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4029    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1
+- **[#4013](https://gitcode.com/cann/ops-nn/issues/4013) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 和 add_rms_norm_dynamic_quant_v…** — 15分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用与release记录，且关闭时无人工说明仅靠系统自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7334（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7334)    - [关联PR #7352（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7352)    - [关联PR #7368（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7368)    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#4010](https://gitcode.com/cann/ops-nn/issues/4010) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过codehub直接关闭，未关联任何PR、commit或release等代码层面的解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4008](https://gitcode.com/cann/ops-nn/issues/4008) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过codehub直接关闭，未关联PR、commit或release等代码证据，缺乏解决过程证明。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4007](https://gitcode.com/cann/ops-nn/issues/4007) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过外部平台直接关闭，未关联任何PR、commit或release等代码证据，且无关闭评论说明，缺乏解决依据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#3991](https://gitcode.com/cann/ops-nn/issues/3991) [Bug-Report|缺陷反馈]: fused_bias_leaky_relu_grad算子 tiling add guard rank>8** — 15分
+  - 痛点原因：仅靠机器人自动关闭并打标签，缺乏commit引用、release版本说明及人工关闭评论等关键解决证据。
+  - 原文依据：
+    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7302)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3991    - `ugzhangyiyi`：add label bug-report    - `cann-robot`：add label resolved    - `ugzhangyiyi`：assigned to @ugzhangyiyi
+- **[#3986](https://gitcode.com/cann/ops-nn/issues/3986) [Bug-Report|缺陷反馈]: aclnnQuantMatmulV5算子oom问题** — 15分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接和人工总结评论，缺乏具体的修复细节说明。
+  - 原文依据：
+    - [关联PR #7276（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7276)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3986    - `steppecat`：add label bug-report    - `cann-robot`：add label resolved    - `steppecat`：assigned to @steppecat
+- **[#3985](https://gitcode.com/cann/ops-nn/issues/3985) [Documentation|文档反馈]: rms_norm 算子aclnn文档中空Tensor支持描述不准确** — 15分
+  - 痛点原因：虽有关联PR，但缺少commit引用、release引用及人工关闭评论等强证据支撑。
+  - 原文依据：
+    - [关联PR #7280（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7280)    - [关联PR #7284（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7284)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3985    - `liangyuhua`：add label documentation    - `cann-robot`：add label resolved
+- **[#3974](https://gitcode.com/cann/ops-nn/issues/3974) [Documentation|文档反馈]: aclnnMatmul&&aclnnMm 资料有误** — 15分
+  - 痛点原因：虽有关联PR被合并，但无commit和release引用，且仅由机器人自动关闭无人工解决说明，证据不足。
+  - 原文依据：
+    - [关联PR #7208（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7208)    - [关联PR #7257（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7257)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3974    - `wuyufei`：add label documentation    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei
+- **[#3971](https://gitcode.com/cann/ops-nn/issues/3971) [Documentation|文档反馈]: fusedmatmul资料修改** — 15分
+  - 痛点原因：仅通过状态变更和标签关闭，无关联PR与commit引用，缺乏代码修复证据。
+  - 原文依据：
+    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label documentation    - `cann-robot`：add label Accepted    - `szhexin`：assigned to @szhexin
+- **[#3962](https://gitcode.com/cann/ops-nn/issues/3962) [Requirement|需求建议]: 新增 randperm 随机排列算子** — 15分
+  - 痛点原因：无关联PR、commit及release引用等代码落地证据，仅停留在需求收集与等待反馈阶段。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3960](https://gitcode.com/cann/ops-nn/issues/3960) [Requirement|需求建议]: 新增 argwhere 多维度非零元素定位算子** — 15分
+  - 痛点原因：无关联 PR、commit 及 release 引用，仅停留在要求补充信息阶段，无任何实际解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3958](https://gitcode.com/cann/ops-nn/issues/3958) [Requirement|需求建议]: 新增 sort 算子（全局/指定维度排序）** — 15分
+  - 痛点原因：无关联 PR、commit 或 release 引用等实际解决证据，仅为需求建议且处于等待反馈状态，面临被关闭风险。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：delete label wait-feedback    - `yolic`：add label wait-feedback
+- **[#3956](https://gitcode.com/cann/ops-nn/issues/3956) [Requirement|需求建议]: 新增 topk 算子（仅 value 不排序场景）** — 15分
+  - 痛点原因：无关联PR、commit及release引用，仅停留在需求收集与等待反馈阶段，未提供实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3955](https://gitcode.com/cann/ops-nn/issues/3955) [Requirement|需求建议]: 新增 searchsorted 二分检索算子** — 15分
+  - 痛点原因：无关联PR、commit及release引用，仅停留在需求收集与催促反馈阶段，缺乏实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3954](https://gitcode.com/cann/ops-nn/issues/3954) [Requirement|需求建议]: 新增 masked_fill 掩码填充算子** — 15分
+  - 痛点原因：缺乏关联 PR、commit 及 release 等实质性解决证据，仅停留在需求收集与等待反馈阶段。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3950](https://gitcode.com/cann/ops-nn/issues/3950) [Documentation|文档反馈]: aclnnSoftplusBackward.md中的示例代码和example中的示例代码不一致** — 15分
+  - 痛点原因：仅靠机器人自动关联PR关闭，缺乏commit引用、release引用及人工关闭评论，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #7242（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7242)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3950    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang
+- **[#3949](https://gitcode.com/cann/ops-nn/issues/3949) [Bug-Report|缺陷反馈]: aclnnElu算子切换pytorch2.10精度失败** — 15分
+  - 痛点原因：虽有合并的关联PR和机器人自动关闭，但缺乏commit引用、文档链接及人工关闭评论来明确说明修复细节。
+  - 原文依据：
+    - [关联PR #6882（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6882)    - [关联PR #7240（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7240)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3949    - `ligen75`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @ligen75
+- **[#3943](https://gitcode.com/cann/ops-nn/issues/3943) [Documentation|文档反馈]: FusedMatmul支持BMM+add/mul的资料说明** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭并打标签，无commit和release引用，缺乏人工关闭评论说明解决情况。
+  - 原文依据：
+    - [关联PR #7197（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7197)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3943    - `liweijian16`：add label documentation    - `cann-robot`：add label resolved    - `liweijian16`：assigned to @liweijian16
+- **[#3942](https://gitcode.com/cann/ops-nn/issues/3942) [Documentation|文档反馈]:torch_npu名称合一TorchNPU** — 15分
+  - 痛点原因：仅指派了负责人，无关联PR、提交记录或版本说明等实质性解决证据，无法证明问题已真正解决。
+  - 原文依据：
+    - `yolic`：assigned to @yanglu-1
+- **[#3939](https://gitcode.com/cann/ops-nn/issues/3939) [Documentation|文档反馈]: nn仓doc tools和aidd内容修改合入9.1.0专项** — 15分
+  - 痛点原因：虽有关联PR，但缺乏commit引用、release引用及关闭评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - [关联PR #7086（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7086)    - `caiwenwen`：add label documentation    - `caiwenwen`：assigned to @caiwenwen
+- **[#3935](https://gitcode.com/cann/ops-nn/issues/3935) [Documentation|文档反馈]: SwigluGroupQuantGrad文档groupIndex aclnn接口说明与实际不一致，clamplim…** — 15分
+  - 痛点原因：虽有合并的关联 PR，但缺乏 commit 引用与人工确认评论，仅靠机器人自动关闭，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #7195（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7195)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3935    - `cann-robot`：add label resolved
+- **[#3901](https://gitcode.com/cann/ops-nn/issues/3901) [Documentation|文档反馈]: cache_runinfo.cpp 常量名MAX_TILING_DADA_SIZE拼写错误** — 15分
+  - 痛点原因：关联PR未合并且无commit引用与关闭评论，仅停留在指派阶段，缺乏问题已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7133（open）](https://gitcode.com/cann/ops-nn/merge_requests/7133)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liliyan](https://gitcode.com/liliyan) 正在跟踪处理。    - `yolic`：assigned to @liliyan
+- **[#3896](https://gitcode.com/cann/ops-nn/issues/3896) [Documentation|文档反馈]: aclnnSoftplusBackward.md、README.md、op_api_list.md、op_list…** — 15分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit和release引用，且无人工关闭评论说明解决内容，导致证据强度不足。
+  - 原文依据：
+    - [关联PR #7113（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7113)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3896    - `Hana77`：add label documentation    - `cann-robot`：add label resolved
+- **[#3884](https://gitcode.com/cann/ops-nn/issues/3884) [Documentation|文档反馈]: aclnnDynamicDualLevelMxQuant、aclnnSwigluGroupQuant、aclnnE…** — 15分
+  - 痛点原因：关联PR仍处于open状态且无commit或release引用，仅凭评论说明资料已修正，解决证据不足。
+  - 原文依据：
+    - [关联PR #7406（open）](https://gitcode.com/cann/ops-nn/merge_requests/7406)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `east_yang`：SwigluGroupQuant资料已修正 https://gitcode.com/cann/ops-nn/blob/master/activation/swiglu_group_quant/docs/aclnnSwigluGroupQu…    - `yolic`：assigned to @sunchun    - `yolic`：assigned to @east_yang    - `yolic`：assigned to @jiaoyiming
+- **[#3880](https://gitcode.com/cann/ops-nn/issues/3880) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，nn仓编译工程适配** — 15分
+  - 痛点原因：仅凭机器人因关联PR合并自动关闭，无人工确认、测试验证或文档更新说明，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #6225（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6225)    - [关联PR #7061（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7061)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3880    - `liuyufan0725`：add label requirement    - `cann-robot`：add label resolved
+- **[#3878](https://gitcode.com/cann/ops-nn/issues/3878) [Documentation|文档反馈]: ExtendConvTranspose算子的README需要更新** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，缺乏commit引用、release说明及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #7074（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7074)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3878    - `YuanTianyi`：add label documentation    - `cann-robot`：add label resolved    - `YuanTianyi`：assigned to @YuanTianyi
+- **[#3877](https://gitcode.com/cann/ops-nn/issues/3877) [Bug-Report|缺陷反馈]: GroupedQuantMax输出amax数据踩踏** — 15分
+  - 痛点原因：缺乏commit与release引用，且无人工关闭评论说明解决过程，仅靠机器人自动关闭，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #6949（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6949)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3877    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yin-peng
+- **[#3859](https://gitcode.com/cann/ops-nn/issues/3859) [Documentation|文档反馈]: Modifying the issue of incorrect links** — 15分
+  - 痛点原因：仅凭机器人关联PR自动关闭，无commit引用、release说明及人工确认修复的评论，证据链薄弱。
+  - 原文依据：
+    - [关联PR #7049（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7049)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3859    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang
+- **[#4032](https://gitcode.com/cann/ops-nn/issues/4032) [Bug-Report|缺陷反馈]: 修复 rmsnormquantv2/v3 的 GM 数据拷贝长度问题** — 23分
+  - 痛点原因：仅依赖机器人合并PR自动关闭，缺乏commit引用、文档链接和release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7389（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7389)    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4032    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong
+- **[#4031](https://gitcode.com/cann/ops-nn/issues/4031) [Bug-Report|缺陷反馈]: 修复data_format_dim_map_def.cpp静态问题** — 23分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及release记录，且关闭评论仅为机器人自动回复，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #7372（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7372)    - [关联PR #7384（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7384)    - `lianjieyu`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4031    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved
+- **[#4030](https://gitcode.com/cann/ops-nn/issues/4030) [Bug-Report|缺陷反馈]: 高精度情况下，非连续有可能走进vec计算未拦截，需要进行拦截** — 23分
+  - 痛点原因：缺乏PR、commit、文档或release等实质性解决证据，仅凭评论和状态变更关闭。
+  - 原文依据：
+    - `gcw_kUomxQ2l`：/approve    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label bug-report    - `szhexin`：assigned to @szhexin
+- **[#4027](https://gitcode.com/cann/ops-nn/issues/4027) fix: 修复 rmsnormquantv2/3 的 GM 内存越界问题** — 23分
+  - 痛点原因：仅靠合并的关联PR和机器人关闭评论，缺乏commit引用、文档链接及release引用等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7338（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7338)    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4027    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong
+- **[#4026](https://gitcode.com/cann/ops-nn/issues/4026) [Bug-Report|缺陷反馈]: usm/usp算子二进制匹配失败** — 23分
+  - 痛点原因：仅依赖关联PR合并关闭，缺乏commit、release及文档等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7382（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7382)    - `zhangxiyan7`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4026    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7
+- **[#4024](https://gitcode.com/cann/ops-nn/issues/4024) [Bug-Report|缺陷反馈]: AdaptiveMaxPool3d性能优化** — 23分
+  - 痛点原因：仅靠机器人自动关联PR并关闭，无人工解决说明，且缺乏commit、文档等实质性证据。
+  - 原文依据：
+    - [关联PR #7335（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7335)    - `liu_hp711`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4024    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @liu_hp711
+- **[#4019](https://gitcode.com/cann/ops-nn/issues/4019) [Requirement|需求建议]: sparse_segment_sum_grad 支持确定性计算** — 23分
+  - 痛点原因：仅有关联PR和自动关闭评论，缺乏commit、文档及release等直接解决证据，证据链不完整。
+  - 原文依据：
+    - [关联PR #7307（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7307)    - `wang-shilong32`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4019    - `wang-shilong32`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wang-shilong32
+- **[#3999](https://gitcode.com/cann/ops-nn/issues/3999) [Requirement|需求建议]: 新增SwigluGroup和SwigluGroupQuant算子torch_extension接口** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档及release链接，仅靠机器人自动关闭缺乏实质证据。
+  - 原文依据：
+    - [关联PR #7232（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7232)    - `taochangmin`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3999    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin
+- **[#3993](https://gitcode.com/cann/ops-nn/issues/3993) [Bug-Report|缺陷反馈]: QBMM MIX模板代码规范整改** — 23分
+  - 痛点原因：虽有关联PR，但缺乏commit引用、文档及release链接，且仅靠机器人自动关闭，无实质性修复说明。
+  - 原文依据：
+    - [关联PR #7303（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7303)    - `ZhangWei1176`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3993    - `ZhangWei1176`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ZhangWei1176
+- **[#3980](https://gitcode.com/cann/ops-nn/issues/3980) [Bug-Report|缺陷反馈]: Matmul算子出现用例精度错误** — 23分
+  - 痛点原因：虽有合并的关联PR和机器人关闭评论，但缺少commit引用、文档链接与release引用等直接修复证据。
+  - 原文依据：
+    - [关联PR #7249（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7249)    - [关联PR #7265（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7265)    - `zhengyuhao3`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3980    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3968](https://gitcode.com/cann/ops-nn/issues/3968) [Bug-Report|缺陷反馈]: MatMulToMatmulV3图融合修复offset_w场景并按输入数量整改pattern** — 23分
+  - 痛点原因：仅有关联PR和自动关闭评论，缺失commit引用、文档链接及release说明等直接解决证据。
+  - 原文依据：
+    - [关联PR #7142（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7142)    - `jgx12`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3968    - `jgx12`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jgx12
+- **[#3966](https://gitcode.com/cann/ops-nn/issues/3966) [Bug-Report] scatter_elements_v2 中 mode==1 时 if (includeSelf) 判断 countLocal，但 i…** — 23分
+  - 痛点原因：仅通过评论口头解释，未提供修复PR、commit或文档链接即关闭issue。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `chenxingyu18`：你好，kernel是和tiling配合使用的，不会误传    - `chenxingyu18`：您好，当前问题已回复，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `chenxingyu18`：changed custom state from 进行中 to 已完成    - `chenxingyu18`：closed from codehub    - `cann-robot`：add label Accepted
+- **[#3944](https://gitcode.com/cann/ops-nn/issues/3944) [Bug-Report|缺陷反馈]: ExtendConvTranspose知识库能力导致relu开关失效问题** — 23分
+  - 痛点原因：仅靠机器人关闭评论和关联PR支撑，缺乏commit引用、文档链接与release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7189（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7189)    - `sunlesheng`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3944    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunlesheng
+- **[#3938](https://gitcode.com/cann/ops-nn/issues/3938) [Bug-Report|缺陷反馈]: pooling\max_pool3d_with_argmax_v2内存问题** — 23分
+  - 痛点原因：缺乏commit引用、文档链接与release说明等直接解决证据，仅靠机器人合并PR后自动关闭。
+  - 原文依据：
+    - [关联PR #7209（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7209)    - [关联PR #7210（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7210)    - `VoyageZhou`：/assign [@VoyageZhou](https://gitcode.com/VoyageZhou)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3938    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @VoyageZhou
+- **[#3934](https://gitcode.com/cann/ops-nn/issues/3934) [Bug-Report|缺陷反馈]: ForeachCopy算子性能修复** — 23分
+  - 痛点原因：虽关联已合并PR，但无commit、release或文档等直接解决证据，且关闭原因仅依赖关联issue状态。
+  - 原文依据：
+    - [关联PR #7146（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7146)    - [关联PR #7211（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7211)    - `u010470851`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3934    - `u010470851`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3929](https://gitcode.com/cann/ops-nn/issues/3929) [Bug-Report|缺陷反馈]: DataCopy多维数据搬运接口参数名变更** — 23分
+  - 痛点原因：仅由机器人关联PR自动关闭，缺乏commit引用、文档链接及release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7151（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7151)    - `Zehai`：/assign@Zehai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3929    - `Zehai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Zehai
+- **[#3928](https://gitcode.com/cann/ops-nn/issues/3928) [Bug-Report|缺陷反馈]: aclnnTopKTopPSampleV2 精度问题解决** — 23分
+  - 痛点原因：虽有关联PR，但缺乏commit、文档和release等直接证据，且仅靠机器人自动关闭，无人工确认解决的实质证据。
+  - 原文依据：
+    - [关联PR #7182（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7182)    - [关联PR #7198（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7198)    - `sunchun`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3928    - `sunchun`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3915](https://gitcode.com/cann/ops-nn/issues/3915) index 算子UT覆盖率提升** — 23分
+  - 痛点原因：虽有关联PR，但缺失commit引用、文档链接与release引用等直接证据，仅靠关闭评论支撑导致得分过低。
+  - 原文依据：
+    - [关联PR #7167（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7167)    - [关联PR #7226（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7226)    - `wkkk0528`：/assign    - `wkkk0528`：closed from codehub    - `wkkk0528`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3912](https://gitcode.com/cann/ops-nn/issues/3912) [Bug-Report|缺陷反馈]: QBMM MX multi batch 路径 atomic add 状态未恢复** — 23分
+  - 痛点原因：仅关联已合并PR，但缺乏commit、文档及release等直接解决证据，且关闭仅依赖机器人自动操作。
+  - 原文依据：
+    - [关联PR #7157（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7157)    - `chen-shuai`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3912    - `chen-shuai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chen-shuai
+- **[#3906](https://gitcode.com/cann/ops-nn/issues/3906) [Bug-Report|缺陷反馈]: usm排序求唯一索引问题** — 23分
+  - 痛点原因：仅靠机器人因关联MR合并自动关闭，缺乏commit引用、文档及release等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7145（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7145)    - `jinpenghe`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3906    - `jinpenghe`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jinpenghe
+- **[#3899](https://gitcode.com/cann/ops-nn/issues/3899) [Bug-Report|缺陷反馈]: UniqueConsecutive算子UT找不到头文件** — 23分
+  - 痛点原因：仅有关联PR和关闭评论，缺少commit引用、文档链接及release记录，导致解决证据单薄。
+  - 原文依据：
+    - [关联PR #7118（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7118)    - `wkx12138`：/assgin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3899    - `wkx12138`：add label bug-report    - `cann-robot`：add label resolved    - `wkx12138`：assigned to @wkx12138
+- **[#3892](https://gitcode.com/cann/ops-nn/issues/3892) [Bug-Report|缺陷反馈]: GroupedQuantMax & QuantMax support batchmode** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit、文档及release等直接解决证据，仅靠机器人自动关闭。
+  - 原文依据：
+    - [关联PR #7115（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7115)    - `yin-peng`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3892    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yin-peng
+- **[#3891](https://gitcode.com/cann/ops-nn/issues/3891) [Bug-Report|缺陷反馈]: Wqbmmv2异常场景打印内容有问题** — 23分
+  - 痛点原因：仅靠机器人因关联issue合并自动关闭，缺乏commit、文档及release等直接修复证据，导致证据链薄弱。
+  - 原文依据：
+    - [关联PR #6957（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6957)    - `ykxxlzhong`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3891    - `ykxxlzhong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ykxxlzhong
+- **[#3887](https://gitcode.com/cann/ops-nn/issues/3887) [Bug-Report|缺陷反馈]: 卷积反向、foreach算子 classifyRlue目录不生效问题** — 23分
+  - 痛点原因：虽有关联PR合并，但缺乏commit引用、文档链接及release引用等直接修复证据，仅靠机器人关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #7090（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7090)    - [关联PR #7124（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7124)    - `zhouxuan78`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3887    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhouxuan78
+- **[#3876](https://gitcode.com/cann/ops-nn/issues/3876) [Requirement|需求建议] 新增 scatter_nd_max 和 scatter_nd_min 算子迁移** — 23分
+  - 痛点原因：虽有合并的PR和机器人关闭记录，但缺少commit引用、文档链接和release引用等直接证据支撑。
+  - 原文依据：
+    - [关联PR #6800（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6800)    - `jialimin1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3876    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jialimin1
+- **[#3873](https://gitcode.com/cann/ops-nn/issues/3873) [Bug][arch35][index] ScatterMul/ScatterMax/ScatterMin/ScatterDiv/UnsortedSegmen…** — 23分
+  - 痛点原因：关闭时未关联任何修复PR、提交记录或文档链接，仅凭系统状态关闭，缺乏实质性解决证据。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，index类算子安排@xieshengwei1024处理中    - `tangweiwei2`：closed from codehub    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3872](https://gitcode.com/cann/ops-nn/issues/3872) [Bug][arch35][norm] AddLayerNormQuant/SyncBatchNormGatherStatsFused kernel 使用 S…** — 23分
+  - 痛点原因：仅靠关联PR和口头确认关闭，缺乏commit引用、文档链接及release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7088（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7088)    - [关联PR #7117（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7117)    - `tangweiwei2`：问题已收到，norm类算子已对齐，安排@xieshengwei1024跟踪    - `tangweiwei2`：closed from codehub    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3870](https://gitcode.com/cann/ops-nn/issues/3870) [Bug][arch35][loss] NLLLossGrad kernel 使用 SyncAll 但 Tiling 未设置 SetScheduleMode(…** — 23分
+  - 痛点原因：评论虽提及修复PR链接，但系统未关联PR，也无commit、文档或release等直接修复证据，支撑力度极弱。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，loss类算子已对齐，安排@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3867](https://gitcode.com/cann/ops-nn/issues/3867) [Bug][arch35][quant] FakeQuantWithMinMaxVarsGradient/FakeQuantWithMinMaxVarsPer…** — 23分
+  - 痛点原因：仅靠关联PR和机器人自动关闭，缺乏commit、文档及release等直接解决证据，人工未提供具体修复说明。
+  - 原文依据：
+    - [关联PR #7085（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7085)    - `tangweiwei2`：quant类算子问题，已安排@xieshengwei1024跟踪    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3867    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3866](https://gitcode.com/cann/ops-nn/issues/3866) [Bug][arch35][pooling] AdaptiveAvgPool3dGrad/MaxPool3DGrad/MaxPoolGrad kernel 使…** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档链接和release引用等实质性解决证据支撑。
+  - 原文依据：
+    - [关联PR #7101（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7101)    - `tangweiwei2`：pooling类算子问题，已确认存在问题，安排@xieshengwei1024解决    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3866    - `cann-robot`：add label resolved    - `xieshengwei1024`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @liuchuangdev
+- **[#3863](https://gitcode.com/cann/ops-nn/issues/3863) [Bug][arch35][conv] DeformableOffsetsGrad kernel 使用 SyncAll 但 Tiling 未设置 SetSch…** — 23分
+  - 痛点原因：仅评论提及修复PR链接，系统未关联PR、无commit引用及文档链接等客观解决证据。
+  - 原文依据：
+    - `tangweiwei2`：deformable问题已确认，请@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3862](https://gitcode.com/cann/ops-nn/issues/3862) [Bug-Report|缺陷反馈]: 【dx】修复kernel拆分出现除零问题** — 23分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档及release链接等实质性解决证据。
+  - 原文依据：
+    - [关联PR #6909（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6909)    - `yejiani`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3862    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yejiani
+- **[#3858](https://gitcode.com/cann/ops-nn/issues/3858) [Bug][arch35][hash] EmbeddingHashTableApplyAdamW 与 EmbeddingHashTableExport ker…** — 23分
+  - 痛点原因：虽有关联PR被合并，但无commit引用、文档及release链接等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7076（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7076)    - `tangweiwei2`：问题已收到，已安排人跟踪处理，预计本周三解决。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3858    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3856](https://gitcode.com/cann/ops-nn/issues/3856) [Requirement|需求建议]: MatMulV3 M较小场景下缺少泛用模板** — 23分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及release说明，仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #6711（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6711)    - `llqx-1`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***llqx-1***. Please do not assign repeatedly.    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3856    - `llqx-1`：add label requirement    - `cann-robot`：add label resolved
+- **[#3854](https://gitcode.com/cann/ops-nn/issues/3854) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 23分
+  - 痛点原因：维护者仅建议去其他社区提问便直接关闭，未提供任何PR、commit或文档等实质性解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@yang-di52](https://gitcode.com/yang-di52) 正在跟踪处理。    - `yang-di52`：[@easel](https://gitcode.com/easel) 您好，nn仓仅提供神经网络计算能力的高阶算子，无法回答您cann机制的问题。您可以前往社区进行提问， https://gitcode.com/cann/communi…    - `yang-di52`：closed from codehub    - `yang-di52`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @yang-di52
+- **[#4048](https://gitcode.com/cann/ops-nn/issues/4048) [Requirement|需求建议]: NLLLoss算子补齐ascend910b原生AscendC实现** — 31分
+  - 痛点原因：关联PR处于open状态未合并，且无关闭评论、文档及release引用，缺乏最终解决证据。
+  - 原文依据：
+    - [关联PR #7421（open）](https://gitcode.com/cann/ops-nn/merge_requests/7421)    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie
+- **[#4047](https://gitcode.com/cann/ops-nn/issues/4047) [Requirement|需求建议]: Quantize算子补齐ascend910b原生AscendC 实现** — 31分
+  - 痛点原因：关联的PR仍处于未合并的open状态，且无关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7420（open）](https://gitcode.com/cann/ops-nn/merge_requests/7420)    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie
+- **[#4046](https://gitcode.com/cann/ops-nn/issues/4046) [Bug-Report|缺陷反馈]: foreach_add_listV2算子在master分支存在精度问题** — 31分
+  - 痛点原因：仅靠机器人自动关闭和打标签，缺乏开发者对根因分析或修复方案的明确说明，导致解决证据较弱。
+  - 原文依据：
+    - [关联PR #7408（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7408)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4046    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4039](https://gitcode.com/cann/ops-nn/issues/4039) [Bug-Report|缺陷反馈]: foreach_add_listV2算子存在精度问题** — 31分
+  - 痛点原因：虽有合并PR和机器人自动关闭，但无人工关闭评论、文档链接及release引用，解决证据不充分。
+  - 原文依据：
+    - [关联PR #7398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7398)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4039    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4020](https://gitcode.com/cann/ops-nn/issues/4020) 【fix】修复precommit的oat空告警失败问题** — 31分
+  - 痛点原因：仅靠机器人自动关闭与打标签，缺乏人工关闭评论说明解决详情，且无文档与release引用佐证，导致证据不足。
+  - 原文依据：
+    - [关联PR #7370（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7370)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4020    - `cann-robot`：add label resolved
+- **[#4005](https://gitcode.com/cann/ops-nn/issues/4005) [Requirement|需求建议]: 【社区任务】MaxUnpool3d算子开发交付** — 31分
+  - 痛点原因：关联PR仍处于open状态未合并，且无文档链接、release引用及关闭评论，缺乏实质交付证据。
+  - 原文依据：
+    - [关联PR #7330（open）](https://gitcode.com/cann/ops-nn/merge_requests/7330)    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `yolic`：assigned to @fullt
+- **[#3989](https://gitcode.com/cann/ops-nn/issues/3989) [Requirement|需求建议]: 算子原型迁移至所属仓** — 31分
+  - 痛点原因：虽有部分PR已合并，但缺乏文档链接、release引用和关闭评论，且存在未合并PR，导致佐证不足。
+  - 原文依据：
+    - [关联PR #7328（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7328)    - [关联PR #7329（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7329)    - [关联PR #7362（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7362)    - [关联PR #7363（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7363)    - `Hana77`：add label requirement    - `chenqi317`：assigned to @Hana77
+- **[#3978](https://gitcode.com/cann/ops-nn/issues/3978) [Bug-Report|缺陷反馈]: mm接口和addmm接口存在精度问题** — 31分
+  - 痛点原因：仅靠机器人因PR合并自动关闭，无人工关闭说明，且缺乏文档更新或版本发布等修复验证证据。
+  - 原文依据：
+    - [关联PR #7266（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7266)    - [关联PR #7269（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7269)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3978    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682
+- **[#3964](https://gitcode.com/cann/ops-nn/issues/3964) [Bug-Report] NLLLossGrad kernel （#3870 已修复版本）在 aicore_num > tiling 分区数时 SyncAll…** — 31分
+  - 痛点原因：无关联PR与关闭评论，且维护者分析认为描述的死锁场景不成立，缺乏明确的修复证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@xieshengwei1024](https://gitcode.com/xieshengwei1024) 正在跟踪处理。    - `huang-qiang`：# Issue #3964 分析说明：NLLLossGrad arch35 SyncAll 死锁问题核对 > 结论先行：**issue 中描述的死锁场景在当前代码中不成立**；#3858/#3870 一系列的真实修复方式与 issue 的…    - `yolic`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @huang-qiang    - `xieshengwei1024`：unassigned @xieshengwei1024
+- **[#3961](https://gitcode.com/cann/ops-nn/issues/3961) [Requirement|需求建议]: 新增 nn.functional.linear 全连接前向算子（不含权重变换）** — 31分
+  - 痛点原因：无关联PR和commit引用等实质落地证据，仅提供现有算子参考链接，且处于等待反馈状态未真正解决。
+  - 原文依据：
+    - `yolic`：您好，仓库已有addmm算子，可以参考 https://gitcode.com/cann/ops-nn/blob/e711e0c7bc9ef633785627ef90307a16f77b1764/matmul/mat_mul_v3/doc…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3957](https://gitcode.com/cann/ops-nn/issues/3957) [Requirement|需求建议]: 新增 plain unique 算子（全局去重，非 consecutive/非 dim）** — 31分
+  - 痛点原因：无关联PR和commit引用，仅停留在需求收集与催促反馈阶段，缺乏实质性代码解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3951](https://gitcode.com/cann/ops-nn/issues/3951) [Documentation|文档反馈]: ①torch_npu名称合一TorchNPU②《acl API》手册更名修改③有一些link失效** — 31分
+  - 痛点原因：虽关联已合并PR，但缺乏commit引用作为直接修复证据，且无人工关闭评论说明，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #7243（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7243)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3951    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1
+- **[#3948](https://gitcode.com/cann/ops-nn/issues/3948) [Requirement|需求建议]: 适配 qbmmv3 MX Basic API tiling 的 3-buffer L1 估算** — 31分
+  - 痛点原因：关联PR仍处于open状态且无关闭评论，缺乏最终解决证据。
+  - 原文依据：
+    - [关联PR #7237（open）](https://gitcode.com/cann/ops-nn/merge_requests/7237)    - `smdbha`：/assign    - `smdbha`：add label requirement    - `cann-robot`：assigned to @smdbha
+- **[#3927](https://gitcode.com/cann/ops-nn/issues/3927) [Bug-Report|缺陷反馈]: 不应当使用GetOptionalInputShape，应当使用GetOptionalInputDesc** — 31分
+  - 痛点原因：关联PR仅显示关闭状态，且无文档链接、release引用及关闭评论，缺乏问题已有效解决的证据。
+  - 原文依据：
+    - [关联PR #7181（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7181)    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `yolic`：assigned to @wangpengbo26
+- **[#3926](https://gitcode.com/cann/ops-nn/issues/3926) [Bug-Report|缺陷反馈]:BMM支持iterbatch broadcast Tiling未做L1 buffer校验** — 31分
+  - 痛点原因：虽有合并的关联PR，但仅由机器人自动关闭，缺乏人工解决说明、文档链接与release引用。
+  - 原文依据：
+    - [关联PR #7179（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7179)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3926    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl
+- **[#3919](https://gitcode.com/cann/ops-nn/issues/3919) [Build] Skip empty TensorFlow plugin library generation** — 31分
+  - 痛点原因：关联PR仍处于open状态未合并，且无关闭评论、文档链接及release引用证实问题已解决。
+  - 原文依据：
+    - [关联PR #7173（open）](https://gitcode.com/cann/ops-nn/merge_requests/7173)    - `yolic`：assigned to @zhaoyingchao2
+- **[#3914](https://gitcode.com/cann/ops-nn/issues/3914) [Bug] PR #6328 修改 GenSimplifiedKey 导致 AddRmsNormQuant BIN 模式符号不匹配** — 31分
+  - 痛点原因：仅靠机器人自动关闭和打标签，缺乏人工确认解决的评论及文档等强证据支撑。
+  - 原文依据：
+    - [关联PR #7166（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7166)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3914    - `cann-robot`：add label resolved    - `yolic`：assigned to @raoliang_sac
+- **[#3886](https://gitcode.com/cann/ops-nn/issues/3886) LinearIndexV2 算子补充 op_host 层 UT 用例，提升目标文件的覆盖率** — 31分
+  - 痛点原因：仅靠机器人自动关闭并打标签，缺乏人工确认解决的总结性评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7096（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7096)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3886    - `cann-robot`：add label resolved    - `yolic`：assigned to @wkkk0528
+- **[#4043](https://gitcode.com/cann/ops-nn/issues/4043) [Requirement|需求建议]: 迁移 Bucketize 和 AvgPool1DAvgMatrix AICPU 算子到 ops-nn** — 38分
+  - 痛点原因：虽关联PR已合并，但缺少commit引用和release引用，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #6877（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6877)    - `zhaowenrui666`：/assign [@zhaowenrui666](https://gitcode.com/zhaowenrui666) 关联 PR：https://gitcode.com/cann/ops-nn/merge_requests/6877    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4043    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhaowenrui666
+- **[#4018](https://gitcode.com/cann/ops-nn/issues/4018) [Documentation|文档反馈]: clipped_swiglu、multi_add_rms_norm_dynamic_quant、dequant_s…** — 38分
+  - 痛点原因：缺少commit引用与release引用，且关闭评论仅为机器人合并PR的模板回复，缺乏人工明确的解决说明。
+  - 原文依据：
+    - [关联PR #7353（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7353)    - `zerosaki_admin`：/assign [@zerosaki_admin](https://gitcode.com/zerosaki_admin)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4018    - `zerosaki_admin`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zerosaki_admin
+- **[#3992](https://gitcode.com/cann/ops-nn/issues/3992) [Bug-Report|缺陷反馈]: Matmul算子N非256B对齐transdata场景性能存在劣化** — 38分
+  - 痛点原因：缺少commit引用和文档链接，仅由机器人因关联issue的MR合并而自动关闭，缺乏直接验证修复的证据。
+  - 原文依据：
+    - [关联PR #7288（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7288)    - [关联PR #7299（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7299)    - `zhengyuhao3`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3992    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3990](https://gitcode.com/cann/ops-nn/issues/3990) [Documentation|文档反馈]: FusedBiasLeakyReluGrad README 文档需要修正** — 38分
+  - 痛点原因：无直接 commit 引用，且关闭证据仅依赖机器人关联其他 issue 的合并记录，缺乏针对本问题的具体解决说明。
+  - 原文依据：
+    - [关联PR #7300（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7300)    - `ugzhangyiyi`：/assign [@ugzhangyiyi](https://gitcode.com/ugzhangyiyi)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3990    - `ugzhangyiyi`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ugzhangyiyi
+- **[#3963](https://gitcode.com/cann/ops-nn/issues/3963) 【需求】【社区任务】LogSoftmaxGrad算子贡献** — 38分
+  - 痛点原因：解决过程仅依赖机器人自动关闭和关联PR，缺乏commit引用与文档链接，人工确认解决细节不足。
+  - 原文依据：
+    - [关联PR #1983（merged）](https://gitcode.com/cann/ops-nn/merge_requests/1983)    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3963    - `cann-robot`：add label resolved    - `yolic`：assigned to @fullt
+- **[#3947](https://gitcode.com/cann/ops-nn/issues/3947) [Bug-Report|缺陷反馈]: ApplyCenteredRMSProp算子文档问题** — 38分
+  - 痛点原因：仅靠关联PR合并与机器人自动关闭，缺乏直接的commit引用和release版本说明，证据链不完整。
+  - 原文依据：
+    - [关联PR #7244（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7244)    - `lianjieyu`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3947    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu
+- **[#3941](https://gitcode.com/cann/ops-nn/issues/3941) [Requirement|需求建议]: TopkTopPSample算子说明文档改进[9.1.0][master]** — 38分
+  - 痛点原因：虽有合并的关联PR，但无commit和release引用，关闭评论仅为机器人自动回复，缺乏人工总结的解决说明。
+  - 原文依据：
+    - [关联PR #7214（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7214)    - [关联PR #7215（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7215)    - `Thaurissan`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3941    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Thaurissan
+- **[#3940](https://gitcode.com/cann/ops-nn/issues/3940) [Bug-Report|缺陷反馈]: 部分网络场景报错MatMulV3 AIC ERROR** — 38分
+  - 痛点原因：缺乏commit与release引用，仅靠机器人因MR合并自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7203（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7203)    - `llqx-1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3940    - `llqx-1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llqx-1
+- **[#3933](https://gitcode.com/cann/ops-nn/issues/3933) [Documentation|文档反馈]: 指针释放异常，导致代码无法执行完成** — 38分
+  - 痛点原因：虽关联已合并PR，但缺乏commit和release引用，且仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #7186（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7186)    - [关联PR #7206（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7206)    - `m0_55003149`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3933    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149
+- **[#3932](https://gitcode.com/cann/ops-nn/issues/3932) [Documentation|文档反馈]: matmulcompressdequant算子约束调整** — 38分
+  - 痛点原因：虽有关联PR合并，但缺少commit和release引用，且关闭说明指向关联issue而非直接证明本issue解决。
+  - 原文依据：
+    - [关联PR #7172（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7172)    - [关联PR #7183（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7183)    - `wmg1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3932    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wmg1
+- **[#3918](https://gitcode.com/cann/ops-nn/issues/3918) [Bug-Report|缺陷反馈]: 共性问题，aclnn接口的参数表格右边超出了目录导航栏，体验不好** — 38分
+  - 痛点原因：虽有合并的PR，但缺少commit和release引用，且关闭评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7185（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7185)    - [关联PR #7191（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7191)    - [关联PR #7193（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7193)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@huzhipeng](https://gitcode.com/huzhipeng) 正在跟踪处理。    - `yuhao_`：/assign    - `yolic`：closed from codehub
+- **[#3911](https://gitcode.com/cann/ops-nn/issues/3911) [Documentation|文档反馈]: 修改nn仓master分支doctool扫描问题** — 38分
+  - 痛点原因：仅有关联PR但无commit和release引用，且关闭原因为机器人因关联issue合并自动关闭，解决证据偏弱。
+  - 原文依据：
+    - [关联PR #7147（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7147)    - `chaotang233`：PLS 处理相关issue问题，目前正在排序解决    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3911    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1
+- **[#3903](https://gitcode.com/cann/ops-nn/issues/3903) [Bug-Report|缺陷反馈]: QuantBatchMatMulV3适配APILEVEL后kernel入口兼容性修复** — 38分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用和文档链接，且仅由机器人自动关闭，解决证据偏弱。
+  - 原文依据：
+    - [关联PR #7126（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7126)    - [关联PR #7128（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7128)    - `Hu1L1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3903    - `Hu1L1`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3897](https://gitcode.com/cann/ops-nn/issues/3897) [Bug-Report|缺陷反馈]: test_max_pool_3d.cpp引用的experiment_ops.h不存在** — 38分
+  - 痛点原因：虽有合并的关联PR，但无commit直接引用与文档链接，且关闭评论仅含分配指令，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7360（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7360)    - [关联PR #7385（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7385)    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign
+- **[#3883](https://gitcode.com/cann/ops-nn/issues/3883) [Documentation|文档反馈]: 大小驼峰命名** — 38分
+  - 痛点原因：未关联PR或commit，维护者直接关闭issue并让用户重提，缺乏实际解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liu-wei](https://gitcode.com/liu-wei) 正在跟踪处理。    - `liu-wei`：kCalls 位于 namespace aicpu 作用域内，属于全局变量，应加 g_ 前缀并使用小驼峰命名（如 g_calls） 这个规则是从哪里来的？如果保持现状会有什么问题吗？    - `liu-wei`：这个issue我们打算关闭了，如果还有问题麻烦重新提PR，我们会持续提供支撑。    - `liu-wei`：closed from codehub    - `liu-wei`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3853](https://gitcode.com/cann/ops-nn/issues/3853) [Documentation|文档反馈]: WeightQuantBatchMatmulExperiment README 中存在公式变量名、格式等问题** — 38分
+  - 痛点原因：虽有合并PR，但缺乏commit和release引用，且另一关联PR被关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7035（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7035)    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - `shi-rui`：/assign    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成    - `shi-rui`：add label documentation
+- **[#4033](https://gitcode.com/cann/ops-nn/issues/4033) [Requirement|需求建议]: 新增 ReluGradV3 算子 Ascend C 实现（Atlas A2/A3）** — 46分
+  - 痛点原因：关联PR仍为open状态未合并，且无文档链接与关闭评论证实问题已彻底解决。
+  - 原文依据：
+    - [关联PR #7392（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7392)    - [关联PR #7394（open）](https://gitcode.com/cann/ops-nn/merge_requests/7394)    - `yolic`：assigned to @gcw_r0GcmdT1    - `fullt`：assigned to @fullt
+- **[#3976](https://gitcode.com/cann/ops-nn/issues/3976) [Bug-Report|缺陷反馈]: ops-nn activation/selu_grad 算子 outputs==0 边界分支判定与 PyTorch 竞品…** — 46分
+  - 痛点原因：虽关联了合并PR与测试说明，但关闭时无总结评论确认解决结果，且缺少文档链接，证据链不完整。
+  - 原文依据：
+    - [关联PR #7268（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7268)    - [关联PR #7270（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7270)    - `ForestFrame`：已提交修复 PR: https://gitcode.com/ForestFrame/ops-nn/merge_requests/1 将 kernel `CMPMODE::LT` 改为 `CMPMODE::LE`，288 例全量测试验证 1…    - `ForestFrame`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***ForestFrame***. Please do not assign repeatedly.    - `yolic`：assigned to @ForestFrame
+- **[#3953](https://gitcode.com/cann/ops-nn/issues/3953) [Requirement|需求建议]: 新增 cumsum/cumprod 累积扫描算子** — 46分
+  - 痛点原因：缺乏关联PR与版本发布记录，且处于等待反馈状态，无实质性解决结论。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3909](https://gitcode.com/cann/ops-nn/issues/3909) [Documentation|文档反馈]: adaptiva_max_pool3d_infershape.cpp 文件名错误** — 46分
+  - 痛点原因：关联PR仍处于open状态未合并，且无关闭评论说明解决结果，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7158（open）](https://gitcode.com/cann/ops-nn/merge_requests/7158)    - `yolic`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：### Notice This issue can not be assigned to ***chenxingyu18***. Please try to assign to the repository members.    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：assigned to @chenxingyu18    - `cann-robot`：assigned to @sunny_112 and unassigned @chenxingyu18
+- **[#3908](https://gitcode.com/cann/ops-nn/issues/3908) [Documentation|文档反馈]: 这个设计文档说，支持8维Shape，请问这个算子支持的Reduce轴是几？，公式哪里体现了Reduce第几根轴了？** — 46分
+  - 痛点原因：缺乏关联PR等实质性修复证据，仅给出文档解释，且处于等待反馈状态，问题未真正闭环解决。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@Chen_HaoWen](https://gitcode.com/Chen_HaoWen) 正在跟踪处理。    - `Chen_HaoWen`：您好，norm轴与gamma的shape一致哈 这点可以看下rstdout的介绍：shape与入参`x`的shape前几维保持一致，前几维指`x`的维度减去`gamma`的维度，表示不需要norm的维度。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @Chen_HaoWen
+- **[#3895](https://gitcode.com/cann/ops-nn/issues/3895) [Requirement|需求建议]: WeightQuantBatchMatmulV2 + Transpose 图融合适配新版 GE 融合框架** — 46分
+  - 痛点原因：缺少文档链接与人工关闭评论，仅靠机器人自动关闭和打标签，缺乏明确的解决说明。
+  - 原文依据：
+    - [关联PR #6419（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6419)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3895    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `maqijun`：assigned to @maqijun
+- **[#3893](https://gitcode.com/cann/ops-nn/issues/3893) [Requirement|需求建议]: QuantBatchMatmulV4 + Transpose 图融合适配新版 GE 融合框架** — 46分
+  - 痛点原因：缺乏人工关闭说明与文档链接，仅由机器人因关联issue合并被动关闭并打标签，证据不够充分。
+  - 原文依据：
+    - [关联PR #4263（merged）](https://gitcode.com/cann/ops-nn/merge_requests/4263)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3893    - `maqijun`：add label requirement    - `cann-robot`：add label resolved
+- **[#3861](https://gitcode.com/cann/ops-nn/issues/3861) [Requirement|需求建议]: SoftplusGrad算子适配Ascend 950开发** — 46分
+  - 痛点原因：缺乏人工确认解决的关闭评论与文档链接，仅依赖机器人自动关闭与打标签，导致证据偏弱。
+  - 原文依据：
+    - [关联PR #6734（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6734)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3861    - `cann-robot`：add label resolved    - `yolic`：assigned to @wucong22
+- **[#4045](https://gitcode.com/cann/ops-nn/issues/4045) [Bug-Report|缺陷反馈]: SwigluGroupQuant GroupIndex计算逻辑异常** — 54分
+  - 痛点原因：虽有合并的关联PR与机器人关闭记录，但缺乏文档链接和release版本引用，且无人工修复说明，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7414（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7414)    - `luwei_1104`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4045    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @luwei_1104
+- **[#4017](https://gitcode.com/cann/ops-nn/issues/4017) [Bug-Report|缺陷反馈]: conv2d用例调整tiling决策解决性能不达标问题** — 54分
+  - 痛点原因：虽有合并的关联PR，但无文档链接与release引用，且关闭评论仅为机器人自动关联关闭，缺乏人工验证说明。
+  - 原文依据：
+    - [关联PR #7305（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7305)    - `ray-shaw`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4017    - `ray-shaw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ray-shaw
+- **[#4002](https://gitcode.com/cann/ops-nn/issues/4002) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题-9.1.0分支** — 54分
+  - 痛点原因：缺乏文档链接与release版本引用，且仅依赖机器人自动关闭与加标签，缺少人工确认修复的强证据。
+  - 原文依据：
+    - [关联PR #7326（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7326)    - `wishercy`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4002    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy
+- **[#3982](https://gitcode.com/cann/ops-nn/issues/3982) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题** — 54分
+  - 痛点原因：虽有合并PR与commit，但缺少文档链接与release引用，且仅靠机器人自动关闭打标，缺乏人工确认，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7260（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7260)    - `wishercy`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3982    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy
+- **[#3937](https://gitcode.com/cann/ops-nn/issues/3937) [Bug-Report|缺陷反馈]: add_layer_norm_quant syncall同步缺失多核同时启动设置** — 54分
+  - 痛点原因：关联PR为closed状态，缺少文档与release引用，关闭评论仅记录操作，缺乏修复验证证据。
+  - 原文依据：
+    - [关联PR #7200（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7200)    - `wangpengbo26`：/assign    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `cann-robot`：assigned to @wangpengbo26
+- **[#3917](https://gitcode.com/cann/ops-nn/issues/3917) [Bug-Report|缺陷反馈]: Modify the description of UnsortedSegmentMax** — 54分
+  - 痛点原因：虽有合并的PR和commit，但缺乏文档链接与release引用，且由机器人自动关闭，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #7165（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7165)    - `zhangxiyan7`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3917    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7
+- **[#3904](https://gitcode.com/cann/ops-nn/issues/3904) [Bug-Report|缺陷反馈]: conv3d_v2 算子 cleancode 扫描告警 (G.CNS.03/G.CNS.04/G.INC.02)** — 54分
+  - 痛点原因：虽有合并PR与commit引用，但缺乏文档和release链接，且关闭评论仅为机器人自动合并提示，缺乏人工验证说明。
+  - 原文依据：
+    - [关联PR #7129（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7129)    - [关联PR #7152（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7152)    - `wanyukang`：/assign [@wanyukang](https://gitcode.com/wanyukang)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3904    - `wanyukang`：add label bug-report    - `cann-robot`：add label resolved
+#### PP-02 关闭阶段缺乏解决证据与知识沉淀（I3 · 总结与关闭）
+
+- **[#4048](https://gitcode.com/cann/ops-nn/issues/4048) [Requirement|需求建议]: NLLLoss算子补齐ascend910b原生AscendC实现** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档沉淀，且关联PR仍处于open状态，未留下可复用的解决参考。
+  - 原文依据：
+    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie    - [关联PR #7421（open）](https://gitcode.com/cann/ops-nn/merge_requests/7421)
+- **[#4047](https://gitcode.com/cann/ops-nn/issues/4047) [Requirement|需求建议]: Quantize算子补齐ascend910b原生AscendC 实现** — 0分
+  - 痛点原因：关闭说明为空，缺乏方案文档沉淀与重复链接，导致无法为后续类似问题提供参考价值。
+  - 原文依据：
+    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie    - [关联PR #7420（open）](https://gitcode.com/cann/ops-nn/merge_requests/7420)
+- **[#4046](https://gitcode.com/cann/ops-nn/issues/4046) [Bug-Report|缺陷反馈]: foreach_add_listV2算子在master分支存在精度问题** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，仅由机器人随MR合并自动关闭，未留存可复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4046    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - [关联PR #7408（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7408)
+- **[#4045](https://gitcode.com/cann/ops-nn/issues/4045) [Bug-Report|缺陷反馈]: SwigluGroupQuant GroupIndex计算逻辑异常** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与主链接，仅靠关联MR合并关闭，未沉淀可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4045    - `cann-robot`：add label resolved    - `luwei_1104`：/assign    - `cann-robot`：assigned to @luwei_1104    - [关联PR #7414（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7414)
+- **[#4044](https://gitcode.com/cann/ops-nn/issues/4044) [Bug-Report|缺陷反馈]: 修复proto文件注释** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，无人工关闭说明、方案文档沉淀及重复链接，无法提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4044    - `yiqiao-wjp`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp    - [关联PR #7415（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7415)
+- **[#4041](https://gitcode.com/cann/ops-nn/issues/4041) [Question|问题咨询]: 代码上库最新规范资料** — 0分
+  - 痛点原因：关闭时未补充任何说明文字，导致后续用户无法复用相关解决方案。
+  - 原文依据：
+    - `weixin_51153241`：add label question    - `yolic`：你好，感谢反馈，问题已收到，当前 [@caiwenwen](https://gitcode.com/caiwenwen) 正在跟踪处理。    - `yolic`：assigned to @caiwenwen
+- **[#4040](https://gitcode.com/cann/ops-nn/issues/4040) [Bug-Report|缺陷反馈]: classify_rule补充缺失文件目录** — 0分
+  - 痛点原因：机器人随MR合并自动关闭，无方案文档沉淀、复用链接及人工关闭说明，缺乏后续参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4040    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - [关联PR #7410（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7410)
+- **[#4039](https://gitcode.com/cann/ops-nn/issues/4039) [Bug-Report|缺陷反馈]: foreach_add_listV2算子存在精度问题** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，仅由机器人因关联MR合并自动关闭，未提供任何可复用的解决方案或排查记录。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4039    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - [关联PR #7398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7398)
+- **[#4038](https://gitcode.com/cann/ops-nn/issues/4038) [Documentation|文档反馈][CANN SUMMER CAMPS 2026][NPU]: Requirement Issue 模板中 Backgr…** — 0分
+  - 痛点原因：关闭说明为0字且关联PR仍处于open状态，未留下任何可复用的信息。
+  - 原文依据：
+    - `yolic`：assigned to @Quirkybrain    - [关联PR #7407（open）](https://gitcode.com/cann/ops-nn/merge_requests/7407)
+- **[#4037](https://gitcode.com/cann/ops-nn/issues/4037) [Requirement|需求建议]: CANNBot项目AdvanceStep算子新增支持A5** — 0分
+  - 痛点原因：机器人随PR合并自动关闭，无人工关闭说明、无方案文档沉淀且未提供复用链接，导致毫无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4037    - `cann-robot`：add label resolved    - `yolic`：assigned to @Almost_CANN    - [关联PR #7405（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7405)
+- **[#4035](https://gitcode.com/cann/ops-nn/issues/4035) [Bug-Report|缺陷反馈]: ops-nn 仓 执行example命令指定芯片时，反馈和其他仓不一致** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档沉淀，仅由机器人关联PR合并自动关闭，未提供可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4035    - `cann-robot`：add label resolved    - `yolic`：assigned to @magicjason0007    - [关联PR #7402（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7402)
+- **[#4034](https://gitcode.com/cann/ops-nn/issues/4034) FusedSgd算子支持Ascend 950平台** — 0分
+  - 痛点原因：关闭说明为空且关联PR仍处于open状态，未留下任何可复用的上下文信息。
+  - 原文依据：
+    - `yolic`：assigned to @raoliang_sac    - [关联PR #7400（open）](https://gitcode.com/cann/ops-nn/merge_requests/7400)
+- **[#4033](https://gitcode.com/cann/ops-nn/issues/4033) [Requirement|需求建议]: 新增 ReluGradV3 算子 Ascend C 实现（Atlas A2/A3）** — 0分
+  - 痛点原因：关闭时无方案文档、重复链接及任何文字说明，未沉淀可复用信息。
+  - 原文依据：
+    - `yolic`：assigned to @gcw_r0GcmdT1    - `fullt`：assigned to @fullt    - [关联PR #7392（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7392)    - [关联PR #7394（open）](https://gitcode.com/cann/ops-nn/merge_requests/7394)
+- **[#4031](https://gitcode.com/cann/ops-nn/issues/4031) [Bug-Report|缺陷反馈]: 修复data_format_dim_map_def.cpp静态问题** — 0分
+  - 痛点原因：仅由机器人自动关闭且说明仅7字，无方案文档化与关联链接，导致无法复用解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4031    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `lianjieyu`：/assign    - `cann-robot`：assigned to @lianjieyu    - [关联PR #7372（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7372)
+- **[#4030](https://gitcode.com/cann/ops-nn/issues/4030) [Bug-Report|缺陷反馈]: 高精度情况下，非连续有可能走进vec计算未拦截，需要进行拦截** — 0分
+  - 痛点原因：仅靠系统状态流转和审批关闭，无方案文档与复现链接，关闭说明仅8字，未留下可复用信息。
+  - 原文依据：
+    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label bug-report    - `gcw_kUomxQ2l`：/approve    - `szhexin`：assigned to @szhexin
+- **[#4028](https://gitcode.com/cann/ops-nn/issues/4028) [Bug-Report|缺陷反馈]: nn仓 安全告警修改** — 0分
+  - 痛点原因：关闭时无任何文字说明，未沉淀方案文档且无重复链接，导致后续无复用参考价值。
+  - 原文依据：
+    - `sunchun`：add label bug-report    - `sunchun`：/assign    - `cann-robot`：assigned to @sunchun    - [关联PR #7344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7344)    - [关联PR #7351（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7351)
+- **[#4026](https://gitcode.com/cann/ops-nn/issues/4026) [Bug-Report|缺陷反馈]: usm/usp算子二进制匹配失败** — 0分
+  - 痛点原因：无方案文档与主链接，关闭说明仅8字，仅随MR合并自动关闭，未留下可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4026    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `zhangxiyan7`：/assign    - `cann-robot`：assigned to @zhangxiyan7    - [关联PR #7382（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7382)
+- **[#4025](https://gitcode.com/cann/ops-nn/issues/4025) [Requirement|需求建议]: 950新增dequantize算子** — 0分
+  - 痛点原因：关闭说明为空且无方案文档沉淀与重复链接，仅靠机器人自动关闭，导致后续无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4025    - `cann-robot`：add label resolved    - `yolic`：assigned to @h1234515    - [关联PR #7037（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7037)
+- **[#4024](https://gitcode.com/cann/ops-nn/issues/4024) [Bug-Report|缺陷反馈]: AdaptiveMaxPool3d性能优化** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与主链接，仅由机器人因MR合并自动关闭，无任何可复用的解决细节。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4024    - `cann-robot`：add label resolved    - `liu_hp711`：/assign    - `cann-robot`：assigned to @liu_hp711    - [关联PR #7335（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7335)
+- **[#4023](https://gitcode.com/cann/ops-nn/issues/4023) [Bug-Report|缺陷反馈]: foreach_asin arch35 tiling 添加 GetPlatformInfoFallback逻辑，解决 G…** — 0分
+  - 痛点原因：机器人自动关闭且关闭说明为0字，无方案文档化与dup主链接，未沉淀任何可供复用的解决方案信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4023    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz    - [关联PR #7339（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7339)    - [关联PR #7358（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7358)
+- **[#4022](https://gitcode.com/cann/ops-nn/issues/4022) [Requirement|需求建议]: Relu6D 算子支持 Ascend950 ascendc 实现** — 0分
+  - 痛点原因：关闭时无任何文字说明，且缺乏方案文档与关联链接，未留下可供复用的信息。
+  - 原文依据：
+    - `zhongheng`：closed from codehub    - `zhongheng`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhongheng    - [关联PR #7375（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7375)    - [关联PR #7444（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7444)
+- **[#4021](https://gitcode.com/cann/ops-nn/issues/4021) [Bug-Report|缺陷反馈]: max_pool3d_grad_with_argmax aclnn接口内存检测时发生oom** — 0分
+  - 痛点原因：无方案文档化记录且关闭说明为空，未沉淀任何根因分析与解决方案，无法为后续类似问题提供参考。
+  - 原文依据：
+    - `dong-yanrong`：add label bug-report    - `dong-yanrong`：、assign    - `dong-yanrong`：/assign    - `cann-robot`：assigned to @dong-yanrong    - [关联PR #7361（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7361)    - [关联PR #7378（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7378)
+- **[#4020](https://gitcode.com/cann/ops-nn/issues/4020) 【fix】修复precommit的oat空告警失败问题** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，仅靠机器人随PR合并自动关闭，未沉淀任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4020    - `cann-robot`：add label resolved    - [关联PR #7370（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7370)
+- **[#4019](https://gitcode.com/cann/ops-nn/issues/4019) [Requirement|需求建议]: sparse_segment_sum_grad 支持确定性计算** — 0分
+  - 痛点原因：仅由机器人自动关闭且无方案文档，关闭说明仅7字，未沉淀任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4019    - `wang-shilong32`：add label requirement    - `cann-robot`：add label resolved    - `wang-shilong32`：/assign    - `cann-robot`：assigned to @wang-shilong32    - [关联PR #7307（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7307)
+- **[#4017](https://gitcode.com/cann/ops-nn/issues/4017) [Bug-Report|缺陷反馈]: conv2d用例调整tiling决策解决性能不达标问题** — 0分
+  - 痛点原因：关闭说明仅7字且由机器人因MR合并自动关闭，无方案文档沉淀与复用指引，无法供后续参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4017    - `ray-shaw`：add label bug-report    - `cann-robot`：add label resolved    - `ray-shaw`：/assign    - `cann-robot`：assigned to @ray-shaw    - [关联PR #7305（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7305)
+- **[#4016](https://gitcode.com/cann/ops-nn/issues/4016) [Bug-Report|缺陷反馈]: sparse_apply_adagrad_v2的golden需要与tf对比** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化记录，仅由机器人随PR合并自动关闭，未沉淀可供复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4016    - `cann-robot`：add label resolved    - [关联PR #7331（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7331)
+- **[#4015](https://gitcode.com/cann/ops-nn/issues/4015) [Requirement|需求建议]: arch35: DataCopyParams迁移为DataCopyExtParams及C-style cast修复** — 0分
+  - 痛点原因：关闭说明为空，无方案文档化与重复链接，仅靠系统状态变更关闭，缺乏可复用的经验沉淀。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac    - [关联PR #7464（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7464)    - [关联PR #7482（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7482)
+- **[#4014](https://gitcode.com/cann/ops-nn/issues/4014) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：关闭说明为空，无方案文档化与复用链接，仅由 codehub 自动关闭，未留存任何可复用信息。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4012](https://gitcode.com/cann/ops-nn/issues/4012) test** — 0分
+  - 痛点原因：关闭时无方案文档、无重复主链接、关闭说明为零字，仅从 codehub 直接关闭，未留存任何可复用信息。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4011](https://gitcode.com/cann/ops-nn/issues/4011) test** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化与dup主链接，仅简单标记关闭，未留下任何可复用信息。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4009](https://gitcode.com/cann/ops-nn/issues/4009) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：关闭说明为0字且未沉淀方案文档，仅由系统自动关闭，无法为后续提供复用参考。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4006](https://gitcode.com/cann/ops-nn/issues/4006) [Bug-Report|缺陷反馈]: scatterupdate算子开启确定性计算越界检查会出现oom报错** — 0分
+  - 痛点原因：仅随MR合并自动关闭，未留下任何方案文档、重复主链接或关闭说明，无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4006    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666    - [关联PR #7323（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7323)    - [关联PR #7333（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7333)
+- **[#4005](https://gitcode.com/cann/ops-nn/issues/4005) [Requirement|需求建议]: 【社区任务】MaxUnpool3d算子开发交付** — 0分
+  - 痛点原因：关闭时无任何文字说明，且缺乏方案文档与重复链接，未留存可复用信息。
+  - 原文依据：
+    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `yolic`：assigned to @fullt    - [关联PR #7330（open）](https://gitcode.com/cann/ops-nn/merge_requests/7330)
+- **[#4004](https://gitcode.com/cann/ops-nn/issues/4004) test-ignore** — 0分
+  - 痛点原因：测试性issue无关闭说明、方案文档与重复链接，仅系统自动关闭，毫无复用价值。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4003](https://gitcode.com/cann/ops-nn/issues/4003) test-pls-ignore-123** — 0分
+  - 痛点原因：测试 issue 被工具直接关闭，无关闭说明、方案文档及重复链接，毫无复用价值。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4002](https://gitcode.com/cann/ops-nn/issues/4002) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题-9.1.0分支** — 0分
+  - 痛点原因：无方案文档化且关闭说明仅7字，仅靠关联MR合并关闭，未记录具体修复方案与排查过程，无法供他人复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4002    - `cann-robot`：add label resolved    - `wishercy`：/assign    - `cann-robot`：assigned to @wishercy    - [关联PR #7326（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7326)
+- **[#4001](https://gitcode.com/cann/ops-nn/issues/4001) [Bug-Report|缺陷反馈]: dynamic_mx_quant跑oom报错，请确认** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化，仅由机器人关联PR合并关闭，未沉淀任何可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4001    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1    - [关联PR #7291（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7291)    - [关联PR #7325（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7325)
+- **[#4000](https://gitcode.com/cann/ops-nn/issues/4000) [Bug-Report|缺陷反馈]: 商分FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅由机器人随MR合并自动关闭，无关闭说明、方案文档及复现链接，无法为后续类似问题提供参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4000    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yushan-kite`：assigned to @yushan-kite    - [关联PR #7324（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7324)
+- **[#3999](https://gitcode.com/cann/ops-nn/issues/3999) [Requirement|需求建议]: 新增SwigluGroup和SwigluGroupQuant算子torch_extension接口** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档，仅由机器人因关联MR合并关闭，未提供任何可复用的解决细节。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3999    - `cann-robot`：add label resolved    - `taochangmin`：/assign    - `cann-robot`：assigned to @taochangmin    - [关联PR #7232（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7232)
+- **[#3998](https://gitcode.com/cann/ops-nn/issues/3998) [Bug-Report|缺陷反馈]: MaxPool3DGradWithArgmax算子在执行geir时，部分用例执行二进制失败core** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化，关联PR已关闭未留存有效解决信息，导致无法复用。
+  - 原文依据：
+    - `dong-yanrong`：add label bug-report    - `dong-yanrong`：/assign    - `cann-robot`：assigned to @dong-yanrong    - [关联PR #7095（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7095)
+- **[#3997](https://gitcode.com/cann/ops-nn/issues/3997) [Bug-Report|缺陷反馈]:** — 0分
+  - 痛点原因：关闭时无任何文字说明且未沉淀方案文档，关联PR仍处于open状态，未留下可复用经验。
+  - 原文依据：
+    - `weiyan_hw`：add label bug-report    - `yolic`：assigned to @weiyan_hw    - [关联PR #7313（open）](https://gitcode.com/cann/ops-nn/merge_requests/7313)
+- **[#3996](https://gitcode.com/cann/ops-nn/issues/3996) [Requirement|需求建议]: Ascend950支持apply_power_sign算子** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化，仅关联PR但未沉淀解决过程，导致无法复用。
+  - 原文依据：
+    - `yolic`：assigned to @niukang_hw    - [关联PR #6827（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6827)    - [关联PR #7409（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7409)
+- **[#3995](https://gitcode.com/cann/ops-nn/issues/3995) 【Ascend950适配】dynamic_rnn 与 single_layer_lstm_grad 需支持 Ascend950** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，关联PR未合并仍处open状态，直接关闭导致无复用价值。
+  - 原文依据：
+    - `chenxingyu18`：closed from codehub    - `yolic`：assigned to @chenxingyu18    - [关联PR #7310（open）](https://gitcode.com/cann/ops-nn/merge_requests/7310)
+- **[#3994](https://gitcode.com/cann/ops-nn/issues/3994) [Requirement|需求建议]: foreach系列算子支持非连续输入和输出** — 0分
+  - 痛点原因：关闭说明为空，且无方案文档与重复链接，未沉淀任何解决经验，导致后续无法复用。
+  - 原文依据：
+    - `yolic`：assigned to @luoyufan7    - [关联PR #6980（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6980)    - [关联PR #7475（open）](https://gitcode.com/cann/ops-nn/merge_requests/7475)    - [关联PR #7495（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7495)
+- **[#3993](https://gitcode.com/cann/ops-nn/issues/3993) [Bug-Report|缺陷反馈]: QBMM MIX模板代码规范整改** — 0分
+  - 痛点原因：无方案文档与重复链接，关闭说明仅7字，未留存可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3993    - `ZhangWei1176`：add label bug-report    - `cann-robot`：add label resolved    - `ZhangWei1176`：/assign    - `cann-robot`：assigned to @ZhangWei1176    - [关联PR #7303（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7303)
+- **[#3992](https://gitcode.com/cann/ops-nn/issues/3992) [Bug-Report|缺陷反馈]: Matmul算子N非256B对齐transdata场景性能存在劣化** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与关联链接，仅由机器人自动关闭，未留下任何可供复用的解决方案或技术细节。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3992    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved    - `zhengyuhao3`：/assign    - `cann-robot`：assigned to @zhengyuhao3    - [关联PR #7288（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7288)
+- **[#3989](https://gitcode.com/cann/ops-nn/issues/3989) [Requirement|需求建议]: 算子原型迁移至所属仓** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，关联PR均直接关闭，未留存任何可供后续复用的决策信息。
+  - 原文依据：
+    - `Hana77`：add label requirement    - `chenqi317`：assigned to @Hana77    - [关联PR #7328（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7328)    - [关联PR #7329（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7329)    - [关联PR #7362（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7362)    - [关联PR #7363（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7363)
+- **[#3988](https://gitcode.com/cann/ops-nn/issues/3988) [Bug-Report|缺陷反馈]: 16in32out场景mm接口性能劣化严重** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，仅由机器人因关联MR合并自动关闭，未沉淀任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3988    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @HuangKun8682    - [关联PR #7296（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7296)    - [关联PR #7297（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7297)
+- **[#3987](https://gitcode.com/cann/ops-nn/issues/3987) [Bug-Report|缺陷反馈]: 卷积反向 dw 邮件问题代码排查** — 0分
+  - 痛点原因：关闭说明为空且无方案文档沉淀，关联PR仍处于open状态，未留下任何可复用的排查经验。
+  - 原文依据：
+    - `zhouxuan78`：/assign    - `cann-robot`：assigned to @zhouxuan78    - [关联PR #7289（open）](https://gitcode.com/cann/ops-nn/merge_requests/7289)
+- **[#3986](https://gitcode.com/cann/ops-nn/issues/3986) [Bug-Report|缺陷反馈]: aclnnQuantMatmulV5算子oom问题** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档沉淀，仅由机器人自动关联合并请求关闭，未留下任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3986    - `steppecat`：add label bug-report    - `cann-robot`：add label resolved    - `steppecat`：assigned to @steppecat    - [关联PR #7276（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7276)
+- **[#3984](https://gitcode.com/cann/ops-nn/issues/3984) [Requirement|需求建议]: 支持QuantMatmul+Gelu+DynamicMxQuant融合算子ascend950** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档沉淀，且关联PR仍处于open状态，导致后续无法复用。
+  - 原文依据：
+    - `yolic`：assigned to @zhuoyunhang    - [关联PR #7272（open）](https://gitcode.com/cann/ops-nn/merge_requests/7272)
+- **[#3983](https://gitcode.com/cann/ops-nn/issues/3983) [Bug-Report|缺陷反馈]: fixpipe场景切tensor api部分场景拦截失败** — 0分
+  - 痛点原因：仅因关联MR合并被机器人自动关闭，无人工关闭说明、方案文档及关联主链接，未留存可复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3983    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647    - [关联PR #7278（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7278)
+- **[#3982](https://gitcode.com/cann/ops-nn/issues/3982) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题** — 0分
+  - 痛点原因：仅由机器人随MR合并自动关闭且关闭说明仅7字，未沉淀任何解决方案文档，对后续用户毫无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3982    - `cann-robot`：add label resolved    - `wishercy`：/assign    - `cann-robot`：assigned to @wishercy    - [关联PR #7260（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7260)
+- **[#3981](https://gitcode.com/cann/ops-nn/issues/3981) glu_grad & grouped_dynamic_block_quant modify suggestion** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化，仅由机器人随PR合并自动关闭，无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3981    - `cann-robot`：add label resolved    - `yolic`：assigned to @ASCEND222    - [关联PR #7238（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7238)
+- **[#3980](https://gitcode.com/cann/ops-nn/issues/3980) [Bug-Report|缺陷反馈]: Matmul算子出现用例精度错误** — 0分
+  - 痛点原因：关闭说明仅7字且仅提及关联MR合并，缺乏根因分析与解决方案等可复用信息，无方案文档化。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3980    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved    - `zhengyuhao3`：/assign    - `cann-robot`：assigned to @zhengyuhao3    - [关联PR #7249（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7249)
+- **[#3979](https://gitcode.com/cann/ops-nn/issues/3979) [Bug-Report|缺陷反馈]: Conv2DBackpropInput等算子融合Pass整改** — 0分
+  - 痛点原因：机器人随MR合并自动关闭，无关闭说明、方案文档及重复链接，未沉淀任何复用知识。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3979    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao    - [关联PR #6081（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6081)
+- **[#3978](https://gitcode.com/cann/ops-nn/issues/3978) [Bug-Report|缺陷反馈]: mm接口和addmm接口存在精度问题** — 0分
+  - 痛点原因：仅由机器人关联MR合并自动关闭，无方案文档沉淀、复用链接及人工关闭说明，无法提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3978    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682    - [关联PR #7266（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7266)    - [关联PR #7269（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7269)
+- **[#3977](https://gitcode.com/cann/ops-nn/issues/3977) [Bug-Report|缺陷反馈]: matmul代码clean code告警** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，关联PR已关闭，未留存任何可复用经验。
+  - 原文依据：
+    - `wuyufei`：add label bug-report    - `yolic`：assigned to @wuyufei    - [关联PR #7212（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7212)
+- **[#3976](https://gitcode.com/cann/ops-nn/issues/3976) [Bug-Report|缺陷反馈]: ops-nn activation/selu_grad 算子 outputs==0 边界分支判定与 PyTorch 竞品…** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化记录，未留存任何修复细节供后续复用参考。
+  - 原文依据：
+    - `ForestFrame`：已提交修复 PR: https://gitcode.com/ForestFrame/ops-nn/merge_requests/1 将 kernel `CMPMODE::LT` 改为 `CMPMODE::LE`，288 例全量测试验证 1…    - `ForestFrame`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***ForestFrame***. Please do not assign repeatedly.    - `yolic`：assigned to @ForestFrame    - [关联PR #7268（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7268)    - [关联PR #7270（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7270)
+- **[#3973](https://gitcode.com/cann/ops-nn/issues/3973) [Question|问题咨询]: BaddbmmMatmulGraph impl函数过大，建议拆分优化** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，关闭说明为0字且无方案文档沉淀，无法供他人参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3973    - `HuangKun8682`：add label question    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682    - [关联PR #7230（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7230)    - [关联PR #7254（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7254)
+- **[#3972](https://gitcode.com/cann/ops-nn/issues/3972) [Bug-Report|缺陷反馈]: 910C环境 aclnnAddmm 16in32out场景 报错，MatMulV3 部分 kernel未找到** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档记录，仅通过状态变更直接关闭，导致同类报错无法被其他用户参考。
+  - 原文依据：
+    - `HuangKun8682`：changed custom state from 进行中 to 已完成    - `HuangKun8682`：closed from codehub    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label Accepted    - `HuangKun8682`：assigned to @HuangKun8682    - [关联PR #7202（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7202)
+- **[#3970](https://gitcode.com/cann/ops-nn/issues/3970) [Bug-Report|缺陷反馈]: Conv2DTranspose算子增加Bias类型校验导致量化功能失败** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档沉淀，仅由机器人关联MR合并自动关闭，无法供后续复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3970    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao    - [关联PR #7218（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7218)
+- **[#3969](https://gitcode.com/cann/ops-nn/issues/3969) [Bug-Report|缺陷反馈]: slice高精度拦截** — 0分
+  - 痛点原因：关闭时仅留机器人自动关闭记录，无人工说明、无方案文档化且无关联主issue链接，导致解决经验无法被复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3969    - `szhexin`：add label bug-report    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - [关联PR #7161（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7161)    - [关联PR #7255（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7255)
+- **[#3968](https://gitcode.com/cann/ops-nn/issues/3968) [Bug-Report|缺陷反馈]: MatMulToMatmulV3图融合修复offset_w场景并按输入数量整改pattern** — 0分
+  - 痛点原因：机器人随MR合并自动关闭，无方案文档与重复链接，关闭说明仅7字，未留存复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3968    - `jgx12`：add label bug-report    - `cann-robot`：add label resolved    - `jgx12`：/assign    - `cann-robot`：assigned to @jgx12    - [关联PR #7142（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7142)
+- **[#3967](https://gitcode.com/cann/ops-nn/issues/3967) [Bug-Report] masked_fill 在 input tensor 有 NaN/Inf 时的处理行为未定义——用 NaN 替换有限值到底算不算 m…** — 0分
+  - 痛点原因：因长期无反馈被机器人自动关闭，关闭说明为空，无方案文档化记录且未关联重复issue链接，无任何复用价值。
+  - 原文依据：
+    - `yolic`：add label wait-feedback    - `yolic`：您好，我看到#3954也是您提出的，目前未关联pr，请在原issue上进行建议。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @jiangzeyu-2026
+- **[#3965](https://gitcode.com/cann/ops-nn/issues/3965) [Bug-Report] celuV2 alpha 很大时的精度问题本质是 float16 下 log1p(x) 在 x>65504 时溢出 inf 而非 e…** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化与重复链接，仅简单回复已收到并指派人员，未留存任何复用价值。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，正在处理。    - `yolic`：assigned to @Coder_Nerd
+- **[#3964](https://gitcode.com/cann/ops-nn/issues/3964) [Bug-Report] NLLLossGrad kernel （#3870 已修复版本）在 aicore_num > tiling 分区数时 SyncAll…** — 0分
+  - 痛点原因：关闭说明为0字，未提供方案文档或重复链接，导致排查与解决经验无法被其他用户复用。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@xieshengwei1024](https://gitcode.com/xieshengwei1024) 正在跟踪处理。    - `huang-qiang`：# Issue #3964 分析说明：NLLLossGrad arch35 SyncAll 死锁问题核对 > 结论先行：**issue 中描述的死锁场景在当前代码中不成立**；#3858/#3870 一系列的真实修复方式与 issue 的…    - `yolic`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @huang-qiang    - `xieshengwei1024`：unassigned @xieshengwei1024
+- **[#3962](https://gitcode.com/cann/ops-nn/issues/3962) [Requirement|需求建议]: 新增 randperm 随机排列算子** — 0分
+  - 痛点原因：机器人因14天无更新自动关闭该需求，关闭说明为0字，未留下任何处理结论供后续复用。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3961](https://gitcode.com/cann/ops-nn/issues/3961) [Requirement|需求建议]: 新增 nn.functional.linear 全连接前向算子（不含权重变换）** — 0分
+  - 痛点原因：因超时被机器人自动关闭，无人工关闭说明，未沉淀已有算子复用方案。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：您好，仓库已有addmm算子，可以参考 https://gitcode.com/cann/ops-nn/blob/e711e0c7bc9ef633785627ef90307a16f77b1764/matmul/mat_mul_v3/doc…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3960](https://gitcode.com/cann/ops-nn/issues/3960) [Requirement|需求建议]: 新增 argwhere 多维度非零元素定位算子** — 0分
+  - 痛点原因：因超时无反馈被机器人自动关闭，关闭说明为0字，未沉淀任何需求处理结论或方案链接供后续复用。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3959](https://gitcode.com/cann/ops-nn/issues/3959) [Requirement|需求建议]: 新增 one_hot 独热编码算子** — 0分
+  - 痛点原因：关闭时无任何文字说明，也未沉淀方案文档或重复链接，导致对社区毫无复用价值。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `yolic`：assigned to @yolic
+- **[#3958](https://gitcode.com/cann/ops-nn/issues/3958) [Requirement|需求建议]: 新增 sort 算子（全局/指定维度排序）** — 0分
+  - 痛点原因：关闭说明为0字，仅通过打标签操作关闭，未留下任何文字记录供后续复用。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：delete label wait-feedback    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。
+- **[#3957](https://gitcode.com/cann/ops-nn/issues/3957) [Requirement|需求建议]: 新增 plain unique 算子（全局去重，非 consecutive/非 dim）** — 0分
+  - 痛点原因：因缺乏反馈被机器人自动关闭，关闭说明为0字且无解决方案链接，无任何复用价值。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3956](https://gitcode.com/cann/ops-nn/issues/3956) [Requirement|需求建议]: 新增 topk 算子（仅 value 不排序场景）** — 0分
+  - 痛点原因：因缺乏反馈被机器人自动关闭，关闭说明为空且无重复链接，未沉淀任何可复用的结论。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3955](https://gitcode.com/cann/ops-nn/issues/3955) [Requirement|需求建议]: 新增 searchsorted 二分检索算子** — 0分
+  - 痛点原因：因无反馈被机器人自动关闭，关闭说明为0字，未沉淀任何可复用的方案结论。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3954](https://gitcode.com/cann/ops-nn/issues/3954) [Requirement|需求建议]: 新增 masked_fill 掩码填充算子** — 0分
+  - 痛点原因：因长期无反馈被机器人自动关闭，且关闭时无任何人工总结或处理结论说明，导致无复用价值。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3953](https://gitcode.com/cann/ops-nn/issues/3953) [Requirement|需求建议]: 新增 cumsum/cumprod 累积扫描算子** — 0分
+  - 痛点原因：因长期无反馈被机器人自动关闭，无人工关闭说明且未关联主链接，无复用价值。
+  - 原文依据：
+    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @yolic
+- **[#3952](https://gitcode.com/cann/ops-nn/issues/3952) [Bug-Report|缺陷反馈]: softplusv2grad原型宏定义应和legacy保持一致** — 0分
+  - 痛点原因：仅由机器人随MR合并自动关闭，无关闭说明、方案文档及关联链接，无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3952    - `Hana77`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @Hana77    - [关联PR #7241（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7241)
+- **[#3949](https://gitcode.com/cann/ops-nn/issues/3949) [Bug-Report|缺陷反馈]: aclnnElu算子切换pytorch2.10精度失败** — 0分
+  - 痛点原因：机器人自动关闭且关闭说明为空，无方案文档化沉淀，未提供任何可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3949    - `ligen75`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @ligen75    - [关联PR #6882（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6882)    - [关联PR #7240（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7240)
+- **[#3948](https://gitcode.com/cann/ops-nn/issues/3948) [Requirement|需求建议]: 适配 qbmmv3 MX Basic API tiling 的 3-buffer L1 估算** — 0分
+  - 痛点原因：关闭说明为空，未沉淀方案文档与重复主链接，且关联PR仍处于open状态，无沉淀信息。
+  - 原文依据：
+    - `smdbha`：add label requirement    - `smdbha`：/assign    - `cann-robot`：assigned to @smdbha    - [关联PR #7237（open）](https://gitcode.com/cann/ops-nn/merge_requests/7237)
+- **[#3946](https://gitcode.com/cann/ops-nn/issues/3946) [Bug-Report|缺陷反馈]: 修改确定性场景下的aicpu cast逻辑** — 0分
+  - 痛点原因：仅由机器人自动关闭且无人工关闭说明，缺乏方案文档沉淀，导致其他用户无法复用解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3946    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz    - [关联PR #7223（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7223)
+- **[#3945](https://gitcode.com/cann/ops-nn/issues/3945) [Bug-Report|缺陷反馈]: cross_entropy_loss算子，ProcessFp32未初始化castTmpBuf大小** — 0分
+  - 痛点原因：关闭说明为空，未沉淀方案文档或重复链接，且关联PR仍处于open状态，无法为后续提供复用参考。
+  - 原文依据：
+    - `kdy18482276080`：add label bug-report    - `kdy18482276080`：assigned to @kdy18482276080    - [关联PR #7219（open）](https://gitcode.com/cann/ops-nn/merge_requests/7219)    - [关联PR #7220（open）](https://gitcode.com/cann/ops-nn/merge_requests/7220)
+- **[#3944](https://gitcode.com/cann/ops-nn/issues/3944) [Bug-Report|缺陷反馈]: ExtendConvTranspose知识库能力导致relu开关失效问题** — 0分
+  - 痛点原因：机器人因MR合并自动关闭，无方案文档与重复链接，关闭说明仅7字，未留下任何可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3944    - `cann-robot`：add label resolved    - `sunlesheng`：/assign    - `cann-robot`：assigned to @sunlesheng    - [关联PR #7189（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7189)
+- **[#3942](https://gitcode.com/cann/ops-nn/issues/3942) [Documentation|文档反馈]:torch_npu名称合一TorchNPU** — 0分
+  - 痛点原因：关闭时未填写任何说明文字，也未关联重复 issue 主链接，导致后续无法复用。
+  - 原文依据：
+    - `yolic`：assigned to @yanglu-1
+- **[#3939](https://gitcode.com/cann/ops-nn/issues/3939) [Documentation|文档反馈]: nn仓doc tools和aidd内容修改合入9.1.0专项** — 0分
+  - 痛点原因：关闭时未填写任何说明文字，且缺少重复issue主链接，未沉淀可供后续复用的信息。
+  - 原文依据：
+    - `caiwenwen`：add label documentation    - `caiwenwen`：assigned to @caiwenwen    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - [关联PR #7086（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7086)
+- **[#3937](https://gitcode.com/cann/ops-nn/issues/3937) [Bug-Report|缺陷反馈]: add_layer_norm_quant syncall同步缺失多核同时启动设置** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与复现链接，未沉淀任何可复用的解决信息。
+  - 原文依据：
+    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `wangpengbo26`：/assign    - `cann-robot`：assigned to @wangpengbo26    - [关联PR #7200（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7200)
+- **[#3936](https://gitcode.com/cann/ops-nn/issues/3936) [Requirement|需求建议]: GlobalLpPool算子950实现** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化，仅靠机器人随关联PR合并自动关闭，未沉淀任何可供复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3936    - `cann-robot`：add label resolved    - `yolic`：assigned to @weixin_51153241    - [关联PR #6398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6398)
+- **[#3934](https://gitcode.com/cann/ops-nn/issues/3934) [Bug-Report|缺陷反馈]: ForeachCopy算子性能修复** — 0分
+  - 痛点原因：关闭说明仅7字且由机器人自动触发，无方案文档沉淀与人工总结，无法为后续同类问题提供参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3934    - `u010470851`：add label bug-report    - `cann-robot`：add label resolved    - `u010470851`：/assign    - `cann-robot`：assigned to @u010470851    - [关联PR #7146（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7146)
+- **[#3931](https://gitcode.com/cann/ops-nn/issues/3931) [Bug-Report|缺陷反馈]: IndexPutWithSortV2算子SIMD/SIMT模板计算逻辑修复** — 0分
+  - 痛点原因：仅由机器人自动关闭，无人工关闭说明、方案文档沉淀及重复issue链接，未留存任何复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3931    - `cann-robot`：add label resolved    - [关联PR #7039（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7039)    - [关联PR #7250（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7250)
+- **[#3930](https://gitcode.com/cann/ops-nn/issues/3930) [Bug-Report|缺陷反馈]: 修复了 NHWC 布局下 conv2d_v2 算子在加载 AL1 数据时后半段数据加载异常** — 0分
+  - 痛点原因：仅由机器人随PR合并自动关闭，无人工关闭说明与方案文档，未沉淀任何复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3930    - `cann-robot`：add label resolved    - `yolic`：assigned to @yangyang4536    - [关联PR #7030（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7030)
+- **[#3929](https://gitcode.com/cann/ops-nn/issues/3929) [Bug-Report|缺陷反馈]: DataCopy多维数据搬运接口参数名变更** — 0分
+  - 痛点原因：关闭说明仅13字且无方案文档与复用链接，仅因关联MR合并机械关闭，未沉淀任何可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3929    - `Zehai`：add label bug-report    - `cann-robot`：add label resolved    - `Zehai`：/assign@Zehai    - `cann-robot`：assigned to @Zehai    - [关联PR #7151（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7151)
+- **[#3928](https://gitcode.com/cann/ops-nn/issues/3928) [Bug-Report|缺陷反馈]: aclnnTopKTopPSampleV2 精度问题解决** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，关闭说明仅7字且无方案文档化，缺乏可复用的解决过程与经验沉淀。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3928    - `sunchun`：add label bug-report    - `cann-robot`：add label resolved    - `sunchun`：/assign    - `cann-robot`：assigned to @sunchun    - [关联PR #7182（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7182)
+- **[#3927](https://gitcode.com/cann/ops-nn/issues/3927) [Bug-Report|缺陷反馈]: 不应当使用GetOptionalInputShape，应当使用GetOptionalInputDesc** — 0分
+  - 痛点原因：关闭时无任何说明文字，未文档化解决方案，且关联PR已关闭，导致他人无法复用解决经验。
+  - 原文依据：
+    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `yolic`：assigned to @wangpengbo26    - [关联PR #7181（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7181)
+- **[#3926](https://gitcode.com/cann/ops-nn/issues/3926) [Bug-Report|缺陷反馈]:BMM支持iterbatch broadcast Tiling未做L1 buffer校验** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档沉淀，仅由机器人自动关闭，导致其他用户无法复用修复经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3926    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl    - [关联PR #7179（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7179)
+- **[#3925](https://gitcode.com/cann/ops-nn/issues/3925) [Bug-Report|缺陷反馈]: FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：关闭时无任何说明文字，未关联重复主链接，且无方案文档化，导致无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3925    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yushan-kite    - [关联PR #7116（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7116)
+- **[#3924](https://gitcode.com/cann/ops-nn/issues/3924) [Requirement|需求建议]: Conv2d小kernel模板支持分组卷积** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档沉淀与重复链接指引，仅关联已关闭PR，未留下任何复用价值。
+  - 原文依据：
+    - `Mrxxx7`：add label requirement    - `yolic`：assigned to @Mrxxx7    - [关联PR #7154（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7154)    - [关联PR #7317（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7317)    - [关联PR #7710（open）](https://gitcode.com/cann/ops-nn/merge_requests/7710)
+- **[#3923](https://gitcode.com/cann/ops-nn/issues/3923) [Bug-Report|缺陷反馈]: bmmv3 vector不支持transA = 1，需要拦截** — 0分
+  - 痛点原因：关闭说明为空，且无方案文档与复用链接，未沉淀任何有效信息供后续参考。
+  - 原文依据：
+    - `hid54649903`：add label bug-report    - `hid54649903`：assigned to @hid54649903    - [关联PR #7178（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7178)
+- **[#3922](https://gitcode.com/cann/ops-nn/issues/3922) [Bug-Report|缺陷反馈]: DS红线网络用例AIC_ERR** — 0分
+  - 痛点原因：机器人因关联MR合并自动关闭，无方案文档、无dup链接且关闭说明为0字，未沉淀任何复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3922    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl    - [关联PR #7174（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7174)
+- **[#3921](https://gitcode.com/cann/ops-nn/issues/3921) [Bug-Report|缺陷反馈]: Matmul部分算子中对寄存器做初始化，在算子执行完成之后未还原** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化，关联PR仍处于open状态，未留下任何可复用经验。
+  - 原文依据：
+    - `wangwei_mayday`：/assign    - `cann-robot`：assigned to @wangwei_mayday    - [关联PR #7262（open）](https://gitcode.com/cann/ops-nn/merge_requests/7262)
+- **[#3920](https://gitcode.com/cann/ops-nn/issues/3920) [Bug-Report|缺陷反馈]: 个别网络在910B图模式8卡训练编译卡住** — 0分
+  - 痛点原因：仅靠机器人关联MR自动关闭，无任何关闭说明与方案文档沉淀，他人无法复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-nn#issue3920    - `Jiaxin_001`：add label bug-report    - `cann-robot`：add label resolved    - `Jiaxin_001`：assigned to @Jiaxin_001    - [关联PR #81980（merged）](https://gitcode.com/cann/canndev/merge_requests/81980)
+- **[#3919](https://gitcode.com/cann/ops-nn/issues/3919) [Build] Skip empty TensorFlow plugin library generation** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，关联PR尚未合并，未留存任何可供复用的信息。
+  - 原文依据：
+    - `yolic`：assigned to @zhaoyingchao2    - [关联PR #7173（open）](https://gitcode.com/cann/ops-nn/merge_requests/7173)
+- **[#3917](https://gitcode.com/cann/ops-nn/issues/3917) [Bug-Report|缺陷反馈]: Modify the description of UnsortedSegmentMax** — 0分
+  - 痛点原因：关闭说明仅7字且由机器人自动关闭，无方案文档化与dup主链接，未沉淀可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3917    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `zhangxiyan7`：/assign    - `cann-robot`：assigned to @zhangxiyan7    - [关联PR #7165（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7165)
+- **[#3916](https://gitcode.com/cann/ops-nn/issues/3916) [Requirement|需求建议]: 卷积小case模板需要支持输入输出NHWC/NCHW混用的情况** — 0分
+  - 痛点原因：关闭时无任何文字说明，未沉淀最终处理结果或解决方案，导致无复用价值。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@ray-shaw](https://gitcode.com/ray-shaw) 正在跟踪处理。    - `yolic`：assigned to @z1456419654    - `yolic`：assigned to @ray-shaw    - `yolic`：unassigned @z1456419654    - [关联PR #6567（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6567)    - [关联PR #7298（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7298)
+- **[#3915](https://gitcode.com/cann/ops-nn/issues/3915) index 算子UT覆盖率提升** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与dup主链接，未沉淀任何可复用经验。
+  - 原文依据：
+    - `wkkk0528`：closed from codehub    - `wkkk0528`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `wkkk0528`：/assign    - `cann-robot`：assigned to @wkkk0528    - [关联PR #7167（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7167)
+- **[#3914](https://gitcode.com/cann/ops-nn/issues/3914) [Bug] PR #6328 修改 GenSimplifiedKey 导致 AddRmsNormQuant BIN 模式符号不匹配** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，仅由机器人随关联PR合并自动关闭，未沉淀任何复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3914    - `cann-robot`：add label resolved    - `yolic`：assigned to @raoliang_sac    - [关联PR #7166（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7166)
+- **[#3913](https://gitcode.com/cann/ops-nn/issues/3913) [Requirement|需求建议]: 新增SwigluStep 算子** — 0分
+  - 痛点原因：关闭说明为0字且未提供关联主链接，缺乏复用指引，无法为后续相似需求提供参考价值。
+  - 原文依据：
+    - `boes129`：add label requirement    - `boes129`：/assign    - `boes129`：纪要:命名参考算子所在layer命名    - `cann-robot`：assigned to @boes129    - [关联PR #7492（open）](https://gitcode.com/cann/ops-nn/merge_requests/7492)
+- **[#3912](https://gitcode.com/cann/ops-nn/issues/3912) [Bug-Report|缺陷反馈]: QBMM MX multi batch 路径 atomic add 状态未恢复** — 0分
+  - 痛点原因：仅由机器人自动关联合并请求关闭，无方案文档沉淀，未提供可复用的解决细节供社区参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3912    - `chen-shuai`：add label bug-report    - `cann-robot`：add label resolved    - `chen-shuai`：/assign    - `cann-robot`：assigned to @chen-shuai    - [关联PR #7157（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7157)
+- **[#3910](https://gitcode.com/cann/ops-nn/issues/3910) [Requirement|需求建议]: 【社区任务】MaxUnpool2d算子开发交付（任务编号 04-14）** — 0分
+  - 痛点原因：关闭时无任何说明文字且关联PR仍处于open状态，未沉淀交付结论，导致后续无法参考复用。
+  - 原文依据：
+    - `yolic`：您好，已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `fullt`：已安排审核，请关注PR检视意见    - `yolic`：assigned to @fullt    - [关联PR #7155（open）](https://gitcode.com/cann/ops-nn/merge_requests/7155)
+- **[#3909](https://gitcode.com/cann/ops-nn/issues/3909) [Documentation|文档反馈]: adaptiva_max_pool3d_infershape.cpp 文件名错误** — 0分
+  - 痛点原因：关闭时未留下任何文字说明或解决方案总结，仅包含人员分配交互，无法提供复用参考。
+  - 原文依据：
+    - `yolic`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：### Notice This issue can not be assigned to ***chenxingyu18***. Please try to assign to the repository members.    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：assigned to @chenxingyu18    - `cann-robot`：assigned to @sunny_112 and unassigned @chenxingyu18    - `cann-robot`：assigned to @chenxingyu18 and unassigned @sunny_112
+- **[#3908](https://gitcode.com/cann/ops-nn/issues/3908) [Documentation|文档反馈]: 这个设计文档说，支持8维Shape，请问这个算子支持的Reduce轴是几？，公式哪里体现了Reduce第几根轴了？** — 0分
+  - 痛点原因：因超时无更新被机器人自动关闭，关闭说明为空且未沉淀最终解决方案，无复用价值。
+  - 原文依据：
+    - `yolic`：add label wait-feedback    - `yolic`：您好，感谢反馈，问题已收到，当前 [@Chen_HaoWen](https://gitcode.com/Chen_HaoWen) 正在跟踪处理。    - `Chen_HaoWen`：您好，norm轴与gamma的shape一致哈 这点可以看下rstdout的介绍：shape与入参`x`的shape前几维保持一致，前几维指`x`的维度减去`gamma`的维度，表示不需要norm的维度。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @Chen_HaoWen
+- **[#3907](https://gitcode.com/cann/ops-nn/issues/3907) [Requirement|需求建议]: 部分参数提前到tiling阶段计算** — 0分
+  - 痛点原因：仅靠机器人关联MR自动关闭，无人工关闭说明且未沉淀方案文档，无法提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3907    - `zhaozhoujun520`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520    - [关联PR #7069（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7069)
+- **[#3906](https://gitcode.com/cann/ops-nn/issues/3906) [Bug-Report|缺陷反馈]: usm排序求唯一索引问题** — 0分
+  - 痛点原因：仅因关联MR合并自动关闭，关闭说明仅7字且无方案文档化，未留存任何可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3906    - `jinpenghe`：add label bug-report    - `cann-robot`：add label resolved    - `jinpenghe`：/assign    - `cann-robot`：assigned to @jinpenghe    - [关联PR #7145（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7145)
+- **[#3905](https://gitcode.com/cann/ops-nn/issues/3905) [Bug-Report|缺陷反馈]: QuantBatchMatmulV3和FusedQuantMatmul的tiling拦截有漏洞** — 0分
+  - 痛点原因：关闭时仅由机器人关联合并请求自动关闭，无人工关闭说明且未沉淀方案文档，导致解决经验无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3905    - `lifei265`：add label bug-report    - `cann-robot`：add label resolved    - `lifei265`：assigned to @lifei265    - [关联PR #7110（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7110)
+- **[#3903](https://gitcode.com/cann/ops-nn/issues/3903) [Bug-Report|缺陷反馈]: QuantBatchMatMulV3适配APILEVEL后kernel入口兼容性修复** — 0分
+  - 痛点原因：关闭说明仅7字且为机器人自动关联关闭，无方案文档化记录，未留下可供复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3903    - `Hu1L1`：add label bug-report    - `cann-robot`：add label resolved    - `Hu1L1`：/assign    - `cann-robot`：assigned to @Hu1L1    - [关联PR #7126（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7126)
+- **[#3902](https://gitcode.com/cann/ops-nn/issues/3902) [Bug-Report|缺陷反馈]: aclnnConvolutionBackward异常场景用例报错有误** — 0分
+  - 痛点原因：机器人自动关闭且无人工关闭说明，未沉淀任何方案文档，无法为后续类似问题提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3902    - `zhaozhoujun520`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520    - [关联PR #7127（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7127)
+- **[#3901](https://gitcode.com/cann/ops-nn/issues/3901) [Documentation|文档反馈]: cache_runinfo.cpp 常量名MAX_TILING_DADA_SIZE拼写错误** — 0分
+  - 痛点原因：关联PR仍处于open状态且关闭说明为空，未提供任何可复用的解决结论。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liliyan](https://gitcode.com/liliyan) 正在跟踪处理。    - `yolic`：assigned to @liliyan    - [关联PR #7133（open）](https://gitcode.com/cann/ops-nn/merge_requests/7133)
+- **[#3900](https://gitcode.com/cann/ops-nn/issues/3900) [Bug-Report|缺陷反馈]: celuV2算子alpha取值比较大的时候，精度问题** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化记录，仅由代码库直接关闭，未沉淀任何可复用的解决经验。
+  - 原文依据：
+    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @gcw_YBIAEfqJ    - [关联PR #7106（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7106)    - [关联PR #7130（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7130)
+- **[#3899](https://gitcode.com/cann/ops-nn/issues/3899) [Bug-Report|缺陷反馈]: UniqueConsecutive算子UT找不到头文件** — 0分
+  - 痛点原因：仅因关联MR被自动关闭，无方案文档化记录且关闭说明仅7字，未留存任何可供复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3899    - `wkx12138`：add label bug-report    - `cann-robot`：add label resolved    - `wkx12138`：/assgin    - `wkx12138`：assigned to @wkx12138    - [关联PR #7118（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7118)
+- **[#3898](https://gitcode.com/cann/ops-nn/issues/3898) [Bug-Report|缺陷反馈]: MaxPool3D内置算子示例测试（图模式）报错** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档化与主链接，仅靠机器人关联关闭，未沉淀解决思路供复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3898    - `harrynospot`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)
+- **[#3897](https://gitcode.com/cann/ops-nn/issues/3897) [Bug-Report|缺陷反馈]: test_max_pool_3d.cpp引用的experiment_ops.h不存在** — 0分
+  - 痛点原因：关闭说明仅7字且为系统自动操作，无方案文档化与根因分析，无法为其他用户提供参考价值。
+  - 原文依据：
+    - `chenxingyu18`：closed from codehub    - `harrynospot`：changed custom state from 已解决 to 已完成    - `cann-robot`：add label Accepted    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.
+- **[#3895](https://gitcode.com/cann/ops-nn/issues/3895) [Requirement|需求建议]: WeightQuantBatchMatmulV2 + Transpose 图融合适配新版 GE 融合框架** — 0分
+  - 痛点原因：机器人因MR合并自动关闭，关闭说明为0字且无方案文档沉淀，无法为后续类似需求提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3895    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `maqijun`：assigned to @maqijun    - [关联PR #6419（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6419)
+- **[#3894](https://gitcode.com/cann/ops-nn/issues/3894) [Requirement|需求建议]: aclnn_convert_to_int4_pack接口runtime整改** — 0分
+  - 痛点原因：仅由机器人随PR合并自动关闭，无方案文档且关闭说明为0字，未留存任何供社区复用的经验信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3894    - `zhangquanxin`：add label requirement    - `cann-robot`：add label resolved    - [关联PR #7013（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7013)
+- **[#3893](https://gitcode.com/cann/ops-nn/issues/3893) [Requirement|需求建议]: QuantBatchMatmulV4 + Transpose 图融合适配新版 GE 融合框架** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，仅由机器人随PR合并自动关闭，未沉淀任何可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3893    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - [关联PR #4263（merged）](https://gitcode.com/cann/ops-nn/merge_requests/4263)
+- **[#3892](https://gitcode.com/cann/ops-nn/issues/3892) [Bug-Report|缺陷反馈]: GroupedQuantMax & QuantMax support batchmode** — 0分
+  - 痛点原因：关闭说明仅7字且为机器人自动回复，无方案文档与重复链接，无法为后续类似问题提供参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3892    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yin-peng`：/assign    - `cann-robot`：assigned to @yin-peng    - [关联PR #7115（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7115)
+- **[#3891](https://gitcode.com/cann/ops-nn/issues/3891) [Bug-Report|缺陷反馈]: Wqbmmv2异常场景打印内容有问题** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，无方案文档化与重复链接，关闭说明仅7字，未沉淀任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3891    - `ykxxlzhong`：add label bug-report    - `cann-robot`：add label resolved    - `ykxxlzhong`：/assign    - `cann-robot`：assigned to @ykxxlzhong    - [关联PR #6957（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6957)
+- **[#3890](https://gitcode.com/cann/ops-nn/issues/3890) [Requirement|需求建议]: 添加bmm/mm b全载+fixpipe优化模板** — 0分
+  - 痛点原因：仅由机器人自动关闭，无方案文档化记录和人工关闭说明，导致解决经验无法被其他用户复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3890    - `huangkejie1647`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647    - [关联PR #5452（merged）](https://gitcode.com/cann/ops-nn/merge_requests/5452)
+- **[#3888](https://gitcode.com/cann/ops-nn/issues/3888) [Requirement|需求建议]: QuantBatchMatmul 算子 FP8-Pertile 支持 WeightNZ** — 0分
+  - 痛点原因：仅靠机器人随PR合并自动关闭，无任何人工关闭说明与方案文档，导致缺乏可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3888    - `cann-robot`：add label resolved    - `yolic`：assigned to @Nam_John    - [关联PR #7104（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7104)
+- **[#3887](https://gitcode.com/cann/ops-nn/issues/3887) [Bug-Report|缺陷反馈]: 卷积反向、foreach算子 classifyRlue目录不生效问题** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与重复链接，仅由机器人关联MR关闭，未留存可供他人复用的解决细节。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3887    - `cann-robot`：add label resolved    - `zhouxuan78`：/assign    - `cann-robot`：assigned to @zhouxuan78    - [关联PR #7090（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7090)    - [关联PR #7124（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7124)
+- **[#3886](https://gitcode.com/cann/ops-nn/issues/3886) LinearIndexV2 算子补充 op_host 层 UT 用例，提升目标文件的覆盖率** — 0分
+  - 痛点原因：关闭说明为0字且方案未文档化，仅由机器人随关联PR合并自动关闭，缺乏后续复用参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3886    - `cann-robot`：add label resolved    - `yolic`：assigned to @wkkk0528    - [关联PR #7096（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7096)
+- **[#3885](https://gitcode.com/cann/ops-nn/issues/3885) [Bug-Report|缺陷反馈]: swiglu_group_quant quant mode==2 out y origin在输入为fp32精度问题** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化，仅由机器人关联PR自动关闭，导致解决过程缺乏记录无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3885    - `cann-robot`：add label resolved    - [关联PR #7094（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7094)
+- **[#3884](https://gitcode.com/cann/ops-nn/issues/3884) [Documentation|文档反馈]: aclnnDynamicDualLevelMxQuant、aclnnSwigluGroupQuant、aclnnE…** — 0分
+  - 痛点原因：关闭时未填写任何说明文字，且未提供重复问题主链接，缺乏复用价值。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `east_yang`：SwigluGroupQuant资料已修正 https://gitcode.com/cann/ops-nn/blob/master/activation/swiglu_group_quant/docs/aclnnSwigluGroupQu…    - `yolic`：assigned to @sunchun    - `yolic`：assigned to @east_yang    - `yolic`：assigned to @jiaoyiming    - `sunchun`：unassigned @sunchun
+- **[#3881](https://gitcode.com/cann/ops-nn/issues/3881) [Bug-Report|缺陷反馈]: ExtendConvTranspose算子A16W8，Group>1的部分场景拦截缺失** — 0分
+  - 痛点原因：关闭说明为空，无方案文档与重复链接，且关联PR未合并，未留存任何可复用信息。
+  - 原文依据：
+    - `YuanTianyi`：add label bug-report    - `YuanTianyi`：assigned to @YuanTianyi    - [关联PR #6850（open）](https://gitcode.com/cann/ops-nn/merge_requests/6850)
+- **[#3880](https://gitcode.com/cann/ops-nn/issues/3880) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，nn仓编译工程适配** — 0分
+  - 痛点原因：关闭时无任何文字说明和方案文档沉淀，仅由机器人自动关闭，缺乏可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3880    - `liuyufan0725`：add label requirement    - `cann-robot`：add label resolved    - [关联PR #6225（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6225)    - [关联PR #7061（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7061)
+- **[#3879](https://gitcode.com/cann/ops-nn/issues/3879) [Bug-Report|缺陷反馈]: addmm和baddbmm接口支持支持混合精度计算输入，当前16in32out场景被拦截** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，仅由机器人因关联MR合并自动关闭，未沉淀任何复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3879    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - [关联PR #6862（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6862)    - [关联PR #7091（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7091)
+- **[#3876](https://gitcode.com/cann/ops-nn/issues/3876) [Requirement|需求建议] 新增 scatter_nd_max 和 scatter_nd_min 算子迁移** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，关闭说明仅7字且无方案文档化，未沉淀可供复用的经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3876    - `cann-robot`：add label resolved    - `jialimin1`：/assign    - `cann-robot`：assigned to @jialimin1    - [关联PR #6800（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6800)
+- **[#3875](https://gitcode.com/cann/ops-nn/issues/3875) [Requirement|需求建议]: 精简Index算子tiling构建配置并统一op_host目录编译** — 0分
+  - 痛点原因：关闭时无任何文字说明且缺乏方案文档，导致解决经验缺失，无法为后续类似需求提供参考。
+  - 原文依据：
+    - `tieyutong`：/assign    - `cann-robot`：assigned to @tieyutong    - [关联PR #7058（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7058)    - [关联PR #7072（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7072)
+- **[#3874](https://gitcode.com/cann/ops-nn/issues/3874) [Documentation|文档反馈]: Relu 算子产品支持范围与代码配置范围不一致，请确认文档或配置是否需要同步** — 0分
+  - 痛点原因：机器人因超时无更新自动关闭，关闭说明为0字，未沉淀问题最终结论或文档更新情况。
+  - 原文依据：
+    - `east_yang`：add label wait-feedback    - `yolic`：您好，感谢反馈，问题已收到，当前 [@east_yang](https://gitcode.com/east_yang) 正在跟踪处理。    - `east_yang`：您好，目前仓内的A5算子全新开发均采用asc实现，而A2/A3上部分算子还存在tbe的实现，当前算子正在逐步切换到asc实现，非常欢迎开发者参与社区，贡献asc实现。 A2/A3的tbe算子我们也发布了社区任务，欢迎开发者参与。 http…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：assigned to @east_yang
+- **[#3873](https://gitcode.com/cann/ops-nn/issues/3873) [Bug][arch35][index] ScatterMul/ScatterMax/ScatterMin/ScatterDiv/UnsortedSegmen…** — 0分
+  - 痛点原因：关闭说明仅35字且无方案文档与dup链接，仅以closed from codehub关闭，缺乏根因分析与解决过程，无复用价值。
+  - 原文依据：
+    - `tangweiwei2`：closed from codehub    - `tangweiwei2`：问题已收到，index类算子安排@xieshengwei1024处理中    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3872](https://gitcode.com/cann/ops-nn/issues/3872) [Bug][arch35][norm] AddLayerNormQuant/SyncBatchNormGatherStatsFused kernel 使用 S…** — 0分
+  - 痛点原因：关闭说明仅记录问题已收到并安排跟踪，无方案文档化或解决细节，其他用户无法复用。
+  - 原文依据：
+    - `tangweiwei2`：closed from codehub    - `cann-robot`：add label resolved    - `tangweiwei2`：问题已收到，norm类算子已对齐，安排@xieshengwei1024跟踪    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - [关联PR #7088（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7088)
+- **[#3870](https://gitcode.com/cann/ops-nn/issues/3870) [Bug][arch35][loss] NLLLossGrad kernel 使用 SyncAll 但 Tiling 未设置 SetScheduleMode(…** — 0分
+  - 痛点原因：关闭说明仅称算子已对齐，无方案文档与代码链接，未沉淀可复用的解决经验。
+  - 原文依据：
+    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：问题已收到，loss类算子已对齐，安排@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3869](https://gitcode.com/cann/ops-nn/issues/3869) [Requirement|需求建议]: mm/bmm算子A全载模板kernel实现切换tensorApi** — 0分
+  - 痛点原因：关闭时零字说明且无方案文档沉淀，关联PR亦被关闭，导致后续无任何复用参考价值。
+  - 原文依据：
+    - `AlbertYoung192`：add label requirement    - `AlbertYoung192`：assigned to @AlbertYoung192    - [关联PR #6610（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6610)
+- **[#3867](https://gitcode.com/cann/ops-nn/issues/3867) [Bug][arch35][quant] FakeQuantWithMinMaxVarsGradient/FakeQuantWithMinMaxVarsPer…** — 0分
+  - 痛点原因：关闭说明仅称随MR合并关闭关联issue，无方案文档化及主链接，未沉淀任何可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3867    - `cann-robot`：add label resolved    - `tangweiwei2`：quant类算子问题，已安排@xieshengwei1024跟踪    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - [关联PR #7085（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7085)
+- **[#3866](https://gitcode.com/cann/ops-nn/issues/3866) [Bug][arch35][pooling] AdaptiveAvgPool3dGrad/MaxPool3DGrad/MaxPoolGrad kernel 使…** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，无方案文档沉淀，关闭说明简略且缺乏具体解决思路，无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3866    - `cann-robot`：add label resolved    - `tangweiwei2`：pooling类算子问题，已确认存在问题，安排@xieshengwei1024解决    - `xieshengwei1024`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @liuchuangdev    - `xieshengwei1024`：unassigned @xieshengwei1024
+- **[#3863](https://gitcode.com/cann/ops-nn/issues/3863) [Bug][arch35][conv] DeformableOffsetsGrad kernel 使用 SyncAll 但 Tiling 未设置 SetSch…** — 0分
+  - 痛点原因：关闭说明仅35字，无方案文档与重复链接，仅由代码库自动关闭，未沉淀问题原因与解决方案，无参考价值。
+  - 原文依据：
+    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：deformable问题已确认，请@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3862](https://gitcode.com/cann/ops-nn/issues/3862) [Bug-Report|缺陷反馈]: 【dx】修复kernel拆分出现除零问题** — 0分
+  - 痛点原因：关闭说明仅7字且为系统自动回复，无修复方案文档化沉淀，无法为后续类似问题提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3862    - `cann-robot`：add label resolved    - `yejiani`：/assign    - `cann-robot`：assigned to @yejiani    - [关联PR #6909（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6909)
+- **[#3861](https://gitcode.com/cann/ops-nn/issues/3861) [Requirement|需求建议]: SoftplusGrad算子适配Ascend 950开发** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，仅由机器人自动关闭，未沉淀任何可供复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3861    - `cann-robot`：add label resolved    - `yolic`：assigned to @wucong22    - [关联PR #6734（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6734)
+- **[#3860](https://gitcode.com/cann/ops-nn/issues/3860) [Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确** — 0分
+  - 痛点原因：仅由机器人自动关联关闭，无人工关闭说明、方案文档及复用指引，导致无法为社区提供复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3860    - `wuyufei`：add label bug-report    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei    - [关联PR #7024（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7024)    - [关联PR #7224（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7224)
+- **[#3858](https://gitcode.com/cann/ops-nn/issues/3858) [Bug][arch35][hash] EmbeddingHashTableApplyAdamW 与 EmbeddingHashTableExport ker…** — 0分
+  - 痛点原因：关闭说明仅23字且为机器人自动关联合并，无方案文档化与根因分析记录，缺乏人工总结，无法供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3858    - `cann-robot`：add label resolved    - `tangweiwei2`：问题已收到，已安排人跟踪处理，预计本周三解决。    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - [关联PR #7076（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7076)
+- **[#3857](https://gitcode.com/cann/ops-nn/issues/3857) [Bug-Report|缺陷反馈]: sparsesegmentmeangrad的网络用例性能优化，核上开多个线程处理indices每次循环的多个segment** — 0分
+  - 痛点原因：机器人因MR合并自动关闭，无方案文档、无重复链接且关闭说明为0字，未留下可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3857    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666    - [关联PR #7044（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7044)    - [关联PR #7064（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7064)
+- **[#3856](https://gitcode.com/cann/ops-nn/issues/3856) [Requirement|需求建议]: MatMulV3 M较小场景下缺少泛用模板** — 0分
+  - 痛点原因：无方案文档与关联链接，关闭说明仅8字，仅因MR合并被机器人自动关闭，未留下任何可复用的解决思路。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3856    - `llqx-1`：add label requirement    - `cann-robot`：add label resolved    - `llqx-1`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***llqx-1***. Please do not assign repeatedly.    - `yolic`：assigned to @llqx-1
+- **[#3855](https://gitcode.com/cann/ops-nn/issues/3855) [Requirement|需求建议]:【QBMM】新增scale支持batch维度** — 0分
+  - 痛点原因：仅由机器人因关联PR合并自动关闭，无人工关闭说明，未沉淀方案文档或复用指引。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3855    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp    - [关联PR #6344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6344)
+- **[#4032](https://gitcode.com/cann/ops-nn/issues/4032) [Bug-Report|缺陷反馈]: 修复 rmsnormquantv2/v3 的 GM 数据拷贝长度问题** — 25分
+  - 痛点原因：关闭说明仅包含机器人自动触发的合并提示，无人工总结的解决方案文档与复用链接，无法为后续提供参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4032    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：assigned to @huanghaihong    - [关联PR #7389（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7389)
+- **[#4027](https://gitcode.com/cann/ops-nn/issues/4027) fix: 修复 rmsnormquantv2/3 的 GM 内存越界问题** — 25分
+  - 痛点原因：关闭说明仅为机器人自动关联关闭，缺乏方案文档化记录与详细排查过程，无法为其他用户提供有效参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4027    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：assigned to @huanghaihong    - [关联PR #7338（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7338)
+- **[#3966](https://gitcode.com/cann/ops-nn/issues/3966) [Bug-Report] scatter_elements_v2 中 mode==1 时 if (includeSelf) 判断 countLocal，但 i…** — 25分
+  - 痛点原因：关闭时未补充解决方案或修复细节，仅保留初步确认信息，导致后续无法复用。
+  - 原文依据：
+    - `chenxingyu18`：changed custom state from 进行中 to 已完成    - `chenxingyu18`：closed from codehub    - `cann-robot`：add label Accepted    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `chenxingyu18`：你好，kernel是和tiling配合使用的，不会误传    - `chenxingyu18`：您好，当前问题已回复，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。
+- **[#3963](https://gitcode.com/cann/ops-nn/issues/3963) 【需求】【社区任务】LogSoftmaxGrad算子贡献** — 25分
+  - 痛点原因：关闭说明仅为机器人自动关联合并的机械回复，无人工总结，且无方案文档沉淀与关联链接，导致无复用参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3963    - `cann-robot`：add label resolved    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `yolic`：assigned to @fullt    - [关联PR #1983（merged）](https://gitcode.com/cann/ops-nn/merge_requests/1983)
+- **[#3938](https://gitcode.com/cann/ops-nn/issues/3938) [Bug-Report|缺陷反馈]: pooling\max_pool3d_with_argmax_v2内存问题** — 25分
+  - 痛点原因：机器人自动关闭且无方案文档与关联链接，关闭说明过短，未沉淀可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3938    - `cann-robot`：add label resolved    - `VoyageZhou`：/assign [@VoyageZhou](https://gitcode.com/VoyageZhou)    - `cann-robot`：assigned to @VoyageZhou    - [关联PR #7209（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7209)    - [关联PR #7210（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7210)
+- **[#3904](https://gitcode.com/cann/ops-nn/issues/3904) [Bug-Report|缺陷反馈]: conv3d_v2 算子 cleancode 扫描告警 (G.CNS.03/G.CNS.04/G.INC.02)** — 25分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，缺乏人工总结的解决方案与文档沉淀，无法供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3904    - `wanyukang`：add label bug-report    - `cann-robot`：add label resolved    - `wanyukang`：/assign [@wanyukang](https://gitcode.com/wanyukang)    - `cann-robot`：assigned to @wanyukang    - [关联PR #7129（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7129)
+- **[#3854](https://gitcode.com/cann/ops-nn/issues/3854) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 25分
+  - 痛点原因：关闭时未提供任何机制解释或解决方案，无文档沉淀，对其他用户毫无参考价值。
+  - 原文依据：
+    - `yang-di52`：closed from codehub    - `yang-di52`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：您好，感谢反馈，问题已收到，当前 [@yang-di52](https://gitcode.com/yang-di52) 正在跟踪处理。    - `yang-di52`：[@easel](https://gitcode.com/easel) 您好，nn仓仅提供神经网络计算能力的高阶算子，无法回答您cann机制的问题。您可以前往社区进行提问， https://gitcode.com/cann/communi…    - `yolic`：assigned to @yang-di52
+- **[#4029](https://gitcode.com/cann/ops-nn/issues/4029) [Documentation|文档反馈]: aclnnDynamicMxQuantV2文档缺少scaleAlg=2时blocksize=32的约束** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人因关联PR合并自动关闭，未沉淀供他人复用的经验总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4029    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1    - [关联PR #7381（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7381)
+- **[#4013](https://gitcode.com/cann/ops-nn/issues/4013) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 和 add_rms_norm_dynamic_quant_v…** — 30分
+  - 痛点原因：关闭说明为0字，未留下任何文字总结供后续复用参考。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac    - [关联PR #7334（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7334)    - [关联PR #7352（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7352)
+- **[#4010](https://gitcode.com/cann/ops-nn/issues/4010) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 30分
+  - 痛点原因：关闭时无任何说明文字，未总结解决方案或提供复用信息，缺乏参考价值。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4008](https://gitcode.com/cann/ops-nn/issues/4008) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 30分
+  - 痛点原因：直接从 codehub 关闭且关闭说明为 0 字，未在 issue 中留下任何可供后续复用的总结信息。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4007](https://gitcode.com/cann/ops-nn/issues/4007) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 30分
+  - 痛点原因：关闭说明为0字且无关联主链接，仅由系统自动关闭，未沉淀可复用的解决信息。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#3991](https://gitcode.com/cann/ops-nn/issues/3991) [Bug-Report|缺陷反馈]: fused_bias_leaky_relu_grad算子 tiling add guard rank>8** — 30分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，关闭说明为0字，未沉淀任何可复用的解决方案信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3991    - `ugzhangyiyi`：add label bug-report    - `cann-robot`：add label resolved    - `ugzhangyiyi`：assigned to @ugzhangyiyi    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7302)
+- **[#3985](https://gitcode.com/cann/ops-nn/issues/3985) [Documentation|文档反馈]: rms_norm 算子aclnn文档中空Tensor支持描述不准确** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人因关联PR合并自动关闭，缺乏对问题与解决方案的总结描述。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3985    - `liangyuhua`：add label documentation    - `cann-robot`：add label resolved    - [关联PR #7280（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7280)    - [关联PR #7284（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7284)
+- **[#3975](https://gitcode.com/cann/ops-nn/issues/3975) [Requirement|需求建议]: 支持 QuantMatmul 动态 T-C 量化 bias** — 30分
+  - 痛点原因：关闭说明仅7字且未提供关联issue链接，虽有方案文档但缺乏直接引导导致复用困难。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3975    - `smdbha`：add label requirement    - `cann-robot`：add label resolved    - `smdbha`：/assign    - `cann-robot`：assigned to @smdbha    - [关联PR #7259（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7259)
+- **[#3974](https://gitcode.com/cann/ops-nn/issues/3974) [Documentation|文档反馈]: aclnnMatmul&&aclnnMm 资料有误** — 30分
+  - 痛点原因：关闭说明为0字且无dup主链接，仅由机器人因MR合并自动关闭，缺乏可复用的关闭信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3974    - `wuyufei`：add label documentation    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei    - [关联PR #7208（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7208)    - [关联PR #7257（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7257)
+- **[#3971](https://gitcode.com/cann/ops-nn/issues/3971) [Documentation|文档反馈]: fusedmatmul资料修改** — 30分
+  - 痛点原因：关闭时未填写任何说明文字且未关联重复链接，导致其他用户无法获取有效参考信息。
+  - 原文依据：
+    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label documentation    - `cann-robot`：add label Accepted    - `szhexin`：assigned to @szhexin
+- **[#3951](https://gitcode.com/cann/ops-nn/issues/3951) [Documentation|文档反馈]: ①torch_npu名称合一TorchNPU②《acl API》手册更名修改③有一些link失效** — 30分
+  - 痛点原因：虽关联PR已合并，但关闭说明为0字，仅靠机器人自动关闭，缺乏人工总结与复用指引。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3951    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1    - [关联PR #7243（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7243)
+- **[#3950](https://gitcode.com/cann/ops-nn/issues/3950) [Documentation|文档反馈]: aclnnSoftplusBackward.md中的示例代码和example中的示例代码不一致** — 30分
+  - 痛点原因：关闭说明为0字，仅靠机器人自动关闭并关联PR，缺乏人工对问题根因及解决方案的总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3950    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang    - [关联PR #7242（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7242)
+- **[#3947](https://gitcode.com/cann/ops-nn/issues/3947) [Bug-Report|缺陷反馈]: ApplyCenteredRMSProp算子文档问题** — 30分
+  - 痛点原因：关闭说明仅7字且为机器人模板，无重复主链接，未提供供其他用户参考的复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3947    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `lianjieyu`：/assign    - `cann-robot`：assigned to @lianjieyu    - [关联PR #7244（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7244)
+- **[#3943](https://gitcode.com/cann/ops-nn/issues/3943) [Documentation|文档反馈]: FusedMatmul支持BMM+add/mul的资料说明** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人自动关闭，缺乏人工总结的复用价值说明。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3943    - `liweijian16`：add label documentation    - `cann-robot`：add label resolved    - `liweijian16`：assigned to @liweijian16    - [关联PR #7197（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7197)
+- **[#3941](https://gitcode.com/cann/ops-nn/issues/3941) [Requirement|需求建议]: TopkTopPSample算子说明文档改进[9.1.0][master]** — 30分
+  - 痛点原因：关闭说明仅7字且仅由机器人因关联MR合并自动关闭，未补充文档改进细节或有效链接，导致复用信息沉淀不足。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3941    - `cann-robot`：add label resolved    - `Thaurissan`：/assign    - `cann-robot`：assigned to @Thaurissan    - [关联PR #7214（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7214)    - [关联PR #7215（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7215)
+- **[#3940](https://gitcode.com/cann/ops-nn/issues/3940) [Bug-Report|缺陷反馈]: 部分网络场景报错MatMulV3 AIC ERROR** — 30分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，关闭说明仅7字且未补充具体解决方案，导致其他用户无法参考复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3940    - `llqx-1`：add label bug-report    - `cann-robot`：add label resolved    - `llqx-1`：/assign    - `cann-robot`：assigned to @llqx-1    - [关联PR #7203（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7203)
+- **[#3935](https://gitcode.com/cann/ops-nn/issues/3935) [Documentation|文档反馈]: SwigluGroupQuantGrad文档groupIndex aclnn接口说明与实际不一致，clamplim…** — 30分
+  - 痛点原因：仅由机器人因关联PR合并自动关闭，关闭说明为0字，缺乏人工总结，无法提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3935    - `cann-robot`：add label resolved    - [关联PR #7195（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7195)
+- **[#3932](https://gitcode.com/cann/ops-nn/issues/3932) [Documentation|文档反馈]: matmulcompressdequant算子约束调整** — 30分
+  - 痛点原因：关闭说明仅7字且无关联链接，仅靠机器人自动关闭，缺乏人工对最终解决方案的总结，导致其他用户无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3932    - `cann-robot`：add label resolved    - `wmg1`：/assign    - `cann-robot`：assigned to @wmg1    - [关联PR #7172（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7172)    - [关联PR #7183（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7183)
+- **[#3911](https://gitcode.com/cann/ops-nn/issues/3911) [Documentation|文档反馈]: 修改nn仓master分支doctool扫描问题** — 30分
+  - 痛点原因：关闭说明仅为机器人合并自动回复，未关联重复issue，缺乏人工沉淀的解决方案。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3911    - `cann-robot`：add label resolved    - `chaotang233`：PLS 处理相关issue问题，目前正在排序解决    - `yolic`：assigned to @yanglu-1    - [关联PR #7147（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7147)
+- **[#3896](https://gitcode.com/cann/ops-nn/issues/3896) [Documentation|文档反馈]: aclnnSoftplusBackward.md、README.md、op_api_list.md、op_list…** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人随关联MR合并自动关闭，缺乏人工补充的复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3896    - `Hana77`：add label documentation    - `cann-robot`：add label resolved    - [关联PR #7113（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7113)
+- **[#3878](https://gitcode.com/cann/ops-nn/issues/3878) [Documentation|文档反馈]: ExtendConvTranspose算子的README需要更新** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人因关联MR合并自动关闭，缺乏人工总结与指引，难以供他人复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3878    - `YuanTianyi`：add label documentation    - `cann-robot`：add label resolved    - `YuanTianyi`：assigned to @YuanTianyi    - [关联PR #7074（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7074)
+- **[#3877](https://gitcode.com/cann/ops-nn/issues/3877) [Bug-Report|缺陷反馈]: GroupedQuantMax输出amax数据踩踏** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人随MR合并自动关闭，未留下任何复用总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3877    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yin-peng    - [关联PR #6949（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6949)
+- **[#3859](https://gitcode.com/cann/ops-nn/issues/3859) [Documentation|文档反馈]: Modifying the issue of incorrect links** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人随PR合并自动关闭，缺乏人工总结与复用指引。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3859    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang    - [关联PR #7049（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7049)
+- **[#3853](https://gitcode.com/cann/ops-nn/issues/3853) [Documentation|文档反馈]: WeightQuantBatchMatmulExperiment README 中存在公式变量名、格式等问题** — 30分
+  - 痛点原因：关闭说明仅7字且无关联代码提交链接，未提供具体修复方案与复用指导。
+  - 原文依据：
+    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成    - `shi-rui`：add label documentation    - `cann-robot`：add label Accepted    - `shi-rui`：/assign    - `cann-robot`：assigned to @shi-rui
+- **[#4018](https://gitcode.com/cann/ops-nn/issues/4018) [Documentation|文档反馈]: clipped_swiglu、multi_add_rms_norm_dynamic_quant、dequant_s…** — 55分
+  - 痛点原因：关闭说明仅为机器人合并MR的模板话术，缺乏具体方案细节总结，且未提供相关重复问题链接，难以供他人参考复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4018    - `zerosaki_admin`：add label documentation    - `cann-robot`：add label resolved    - `zerosaki_admin`：/assign [@zerosaki_admin](https://gitcode.com/zerosaki_admin)    - `cann-robot`：assigned to @zerosaki_admin    - [关联PR #7353（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7353)
+- **[#3990](https://gitcode.com/cann/ops-nn/issues/3990) [Documentation|文档反馈]: FusedBiasLeakyReluGrad README 文档需要修正** — 55分
+  - 痛点原因：关闭说明仅为机器人合并套话，缺乏具体修复细节与关联文档链接，导致同类问题用户难以复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3990    - `ugzhangyiyi`：add label documentation    - `cann-robot`：add label resolved    - `ugzhangyiyi`：/assign [@ugzhangyiyi](https://gitcode.com/ugzhangyiyi)    - `cann-robot`：assigned to @ugzhangyiyi    - [关联PR #7300（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7300)
+- **[#3933](https://gitcode.com/cann/ops-nn/issues/3933) [Documentation|文档反馈]: 指针释放异常，导致代码无法执行完成** — 55分
+  - 痛点原因：关闭说明仅为机器人关联 MR 的自动回复，缺乏人工对指针释放异常问题的具体解决总结，难以复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3933    - `cann-robot`：add label resolved    - `m0_55003149`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：assigned to @m0_55003149    - [关联PR #7186（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7186)    - [关联PR #7206（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7206)
+- **[#3918](https://gitcode.com/cann/ops-nn/issues/3918) [Bug-Report|缺陷反馈]: 共性问题，aclnn接口的参数表格右边超出了目录导航栏，体验不好** — 55分
+  - 痛点原因：关闭说明仅为初始确认回复，未关联重复issue主链接，也未沉淀最终解决方案，难以供后续参考。
+  - 原文依据：
+    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：您好，感谢反馈，问题已收到，当前 [@huzhipeng](https://gitcode.com/huzhipeng) 正在跟踪处理。    - `yuhao_`：/assign    - `yolic`：assigned to @zhengyuhao3
+- **[#3883](https://gitcode.com/cann/ops-nn/issues/3883) [Documentation|文档反馈]: 大小驼峰命名** — 55分
+  - 痛点原因：关闭说明仅含状态流转与初步受理回复，未明确具体解决方案或关联重复链接，缺乏后续参考价值。
+  - 原文依据：
+    - `liu-wei`：closed from codehub    - `liu-wei`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liu-wei](https://gitcode.com/liu-wei) 正在跟踪处理。    - `liu-wei`：kCalls 位于 namespace aicpu 作用域内，属于全局变量，应加 g_ 前缀并使用小驼峰命名（如 g_calls） 这个规则是从哪里来的？如果保持现状会有什么问题吗？    - `liu-wei`：这个issue我们打算关闭了，如果还有问题麻烦重新提PR，我们会持续提供支撑。
+#### PP-03 分流阶段客观指标偏低缺乏优先级判定（I1 · 分配与首次响应）
+
+- **[#4048](https://gitcode.com/cann/ops-nn/issues/4048) [Requirement|需求建议]: NLLLoss算子补齐ascend910b原生AscendC实现** — 0分
+  - 痛点原因：仅有机器人分配和指派操作，虽关联PR但无任何人工实质性回复。
+  - 原文依据：
+    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie    - [关联PR #7421（open）](https://gitcode.com/cann/ops-nn/merge_requests/7421)
+- **[#4047](https://gitcode.com/cann/ops-nn/issues/4047) [Requirement|需求建议]: Quantize算子补齐ascend910b原生AscendC 实现** — 0分
+  - 痛点原因：仅执行了任务分配和关联PR操作，未提供任何实质性的文字回复或沟通。
+  - 原文依据：
+    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie    - [关联PR #7420（open）](https://gitcode.com/cann/ops-nn/merge_requests/7420)
+- **[#4046](https://gitcode.com/cann/ops-nn/issues/4046) [Bug-Report|缺陷反馈]: foreach_add_listV2算子在master分支存在精度问题** — 0分
+  - 痛点原因：全程仅打标签和分配负责人等机械操作，无任何人工技术解答，最终被机器人直接关联关闭。
+  - 原文依据：
+    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4046    - [关联PR #7408（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7408)
+- **[#4045](https://gitcode.com/cann/ops-nn/issues/4045) [Bug-Report|缺陷反馈]: SwigluGroupQuant GroupIndex计算逻辑异常** — 0分
+  - 痛点原因：维护者仅执行分配操作，全程无人工实质回应，最终由机器人自动关闭。
+  - 原文依据：
+    - `luwei_1104`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @luwei_1104    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4045    - [关联PR #7414（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7414)
+- **[#4044](https://gitcode.com/cann/ops-nn/issues/4044) [Bug-Report|缺陷反馈]: 修复proto文件注释** — 0分
+  - 痛点原因：全程仅有打标签、分配及机器人关闭等自动化操作，缺乏任何人工实质性技术回应。
+  - 原文依据：
+    - `yiqiao-wjp`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4044    - [关联PR #7415（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7415)
+- **[#4043](https://gitcode.com/cann/ops-nn/issues/4043) [Requirement|需求建议]: 迁移 Bucketize 和 AvgPool1DAvgMatrix AICPU 算子到 ops-nn** — 0分
+  - 痛点原因：全程仅机器人自动指派和关闭，无任何人工实质性技术回应。
+  - 原文依据：
+    - `zhaowenrui666`：/assign [@zhaowenrui666](https://gitcode.com/zhaowenrui666) 关联 PR：https://gitcode.com/cann/ops-nn/merge_requests/6877    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhaowenrui666    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4043    - [关联PR #6877（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6877)
+- **[#4041](https://gitcode.com/cann/ops-nn/issues/4041) [Question|问题咨询]: 代码上库最新规范资料** — 0分
+  - 痛点原因：仅有确认收到和指派人员的流转回复，始终未提供针对问题的实质性解答。
+  - 原文依据：
+    - `yolic`：你好，感谢反馈，问题已收到，当前 [@caiwenwen](https://gitcode.com/caiwenwen) 正在跟踪处理。    - `weixin_51153241`：add label question    - `yolic`：assigned to @caiwenwen
+- **[#4040](https://gitcode.com/cann/ops-nn/issues/4040) [Bug-Report|缺陷反馈]: classify_rule补充缺失文件目录** — 0分
+  - 痛点原因：仅打标签和分配任务，无任何人工实质回应即被机器人随MR合并自动关闭。
+  - 原文依据：
+    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4040    - [关联PR #7410（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7410)
+- **[#4039](https://gitcode.com/cann/ops-nn/issues/4039) [Bug-Report|缺陷反馈]: foreach_add_listV2算子存在精度问题** — 0分
+  - 痛点原因：仅加标签和指派负责人，无任何人工技术解答，直接被机器人关联代码合并关闭，全程无实质回应。
+  - 原文依据：
+    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4039    - [关联PR #7398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7398)
+- **[#4038](https://gitcode.com/cann/ops-nn/issues/4038) [Documentation|文档反馈][CANN SUMMER CAMPS 2026][NPU]: Requirement Issue 模板中 Backgr…** — 0分
+  - 痛点原因：仅指派了负责人，未对问题给出任何实质性回应，且关联PR仍处于open状态。
+  - 原文依据：
+    - `yolic`：assigned to @Quirkybrain    - [关联PR #7407（open）](https://gitcode.com/cann/ops-nn/merge_requests/7407)
+- **[#4037](https://gitcode.com/cann/ops-nn/issues/4037) [Requirement|需求建议]: CANNBot项目AdvanceStep算子新增支持A5** — 0分
+  - 痛点原因：全程仅有机器人加标签和分配人员，无任何人工实质回应即随PR合并被关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @Almost_CANN    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4037    - [关联PR #7405（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7405)
+- **[#4035](https://gitcode.com/cann/ops-nn/issues/4035) [Bug-Report|缺陷反馈]: ops-nn 仓 执行example命令指定芯片时，反馈和其他仓不一致** — 0分
+  - 痛点原因：全程仅机器人分配及关联PR合并自动关闭，始终无任何人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @magicjason0007    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4035    - [关联PR #7402（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7402)
+- **[#4034](https://gitcode.com/cann/ops-nn/issues/4034) FusedSgd算子支持Ascend 950平台** — 0分
+  - 痛点原因：仅指派负责人，未提供任何技术解答或有效沟通，且关联PR未合并，导致无实质回应。
+  - 原文依据：
+    - `yolic`：assigned to @raoliang_sac    - [关联PR #7400（open）](https://gitcode.com/cann/ops-nn/merge_requests/7400)
+- **[#4033](https://gitcode.com/cann/ops-nn/issues/4033) [Requirement|需求建议]: 新增 ReluGradV3 算子 Ascend C 实现（Atlas A2/A3）** — 0分
+  - 痛点原因：仅有指派和关联PR操作，一直未提供任何实质性的技术解答或讨论。
+  - 原文依据：
+    - `yolic`：assigned to @gcw_r0GcmdT1    - `fullt`：assigned to @fullt    - [关联PR #7392（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7392)    - [关联PR #7394（open）](https://gitcode.com/cann/ops-nn/merge_requests/7394)
+- **[#4032](https://gitcode.com/cann/ops-nn/issues/4032) [Bug-Report|缺陷反馈]: 修复 rmsnormquantv2/v3 的 GM 数据拷贝长度问题** — 0分
+  - 痛点原因：维护者仅指派任务和添加标签，全程无任何针对缺陷的技术讨论或实质解答。
+  - 原文依据：
+    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4032    - [关联PR #7389（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7389)
+- **[#4031](https://gitcode.com/cann/ops-nn/issues/4031) [Bug-Report|缺陷反馈]: 修复data_format_dim_map_def.cpp静态问题** — 0分
+  - 痛点原因：仅机器人执行分配和打标签并直接标记为已解决，全程无人工实质回应。
+  - 原文依据：
+    - `lianjieyu`：/assign    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4031    - [关联PR #7372（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7372)
+- **[#4030](https://gitcode.com/cann/ops-nn/issues/4030) [Bug-Report|缺陷反馈]: 高精度情况下，非连续有可能走进vec计算未拦截，需要进行拦截** — 0分
+  - 痛点原因：仅执行打标签、分配和关闭等流程操作，未对缺陷提供实质性技术回应。
+  - 原文依据：
+    - `gcw_kUomxQ2l`：/approve    - `szhexin`：add label bug-report    - `szhexin`：assigned to @szhexin    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成
+- **[#4029](https://gitcode.com/cann/ops-nn/issues/4029) [Documentation|文档反馈]: aclnnDynamicMxQuantV2文档缺少scaleAlg=2时blocksize=32的约束** — 0分
+  - 痛点原因：机器人自动分配并随关联PR合并关闭，全程无人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4029    - [关联PR #7381（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7381)
+- **[#4028](https://gitcode.com/cann/ops-nn/issues/4028) [Bug-Report|缺陷反馈]: nn仓 安全告警修改** — 0分
+  - 痛点原因：仅快速认领和打标签，未对问题进行任何实质性技术解答或确认，直接关联PR合并。
+  - 原文依据：
+    - `sunchun`：/assign    - `sunchun`：add label bug-report    - `cann-robot`：assigned to @sunchun    - [关联PR #7344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7344)    - [关联PR #7351（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7351)
+- **[#4027](https://gitcode.com/cann/ops-nn/issues/4027) fix: 修复 rmsnormquantv2/3 的 GM 内存越界问题** — 0分
+  - 痛点原因：维护者仅执行了指派和打标签操作，全程未提供任何技术性或实质性的解答。
+  - 原文依据：
+    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4027    - [关联PR #7338（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7338)
+- **[#4026](https://gitcode.com/cann/ops-nn/issues/4026) [Bug-Report|缺陷反馈]: usm/usp算子二进制匹配失败** — 0分
+  - 痛点原因：仅执行了指派和打标签操作，无任何针对缺陷的实质性技术回应，且被机器人直接标记为已解决。
+  - 原文依据：
+    - `zhangxiyan7`：/assign    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4026    - [关联PR #7382（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7382)
+- **[#4025](https://gitcode.com/cann/ops-nn/issues/4025) [Requirement|需求建议]: 950新增dequantize算子** — 0分
+  - 痛点原因：仅进行了人员分配和机器人关闭操作，直至关联PR合并关闭均无任何实质性技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @h1234515    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4025    - [关联PR #7037（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7037)
+- **[#4024](https://gitcode.com/cann/ops-nn/issues/4024) [Bug-Report|缺陷反馈]: AdaptiveMaxPool3d性能优化** — 0分
+  - 痛点原因：全程仅由机器人自动分配并因关联MR合并而关闭，无任何人工实质回应。
+  - 原文依据：
+    - `liu_hp711`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @liu_hp711    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4024    - [关联PR #7335（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7335)
+- **[#4023](https://gitcode.com/cann/ops-nn/issues/4023) [Bug-Report|缺陷反馈]: foreach_asin arch35 tiling 添加 GetPlatformInfoFallback逻辑，解决 G…** — 0分
+  - 痛点原因：全程仅有机器人分配与关闭操作，直至关联PR合并关闭均无人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4023    - [关联PR #7339（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7339)    - [关联PR #7358（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7358)
+- **[#4022](https://gitcode.com/cann/ops-nn/issues/4022) [Requirement|需求建议]: Relu6D 算子支持 Ascend950 ascendc 实现** — 0分
+  - 痛点原因：仅进行了加标签和分配任务等流程操作，全程无任何实质性技术回应即被关闭。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhongheng    - `zhongheng`：closed from codehub    - `zhongheng`：changed custom state from 进行中 to 已完成    - [关联PR #7375（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7375)    - [关联PR #7444（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7444)
+- **[#4021](https://gitcode.com/cann/ops-nn/issues/4021) [Bug-Report|缺陷反馈]: max_pool3d_grad_with_argmax aclnn接口内存检测时发生oom** — 0分
+  - 痛点原因：维护者仅执行分配和打标签等机械操作，始终未对问题提供任何实质性技术回应。
+  - 原文依据：
+    - `dong-yanrong`：、assign    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report    - `cann-robot`：assigned to @dong-yanrong    - [关联PR #7361（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7361)    - [关联PR #7378（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7378)
+- **[#4020](https://gitcode.com/cann/ops-nn/issues/4020) 【fix】修复precommit的oat空告警失败问题** — 0分
+  - 痛点原因：仅机器人自动打标签并随关联PR合并关闭，全程无人工实质技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4020    - [关联PR #7370（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7370)
+- **[#4019](https://gitcode.com/cann/ops-nn/issues/4019) [Requirement|需求建议]: sparse_segment_sum_grad 支持确定性计算** — 0分
+  - 痛点原因：仅有分配任务和打标签等流程性操作，始终未对需求内容进行实质性技术回应。
+  - 原文依据：
+    - `wang-shilong32`：/assign    - `wang-shilong32`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wang-shilong32    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4019    - [关联PR #7307（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7307)
+- **[#4018](https://gitcode.com/cann/ops-nn/issues/4018) [Documentation|文档反馈]: clipped_swiglu、multi_add_rms_norm_dynamic_quant、dequant_s…** — 0分
+  - 痛点原因：仅执行了分配和打标签操作，未对文档反馈提供任何实质性解答即被机器人标记为已解决。
+  - 原文依据：
+    - `zerosaki_admin`：/assign [@zerosaki_admin](https://gitcode.com/zerosaki_admin)    - `zerosaki_admin`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zerosaki_admin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4018    - [关联PR #7353（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7353)
+- **[#4017](https://gitcode.com/cann/ops-nn/issues/4017) [Bug-Report|缺陷反馈]: conv2d用例调整tiling决策解决性能不达标问题** — 0分
+  - 痛点原因：维护者仅执行分配和加标签操作，未对缺陷进行任何实质性技术回应。
+  - 原文依据：
+    - `ray-shaw`：/assign    - `ray-shaw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ray-shaw    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4017    - [关联PR #7305（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7305)
+- **[#4016](https://gitcode.com/cann/ops-nn/issues/4016) [Bug-Report|缺陷反馈]: sparse_apply_adagrad_v2的golden需要与tf对比** — 0分
+  - 痛点原因：机器人直接关闭并关联合并PR，全程无任何实质性技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4016    - [关联PR #7331（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7331)
+- **[#4015](https://gitcode.com/cann/ops-nn/issues/4015) [Requirement|需求建议]: arch35: DataCopyParams迁移为DataCopyExtParams及C-style cast修复** — 0分
+  - 痛点原因：仅有机器人加标签和分配人员等流程操作，全程无任何人工实质回复即被直接关闭。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - [关联PR #7464（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7464)    - [关联PR #7482（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7482)
+- **[#4014](https://gitcode.com/cann/ops-nn/issues/4014) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：直接从代码库关闭，全程无任何人工响应或实质回复。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4013](https://gitcode.com/cann/ops-nn/issues/4013) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 和 add_rms_norm_dynamic_quant_v…** — 0分
+  - 痛点原因：仅机器人加标签和分配人员后直接关闭，全程无针对反馈内容的实质性回复。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - [关联PR #7334（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7334)    - [关联PR #7352（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7352)
+- **[#4012](https://gitcode.com/cann/ops-nn/issues/4012) test** — 0分
+  - 痛点原因：该 issue 被直接关闭，全程未提供任何首次响应与实质回复。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4011](https://gitcode.com/cann/ops-nn/issues/4011) test** — 0分
+  - 痛点原因：该issue被直接关闭，全程未产生任何首次响应与实质回应。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4010](https://gitcode.com/cann/ops-nn/issues/4010) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：维护者直接从 codehub 关闭了该 issue，全程未提供任何首次响应与实质回应。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4009](https://gitcode.com/cann/ops-nn/issues/4009) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：全程无任何首次响应与实质回应即被直接关闭。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4008](https://gitcode.com/cann/ops-nn/issues/4008) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：issue 被直接从 codehub 关闭，全程未提供任何首次响应与实质回应。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4007](https://gitcode.com/cann/ops-nn/issues/4007) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：无任何首次响应与实质解答，直接被从代码库关闭。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4006](https://gitcode.com/cann/ops-nn/issues/4006) [Bug-Report|缺陷反馈]: scatterupdate算子开启确定性计算越界检查会出现oom报错** — 0分
+  - 痛点原因：仅机器人快速打标签和分配，全程无人工实质性技术回应，最终直接被机器人关联合并请求关闭。
+  - 原文依据：
+    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4006    - [关联PR #7323（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7323)    - [关联PR #7333（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7333)
+- **[#4005](https://gitcode.com/cann/ops-nn/issues/4005) [Requirement|需求建议]: 【社区任务】MaxUnpool3d算子开发交付** — 0分
+  - 痛点原因：首次响应仅流转指派，后续未提供技术评审或实质性解答，导致无实质回应。
+  - 原文依据：
+    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `yolic`：assigned to @fullt    - [关联PR #7330（open）](https://gitcode.com/cann/ops-nn/merge_requests/7330)
+- **[#4004](https://gitcode.com/cann/ops-nn/issues/4004) test-ignore** — 0分
+  - 痛点原因：耗时10.68小时仅作关闭操作，全程无任何实质回应。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4003](https://gitcode.com/cann/ops-nn/issues/4003) test-pls-ignore-123** — 0分
+  - 痛点原因：首次响应仅为10.69小时后的关闭操作，全程无任何实质回应内容。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4002](https://gitcode.com/cann/ops-nn/issues/4002) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题-9.1.0分支** — 0分
+  - 痛点原因：仅由机器人分配任务并因关联MR合并自动关闭，全程无人工实质回应。
+  - 原文依据：
+    - `wishercy`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4002    - [关联PR #7326（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7326)
+- **[#4001](https://gitcode.com/cann/ops-nn/issues/4001) [Bug-Report|缺陷反馈]: dynamic_mx_quant跑oom报错，请确认** — 0分
+  - 痛点原因：全程仅由机器人打标签、分配人员及合并PR关闭，无任何人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4001    - [关联PR #7291（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7291)    - [关联PR #7325（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7325)
+- **[#4000](https://gitcode.com/cann/ops-nn/issues/4000) [Bug-Report|缺陷反馈]: 商分FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅机器人自动打标签和分配，随后直接随MR合并关闭，全程无人工实质回应。
+  - 原文依据：
+    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yushan-kite`：assigned to @yushan-kite    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4000    - [关联PR #7324（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7324)
+- **[#3999](https://gitcode.com/cann/ops-nn/issues/3999) [Requirement|需求建议]: 新增SwigluGroup和SwigluGroupQuant算子torch_extension接口** — 0分
+  - 痛点原因：仅机器人自动分配并在MR合并时关闭，全程无人工实质回应。
+  - 原文依据：
+    - `taochangmin`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3999    - [关联PR #7232（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7232)
+- **[#3998](https://gitcode.com/cann/ops-nn/issues/3998) [Bug-Report|缺陷反馈]: MaxPool3DGradWithArgmax算子在执行geir时，部分用例执行二进制失败core** — 0分
+  - 痛点原因：仅执行了分配和打标签操作，未提供任何针对该缺陷的实质性技术回应。
+  - 原文依据：
+    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report    - `cann-robot`：assigned to @dong-yanrong    - [关联PR #7095（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7095)
+- **[#3997](https://gitcode.com/cann/ops-nn/issues/3997) [Bug-Report|缺陷反馈]:** — 0分
+  - 痛点原因：仅打标签和分配负责人，未对缺陷进行实质性分析或回复，且关联PR未合并，导致无实质回应。
+  - 原文依据：
+    - `weiyan_hw`：add label bug-report    - `yolic`：assigned to @weiyan_hw    - [关联PR #7313（open）](https://gitcode.com/cann/ops-nn/merge_requests/7313)
+- **[#3996](https://gitcode.com/cann/ops-nn/issues/3996) [Requirement|需求建议]: Ascend950支持apply_power_sign算子** — 0分
+  - 痛点原因：虽快速指派负责人且关联PR已合并，但全程未在issue内提供任何实质性的技术回应或进度说明。
+  - 原文依据：
+    - `yolic`：assigned to @niukang_hw    - [关联PR #6827（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6827)    - [关联PR #7409（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7409)
+- **[#3995](https://gitcode.com/cann/ops-nn/issues/3995) 【Ascend950适配】dynamic_rnn 与 single_layer_lstm_grad 需支持 Ascend950** — 0分
+  - 痛点原因：虽被快速指派，但直接关闭issue且关联PR未合并，全程无任何实质性文字回复。
+  - 原文依据：
+    - `yolic`：assigned to @chenxingyu18    - `chenxingyu18`：closed from codehub    - [关联PR #7310（open）](https://gitcode.com/cann/ops-nn/merge_requests/7310)
+- **[#3994](https://gitcode.com/cann/ops-nn/issues/3994) [Requirement|需求建议]: foreach系列算子支持非连续输入和输出** — 0分
+  - 痛点原因：仅通过指派和关联PR处理，始终未对需求给出实质性文字回应。
+  - 原文依据：
+    - `yolic`：assigned to @luoyufan7    - [关联PR #6980（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6980)    - [关联PR #7475（open）](https://gitcode.com/cann/ops-nn/merge_requests/7475)    - [关联PR #7495（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7495)
+- **[#3993](https://gitcode.com/cann/ops-nn/issues/3993) [Bug-Report|缺陷反馈]: QBMM MIX模板代码规范整改** — 0分
+  - 痛点原因：仅执行分配和打标签操作，全程无任何实质性技术回应，且被机器人直接标记为已解决。
+  - 原文依据：
+    - `ZhangWei1176`：/assign    - `ZhangWei1176`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ZhangWei1176    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3993    - [关联PR #7303（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7303)
+- **[#3992](https://gitcode.com/cann/ops-nn/issues/3992) [Bug-Report|缺陷反馈]: Matmul算子N非256B对齐transdata场景性能存在劣化** — 0分
+  - 痛点原因：开发者仅执行分配和加标签操作，机器人直接标记resolved，全程无针对缺陷的实质性技术回应。
+  - 原文依据：
+    - `zhengyuhao3`：/assign    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhengyuhao3    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3992    - [关联PR #7288（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7288)
+- **[#3991](https://gitcode.com/cann/ops-nn/issues/3991) [Bug-Report|缺陷反馈]: fused_bias_leaky_relu_grad算子 tiling add guard rank>8** — 0分
+  - 痛点原因：仅添加标签和指派人员，随后机器人直接因代码合并关闭，全程无人工实质回应。
+  - 原文依据：
+    - `ugzhangyiyi`：add label bug-report    - `cann-robot`：add label resolved    - `ugzhangyiyi`：assigned to @ugzhangyiyi    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3991    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7302)
+- **[#3990](https://gitcode.com/cann/ops-nn/issues/3990) [Documentation|文档反馈]: FusedBiasLeakyReluGrad README 文档需要修正** — 0分
+  - 痛点原因：仅进行了指派和加标签等流程操作，全程无针对文档修正的实质性技术回应。
+  - 原文依据：
+    - `ugzhangyiyi`：/assign [@ugzhangyiyi](https://gitcode.com/ugzhangyiyi)    - `ugzhangyiyi`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ugzhangyiyi    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3990    - [关联PR #7300（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7300)
+- **[#3989](https://gitcode.com/cann/ops-nn/issues/3989) [Requirement|需求建议]: 算子原型迁移至所属仓** — 0分
+  - 痛点原因：全程无实质回应，仅有打标签和分配的初步操作，且关联PR均已关闭，需求未获有效处理。
+  - 原文依据：
+    - `Hana77`：add label requirement    - `chenqi317`：assigned to @Hana77    - [关联PR #7328（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7328)    - [关联PR #7329（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7329)    - [关联PR #7362（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7362)    - [关联PR #7363（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7363)
+- **[#3988](https://gitcode.com/cann/ops-nn/issues/3988) [Bug-Report|缺陷反馈]: 16in32out场景mm接口性能劣化严重** — 0分
+  - 痛点原因：仅打标签和分配人员，最终由机器人自动关闭，全程无人工实质性技术回应。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @HuangKun8682    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3988    - [关联PR #7296（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7296)    - [关联PR #7297（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7297)
+- **[#3987](https://gitcode.com/cann/ops-nn/issues/3987) [Bug-Report|缺陷反馈]: 卷积反向 dw 邮件问题代码排查** — 0分
+  - 痛点原因：仅通过机器人分配和开发者认领，未对缺陷提供任何实质技术排查或解答。
+  - 原文依据：
+    - `zhouxuan78`：/assign    - `cann-robot`：assigned to @zhouxuan78    - [关联PR #7289（open）](https://gitcode.com/cann/ops-nn/merge_requests/7289)
+- **[#3986](https://gitcode.com/cann/ops-nn/issues/3986) [Bug-Report|缺陷反馈]: aclnnQuantMatmulV5算子oom问题** — 0分
+  - 痛点原因：全程无人工实质解答，仅通过加标签、分配任务及关联其他问题即被关闭。
+  - 原文依据：
+    - `steppecat`：add label bug-report    - `cann-robot`：add label resolved    - `steppecat`：assigned to @steppecat    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3986    - [关联PR #7276（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7276)
+- **[#3985](https://gitcode.com/cann/ops-nn/issues/3985) [Documentation|文档反馈]: rms_norm 算子aclnn文档中空Tensor支持描述不准确** — 0分
+  - 痛点原因：首次响应仅打标签，后续直接由机器人关联PR并关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `liangyuhua`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3985    - [关联PR #7280（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7280)    - [关联PR #7284（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7284)
+- **[#3984](https://gitcode.com/cann/ops-nn/issues/3984) [Requirement|需求建议]: 支持QuantMatmul+Gelu+DynamicMxQuant融合算子ascend950** — 0分
+  - 痛点原因：仅分配负责人和关联PR，未提供实质性文字回应。
+  - 原文依据：
+    - `yolic`：assigned to @zhuoyunhang    - [关联PR #7272（open）](https://gitcode.com/cann/ops-nn/merge_requests/7272)
+- **[#3983](https://gitcode.com/cann/ops-nn/issues/3983) [Bug-Report|缺陷反馈]: fixpipe场景切tensor api部分场景拦截失败** — 0分
+  - 痛点原因：仅进行了打标签和分配，无任何人工实质回应，最终被机器人随关联MR合并自动关闭。
+  - 原文依据：
+    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3983    - [关联PR #7278（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7278)
+- **[#3982](https://gitcode.com/cann/ops-nn/issues/3982) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题** — 0分
+  - 痛点原因：全程仅机器人执行分配和关闭操作，无任何人工技术解答或问题确认等实质回应。
+  - 原文依据：
+    - `wishercy`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3982    - [关联PR #7260（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7260)
+- **[#3981](https://gitcode.com/cann/ops-nn/issues/3981) glu_grad & grouped_dynamic_block_quant modify suggestion** — 0分
+  - 痛点原因：仅机器人打标签与指派，无人工技术回应，最终随关联PR合并直接关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @ASCEND222    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3981    - [关联PR #7238（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7238)
+- **[#3980](https://gitcode.com/cann/ops-nn/issues/3980) [Bug-Report|缺陷反馈]: Matmul算子出现用例精度错误** — 0分
+  - 痛点原因：维护者仅执行认领和打标签操作，未提供任何实质性技术分析或回复，且直接被机器人标记为已解决。
+  - 原文依据：
+    - `zhengyuhao3`：/assign    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhengyuhao3    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3980    - [关联PR #7249（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7249)
+- **[#3979](https://gitcode.com/cann/ops-nn/issues/3979) [Bug-Report|缺陷反馈]: Conv2DBackpropInput等算子融合Pass整改** — 0分
+  - 痛点原因：首次响应超100小时，且全程无人工实质回应，仅由机器人加标签并关联其他问题关闭。
+  - 原文依据：
+    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3979    - [关联PR #6081（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6081)
+- **[#3978](https://gitcode.com/cann/ops-nn/issues/3978) [Bug-Report|缺陷反馈]: mm接口和addmm接口存在精度问题** — 0分
+  - 痛点原因：全程无人工实质回应，仅加标签和指派后由机器人自动关闭，未与用户进行有效沟通。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3978    - [关联PR #7266（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7266)    - [关联PR #7269（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7269)
+- **[#3977](https://gitcode.com/cann/ops-nn/issues/3977) [Bug-Report|缺陷反馈]: matmul代码clean code告警** — 0分
+  - 痛点原因：仅打标签和指派人员，未针对缺陷反馈提供任何实质性的文字解答或原因分析。
+  - 原文依据：
+    - `wuyufei`：add label bug-report    - `yolic`：assigned to @wuyufei    - [关联PR #7212（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7212)
+- **[#3975](https://gitcode.com/cann/ops-nn/issues/3975) [Requirement|需求建议]: 支持 QuantMatmul 动态 T-C 量化 bias** — 0分
+  - 痛点原因：仅有分配和加标签的机械操作，全程无任何实质性技术回应，且被机器人直接标记为已解决。
+  - 原文依据：
+    - `smdbha`：/assign    - `smdbha`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @smdbha    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3975    - [关联PR #7259（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7259)
+- **[#3974](https://gitcode.com/cann/ops-nn/issues/3974) [Documentation|文档反馈]: aclnnMatmul&&aclnnMm 资料有误** — 0分
+  - 痛点原因：全程仅加标签和分配，耗时超102小时，未对文档错误提供任何实质性文字回应，最终被机器人自动关闭。
+  - 原文依据：
+    - `wuyufei`：add label documentation    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3974    - [关联PR #7208（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7208)    - [关联PR #7257（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7257)
+- **[#3973](https://gitcode.com/cann/ops-nn/issues/3973) [Question|问题咨询]: BaddbmmMatmulGraph impl函数过大，建议拆分优化** — 0分
+  - 痛点原因：仅打标签和指派，直至关联合并关闭始终未提供任何实质性解答。
+  - 原文依据：
+    - `HuangKun8682`：add label question    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3973    - [关联PR #7230（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7230)    - [关联PR #7254（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7254)
+- **[#3972](https://gitcode.com/cann/ops-nn/issues/3972) [Bug-Report|缺陷反馈]: 910C环境 aclnnAddmm 16in32out场景 报错，MatMulV3 部分 kernel未找到** — 0分
+  - 痛点原因：维护者仅完成打标签、分配和状态流转，全程未对报错问题提供任何实质性技术解答。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label Accepted    - `HuangKun8682`：assigned to @HuangKun8682    - `HuangKun8682`：changed custom state from 进行中 to 已完成    - `HuangKun8682`：closed from codehub    - [关联PR #7202（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7202)
+- **[#3971](https://gitcode.com/cann/ops-nn/issues/3971) [Documentation|文档反馈]: fusedmatmul资料修改** — 0分
+  - 痛点原因：响应耗时超264小时且全程无实质回复，仅打标签后直接关闭。
+  - 原文依据：
+    - `szhexin`：add label documentation    - `cann-robot`：add label Accepted    - `szhexin`：assigned to @szhexin    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成
+- **[#3970](https://gitcode.com/cann/ops-nn/issues/3970) [Bug-Report|缺陷反馈]: Conv2DTranspose算子增加Bias类型校验导致量化功能失败** — 0分
+  - 痛点原因：全程仅打标签和机器人自动关闭，无任何人工实质回应。
+  - 原文依据：
+    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3970    - [关联PR #7218（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7218)
+- **[#3969](https://gitcode.com/cann/ops-nn/issues/3969) [Bug-Report|缺陷反馈]: slice高精度拦截** — 0分
+  - 痛点原因：仅机器人打标签并随关联MR合并自动关闭，全程无人工实质回应。
+  - 原文依据：
+    - `szhexin`：add label bug-report    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3969    - [关联PR #7161（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7161)    - [关联PR #7255（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7255)
+- **[#3968](https://gitcode.com/cann/ops-nn/issues/3968) [Bug-Report|缺陷反馈]: MatMulToMatmulV3图融合修复offset_w场景并按输入数量整改pattern** — 0分
+  - 痛点原因：全程仅有分配和打标签操作，无任何实质性技术回应，直接被机器人标记为已解决。
+  - 原文依据：
+    - `jgx12`：/assign    - `jgx12`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jgx12    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3968    - [关联PR #7142（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7142)
+- **[#3965](https://gitcode.com/cann/ops-nn/issues/3965) [Bug-Report] celuV2 alpha 很大时的精度问题本质是 float16 下 log1p(x) 在 x>65504 时溢出 inf 而非 e…** — 0分
+  - 痛点原因：首次响应耗时超10小时，但内容仅为模板回复与指派人员，全程无任何技术性实质解答。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，正在处理。    - `yolic`：assigned to @Coder_Nerd
+- **[#3963](https://gitcode.com/cann/ops-nn/issues/3963) 【需求】【社区任务】LogSoftmaxGrad算子贡献** — 0分
+  - 痛点原因：仅进行了人员流转，但直至被机器人关闭，始终无人提供实质性的技术评审或反馈。
+  - 原文依据：
+    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `cann-robot`：add label resolved    - `yolic`：assigned to @fullt    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3963    - [关联PR #1983（merged）](https://gitcode.com/cann/ops-nn/merge_requests/1983)
+- **[#3952](https://gitcode.com/cann/ops-nn/issues/3952) [Bug-Report|缺陷反馈]: softplusv2grad原型宏定义应和legacy保持一致** — 0分
+  - 痛点原因：全程无人工实质回应，仅由机器人添加标签并随关联MR合并自动关闭。
+  - 原文依据：
+    - `Hana77`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @Hana77    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3952    - [关联PR #7241（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7241)
+- **[#3951](https://gitcode.com/cann/ops-nn/issues/3951) [Documentation|文档反馈]: ①torch_npu名称合一TorchNPU②《acl API》手册更名修改③有一些link失效** — 0分
+  - 痛点原因：仅机器人打标签分配并因关联PR合并自动关闭，全程无人工对文档反馈进行实质解答。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3951    - [关联PR #7243（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7243)
+- **[#3950](https://gitcode.com/cann/ops-nn/issues/3950) [Documentation|文档反馈]: aclnnSoftplusBackward.md中的示例代码和example中的示例代码不一致** — 0分
+  - 痛点原因：全程仅机器人打标签、分配及随PR合并自动关闭，无任何人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3950    - [关联PR #7242（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7242)
+- **[#3949](https://gitcode.com/cann/ops-nn/issues/3949) [Bug-Report|缺陷反馈]: aclnnElu算子切换pytorch2.10精度失败** — 0分
+  - 痛点原因：全程无人工实质性回应，仅由机器人打标签、分配并关联MR合并自动关闭。
+  - 原文依据：
+    - `ligen75`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @ligen75    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3949    - [关联PR #6882（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6882)    - [关联PR #7240（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7240)
+- **[#3948](https://gitcode.com/cann/ops-nn/issues/3948) [Requirement|需求建议]: 适配 qbmmv3 MX Basic API tiling 的 3-buffer L1 估算** — 0分
+  - 痛点原因：仅快速分配任务和打标签，始终未对需求给出实质性的技术回应或进展说明。
+  - 原文依据：
+    - `smdbha`：/assign    - `smdbha`：add label requirement    - `cann-robot`：assigned to @smdbha    - [关联PR #7237（open）](https://gitcode.com/cann/ops-nn/merge_requests/7237)
+- **[#3947](https://gitcode.com/cann/ops-nn/issues/3947) [Bug-Report|缺陷反馈]: ApplyCenteredRMSProp算子文档问题** — 0分
+  - 痛点原因：仅执行了自动指派和打标签操作，全程无任何人工实质回应，直接被机器人标记为已解决。
+  - 原文依据：
+    - `lianjieyu`：/assign    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3947    - [关联PR #7244（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7244)
+- **[#3946](https://gitcode.com/cann/ops-nn/issues/3946) [Bug-Report|缺陷反馈]: 修改确定性场景下的aicpu cast逻辑** — 0分
+  - 痛点原因：仅机器人分配人员并随PR合并关闭，全程无人工实质性技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3946    - [关联PR #7223（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7223)
+- **[#3945](https://gitcode.com/cann/ops-nn/issues/3945) [Bug-Report|缺陷反馈]: cross_entropy_loss算子，ProcessFp32未初始化castTmpBuf大小** — 0分
+  - 痛点原因：维护者仅打标签、指派并关联PR，未针对缺陷本身提供任何实质性文字回复。
+  - 原文依据：
+    - `kdy18482276080`：add label bug-report    - `kdy18482276080`：assigned to @kdy18482276080    - [关联PR #7219（open）](https://gitcode.com/cann/ops-nn/merge_requests/7219)    - [关联PR #7220（open）](https://gitcode.com/cann/ops-nn/merge_requests/7220)
+- **[#3944](https://gitcode.com/cann/ops-nn/issues/3944) [Bug-Report|缺陷反馈]: ExtendConvTranspose知识库能力导致relu开关失效问题** — 0分
+  - 痛点原因：维护者仅指派了负责人，机器人便自动关联合并请求并关闭了issue，全程无任何人工实质回应。
+  - 原文依据：
+    - `sunlesheng`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunlesheng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3944    - [关联PR #7189（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7189)
+- **[#3943](https://gitcode.com/cann/ops-nn/issues/3943) [Documentation|文档反馈]: FusedMatmul支持BMM+add/mul的资料说明** — 0分
+  - 痛点原因：全程无人工实质回应，仅打标签和指派，最终由机器人自动关闭。
+  - 原文依据：
+    - `liweijian16`：add label documentation    - `cann-robot`：add label resolved    - `liweijian16`：assigned to @liweijian16    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3943    - [关联PR #7197（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7197)
+- **[#3942](https://gitcode.com/cann/ops-nn/issues/3942) [Documentation|文档反馈]:torch_npu名称合一TorchNPU** — 0分
+  - 痛点原因：仅进行了指派操作，未提供任何实质性解答或反馈。
+  - 原文依据：
+    - `yolic`：assigned to @yanglu-1
+- **[#3941](https://gitcode.com/cann/ops-nn/issues/3941) [Requirement|需求建议]: TopkTopPSample算子说明文档改进[9.1.0][master]** — 0分
+  - 痛点原因：仅有机器人指派及关联合并自动关闭操作，全程无任何人工实质回应。
+  - 原文依据：
+    - `Thaurissan`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Thaurissan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3941    - [关联PR #7214（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7214)    - [关联PR #7215（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7215)
+- **[#3940](https://gitcode.com/cann/ops-nn/issues/3940) [Bug-Report|缺陷反馈]: 部分网络场景报错MatMulV3 AIC ERROR** — 0分
+  - 痛点原因：仅进行了分配和打标签操作，全程无任何人工技术解答或实质处理。
+  - 原文依据：
+    - `llqx-1`：/assign    - `llqx-1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llqx-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3940    - [关联PR #7203（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7203)
+- **[#3939](https://gitcode.com/cann/ops-nn/issues/3939) [Documentation|文档反馈]: nn仓doc tools和aidd内容修改合入9.1.0专项** — 0分
+  - 痛点原因：仅进行了加标签、指派和关联PR操作，全程未给出任何实质性文字回应。
+  - 原文依据：
+    - `caiwenwen`：add label documentation    - `caiwenwen`：assigned to @caiwenwen    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - [关联PR #7086（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7086)
+- **[#3938](https://gitcode.com/cann/ops-nn/issues/3938) [Bug-Report|缺陷反馈]: pooling\max_pool3d_with_argmax_v2内存问题** — 0分
+  - 痛点原因：全程仅机器人分配和加标签，无人工实质性回应，最终被机器人因关联MR合并自动关闭。
+  - 原文依据：
+    - `VoyageZhou`：/assign [@VoyageZhou](https://gitcode.com/VoyageZhou)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @VoyageZhou    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3938    - [关联PR #7209（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7209)    - [关联PR #7210（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7210)
+- **[#3937](https://gitcode.com/cann/ops-nn/issues/3937) [Bug-Report|缺陷反馈]: add_layer_norm_quant syncall同步缺失多核同时启动设置** — 0分
+  - 痛点原因：维护者仅执行分配、打标签和关闭等机械操作，未对缺陷提供任何技术层面的实质回应。
+  - 原文依据：
+    - `wangpengbo26`：/assign    - `wangpengbo26`：add label bug-report    - `cann-robot`：assigned to @wangpengbo26    - `wangpengbo26`：closed from codehub    - [关联PR #7200（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7200)
+- **[#3936](https://gitcode.com/cann/ops-nn/issues/3936) [Requirement|需求建议]: GlobalLpPool算子950实现** — 0分
+  - 痛点原因：全程无人工实质回应，仅机器人打标签与分配，最终随关联PR合并被自动关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @weixin_51153241    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3936    - [关联PR #6398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6398)
+- **[#3935](https://gitcode.com/cann/ops-nn/issues/3935) [Documentation|文档反馈]: SwigluGroupQuantGrad文档groupIndex aclnn接口说明与实际不一致，clamplim…** — 0分
+  - 痛点原因：仅由机器人在关联PR合并后自动关闭并打标签，全程无人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3935    - [关联PR #7195（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7195)
+- **[#3934](https://gitcode.com/cann/ops-nn/issues/3934) [Bug-Report|缺陷反馈]: ForeachCopy算子性能修复** — 0分
+  - 痛点原因：仅执行了分配和打标签等机械操作，全程未提供任何实质性的技术回应或解答。
+  - 原文依据：
+    - `u010470851`：/assign    - `u010470851`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @u010470851    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3934    - [关联PR #7146（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7146)
+- **[#3933](https://gitcode.com/cann/ops-nn/issues/3933) [Documentation|文档反馈]: 指针释放异常，导致代码无法执行完成** — 0分
+  - 痛点原因：全程仅机器人执行指派并随关联MR自动关闭，无任何人工实质回应。
+  - 原文依据：
+    - `m0_55003149`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3933    - [关联PR #7186（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7186)    - [关联PR #7206（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7206)
+- **[#3932](https://gitcode.com/cann/ops-nn/issues/3932) [Documentation|文档反馈]: matmulcompressdequant算子约束调整** — 0分
+  - 痛点原因：维护者仅分配了任务，全程未对文档反馈作任何实质性解答或沟通，直接由机器人关联MR自动关闭。
+  - 原文依据：
+    - `wmg1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wmg1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3932    - [关联PR #7172（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7172)    - [关联PR #7183（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7183)
+- **[#3931](https://gitcode.com/cann/ops-nn/issues/3931) [Bug-Report|缺陷反馈]: IndexPutWithSortV2算子SIMD/SIMT模板计算逻辑修复** — 0分
+  - 痛点原因：全程仅机器人打标签并随关联PR合并自动关闭，缺乏人工实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3931    - [关联PR #7039（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7039)    - [关联PR #7250（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7250)
+- **[#3930](https://gitcode.com/cann/ops-nn/issues/3930) [Bug-Report|缺陷反馈]: 修复了 NHWC 布局下 conv2d_v2 算子在加载 AL1 数据时后半段数据加载异常** — 0分
+  - 痛点原因：全程仅有机器人加标签和分配负责人，无任何人工实质回应，最终直接随关联PR合并而关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @yangyang4536    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3930    - [关联PR #7030（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7030)
+- **[#3929](https://gitcode.com/cann/ops-nn/issues/3929) [Bug-Report|缺陷反馈]: DataCopy多维数据搬运接口参数名变更** — 0分
+  - 痛点原因：仅执行分配负责人和打标签操作，随后直接被机器人标记为resolved，全程无任何实质性技术回应。
+  - 原文依据：
+    - `Zehai`：/assign@Zehai    - `Zehai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Zehai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3929    - [关联PR #7151（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7151)
+- **[#3928](https://gitcode.com/cann/ops-nn/issues/3928) [Bug-Report|缺陷反馈]: aclnnTopKTopPSampleV2 精度问题解决** — 0分
+  - 痛点原因：仅执行分配和打标签操作，无任何针对缺陷的技术分析或解答，且被机器人直接标记为已解决，导致无实质回应。
+  - 原文依据：
+    - `sunchun`：/assign    - `sunchun`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunchun    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3928    - [关联PR #7182（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7182)
+- **[#3927](https://gitcode.com/cann/ops-nn/issues/3927) [Bug-Report|缺陷反馈]: 不应当使用GetOptionalInputShape，应当使用GetOptionalInputDesc** — 0分
+  - 痛点原因：维护者仅打标签和分配任务，全程无任何实质性技术解答便直接关闭issue。
+  - 原文依据：
+    - `wangpengbo26`：add label bug-report    - `yolic`：assigned to @wangpengbo26    - `wangpengbo26`：closed from codehub    - [关联PR #7181（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7181)
+- **[#3926](https://gitcode.com/cann/ops-nn/issues/3926) [Bug-Report|缺陷反馈]:BMM支持iterbatch broadcast Tiling未做L1 buffer校验** — 0分
+  - 痛点原因：仅机器人加标签并关联MR合并关闭，全程无人工实质回应。
+  - 原文依据：
+    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3926    - [关联PR #7179（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7179)
+- **[#3925](https://gitcode.com/cann/ops-nn/issues/3925) [Bug-Report|缺陷反馈]: FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：全程仅打标签和分配任务，最终由机器人自动关闭，无任何人工实质内容回复。
+  - 原文依据：
+    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yushan-kite    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3925    - [关联PR #7116（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7116)
+- **[#3924](https://gitcode.com/cann/ops-nn/issues/3924) [Requirement|需求建议]: Conv2d小kernel模板支持分组卷积** — 0分
+  - 痛点原因：仅加标签和分配负责人，未对需求进行实质性分析或方案讨论，且关联PR均被关闭，全程无实质回应。
+  - 原文依据：
+    - `Mrxxx7`：add label requirement    - `yolic`：assigned to @Mrxxx7    - [关联PR #7154（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7154)    - [关联PR #7317（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7317)    - [关联PR #7710（open）](https://gitcode.com/cann/ops-nn/merge_requests/7710)
+- **[#3923](https://gitcode.com/cann/ops-nn/issues/3923) [Bug-Report|缺陷反馈]: bmmv3 vector不支持transA = 1，需要拦截** — 0分
+  - 痛点原因：仅有打标签和分配负责人等机械操作，始终未提供任何实质性的文字回应。
+  - 原文依据：
+    - `hid54649903`：add label bug-report    - `hid54649903`：assigned to @hid54649903    - [关联PR #7178（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7178)
+- **[#3922](https://gitcode.com/cann/ops-nn/issues/3922) [Bug-Report|缺陷反馈]: DS红线网络用例AIC_ERR** — 0分
+  - 痛点原因：全程仅机器人打标签和分配，无人工实质回应即因关联MR合并被自动关闭。
+  - 原文依据：
+    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3922    - [关联PR #7174（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7174)
+- **[#3921](https://gitcode.com/cann/ops-nn/issues/3921) [Bug-Report|缺陷反馈]: Matmul部分算子中对寄存器做初始化，在算子执行完成之后未还原** — 0分
+  - 痛点原因：仅分配了任务，未提供实质性技术解答或修复确认，且关联的修复PR仍处于未合并状态。
+  - 原文依据：
+    - `wangwei_mayday`：/assign    - `cann-robot`：assigned to @wangwei_mayday    - [关联PR #7262（open）](https://gitcode.com/cann/ops-nn/merge_requests/7262)
+- **[#3920](https://gitcode.com/cann/ops-nn/issues/3920) [Bug-Report|缺陷反馈]: 个别网络在910B图模式8卡训练编译卡住** — 0分
+  - 痛点原因：首次响应仅加标签和分配人员，随后机器人直接关闭，全程无实质性技术回应。
+  - 原文依据：
+    - `Jiaxin_001`：add label bug-report    - `cann-robot`：add label resolved    - `Jiaxin_001`：assigned to @Jiaxin_001    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-nn#issue3920    - [关联PR #81980（merged）](https://gitcode.com/cann/canndev/merge_requests/81980)
+- **[#3919](https://gitcode.com/cann/ops-nn/issues/3919) [Build] Skip empty TensorFlow plugin library generation** — 0分
+  - 痛点原因：仅进行了人员分配和关联PR操作，始终未给出实质性技术回应。
+  - 原文依据：
+    - `yolic`：assigned to @zhaoyingchao2    - [关联PR #7173（open）](https://gitcode.com/cann/ops-nn/merge_requests/7173)
+- **[#3918](https://gitcode.com/cann/ops-nn/issues/3918) [Bug-Report|缺陷反馈]: 共性问题，aclnn接口的参数表格右边超出了目录导航栏，体验不好** — 0分
+  - 痛点原因：仅快速确认问题并分配负责人，但后续无任何技术分析或解决方案等实质回应。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@huzhipeng](https://gitcode.com/huzhipeng) 正在跟踪处理。    - `yuhao_`：/assign    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhengyuhao3    - `yolic`：unassigned @zhengyuhao3    - `cann-robot`：assigned to @yuhao_
+- **[#3917](https://gitcode.com/cann/ops-nn/issues/3917) [Bug-Report|缺陷反馈]: Modify the description of UnsortedSegmentMax** — 0分
+  - 痛点原因：仅分配任务和打标签即由机器人关闭，全程无任何针对缺陷的实质性技术回应。
+  - 原文依据：
+    - `zhangxiyan7`：/assign    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3917    - [关联PR #7165（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7165)
+- **[#3916](https://gitcode.com/cann/ops-nn/issues/3916) [Requirement|需求建议]: 卷积小case模板需要支持输入输出NHWC/NCHW混用的情况** — 0分
+  - 痛点原因：仅进行了问题接收与人员指派等流程性操作，始终未给出针对需求内容的实质性解答。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@ray-shaw](https://gitcode.com/ray-shaw) 正在跟踪处理。    - `yolic`：assigned to @z1456419654    - `yolic`：assigned to @ray-shaw    - `yolic`：unassigned @z1456419654    - [关联PR #6567（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6567)    - [关联PR #7298（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7298)
+- **[#3915](https://gitcode.com/cann/ops-nn/issues/3915) index 算子UT覆盖率提升** — 0分
+  - 痛点原因：仅执行了分配和关闭操作，全程未提供任何实质性的技术回应。
+  - 原文依据：
+    - `wkkk0528`：/assign    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @wkkk0528    - `wkkk0528`：closed from codehub    - `wkkk0528`：changed custom state from 进行中 to 已完成    - [关联PR #7167（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7167)
+- **[#3914](https://gitcode.com/cann/ops-nn/issues/3914) [Bug] PR #6328 修改 GenSimplifiedKey 导致 AddRmsNormQuant BIN 模式符号不匹配** — 0分
+  - 痛点原因：全程仅机器人打标签和分配，无任何人工技术分析或解答，直接随PR合并关闭，无实质回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @raoliang_sac    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3914    - [关联PR #7166（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7166)
+- **[#3912](https://gitcode.com/cann/ops-nn/issues/3912) [Bug-Report|缺陷反馈]: QBMM MX multi batch 路径 atomic add 状态未恢复** — 0分
+  - 痛点原因：维护者仅执行指派和加标签操作，机器人直接标记为已解决，全程无任何针对缺陷的实质性人工技术回应。
+  - 原文依据：
+    - `chen-shuai`：/assign    - `chen-shuai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chen-shuai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3912    - [关联PR #7157（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7157)
+- **[#3911](https://gitcode.com/cann/ops-nn/issues/3911) [Documentation|文档反馈]: 修改nn仓master分支doctool扫描问题** — 0分
+  - 痛点原因：虽有首次响应，但后续仅机器人打标签和分配人员，最终因关联MR合并直接关闭，全程无实质性人工回应。
+  - 原文依据：
+    - `chaotang233`：PLS 处理相关issue问题，目前正在排序解决    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3911    - [关联PR #7147（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7147)
+- **[#3910](https://gitcode.com/cann/ops-nn/issues/3910) [Requirement|需求建议]: 【社区任务】MaxUnpool2d算子开发交付（任务编号 04-14）** — 0分
+  - 痛点原因：虽有初步响应，但后续仅停留在任务分配与流程流转，始终未对需求本身提供技术评审等实质性解答。
+  - 原文依据：
+    - `yolic`：您好，已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `fullt`：已安排审核，请关注PR检视意见    - `yolic`：assigned to @fullt    - [关联PR #7155（open）](https://gitcode.com/cann/ops-nn/merge_requests/7155)
+- **[#3909](https://gitcode.com/cann/ops-nn/issues/3909) [Documentation|文档反馈]: adaptiva_max_pool3d_infershape.cpp 文件名错误** — 0分
+  - 痛点原因：全程仅有指派操作和机器人提示，始终未对文档错误问题提供任何实质回应。
+  - 原文依据：
+    - `yolic`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：### Notice This issue can not be assigned to ***chenxingyu18***. Please try to assign to the repository members.    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：assigned to @chenxingyu18    - `cann-robot`：assigned to @sunny_112 and unassigned @chenxingyu18    - `cann-robot`：assigned to @chenxingyu18 and unassigned @sunny_112
+- **[#3907](https://gitcode.com/cann/ops-nn/issues/3907) [Requirement|需求建议]: 部分参数提前到tiling阶段计算** — 0分
+  - 痛点原因：仅进行了打标签和指派操作，全程无针对需求内容的实质回应即被关联关闭。
+  - 原文依据：
+    - `zhaozhoujun520`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3907    - [关联PR #7069（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7069)
+- **[#3906](https://gitcode.com/cann/ops-nn/issues/3906) [Bug-Report|缺陷反馈]: usm排序求唯一索引问题** — 0分
+  - 痛点原因：维护者仅执行指派和打标签，机器人直接标记resolved，全程未提供任何实质性技术回应。
+  - 原文依据：
+    - `jinpenghe`：/assign    - `jinpenghe`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jinpenghe    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3906    - [关联PR #7145（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7145)
+- **[#3905](https://gitcode.com/cann/ops-nn/issues/3905) [Bug-Report|缺陷反馈]: QuantBatchMatmulV3和FusedQuantMatmul的tiling拦截有漏洞** — 0分
+  - 痛点原因：首次响应超20小时且仅为打标签和指派，全程无人工技术回应，直接由机器人随MR合并关闭。
+  - 原文依据：
+    - `lifei265`：add label bug-report    - `cann-robot`：add label resolved    - `lifei265`：assigned to @lifei265    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3905    - [关联PR #7110（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7110)
+- **[#3904](https://gitcode.com/cann/ops-nn/issues/3904) [Bug-Report|缺陷反馈]: conv3d_v2 算子 cleancode 扫描告警 (G.CNS.03/G.CNS.04/G.INC.02)** — 0分
+  - 痛点原因：仅分配任务和加标签，全程无人工实质性回复，被机器人直接关闭。
+  - 原文依据：
+    - `wanyukang`：/assign [@wanyukang](https://gitcode.com/wanyukang)    - `wanyukang`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wanyukang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3904    - [关联PR #7129（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7129)
+- **[#3903](https://gitcode.com/cann/ops-nn/issues/3903) [Bug-Report|缺陷反馈]: QuantBatchMatMulV3适配APILEVEL后kernel入口兼容性修复** — 0分
+  - 痛点原因：仅进行了指派和打标签等机械操作，全程未提供针对缺陷的实质性分析与解答。
+  - 原文依据：
+    - `Hu1L1`：/assign    - `Hu1L1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Hu1L1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3903    - [关联PR #7126（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7126)
+- **[#3902](https://gitcode.com/cann/ops-nn/issues/3902) [Bug-Report|缺陷反馈]: aclnnConvolutionBackward异常场景用例报错有误** — 0分
+  - 痛点原因：全程仅有打标签、分配负责人及机器人关闭等流程操作，未提供任何实质性技术回应。
+  - 原文依据：
+    - `zhaozhoujun520`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3902    - [关联PR #7127（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7127)
+- **[#3901](https://gitcode.com/cann/ops-nn/issues/3901) [Documentation|文档反馈]: cache_runinfo.cpp 常量名MAX_TILING_DADA_SIZE拼写错误** — 0分
+  - 痛点原因：首次响应仅确认收到并指派人员，虽关联了PR，但始终未在issue内提供任何实质性的技术回应。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liliyan](https://gitcode.com/liliyan) 正在跟踪处理。    - `yolic`：assigned to @liliyan    - [关联PR #7133（open）](https://gitcode.com/cann/ops-nn/merge_requests/7133)
+- **[#3900](https://gitcode.com/cann/ops-nn/issues/3900) [Bug-Report|缺陷反馈]: celuV2算子alpha取值比较大的时候，精度问题** — 0分
+  - 痛点原因：仅有自动打标和分配操作，未提供任何实质性的人工技术解答即被直接关闭。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @gcw_YBIAEfqJ    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - [关联PR #7106（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7106)    - [关联PR #7130（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7130)
+- **[#3899](https://gitcode.com/cann/ops-nn/issues/3899) [Bug-Report|缺陷反馈]: UniqueConsecutive算子UT找不到头文件** — 0分
+  - 痛点原因：全程仅有分配和打标签操作，未对缺陷提供任何实质性的技术回应。
+  - 原文依据：
+    - `wkx12138`：/assgin    - `wkx12138`：add label bug-report    - `cann-robot`：add label resolved    - `wkx12138`：assigned to @wkx12138    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3899    - [关联PR #7118（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7118)
+- **[#3898](https://gitcode.com/cann/ops-nn/issues/3898) [Bug-Report|缺陷反馈]: MaxPool3D内置算子示例测试（图模式）报错** — 0分
+  - 痛点原因：首次响应后仅有分配指令及机器人报错，始终无针对缺陷的实质性技术回应。
+  - 原文依据：
+    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign    - `Apricityh`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：add label resolved
+- **[#3897](https://gitcode.com/cann/ops-nn/issues/3897) [Bug-Report|缺陷反馈]: test_max_pool_3d.cpp引用的experiment_ops.h不存在** — 0分
+  - 痛点原因：首次响应仅为无效的分配指令与系统报错，后续始终无人对缺陷进行实质回应。
+  - 原文依据：
+    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign    - `Apricityh`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：add label Accepted
+- **[#3896](https://gitcode.com/cann/ops-nn/issues/3896) [Documentation|文档反馈]: aclnnSoftplusBackward.md、README.md、op_api_list.md、op_list…** — 0分
+  - 痛点原因：全程无人工实质回应，仅靠机器人打标签并随关联PR合并自动关闭。
+  - 原文依据：
+    - `Hana77`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3896    - [关联PR #7113（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7113)
+- **[#3895](https://gitcode.com/cann/ops-nn/issues/3895) [Requirement|需求建议]: WeightQuantBatchMatmulV2 + Transpose 图融合适配新版 GE 融合框架** — 0分
+  - 痛点原因：首次响应耗时超337小时，且全程无实质技术回应，仅通过打标签和关联合并请求直接关闭。
+  - 原文依据：
+    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `maqijun`：assigned to @maqijun    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3895    - [关联PR #6419（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6419)
+- **[#3894](https://gitcode.com/cann/ops-nn/issues/3894) [Requirement|需求建议]: aclnn_convert_to_int4_pack接口runtime整改** — 0分
+  - 痛点原因：全程仅由机器人打标签和关闭，无任何人工实质回应。
+  - 原文依据：
+    - `zhangquanxin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3894    - [关联PR #7013（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7013)
+- **[#3893](https://gitcode.com/cann/ops-nn/issues/3893) [Requirement|需求建议]: QuantBatchMatmulV4 + Transpose 图融合适配新版 GE 融合框架** — 0分
+  - 痛点原因：首次响应耗时超313小时且全程无人工实质回应，仅由机器人打标签后随关联PR合并直接关闭。
+  - 原文依据：
+    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3893    - [关联PR #4263（merged）](https://gitcode.com/cann/ops-nn/merge_requests/4263)
+- **[#3892](https://gitcode.com/cann/ops-nn/issues/3892) [Bug-Report|缺陷反馈]: GroupedQuantMax & QuantMax support batchmode** — 0分
+  - 痛点原因：仅执行了分配和打标签操作，随后被机器人直接标记为已解决，全程无任何实质性技术回应。
+  - 原文依据：
+    - `yin-peng`：/assign    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yin-peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3892    - [关联PR #7115（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7115)
+- **[#3891](https://gitcode.com/cann/ops-nn/issues/3891) [Bug-Report|缺陷反馈]: Wqbmmv2异常场景打印内容有问题** — 0分
+  - 痛点原因：维护者仅进行了指派和打标签操作，未对缺陷内容进行任何实质性的技术回复或确认。
+  - 原文依据：
+    - `ykxxlzhong`：/assign    - `ykxxlzhong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ykxxlzhong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3891    - [关联PR #6957（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6957)
+- **[#3890](https://gitcode.com/cann/ops-nn/issues/3890) [Requirement|需求建议]: 添加bmm/mm b全载+fixpipe优化模板** — 0分
+  - 痛点原因：全程仅有打标签、分配及机器人自动关闭操作，缺乏任何人工实质回应。
+  - 原文依据：
+    - `huangkejie1647`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3890    - [关联PR #5452（merged）](https://gitcode.com/cann/ops-nn/merge_requests/5452)
+- **[#3888](https://gitcode.com/cann/ops-nn/issues/3888) [Requirement|需求建议]: QuantBatchMatmul 算子 FP8-Pertile 支持 WeightNZ** — 0分
+  - 痛点原因：全程无人工实质回应，仅被指派后由机器人因关联PR合并自动关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @Nam_John    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3888    - [关联PR #7104（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7104)
+- **[#3887](https://gitcode.com/cann/ops-nn/issues/3887) [Bug-Report|缺陷反馈]: 卷积反向、foreach算子 classifyRlue目录不生效问题** — 0分
+  - 痛点原因：全程仅机器人自动指派并随关联MR合并关闭，无任何人工实质技术回应。
+  - 原文依据：
+    - `zhouxuan78`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhouxuan78    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3887    - [关联PR #7090（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7090)    - [关联PR #7124（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7124)
+- **[#3886](https://gitcode.com/cann/ops-nn/issues/3886) LinearIndexV2 算子补充 op_host 层 UT 用例，提升目标文件的覆盖率** — 0分
+  - 痛点原因：仅有机器人分配及PR合并后自动关闭，全程无人工实质技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @wkkk0528    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3886    - [关联PR #7096（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7096)
+- **[#3885](https://gitcode.com/cann/ops-nn/issues/3885) [Bug-Report|缺陷反馈]: swiglu_group_quant quant mode==2 out y origin在输入为fp32精度问题** — 0分
+  - 痛点原因：全程无人工实质回应，仅由机器人关联PR合并后自动关闭，故得分为零。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3885    - [关联PR #7094（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7094)
+- **[#3881](https://gitcode.com/cann/ops-nn/issues/3881) [Bug-Report|缺陷反馈]: ExtendConvTranspose算子A16W8，Group>1的部分场景拦截缺失** — 0分
+  - 痛点原因：维护者仅添加标签并分配负责人，未提供任何实质性的文字回复。
+  - 原文依据：
+    - `YuanTianyi`：add label bug-report    - `YuanTianyi`：assigned to @YuanTianyi    - [关联PR #6850（open）](https://gitcode.com/cann/ops-nn/merge_requests/6850)
+- **[#3880](https://gitcode.com/cann/ops-nn/issues/3880) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，nn仓编译工程适配** — 0分
+  - 痛点原因：响应耗时超210小时且无任何人工实质回应，仅靠机器人打标签及关联PR合并自动关闭。
+  - 原文依据：
+    - `liuyufan0725`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3880    - [关联PR #6225（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6225)    - [关联PR #7061（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7061)
+- **[#3879](https://gitcode.com/cann/ops-nn/issues/3879) [Bug-Report|缺陷反馈]: addmm和baddbmm接口支持支持混合精度计算输入，当前16in32out场景被拦截** — 0分
+  - 痛点原因：全程仅机器人打标签并关闭，无任何人工实质性技术回应。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3879    - [关联PR #6862（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6862)    - [关联PR #7091（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7091)
+- **[#3878](https://gitcode.com/cann/ops-nn/issues/3878) [Documentation|文档反馈]: ExtendConvTranspose算子的README需要更新** — 0分
+  - 痛点原因：维护者仅打标签和分配任务，全程未提供任何实质性解答即关联关闭。
+  - 原文依据：
+    - `YuanTianyi`：add label documentation    - `cann-robot`：add label resolved    - `YuanTianyi`：assigned to @YuanTianyi    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3878    - [关联PR #7074（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7074)
+- **[#3877](https://gitcode.com/cann/ops-nn/issues/3877) [Bug-Report|缺陷反馈]: GroupedQuantMax输出amax数据踩踏** — 0分
+  - 痛点原因：全程仅机器人打标签、分配及关联关闭，无任何人工实质性回应。
+  - 原文依据：
+    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yin-peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3877    - [关联PR #6949（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6949)
+- **[#3876](https://gitcode.com/cann/ops-nn/issues/3876) [Requirement|需求建议] 新增 scatter_nd_max 和 scatter_nd_min 算子迁移** — 0分
+  - 痛点原因：全程仅机器人自动分配与关联关闭，无任何人工实质回应。
+  - 原文依据：
+    - `jialimin1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jialimin1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3876    - [关联PR #6800（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6800)
+- **[#3875](https://gitcode.com/cann/ops-nn/issues/3875) [Requirement|需求建议]: 精简Index算子tiling构建配置并统一op_host目录编译** — 0分
+  - 痛点原因：仅有机器人指派和关联PR记录，全程无任何人工实质回应。
+  - 原文依据：
+    - `tieyutong`：/assign    - `cann-robot`：assigned to @tieyutong    - [关联PR #7058（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7058)    - [关联PR #7072（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7072)
+- **[#3869](https://gitcode.com/cann/ops-nn/issues/3869) [Requirement|需求建议]: mm/bmm算子A全载模板kernel实现切换tensorApi** — 0分
+  - 痛点原因：仅有打标签和分配人员等管理操作，始终未提供任何技术层面的实质回应。
+  - 原文依据：
+    - `AlbertYoung192`：add label requirement    - `AlbertYoung192`：assigned to @AlbertYoung192    - [关联PR #6610（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6610)
+- **[#3867](https://gitcode.com/cann/ops-nn/issues/3867) [Bug][arch35][quant] FakeQuantWithMinMaxVarsGradient/FakeQuantWithMinMaxVarsPer…** — 0分
+  - 痛点原因：仅进行了任务分配和加标签操作，始终未提供任何实质性的技术解答或问题处理。
+  - 原文依据：
+    - `tangweiwei2`：quant类算子问题，已安排@xieshengwei1024跟踪    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3867    - [关联PR #7085（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7085)
+- **[#3862](https://gitcode.com/cann/ops-nn/issues/3862) [Bug-Report|缺陷反馈]: 【dx】修复kernel拆分出现除零问题** — 0分
+  - 痛点原因：全程仅机器人执行指派和关联关闭，无任何人工实质回应内容。
+  - 原文依据：
+    - `yejiani`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yejiani    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3862    - [关联PR #6909（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6909)
+- **[#3861](https://gitcode.com/cann/ops-nn/issues/3861) [Requirement|需求建议]: SoftplusGrad算子适配Ascend 950开发** — 0分
+  - 痛点原因：全程仅机器人分配与关闭，虽关联PR已合并，但缺乏人工实质性技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @wucong22    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3861    - [关联PR #6734（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6734)
+- **[#3860](https://gitcode.com/cann/ops-nn/issues/3860) [Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确** — 0分
+  - 痛点原因：仅打标签和分配负责人，无任何人工技术分析，直接被机器人关联代码合并关闭，导致无实质回应。
+  - 原文依据：
+    - `wuyufei`：add label bug-report    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3860    - [关联PR #7024（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7024)    - [关联PR #7224（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7224)
+- **[#3859](https://gitcode.com/cann/ops-nn/issues/3859) [Documentation|文档反馈]: Modifying the issue of incorrect links** — 0分
+  - 痛点原因：全程无人工实质回应，仅由机器人分配并随关联PR合并自动关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3859    - [关联PR #7049（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7049)
+- **[#3858](https://gitcode.com/cann/ops-nn/issues/3858) [Bug][arch35][hash] EmbeddingHashTableApplyAdamW 与 EmbeddingHashTableExport ker…** — 0分
+  - 痛点原因：仅有流程性确认与指派操作，缺乏针对该Bug的实质性技术解答，导致实质回应缺失。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，已安排人跟踪处理，预计本周三解决。    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3858    - [关联PR #7076（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7076)
+- **[#3857](https://gitcode.com/cann/ops-nn/issues/3857) [Bug-Report|缺陷反馈]: sparsesegmentmeangrad的网络用例性能优化，核上开多个线程处理indices每次循环的多个segment** — 0分
+  - 痛点原因：全程仅加标签和分配人员，无任何人工实质性技术回应，最终由机器人关联MR直接关闭。
+  - 原文依据：
+    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3857    - [关联PR #7044（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7044)    - [关联PR #7064（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7064)
+- **[#3856](https://gitcode.com/cann/ops-nn/issues/3856) [Requirement|需求建议]: MatMulV3 M较小场景下缺少泛用模板** — 0分
+  - 痛点原因：仅执行分配和打标签等机械操作，未针对需求内容提供任何实质性解答，直接被标记为resolved。
+  - 原文依据：
+    - `llqx-1`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***llqx-1***. Please do not assign repeatedly.    - `llqx-1`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @llqx-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3856
+- **[#3855](https://gitcode.com/cann/ops-nn/issues/3855) [Requirement|需求建议]:【QBMM】新增scale支持batch维度** — 0分
+  - 痛点原因：仅机器人打标签和分配人员，无任何人工实质性技术回应，直接因关联PR合并关闭。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3855    - [关联PR #6344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6344)
+- **[#3853](https://gitcode.com/cann/ops-nn/issues/3853) [Documentation|文档反馈]: WeightQuantBatchMatmulExperiment README 中存在公式变量名、格式等问题** — 0分
+  - 痛点原因：维护者仅通过机器人分配任务并添加标签，未提供任何实质性技术回应。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label documentation    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @shi-rui    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成
+- **[#3913](https://gitcode.com/cann/ops-nn/issues/3913) [Requirement|需求建议]: 新增SwigluStep 算子** — 40分
+  - 痛点原因：首次响应仅机械分配和打标签，实质技术讨论耗时近237小时，严重滞后。
+  - 原文依据：
+    - `boes129`：/assign    - `boes129`：纪要:命名参考算子所在layer命名    - `boes129`：add label requirement    - `cann-robot`：assigned to @boes129    - [关联PR #7492（open）](https://gitcode.com/cann/ops-nn/merge_requests/7492)
+- **[#3884](https://gitcode.com/cann/ops-nn/issues/3884) [Documentation|文档反馈]: aclnnDynamicDualLevelMxQuant、aclnnSwigluGroupQuant、aclnnE…** — 40分
+  - 痛点原因：首次响应虽快，但真正修正文档给出实质解决方案耗时237小时，导致时效严重滞后。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `east_yang`：SwigluGroupQuant资料已修正 https://gitcode.com/cann/ops-nn/blob/master/activation/swiglu_group_quant/docs/aclnnSwigluGroupQu…    - `yolic`：assigned to @sunchun    - `yolic`：assigned to @east_yang    - `yolic`：assigned to @jiaoyiming    - `sunchun`：unassigned @sunchun
+- **[#3854](https://gitcode.com/cann/ops-nn/issues/3854) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 40分
+  - 痛点原因：首次响应快但实质回应耗时超247小时，且最终仅以非本仓职责为由引导至其他社区，未解决实际问题。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@yang-di52](https://gitcode.com/yang-di52) 正在跟踪处理。    - `yang-di52`：[@easel](https://gitcode.com/easel) 您好，nn仓仅提供神经网络计算能力的高阶算子，无法回答您cann机制的问题。您可以前往社区进行提问， https://gitcode.com/cann/communi…    - `cann-robot`：add label Accepted    - `yolic`：assigned to @yang-di52    - `yang-di52`：closed from codehub    - `yang-di52`：changed custom state from 进行中 to 已完成
+#### PP-04 Bot缺位与误关闭风险并存覆盖率不足（G · Bot/Agent 治理）
+
+- **[#3967](https://gitcode.com/cann/ops-nn/issues/3967) [Bug-Report] masked_fill 在 input tensor 有 NaN/Inf 时的处理行为未定义——用 NaN 替换有限值到底算不算 m…** — 15分
+  - 痛点原因：Bot仅发送一条模板催促评论，未执行自动打标或关闭等有效治理动作，实际处理依赖人工介入。
+  - 原文依据：
+    - `yolic`：您好，我看到#3954也是您提出的，目前未关联pr，请在原issue上进行建议。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @jiangzeyu-2026
+- **[#3962](https://gitcode.com/cann/ops-nn/issues/3962) [Requirement|需求建议]: 新增 randperm 随机排列算子** — 15分
+  - 痛点原因：Bot仅发模板评论要求补充信息，未实际执行打标和关闭操作，治理动作未闭环。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3961](https://gitcode.com/cann/ops-nn/issues/3961) [Requirement|需求建议]: 新增 nn.functional.linear 全连接前向算子（不含权重变换）** — 15分
+  - 痛点原因：Bot仅发1条催收评论未执行关闭，且打标由人工完成，治理未闭环。
+  - 原文依据：
+    - `yolic`：您好，仓库已有addmm算子，可以参考 https://gitcode.com/cann/ops-nn/blob/e711e0c7bc9ef633785627ef90307a16f77b1764/matmul/mat_mul_v3/doc…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3960](https://gitcode.com/cann/ops-nn/issues/3960) [Requirement|需求建议]: 新增 argwhere 多维度非零元素定位算子** — 15分
+  - 痛点原因：Bot仅机械回复催促信息，未执行自动打标与关闭，治理动作缺失且与人工处理脱节。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3958](https://gitcode.com/cann/ops-nn/issues/3958) [Requirement|需求建议]: 新增 sort 算子（全局/指定维度排序）** — 15分
+  - 痛点原因：Bot仅发出提醒评论，未执行自动打标与超期关闭等实际治理动作，治理流程未闭环。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：delete label wait-feedback    - `yolic`：add label wait-feedback
+- **[#3957](https://gitcode.com/cann/ops-nn/issues/3957) [Requirement|需求建议]: 新增 plain unique 算子（全局去重，非 consecutive/非 dim）** — 15分
+  - 痛点原因：Bot未识别需求建议类Issue，错误触发催补信息及14天关闭警告模板，自动化治理逻辑失效。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3956](https://gitcode.com/cann/ops-nn/issues/3956) [Requirement|需求建议]: 新增 topk 算子（仅 value 不排序场景）** — 15分
+  - 痛点原因：Bot仅发出通用催促评论，未实际执行打标或关闭操作，且回复与需求场景不符。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3955](https://gitcode.com/cann/ops-nn/issues/3955) [Requirement|需求建议]: 新增 searchsorted 二分检索算子** — 15分
+  - 痛点原因：Bot未自动打标，对需求建议误用Bug模板回复，且未执行关闭动作，治理无效。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3954](https://gitcode.com/cann/ops-nn/issues/3954) [Requirement|需求建议]: 新增 masked_fill 掩码填充算子** — 15分
+  - 痛点原因：Bot仅发模板回复，未执行自动打标与关闭，标签均由人工添加，未发挥实际治理作用。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3953](https://gitcode.com/cann/ops-nn/issues/3953) [Requirement|需求建议]: 新增 cumsum/cumprod 累积扫描算子** — 15分
+  - 痛点原因：Bot仅发送催促评论，未执行自动打标与超时关闭动作，未发挥实际治理作用。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3909](https://gitcode.com/cann/ops-nn/issues/3909) [Documentation|文档反馈]: adaptiva_max_pool3d_infershape.cpp 文件名错误** — 15分
+  - 痛点原因：Bot执行分配指令时逻辑自相矛盾，先拒绝分配给chenxingyu18，随后又将其分配，导致治理失效。
+  - 原文依据：
+    - `yolic`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：### Notice This issue can not be assigned to ***chenxingyu18***. Please try to assign to the repository members.    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：assigned to @chenxingyu18    - `cann-robot`：assigned to @sunny_112 and unassigned @chenxingyu18    - `cann-robot`：assigned to @chenxingyu18 and unassigned @sunny_112
+- **[#3908](https://gitcode.com/cann/ops-nn/issues/3908) [Documentation|文档反馈]: 这个设计文档说，支持8维Shape，请问这个算子支持的Reduce轴是几？，公式哪里体现了Reduce第几根轴了？** — 15分
+  - 痛点原因：Bot仅发单条催促评论，未执行自动打标与关闭操作，治理动作单一且缺乏闭环。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@Chen_HaoWen](https://gitcode.com/Chen_HaoWen) 正在跟踪处理。    - `Chen_HaoWen`：您好，norm轴与gamma的shape一致哈 这点可以看下rstdout的介绍：shape与入参`x`的shape前几维保持一致，前几维指`x`的维度减去`gamma`的维度，表示不需要norm的维度。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @Chen_HaoWen
+- **[#3874](https://gitcode.com/cann/ops-nn/issues/3874) [Documentation|文档反馈]: Relu 算子产品支持范围与代码配置范围不一致，请确认文档或配置是否需要同步** — 15分
+  - 痛点原因：Bot未执行打标与自动关闭操作，且人工维护者直接手动打标，导致自动治理流程失效。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@east_yang](https://gitcode.com/east_yang) 正在跟踪处理。    - `east_yang`：您好，目前仓内的A5算子全新开发均采用asc实现，而A2/A3上部分算子还存在tbe的实现，当前算子正在逐步切换到asc实现，非常欢迎开发者参与社区，贡献asc实现。 A2/A3的tbe算子我们也发布了社区任务，欢迎开发者参与。 http…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `east_yang`：add label wait-feedback    - `yolic`：assigned to @east_yang
+- **[#4046](https://gitcode.com/cann/ops-nn/issues/4046) [Bug-Report|缺陷反馈]: foreach_add_listV2算子在master分支存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭，无任何评论互动，缺乏有效沟通与过程引导。
+  - 原文依据：
+    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4046    - [关联PR #7408（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7408)
+- **[#4045](https://gitcode.com/cann/ops-nn/issues/4045) [Bug-Report|缺陷反馈]: SwigluGroupQuant GroupIndex计算逻辑异常** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，评论数为零，未提供任何有效交互说明，导致治理过程不透明。
+  - 原文依据：
+    - `luwei_1104`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @luwei_1104    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4045    - [关联PR #7414（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7414)
+- **[#4044](https://gitcode.com/cann/ops-nn/issues/4044) [Bug-Report|缺陷反馈]: 修复proto文件注释** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并关闭，全程无评论互动，治理过程缺乏透明度。
+  - 原文依据：
+    - `yiqiao-wjp`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4044    - [关联PR #7415（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7415)
+- **[#4043](https://gitcode.com/cann/ops-nn/issues/4043) [Requirement|需求建议]: 迁移 Bucketize 和 AvgPool1DAvgMatrix AICPU 算子到 ops-nn** — 20分
+  - 痛点原因：Bot全程无评论记录，仅机械执行打标与关闭操作，直接关闭需求类issue导致治理流程缺失。
+  - 原文依据：
+    - `zhaowenrui666`：/assign [@zhaowenrui666](https://gitcode.com/zhaowenrui666) 关联 PR：https://gitcode.com/cann/ops-nn/merge_requests/6877    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhaowenrui666    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4043    - [关联PR #6877（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6877)
+- **[#4040](https://gitcode.com/cann/ops-nn/issues/4040) [Bug-Report|缺陷反馈]: classify_rule补充缺失文件目录** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，无任何评论互动，缺乏对用户的状态同步与反馈，导致治理效果差。
+  - 原文依据：
+    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4040    - [关联PR #7410（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7410)
+- **[#4039](https://gitcode.com/cann/ops-nn/issues/4039) [Bug-Report|缺陷反馈]: foreach_add_listV2算子存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何评论向用户说明情况，缺乏有效反馈与互动。
+  - 原文依据：
+    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4039    - [关联PR #7398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7398)
+- **[#4037](https://gitcode.com/cann/ops-nn/issues/4037) [Requirement|需求建议]: CANNBot项目AdvanceStep算子新增支持A5** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭，未发布任何解释性评论，缺乏与用户的沟通反馈。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @Almost_CANN    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4037    - [关联PR #7405（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7405)
+- **[#4035](https://gitcode.com/cann/ops-nn/issues/4035) [Bug-Report|缺陷反馈]: ops-nn 仓 执行example命令指定芯片时，反馈和其他仓不一致** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无任何评论进行状态同步或用户引导，缺乏有效交互。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @magicjason0007    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4035    - [关联PR #7402（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7402)
+- **[#4032](https://gitcode.com/cann/ops-nn/issues/4032) [Bug-Report|缺陷反馈]: 修复 rmsnormquantv2/v3 的 GM 数据拷贝长度问题** — 20分
+  - 痛点原因：Bot仅被动响应分配与resolved打标，核心打标由人工完成且无任何有效评论，未发挥自动化治理作用。
+  - 原文依据：
+    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4032    - [关联PR #7389（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7389)
+- **[#4031](https://gitcode.com/cann/ops-nn/issues/4031) [Bug-Report|缺陷反馈]: 修复data_format_dim_map_def.cpp静态问题** — 20分
+  - 痛点原因：Bot仅执行机械打标与指派，无任何评论互动，缺乏有效治理反馈与用户引导。
+  - 原文依据：
+    - `lianjieyu`：/assign    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4031    - [关联PR #7372（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7372)
+- **[#4029](https://gitcode.com/cann/ops-nn/issues/4029) [Documentation|文档反馈]: aclnnDynamicMxQuantV2文档缺少scaleAlg=2时blocksize=32的约束** — 20分
+  - 痛点原因：Bot仅完成打标与关闭，评论数为零，未通过评论提供进度同步与状态反馈，治理互动严重缺失。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4029    - [关联PR #7381（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7381)
+- **[#4027](https://gitcode.com/cann/ops-nn/issues/4027) fix: 修复 rmsnormquantv2/3 的 GM 内存越界问题** — 20分
+  - 痛点原因：Bot仅机械重复人工的打标与指派动作，无任何评论互动，未能提供有效治理反馈。
+  - 原文依据：
+    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4027    - [关联PR #7338（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7338)
+- **[#4026](https://gitcode.com/cann/ops-nn/issues/4026) [Bug-Report|缺陷反馈]: usm/usp算子二进制匹配失败** — 20分
+  - 痛点原因：Bot仅机械执行指派与打标，无任何评论反馈，缺乏有效沟通与治理引导。
+  - 原文依据：
+    - `zhangxiyan7`：/assign    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4026    - [关联PR #7382（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7382)
+- **[#4025](https://gitcode.com/cann/ops-nn/issues/4025) [Requirement|需求建议]: 950新增dequantize算子** — 20分
+  - 痛点原因：Bot执行打标与关闭操作时评论数为零，未向用户说明关闭原因及关联PR信息，治理透明度不足。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @h1234515    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4025    - [关联PR #7037（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7037)
+- **[#4024](https://gitcode.com/cann/ops-nn/issues/4024) [Bug-Report|缺陷反馈]: AdaptiveMaxPool3d性能优化** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为零，缺乏对用户的公开反馈与交互说明，治理过程不透明。
+  - 原文依据：
+    - `liu_hp711`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @liu_hp711    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4024    - [关联PR #7335（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7335)
+- **[#4023](https://gitcode.com/cann/ops-nn/issues/4023) [Bug-Report|缺陷反馈]: foreach_asin arch35 tiling 添加 GetPlatformInfoFallback逻辑，解决 G…** — 20分
+  - 痛点原因：Bot仅执行打标和自动关闭，全程无评论互动，缺乏状态同步与有效沟通。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4023    - [关联PR #7339（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7339)    - [关联PR #7358（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7358)
+- **[#4022](https://gitcode.com/cann/ops-nn/issues/4022) [Requirement|需求建议]: Relu6D 算子支持 Ascend950 ascendc 实现** — 20分
+  - 痛点原因：Bot仅完成打标，未参与状态流转与关闭，核心治理动作依赖人工完成。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhongheng    - `zhongheng`：closed from codehub    - `zhongheng`：changed custom state from 进行中 to 已完成    - [关联PR #7375（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7375)    - [关联PR #7444（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7444)
+- **[#4020](https://gitcode.com/cann/ops-nn/issues/4020) 【fix】修复precommit的oat空告警失败问题** — 20分
+  - 痛点原因：Bot仅机械打标和关闭，全程无评论说明关联PR及关闭原因，缺乏有效反馈，治理过程不透明。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4020    - [关联PR #7370（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7370)
+- **[#4019](https://gitcode.com/cann/ops-nn/issues/4019) [Requirement|需求建议]: sparse_segment_sum_grad 支持确定性计算** — 20分
+  - 痛点原因：Bot错误地将未解决的需求自动标记为resolved并关闭，且无任何有效评论，治理动作完全失效。
+  - 原文依据：
+    - `wang-shilong32`：/assign    - `wang-shilong32`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wang-shilong32    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4019    - [关联PR #7307（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7307)
+- **[#4018](https://gitcode.com/cann/ops-nn/issues/4018) [Documentation|文档反馈]: clipped_swiglu、multi_add_rms_norm_dynamic_quant、dequant_s…** — 20分
+  - 痛点原因：Bot直接关闭并打标但未留下任何解释性评论，缺乏透明度与有效沟通，导致用户无法理解操作原因。
+  - 原文依据：
+    - `zerosaki_admin`：/assign [@zerosaki_admin](https://gitcode.com/zerosaki_admin)    - `zerosaki_admin`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zerosaki_admin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4018    - [关联PR #7353（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7353)
+- **[#4017](https://gitcode.com/cann/ops-nn/issues/4017) [Bug-Report|缺陷反馈]: conv2d用例调整tiling决策解决性能不达标问题** — 20分
+  - 痛点原因：Bot仅静默执行分配与打标，无任何评论反馈，缺乏有效交互。
+  - 原文依据：
+    - `ray-shaw`：/assign    - `ray-shaw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ray-shaw    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4017    - [关联PR #7305（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7305)
+- **[#4016](https://gitcode.com/cann/ops-nn/issues/4016) [Bug-Report|缺陷反馈]: sparse_apply_adagrad_v2的golden需要与tf对比** — 20分
+  - 痛点原因：Bot仅机械打标并随PR合并关闭issue，未发布任何评论说明修复情况，缺乏对用户的有效反馈。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4016    - [关联PR #7331（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7331)
+- **[#4015](https://gitcode.com/cann/ops-nn/issues/4015) [Requirement|需求建议]: arch35: DataCopyParams迁移为DataCopyExtParams及C-style cast修复** — 20分
+  - 痛点原因：Bot仅执行打标，未实现自动关闭及评论互动，治理流程仍高度依赖人工。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - [关联PR #7464（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7464)    - [关联PR #7482（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7482)
+- **[#4013](https://gitcode.com/cann/ops-nn/issues/4013) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 和 add_rms_norm_dynamic_quant_v…** — 20分
+  - 痛点原因：Bot仅执行打标，未参与评论与自动关闭，状态流转及关闭均依赖人工处理。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - [关联PR #7334（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7334)    - [关联PR #7352（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7352)
+- **[#4006](https://gitcode.com/cann/ops-nn/issues/4006) [Bug-Report|缺陷反馈]: scatterupdate算子开启确定性计算越界检查会出现oom报错** — 20分
+  - 痛点原因：Bot仅机械执行打标与自动关闭，无任何评论引导，治理流于形式。
+  - 原文依据：
+    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4006    - [关联PR #7323（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7323)    - [关联PR #7333（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7333)
+- **[#4002](https://gitcode.com/cann/ops-nn/issues/4002) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题-9.1.0分支** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭操作，无任何评论互动，缺乏有效沟通与状态说明。
+  - 原文依据：
+    - `wishercy`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4002    - [关联PR #7326（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7326)
+- **[#4001](https://gitcode.com/cann/ops-nn/issues/4001) [Bug-Report|缺陷反馈]: dynamic_mx_quant跑oom报错，请确认** — 20分
+  - 痛点原因：Bot仅机械执行打标与随PR合并关闭操作，全程无任何评论互动，缺乏过程性沟通与状态说明。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4001    - [关联PR #7291（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7291)    - [关联PR #7325（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7325)
+- **[#4000](https://gitcode.com/cann/ops-nn/issues/4000) [Bug-Report|缺陷反馈]: 商分FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭，全程无评论与用户互动，治理流于表面且缺乏有效沟通。
+  - 原文依据：
+    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yushan-kite`：assigned to @yushan-kite    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4000    - [关联PR #7324（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7324)
+- **[#3999](https://gitcode.com/cann/ops-nn/issues/3999) [Requirement|需求建议]: 新增SwigluGroup和SwigluGroupQuant算子torch_extension接口** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程零评论，缺乏状态同步与有效沟通，治理过程不透明。
+  - 原文依据：
+    - `taochangmin`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3999    - [关联PR #7232（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7232)
+- **[#3993](https://gitcode.com/cann/ops-nn/issues/3993) [Bug-Report|缺陷反馈]: QBMM MIX模板代码规范整改** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程零评论，缺乏有效沟通与引导，治理粗暴。
+  - 原文依据：
+    - `ZhangWei1176`：/assign    - `ZhangWei1176`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ZhangWei1176    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3993    - [关联PR #7303（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7303)
+- **[#3992](https://gitcode.com/cann/ops-nn/issues/3992) [Bug-Report|缺陷反馈]: Matmul算子N非256B对齐transdata场景性能存在劣化** — 20分
+  - 痛点原因：Bot仅机械执行打标与分配，无任何评论交互，缺乏有效治理反馈。
+  - 原文依据：
+    - `zhengyuhao3`：/assign    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhengyuhao3    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3992    - [关联PR #7288（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7288)
+- **[#3991](https://gitcode.com/cann/ops-nn/issues/3991) [Bug-Report|缺陷反馈]: fused_bias_leaky_relu_grad算子 tiling add guard rank>8** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，无任何评论交互，缺乏有效治理沟通。
+  - 原文依据：
+    - `ugzhangyiyi`：add label bug-report    - `cann-robot`：add label resolved    - `ugzhangyiyi`：assigned to @ugzhangyiyi    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3991    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7302)
+- **[#3990](https://gitcode.com/cann/ops-nn/issues/3990) [Documentation|文档反馈]: FusedBiasLeakyReluGrad README 文档需要修正** — 20分
+  - 痛点原因：Bot仅执行了打标和分配操作，但全程无任何评论反馈，缺乏有效治理交互。
+  - 原文依据：
+    - `ugzhangyiyi`：/assign [@ugzhangyiyi](https://gitcode.com/ugzhangyiyi)    - `ugzhangyiyi`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ugzhangyiyi    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3990    - [关联PR #7300（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7300)
+- **[#3988](https://gitcode.com/cann/ops-nn/issues/3988) [Bug-Report|缺陷反馈]: 16in32out场景mm接口性能劣化严重** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，无任何评论交互，缺乏有效引导与状态说明，未发挥实际治理作用。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @HuangKun8682    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3988    - [关联PR #7296（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7296)    - [关联PR #7297（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7297)
+- **[#3986](https://gitcode.com/cann/ops-nn/issues/3986) [Bug-Report|缺陷反馈]: aclnnQuantMatmulV5算子oom问题** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并被动关闭，全程无评论互动，缺乏有效治理与引导。
+  - 原文依据：
+    - `steppecat`：add label bug-report    - `cann-robot`：add label resolved    - `steppecat`：assigned to @steppecat    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3986    - [关联PR #7276（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7276)
+- **[#3985](https://gitcode.com/cann/ops-nn/issues/3985) [Documentation|文档反馈]: rms_norm 算子aclnn文档中空Tensor支持描述不准确** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，无任何评论互动，缺乏有效沟通与引导。
+  - 原文依据：
+    - `liangyuhua`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3985    - [关联PR #7280（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7280)    - [关联PR #7284（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7284)
+- **[#3983](https://gitcode.com/cann/ops-nn/issues/3983) [Bug-Report|缺陷反馈]: fixpipe场景切tensor api部分场景拦截失败** — 20分
+  - 痛点原因：Bot仅随MR合并被动打标与关闭，全程无任何治理评论，缺乏主动跟进与有效交互。
+  - 原文依据：
+    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3983    - [关联PR #7278（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7278)
+- **[#3982](https://gitcode.com/cann/ops-nn/issues/3982) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题** — 20分
+  - 痛点原因：Bot虽自动完成分配、打标与关闭，但全程零评论，缺乏对用户的解释沟通，治理过程不透明。
+  - 原文依据：
+    - `wishercy`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3982    - [关联PR #7260（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7260)
+- **[#3981](https://gitcode.com/cann/ops-nn/issues/3981) glu_grad & grouped_dynamic_block_quant modify suggestion** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论互动，缺乏状态同步与进度通知，沟通无效。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @ASCEND222    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3981    - [关联PR #7238（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7238)
+- **[#3980](https://gitcode.com/cann/ops-nn/issues/3980) [Bug-Report|缺陷反馈]: Matmul算子出现用例精度错误** — 20分
+  - 痛点原因：Bot仅机械执行打标和分配，直接添加resolved标签且无任何评论交互，与人工bug-report标签冲突，治理失效。
+  - 原文依据：
+    - `zhengyuhao3`：/assign    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhengyuhao3    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3980    - [关联PR #7249（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7249)
+- **[#3979](https://gitcode.com/cann/ops-nn/issues/3979) [Bug-Report|缺陷反馈]: Conv2DBackpropInput等算子融合Pass整改** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，无任何评论互动，导致治理过程不透明且缺乏有效沟通。
+  - 原文依据：
+    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3979    - [关联PR #6081（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6081)
+- **[#3978](https://gitcode.com/cann/ops-nn/issues/3978) [Bug-Report|缺陷反馈]: mm接口和addmm接口存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭操作，无任何评论互动，缺乏有效沟通与治理反馈。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3978    - [关联PR #7266（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7266)    - [关联PR #7269（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7269)
+- **[#3975](https://gitcode.com/cann/ops-nn/issues/3975) [Requirement|需求建议]: 支持 QuantMatmul 动态 T-C 量化 bias** — 20分
+  - 痛点原因：Bot直接执行打标和关闭操作，但全程无任何解释性评论，导致治理过程缺乏透明度与有效沟通。
+  - 原文依据：
+    - `smdbha`：/assign    - `smdbha`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @smdbha    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3975    - [关联PR #7259（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7259)
+- **[#3974](https://gitcode.com/cann/ops-nn/issues/3974) [Documentation|文档反馈]: aclnnMatmul&&aclnnMm 资料有误** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，无任何评论互动，缺乏对用户的进度反馈与有效引导。
+  - 原文依据：
+    - `wuyufei`：add label documentation    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3974    - [关联PR #7208（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7208)    - [关联PR #7257（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7257)
+- **[#3973](https://gitcode.com/cann/ops-nn/issues/3973) [Question|问题咨询]: BaddbmmMatmulGraph impl函数过大，建议拆分优化** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，无任何评论回复，治理流于形式。
+  - 原文依据：
+    - `HuangKun8682`：add label question    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3973    - [关联PR #7230（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7230)    - [关联PR #7254（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7254)
+- **[#3972](https://gitcode.com/cann/ops-nn/issues/3972) [Bug-Report|缺陷反馈]: 910C环境 aclnnAddmm 16in32out场景 报错，MatMulV3 部分 kernel未找到** — 20分
+  - 痛点原因：Bot仅完成打标，缺乏自动指派、关闭及有效评论，状态流转全靠人工干预，治理流于表面。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label Accepted    - `HuangKun8682`：assigned to @HuangKun8682    - `HuangKun8682`：changed custom state from 进行中 to 已完成    - `HuangKun8682`：closed from codehub    - [关联PR #7202（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7202)
+- **[#3971](https://gitcode.com/cann/ops-nn/issues/3971) [Documentation|文档反馈]: fusedmatmul资料修改** — 20分
+  - 痛点原因：Bot仅执行打标，未参与评论互动与自动关闭，治理动作单一且未闭环。
+  - 原文依据：
+    - `szhexin`：add label documentation    - `cann-robot`：add label Accepted    - `szhexin`：assigned to @szhexin    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成
+- **[#3970](https://gitcode.com/cann/ops-nn/issues/3970) [Bug-Report|缺陷反馈]: Conv2DTranspose算子增加Bias类型校验导致量化功能失败** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭，无评论互动，且核心打标与分配依赖人工，自动化治理效果差。
+  - 原文依据：
+    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3970    - [关联PR #7218（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7218)
+- **[#3969](https://gitcode.com/cann/ops-nn/issues/3969) [Bug-Report|缺陷反馈]: slice高精度拦截** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，无任何评论互动，缺乏有效治理引导。
+  - 原文依据：
+    - `szhexin`：add label bug-report    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3969    - [关联PR #7161（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7161)    - [关联PR #7255（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7255)
+- **[#3968](https://gitcode.com/cann/ops-nn/issues/3968) [Bug-Report|缺陷反馈]: MatMulToMatmulV3图融合修复offset_w场景并按输入数量整改pattern** — 20分
+  - 痛点原因：Bot仅执行基础打标与分配，全程无任何评论互动，缺乏对用户的引导与状态反馈，治理效果单一。
+  - 原文依据：
+    - `jgx12`：/assign    - `jgx12`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jgx12    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3968    - [关联PR #7142（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7142)
+- **[#3966](https://gitcode.com/cann/ops-nn/issues/3966) [Bug-Report] scatter_elements_v2 中 mode==1 时 if (includeSelf) 判断 countLocal，但 i…** — 20分
+  - 痛点原因：Bot仅完成打标，无评论互动且未执行关闭操作，治理动作单一，实际处理仍依赖人工。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `chenxingyu18`：你好，kernel是和tiling配合使用的，不会误传    - `chenxingyu18`：您好，当前问题已回复，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `cann-robot`：add label Accepted    - `yolic`：assigned to @sunchun    - `sunchun`：unassigned @sunchun
+- **[#3963](https://gitcode.com/cann/ops-nn/issues/3963) 【需求】【社区任务】LogSoftmaxGrad算子贡献** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭，无任何评论互动，缺乏有效治理沟通。
+  - 原文依据：
+    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `cann-robot`：add label resolved    - `yolic`：assigned to @fullt    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3963    - [关联PR #1983（merged）](https://gitcode.com/cann/ops-nn/merge_requests/1983)
+- **[#3952](https://gitcode.com/cann/ops-nn/issues/3952) [Bug-Report|缺陷反馈]: softplusv2grad原型宏定义应和legacy保持一致** — 20分
+  - 痛点原因：Bot自动关闭issue但未留下任何解释性评论，缺乏关闭原因说明，导致治理过程不透明。
+  - 原文依据：
+    - `Hana77`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @Hana77    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3952    - [关联PR #7241（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7241)
+- **[#3951](https://gitcode.com/cann/ops-nn/issues/3951) [Documentation|文档反馈]: ①torch_npu名称合一TorchNPU②《acl API》手册更名修改③有一些link失效** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无任何评论说明原因或引导用户，缺乏治理透明度与交互。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3951    - [关联PR #7243（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7243)
+- **[#3950](https://gitcode.com/cann/ops-nn/issues/3950) [Documentation|文档反馈]: aclnnSoftplusBackward.md中的示例代码和example中的示例代码不一致** — 20分
+  - 痛点原因：Bot仅机械执行打标与自动关闭，全程零评论，缺乏对用户的有效反馈与治理互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3950    - [关联PR #7242（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7242)
+- **[#3949](https://gitcode.com/cann/ops-nn/issues/3949) [Bug-Report|缺陷反馈]: aclnnElu算子切换pytorch2.10精度失败** — 20分
+  - 痛点原因：Bot虽自动打标并关闭，但全程零评论，未向用户公开关闭原因及关联MR信息，导致治理过程不透明。
+  - 原文依据：
+    - `ligen75`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @ligen75    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3949    - [关联PR #6882（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6882)    - [关联PR #7240（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7240)
+- **[#3947](https://gitcode.com/cann/ops-nn/issues/3947) [Bug-Report|缺陷反馈]: ApplyCenteredRMSProp算子文档问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭操作，无任何评论互动，缺乏有效沟通与反馈，治理流于形式。
+  - 原文依据：
+    - `lianjieyu`：/assign    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3947    - [关联PR #7244（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7244)
+- **[#3946](https://gitcode.com/cann/ops-nn/issues/3946) [Bug-Report|缺陷反馈]: 修改确定性场景下的aicpu cast逻辑** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无任何评论互动，缺乏实质性治理反馈导致得分极低。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3946    - [关联PR #7223（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7223)
+- **[#3944](https://gitcode.com/cann/ops-nn/issues/3944) [Bug-Report|缺陷反馈]: ExtendConvTranspose知识库能力导致relu开关失效问题** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，评论数为0，缺乏有效交互与引导，治理流于形式。
+  - 原文依据：
+    - `sunlesheng`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunlesheng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3944    - [关联PR #7189（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7189)
+- **[#3943](https://gitcode.com/cann/ops-nn/issues/3943) [Documentation|文档反馈]: FusedMatmul支持BMM+add/mul的资料说明** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，无任何评论说明，缺乏对用户反馈的有效治理与闭环。
+  - 原文依据：
+    - `liweijian16`：add label documentation    - `cann-robot`：add label resolved    - `liweijian16`：assigned to @liweijian16    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3943    - [关联PR #7197（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7197)
+- **[#3941](https://gitcode.com/cann/ops-nn/issues/3941) [Requirement|需求建议]: TopkTopPSample算子说明文档改进[9.1.0][master]** — 20分
+  - 痛点原因：Bot执行打标、分配和关闭操作时未留下任何说明评论，缺乏对用户的操作反馈，治理过程不透明。
+  - 原文依据：
+    - `Thaurissan`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Thaurissan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3941    - [关联PR #7214（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7214)    - [关联PR #7215（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7215)
+- **[#3940](https://gitcode.com/cann/ops-nn/issues/3940) [Bug-Report|缺陷反馈]: 部分网络场景报错MatMulV3 AIC ERROR** — 20分
+  - 痛点原因：Bot虽执行了打标、分配与关闭操作，但全程零评论，缺乏操作说明与用户互动，治理过程不透明。
+  - 原文依据：
+    - `llqx-1`：/assign    - `llqx-1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llqx-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3940    - [关联PR #7203（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7203)
+- **[#3938](https://gitcode.com/cann/ops-nn/issues/3938) [Bug-Report|缺陷反馈]: pooling\max_pool3d_with_argmax_v2内存问题** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配与关闭，全程零评论，缺乏与用户的互动及治理过程说明。
+  - 原文依据：
+    - `VoyageZhou`：/assign [@VoyageZhou](https://gitcode.com/VoyageZhou)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @VoyageZhou    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3938    - [关联PR #7209（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7209)    - [关联PR #7210（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7210)
+- **[#3936](https://gitcode.com/cann/ops-nn/issues/3936) [Requirement|需求建议]: GlobalLpPool算子950实现** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为零，未提供有效状态同步与反馈，治理缺乏互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @weixin_51153241    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3936    - [关联PR #6398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6398)
+- **[#3935](https://gitcode.com/cann/ops-nn/issues/3935) [Documentation|文档反馈]: SwigluGroupQuantGrad文档groupIndex aclnn接口说明与实际不一致，clamplim…** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭，全程无可见评论与用户沟通，缺乏有效互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3935    - [关联PR #7195（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7195)
+- **[#3934](https://gitcode.com/cann/ops-nn/issues/3934) [Bug-Report|缺陷反馈]: ForeachCopy算子性能修复** — 20分
+  - 痛点原因：Bot仅执行打标与分配，全程零评论，缺乏状态反馈与关闭原因说明，治理流于形式。
+  - 原文依据：
+    - `u010470851`：/assign    - `u010470851`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @u010470851    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3934    - [关联PR #7146（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7146)
+- **[#3933](https://gitcode.com/cann/ops-nn/issues/3933) [Documentation|文档反馈]: 指针释放异常，导致代码无法执行完成** — 20分
+  - 痛点原因：Bot将代码异常问题误打resolved标签并随MR合并自动关闭，未解决实际技术问题。
+  - 原文依据：
+    - `m0_55003149`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3933    - [关联PR #7186（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7186)    - [关联PR #7206（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7206)
+- **[#3932](https://gitcode.com/cann/ops-nn/issues/3932) [Documentation|文档反馈]: matmulcompressdequant算子约束调整** — 20分
+  - 痛点原因：Bot仅机械执行分配、打标和关闭指令，无任何评论互动，未发挥实质性治理作用。
+  - 原文依据：
+    - `wmg1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wmg1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3932    - [关联PR #7172（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7172)    - [关联PR #7183（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7183)
+- **[#3931](https://gitcode.com/cann/ops-nn/issues/3931) [Bug-Report|缺陷反馈]: IndexPutWithSortV2算子SIMD/SIMT模板计算逻辑修复** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，全程无任何评论说明或交互引导，缺乏有效反馈导致得分低。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3931    - [关联PR #7039（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7039)    - [关联PR #7250（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7250)
+- **[#3930](https://gitcode.com/cann/ops-nn/issues/3930) [Bug-Report|缺陷反馈]: 修复了 NHWC 布局下 conv2d_v2 算子在加载 AL1 数据时后半段数据加载异常** — 20分
+  - 痛点原因：Bot仅机械打标和关闭，未产生任何评论与用户沟通或说明情况，缺乏有效治理互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @yangyang4536    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3930    - [关联PR #7030（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7030)
+- **[#3929](https://gitcode.com/cann/ops-nn/issues/3929) [Bug-Report|缺陷反馈]: DataCopy多维数据搬运接口参数名变更** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派，无任何评论互动，自动化治理动作单一，缺乏实际介入与引导。
+  - 原文依据：
+    - `Zehai`：/assign@Zehai    - `Zehai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Zehai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3929    - [关联PR #7151（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7151)
+- **[#3928](https://gitcode.com/cann/ops-nn/issues/3928) [Bug-Report|缺陷反馈]: aclnnTopKTopPSampleV2 精度问题解决** — 20分
+  - 痛点原因：Bot仅执行机械打标与分配，无任何评论引导，缺乏有效治理互动。
+  - 原文依据：
+    - `sunchun`：/assign    - `sunchun`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunchun    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3928    - [关联PR #7182（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7182)
+- **[#3926](https://gitcode.com/cann/ops-nn/issues/3926) [Bug-Report|缺陷反馈]:BMM支持iterbatch broadcast Tiling未做L1 buffer校验** — 20分
+  - 痛点原因：Bot虽执行打标和关闭，但评论数为零，缺乏互动说明导致治理有效性不足。
+  - 原文依据：
+    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3926    - [关联PR #7179（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7179)
+- **[#3925](https://gitcode.com/cann/ops-nn/issues/3925) [Bug-Report|缺陷反馈]: FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，全程无评论交互，治理流于形式。
+  - 原文依据：
+    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yushan-kite    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3925    - [关联PR #7116（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7116)
+- **[#3922](https://gitcode.com/cann/ops-nn/issues/3922) [Bug-Report|缺陷反馈]: DS红线网络用例AIC_ERR** — 20分
+  - 痛点原因：Bot仅机械执行打标和自动关闭，全程无评论互动，缺乏进度同步与有效反馈，治理流于形式。
+  - 原文依据：
+    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3922    - [关联PR #7174（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7174)
+- **[#3920](https://gitcode.com/cann/ops-nn/issues/3920) [Bug-Report|缺陷反馈]: 个别网络在910B图模式8卡训练编译卡住** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程零评论，缺乏状态同步与用户互动，导致治理流于表面。
+  - 原文依据：
+    - `Jiaxin_001`：add label bug-report    - `cann-robot`：add label resolved    - `Jiaxin_001`：assigned to @Jiaxin_001    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-nn#issue3920    - [关联PR #81980（merged）](https://gitcode.com/cann/canndev/merge_requests/81980)
+- **[#3918](https://gitcode.com/cann/ops-nn/issues/3918) [Bug-Report|缺陷反馈]: 共性问题，aclnn接口的参数表格右边超出了目录导航栏，体验不好** — 20分
+  - 痛点原因：Bot仅完成基础打标，无自动关闭与自动评论等深度治理动作，治理行为单一且缺乏闭环。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@huzhipeng](https://gitcode.com/huzhipeng) 正在跟踪处理。    - `yuhao_`：/assign    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhengyuhao3    - `yolic`：unassigned @zhengyuhao3    - `cann-robot`：assigned to @yuhao_
+- **[#3917](https://gitcode.com/cann/ops-nn/issues/3917) [Bug-Report|缺陷反馈]: Modify the description of UnsortedSegmentMax** — 20分
+  - 痛点原因：Bot仅被动响应人工指令执行打标和关闭，评论数为0，缺乏主动交互与有效引导。
+  - 原文依据：
+    - `zhangxiyan7`：/assign    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3917    - [关联PR #7165（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7165)
+- **[#3915](https://gitcode.com/cann/ops-nn/issues/3915) index 算子UT覆盖率提升** — 20分
+  - 痛点原因：Bot仅执行打标与分配，无自动关闭动作且无评论互动，生命周期管理参与度严重不足。
+  - 原文依据：
+    - `wkkk0528`：/assign    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @wkkk0528    - `wkkk0528`：closed from codehub    - `wkkk0528`：changed custom state from 进行中 to 已完成    - [关联PR #7167（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7167)
+- **[#3914](https://gitcode.com/cann/ops-nn/issues/3914) [Bug] PR #6328 修改 GenSimplifiedKey 导致 AddRmsNormQuant BIN 模式符号不匹配** — 20分
+  - 痛点原因：Bot误因无关issue3914合并而关闭当前issue，且关联PR实为7166，全程无解释评论，治理失效。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @raoliang_sac    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3914    - [关联PR #7166（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7166)
+- **[#3912](https://gitcode.com/cann/ops-nn/issues/3912) [Bug-Report|缺陷反馈]: QBMM MX multi batch 路径 atomic add 状态未恢复** — 20分
+  - 痛点原因：Bot仅机械执行打标与分配操作，全程无任何评论互动，缺乏有效反馈与治理透明度。
+  - 原文依据：
+    - `chen-shuai`：/assign    - `chen-shuai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chen-shuai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3912    - [关联PR #7157（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7157)
+- **[#3911](https://gitcode.com/cann/ops-nn/issues/3911) [Documentation|文档反馈]: 修改nn仓master分支doctool扫描问题** — 20分
+  - 痛点原因：Bot仅机械打标与自动关闭，无任何状态同步或引导性评论，治理过程简单粗暴。
+  - 原文依据：
+    - `chaotang233`：PLS 处理相关issue问题，目前正在排序解决    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3911    - [关联PR #7147（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7147)
+- **[#3907](https://gitcode.com/cann/ops-nn/issues/3907) [Requirement|需求建议]: 部分参数提前到tiling阶段计算** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无任何评论说明，缺乏与用户的沟通互动，治理过程不透明。
+  - 原文依据：
+    - `zhaozhoujun520`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3907    - [关联PR #7069（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7069)
+- **[#3906](https://gitcode.com/cann/ops-nn/issues/3906) [Bug-Report|缺陷反馈]: usm排序求唯一索引问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与分配，未留下任何解释性评论，缺乏有效沟通导致治理流于形式。
+  - 原文依据：
+    - `jinpenghe`：/assign    - `jinpenghe`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jinpenghe    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3906    - [关联PR #7145（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7145)
+- **[#3905](https://gitcode.com/cann/ops-nn/issues/3905) [Bug-Report|缺陷反馈]: QuantBatchMatmulV3和FusedQuantMatmul的tiling拦截有漏洞** — 20分
+  - 痛点原因：Bot虽自动打标并关闭issue，但全程无任何评论说明原因，治理过程不透明且缺乏用户互动。
+  - 原文依据：
+    - `lifei265`：add label bug-report    - `cann-robot`：add label resolved    - `lifei265`：assigned to @lifei265    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3905    - [关联PR #7110（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7110)
+- **[#3904](https://gitcode.com/cann/ops-nn/issues/3904) [Bug-Report|缺陷反馈]: conv3d_v2 算子 cleancode 扫描告警 (G.CNS.03/G.CNS.04/G.INC.02)** — 20分
+  - 痛点原因：Bot仅机械执行打标和分配，关闭issue时未发表任何评论说明原因或提供引导，缺乏有效互动。
+  - 原文依据：
+    - `wanyukang`：/assign [@wanyukang](https://gitcode.com/wanyukang)    - `wanyukang`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wanyukang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3904    - [关联PR #7129（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7129)
+- **[#3903](https://gitcode.com/cann/ops-nn/issues/3903) [Bug-Report|缺陷反馈]: QuantBatchMatMulV3适配APILEVEL后kernel入口兼容性修复** — 20分
+  - 痛点原因：Bot仅机械执行打标与分配操作，未产生任何评论，缺乏状态说明与用户互动反馈。
+  - 原文依据：
+    - `Hu1L1`：/assign    - `Hu1L1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Hu1L1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3903    - [关联PR #7126（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7126)
+- **[#3902](https://gitcode.com/cann/ops-nn/issues/3902) [Bug-Report|缺陷反馈]: aclnnConvolutionBackward异常场景用例报错有误** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，无任何评论互动，缺乏有效沟通，治理流于形式。
+  - 原文依据：
+    - `zhaozhoujun520`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3902    - [关联PR #7127（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7127)
+- **[#3900](https://gitcode.com/cann/ops-nn/issues/3900) [Bug-Report|缺陷反馈]: celuV2算子alpha取值比较大的时候，精度问题** — 20分
+  - 痛点原因：Bot仅执行打标，未参与评论互动与自动关闭，核心治理动作完全依赖人工处理。
+  - 原文依据：
+    - `cann-robot`：add label Accepted    - `yolic`：assigned to @gcw_YBIAEfqJ    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - [关联PR #7106（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7106)    - [关联PR #7130（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7130)
+- **[#3899](https://gitcode.com/cann/ops-nn/issues/3899) [Bug-Report|缺陷反馈]: UniqueConsecutive算子UT找不到头文件** — 20分
+  - 痛点原因：Bot仅被动打标且无评论互动，分配与关闭等核心治理动作均由人工完成，缺乏实质自动化治理。
+  - 原文依据：
+    - `wkx12138`：/assgin    - `wkx12138`：add label bug-report    - `cann-robot`：add label resolved    - `wkx12138`：assigned to @wkx12138    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3899    - [关联PR #7118（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7118)
+- **[#3896](https://gitcode.com/cann/ops-nn/issues/3896) [Documentation|文档反馈]: aclnnSoftplusBackward.md、README.md、op_api_list.md、op_list…** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，全程无任何评论说明进度或原因，缺乏有效互动反馈。
+  - 原文依据：
+    - `Hana77`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3896    - [关联PR #7113（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7113)
+- **[#3895](https://gitcode.com/cann/ops-nn/issues/3895) [Requirement|需求建议]: WeightQuantBatchMatmulV2 + Transpose 图融合适配新版 GE 融合框架** — 20分
+  - 痛点原因：Bot仅机械打标与关闭，无任何评论与用户沟通，缺乏有效治理互动。
+  - 原文依据：
+    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `maqijun`：assigned to @maqijun    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3895    - [关联PR #6419（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6419)
+- **[#3894](https://gitcode.com/cann/ops-nn/issues/3894) [Requirement|需求建议]: aclnn_convert_to_int4_pack接口runtime整改** — 20分
+  - 痛点原因：Bot仅静默执行打标和关闭操作，全程无任何评论说明，缺乏透明反馈导致治理无效。
+  - 原文依据：
+    - `zhangquanxin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3894    - [关联PR #7013（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7013)
+- **[#3893](https://gitcode.com/cann/ops-nn/issues/3893) [Requirement|需求建议]: QuantBatchMatmulV4 + Transpose 图融合适配新版 GE 融合框架** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭操作，未留下任何有效评论与用户沟通状态及原因，缺乏互动性。
+  - 原文依据：
+    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3893    - [关联PR #4263（merged）](https://gitcode.com/cann/ops-nn/merge_requests/4263)
+- **[#3892](https://gitcode.com/cann/ops-nn/issues/3892) [Bug-Report|缺陷反馈]: GroupedQuantMax & QuantMax support batchmode** — 20分
+  - 痛点原因：Bot仅机械执行指派与关闭，无评论互动，且需人工手动打标，治理流于形式。
+  - 原文依据：
+    - `yin-peng`：/assign    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yin-peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3892    - [关联PR #7115（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7115)
+- **[#3891](https://gitcode.com/cann/ops-nn/issues/3891) [Bug-Report|缺陷反馈]: Wqbmmv2异常场景打印内容有问题** — 20分
+  - 痛点原因：Bot误将未解决的缺陷打标为resolved并关闭，且无任何有效评论，治理动作无效。
+  - 原文依据：
+    - `ykxxlzhong`：/assign    - `ykxxlzhong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ykxxlzhong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3891    - [关联PR #6957（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6957)
+- **[#3890](https://gitcode.com/cann/ops-nn/issues/3890) [Requirement|需求建议]: 添加bmm/mm b全载+fixpipe优化模板** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，全程无任何评论说明，缺乏与用户的透明沟通和治理互动。
+  - 原文依据：
+    - `huangkejie1647`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3890    - [关联PR #5452（merged）](https://gitcode.com/cann/ops-nn/merge_requests/5452)
+- **[#3888](https://gitcode.com/cann/ops-nn/issues/3888) [Requirement|需求建议]: QuantBatchMatmul 算子 FP8-Pertile 支持 WeightNZ** — 20分
+  - 痛点原因：Bot仅机械打标与关闭，无任何评论互动，缺乏自动指派与状态流转等有效治理动作。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @Nam_John    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3888    - [关联PR #7104（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7104)
+- **[#3887](https://gitcode.com/cann/ops-nn/issues/3887) [Bug-Report|缺陷反馈]: 卷积反向、foreach算子 classifyRlue目录不生效问题** — 20分
+  - 痛点原因：Bot虽完成了打标与关闭操作，但全程无任何评论说明，缺乏状态变更的透明沟通与解释。
+  - 原文依据：
+    - `zhouxuan78`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhouxuan78    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3887    - [关联PR #7090（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7090)    - [关联PR #7124（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7124)
+- **[#3886](https://gitcode.com/cann/ops-nn/issues/3886) LinearIndexV2 算子补充 op_host 层 UT 用例，提升目标文件的覆盖率** — 20分
+  - 痛点原因：Bot直接打标并关闭，全程无任何解释性评论，治理过程不透明且缺乏有效互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @wkkk0528    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3886    - [关联PR #7096（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7096)
+- **[#3885](https://gitcode.com/cann/ops-nn/issues/3885) [Bug-Report|缺陷反馈]: swiglu_group_quant quant mode==2 out y origin在输入为fp32精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何评论同步关闭原因及关联PR进度，缺乏与用户的有效沟通。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3885    - [关联PR #7094（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7094)
+- **[#3883](https://gitcode.com/cann/ops-nn/issues/3883) [Documentation|文档反馈]: 大小驼峰命名** — 20分
+  - 痛点原因：Bot仅打标无评论且未自动关闭，问题的跟踪与关闭全由人工完成，缺乏自动化治理。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liu-wei](https://gitcode.com/liu-wei) 正在跟踪处理。    - `liu-wei`：kCalls 位于 namespace aicpu 作用域内，属于全局变量，应加 g_ 前缀并使用小驼峰命名（如 g_calls） 这个规则是从哪里来的？如果保持现状会有什么问题吗？    - `liu-wei`：这个issue我们打算关闭了，如果还有问题麻烦重新提PR，我们会持续提供支撑。    - `cann-robot`：add label Accepted    - `yolic`：assigned to @liu-wei    - `liu-wei`：closed from codehub
+- **[#3880](https://gitcode.com/cann/ops-nn/issues/3880) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，nn仓编译工程适配** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为零，缺乏与用户的互动沟通及有效反馈。
+  - 原文依据：
+    - `liuyufan0725`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3880    - [关联PR #6225（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6225)    - [关联PR #7061（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7061)
+- **[#3879](https://gitcode.com/cann/ops-nn/issues/3879) [Bug-Report|缺陷反馈]: addmm和baddbmm接口支持支持混合精度计算输入，当前16in32out场景被拦截** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，全程零评论无解释说明，缺乏有效互动与治理透明度。
+  - 原文依据：
+    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3879    - [关联PR #6862（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6862)    - [关联PR #7091（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7091)
+- **[#3878](https://gitcode.com/cann/ops-nn/issues/3878) [Documentation|文档反馈]: ExtendConvTranspose算子的README需要更新** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为零，缺乏与用户的有效交互和反馈。
+  - 原文依据：
+    - `YuanTianyi`：add label documentation    - `cann-robot`：add label resolved    - `YuanTianyi`：assigned to @YuanTianyi    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3878    - [关联PR #7074（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7074)
+- **[#3877](https://gitcode.com/cann/ops-nn/issues/3877) [Bug-Report|缺陷反馈]: GroupedQuantMax输出amax数据踩踏** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，未留下任何评论说明关闭原因，缺乏交互导致治理不透明。
+  - 原文依据：
+    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yin-peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3877    - [关联PR #6949（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6949)
+- **[#3876](https://gitcode.com/cann/ops-nn/issues/3876) [Requirement|需求建议] 新增 scatter_nd_max 和 scatter_nd_min 算子迁移** — 20分
+  - 痛点原因：Bot仅执行打标与关闭等机械动作，无任何评论交互，缺乏有效治理引导，导致得分过低。
+  - 原文依据：
+    - `jialimin1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jialimin1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3876    - [关联PR #6800（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6800)
+- **[#3872](https://gitcode.com/cann/ops-nn/issues/3872) [Bug][arch35][norm] AddLayerNormQuant/SyncBatchNormGatherStatsFused kernel 使用 S…** — 20分
+  - 痛点原因：Bot仅添加resolved标签，未关闭issue且无任何评论，治理动作不完整。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，norm类算子已对齐，安排@xieshengwei1024跟踪    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `tangweiwei2`：closed from codehub    - [关联PR #7088（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7088)
+- **[#3870](https://gitcode.com/cann/ops-nn/issues/3870) [Bug][arch35][loss] NLLLossGrad kernel 使用 SyncAll 但 Tiling 未设置 SetScheduleMode(…** — 20分
+  - 痛点原因：Bot仅执行了打标，未在问题修复后自动关闭issue，且全程无评论互动，治理动作不完整。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，loss类算子已对齐，安排@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `xieshengwei1024`：closed from codehub
+- **[#3867](https://gitcode.com/cann/ops-nn/issues/3867) [Bug][arch35][quant] FakeQuantWithMinMaxVarsGradient/FakeQuantWithMinMaxVarsPer…** — 20分
+  - 痛点原因：Bot仅机械打标且评论数为0，未执行自动分配等实质辅助动作，未发挥实际治理作用。
+  - 原文依据：
+    - `tangweiwei2`：quant类算子问题，已安排@xieshengwei1024跟踪    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3867    - [关联PR #7085（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7085)
+- **[#3866](https://gitcode.com/cann/ops-nn/issues/3866) [Bug][arch35][pooling] AdaptiveAvgPool3dGrad/MaxPool3DGrad/MaxPoolGrad kernel 使…** — 20分
+  - 痛点原因：Bot在问题仅确认且刚分配负责人时便错误打上resolved标签并关闭issue，且无任何评论说明，治理无效。
+  - 原文依据：
+    - `tangweiwei2`：pooling类算子问题，已确认存在问题，安排@xieshengwei1024解决    - `cann-robot`：add label resolved    - `xieshengwei1024`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @liuchuangdev    - `xieshengwei1024`：unassigned @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3863](https://gitcode.com/cann/ops-nn/issues/3863) [Bug][arch35][conv] DeformableOffsetsGrad kernel 使用 SyncAll 但 Tiling 未设置 SetSch…** — 20分
+  - 痛点原因：Bot仅执行打标且无评论互动，在人工确认修复后未自动关闭issue，缺乏治理闭环。
+  - 原文依据：
+    - `tangweiwei2`：deformable问题已确认，请@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `xieshengwei1024`：closed from codehub
+- **[#3862](https://gitcode.com/cann/ops-nn/issues/3862) [Bug-Report|缺陷反馈]: 【dx】修复kernel拆分出现除零问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论说明，导致治理过程不透明且缺乏有效沟通。
+  - 原文依据：
+    - `yejiani`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yejiani    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3862    - [关联PR #6909（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6909)
+- **[#3861](https://gitcode.com/cann/ops-nn/issues/3861) [Requirement|需求建议]: SoftplusGrad算子适配Ascend 950开发** — 20分
+  - 痛点原因：Bot仅机械打标与关闭，无任何评论交互，且关闭依据与实际关联PR不符，治理缺乏有效沟通与准确性。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @wucong22    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3861    - [关联PR #6734（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6734)
+- **[#3860](https://gitcode.com/cann/ops-nn/issues/3860) [Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为0，未提供任何状态同步或与用户的有效沟通。
+  - 原文依据：
+    - `wuyufei`：add label bug-report    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3860    - [关联PR #7024（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7024)    - [关联PR #7224（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7224)
+- **[#3859](https://gitcode.com/cann/ops-nn/issues/3859) [Documentation|文档反馈]: Modifying the issue of incorrect links** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，全程无任何评论与用户互动，导致治理过程不透明且缺乏沟通。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3859    - [关联PR #7049（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7049)
+- **[#3858](https://gitcode.com/cann/ops-nn/issues/3858) [Bug][arch35][hash] EmbeddingHashTableApplyAdamW 与 EmbeddingHashTableExport ker…** — 20分
+  - 痛点原因：Bot仅机械打标与关闭，无评论互动，且在人工仍在跟进解决时误打resolved标签，治理动作与实际进度脱节。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，已安排人跟踪处理，预计本周三解决。    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3858    - [关联PR #7076（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7076)
+- **[#3857](https://gitcode.com/cann/ops-nn/issues/3857) [Bug-Report|缺陷反馈]: sparsesegmentmeangrad的网络用例性能优化，核上开多个线程处理indices每次循环的多个segment** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，无任何评论互动，自动化治理深度不足。
+  - 原文依据：
+    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3857    - [关联PR #7044（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7044)    - [关联PR #7064（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7064)
+- **[#3855](https://gitcode.com/cann/ops-nn/issues/3855) [Requirement|需求建议]:【QBMM】新增scale支持batch维度** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论互动，缺乏状态同步与解释说明，治理过程生硬无效。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3855    - [关联PR #6344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6344)
+- **[#3854](https://gitcode.com/cann/ops-nn/issues/3854) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 20分
+  - 痛点原因：机器人仅执行打标，在问题被引导转交其他社区后未自动关闭或跟进流转，治理动作缺失。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@yang-di52](https://gitcode.com/yang-di52) 正在跟踪处理。    - `yang-di52`：[@easel](https://gitcode.com/easel) 您好，nn仓仅提供神经网络计算能力的高阶算子，无法回答您cann机制的问题。您可以前往社区进行提问， https://gitcode.com/cann/communi…    - `cann-robot`：add label Accepted    - `yolic`：assigned to @yang-di52    - `yang-di52`：closed from codehub    - `yang-di52`：changed custom state from 进行中 to 已完成
+- **[#3853](https://gitcode.com/cann/ops-nn/issues/3853) [Documentation|文档反馈]: WeightQuantBatchMatmulExperiment README 中存在公式变量名、格式等问题** — 20分
+  - 痛点原因：Bot仅执行基础打标与分配，无自动关闭及评论互动，治理动作单一且未形成闭环。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label documentation    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @shi-rui    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成
+- **[#3898](https://gitcode.com/cann/ops-nn/issues/3898) [Bug-Report|缺陷反馈]: MaxPool3D内置算子示例测试（图模式）报错** — 35分
+  - 痛点原因：Bot拦截非成员指派后未提供有效引导，导致用户多次尝试指派命令均未成功，治理流程未闭环。
+  - 原文依据：
+    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign    - `Apricityh`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：add label resolved
+- **[#3897](https://gitcode.com/cann/ops-nn/issues/3897) [Bug-Report|缺陷反馈]: test_max_pool_3d.cpp引用的experiment_ops.h不存在** — 35分
+  - 痛点原因：Bot仅打标并提示指派失败，未执行关闭或后续有效治理动作，导致治理流程中断。
+  - 原文依据：
+    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign    - `Apricityh`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：add label Accepted
+- **[#3976](https://gitcode.com/cann/ops-nn/issues/3976) [Bug-Report|缺陷反馈]: ops-nn activation/selu_grad 算子 outputs==0 边界分支判定与 PyTorch 竞品…** — 40分
+  - 痛点原因：Bot仅提示重复分配，未自动打标，且在修复PR提交后未自动关闭，缺乏实质性的自动化治理动作。
+  - 原文依据：
+    - `ForestFrame`：已提交修复 PR: https://gitcode.com/ForestFrame/ops-nn/merge_requests/1 将 kernel `CMPMODE::LT` 改为 `CMPMODE::LE`，288 例全量测试验证 1…    - `ForestFrame`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***ForestFrame***. Please do not assign repeatedly.    - `yolic`：assigned to @ForestFrame    - [关联PR #7268（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7268)    - [关联PR #7270（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7270)
+#### PP-05 开启Issue长期停滞缺乏跟进机制（I2 · 讨论与解决）
+
+- **[#4044](https://gitcode.com/cann/ops-nn/issues/4044) [Bug-Report|缺陷反馈]: 修复proto文件注释** — 0分
+  - 痛点原因：仅靠机器人自动关闭并加标签，无人工修复说明，且缺乏commit、文档或release等强证据链接。
+  - 原文依据：
+    - [关联PR #7415（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7415)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4044    - `yiqiao-wjp`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp
+- **[#4040](https://gitcode.com/cann/ops-nn/issues/4040) [Bug-Report|缺陷反馈]: classify_rule补充缺失文件目录** — 0分
+  - 痛点原因：仅靠机器人自动关闭和打标签，无commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7410（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7410)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4040    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4037](https://gitcode.com/cann/ops-nn/issues/4037) [Requirement|需求建议]: CANNBot项目AdvanceStep算子新增支持A5** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏人工关闭评论、文档链接或release等明确的解决说明。
+  - 原文依据：
+    - [关联PR #7405（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7405)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4037    - `cann-robot`：add label resolved    - `yolic`：assigned to @Almost_CANN
+- **[#4035](https://gitcode.com/cann/ops-nn/issues/4035) [Bug-Report|缺陷反馈]: ops-nn 仓 执行example命令指定芯片时，反馈和其他仓不一致** — 0分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，无commit引用、文档链接及人工关闭评论，缺乏具体解决说明。
+  - 原文依据：
+    - [关联PR #7402（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7402)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4035    - `cann-robot`：add label resolved    - `yolic`：assigned to @magicjason0007
+- **[#4028](https://gitcode.com/cann/ops-nn/issues/4028) [Bug-Report|缺陷反馈]: nn仓 安全告警修改** — 0分
+  - 痛点原因：虽有关联PR，但无commit、文档及release引用，且关闭时无总结评论，无法证明问题已实质解决。
+  - 原文依据：
+    - [关联PR #7344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7344)    - [关联PR #7351（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7351)    - `sunchun`：/assign    - `sunchun`：add label bug-report    - `cann-robot`：assigned to @sunchun
+- **[#4025](https://gitcode.com/cann/ops-nn/issues/4025) [Requirement|需求建议]: 950新增dequantize算子** — 0分
+  - 痛点原因：解决证据强度得分0，低于合格线 60
+  - 原文依据：
+    - [关联PR #7037（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7037)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4025    - `cann-robot`：add label resolved    - `yolic`：assigned to @h1234515
+- **[#4023](https://gitcode.com/cann/ops-nn/issues/4023) [Bug-Report|缺陷反馈]: foreach_asin arch35 tiling 添加 GetPlatformInfoFallback逻辑，解决 G…** — 0分
+  - 痛点原因：仅依赖机器人自动关闭与打标签，缺乏commit、文档、release及人工关闭评论等有效解决证据。
+  - 原文依据：
+    - [关联PR #7339（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7339)    - [关联PR #7358（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7358)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4023    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz
+- **[#4022](https://gitcode.com/cann/ops-nn/issues/4022) [Requirement|需求建议]: Relu6D 算子支持 Ascend950 ascendc 实现** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档及release链接等直接解决证据，仅靠外部状态变更关闭。
+  - 原文依据：
+    - [关联PR #7375（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7375)    - [关联PR #7444（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7444)    - `zhongheng`：closed from codehub    - `zhongheng`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhongheng
+- **[#4021](https://gitcode.com/cann/ops-nn/issues/4021) [Bug-Report|缺陷反馈]: max_pool3d_grad_with_argmax aclnn接口内存检测时发生oom** — 0分
+  - 痛点原因：虽关联了已合并的PR，但无commit引用、关闭评论等直接说明修复情况的证据。
+  - 原文依据：
+    - [关联PR #7361（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7361)    - [关联PR #7378（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7378)    - [关联PR #7380（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7380)    - `dong-yanrong`：、assign    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report
+- **[#4016](https://gitcode.com/cann/ops-nn/issues/4016) [Bug-Report|缺陷反馈]: sparse_apply_adagrad_v2的golden需要与tf对比** — 0分
+  - 痛点原因：仅靠机器人因PR合并自动关闭并加标签，缺乏commit引用、文档链接及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #7331（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7331)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4016    - `cann-robot`：add label resolved
+- **[#4015](https://gitcode.com/cann/ops-nn/issues/4015) [Requirement|需求建议]: arch35: DataCopyParams迁移为DataCopyExtParams及C-style cast修复** — 0分
+  - 痛点原因：缺乏commit引用、文档链接、release引用及关闭评论，仅靠关联PR和状态变更关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7464（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7464)    - [关联PR #7482（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7482)    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac
+- **[#4014](https://gitcode.com/cann/ops-nn/issues/4014) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：仅由系统直接关闭，未关联任何PR、commit或文档链接等实质性解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4012](https://gitcode.com/cann/ops-nn/issues/4012) test** — 0分
+  - 痛点原因：关闭时未关联任何 PR、commit 或文档链接，也无关闭评论说明，缺乏实质解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4011](https://gitcode.com/cann/ops-nn/issues/4011) test** — 0分
+  - 痛点原因：仅被直接关闭，未关联任何 PR、commit 或文档链接，缺乏实质性的解决证据留存。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4009](https://gitcode.com/cann/ops-nn/issues/4009) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：直接通过codehub关闭，未关联PR、commit或文档链接等任何可追溯证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4006](https://gitcode.com/cann/ops-nn/issues/4006) [Bug-Report|缺陷反馈]: scatterupdate算子开启确定性计算越界检查会出现oom报错** — 0分
+  - 痛点原因：虽有关联PR合并并由机器人关闭，但缺乏commit引用、文档链接及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7323（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7323)    - [关联PR #7333（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7333)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4006    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666
+- **[#4004](https://gitcode.com/cann/ops-nn/issues/4004) test-ignore** — 0分
+  - 痛点原因：关闭时未提供任何PR、commit、文档或release等实质性解决证据，仅有一句无链接的关闭说明。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4003](https://gitcode.com/cann/ops-nn/issues/4003) test-pls-ignore-123** — 0分
+  - 痛点原因：关闭时未关联任何PR、commit或文档链接，仅凭一句无实质内容的评论关闭，缺乏解决证据。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4001](https://gitcode.com/cann/ops-nn/issues/4001) [Bug-Report|缺陷反馈]: dynamic_mx_quant跑oom报错，请确认** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档链接及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7291（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7291)    - [关联PR #7325（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7325)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4001    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1
+- **[#4000](https://gitcode.com/cann/ops-nn/issues/4000) [Bug-Report|缺陷反馈]: 商分FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7324（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7324)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4000    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yushan-kite`：assigned to @yushan-kite
+- **[#3998](https://gitcode.com/cann/ops-nn/issues/3998) [Bug-Report|缺陷反馈]: MaxPool3DGradWithArgmax算子在执行geir时，部分用例执行二进制失败core** — 0分
+  - 痛点原因：仅关联已关闭PR，但无commit引用、release引用及关闭评论，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #7095（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7095)    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report    - `cann-robot`：assigned to @dong-yanrong
+- **[#3997](https://gitcode.com/cann/ops-nn/issues/3997) [Bug-Report|缺陷反馈]:** — 0分
+  - 痛点原因：仅关联了未合并的open状态PR，无commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7313（open）](https://gitcode.com/cann/ops-nn/merge_requests/7313)    - `weiyan_hw`：add label bug-report    - `yolic`：assigned to @weiyan_hw
+- **[#3996](https://gitcode.com/cann/ops-nn/issues/3996) [Requirement|需求建议]: Ascend950支持apply_power_sign算子** — 0分
+  - 痛点原因：虽关联PR已合并，但缺乏commit引用、文档链接、release引用及关闭评论等明确解决证据。
+  - 原文依据：
+    - [关联PR #6827（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6827)    - [关联PR #7409（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7409)    - `yolic`：assigned to @niukang_hw
+- **[#3995](https://gitcode.com/cann/ops-nn/issues/3995) 【Ascend950适配】dynamic_rnn 与 single_layer_lstm_grad 需支持 Ascend950** — 0分
+  - 痛点原因：关联的PR未合并且无关闭评论，缺乏commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7310（open）](https://gitcode.com/cann/ops-nn/merge_requests/7310)    - `chenxingyu18`：closed from codehub    - `yolic`：assigned to @chenxingyu18
+- **[#3994](https://gitcode.com/cann/ops-nn/issues/3994) [Requirement|需求建议]: foreach系列算子支持非连续输入和输出** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit、文档、release引用及关闭评论，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #6980（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6980)    - [关联PR #7475（open）](https://gitcode.com/cann/ops-nn/merge_requests/7475)    - [关联PR #7495（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7495)    - `yolic`：assigned to @luoyufan7
+- **[#3988](https://gitcode.com/cann/ops-nn/issues/3988) [Bug-Report|缺陷反馈]: 16in32out场景mm接口性能劣化严重** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，证据不足。
+  - 原文依据：
+    - [关联PR #7296（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7296)    - [关联PR #7297（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7297)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3988    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @HuangKun8682
+- **[#3987](https://gitcode.com/cann/ops-nn/issues/3987) [Bug-Report|缺陷反馈]: 卷积反向 dw 邮件问题代码排查** — 0分
+  - 痛点原因：关联PR仍为open未合并，且无commit、文档或release引用，仅完成指派，缺乏实际解决证据。
+  - 原文依据：
+    - [关联PR #7289（open）](https://gitcode.com/cann/ops-nn/merge_requests/7289)    - `zhouxuan78`：/assign    - `cann-robot`：assigned to @zhouxuan78
+- **[#3984](https://gitcode.com/cann/ops-nn/issues/3984) [Requirement|需求建议]: 支持QuantMatmul+Gelu+DynamicMxQuant融合算子ascend950** — 0分
+  - 痛点原因：关联PR未合并且无提交、文档及版本引用，仅分配负责人，缺乏问题已解决的闭环证据。
+  - 原文依据：
+    - [关联PR #7272（open）](https://gitcode.com/cann/ops-nn/merge_requests/7272)    - `yolic`：assigned to @zhuoyunhang
+- **[#3983](https://gitcode.com/cann/ops-nn/issues/3983) [Bug-Report|缺陷反馈]: fixpipe场景切tensor api部分场景拦截失败** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit、release引用及关闭评论，仅靠机器人
+  - 原文依据：
+    - [关联PR #7278（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7278)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3983    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647
+- **[#3981](https://gitcode.com/cann/ops-nn/issues/3981) glu_grad & grouped_dynamic_block_quant modify suggestion** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及人工关闭评论等明确的解决证据。
+  - 原文依据：
+    - [关联PR #7238（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7238)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3981    - `cann-robot`：add label resolved    - `yolic`：assigned to @ASCEND222
+- **[#3979](https://gitcode.com/cann/ops-nn/issues/3979) [Bug-Report|缺陷反馈]: Conv2DBackpropInput等算子融合Pass整改** — 0分
+  - 痛点原因：仅由机器人关联PR自动关闭并打标签，缺乏commit引用、文档链接及人工关闭说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #6081（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6081)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3979    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao
+- **[#3977](https://gitcode.com/cann/ops-nn/issues/3977) [Bug-Report|缺陷反馈]: matmul代码clean code告警** — 0分
+  - 痛点原因：关联的PR已关闭未合并，且无commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7212（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7212)    - `wuyufei`：add label bug-report    - `yolic`：assigned to @wuyufei
+- **[#3973](https://gitcode.com/cann/ops-nn/issues/3973) [Question|问题咨询]: BaddbmmMatmulGraph impl函数过大，建议拆分优化** — 0分
+  - 痛点原因：虽有关联PR被合并，但issue内无commit引用、文档链接及人工确认解决的关闭评论，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7230（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7230)    - [关联PR #7254（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7254)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3973    - `HuangKun8682`：add label question    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682
+- **[#3972](https://gitcode.com/cann/ops-nn/issues/3972) [Bug-Report|缺陷反馈]: 910C环境 aclnnAddmm 16in32out场景 报错，MatMulV3 部分 kernel未找到** — 0分
+  - 痛点原因：虽关联多个PR且部分已合并，但缺乏commit引用、文档链接及关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7202（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7202)    - [关联PR #7248（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7248)    - [关联PR #7253（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7253)    - [关联PR #7264（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7264)    - [关联PR #7275（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7275)    - [关联PR #7277（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7277)
+- **[#3970](https://gitcode.com/cann/ops-nn/issues/3970) [Bug-Report|缺陷反馈]: Conv2DTranspose算子增加Bias类型校验导致量化功能失败** — 0分
+  - 痛点原因：仅靠机器人关联合并PR自动关闭，缺乏commit引用、文档链接、release引用及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7218（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7218)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3970    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao
+- **[#3969](https://gitcode.com/cann/ops-nn/issues/3969) [Bug-Report|缺陷反馈]: slice高精度拦截** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，缺乏明确的修复证据。
+  - 原文依据：
+    - [关联PR #7161（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7161)    - [关联PR #7255（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7255)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3969    - `szhexin`：add label bug-report    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin
+- **[#3967](https://gitcode.com/cann/ops-nn/issues/3967) [Bug-Report] masked_fill 在 input tensor 有 NaN/Inf 时的处理行为未定义——用 NaN 替换有限值到底算不算 m…** — 0分
+  - 痛点原因：缺乏关联PR、commit引用及文档等任何解决证据，且处于等待反馈状态，无实质性解决进展。
+  - 原文依据：
+    - `yolic`：您好，我看到#3954也是您提出的，目前未关联pr，请在原issue上进行建议。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @jiangzeyu-2026
+- **[#3965](https://gitcode.com/cann/ops-nn/issues/3965) [Bug-Report] celuV2 alpha 很大时的精度问题本质是 float16 下 log1p(x) 在 x>65504 时溢出 inf 而非 e…** — 0分
+  - 痛点原因：仅停留在受理与分配阶段，无关联PR、代码提交或关闭说明等实质性解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，正在处理。    - `yolic`：assigned to @Coder_Nerd
+- **[#3959](https://gitcode.com/cann/ops-nn/issues/3959) [Requirement|需求建议]: 新增 one_hot 独热编码算子** — 0分
+  - 痛点原因：仅停留在需求收集与分配阶段，未关联PR、commit或文档等任何实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `jiangzeyu-2026`：add label requirement    - `yolic`：assigned to @yolic
+- **[#3952](https://gitcode.com/cann/ops-nn/issues/3952) [Bug-Report|缺陷反馈]: softplusv2grad原型宏定义应和legacy保持一致** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接及人工关闭评论等具体解决说明，证据不足。
+  - 原文依据：
+    - [关联PR #7241（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7241)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3952    - `Hana77`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @Hana77
+- **[#3946](https://gitcode.com/cann/ops-nn/issues/3946) [Bug-Report|缺陷反馈]: 修改确定性场景下的aicpu cast逻辑** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #7223（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7223)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3946    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz
+- **[#3945](https://gitcode.com/cann/ops-nn/issues/3945) [Bug-Report|缺陷反馈]: cross_entropy_loss算子，ProcessFp32未初始化castTmpBuf大小** — 0分
+  - 痛点原因：关联的两个PR均处于open未合并状态，无commit引用和关闭评论，缺乏已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7219（open）](https://gitcode.com/cann/ops-nn/merge_requests/7219)    - [关联PR #7220（open）](https://gitcode.com/cann/ops-nn/merge_requests/7220)    - `kdy18482276080`：add label bug-report    - `kdy18482276080`：assigned to @kdy18482276080
+- **[#3936](https://gitcode.com/cann/ops-nn/issues/3936) [Requirement|需求建议]: GlobalLpPool算子950实现** — 0分
+  - 痛点原因：仅靠机器人关闭和关联PR，无人工确认解决的评论，且缺少commit、文档等具体解决证据链接。
+  - 原文依据：
+    - [关联PR #6398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6398)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3936    - `cann-robot`：add label resolved    - `yolic`：assigned to @weixin_51153241
+- **[#3931](https://gitcode.com/cann/ops-nn/issues/3931) [Bug-Report|缺陷反馈]: IndexPutWithSortV2算子SIMD/SIMT模板计算逻辑修复** — 0分
+  - 痛点原因：虽关联PR已合并，但缺少commit引用、文档及release链接，且无关闭评论说明，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7039（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7039)    - [关联PR #7250（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7250)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3931    - `cann-robot`：add label resolved
+- **[#3930](https://gitcode.com/cann/ops-nn/issues/3930) [Bug-Report|缺陷反馈]: 修复了 NHWC 布局下 conv2d_v2 算子在加载 AL1 数据时后半段数据加载异常** — 0分
+  - 痛点原因：仅有关联PR被合并及机器人自动关闭，缺乏commit引用、文档链接和人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7030（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7030)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3930    - `cann-robot`：add label resolved    - `yolic`：assigned to @yangyang4536
+- **[#3925](https://gitcode.com/cann/ops-nn/issues/3925) [Bug-Report|缺陷反馈]: FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7116（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7116)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3925    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yushan-kite
+- **[#3924](https://gitcode.com/cann/ops-nn/issues/3924) [Requirement|需求建议]: Conv2d小kernel模板支持分组卷积** — 0分
+  - 痛点原因：关联PR均已关闭或未合并，且无commit、文档及release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7154（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7154)    - [关联PR #7317（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7317)    - [关联PR #7710（open）](https://gitcode.com/cann/ops-nn/merge_requests/7710)    - `Mrxxx7`：add label requirement    - `yolic`：assigned to @Mrxxx7
+- **[#3923](https://gitcode.com/cann/ops-nn/issues/3923) [Bug-Report|缺陷反馈]: bmmv3 vector不支持transA = 1，需要拦截** — 0分
+  - 痛点原因：关联PR仅被关闭未明确合并，且无commit、文档、release引用及关闭评论等实质解决证据。
+  - 原文依据：
+    - [关联PR #7178（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7178)    - `hid54649903`：add label bug-report    - `hid54649903`：assigned to @hid54649903
+- **[#3922](https://gitcode.com/cann/ops-nn/issues/3922) [Bug-Report|缺陷反馈]: DS红线网络用例AIC_ERR** — 0分
+  - 痛点原因：仅靠机器人自动关闭并关联PR，缺乏commit引用、文档链接及人工关闭评论等具体解决证据说明。
+  - 原文依据：
+    - [关联PR #7174（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7174)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3922    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl
+- **[#3921](https://gitcode.com/cann/ops-nn/issues/3921) [Bug-Report|缺陷反馈]: Matmul部分算子中对寄存器做初始化，在算子执行完成之后未还原** — 0分
+  - 痛点原因：关联PR未合并且无commit引用、文档链接及关闭评论等已解决证据。
+  - 原文依据：
+    - [关联PR #7262（open）](https://gitcode.com/cann/ops-nn/merge_requests/7262)    - `wangwei_mayday`：/assign    - `cann-robot`：assigned to @wangwei_mayday
+- **[#3920](https://gitcode.com/cann/ops-nn/issues/3920) [Bug-Report|缺陷反馈]: 个别网络在910B图模式8卡训练编译卡住** — 0分
+  - 痛点原因：虽关联PR已合并，但无commit引用、关闭评论及文档链接，仅靠机器人自动关闭，缺乏实质性解决说明。
+  - 原文依据：
+    - [关联PR #81980（merged）](https://gitcode.com/cann/canndev/merge_requests/81980)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-nn#issue3920    - `Jiaxin_001`：add label bug-report    - `cann-robot`：add label resolved    - `Jiaxin_001`：assigned to @Jiaxin_001
+- **[#3907](https://gitcode.com/cann/ops-nn/issues/3907) [Requirement|需求建议]: 部分参数提前到tiling阶段计算** — 0分
+  - 痛点原因：仅靠机器人关联已合并PR自动关闭，缺乏commit、文档及release等直接解决证据，无人工关闭评论说明。
+  - 原文依据：
+    - [关联PR #7069（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7069)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3907    - `zhaozhoujun520`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520
+- **[#3905](https://gitcode.com/cann/ops-nn/issues/3905) [Bug-Report|缺陷反馈]: QuantBatchMatmulV3和FusedQuantMatmul的tiling拦截有漏洞** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7110（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7110)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3905    - `lifei265`：add label bug-report    - `cann-robot`：add label resolved    - `lifei265`：assigned to @lifei265
+- **[#3902](https://gitcode.com/cann/ops-nn/issues/3902) [Bug-Report|缺陷反馈]: aclnnConvolutionBackward异常场景用例报错有误** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档说明及人工确认等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7127（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7127)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3902    - `zhaozhoujun520`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520
+- **[#3900](https://gitcode.com/cann/ops-nn/issues/3900) [Bug-Report|缺陷反馈]: celuV2算子alpha取值比较大的时候，精度问题** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7106（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7106)    - [关联PR #7130（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7130)    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @gcw_YBIAEfqJ
+- **[#3894](https://gitcode.com/cann/ops-nn/issues/3894) [Requirement|需求建议]: aclnn_convert_to_int4_pack接口runtime整改** — 0分
+  - 痛点原因：仅靠机器人自动关闭并加标签，缺乏人工关闭说明、文档链接及release记录等实质性证据支撑。
+  - 原文依据：
+    - [关联PR #7013（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7013)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3894    - `zhangquanxin`：add label requirement    - `cann-robot`：add label resolved
+- **[#3890](https://gitcode.com/cann/ops-nn/issues/3890) [Requirement|需求建议]: 添加bmm/mm b全载+fixpipe优化模板** — 0分
+  - 痛点原因：虽有关联PR，但缺乏commit、文档或release等直接证据链接，且无人工关闭评论说明具体解决情况。
+  - 原文依据：
+    - [关联PR #5452（merged）](https://gitcode.com/cann/ops-nn/merge_requests/5452)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3890    - `huangkejie1647`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647
+- **[#3888](https://gitcode.com/cann/ops-nn/issues/3888) [Requirement|需求建议]: QuantBatchMatmul 算子 FP8-Pertile 支持 WeightNZ** — 0分
+  - 痛点原因：仅凭机器人因关联PR合并自动关闭，缺乏commit、文档和release等直接解决证据，也无人工确认解决的评论。
+  - 原文依据：
+    - [关联PR #7104（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7104)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3888    - `cann-robot`：add label resolved    - `yolic`：assigned to @Nam_John
+- **[#3885](https://gitcode.com/cann/ops-nn/issues/3885) [Bug-Report|缺陷反馈]: swiglu_group_quant quant mode==2 out y origin在输入为fp32精度问题** — 0分
+  - 痛点原因：仅由机器人自动关闭并打标签，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7094（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7094)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3885    - `cann-robot`：add label resolved
+- **[#3881](https://gitcode.com/cann/ops-nn/issues/3881) [Bug-Report|缺陷反馈]: ExtendConvTranspose算子A16W8，Group>1的部分场景拦截缺失** — 0分
+  - 痛点原因：关联的PR仍为open状态未合并，且无commit、文档或release引用等实际解决证据。
+  - 原文依据：
+    - [关联PR #6850（open）](https://gitcode.com/cann/ops-nn/merge_requests/6850)    - `YuanTianyi`：add label bug-report    - `YuanTianyi`：assigned to @YuanTianyi
+- **[#3879](https://gitcode.com/cann/ops-nn/issues/3879) [Bug-Report|缺陷反馈]: addmm和baddbmm接口支持支持混合精度计算输入，当前16in32out场景被拦截** — 0分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit、文档及release引用，且仅由机器人自动关闭，无人工解决说明。
+  - 原文依据：
+    - [关联PR #6862（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6862)    - [关联PR #7091（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7091)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3879    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3875](https://gitcode.com/cann/ops-nn/issues/3875) [Requirement|需求建议]: 精简Index算子tiling构建配置并统一op_host目录编译** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及关闭评论等直接证明问题解决的证据。
+  - 原文依据：
+    - [关联PR #7058（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7058)    - [关联PR #7072（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7072)    - `tieyutong`：/assign    - `cann-robot`：assigned to @tieyutong
+- **[#3869](https://gitcode.com/cann/ops-nn/issues/3869) [Requirement|需求建议]: mm/bmm算子A全载模板kernel实现切换tensorApi** — 0分
+  - 痛点原因：关联PR处于未合并的关闭状态，且无commit、文档及release引用，关闭时无任何说明评论。
+  - 原文依据：
+    - [关联PR #6610（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6610)    - `AlbertYoung192`：add label requirement    - `AlbertYoung192`：assigned to @AlbertYoung192
+- **[#3860](https://gitcode.com/cann/ops-nn/issues/3860) [Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确** — 0分
+  - 痛点原因：虽有关联PR合并及机器人自动关闭，但缺乏人工确认解决的评论、commit引用或文档说明等实质证据。
+  - 原文依据：
+    - [关联PR #7024（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7024)    - [关联PR #7224（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7224)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3860    - `wuyufei`：add label bug-report    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei
+- **[#3857](https://gitcode.com/cann/ops-nn/issues/3857) [Bug-Report|缺陷反馈]: sparsesegmentmeangrad的网络用例性能优化，核上开多个线程处理indices每次循环的多个segment** — 0分
+  - 痛点原因：虽有关联PR被合并，但缺少commit引用、文档及release链接，且无人工关闭说明，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7044（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7044)    - [关联PR #7064（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7064)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3857    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666
+- **[#3855](https://gitcode.com/cann/ops-nn/issues/3855) [Requirement|需求建议]:【QBMM】新增scale支持batch维度** — 0分
+  - 痛点原因：虽有合并的关联PR，但仅由机器人自动关闭，缺乏人工关闭评论及commit、文档、release等具体解决证据支撑。
+  - 原文依据：
+    - [关联PR #6344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6344)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3855    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp
+- **[#4041](https://gitcode.com/cann/ops-nn/issues/4041) [Question|问题咨询]: 代码上库最新规范资料** — 15分
+  - 痛点原因：仅停留在问题受理和分配阶段，缺乏关联PR、commit引用等实质性解决证据。
+  - 原文依据：
+    - `yolic`：你好，感谢反馈，问题已收到，当前 [@caiwenwen](https://gitcode.com/caiwenwen) 正在跟踪处理。    - `weixin_51153241`：add label question    - `yolic`：assigned to @caiwenwen
+- **[#4038](https://gitcode.com/cann/ops-nn/issues/4038) [Documentation|文档反馈][CANN SUMMER CAMPS 2026][NPU]: Requirement Issue 模板中 Backgr…** — 15分
+  - 痛点原因：关联PR仍处于open未合并状态，且无commit引用与关闭评论，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #7407（open）](https://gitcode.com/cann/ops-nn/merge_requests/7407)    - `yolic`：assigned to @Quirkybrain
+- **[#4034](https://gitcode.com/cann/ops-nn/issues/4034) FusedSgd算子支持Ascend 950平台** — 15分
+  - 痛点原因：关联PR #7400仍处于open状态未合并，且无commit或release引用，缺乏问题已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7400（open）](https://gitcode.com/cann/ops-nn/merge_requests/7400)    - `yolic`：assigned to @raoliang_sac
+- **[#4029](https://gitcode.com/cann/ops-nn/issues/4029) [Documentation|文档反馈]: aclnnDynamicMxQuantV2文档缺少scaleAlg=2时blocksize=32的约束** — 15分
+  - 痛点原因：仅靠机器人标签和PR关联证明解决，无commit引用、release引用或关闭评论佐证，证据强度不足。
+  - 原文依据：
+    - [关联PR #7381（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7381)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4029    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1
+- **[#4013](https://gitcode.com/cann/ops-nn/issues/4013) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 和 add_rms_norm_dynamic_quant_v…** — 15分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用与release记录，且关闭时无人工说明仅靠系统自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7334（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7334)    - [关联PR #7352（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7352)    - [关联PR #7368（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7368)    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#4010](https://gitcode.com/cann/ops-nn/issues/4010) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过codehub直接关闭，未关联任何PR、commit或release等代码层面的解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4008](https://gitcode.com/cann/ops-nn/issues/4008) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过codehub直接关闭，未关联PR、commit或release等代码证据，缺乏解决过程证明。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4007](https://gitcode.com/cann/ops-nn/issues/4007) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过外部平台直接关闭，未关联任何PR、commit或release等代码证据，且无关闭评论说明，缺乏解决依据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#3991](https://gitcode.com/cann/ops-nn/issues/3991) [Bug-Report|缺陷反馈]: fused_bias_leaky_relu_grad算子 tiling add guard rank>8** — 15分
+  - 痛点原因：仅靠机器人自动关闭并打标签，缺乏commit引用、release版本说明及人工关闭评论等关键解决证据。
+  - 原文依据：
+    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7302)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3991    - `ugzhangyiyi`：add label bug-report    - `cann-robot`：add label resolved    - `ugzhangyiyi`：assigned to @ugzhangyiyi
+- **[#3986](https://gitcode.com/cann/ops-nn/issues/3986) [Bug-Report|缺陷反馈]: aclnnQuantMatmulV5算子oom问题** — 15分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接和人工总结评论，缺乏具体的修复细节说明。
+  - 原文依据：
+    - [关联PR #7276（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7276)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3986    - `steppecat`：add label bug-report    - `cann-robot`：add label resolved    - `steppecat`：assigned to @steppecat
+- **[#3985](https://gitcode.com/cann/ops-nn/issues/3985) [Documentation|文档反馈]: rms_norm 算子aclnn文档中空Tensor支持描述不准确** — 15分
+  - 痛点原因：虽有关联PR，但缺少commit引用、release引用及人工关闭评论等强证据支撑。
+  - 原文依据：
+    - [关联PR #7280（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7280)    - [关联PR #7284（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7284)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3985    - `liangyuhua`：add label documentation    - `cann-robot`：add label resolved
+- **[#3974](https://gitcode.com/cann/ops-nn/issues/3974) [Documentation|文档反馈]: aclnnMatmul&&aclnnMm 资料有误** — 15分
+  - 痛点原因：虽有关联PR被合并，但无commit和release引用，且仅由机器人自动关闭无人工解决说明，证据不足。
+  - 原文依据：
+    - [关联PR #7208（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7208)    - [关联PR #7257（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7257)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3974    - `wuyufei`：add label documentation    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei
+- **[#3971](https://gitcode.com/cann/ops-nn/issues/3971) [Documentation|文档反馈]: fusedmatmul资料修改** — 15分
+  - 痛点原因：仅通过状态变更和标签关闭，无关联PR与commit引用，缺乏代码修复证据。
+  - 原文依据：
+    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label documentation    - `cann-robot`：add label Accepted    - `szhexin`：assigned to @szhexin
+- **[#3962](https://gitcode.com/cann/ops-nn/issues/3962) [Requirement|需求建议]: 新增 randperm 随机排列算子** — 15分
+  - 痛点原因：无关联PR、commit及release引用等代码落地证据，仅停留在需求收集与等待反馈阶段。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3960](https://gitcode.com/cann/ops-nn/issues/3960) [Requirement|需求建议]: 新增 argwhere 多维度非零元素定位算子** — 15分
+  - 痛点原因：无关联 PR、commit 及 release 引用，仅停留在要求补充信息阶段，无任何实际解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3958](https://gitcode.com/cann/ops-nn/issues/3958) [Requirement|需求建议]: 新增 sort 算子（全局/指定维度排序）** — 15分
+  - 痛点原因：无关联 PR、commit 或 release 引用等实际解决证据，仅为需求建议且处于等待反馈状态，面临被关闭风险。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：delete label wait-feedback    - `yolic`：add label wait-feedback
+- **[#3956](https://gitcode.com/cann/ops-nn/issues/3956) [Requirement|需求建议]: 新增 topk 算子（仅 value 不排序场景）** — 15分
+  - 痛点原因：无关联PR、commit及release引用，仅停留在需求收集与等待反馈阶段，未提供实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3955](https://gitcode.com/cann/ops-nn/issues/3955) [Requirement|需求建议]: 新增 searchsorted 二分检索算子** — 15分
+  - 痛点原因：无关联PR、commit及release引用，仅停留在需求收集与催促反馈阶段，缺乏实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3954](https://gitcode.com/cann/ops-nn/issues/3954) [Requirement|需求建议]: 新增 masked_fill 掩码填充算子** — 15分
+  - 痛点原因：缺乏关联 PR、commit 及 release 等实质性解决证据，仅停留在需求收集与等待反馈阶段。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3950](https://gitcode.com/cann/ops-nn/issues/3950) [Documentation|文档反馈]: aclnnSoftplusBackward.md中的示例代码和example中的示例代码不一致** — 15分
+  - 痛点原因：仅靠机器人自动关联PR关闭，缺乏commit引用、release引用及人工关闭评论，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #7242（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7242)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3950    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang
+- **[#3949](https://gitcode.com/cann/ops-nn/issues/3949) [Bug-Report|缺陷反馈]: aclnnElu算子切换pytorch2.10精度失败** — 15分
+  - 痛点原因：虽有合并的关联PR和机器人自动关闭，但缺乏commit引用、文档链接及人工关闭评论来明确说明修复细节。
+  - 原文依据：
+    - [关联PR #6882（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6882)    - [关联PR #7240（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7240)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3949    - `ligen75`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @ligen75
+- **[#3943](https://gitcode.com/cann/ops-nn/issues/3943) [Documentation|文档反馈]: FusedMatmul支持BMM+add/mul的资料说明** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭并打标签，无commit和release引用，缺乏人工关闭评论说明解决情况。
+  - 原文依据：
+    - [关联PR #7197（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7197)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3943    - `liweijian16`：add label documentation    - `cann-robot`：add label resolved    - `liweijian16`：assigned to @liweijian16
+- **[#3942](https://gitcode.com/cann/ops-nn/issues/3942) [Documentation|文档反馈]:torch_npu名称合一TorchNPU** — 15分
+  - 痛点原因：仅指派了负责人，无关联PR、提交记录或版本说明等实质性解决证据，无法证明问题已真正解决。
+  - 原文依据：
+    - `yolic`：assigned to @yanglu-1
+- **[#3939](https://gitcode.com/cann/ops-nn/issues/3939) [Documentation|文档反馈]: nn仓doc tools和aidd内容修改合入9.1.0专项** — 15分
+  - 痛点原因：虽有关联PR，但缺乏commit引用、release引用及关闭评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - [关联PR #7086（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7086)    - `caiwenwen`：add label documentation    - `caiwenwen`：assigned to @caiwenwen
+- **[#3935](https://gitcode.com/cann/ops-nn/issues/3935) [Documentation|文档反馈]: SwigluGroupQuantGrad文档groupIndex aclnn接口说明与实际不一致，clamplim…** — 15分
+  - 痛点原因：虽有合并的关联 PR，但缺乏 commit 引用与人工确认评论，仅靠机器人自动关闭，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #7195（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7195)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3935    - `cann-robot`：add label resolved
+- **[#3901](https://gitcode.com/cann/ops-nn/issues/3901) [Documentation|文档反馈]: cache_runinfo.cpp 常量名MAX_TILING_DADA_SIZE拼写错误** — 15分
+  - 痛点原因：关联PR未合并且无commit引用与关闭评论，仅停留在指派阶段，缺乏问题已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7133（open）](https://gitcode.com/cann/ops-nn/merge_requests/7133)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liliyan](https://gitcode.com/liliyan) 正在跟踪处理。    - `yolic`：assigned to @liliyan
+- **[#3896](https://gitcode.com/cann/ops-nn/issues/3896) [Documentation|文档反馈]: aclnnSoftplusBackward.md、README.md、op_api_list.md、op_list…** — 15分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit和release引用，且无人工关闭评论说明解决内容，导致证据强度不足。
+  - 原文依据：
+    - [关联PR #7113（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7113)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3896    - `Hana77`：add label documentation    - `cann-robot`：add label resolved
+- **[#3884](https://gitcode.com/cann/ops-nn/issues/3884) [Documentation|文档反馈]: aclnnDynamicDualLevelMxQuant、aclnnSwigluGroupQuant、aclnnE…** — 15分
+  - 痛点原因：关联PR仍处于open状态且无commit或release引用，仅凭评论说明资料已修正，解决证据不足。
+  - 原文依据：
+    - [关联PR #7406（open）](https://gitcode.com/cann/ops-nn/merge_requests/7406)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `east_yang`：SwigluGroupQuant资料已修正 https://gitcode.com/cann/ops-nn/blob/master/activation/swiglu_group_quant/docs/aclnnSwigluGroupQu…    - `yolic`：assigned to @sunchun    - `yolic`：assigned to @east_yang    - `yolic`：assigned to @jiaoyiming
+- **[#3880](https://gitcode.com/cann/ops-nn/issues/3880) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，nn仓编译工程适配** — 15分
+  - 痛点原因：仅凭机器人因关联PR合并自动关闭，无人工确认、测试验证或文档更新说明，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #6225（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6225)    - [关联PR #7061（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7061)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3880    - `liuyufan0725`：add label requirement    - `cann-robot`：add label resolved
+- **[#3878](https://gitcode.com/cann/ops-nn/issues/3878) [Documentation|文档反馈]: ExtendConvTranspose算子的README需要更新** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，缺乏commit引用、release说明及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #7074（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7074)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3878    - `YuanTianyi`：add label documentation    - `cann-robot`：add label resolved    - `YuanTianyi`：assigned to @YuanTianyi
+- **[#3877](https://gitcode.com/cann/ops-nn/issues/3877) [Bug-Report|缺陷反馈]: GroupedQuantMax输出amax数据踩踏** — 15分
+  - 痛点原因：缺乏commit与release引用，且无人工关闭评论说明解决过程，仅靠机器人自动关闭，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #6949（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6949)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3877    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yin-peng
+- **[#3859](https://gitcode.com/cann/ops-nn/issues/3859) [Documentation|文档反馈]: Modifying the issue of incorrect links** — 15分
+  - 痛点原因：仅凭机器人关联PR自动关闭，无commit引用、release说明及人工确认修复的评论，证据链薄弱。
+  - 原文依据：
+    - [关联PR #7049（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7049)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3859    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang
+- **[#4032](https://gitcode.com/cann/ops-nn/issues/4032) [Bug-Report|缺陷反馈]: 修复 rmsnormquantv2/v3 的 GM 数据拷贝长度问题** — 23分
+  - 痛点原因：仅依赖机器人合并PR自动关闭，缺乏commit引用、文档链接和release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7389（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7389)    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4032    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong
+- **[#4031](https://gitcode.com/cann/ops-nn/issues/4031) [Bug-Report|缺陷反馈]: 修复data_format_dim_map_def.cpp静态问题** — 23分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及release记录，且关闭评论仅为机器人自动回复，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #7372（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7372)    - [关联PR #7384（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7384)    - `lianjieyu`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4031    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved
+- **[#4030](https://gitcode.com/cann/ops-nn/issues/4030) [Bug-Report|缺陷反馈]: 高精度情况下，非连续有可能走进vec计算未拦截，需要进行拦截** — 23分
+  - 痛点原因：缺乏PR、commit、文档或release等实质性解决证据，仅凭评论和状态变更关闭。
+  - 原文依据：
+    - `gcw_kUomxQ2l`：/approve    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label bug-report    - `szhexin`：assigned to @szhexin
+- **[#4027](https://gitcode.com/cann/ops-nn/issues/4027) fix: 修复 rmsnormquantv2/3 的 GM 内存越界问题** — 23分
+  - 痛点原因：仅靠合并的关联PR和机器人关闭评论，缺乏commit引用、文档链接及release引用等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7338（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7338)    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4027    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong
+- **[#4026](https://gitcode.com/cann/ops-nn/issues/4026) [Bug-Report|缺陷反馈]: usm/usp算子二进制匹配失败** — 23分
+  - 痛点原因：仅依赖关联PR合并关闭，缺乏commit、release及文档等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7382（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7382)    - `zhangxiyan7`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4026    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7
+- **[#4024](https://gitcode.com/cann/ops-nn/issues/4024) [Bug-Report|缺陷反馈]: AdaptiveMaxPool3d性能优化** — 23分
+  - 痛点原因：仅靠机器人自动关联PR并关闭，无人工解决说明，且缺乏commit、文档等实质性证据。
+  - 原文依据：
+    - [关联PR #7335（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7335)    - `liu_hp711`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4024    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @liu_hp711
+- **[#4019](https://gitcode.com/cann/ops-nn/issues/4019) [Requirement|需求建议]: sparse_segment_sum_grad 支持确定性计算** — 23分
+  - 痛点原因：仅有关联PR和自动关闭评论，缺乏commit、文档及release等直接解决证据，证据链不完整。
+  - 原文依据：
+    - [关联PR #7307（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7307)    - `wang-shilong32`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4019    - `wang-shilong32`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wang-shilong32
+- **[#3999](https://gitcode.com/cann/ops-nn/issues/3999) [Requirement|需求建议]: 新增SwigluGroup和SwigluGroupQuant算子torch_extension接口** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档及release链接，仅靠机器人自动关闭缺乏实质证据。
+  - 原文依据：
+    - [关联PR #7232（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7232)    - `taochangmin`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3999    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin
+- **[#3993](https://gitcode.com/cann/ops-nn/issues/3993) [Bug-Report|缺陷反馈]: QBMM MIX模板代码规范整改** — 23分
+  - 痛点原因：虽有关联PR，但缺乏commit引用、文档及release链接，且仅靠机器人自动关闭，无实质性修复说明。
+  - 原文依据：
+    - [关联PR #7303（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7303)    - `ZhangWei1176`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3993    - `ZhangWei1176`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ZhangWei1176
+- **[#3980](https://gitcode.com/cann/ops-nn/issues/3980) [Bug-Report|缺陷反馈]: Matmul算子出现用例精度错误** — 23分
+  - 痛点原因：虽有合并的关联PR和机器人关闭评论，但缺少commit引用、文档链接与release引用等直接修复证据。
+  - 原文依据：
+    - [关联PR #7249（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7249)    - [关联PR #7265（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7265)    - `zhengyuhao3`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3980    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3968](https://gitcode.com/cann/ops-nn/issues/3968) [Bug-Report|缺陷反馈]: MatMulToMatmulV3图融合修复offset_w场景并按输入数量整改pattern** — 23分
+  - 痛点原因：仅有关联PR和自动关闭评论，缺失commit引用、文档链接及release说明等直接解决证据。
+  - 原文依据：
+    - [关联PR #7142（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7142)    - `jgx12`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3968    - `jgx12`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jgx12
+- **[#3966](https://gitcode.com/cann/ops-nn/issues/3966) [Bug-Report] scatter_elements_v2 中 mode==1 时 if (includeSelf) 判断 countLocal，但 i…** — 23分
+  - 痛点原因：仅通过评论口头解释，未提供修复PR、commit或文档链接即关闭issue。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `chenxingyu18`：你好，kernel是和tiling配合使用的，不会误传    - `chenxingyu18`：您好，当前问题已回复，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `chenxingyu18`：changed custom state from 进行中 to 已完成    - `chenxingyu18`：closed from codehub    - `cann-robot`：add label Accepted
+- **[#3944](https://gitcode.com/cann/ops-nn/issues/3944) [Bug-Report|缺陷反馈]: ExtendConvTranspose知识库能力导致relu开关失效问题** — 23分
+  - 痛点原因：仅靠机器人关闭评论和关联PR支撑，缺乏commit引用、文档链接与release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7189（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7189)    - `sunlesheng`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3944    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunlesheng
+- **[#3938](https://gitcode.com/cann/ops-nn/issues/3938) [Bug-Report|缺陷反馈]: pooling\max_pool3d_with_argmax_v2内存问题** — 23分
+  - 痛点原因：缺乏commit引用、文档链接与release说明等直接解决证据，仅靠机器人合并PR后自动关闭。
+  - 原文依据：
+    - [关联PR #7209（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7209)    - [关联PR #7210（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7210)    - `VoyageZhou`：/assign [@VoyageZhou](https://gitcode.com/VoyageZhou)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3938    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @VoyageZhou
+- **[#3934](https://gitcode.com/cann/ops-nn/issues/3934) [Bug-Report|缺陷反馈]: ForeachCopy算子性能修复** — 23分
+  - 痛点原因：虽关联已合并PR，但无commit、release或文档等直接解决证据，且关闭原因仅依赖关联issue状态。
+  - 原文依据：
+    - [关联PR #7146（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7146)    - [关联PR #7211（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7211)    - `u010470851`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3934    - `u010470851`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3929](https://gitcode.com/cann/ops-nn/issues/3929) [Bug-Report|缺陷反馈]: DataCopy多维数据搬运接口参数名变更** — 23分
+  - 痛点原因：仅由机器人关联PR自动关闭，缺乏commit引用、文档链接及release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7151（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7151)    - `Zehai`：/assign@Zehai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3929    - `Zehai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Zehai
+- **[#3928](https://gitcode.com/cann/ops-nn/issues/3928) [Bug-Report|缺陷反馈]: aclnnTopKTopPSampleV2 精度问题解决** — 23分
+  - 痛点原因：虽有关联PR，但缺乏commit、文档和release等直接证据，且仅靠机器人自动关闭，无人工确认解决的实质证据。
+  - 原文依据：
+    - [关联PR #7182（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7182)    - [关联PR #7198（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7198)    - `sunchun`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3928    - `sunchun`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3915](https://gitcode.com/cann/ops-nn/issues/3915) index 算子UT覆盖率提升** — 23分
+  - 痛点原因：虽有关联PR，但缺失commit引用、文档链接与release引用等直接证据，仅靠关闭评论支撑导致得分过低。
+  - 原文依据：
+    - [关联PR #7167（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7167)    - [关联PR #7226（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7226)    - `wkkk0528`：/assign    - `wkkk0528`：closed from codehub    - `wkkk0528`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3912](https://gitcode.com/cann/ops-nn/issues/3912) [Bug-Report|缺陷反馈]: QBMM MX multi batch 路径 atomic add 状态未恢复** — 23分
+  - 痛点原因：仅关联已合并PR，但缺乏commit、文档及release等直接解决证据，且关闭仅依赖机器人自动操作。
+  - 原文依据：
+    - [关联PR #7157（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7157)    - `chen-shuai`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3912    - `chen-shuai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chen-shuai
+- **[#3906](https://gitcode.com/cann/ops-nn/issues/3906) [Bug-Report|缺陷反馈]: usm排序求唯一索引问题** — 23分
+  - 痛点原因：仅靠机器人因关联MR合并自动关闭，缺乏commit引用、文档及release等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7145（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7145)    - `jinpenghe`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3906    - `jinpenghe`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jinpenghe
+- **[#3899](https://gitcode.com/cann/ops-nn/issues/3899) [Bug-Report|缺陷反馈]: UniqueConsecutive算子UT找不到头文件** — 23分
+  - 痛点原因：仅有关联PR和关闭评论，缺少commit引用、文档链接及release记录，导致解决证据单薄。
+  - 原文依据：
+    - [关联PR #7118（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7118)    - `wkx12138`：/assgin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3899    - `wkx12138`：add label bug-report    - `cann-robot`：add label resolved    - `wkx12138`：assigned to @wkx12138
+- **[#3892](https://gitcode.com/cann/ops-nn/issues/3892) [Bug-Report|缺陷反馈]: GroupedQuantMax & QuantMax support batchmode** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit、文档及release等直接解决证据，仅靠机器人自动关闭。
+  - 原文依据：
+    - [关联PR #7115（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7115)    - `yin-peng`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3892    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yin-peng
+- **[#3891](https://gitcode.com/cann/ops-nn/issues/3891) [Bug-Report|缺陷反馈]: Wqbmmv2异常场景打印内容有问题** — 23分
+  - 痛点原因：仅靠机器人因关联issue合并自动关闭，缺乏commit、文档及release等直接修复证据，导致证据链薄弱。
+  - 原文依据：
+    - [关联PR #6957（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6957)    - `ykxxlzhong`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3891    - `ykxxlzhong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ykxxlzhong
+- **[#3887](https://gitcode.com/cann/ops-nn/issues/3887) [Bug-Report|缺陷反馈]: 卷积反向、foreach算子 classifyRlue目录不生效问题** — 23分
+  - 痛点原因：虽有关联PR合并，但缺乏commit引用、文档链接及release引用等直接修复证据，仅靠机器人关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #7090（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7090)    - [关联PR #7124（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7124)    - `zhouxuan78`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3887    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhouxuan78
+- **[#3876](https://gitcode.com/cann/ops-nn/issues/3876) [Requirement|需求建议] 新增 scatter_nd_max 和 scatter_nd_min 算子迁移** — 23分
+  - 痛点原因：虽有合并的PR和机器人关闭记录，但缺少commit引用、文档链接和release引用等直接证据支撑。
+  - 原文依据：
+    - [关联PR #6800（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6800)    - `jialimin1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3876    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jialimin1
+- **[#3873](https://gitcode.com/cann/ops-nn/issues/3873) [Bug][arch35][index] ScatterMul/ScatterMax/ScatterMin/ScatterDiv/UnsortedSegmen…** — 23分
+  - 痛点原因：关闭时未关联任何修复PR、提交记录或文档链接，仅凭系统状态关闭，缺乏实质性解决证据。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，index类算子安排@xieshengwei1024处理中    - `tangweiwei2`：closed from codehub    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3872](https://gitcode.com/cann/ops-nn/issues/3872) [Bug][arch35][norm] AddLayerNormQuant/SyncBatchNormGatherStatsFused kernel 使用 S…** — 23分
+  - 痛点原因：仅靠关联PR和口头确认关闭，缺乏commit引用、文档链接及release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7088（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7088)    - [关联PR #7117（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7117)    - `tangweiwei2`：问题已收到，norm类算子已对齐，安排@xieshengwei1024跟踪    - `tangweiwei2`：closed from codehub    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3870](https://gitcode.com/cann/ops-nn/issues/3870) [Bug][arch35][loss] NLLLossGrad kernel 使用 SyncAll 但 Tiling 未设置 SetScheduleMode(…** — 23分
+  - 痛点原因：评论虽提及修复PR链接，但系统未关联PR，也无commit、文档或release等直接修复证据，支撑力度极弱。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，loss类算子已对齐，安排@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3867](https://gitcode.com/cann/ops-nn/issues/3867) [Bug][arch35][quant] FakeQuantWithMinMaxVarsGradient/FakeQuantWithMinMaxVarsPer…** — 23分
+  - 痛点原因：仅靠关联PR和机器人自动关闭，缺乏commit、文档及release等直接解决证据，人工未提供具体修复说明。
+  - 原文依据：
+    - [关联PR #7085（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7085)    - `tangweiwei2`：quant类算子问题，已安排@xieshengwei1024跟踪    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3867    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3866](https://gitcode.com/cann/ops-nn/issues/3866) [Bug][arch35][pooling] AdaptiveAvgPool3dGrad/MaxPool3DGrad/MaxPoolGrad kernel 使…** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档链接和release引用等实质性解决证据支撑。
+  - 原文依据：
+    - [关联PR #7101（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7101)    - `tangweiwei2`：pooling类算子问题，已确认存在问题，安排@xieshengwei1024解决    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3866    - `cann-robot`：add label resolved    - `xieshengwei1024`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @liuchuangdev
+- **[#3863](https://gitcode.com/cann/ops-nn/issues/3863) [Bug][arch35][conv] DeformableOffsetsGrad kernel 使用 SyncAll 但 Tiling 未设置 SetSch…** — 23分
+  - 痛点原因：仅评论提及修复PR链接，系统未关联PR、无commit引用及文档链接等客观解决证据。
+  - 原文依据：
+    - `tangweiwei2`：deformable问题已确认，请@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3862](https://gitcode.com/cann/ops-nn/issues/3862) [Bug-Report|缺陷反馈]: 【dx】修复kernel拆分出现除零问题** — 23分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档及release链接等实质性解决证据。
+  - 原文依据：
+    - [关联PR #6909（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6909)    - `yejiani`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3862    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yejiani
+- **[#3858](https://gitcode.com/cann/ops-nn/issues/3858) [Bug][arch35][hash] EmbeddingHashTableApplyAdamW 与 EmbeddingHashTableExport ker…** — 23分
+  - 痛点原因：虽有关联PR被合并，但无commit引用、文档及release链接等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7076（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7076)    - `tangweiwei2`：问题已收到，已安排人跟踪处理，预计本周三解决。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3858    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3856](https://gitcode.com/cann/ops-nn/issues/3856) [Requirement|需求建议]: MatMulV3 M较小场景下缺少泛用模板** — 23分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及release说明，仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #6711（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6711)    - `llqx-1`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***llqx-1***. Please do not assign repeatedly.    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3856    - `llqx-1`：add label requirement    - `cann-robot`：add label resolved
+- **[#3854](https://gitcode.com/cann/ops-nn/issues/3854) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 23分
+  - 痛点原因：维护者仅建议去其他社区提问便直接关闭，未提供任何PR、commit或文档等实质性解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@yang-di52](https://gitcode.com/yang-di52) 正在跟踪处理。    - `yang-di52`：[@easel](https://gitcode.com/easel) 您好，nn仓仅提供神经网络计算能力的高阶算子，无法回答您cann机制的问题。您可以前往社区进行提问， https://gitcode.com/cann/communi…    - `yang-di52`：closed from codehub    - `yang-di52`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @yang-di52
+- **[#4048](https://gitcode.com/cann/ops-nn/issues/4048) [Requirement|需求建议]: NLLLoss算子补齐ascend910b原生AscendC实现** — 31分
+  - 痛点原因：关联PR处于open状态未合并，且无关闭评论、文档及release引用，缺乏最终解决证据。
+  - 原文依据：
+    - [关联PR #7421（open）](https://gitcode.com/cann/ops-nn/merge_requests/7421)    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie
+- **[#4047](https://gitcode.com/cann/ops-nn/issues/4047) [Requirement|需求建议]: Quantize算子补齐ascend910b原生AscendC 实现** — 31分
+  - 痛点原因：关联的PR仍处于未合并的open状态，且无关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7420（open）](https://gitcode.com/cann/ops-nn/merge_requests/7420)    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie
+- **[#4046](https://gitcode.com/cann/ops-nn/issues/4046) [Bug-Report|缺陷反馈]: foreach_add_listV2算子在master分支存在精度问题** — 31分
+  - 痛点原因：仅靠机器人自动关闭和打标签，缺乏开发者对根因分析或修复方案的明确说明，导致解决证据较弱。
+  - 原文依据：
+    - [关联PR #7408（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7408)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4046    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4039](https://gitcode.com/cann/ops-nn/issues/4039) [Bug-Report|缺陷反馈]: foreach_add_listV2算子存在精度问题** — 31分
+  - 痛点原因：虽有合并PR和机器人自动关闭，但无人工关闭评论、文档链接及release引用，解决证据不充分。
+  - 原文依据：
+    - [关联PR #7398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7398)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4039    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4020](https://gitcode.com/cann/ops-nn/issues/4020) 【fix】修复precommit的oat空告警失败问题** — 31分
+  - 痛点原因：仅靠机器人自动关闭与打标签，缺乏人工关闭评论说明解决详情，且无文档与release引用佐证，导致证据不足。
+  - 原文依据：
+    - [关联PR #7370（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7370)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4020    - `cann-robot`：add label resolved
+- **[#4005](https://gitcode.com/cann/ops-nn/issues/4005) [Requirement|需求建议]: 【社区任务】MaxUnpool3d算子开发交付** — 31分
+  - 痛点原因：关联PR仍处于open状态未合并，且无文档链接、release引用及关闭评论，缺乏实质交付证据。
+  - 原文依据：
+    - [关联PR #7330（open）](https://gitcode.com/cann/ops-nn/merge_requests/7330)    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `yolic`：assigned to @fullt
+- **[#3989](https://gitcode.com/cann/ops-nn/issues/3989) [Requirement|需求建议]: 算子原型迁移至所属仓** — 31分
+  - 痛点原因：虽有部分PR已合并，但缺乏文档链接、release引用和关闭评论，且存在未合并PR，导致佐证不足。
+  - 原文依据：
+    - [关联PR #7328（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7328)    - [关联PR #7329（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7329)    - [关联PR #7362（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7362)    - [关联PR #7363（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7363)    - `Hana77`：add label requirement    - `chenqi317`：assigned to @Hana77
+- **[#3978](https://gitcode.com/cann/ops-nn/issues/3978) [Bug-Report|缺陷反馈]: mm接口和addmm接口存在精度问题** — 31分
+  - 痛点原因：仅靠机器人因PR合并自动关闭，无人工关闭说明，且缺乏文档更新或版本发布等修复验证证据。
+  - 原文依据：
+    - [关联PR #7266（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7266)    - [关联PR #7269（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7269)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3978    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682
+- **[#3964](https://gitcode.com/cann/ops-nn/issues/3964) [Bug-Report] NLLLossGrad kernel （#3870 已修复版本）在 aicore_num > tiling 分区数时 SyncAll…** — 31分
+  - 痛点原因：无关联PR与关闭评论，且维护者分析认为描述的死锁场景不成立，缺乏明确的修复证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@xieshengwei1024](https://gitcode.com/xieshengwei1024) 正在跟踪处理。    - `huang-qiang`：# Issue #3964 分析说明：NLLLossGrad arch35 SyncAll 死锁问题核对 > 结论先行：**issue 中描述的死锁场景在当前代码中不成立**；#3858/#3870 一系列的真实修复方式与 issue 的…    - `yolic`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @huang-qiang    - `xieshengwei1024`：unassigned @xieshengwei1024
+- **[#3961](https://gitcode.com/cann/ops-nn/issues/3961) [Requirement|需求建议]: 新增 nn.functional.linear 全连接前向算子（不含权重变换）** — 31分
+  - 痛点原因：无关联PR和commit引用等实质落地证据，仅提供现有算子参考链接，且处于等待反馈状态未真正解决。
+  - 原文依据：
+    - `yolic`：您好，仓库已有addmm算子，可以参考 https://gitcode.com/cann/ops-nn/blob/e711e0c7bc9ef633785627ef90307a16f77b1764/matmul/mat_mul_v3/doc…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3957](https://gitcode.com/cann/ops-nn/issues/3957) [Requirement|需求建议]: 新增 plain unique 算子（全局去重，非 consecutive/非 dim）** — 31分
+  - 痛点原因：无关联PR和commit引用，仅停留在需求收集与催促反馈阶段，缺乏实质性代码解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3951](https://gitcode.com/cann/ops-nn/issues/3951) [Documentation|文档反馈]: ①torch_npu名称合一TorchNPU②《acl API》手册更名修改③有一些link失效** — 31分
+  - 痛点原因：虽关联已合并PR，但缺乏commit引用作为直接修复证据，且无人工关闭评论说明，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #7243（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7243)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3951    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1
+- **[#3948](https://gitcode.com/cann/ops-nn/issues/3948) [Requirement|需求建议]: 适配 qbmmv3 MX Basic API tiling 的 3-buffer L1 估算** — 31分
+  - 痛点原因：关联PR仍处于open状态且无关闭评论，缺乏最终解决证据。
+  - 原文依据：
+    - [关联PR #7237（open）](https://gitcode.com/cann/ops-nn/merge_requests/7237)    - `smdbha`：/assign    - `smdbha`：add label requirement    - `cann-robot`：assigned to @smdbha
+- **[#3927](https://gitcode.com/cann/ops-nn/issues/3927) [Bug-Report|缺陷反馈]: 不应当使用GetOptionalInputShape，应当使用GetOptionalInputDesc** — 31分
+  - 痛点原因：关联PR仅显示关闭状态，且无文档链接、release引用及关闭评论，缺乏问题已有效解决的证据。
+  - 原文依据：
+    - [关联PR #7181（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7181)    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `yolic`：assigned to @wangpengbo26
+- **[#3926](https://gitcode.com/cann/ops-nn/issues/3926) [Bug-Report|缺陷反馈]:BMM支持iterbatch broadcast Tiling未做L1 buffer校验** — 31分
+  - 痛点原因：虽有合并的关联PR，但仅由机器人自动关闭，缺乏人工解决说明、文档链接与release引用。
+  - 原文依据：
+    - [关联PR #7179（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7179)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3926    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl
+- **[#3919](https://gitcode.com/cann/ops-nn/issues/3919) [Build] Skip empty TensorFlow plugin library generation** — 31分
+  - 痛点原因：关联PR仍处于open状态未合并，且无关闭评论、文档链接及release引用证实问题已解决。
+  - 原文依据：
+    - [关联PR #7173（open）](https://gitcode.com/cann/ops-nn/merge_requests/7173)    - `yolic`：assigned to @zhaoyingchao2
+- **[#3914](https://gitcode.com/cann/ops-nn/issues/3914) [Bug] PR #6328 修改 GenSimplifiedKey 导致 AddRmsNormQuant BIN 模式符号不匹配** — 31分
+  - 痛点原因：仅靠机器人自动关闭和打标签，缺乏人工确认解决的评论及文档等强证据支撑。
+  - 原文依据：
+    - [关联PR #7166（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7166)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3914    - `cann-robot`：add label resolved    - `yolic`：assigned to @raoliang_sac
+- **[#3886](https://gitcode.com/cann/ops-nn/issues/3886) LinearIndexV2 算子补充 op_host 层 UT 用例，提升目标文件的覆盖率** — 31分
+  - 痛点原因：仅靠机器人自动关闭并打标签，缺乏人工确认解决的总结性评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7096（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7096)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3886    - `cann-robot`：add label resolved    - `yolic`：assigned to @wkkk0528
+- **[#4043](https://gitcode.com/cann/ops-nn/issues/4043) [Requirement|需求建议]: 迁移 Bucketize 和 AvgPool1DAvgMatrix AICPU 算子到 ops-nn** — 38分
+  - 痛点原因：虽关联PR已合并，但缺少commit引用和release引用，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #6877（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6877)    - `zhaowenrui666`：/assign [@zhaowenrui666](https://gitcode.com/zhaowenrui666) 关联 PR：https://gitcode.com/cann/ops-nn/merge_requests/6877    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4043    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhaowenrui666
+- **[#4018](https://gitcode.com/cann/ops-nn/issues/4018) [Documentation|文档反馈]: clipped_swiglu、multi_add_rms_norm_dynamic_quant、dequant_s…** — 38分
+  - 痛点原因：缺少commit引用与release引用，且关闭评论仅为机器人合并PR的模板回复，缺乏人工明确的解决说明。
+  - 原文依据：
+    - [关联PR #7353（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7353)    - `zerosaki_admin`：/assign [@zerosaki_admin](https://gitcode.com/zerosaki_admin)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4018    - `zerosaki_admin`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zerosaki_admin
+- **[#3992](https://gitcode.com/cann/ops-nn/issues/3992) [Bug-Report|缺陷反馈]: Matmul算子N非256B对齐transdata场景性能存在劣化** — 38分
+  - 痛点原因：缺少commit引用和文档链接，仅由机器人因关联issue的MR合并而自动关闭，缺乏直接验证修复的证据。
+  - 原文依据：
+    - [关联PR #7288（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7288)    - [关联PR #7299（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7299)    - `zhengyuhao3`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3992    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3990](https://gitcode.com/cann/ops-nn/issues/3990) [Documentation|文档反馈]: FusedBiasLeakyReluGrad README 文档需要修正** — 38分
+  - 痛点原因：无直接 commit 引用，且关闭证据仅依赖机器人关联其他 issue 的合并记录，缺乏针对本问题的具体解决说明。
+  - 原文依据：
+    - [关联PR #7300（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7300)    - `ugzhangyiyi`：/assign [@ugzhangyiyi](https://gitcode.com/ugzhangyiyi)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3990    - `ugzhangyiyi`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ugzhangyiyi
+- **[#3963](https://gitcode.com/cann/ops-nn/issues/3963) 【需求】【社区任务】LogSoftmaxGrad算子贡献** — 38分
+  - 痛点原因：解决过程仅依赖机器人自动关闭和关联PR，缺乏commit引用与文档链接，人工确认解决细节不足。
+  - 原文依据：
+    - [关联PR #1983（merged）](https://gitcode.com/cann/ops-nn/merge_requests/1983)    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3963    - `cann-robot`：add label resolved    - `yolic`：assigned to @fullt
+- **[#3947](https://gitcode.com/cann/ops-nn/issues/3947) [Bug-Report|缺陷反馈]: ApplyCenteredRMSProp算子文档问题** — 38分
+  - 痛点原因：仅靠关联PR合并与机器人自动关闭，缺乏直接的commit引用和release版本说明，证据链不完整。
+  - 原文依据：
+    - [关联PR #7244（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7244)    - `lianjieyu`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3947    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu
+- **[#3941](https://gitcode.com/cann/ops-nn/issues/3941) [Requirement|需求建议]: TopkTopPSample算子说明文档改进[9.1.0][master]** — 38分
+  - 痛点原因：虽有合并的关联PR，但无commit和release引用，关闭评论仅为机器人自动回复，缺乏人工总结的解决说明。
+  - 原文依据：
+    - [关联PR #7214（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7214)    - [关联PR #7215（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7215)    - `Thaurissan`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3941    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Thaurissan
+- **[#3940](https://gitcode.com/cann/ops-nn/issues/3940) [Bug-Report|缺陷反馈]: 部分网络场景报错MatMulV3 AIC ERROR** — 38分
+  - 痛点原因：缺乏commit与release引用，仅靠机器人因MR合并自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7203（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7203)    - `llqx-1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3940    - `llqx-1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llqx-1
+- **[#3933](https://gitcode.com/cann/ops-nn/issues/3933) [Documentation|文档反馈]: 指针释放异常，导致代码无法执行完成** — 38分
+  - 痛点原因：虽关联已合并PR，但缺乏commit和release引用，且仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #7186（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7186)    - [关联PR #7206（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7206)    - `m0_55003149`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3933    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149
+- **[#3932](https://gitcode.com/cann/ops-nn/issues/3932) [Documentation|文档反馈]: matmulcompressdequant算子约束调整** — 38分
+  - 痛点原因：虽有关联PR合并，但缺少commit和release引用，且关闭说明指向关联issue而非直接证明本issue解决。
+  - 原文依据：
+    - [关联PR #7172（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7172)    - [关联PR #7183（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7183)    - `wmg1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3932    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wmg1
+- **[#3918](https://gitcode.com/cann/ops-nn/issues/3918) [Bug-Report|缺陷反馈]: 共性问题，aclnn接口的参数表格右边超出了目录导航栏，体验不好** — 38分
+  - 痛点原因：虽有合并的PR，但缺少commit和release引用，且关闭评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7185（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7185)    - [关联PR #7191（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7191)    - [关联PR #7193（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7193)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@huzhipeng](https://gitcode.com/huzhipeng) 正在跟踪处理。    - `yuhao_`：/assign    - `yolic`：closed from codehub
+- **[#3911](https://gitcode.com/cann/ops-nn/issues/3911) [Documentation|文档反馈]: 修改nn仓master分支doctool扫描问题** — 38分
+  - 痛点原因：仅有关联PR但无commit和release引用，且关闭原因为机器人因关联issue合并自动关闭，解决证据偏弱。
+  - 原文依据：
+    - [关联PR #7147（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7147)    - `chaotang233`：PLS 处理相关issue问题，目前正在排序解决    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3911    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1
+- **[#3903](https://gitcode.com/cann/ops-nn/issues/3903) [Bug-Report|缺陷反馈]: QuantBatchMatMulV3适配APILEVEL后kernel入口兼容性修复** — 38分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用和文档链接，且仅由机器人自动关闭，解决证据偏弱。
+  - 原文依据：
+    - [关联PR #7126（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7126)    - [关联PR #7128（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7128)    - `Hu1L1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3903    - `Hu1L1`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3897](https://gitcode.com/cann/ops-nn/issues/3897) [Bug-Report|缺陷反馈]: test_max_pool_3d.cpp引用的experiment_ops.h不存在** — 38分
+  - 痛点原因：虽有合并的关联PR，但无commit直接引用与文档链接，且关闭评论仅含分配指令，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7360（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7360)    - [关联PR #7385（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7385)    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign
+- **[#3883](https://gitcode.com/cann/ops-nn/issues/3883) [Documentation|文档反馈]: 大小驼峰命名** — 38分
+  - 痛点原因：未关联PR或commit，维护者直接关闭issue并让用户重提，缺乏实际解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liu-wei](https://gitcode.com/liu-wei) 正在跟踪处理。    - `liu-wei`：kCalls 位于 namespace aicpu 作用域内，属于全局变量，应加 g_ 前缀并使用小驼峰命名（如 g_calls） 这个规则是从哪里来的？如果保持现状会有什么问题吗？    - `liu-wei`：这个issue我们打算关闭了，如果还有问题麻烦重新提PR，我们会持续提供支撑。    - `liu-wei`：closed from codehub    - `liu-wei`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3853](https://gitcode.com/cann/ops-nn/issues/3853) [Documentation|文档反馈]: WeightQuantBatchMatmulExperiment README 中存在公式变量名、格式等问题** — 38分
+  - 痛点原因：虽有合并PR，但缺乏commit和release引用，且另一关联PR被关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7035（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7035)    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - `shi-rui`：/assign    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成    - `shi-rui`：add label documentation
+- **[#4033](https://gitcode.com/cann/ops-nn/issues/4033) [Requirement|需求建议]: 新增 ReluGradV3 算子 Ascend C 实现（Atlas A2/A3）** — 46分
+  - 痛点原因：关联PR仍为open状态未合并，且无文档链接与关闭评论证实问题已彻底解决。
+  - 原文依据：
+    - [关联PR #7392（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7392)    - [关联PR #7394（open）](https://gitcode.com/cann/ops-nn/merge_requests/7394)    - `yolic`：assigned to @gcw_r0GcmdT1    - `fullt`：assigned to @fullt
+- **[#3976](https://gitcode.com/cann/ops-nn/issues/3976) [Bug-Report|缺陷反馈]: ops-nn activation/selu_grad 算子 outputs==0 边界分支判定与 PyTorch 竞品…** — 46分
+  - 痛点原因：虽关联了合并PR与测试说明，但关闭时无总结评论确认解决结果，且缺少文档链接，证据链不完整。
+  - 原文依据：
+    - [关联PR #7268（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7268)    - [关联PR #7270（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7270)    - `ForestFrame`：已提交修复 PR: https://gitcode.com/ForestFrame/ops-nn/merge_requests/1 将 kernel `CMPMODE::LT` 改为 `CMPMODE::LE`，288 例全量测试验证 1…    - `ForestFrame`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***ForestFrame***. Please do not assign repeatedly.    - `yolic`：assigned to @ForestFrame
+- **[#3953](https://gitcode.com/cann/ops-nn/issues/3953) [Requirement|需求建议]: 新增 cumsum/cumprod 累积扫描算子** — 46分
+  - 痛点原因：缺乏关联PR与版本发布记录，且处于等待反馈状态，无实质性解决结论。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3909](https://gitcode.com/cann/ops-nn/issues/3909) [Documentation|文档反馈]: adaptiva_max_pool3d_infershape.cpp 文件名错误** — 46分
+  - 痛点原因：关联PR仍处于open状态未合并，且无关闭评论说明解决结果，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7158（open）](https://gitcode.com/cann/ops-nn/merge_requests/7158)    - `yolic`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：### Notice This issue can not be assigned to ***chenxingyu18***. Please try to assign to the repository members.    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：assigned to @chenxingyu18    - `cann-robot`：assigned to @sunny_112 and unassigned @chenxingyu18
+- **[#3908](https://gitcode.com/cann/ops-nn/issues/3908) [Documentation|文档反馈]: 这个设计文档说，支持8维Shape，请问这个算子支持的Reduce轴是几？，公式哪里体现了Reduce第几根轴了？** — 46分
+  - 痛点原因：缺乏关联PR等实质性修复证据，仅给出文档解释，且处于等待反馈状态，问题未真正闭环解决。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@Chen_HaoWen](https://gitcode.com/Chen_HaoWen) 正在跟踪处理。    - `Chen_HaoWen`：您好，norm轴与gamma的shape一致哈 这点可以看下rstdout的介绍：shape与入参`x`的shape前几维保持一致，前几维指`x`的维度减去`gamma`的维度，表示不需要norm的维度。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @Chen_HaoWen
+- **[#3895](https://gitcode.com/cann/ops-nn/issues/3895) [Requirement|需求建议]: WeightQuantBatchMatmulV2 + Transpose 图融合适配新版 GE 融合框架** — 46分
+  - 痛点原因：缺少文档链接与人工关闭评论，仅靠机器人自动关闭和打标签，缺乏明确的解决说明。
+  - 原文依据：
+    - [关联PR #6419（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6419)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3895    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `maqijun`：assigned to @maqijun
+- **[#3893](https://gitcode.com/cann/ops-nn/issues/3893) [Requirement|需求建议]: QuantBatchMatmulV4 + Transpose 图融合适配新版 GE 融合框架** — 46分
+  - 痛点原因：缺乏人工关闭说明与文档链接，仅由机器人因关联issue合并被动关闭并打标签，证据不够充分。
+  - 原文依据：
+    - [关联PR #4263（merged）](https://gitcode.com/cann/ops-nn/merge_requests/4263)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3893    - `maqijun`：add label requirement    - `cann-robot`：add label resolved
+- **[#3861](https://gitcode.com/cann/ops-nn/issues/3861) [Requirement|需求建议]: SoftplusGrad算子适配Ascend 950开发** — 46分
+  - 痛点原因：缺乏人工确认解决的关闭评论与文档链接，仅依赖机器人自动关闭与打标签，导致证据偏弱。
+  - 原文依据：
+    - [关联PR #6734（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6734)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3861    - `cann-robot`：add label resolved    - `yolic`：assigned to @wucong22
+- **[#4045](https://gitcode.com/cann/ops-nn/issues/4045) [Bug-Report|缺陷反馈]: SwigluGroupQuant GroupIndex计算逻辑异常** — 54分
+  - 痛点原因：虽有合并的关联PR与机器人关闭记录，但缺乏文档链接和release版本引用，且无人工修复说明，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7414（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7414)    - `luwei_1104`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4045    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @luwei_1104
+- **[#4017](https://gitcode.com/cann/ops-nn/issues/4017) [Bug-Report|缺陷反馈]: conv2d用例调整tiling决策解决性能不达标问题** — 54分
+  - 痛点原因：虽有合并的关联PR，但无文档链接与release引用，且关闭评论仅为机器人自动关联关闭，缺乏人工验证说明。
+  - 原文依据：
+    - [关联PR #7305（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7305)    - `ray-shaw`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4017    - `ray-shaw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ray-shaw
+- **[#4002](https://gitcode.com/cann/ops-nn/issues/4002) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题-9.1.0分支** — 54分
+  - 痛点原因：缺乏文档链接与release版本引用，且仅依赖机器人自动关闭与加标签，缺少人工确认修复的强证据。
+  - 原文依据：
+    - [关联PR #7326（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7326)    - `wishercy`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4002    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy
+- **[#3982](https://gitcode.com/cann/ops-nn/issues/3982) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题** — 54分
+  - 痛点原因：虽有合并PR与commit，但缺少文档链接与release引用，且仅靠机器人自动关闭打标，缺乏人工确认，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7260（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7260)    - `wishercy`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3982    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy
+- **[#3937](https://gitcode.com/cann/ops-nn/issues/3937) [Bug-Report|缺陷反馈]: add_layer_norm_quant syncall同步缺失多核同时启动设置** — 54分
+  - 痛点原因：关联PR为closed状态，缺少文档与release引用，关闭评论仅记录操作，缺乏修复验证证据。
+  - 原文依据：
+    - [关联PR #7200（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7200)    - `wangpengbo26`：/assign    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `cann-robot`：assigned to @wangpengbo26
+- **[#3917](https://gitcode.com/cann/ops-nn/issues/3917) [Bug-Report|缺陷反馈]: Modify the description of UnsortedSegmentMax** — 54分
+  - 痛点原因：虽有合并的PR和commit，但缺乏文档链接与release引用，且由机器人自动关闭，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #7165（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7165)    - `zhangxiyan7`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3917    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7
+- **[#3904](https://gitcode.com/cann/ops-nn/issues/3904) [Bug-Report|缺陷反馈]: conv3d_v2 算子 cleancode 扫描告警 (G.CNS.03/G.CNS.04/G.INC.02)** — 54分
+  - 痛点原因：虽有合并PR与commit引用，但缺乏文档和release链接，且关闭评论仅为机器人自动合并提示，缺乏人工验证说明。
+  - 原文依据：
+    - [关联PR #7129（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7129)    - [关联PR #7152（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7152)    - `wanyukang`：/assign [@wanyukang](https://gitcode.com/wanyukang)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3904    - `wanyukang`：add label bug-report    - `cann-robot`：add label resolved
+#### PP-06 需求类Issue评审路径断裂无闭环（I2 · 讨论与解决）
+
+- **[#4044](https://gitcode.com/cann/ops-nn/issues/4044) [Bug-Report|缺陷反馈]: 修复proto文件注释** — 0分
+  - 痛点原因：仅靠机器人自动关闭并加标签，无人工修复说明，且缺乏commit、文档或release等强证据链接。
+  - 原文依据：
+    - [关联PR #7415（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7415)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4044    - `yiqiao-wjp`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp
+- **[#4040](https://gitcode.com/cann/ops-nn/issues/4040) [Bug-Report|缺陷反馈]: classify_rule补充缺失文件目录** — 0分
+  - 痛点原因：仅靠机器人自动关闭和打标签，无commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7410（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7410)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4040    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4037](https://gitcode.com/cann/ops-nn/issues/4037) [Requirement|需求建议]: CANNBot项目AdvanceStep算子新增支持A5** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏人工关闭评论、文档链接或release等明确的解决说明。
+  - 原文依据：
+    - [关联PR #7405（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7405)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4037    - `cann-robot`：add label resolved    - `yolic`：assigned to @Almost_CANN
+- **[#4035](https://gitcode.com/cann/ops-nn/issues/4035) [Bug-Report|缺陷反馈]: ops-nn 仓 执行example命令指定芯片时，反馈和其他仓不一致** — 0分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，无commit引用、文档链接及人工关闭评论，缺乏具体解决说明。
+  - 原文依据：
+    - [关联PR #7402（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7402)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4035    - `cann-robot`：add label resolved    - `yolic`：assigned to @magicjason0007
+- **[#4028](https://gitcode.com/cann/ops-nn/issues/4028) [Bug-Report|缺陷反馈]: nn仓 安全告警修改** — 0分
+  - 痛点原因：虽有关联PR，但无commit、文档及release引用，且关闭时无总结评论，无法证明问题已实质解决。
+  - 原文依据：
+    - [关联PR #7344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7344)    - [关联PR #7351（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7351)    - `sunchun`：/assign    - `sunchun`：add label bug-report    - `cann-robot`：assigned to @sunchun
+- **[#4025](https://gitcode.com/cann/ops-nn/issues/4025) [Requirement|需求建议]: 950新增dequantize算子** — 0分
+  - 痛点原因：解决证据强度得分0，低于合格线 60
+  - 原文依据：
+    - [关联PR #7037（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7037)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4025    - `cann-robot`：add label resolved    - `yolic`：assigned to @h1234515
+- **[#4023](https://gitcode.com/cann/ops-nn/issues/4023) [Bug-Report|缺陷反馈]: foreach_asin arch35 tiling 添加 GetPlatformInfoFallback逻辑，解决 G…** — 0分
+  - 痛点原因：仅依赖机器人自动关闭与打标签，缺乏commit、文档、release及人工关闭评论等有效解决证据。
+  - 原文依据：
+    - [关联PR #7339（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7339)    - [关联PR #7358（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7358)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4023    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz
+- **[#4022](https://gitcode.com/cann/ops-nn/issues/4022) [Requirement|需求建议]: Relu6D 算子支持 Ascend950 ascendc 实现** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档及release链接等直接解决证据，仅靠外部状态变更关闭。
+  - 原文依据：
+    - [关联PR #7375（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7375)    - [关联PR #7444（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7444)    - `zhongheng`：closed from codehub    - `zhongheng`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @zhongheng
+- **[#4021](https://gitcode.com/cann/ops-nn/issues/4021) [Bug-Report|缺陷反馈]: max_pool3d_grad_with_argmax aclnn接口内存检测时发生oom** — 0分
+  - 痛点原因：虽关联了已合并的PR，但无commit引用、关闭评论等直接说明修复情况的证据。
+  - 原文依据：
+    - [关联PR #7361（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7361)    - [关联PR #7378（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7378)    - [关联PR #7380（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7380)    - `dong-yanrong`：、assign    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report
+- **[#4016](https://gitcode.com/cann/ops-nn/issues/4016) [Bug-Report|缺陷反馈]: sparse_apply_adagrad_v2的golden需要与tf对比** — 0分
+  - 痛点原因：仅靠机器人因PR合并自动关闭并加标签，缺乏commit引用、文档链接及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #7331（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7331)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4016    - `cann-robot`：add label resolved
+- **[#4015](https://gitcode.com/cann/ops-nn/issues/4015) [Requirement|需求建议]: arch35: DataCopyParams迁移为DataCopyExtParams及C-style cast修复** — 0分
+  - 痛点原因：缺乏commit引用、文档链接、release引用及关闭评论，仅靠关联PR和状态变更关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7464（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7464)    - [关联PR #7482（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7482)    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @raoliang_sac
+- **[#4014](https://gitcode.com/cann/ops-nn/issues/4014) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：仅由系统直接关闭，未关联任何PR、commit或文档链接等实质性解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4012](https://gitcode.com/cann/ops-nn/issues/4012) test** — 0分
+  - 痛点原因：关闭时未关联任何 PR、commit 或文档链接，也无关闭评论说明，缺乏实质解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4011](https://gitcode.com/cann/ops-nn/issues/4011) test** — 0分
+  - 痛点原因：仅被直接关闭，未关联任何 PR、commit 或文档链接，缺乏实质性的解决证据留存。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4009](https://gitcode.com/cann/ops-nn/issues/4009) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 0分
+  - 痛点原因：直接通过codehub关闭，未关联PR、commit或文档链接等任何可追溯证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4006](https://gitcode.com/cann/ops-nn/issues/4006) [Bug-Report|缺陷反馈]: scatterupdate算子开启确定性计算越界检查会出现oom报错** — 0分
+  - 痛点原因：虽有关联PR合并并由机器人关闭，但缺乏commit引用、文档链接及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7323（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7323)    - [关联PR #7333（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7333)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4006    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666
+- **[#4004](https://gitcode.com/cann/ops-nn/issues/4004) test-ignore** — 0分
+  - 痛点原因：关闭时未提供任何PR、commit、文档或release等实质性解决证据，仅有一句无链接的关闭说明。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4003](https://gitcode.com/cann/ops-nn/issues/4003) test-pls-ignore-123** — 0分
+  - 痛点原因：关闭时未关联任何PR、commit或文档链接，仅凭一句无实质内容的评论关闭，缺乏解决证据。
+  - 原文依据：
+    - `chenqi317`：closed from codehub
+- **[#4001](https://gitcode.com/cann/ops-nn/issues/4001) [Bug-Report|缺陷反馈]: dynamic_mx_quant跑oom报错，请确认** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档链接及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7291（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7291)    - [关联PR #7325（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7325)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4001    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1
+- **[#4000](https://gitcode.com/cann/ops-nn/issues/4000) [Bug-Report|缺陷反馈]: 商分FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7324（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7324)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4000    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yushan-kite`：assigned to @yushan-kite
+- **[#3998](https://gitcode.com/cann/ops-nn/issues/3998) [Bug-Report|缺陷反馈]: MaxPool3DGradWithArgmax算子在执行geir时，部分用例执行二进制失败core** — 0分
+  - 痛点原因：仅关联已关闭PR，但无commit引用、release引用及关闭评论，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #7095（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7095)    - `dong-yanrong`：/assign    - `dong-yanrong`：add label bug-report    - `cann-robot`：assigned to @dong-yanrong
+- **[#3997](https://gitcode.com/cann/ops-nn/issues/3997) [Bug-Report|缺陷反馈]:** — 0分
+  - 痛点原因：仅关联了未合并的open状态PR，无commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7313（open）](https://gitcode.com/cann/ops-nn/merge_requests/7313)    - `weiyan_hw`：add label bug-report    - `yolic`：assigned to @weiyan_hw
+- **[#3996](https://gitcode.com/cann/ops-nn/issues/3996) [Requirement|需求建议]: Ascend950支持apply_power_sign算子** — 0分
+  - 痛点原因：虽关联PR已合并，但缺乏commit引用、文档链接、release引用及关闭评论等明确解决证据。
+  - 原文依据：
+    - [关联PR #6827（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6827)    - [关联PR #7409（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7409)    - `yolic`：assigned to @niukang_hw
+- **[#3995](https://gitcode.com/cann/ops-nn/issues/3995) 【Ascend950适配】dynamic_rnn 与 single_layer_lstm_grad 需支持 Ascend950** — 0分
+  - 痛点原因：关联的PR未合并且无关闭评论，缺乏commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7310（open）](https://gitcode.com/cann/ops-nn/merge_requests/7310)    - `chenxingyu18`：closed from codehub    - `yolic`：assigned to @chenxingyu18
+- **[#3994](https://gitcode.com/cann/ops-nn/issues/3994) [Requirement|需求建议]: foreach系列算子支持非连续输入和输出** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit、文档、release引用及关闭评论，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #6980（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6980)    - [关联PR #7475（open）](https://gitcode.com/cann/ops-nn/merge_requests/7475)    - [关联PR #7495（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7495)    - `yolic`：assigned to @luoyufan7
+- **[#3988](https://gitcode.com/cann/ops-nn/issues/3988) [Bug-Report|缺陷反馈]: 16in32out场景mm接口性能劣化严重** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，证据不足。
+  - 原文依据：
+    - [关联PR #7296（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7296)    - [关联PR #7297（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7297)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3988    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @HuangKun8682
+- **[#3987](https://gitcode.com/cann/ops-nn/issues/3987) [Bug-Report|缺陷反馈]: 卷积反向 dw 邮件问题代码排查** — 0分
+  - 痛点原因：关联PR仍为open未合并，且无commit、文档或release引用，仅完成指派，缺乏实际解决证据。
+  - 原文依据：
+    - [关联PR #7289（open）](https://gitcode.com/cann/ops-nn/merge_requests/7289)    - `zhouxuan78`：/assign    - `cann-robot`：assigned to @zhouxuan78
+- **[#3984](https://gitcode.com/cann/ops-nn/issues/3984) [Requirement|需求建议]: 支持QuantMatmul+Gelu+DynamicMxQuant融合算子ascend950** — 0分
+  - 痛点原因：关联PR未合并且无提交、文档及版本引用，仅分配负责人，缺乏问题已解决的闭环证据。
+  - 原文依据：
+    - [关联PR #7272（open）](https://gitcode.com/cann/ops-nn/merge_requests/7272)    - `yolic`：assigned to @zhuoyunhang
+- **[#3983](https://gitcode.com/cann/ops-nn/issues/3983) [Bug-Report|缺陷反馈]: fixpipe场景切tensor api部分场景拦截失败** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit、release引用及关闭评论，仅靠机器人
+  - 原文依据：
+    - [关联PR #7278（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7278)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3983    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647
+- **[#3981](https://gitcode.com/cann/ops-nn/issues/3981) glu_grad & grouped_dynamic_block_quant modify suggestion** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及人工关闭评论等明确的解决证据。
+  - 原文依据：
+    - [关联PR #7238（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7238)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3981    - `cann-robot`：add label resolved    - `yolic`：assigned to @ASCEND222
+- **[#3979](https://gitcode.com/cann/ops-nn/issues/3979) [Bug-Report|缺陷反馈]: Conv2DBackpropInput等算子融合Pass整改** — 0分
+  - 痛点原因：仅由机器人关联PR自动关闭并打标签，缺乏commit引用、文档链接及人工关闭说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #6081（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6081)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3979    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao
+- **[#3977](https://gitcode.com/cann/ops-nn/issues/3977) [Bug-Report|缺陷反馈]: matmul代码clean code告警** — 0分
+  - 痛点原因：关联的PR已关闭未合并，且无commit、文档或release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7212（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7212)    - `wuyufei`：add label bug-report    - `yolic`：assigned to @wuyufei
+- **[#3973](https://gitcode.com/cann/ops-nn/issues/3973) [Question|问题咨询]: BaddbmmMatmulGraph impl函数过大，建议拆分优化** — 0分
+  - 痛点原因：虽有关联PR被合并，但issue内无commit引用、文档链接及人工确认解决的关闭评论，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7230（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7230)    - [关联PR #7254（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7254)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3973    - `HuangKun8682`：add label question    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682
+- **[#3972](https://gitcode.com/cann/ops-nn/issues/3972) [Bug-Report|缺陷反馈]: 910C环境 aclnnAddmm 16in32out场景 报错，MatMulV3 部分 kernel未找到** — 0分
+  - 痛点原因：虽关联多个PR且部分已合并，但缺乏commit引用、文档链接及关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7202（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7202)    - [关联PR #7248（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7248)    - [关联PR #7253（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7253)    - [关联PR #7264（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7264)    - [关联PR #7275（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7275)    - [关联PR #7277（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7277)
+- **[#3970](https://gitcode.com/cann/ops-nn/issues/3970) [Bug-Report|缺陷反馈]: Conv2DTranspose算子增加Bias类型校验导致量化功能失败** — 0分
+  - 痛点原因：仅靠机器人关联合并PR自动关闭，缺乏commit引用、文档链接、release引用及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7218（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7218)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3970    - `cheng_gao`：add label bug-report    - `cann-robot`：add label resolved    - `cheng_gao`：assigned to @cheng_gao
+- **[#3969](https://gitcode.com/cann/ops-nn/issues/3969) [Bug-Report|缺陷反馈]: slice高精度拦截** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，缺乏明确的修复证据。
+  - 原文依据：
+    - [关联PR #7161（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7161)    - [关联PR #7255（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7255)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3969    - `szhexin`：add label bug-report    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin
+- **[#3967](https://gitcode.com/cann/ops-nn/issues/3967) [Bug-Report] masked_fill 在 input tensor 有 NaN/Inf 时的处理行为未定义——用 NaN 替换有限值到底算不算 m…** — 0分
+  - 痛点原因：缺乏关联PR、commit引用及文档等任何解决证据，且处于等待反馈状态，无实质性解决进展。
+  - 原文依据：
+    - `yolic`：您好，我看到#3954也是您提出的，目前未关联pr，请在原issue上进行建议。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @jiangzeyu-2026
+- **[#3965](https://gitcode.com/cann/ops-nn/issues/3965) [Bug-Report] celuV2 alpha 很大时的精度问题本质是 float16 下 log1p(x) 在 x>65504 时溢出 inf 而非 e…** — 0分
+  - 痛点原因：仅停留在受理与分配阶段，无关联PR、代码提交或关闭说明等实质性解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，正在处理。    - `yolic`：assigned to @Coder_Nerd
+- **[#3959](https://gitcode.com/cann/ops-nn/issues/3959) [Requirement|需求建议]: 新增 one_hot 独热编码算子** — 0分
+  - 痛点原因：仅停留在需求收集与分配阶段，未关联PR、commit或文档等任何实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `jiangzeyu-2026`：add label requirement    - `yolic`：assigned to @yolic
+- **[#3952](https://gitcode.com/cann/ops-nn/issues/3952) [Bug-Report|缺陷反馈]: softplusv2grad原型宏定义应和legacy保持一致** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接及人工关闭评论等具体解决说明，证据不足。
+  - 原文依据：
+    - [关联PR #7241（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7241)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3952    - `Hana77`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @Hana77
+- **[#3946](https://gitcode.com/cann/ops-nn/issues/3946) [Bug-Report|缺陷反馈]: 修改确定性场景下的aicpu cast逻辑** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #7223（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7223)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3946    - `cann-robot`：add label resolved    - `yolic`：assigned to @surezz
+- **[#3945](https://gitcode.com/cann/ops-nn/issues/3945) [Bug-Report|缺陷反馈]: cross_entropy_loss算子，ProcessFp32未初始化castTmpBuf大小** — 0分
+  - 痛点原因：关联的两个PR均处于open未合并状态，无commit引用和关闭评论，缺乏已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7219（open）](https://gitcode.com/cann/ops-nn/merge_requests/7219)    - [关联PR #7220（open）](https://gitcode.com/cann/ops-nn/merge_requests/7220)    - `kdy18482276080`：add label bug-report    - `kdy18482276080`：assigned to @kdy18482276080
+- **[#3936](https://gitcode.com/cann/ops-nn/issues/3936) [Requirement|需求建议]: GlobalLpPool算子950实现** — 0分
+  - 痛点原因：仅靠机器人关闭和关联PR，无人工确认解决的评论，且缺少commit、文档等具体解决证据链接。
+  - 原文依据：
+    - [关联PR #6398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6398)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3936    - `cann-robot`：add label resolved    - `yolic`：assigned to @weixin_51153241
+- **[#3931](https://gitcode.com/cann/ops-nn/issues/3931) [Bug-Report|缺陷反馈]: IndexPutWithSortV2算子SIMD/SIMT模板计算逻辑修复** — 0分
+  - 痛点原因：虽关联PR已合并，但缺少commit引用、文档及release链接，且无关闭评论说明，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7039（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7039)    - [关联PR #7250（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7250)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3931    - `cann-robot`：add label resolved
+- **[#3930](https://gitcode.com/cann/ops-nn/issues/3930) [Bug-Report|缺陷反馈]: 修复了 NHWC 布局下 conv2d_v2 算子在加载 AL1 数据时后半段数据加载异常** — 0分
+  - 痛点原因：仅有关联PR被合并及机器人自动关闭，缺乏commit引用、文档链接和人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #7030（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7030)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3930    - `cann-robot`：add label resolved    - `yolic`：assigned to @yangyang4536
+- **[#3925](https://gitcode.com/cann/ops-nn/issues/3925) [Bug-Report|缺陷反馈]: FlatQuant算子ascend950的int场景统一走HIGH_MODE** — 0分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7116（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7116)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3925    - `yushan-kite`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yushan-kite
+- **[#3924](https://gitcode.com/cann/ops-nn/issues/3924) [Requirement|需求建议]: Conv2d小kernel模板支持分组卷积** — 0分
+  - 痛点原因：关联PR均已关闭或未合并，且无commit、文档及release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7154（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7154)    - [关联PR #7317（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7317)    - [关联PR #7710（open）](https://gitcode.com/cann/ops-nn/merge_requests/7710)    - `Mrxxx7`：add label requirement    - `yolic`：assigned to @Mrxxx7
+- **[#3923](https://gitcode.com/cann/ops-nn/issues/3923) [Bug-Report|缺陷反馈]: bmmv3 vector不支持transA = 1，需要拦截** — 0分
+  - 痛点原因：关联PR仅被关闭未明确合并，且无commit、文档、release引用及关闭评论等实质解决证据。
+  - 原文依据：
+    - [关联PR #7178（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7178)    - `hid54649903`：add label bug-report    - `hid54649903`：assigned to @hid54649903
+- **[#3922](https://gitcode.com/cann/ops-nn/issues/3922) [Bug-Report|缺陷反馈]: DS红线网络用例AIC_ERR** — 0分
+  - 痛点原因：仅靠机器人自动关闭并关联PR，缺乏commit引用、文档链接及人工关闭评论等具体解决证据说明。
+  - 原文依据：
+    - [关联PR #7174（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7174)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3922    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl
+- **[#3921](https://gitcode.com/cann/ops-nn/issues/3921) [Bug-Report|缺陷反馈]: Matmul部分算子中对寄存器做初始化，在算子执行完成之后未还原** — 0分
+  - 痛点原因：关联PR未合并且无commit引用、文档链接及关闭评论等已解决证据。
+  - 原文依据：
+    - [关联PR #7262（open）](https://gitcode.com/cann/ops-nn/merge_requests/7262)    - `wangwei_mayday`：/assign    - `cann-robot`：assigned to @wangwei_mayday
+- **[#3920](https://gitcode.com/cann/ops-nn/issues/3920) [Bug-Report|缺陷反馈]: 个别网络在910B图模式8卡训练编译卡住** — 0分
+  - 痛点原因：虽关联PR已合并，但无commit引用、关闭评论及文档链接，仅靠机器人自动关闭，缺乏实质性解决说明。
+  - 原文依据：
+    - [关联PR #81980（merged）](https://gitcode.com/cann/canndev/merge_requests/81980)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-nn#issue3920    - `Jiaxin_001`：add label bug-report    - `cann-robot`：add label resolved    - `Jiaxin_001`：assigned to @Jiaxin_001
+- **[#3907](https://gitcode.com/cann/ops-nn/issues/3907) [Requirement|需求建议]: 部分参数提前到tiling阶段计算** — 0分
+  - 痛点原因：仅靠机器人关联已合并PR自动关闭，缺乏commit、文档及release等直接解决证据，无人工关闭评论说明。
+  - 原文依据：
+    - [关联PR #7069（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7069)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3907    - `zhaozhoujun520`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520
+- **[#3905](https://gitcode.com/cann/ops-nn/issues/3905) [Bug-Report|缺陷反馈]: QuantBatchMatmulV3和FusedQuantMatmul的tiling拦截有漏洞** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7110（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7110)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3905    - `lifei265`：add label bug-report    - `cann-robot`：add label resolved    - `lifei265`：assigned to @lifei265
+- **[#3902](https://gitcode.com/cann/ops-nn/issues/3902) [Bug-Report|缺陷反馈]: aclnnConvolutionBackward异常场景用例报错有误** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档说明及人工确认等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7127（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7127)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3902    - `zhaozhoujun520`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhaozhoujun520
+- **[#3900](https://gitcode.com/cann/ops-nn/issues/3900) [Bug-Report|缺陷反馈]: celuV2算子alpha取值比较大的时候，精度问题** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7106（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7106)    - [关联PR #7130（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7130)    - `yolic`：closed from codehub    - `yolic`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @gcw_YBIAEfqJ
+- **[#3894](https://gitcode.com/cann/ops-nn/issues/3894) [Requirement|需求建议]: aclnn_convert_to_int4_pack接口runtime整改** — 0分
+  - 痛点原因：仅靠机器人自动关闭并加标签，缺乏人工关闭说明、文档链接及release记录等实质性证据支撑。
+  - 原文依据：
+    - [关联PR #7013（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7013)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3894    - `zhangquanxin`：add label requirement    - `cann-robot`：add label resolved
+- **[#3890](https://gitcode.com/cann/ops-nn/issues/3890) [Requirement|需求建议]: 添加bmm/mm b全载+fixpipe优化模板** — 0分
+  - 痛点原因：虽有关联PR，但缺乏commit、文档或release等直接证据链接，且无人工关闭评论说明具体解决情况。
+  - 原文依据：
+    - [关联PR #5452（merged）](https://gitcode.com/cann/ops-nn/merge_requests/5452)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3890    - `huangkejie1647`：add label requirement    - `cann-robot`：add label resolved    - `yolic`：assigned to @huangkejie1647
+- **[#3888](https://gitcode.com/cann/ops-nn/issues/3888) [Requirement|需求建议]: QuantBatchMatmul 算子 FP8-Pertile 支持 WeightNZ** — 0分
+  - 痛点原因：仅凭机器人因关联PR合并自动关闭，缺乏commit、文档和release等直接解决证据，也无人工确认解决的评论。
+  - 原文依据：
+    - [关联PR #7104（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7104)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3888    - `cann-robot`：add label resolved    - `yolic`：assigned to @Nam_John
+- **[#3885](https://gitcode.com/cann/ops-nn/issues/3885) [Bug-Report|缺陷反馈]: swiglu_group_quant quant mode==2 out y origin在输入为fp32精度问题** — 0分
+  - 痛点原因：仅由机器人自动关闭并打标签，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7094（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7094)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3885    - `cann-robot`：add label resolved
+- **[#3881](https://gitcode.com/cann/ops-nn/issues/3881) [Bug-Report|缺陷反馈]: ExtendConvTranspose算子A16W8，Group>1的部分场景拦截缺失** — 0分
+  - 痛点原因：关联的PR仍为open状态未合并，且无commit、文档或release引用等实际解决证据。
+  - 原文依据：
+    - [关联PR #6850（open）](https://gitcode.com/cann/ops-nn/merge_requests/6850)    - `YuanTianyi`：add label bug-report    - `YuanTianyi`：assigned to @YuanTianyi
+- **[#3879](https://gitcode.com/cann/ops-nn/issues/3879) [Bug-Report|缺陷反馈]: addmm和baddbmm接口支持支持混合精度计算输入，当前16in32out场景被拦截** — 0分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit、文档及release引用，且仅由机器人自动关闭，无人工解决说明。
+  - 原文依据：
+    - [关联PR #6862（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6862)    - [关联PR #7091（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7091)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3879    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3875](https://gitcode.com/cann/ops-nn/issues/3875) [Requirement|需求建议]: 精简Index算子tiling构建配置并统一op_host目录编译** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及关闭评论等直接证明问题解决的证据。
+  - 原文依据：
+    - [关联PR #7058（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7058)    - [关联PR #7072（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7072)    - `tieyutong`：/assign    - `cann-robot`：assigned to @tieyutong
+- **[#3869](https://gitcode.com/cann/ops-nn/issues/3869) [Requirement|需求建议]: mm/bmm算子A全载模板kernel实现切换tensorApi** — 0分
+  - 痛点原因：关联PR处于未合并的关闭状态，且无commit、文档及release引用，关闭时无任何说明评论。
+  - 原文依据：
+    - [关联PR #6610（closed）](https://gitcode.com/cann/ops-nn/merge_requests/6610)    - `AlbertYoung192`：add label requirement    - `AlbertYoung192`：assigned to @AlbertYoung192
+- **[#3860](https://gitcode.com/cann/ops-nn/issues/3860) [Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确** — 0分
+  - 痛点原因：虽有关联PR合并及机器人自动关闭，但缺乏人工确认解决的评论、commit引用或文档说明等实质证据。
+  - 原文依据：
+    - [关联PR #7024（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7024)    - [关联PR #7224（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7224)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3860    - `wuyufei`：add label bug-report    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei
+- **[#3857](https://gitcode.com/cann/ops-nn/issues/3857) [Bug-Report|缺陷反馈]: sparsesegmentmeangrad的网络用例性能优化，核上开多个线程处理indices每次循环的多个segment** — 0分
+  - 痛点原因：虽有关联PR被合并，但缺少commit引用、文档及release链接，且无人工关闭说明，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7044（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7044)    - [关联PR #7064（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7064)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3857    - `xiaodong666`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @xiaodong666
+- **[#3855](https://gitcode.com/cann/ops-nn/issues/3855) [Requirement|需求建议]:【QBMM】新增scale支持batch维度** — 0分
+  - 痛点原因：虽有合并的关联PR，但仅由机器人自动关闭，缺乏人工关闭评论及commit、文档、release等具体解决证据支撑。
+  - 原文依据：
+    - [关联PR #6344（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6344)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3855    - `cann-robot`：add label resolved    - `yolic`：assigned to @yiqiao-wjp
+- **[#4041](https://gitcode.com/cann/ops-nn/issues/4041) [Question|问题咨询]: 代码上库最新规范资料** — 15分
+  - 痛点原因：仅停留在问题受理和分配阶段，缺乏关联PR、commit引用等实质性解决证据。
+  - 原文依据：
+    - `yolic`：你好，感谢反馈，问题已收到，当前 [@caiwenwen](https://gitcode.com/caiwenwen) 正在跟踪处理。    - `weixin_51153241`：add label question    - `yolic`：assigned to @caiwenwen
+- **[#4038](https://gitcode.com/cann/ops-nn/issues/4038) [Documentation|文档反馈][CANN SUMMER CAMPS 2026][NPU]: Requirement Issue 模板中 Backgr…** — 15分
+  - 痛点原因：关联PR仍处于open未合并状态，且无commit引用与关闭评论，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #7407（open）](https://gitcode.com/cann/ops-nn/merge_requests/7407)    - `yolic`：assigned to @Quirkybrain
+- **[#4034](https://gitcode.com/cann/ops-nn/issues/4034) FusedSgd算子支持Ascend 950平台** — 15分
+  - 痛点原因：关联PR #7400仍处于open状态未合并，且无commit或release引用，缺乏问题已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7400（open）](https://gitcode.com/cann/ops-nn/merge_requests/7400)    - `yolic`：assigned to @raoliang_sac
+- **[#4029](https://gitcode.com/cann/ops-nn/issues/4029) [Documentation|文档反馈]: aclnnDynamicMxQuantV2文档缺少scaleAlg=2时blocksize=32的约束** — 15分
+  - 痛点原因：仅靠机器人标签和PR关联证明解决，无commit引用、release引用或关闭评论佐证，证据强度不足。
+  - 原文依据：
+    - [关联PR #7381（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7381)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4029    - `cann-robot`：add label resolved    - `yolic`：assigned to @ji-jun1
+- **[#4013](https://gitcode.com/cann/ops-nn/issues/4013) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 和 add_rms_norm_dynamic_quant_v…** — 15分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用与release记录，且关闭时无人工说明仅靠系统自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7334（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7334)    - [关联PR #7352（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7352)    - [关联PR #7368（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7368)    - `raoliang_sac`：closed from codehub    - `raoliang_sac`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#4010](https://gitcode.com/cann/ops-nn/issues/4010) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过codehub直接关闭，未关联任何PR、commit或release等代码层面的解决证据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4008](https://gitcode.com/cann/ops-nn/issues/4008) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过codehub直接关闭，未关联PR、commit或release等代码证据，缺乏解决过程证明。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#4007](https://gitcode.com/cann/ops-nn/issues/4007) [Documentation|文档反馈]: add_rms_norm_dynamic_quant 算子文档 scale1Out/scale2Out 非连续Te…** — 15分
+  - 痛点原因：仅通过外部平台直接关闭，未关联任何PR、commit或release等代码证据，且无关闭评论说明，缺乏解决依据。
+  - 原文依据：
+    - `raoliang_sac`：closed from codehub
+- **[#3991](https://gitcode.com/cann/ops-nn/issues/3991) [Bug-Report|缺陷反馈]: fused_bias_leaky_relu_grad算子 tiling add guard rank>8** — 15分
+  - 痛点原因：仅靠机器人自动关闭并打标签，缺乏commit引用、release版本说明及人工关闭评论等关键解决证据。
+  - 原文依据：
+    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7302)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3991    - `ugzhangyiyi`：add label bug-report    - `cann-robot`：add label resolved    - `ugzhangyiyi`：assigned to @ugzhangyiyi
+- **[#3986](https://gitcode.com/cann/ops-nn/issues/3986) [Bug-Report|缺陷反馈]: aclnnQuantMatmulV5算子oom问题** — 15分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit引用、文档链接和人工总结评论，缺乏具体的修复细节说明。
+  - 原文依据：
+    - [关联PR #7276（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7276)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3986    - `steppecat`：add label bug-report    - `cann-robot`：add label resolved    - `steppecat`：assigned to @steppecat
+- **[#3985](https://gitcode.com/cann/ops-nn/issues/3985) [Documentation|文档反馈]: rms_norm 算子aclnn文档中空Tensor支持描述不准确** — 15分
+  - 痛点原因：虽有关联PR，但缺少commit引用、release引用及人工关闭评论等强证据支撑。
+  - 原文依据：
+    - [关联PR #7280（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7280)    - [关联PR #7284（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7284)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3985    - `liangyuhua`：add label documentation    - `cann-robot`：add label resolved
+- **[#3974](https://gitcode.com/cann/ops-nn/issues/3974) [Documentation|文档反馈]: aclnnMatmul&&aclnnMm 资料有误** — 15分
+  - 痛点原因：虽有关联PR被合并，但无commit和release引用，且仅由机器人自动关闭无人工解决说明，证据不足。
+  - 原文依据：
+    - [关联PR #7208（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7208)    - [关联PR #7257（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7257)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3974    - `wuyufei`：add label documentation    - `cann-robot`：add label resolved    - `wuyufei`：assigned to @wuyufei
+- **[#3971](https://gitcode.com/cann/ops-nn/issues/3971) [Documentation|文档反馈]: fusedmatmul资料修改** — 15分
+  - 痛点原因：仅通过状态变更和标签关闭，无关联PR与commit引用，缺乏代码修复证据。
+  - 原文依据：
+    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label documentation    - `cann-robot`：add label Accepted    - `szhexin`：assigned to @szhexin
+- **[#3962](https://gitcode.com/cann/ops-nn/issues/3962) [Requirement|需求建议]: 新增 randperm 随机排列算子** — 15分
+  - 痛点原因：无关联PR、commit及release引用等代码落地证据，仅停留在需求收集与等待反馈阶段。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3960](https://gitcode.com/cann/ops-nn/issues/3960) [Requirement|需求建议]: 新增 argwhere 多维度非零元素定位算子** — 15分
+  - 痛点原因：无关联 PR、commit 及 release 引用，仅停留在要求补充信息阶段，无任何实际解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3958](https://gitcode.com/cann/ops-nn/issues/3958) [Requirement|需求建议]: 新增 sort 算子（全局/指定维度排序）** — 15分
+  - 痛点原因：无关联 PR、commit 或 release 引用等实际解决证据，仅为需求建议且处于等待反馈状态，面临被关闭风险。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：delete label wait-feedback    - `yolic`：add label wait-feedback
+- **[#3956](https://gitcode.com/cann/ops-nn/issues/3956) [Requirement|需求建议]: 新增 topk 算子（仅 value 不排序场景）** — 15分
+  - 痛点原因：无关联PR、commit及release引用，仅停留在需求收集与等待反馈阶段，未提供实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3955](https://gitcode.com/cann/ops-nn/issues/3955) [Requirement|需求建议]: 新增 searchsorted 二分检索算子** — 15分
+  - 痛点原因：无关联PR、commit及release引用，仅停留在需求收集与催促反馈阶段，缺乏实质性解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3954](https://gitcode.com/cann/ops-nn/issues/3954) [Requirement|需求建议]: 新增 masked_fill 掩码填充算子** — 15分
+  - 痛点原因：缺乏关联 PR、commit 及 release 等实质性解决证据，仅停留在需求收集与等待反馈阶段。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3950](https://gitcode.com/cann/ops-nn/issues/3950) [Documentation|文档反馈]: aclnnSoftplusBackward.md中的示例代码和example中的示例代码不一致** — 15分
+  - 痛点原因：仅靠机器人自动关联PR关闭，缺乏commit引用、release引用及人工关闭评论，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #7242（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7242)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3950    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang
+- **[#3949](https://gitcode.com/cann/ops-nn/issues/3949) [Bug-Report|缺陷反馈]: aclnnElu算子切换pytorch2.10精度失败** — 15分
+  - 痛点原因：虽有合并的关联PR和机器人自动关闭，但缺乏commit引用、文档链接及人工关闭评论来明确说明修复细节。
+  - 原文依据：
+    - [关联PR #6882（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6882)    - [关联PR #7240（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7240)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3949    - `ligen75`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @ligen75
+- **[#3943](https://gitcode.com/cann/ops-nn/issues/3943) [Documentation|文档反馈]: FusedMatmul支持BMM+add/mul的资料说明** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭并打标签，无commit和release引用，缺乏人工关闭评论说明解决情况。
+  - 原文依据：
+    - [关联PR #7197（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7197)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3943    - `liweijian16`：add label documentation    - `cann-robot`：add label resolved    - `liweijian16`：assigned to @liweijian16
+- **[#3942](https://gitcode.com/cann/ops-nn/issues/3942) [Documentation|文档反馈]:torch_npu名称合一TorchNPU** — 15分
+  - 痛点原因：仅指派了负责人，无关联PR、提交记录或版本说明等实质性解决证据，无法证明问题已真正解决。
+  - 原文依据：
+    - `yolic`：assigned to @yanglu-1
+- **[#3939](https://gitcode.com/cann/ops-nn/issues/3939) [Documentation|文档反馈]: nn仓doc tools和aidd内容修改合入9.1.0专项** — 15分
+  - 痛点原因：虽有关联PR，但缺乏commit引用、release引用及关闭评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - [关联PR #7086（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7086)    - `caiwenwen`：add label documentation    - `caiwenwen`：assigned to @caiwenwen
+- **[#3935](https://gitcode.com/cann/ops-nn/issues/3935) [Documentation|文档反馈]: SwigluGroupQuantGrad文档groupIndex aclnn接口说明与实际不一致，clamplim…** — 15分
+  - 痛点原因：虽有合并的关联 PR，但缺乏 commit 引用与人工确认评论，仅靠机器人自动关闭，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #7195（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7195)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3935    - `cann-robot`：add label resolved
+- **[#3901](https://gitcode.com/cann/ops-nn/issues/3901) [Documentation|文档反馈]: cache_runinfo.cpp 常量名MAX_TILING_DADA_SIZE拼写错误** — 15分
+  - 痛点原因：关联PR未合并且无commit引用与关闭评论，仅停留在指派阶段，缺乏问题已解决的实质证据。
+  - 原文依据：
+    - [关联PR #7133（open）](https://gitcode.com/cann/ops-nn/merge_requests/7133)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liliyan](https://gitcode.com/liliyan) 正在跟踪处理。    - `yolic`：assigned to @liliyan
+- **[#3896](https://gitcode.com/cann/ops-nn/issues/3896) [Documentation|文档反馈]: aclnnSoftplusBackward.md、README.md、op_api_list.md、op_list…** — 15分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无commit和release引用，且无人工关闭评论说明解决内容，导致证据强度不足。
+  - 原文依据：
+    - [关联PR #7113（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7113)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3896    - `Hana77`：add label documentation    - `cann-robot`：add label resolved
+- **[#3884](https://gitcode.com/cann/ops-nn/issues/3884) [Documentation|文档反馈]: aclnnDynamicDualLevelMxQuant、aclnnSwigluGroupQuant、aclnnE…** — 15分
+  - 痛点原因：关联PR仍处于open状态且无commit或release引用，仅凭评论说明资料已修正，解决证据不足。
+  - 原文依据：
+    - [关联PR #7406（open）](https://gitcode.com/cann/ops-nn/merge_requests/7406)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `east_yang`：SwigluGroupQuant资料已修正 https://gitcode.com/cann/ops-nn/blob/master/activation/swiglu_group_quant/docs/aclnnSwigluGroupQu…    - `yolic`：assigned to @sunchun    - `yolic`：assigned to @east_yang    - `yolic`：assigned to @jiaoyiming
+- **[#3880](https://gitcode.com/cann/ops-nn/issues/3880) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，nn仓编译工程适配** — 15分
+  - 痛点原因：仅凭机器人因关联PR合并自动关闭，无人工确认、测试验证或文档更新说明，解决证据薄弱。
+  - 原文依据：
+    - [关联PR #6225（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6225)    - [关联PR #7061（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7061)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3880    - `liuyufan0725`：add label requirement    - `cann-robot`：add label resolved
+- **[#3878](https://gitcode.com/cann/ops-nn/issues/3878) [Documentation|文档反馈]: ExtendConvTranspose算子的README需要更新** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭，缺乏commit引用、release说明及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #7074（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7074)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3878    - `YuanTianyi`：add label documentation    - `cann-robot`：add label resolved    - `YuanTianyi`：assigned to @YuanTianyi
+- **[#3877](https://gitcode.com/cann/ops-nn/issues/3877) [Bug-Report|缺陷反馈]: GroupedQuantMax输出amax数据踩踏** — 15分
+  - 痛点原因：缺乏commit与release引用，且无人工关闭评论说明解决过程，仅靠机器人自动关闭，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #6949（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6949)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3877    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yin-peng
+- **[#3859](https://gitcode.com/cann/ops-nn/issues/3859) [Documentation|文档反馈]: Modifying the issue of incorrect links** — 15分
+  - 痛点原因：仅凭机器人关联PR自动关闭，无commit引用、release说明及人工确认修复的评论，证据链薄弱。
+  - 原文依据：
+    - [关联PR #7049（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7049)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3859    - `cann-robot`：add label resolved    - `yolic`：assigned to @zhouwenfang
+- **[#4032](https://gitcode.com/cann/ops-nn/issues/4032) [Bug-Report|缺陷反馈]: 修复 rmsnormquantv2/v3 的 GM 数据拷贝长度问题** — 23分
+  - 痛点原因：仅依赖机器人合并PR自动关闭，缺乏commit引用、文档链接和release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7389（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7389)    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4032    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong
+- **[#4031](https://gitcode.com/cann/ops-nn/issues/4031) [Bug-Report|缺陷反馈]: 修复data_format_dim_map_def.cpp静态问题** — 23分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及release记录，且关闭评论仅为机器人自动回复，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #7372（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7372)    - [关联PR #7384（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7384)    - `lianjieyu`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4031    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved
+- **[#4030](https://gitcode.com/cann/ops-nn/issues/4030) [Bug-Report|缺陷反馈]: 高精度情况下，非连续有可能走进vec计算未拦截，需要进行拦截** — 23分
+  - 痛点原因：缺乏PR、commit、文档或release等实质性解决证据，仅凭评论和状态变更关闭。
+  - 原文依据：
+    - `gcw_kUomxQ2l`：/approve    - `szhexin`：closed from codehub    - `szhexin`：changed custom state from 进行中 to 已完成    - `szhexin`：add label bug-report    - `szhexin`：assigned to @szhexin
+- **[#4027](https://gitcode.com/cann/ops-nn/issues/4027) fix: 修复 rmsnormquantv2/3 的 GM 内存越界问题** — 23分
+  - 痛点原因：仅靠合并的关联PR和机器人关闭评论，缺乏commit引用、文档链接及release引用等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7338（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7338)    - `huanghaihong`：/assign [@huanghaihong](https://gitcode.com/huanghaihong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4027    - `huanghaihong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huanghaihong
+- **[#4026](https://gitcode.com/cann/ops-nn/issues/4026) [Bug-Report|缺陷反馈]: usm/usp算子二进制匹配失败** — 23分
+  - 痛点原因：仅依赖关联PR合并关闭，缺乏commit、release及文档等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7382（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7382)    - `zhangxiyan7`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4026    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7
+- **[#4024](https://gitcode.com/cann/ops-nn/issues/4024) [Bug-Report|缺陷反馈]: AdaptiveMaxPool3d性能优化** — 23分
+  - 痛点原因：仅靠机器人自动关联PR并关闭，无人工解决说明，且缺乏commit、文档等实质性证据。
+  - 原文依据：
+    - [关联PR #7335（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7335)    - `liu_hp711`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4024    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @liu_hp711
+- **[#4019](https://gitcode.com/cann/ops-nn/issues/4019) [Requirement|需求建议]: sparse_segment_sum_grad 支持确定性计算** — 23分
+  - 痛点原因：仅有关联PR和自动关闭评论，缺乏commit、文档及release等直接解决证据，证据链不完整。
+  - 原文依据：
+    - [关联PR #7307（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7307)    - `wang-shilong32`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4019    - `wang-shilong32`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wang-shilong32
+- **[#3999](https://gitcode.com/cann/ops-nn/issues/3999) [Requirement|需求建议]: 新增SwigluGroup和SwigluGroupQuant算子torch_extension接口** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档及release链接，仅靠机器人自动关闭缺乏实质证据。
+  - 原文依据：
+    - [关联PR #7232（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7232)    - `taochangmin`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3999    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin
+- **[#3993](https://gitcode.com/cann/ops-nn/issues/3993) [Bug-Report|缺陷反馈]: QBMM MIX模板代码规范整改** — 23分
+  - 痛点原因：虽有关联PR，但缺乏commit引用、文档及release链接，且仅靠机器人自动关闭，无实质性修复说明。
+  - 原文依据：
+    - [关联PR #7303（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7303)    - `ZhangWei1176`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3993    - `ZhangWei1176`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ZhangWei1176
+- **[#3980](https://gitcode.com/cann/ops-nn/issues/3980) [Bug-Report|缺陷反馈]: Matmul算子出现用例精度错误** — 23分
+  - 痛点原因：虽有合并的关联PR和机器人关闭评论，但缺少commit引用、文档链接与release引用等直接修复证据。
+  - 原文依据：
+    - [关联PR #7249（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7249)    - [关联PR #7265（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7265)    - `zhengyuhao3`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3980    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3968](https://gitcode.com/cann/ops-nn/issues/3968) [Bug-Report|缺陷反馈]: MatMulToMatmulV3图融合修复offset_w场景并按输入数量整改pattern** — 23分
+  - 痛点原因：仅有关联PR和自动关闭评论，缺失commit引用、文档链接及release说明等直接解决证据。
+  - 原文依据：
+    - [关联PR #7142（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7142)    - `jgx12`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3968    - `jgx12`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jgx12
+- **[#3966](https://gitcode.com/cann/ops-nn/issues/3966) [Bug-Report] scatter_elements_v2 中 mode==1 时 if (includeSelf) 判断 countLocal，但 i…** — 23分
+  - 痛点原因：仅通过评论口头解释，未提供修复PR、commit或文档链接即关闭issue。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@sunchun](https://gitcode.com/sunchun) 正在跟踪处理。    - `chenxingyu18`：你好，kernel是和tiling配合使用的，不会误传    - `chenxingyu18`：您好，当前问题已回复，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `chenxingyu18`：changed custom state from 进行中 to 已完成    - `chenxingyu18`：closed from codehub    - `cann-robot`：add label Accepted
+- **[#3944](https://gitcode.com/cann/ops-nn/issues/3944) [Bug-Report|缺陷反馈]: ExtendConvTranspose知识库能力导致relu开关失效问题** — 23分
+  - 痛点原因：仅靠机器人关闭评论和关联PR支撑，缺乏commit引用、文档链接与release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7189（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7189)    - `sunlesheng`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3944    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @sunlesheng
+- **[#3938](https://gitcode.com/cann/ops-nn/issues/3938) [Bug-Report|缺陷反馈]: pooling\max_pool3d_with_argmax_v2内存问题** — 23分
+  - 痛点原因：缺乏commit引用、文档链接与release说明等直接解决证据，仅靠机器人合并PR后自动关闭。
+  - 原文依据：
+    - [关联PR #7209（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7209)    - [关联PR #7210（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7210)    - `VoyageZhou`：/assign [@VoyageZhou](https://gitcode.com/VoyageZhou)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3938    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @VoyageZhou
+- **[#3934](https://gitcode.com/cann/ops-nn/issues/3934) [Bug-Report|缺陷反馈]: ForeachCopy算子性能修复** — 23分
+  - 痛点原因：虽关联已合并PR，但无commit、release或文档等直接解决证据，且关闭原因仅依赖关联issue状态。
+  - 原文依据：
+    - [关联PR #7146（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7146)    - [关联PR #7211（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7211)    - `u010470851`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3934    - `u010470851`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3929](https://gitcode.com/cann/ops-nn/issues/3929) [Bug-Report|缺陷反馈]: DataCopy多维数据搬运接口参数名变更** — 23分
+  - 痛点原因：仅由机器人关联PR自动关闭，缺乏commit引用、文档链接及release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7151（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7151)    - `Zehai`：/assign@Zehai    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3929    - `Zehai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Zehai
+- **[#3928](https://gitcode.com/cann/ops-nn/issues/3928) [Bug-Report|缺陷反馈]: aclnnTopKTopPSampleV2 精度问题解决** — 23分
+  - 痛点原因：虽有关联PR，但缺乏commit、文档和release等直接证据，且仅靠机器人自动关闭，无人工确认解决的实质证据。
+  - 原文依据：
+    - [关联PR #7182（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7182)    - [关联PR #7198（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7198)    - `sunchun`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3928    - `sunchun`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3915](https://gitcode.com/cann/ops-nn/issues/3915) index 算子UT覆盖率提升** — 23分
+  - 痛点原因：虽有关联PR，但缺失commit引用、文档链接与release引用等直接证据，仅靠关闭评论支撑导致得分过低。
+  - 原文依据：
+    - [关联PR #7167（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7167)    - [关联PR #7226（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7226)    - `wkkk0528`：/assign    - `wkkk0528`：closed from codehub    - `wkkk0528`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3912](https://gitcode.com/cann/ops-nn/issues/3912) [Bug-Report|缺陷反馈]: QBMM MX multi batch 路径 atomic add 状态未恢复** — 23分
+  - 痛点原因：仅关联已合并PR，但缺乏commit、文档及release等直接解决证据，且关闭仅依赖机器人自动操作。
+  - 原文依据：
+    - [关联PR #7157（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7157)    - `chen-shuai`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3912    - `chen-shuai`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chen-shuai
+- **[#3906](https://gitcode.com/cann/ops-nn/issues/3906) [Bug-Report|缺陷反馈]: usm排序求唯一索引问题** — 23分
+  - 痛点原因：仅靠机器人因关联MR合并自动关闭，缺乏commit引用、文档及release等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7145（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7145)    - `jinpenghe`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3906    - `jinpenghe`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jinpenghe
+- **[#3899](https://gitcode.com/cann/ops-nn/issues/3899) [Bug-Report|缺陷反馈]: UniqueConsecutive算子UT找不到头文件** — 23分
+  - 痛点原因：仅有关联PR和关闭评论，缺少commit引用、文档链接及release记录，导致解决证据单薄。
+  - 原文依据：
+    - [关联PR #7118（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7118)    - `wkx12138`：/assgin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3899    - `wkx12138`：add label bug-report    - `cann-robot`：add label resolved    - `wkx12138`：assigned to @wkx12138
+- **[#3892](https://gitcode.com/cann/ops-nn/issues/3892) [Bug-Report|缺陷反馈]: GroupedQuantMax & QuantMax support batchmode** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit、文档及release等直接解决证据，仅靠机器人自动关闭。
+  - 原文依据：
+    - [关联PR #7115（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7115)    - `yin-peng`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3892    - `yin-peng`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yin-peng
+- **[#3891](https://gitcode.com/cann/ops-nn/issues/3891) [Bug-Report|缺陷反馈]: Wqbmmv2异常场景打印内容有问题** — 23分
+  - 痛点原因：仅靠机器人因关联issue合并自动关闭，缺乏commit、文档及release等直接修复证据，导致证据链薄弱。
+  - 原文依据：
+    - [关联PR #6957（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6957)    - `ykxxlzhong`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3891    - `ykxxlzhong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ykxxlzhong
+- **[#3887](https://gitcode.com/cann/ops-nn/issues/3887) [Bug-Report|缺陷反馈]: 卷积反向、foreach算子 classifyRlue目录不生效问题** — 23分
+  - 痛点原因：虽有关联PR合并，但缺乏commit引用、文档链接及release引用等直接修复证据，仅靠机器人关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #7090（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7090)    - [关联PR #7124（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7124)    - `zhouxuan78`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3887    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhouxuan78
+- **[#3876](https://gitcode.com/cann/ops-nn/issues/3876) [Requirement|需求建议] 新增 scatter_nd_max 和 scatter_nd_min 算子迁移** — 23分
+  - 痛点原因：虽有合并的PR和机器人关闭记录，但缺少commit引用、文档链接和release引用等直接证据支撑。
+  - 原文依据：
+    - [关联PR #6800（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6800)    - `jialimin1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3876    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @jialimin1
+- **[#3873](https://gitcode.com/cann/ops-nn/issues/3873) [Bug][arch35][index] ScatterMul/ScatterMax/ScatterMin/ScatterDiv/UnsortedSegmen…** — 23分
+  - 痛点原因：关闭时未关联任何修复PR、提交记录或文档链接，仅凭系统状态关闭，缺乏实质性解决证据。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，index类算子安排@xieshengwei1024处理中    - `tangweiwei2`：closed from codehub    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3872](https://gitcode.com/cann/ops-nn/issues/3872) [Bug][arch35][norm] AddLayerNormQuant/SyncBatchNormGatherStatsFused kernel 使用 S…** — 23分
+  - 痛点原因：仅靠关联PR和口头确认关闭，缺乏commit引用、文档链接及release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7088（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7088)    - [关联PR #7117（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7117)    - `tangweiwei2`：问题已收到，norm类算子已对齐，安排@xieshengwei1024跟踪    - `tangweiwei2`：closed from codehub    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3870](https://gitcode.com/cann/ops-nn/issues/3870) [Bug][arch35][loss] NLLLossGrad kernel 使用 SyncAll 但 Tiling 未设置 SetScheduleMode(…** — 23分
+  - 痛点原因：评论虽提及修复PR链接，但系统未关联PR，也无commit、文档或release等直接修复证据，支撑力度极弱。
+  - 原文依据：
+    - `tangweiwei2`：问题已收到，loss类算子已对齐，安排@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3867](https://gitcode.com/cann/ops-nn/issues/3867) [Bug][arch35][quant] FakeQuantWithMinMaxVarsGradient/FakeQuantWithMinMaxVarsPer…** — 23分
+  - 痛点原因：仅靠关联PR和机器人自动关闭，缺乏commit、文档及release等直接解决证据，人工未提供具体修复说明。
+  - 原文依据：
+    - [关联PR #7085（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7085)    - `tangweiwei2`：quant类算子问题，已安排@xieshengwei1024跟踪    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3867    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3866](https://gitcode.com/cann/ops-nn/issues/3866) [Bug][arch35][pooling] AdaptiveAvgPool3dGrad/MaxPool3DGrad/MaxPoolGrad kernel 使…** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档链接和release引用等实质性解决证据支撑。
+  - 原文依据：
+    - [关联PR #7101（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7101)    - `tangweiwei2`：pooling类算子问题，已确认存在问题，安排@xieshengwei1024解决    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3866    - `cann-robot`：add label resolved    - `xieshengwei1024`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @liuchuangdev
+- **[#3863](https://gitcode.com/cann/ops-nn/issues/3863) [Bug][arch35][conv] DeformableOffsetsGrad kernel 使用 SyncAll 但 Tiling 未设置 SetSch…** — 23分
+  - 痛点原因：仅评论提及修复PR链接，系统未关联PR、无commit引用及文档链接等客观解决证据。
+  - 原文依据：
+    - `tangweiwei2`：deformable问题已确认，请@xieshengwei1024跟踪    - `xieshengwei1024`：已在https://gitcode.com/cann/ops-nn/pull/7076中修复    - `xieshengwei1024`：closed from codehub    - `xieshengwei1024`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `tangweiwei2`：assigned to @xieshengwei1024
+- **[#3862](https://gitcode.com/cann/ops-nn/issues/3862) [Bug-Report|缺陷反馈]: 【dx】修复kernel拆分出现除零问题** — 23分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档及release链接等实质性解决证据。
+  - 原文依据：
+    - [关联PR #6909（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6909)    - `yejiani`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3862    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yejiani
+- **[#3858](https://gitcode.com/cann/ops-nn/issues/3858) [Bug][arch35][hash] EmbeddingHashTableApplyAdamW 与 EmbeddingHashTableExport ker…** — 23分
+  - 痛点原因：虽有关联PR被合并，但无commit引用、文档及release链接等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7076（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7076)    - `tangweiwei2`：问题已收到，已安排人跟踪处理，预计本周三解决。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3858    - `cann-robot`：add label resolved    - `tangweiwei2`：assigned to @xieshengwei1024    - `yolic`：assigned to @tangweiwei2
+- **[#3856](https://gitcode.com/cann/ops-nn/issues/3856) [Requirement|需求建议]: MatMulV3 M较小场景下缺少泛用模板** — 23分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接及release说明，仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #6711（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6711)    - `llqx-1`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***llqx-1***. Please do not assign repeatedly.    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3856    - `llqx-1`：add label requirement    - `cann-robot`：add label resolved
+- **[#3854](https://gitcode.com/cann/ops-nn/issues/3854) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 23分
+  - 痛点原因：维护者仅建议去其他社区提问便直接关闭，未提供任何PR、commit或文档等实质性解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@yang-di52](https://gitcode.com/yang-di52) 正在跟踪处理。    - `yang-di52`：[@easel](https://gitcode.com/easel) 您好，nn仓仅提供神经网络计算能力的高阶算子，无法回答您cann机制的问题。您可以前往社区进行提问， https://gitcode.com/cann/communi…    - `yang-di52`：closed from codehub    - `yang-di52`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `yolic`：assigned to @yang-di52
+- **[#4048](https://gitcode.com/cann/ops-nn/issues/4048) [Requirement|需求建议]: NLLLoss算子补齐ascend910b原生AscendC实现** — 31分
+  - 痛点原因：关联PR处于open状态未合并，且无关闭评论、文档及release引用，缺乏最终解决证据。
+  - 原文依据：
+    - [关联PR #7421（open）](https://gitcode.com/cann/ops-nn/merge_requests/7421)    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie
+- **[#4047](https://gitcode.com/cann/ops-nn/issues/4047) [Requirement|需求建议]: Quantize算子补齐ascend910b原生AscendC 实现** — 31分
+  - 痛点原因：关联的PR仍处于未合并的open状态，且无关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7420（open）](https://gitcode.com/cann/ops-nn/merge_requests/7420)    - `zhaohujie`：/assign [@zhaohujie](https://gitcode.com/zhaohujie)    - `cann-robot`：assigned to @zhaohujie
+- **[#4046](https://gitcode.com/cann/ops-nn/issues/4046) [Bug-Report|缺陷反馈]: foreach_add_listV2算子在master分支存在精度问题** — 31分
+  - 痛点原因：仅靠机器人自动关闭和打标签，缺乏开发者对根因分析或修复方案的明确说明，导致解决证据较弱。
+  - 原文依据：
+    - [关联PR #7408（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7408)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4046    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4039](https://gitcode.com/cann/ops-nn/issues/4039) [Bug-Report|缺陷反馈]: foreach_add_listV2算子存在精度问题** — 31分
+  - 痛点原因：虽有合并PR和机器人自动关闭，但无人工关闭评论、文档链接及release引用，解决证据不充分。
+  - 原文依据：
+    - [关联PR #7398（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7398)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4039    - `zhaozhongyao`：add label bug-report    - `cann-robot`：add label resolved    - `zhaozhongyao`：assigned to @zhaozhongyao
+- **[#4020](https://gitcode.com/cann/ops-nn/issues/4020) 【fix】修复precommit的oat空告警失败问题** — 31分
+  - 痛点原因：仅靠机器人自动关闭与打标签，缺乏人工关闭评论说明解决详情，且无文档与release引用佐证，导致证据不足。
+  - 原文依据：
+    - [关联PR #7370（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7370)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4020    - `cann-robot`：add label resolved
+- **[#4005](https://gitcode.com/cann/ops-nn/issues/4005) [Requirement|需求建议]: 【社区任务】MaxUnpool3d算子开发交付** — 31分
+  - 痛点原因：关联PR仍处于open状态未合并，且无文档链接、release引用及关闭评论，缺乏实质交付证据。
+  - 原文依据：
+    - [关联PR #7330（open）](https://gitcode.com/cann/ops-nn/merge_requests/7330)    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `yolic`：assigned to @fullt
+- **[#3989](https://gitcode.com/cann/ops-nn/issues/3989) [Requirement|需求建议]: 算子原型迁移至所属仓** — 31分
+  - 痛点原因：虽有部分PR已合并，但缺乏文档链接、release引用和关闭评论，且存在未合并PR，导致佐证不足。
+  - 原文依据：
+    - [关联PR #7328（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7328)    - [关联PR #7329（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7329)    - [关联PR #7362（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7362)    - [关联PR #7363（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7363)    - `Hana77`：add label requirement    - `chenqi317`：assigned to @Hana77
+- **[#3978](https://gitcode.com/cann/ops-nn/issues/3978) [Bug-Report|缺陷反馈]: mm接口和addmm接口存在精度问题** — 31分
+  - 痛点原因：仅靠机器人因PR合并自动关闭，无人工关闭说明，且缺乏文档更新或版本发布等修复验证证据。
+  - 原文依据：
+    - [关联PR #7266（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7266)    - [关联PR #7269（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7269)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3978    - `HuangKun8682`：add label bug-report    - `cann-robot`：add label resolved    - `HuangKun8682`：assigned to @HuangKun8682
+- **[#3964](https://gitcode.com/cann/ops-nn/issues/3964) [Bug-Report] NLLLossGrad kernel （#3870 已修复版本）在 aicore_num > tiling 分区数时 SyncAll…** — 31分
+  - 痛点原因：无关联PR与关闭评论，且维护者分析认为描述的死锁场景不成立，缺乏明确的修复证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@xieshengwei1024](https://gitcode.com/xieshengwei1024) 正在跟踪处理。    - `huang-qiang`：# Issue #3964 分析说明：NLLLossGrad arch35 SyncAll 死锁问题核对 > 结论先行：**issue 中描述的死锁场景在当前代码中不成立**；#3858/#3870 一系列的真实修复方式与 issue 的…    - `yolic`：assigned to @xieshengwei1024    - `xieshengwei1024`：assigned to @huang-qiang    - `xieshengwei1024`：unassigned @xieshengwei1024
+- **[#3961](https://gitcode.com/cann/ops-nn/issues/3961) [Requirement|需求建议]: 新增 nn.functional.linear 全连接前向算子（不含权重变换）** — 31分
+  - 痛点原因：无关联PR和commit引用等实质落地证据，仅提供现有算子参考链接，且处于等待反馈状态未真正解决。
+  - 原文依据：
+    - `yolic`：您好，仓库已有addmm算子，可以参考 https://gitcode.com/cann/ops-nn/blob/e711e0c7bc9ef633785627ef90307a16f77b1764/matmul/mat_mul_v3/doc…    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3957](https://gitcode.com/cann/ops-nn/issues/3957) [Requirement|需求建议]: 新增 plain unique 算子（全局去重，非 consecutive/非 dim）** — 31分
+  - 痛点原因：无关联PR和commit引用，仅停留在需求收集与催促反馈阶段，缺乏实质性代码解决证据。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3951](https://gitcode.com/cann/ops-nn/issues/3951) [Documentation|文档反馈]: ①torch_npu名称合一TorchNPU②《acl API》手册更名修改③有一些link失效** — 31分
+  - 痛点原因：虽关联已合并PR，但缺乏commit引用作为直接修复证据，且无人工关闭评论说明，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #7243（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7243)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3951    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1
+- **[#3948](https://gitcode.com/cann/ops-nn/issues/3948) [Requirement|需求建议]: 适配 qbmmv3 MX Basic API tiling 的 3-buffer L1 估算** — 31分
+  - 痛点原因：关联PR仍处于open状态且无关闭评论，缺乏最终解决证据。
+  - 原文依据：
+    - [关联PR #7237（open）](https://gitcode.com/cann/ops-nn/merge_requests/7237)    - `smdbha`：/assign    - `smdbha`：add label requirement    - `cann-robot`：assigned to @smdbha
+- **[#3927](https://gitcode.com/cann/ops-nn/issues/3927) [Bug-Report|缺陷反馈]: 不应当使用GetOptionalInputShape，应当使用GetOptionalInputDesc** — 31分
+  - 痛点原因：关联PR仅显示关闭状态，且无文档链接、release引用及关闭评论，缺乏问题已有效解决的证据。
+  - 原文依据：
+    - [关联PR #7181（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7181)    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `yolic`：assigned to @wangpengbo26
+- **[#3926](https://gitcode.com/cann/ops-nn/issues/3926) [Bug-Report|缺陷反馈]:BMM支持iterbatch broadcast Tiling未做L1 buffer校验** — 31分
+  - 痛点原因：虽有合并的关联PR，但仅由机器人自动关闭，缺乏人工解决说明、文档链接与release引用。
+  - 原文依据：
+    - [关联PR #7179（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7179)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3926    - `justsozl`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @justsozl
+- **[#3919](https://gitcode.com/cann/ops-nn/issues/3919) [Build] Skip empty TensorFlow plugin library generation** — 31分
+  - 痛点原因：关联PR仍处于open状态未合并，且无关闭评论、文档链接及release引用证实问题已解决。
+  - 原文依据：
+    - [关联PR #7173（open）](https://gitcode.com/cann/ops-nn/merge_requests/7173)    - `yolic`：assigned to @zhaoyingchao2
+- **[#3914](https://gitcode.com/cann/ops-nn/issues/3914) [Bug] PR #6328 修改 GenSimplifiedKey 导致 AddRmsNormQuant BIN 模式符号不匹配** — 31分
+  - 痛点原因：仅靠机器人自动关闭和打标签，缺乏人工确认解决的评论及文档等强证据支撑。
+  - 原文依据：
+    - [关联PR #7166（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7166)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3914    - `cann-robot`：add label resolved    - `yolic`：assigned to @raoliang_sac
+- **[#3886](https://gitcode.com/cann/ops-nn/issues/3886) LinearIndexV2 算子补充 op_host 层 UT 用例，提升目标文件的覆盖率** — 31分
+  - 痛点原因：仅靠机器人自动关闭并打标签，缺乏人工确认解决的总结性评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7096（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7096)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3886    - `cann-robot`：add label resolved    - `yolic`：assigned to @wkkk0528
+- **[#4043](https://gitcode.com/cann/ops-nn/issues/4043) [Requirement|需求建议]: 迁移 Bucketize 和 AvgPool1DAvgMatrix AICPU 算子到 ops-nn** — 38分
+  - 痛点原因：虽关联PR已合并，但缺少commit引用和release引用，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #6877（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6877)    - `zhaowenrui666`：/assign [@zhaowenrui666](https://gitcode.com/zhaowenrui666) 关联 PR：https://gitcode.com/cann/ops-nn/merge_requests/6877    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4043    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhaowenrui666
+- **[#4018](https://gitcode.com/cann/ops-nn/issues/4018) [Documentation|文档反馈]: clipped_swiglu、multi_add_rms_norm_dynamic_quant、dequant_s…** — 38分
+  - 痛点原因：缺少commit引用与release引用，且关闭评论仅为机器人合并PR的模板回复，缺乏人工明确的解决说明。
+  - 原文依据：
+    - [关联PR #7353（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7353)    - `zerosaki_admin`：/assign [@zerosaki_admin](https://gitcode.com/zerosaki_admin)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4018    - `zerosaki_admin`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zerosaki_admin
+- **[#3992](https://gitcode.com/cann/ops-nn/issues/3992) [Bug-Report|缺陷反馈]: Matmul算子N非256B对齐transdata场景性能存在劣化** — 38分
+  - 痛点原因：缺少commit引用和文档链接，仅由机器人因关联issue的MR合并而自动关闭，缺乏直接验证修复的证据。
+  - 原文依据：
+    - [关联PR #7288（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7288)    - [关联PR #7299（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7299)    - `zhengyuhao3`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3992    - `zhengyuhao3`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3990](https://gitcode.com/cann/ops-nn/issues/3990) [Documentation|文档反馈]: FusedBiasLeakyReluGrad README 文档需要修正** — 38分
+  - 痛点原因：无直接 commit 引用，且关闭证据仅依赖机器人关联其他 issue 的合并记录，缺乏针对本问题的具体解决说明。
+  - 原文依据：
+    - [关联PR #7300（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7300)    - `ugzhangyiyi`：/assign [@ugzhangyiyi](https://gitcode.com/ugzhangyiyi)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3990    - `ugzhangyiyi`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ugzhangyiyi
+- **[#3963](https://gitcode.com/cann/ops-nn/issues/3963) 【需求】【社区任务】LogSoftmaxGrad算子贡献** — 38分
+  - 痛点原因：解决过程仅依赖机器人自动关闭和关联PR，缺乏commit引用与文档链接，人工确认解决细节不足。
+  - 原文依据：
+    - [关联PR #1983（merged）](https://gitcode.com/cann/ops-nn/merge_requests/1983)    - `yolic`：已接受到需求建议，请 [@fullt](https://gitcode.com/fullt) 安排评审。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3963    - `cann-robot`：add label resolved    - `yolic`：assigned to @fullt
+- **[#3947](https://gitcode.com/cann/ops-nn/issues/3947) [Bug-Report|缺陷反馈]: ApplyCenteredRMSProp算子文档问题** — 38分
+  - 痛点原因：仅靠关联PR合并与机器人自动关闭，缺乏直接的commit引用和release版本说明，证据链不完整。
+  - 原文依据：
+    - [关联PR #7244（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7244)    - `lianjieyu`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3947    - `lianjieyu`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @lianjieyu
+- **[#3941](https://gitcode.com/cann/ops-nn/issues/3941) [Requirement|需求建议]: TopkTopPSample算子说明文档改进[9.1.0][master]** — 38分
+  - 痛点原因：虽有合并的关联PR，但无commit和release引用，关闭评论仅为机器人自动回复，缺乏人工总结的解决说明。
+  - 原文依据：
+    - [关联PR #7214（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7214)    - [关联PR #7215（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7215)    - `Thaurissan`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3941    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Thaurissan
+- **[#3940](https://gitcode.com/cann/ops-nn/issues/3940) [Bug-Report|缺陷反馈]: 部分网络场景报错MatMulV3 AIC ERROR** — 38分
+  - 痛点原因：缺乏commit与release引用，仅靠机器人因MR合并自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7203（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7203)    - `llqx-1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3940    - `llqx-1`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llqx-1
+- **[#3933](https://gitcode.com/cann/ops-nn/issues/3933) [Documentation|文档反馈]: 指针释放异常，导致代码无法执行完成** — 38分
+  - 痛点原因：虽关联已合并PR，但缺乏commit和release引用，且仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #7186（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7186)    - [关联PR #7206（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7206)    - `m0_55003149`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3933    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149
+- **[#3932](https://gitcode.com/cann/ops-nn/issues/3932) [Documentation|文档反馈]: matmulcompressdequant算子约束调整** — 38分
+  - 痛点原因：虽有关联PR合并，但缺少commit和release引用，且关闭说明指向关联issue而非直接证明本issue解决。
+  - 原文依据：
+    - [关联PR #7172（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7172)    - [关联PR #7183（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7183)    - `wmg1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3932    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wmg1
+- **[#3918](https://gitcode.com/cann/ops-nn/issues/3918) [Bug-Report|缺陷反馈]: 共性问题，aclnn接口的参数表格右边超出了目录导航栏，体验不好** — 38分
+  - 痛点原因：虽有合并的PR，但缺少commit和release引用，且关闭评论，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7185（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7185)    - [关联PR #7191（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7191)    - [关联PR #7193（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7193)    - `yolic`：您好，感谢反馈，问题已收到，当前 [@huzhipeng](https://gitcode.com/huzhipeng) 正在跟踪处理。    - `yuhao_`：/assign    - `yolic`：closed from codehub
+- **[#3911](https://gitcode.com/cann/ops-nn/issues/3911) [Documentation|文档反馈]: 修改nn仓master分支doctool扫描问题** — 38分
+  - 痛点原因：仅有关联PR但无commit和release引用，且关闭原因为机器人因关联issue合并自动关闭，解决证据偏弱。
+  - 原文依据：
+    - [关联PR #7147（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7147)    - `chaotang233`：PLS 处理相关issue问题，目前正在排序解决    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3911    - `cann-robot`：add label resolved    - `yolic`：assigned to @yanglu-1
+- **[#3903](https://gitcode.com/cann/ops-nn/issues/3903) [Bug-Report|缺陷反馈]: QuantBatchMatMulV3适配APILEVEL后kernel入口兼容性修复** — 38分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用和文档链接，且仅由机器人自动关闭，解决证据偏弱。
+  - 原文依据：
+    - [关联PR #7126（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7126)    - [关联PR #7128（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7128)    - `Hu1L1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3903    - `Hu1L1`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3897](https://gitcode.com/cann/ops-nn/issues/3897) [Bug-Report|缺陷反馈]: test_max_pool_3d.cpp引用的experiment_ops.h不存在** — 38分
+  - 痛点原因：虽有合并的关联PR，但无commit直接引用与文档链接，且关闭评论仅含分配指令，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7360（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7360)    - [关联PR #7385（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7385)    - `chenxingyu18`：/assign    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：### Notice This issue can not be assigned to ***sunny_112***. Please try to assign to the repository members.    - `Apricityh`：/assign
+- **[#3883](https://gitcode.com/cann/ops-nn/issues/3883) [Documentation|文档反馈]: 大小驼峰命名** — 38分
+  - 痛点原因：未关联PR或commit，维护者直接关闭issue并让用户重提，缺乏实际解决证据。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@liu-wei](https://gitcode.com/liu-wei) 正在跟踪处理。    - `liu-wei`：kCalls 位于 namespace aicpu 作用域内，属于全局变量，应加 g_ 前缀并使用小驼峰命名（如 g_calls） 这个规则是从哪里来的？如果保持现状会有什么问题吗？    - `liu-wei`：这个issue我们打算关闭了，如果还有问题麻烦重新提PR，我们会持续提供支撑。    - `liu-wei`：closed from codehub    - `liu-wei`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3853](https://gitcode.com/cann/ops-nn/issues/3853) [Documentation|文档反馈]: WeightQuantBatchMatmulExperiment README 中存在公式变量名、格式等问题** — 38分
+  - 痛点原因：虽有合并PR，但缺乏commit和release引用，且另一关联PR被关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7035（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7035)    - [关联PR #7036（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7036)    - `shi-rui`：/assign    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成    - `shi-rui`：add label documentation
+- **[#4033](https://gitcode.com/cann/ops-nn/issues/4033) [Requirement|需求建议]: 新增 ReluGradV3 算子 Ascend C 实现（Atlas A2/A3）** — 46分
+  - 痛点原因：关联PR仍为open状态未合并，且无文档链接与关闭评论证实问题已彻底解决。
+  - 原文依据：
+    - [关联PR #7392（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7392)    - [关联PR #7394（open）](https://gitcode.com/cann/ops-nn/merge_requests/7394)    - `yolic`：assigned to @gcw_r0GcmdT1    - `fullt`：assigned to @fullt
+- **[#3976](https://gitcode.com/cann/ops-nn/issues/3976) [Bug-Report|缺陷反馈]: ops-nn activation/selu_grad 算子 outputs==0 边界分支判定与 PyTorch 竞品…** — 46分
+  - 痛点原因：虽关联了合并PR与测试说明，但关闭时无总结评论确认解决结果，且缺少文档链接，证据链不完整。
+  - 原文依据：
+    - [关联PR #7268（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7268)    - [关联PR #7270（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7270)    - `ForestFrame`：已提交修复 PR: https://gitcode.com/ForestFrame/ops-nn/merge_requests/1 将 kernel `CMPMODE::LT` 改为 `CMPMODE::LE`，288 例全量测试验证 1…    - `ForestFrame`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***ForestFrame***. Please do not assign repeatedly.    - `yolic`：assigned to @ForestFrame
+- **[#3953](https://gitcode.com/cann/ops-nn/issues/3953) [Requirement|需求建议]: 新增 cumsum/cumprod 累积扫描算子** — 46分
+  - 痛点原因：缺乏关联PR与版本发布记录，且处于等待反馈状态，无实质性解决结论。
+  - 原文依据：
+    - `yolic`：收到需求建议，欢迎您参加 ops-nn sig 例会评审并申报相关议题，最近的例会议题申报及会议时间可见：https://etherpad-cann.meeting.osinfra.cn/p/sig-ops-nn    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `jiangzeyu-2026`：add label requirement    - `yolic`：add label wait-feedback    - `yolic`：assigned to @yolic
+- **[#3909](https://gitcode.com/cann/ops-nn/issues/3909) [Documentation|文档反馈]: adaptiva_max_pool3d_infershape.cpp 文件名错误** — 46分
+  - 痛点原因：关联PR仍处于open状态未合并，且无关闭评论说明解决结果，导致解决证据不足。
+  - 原文依据：
+    - [关联PR #7158（open）](https://gitcode.com/cann/ops-nn/merge_requests/7158)    - `yolic`：/assign [@chenxingyu18](https://gitcode.com/chenxingyu18)    - `cann-robot`：### Notice This issue can not be assigned to ***chenxingyu18***. Please try to assign to the repository members.    - `chenxingyu18`：/assign [@sunny_112](https://gitcode.com/sunny_112)    - `cann-robot`：assigned to @chenxingyu18    - `cann-robot`：assigned to @sunny_112 and unassigned @chenxingyu18
+- **[#3908](https://gitcode.com/cann/ops-nn/issues/3908) [Documentation|文档反馈]: 这个设计文档说，支持8维Shape，请问这个算子支持的Reduce轴是几？，公式哪里体现了Reduce第几根轴了？** — 46分
+  - 痛点原因：缺乏关联PR等实质性修复证据，仅给出文档解释，且处于等待反馈状态，问题未真正闭环解决。
+  - 原文依据：
+    - `yolic`：您好，感谢反馈，问题已收到，当前 [@Chen_HaoWen](https://gitcode.com/Chen_HaoWen) 正在跟踪处理。    - `Chen_HaoWen`：您好，norm轴与gamma的shape一致哈 这点可以看下rstdout的介绍：shape与入参`x`的shape前几维保持一致，前几维指`x`的维度减去`gamma`的维度，表示不需要norm的维度。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `yolic`：assigned to @Chen_HaoWen
+- **[#3895](https://gitcode.com/cann/ops-nn/issues/3895) [Requirement|需求建议]: WeightQuantBatchMatmulV2 + Transpose 图融合适配新版 GE 融合框架** — 46分
+  - 痛点原因：缺少文档链接与人工关闭评论，仅靠机器人自动关闭和打标签，缺乏明确的解决说明。
+  - 原文依据：
+    - [关联PR #6419（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6419)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3895    - `maqijun`：add label requirement    - `cann-robot`：add label resolved    - `maqijun`：assigned to @maqijun
+- **[#3893](https://gitcode.com/cann/ops-nn/issues/3893) [Requirement|需求建议]: QuantBatchMatmulV4 + Transpose 图融合适配新版 GE 融合框架** — 46分
+  - 痛点原因：缺乏人工关闭说明与文档链接，仅由机器人因关联issue合并被动关闭并打标签，证据不够充分。
+  - 原文依据：
+    - [关联PR #4263（merged）](https://gitcode.com/cann/ops-nn/merge_requests/4263)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3893    - `maqijun`：add label requirement    - `cann-robot`：add label resolved
+- **[#3861](https://gitcode.com/cann/ops-nn/issues/3861) [Requirement|需求建议]: SoftplusGrad算子适配Ascend 950开发** — 46分
+  - 痛点原因：缺乏人工确认解决的关闭评论与文档链接，仅依赖机器人自动关闭与打标签，导致证据偏弱。
+  - 原文依据：
+    - [关联PR #6734（merged）](https://gitcode.com/cann/ops-nn/merge_requests/6734)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3861    - `cann-robot`：add label resolved    - `yolic`：assigned to @wucong22
+- **[#4045](https://gitcode.com/cann/ops-nn/issues/4045) [Bug-Report|缺陷反馈]: SwigluGroupQuant GroupIndex计算逻辑异常** — 54分
+  - 痛点原因：虽有合并的关联PR与机器人关闭记录，但缺乏文档链接和release版本引用，且无人工修复说明，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7414（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7414)    - `luwei_1104`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4045    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @luwei_1104
+- **[#4017](https://gitcode.com/cann/ops-nn/issues/4017) [Bug-Report|缺陷反馈]: conv2d用例调整tiling决策解决性能不达标问题** — 54分
+  - 痛点原因：虽有合并的关联PR，但无文档链接与release引用，且关闭评论仅为机器人自动关联关闭，缺乏人工验证说明。
+  - 原文依据：
+    - [关联PR #7305（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7305)    - `ray-shaw`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4017    - `ray-shaw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ray-shaw
+- **[#4002](https://gitcode.com/cann/ops-nn/issues/4002) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题-9.1.0分支** — 54分
+  - 痛点原因：缺乏文档链接与release版本引用，且仅依赖机器人自动关闭与加标签，缺少人工确认修复的强证据。
+  - 原文依据：
+    - [关联PR #7326（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7326)    - `wishercy`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue4002    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy
+- **[#3982](https://gitcode.com/cann/ops-nn/issues/3982) [Bug-Report|缺陷反馈]: 卷积反向算子在部分groups=32时存在计算超时问题** — 54分
+  - 痛点原因：虽有合并PR与commit，但缺少文档链接与release引用，且仅靠机器人自动关闭打标，缺乏人工确认，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #7260（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7260)    - `wishercy`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3982    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wishercy
+- **[#3937](https://gitcode.com/cann/ops-nn/issues/3937) [Bug-Report|缺陷反馈]: add_layer_norm_quant syncall同步缺失多核同时启动设置** — 54分
+  - 痛点原因：关联PR为closed状态，缺少文档与release引用，关闭评论仅记录操作，缺乏修复验证证据。
+  - 原文依据：
+    - [关联PR #7200（closed）](https://gitcode.com/cann/ops-nn/merge_requests/7200)    - `wangpengbo26`：/assign    - `wangpengbo26`：closed from codehub    - `wangpengbo26`：add label bug-report    - `cann-robot`：assigned to @wangpengbo26
+- **[#3917](https://gitcode.com/cann/ops-nn/issues/3917) [Bug-Report|缺陷反馈]: Modify the description of UnsortedSegmentMax** — 54分
+  - 痛点原因：虽有合并的PR和commit，但缺乏文档链接与release引用，且由机器人自动关闭，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #7165（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7165)    - `zhangxiyan7`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3917    - `zhangxiyan7`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangxiyan7
+- **[#3904](https://gitcode.com/cann/ops-nn/issues/3904) [Bug-Report|缺陷反馈]: conv3d_v2 算子 cleancode 扫描告警 (G.CNS.03/G.CNS.04/G.INC.02)** — 54分
+  - 痛点原因：虽有合并PR与commit引用，但缺乏文档和release链接，且关闭评论仅为机器人自动合并提示，缺乏人工验证说明。
+  - 原文依据：
+    - [关联PR #7129（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7129)    - [关联PR #7152（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7152)    - `wanyukang`：/assign [@wanyukang](https://gitcode.com/wanyukang)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3904    - `wanyukang`：add label bug-report    - `cann-robot`：add label resolved
+
+## 5. 本周行动清单
+
+### REC-01 · 补齐技术讨论并补充解决方案与验证结论
+
+| 字段 | 内容 |
+| ---- | ---- |
+| 优先级 | P0 |
+| 对应问题 | PP-01 |
+| 影响环节 | 讨论与解决 |
+| 承接方 | 维护者/SIG负责人；候选负责人 `yolic` |
+| 触发条件 | Issue创建后24小时内无评论 |
+| 具体动作 | 维护者主动发起技术讨论或提供排查方向 |
+| 目标 | `OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升至 1.5 以上 |
+| 相关证据 | OBJ_SOLUTION_EVIDENCE：均值 19.1，低分 182/188；OBJ_RESULT_FORMATION_TIMELINESS：均值 71.1，低分 45/188 |
+
+**对应给分点**
+
+| 指标 | 当前问题 | 预期改善 |
+| ---- | -------- | -------- |
+| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 均值 71.1，低分 45/188 | 加快形成明确结果的速度 |
+| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 均值 19.1，低分 182/188 | 补充修改内容、关联变更和影响范围 |
+| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | PR含完整实现与测试报告，但issue本身无讨论互动 | 明确下一步动作、阶段结论和推进记录 |
+
+### REC-02 · 规范关闭原因和关闭摘要
+
+| 字段 | 内容 |
+| ---- | ---- |
+| 优先级 | P0 |
+| 对应问题 | PP-02 |
+| 影响环节 | 总结与关闭 |
+| 承接方 | 维护者；候选负责人 `yolic` |
+| 触发条件 | Issue关闭前 |
+| 具体动作 | 强制填写解决总结（根因、方案、影响范围）方可关闭 |
+| 目标 | `OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升至 50 以上 |
+| 相关证据 | OBJ_CLOSURE_REUSE：均值 6.6，低分 187/188；OBJ_DECISION_TRANSPARENCY：均值 44.4，低分 128/188 |
+
+**对应给分点**
+
+| 指标 | 当前问题 | 预期改善 |
+| ---- | -------- | -------- |
+| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 均值 6.6，低分 187/188 | 关闭时沉淀解决方案文档、FAQ和规避方案 |
+| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 均值 44.4，低分 128/188 | 补齐关闭原因、关闭评论和结构化总结 |
+| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 关闭时未说明后续反馈路径或重新开启条件，信息不足。 | 关闭时明确说明后续反馈路径和重新开启条件 |
+
+### REC-03 · 提升分流响应
+
+| 字段 | 内容 |
+| ---- | ---- |
+| 优先级 | P1 |
+| 对应问题 | PP-03 |
+| 影响环节 | 分配与首次响应 |
+| 承接方 | 维护者；候选负责人 `yolic` |
+| 触发条件 | Issue创建后 |
+| 具体动作 | 在现有标签基础上增加优先级（P0/P1/P2）和模块标签 |
+| 目标 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升至 60 以上 |
+| 相关证据 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 12.3，低分 166/188；OBJ_RESPONSE_SPEED：均值 84.0，低分 18/188 |
+
+**对应给分点**
+
+| 指标 | 当前问题 | 预期改善 |
+| ---- | -------- | -------- |
+| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 均值 12.3，低分 166/188 | 缩短首次实质回应时间，不只是'有人回复'而是'有实质内容' |
+| `OBJ_RESPONSE_SPEED` 响应速度 | 均值 84.0，低分 18/188 | 缩短首次响应时间，提高 7 天响应率 |
+| `SUB_OWNER_CLARITY` 责任归属清晰度 | 作者自assign，bot确认分配，责任归属明确。 | 明确责任人、候选负责人和下一步动作 |
+
+
+## 6. 各阶段简析
+
+### I0 · 创建
+
+本阶段分数为 **79.3/100**，整体相对可控，但仍需关注：创建阶段整体质量尚可，但存在测试Issue和模板填写不完整的问题。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `SUB_AGENT_NOISE_RISK` AI噪音风险 | 88.7 | AI辅助但内容真实、技术详实，有实测数据支撑，非噪音 |
+| `SUB_INPUT_QUALITY` 输入质量 | 70.0 | 背景、设计、接口、语义、实现思路、测试计划齐全，结构化程度极高 |
+
+代表低分 Issue：[#4003](https://gitcode.com/cann/ops-nn/issues/4003)
+问题：test-pls-ignore-123。
+
+### I1 · 分配与首次响应
+
+本阶段分数为 **59.9/100**，本阶段需要改进，主要问题是：分流阶段客观指标偏低缺乏优先级判定。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 12.3 | 均值 12.3，低分 166/188 |
+| `OBJ_RESPONSE_SPEED` 响应速度 | 84.0 | 均值 84.0，低分 18/188 |
+| `SUB_OWNER_CLARITY` 责任归属清晰度 | 80.6 | 作者自assign，bot确认分配，责任归属明确。 |
+| `SUB_ROUTING_CORRECTNESS` 分流正确性 | 74.1 | 正确添加bug-report标签并分配给提交者，分流路径合理。 |
+
+代表低分 Issue：[#3869](https://gitcode.com/cann/ops-nn/issues/3869)
+问题：[Requirement|需求建议]: mm/bmm算子A全载模板kernel实现切换tensorApi。
+
+### I2 · 讨论与解决
+
+本阶段分数为 **51.3/100**，本阶段需要改进，主要问题是：半数Issue零评论无技术讨论推进。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 71.1 | 均值 71.1，低分 45/188 |
+| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 19.1 | 均值 19.1，低分 182/188 |
+| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | 52.5 | PR含完整实现与测试报告，但issue本身无讨论互动 |
+| `SUB_USER_GOAL_RESULT` 用户目标处理结果 | 68.6 | PR已含完整实现且测试通过，但尚未合并，issue仍open |
+
+代表低分 Issue：[#3977](https://gitcode.com/cann/ops-nn/issues/3977)
+问题：[Bug-Report|缺陷反馈]: matmul代码clean code告警。
+
+### I3 · 总结与关闭
+
+本阶段分数为 **40.2/100**，本阶段需要改进，主要问题是：关闭阶段缺乏解决证据与知识沉淀。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 6.6 | 均值 6.6，低分 187/188 |
+| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 44.4 | 均值 44.4，低分 128/188 |
+| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 43.7 | 关闭时未说明后续反馈路径或重新开启条件，信息不足。 |
+| `SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分 | 80.9 | issue仍处于open状态，不存在过早关闭风险 |
+
+代表低分 Issue：[#3860](https://gitcode.com/cann/ops-nn/issues/3860)
+问题：[Bug-Report|缺陷反馈]: 【fusedmatmul】异常场景fused_op_type的值不支持，拦截报错不准确。
+
+### G · Bot/Agent 治理
+
+本阶段分数为 **65.4/100**，仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_BOT_GOVERNANCE` Bot治理有效性 | 30.8 | 均值 30.8，低分 137/188 |
+| `OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分 | 96.1 | 均值 96.1，低分 0/188 |
+| `SUB_BOT_HANDOFF_QUALITY` 人机交接质量 | 71.6 | bot assign后人工创建PR并持续推进，交接顺畅 |
+| `SUB_BOT_HELPFULNESS` 自动化帮助度 | 65.6 | 无bot介入记录，信息不足，给中性保守分。 |
+| `SUB_BOT_INTERVENTION_QUALITY` 介入动作质量 | 69.3 | bot关闭时机准确（PR合并后），标签添加正确，无错误阻断或误判。 |
+
+代表低分 Issue：[#3956](https://gitcode.com/cann/ops-nn/issues/3956)
+问题：[Requirement|需求建议]: 新增 topk 算子（仅 value 不排序场景）。
+
+
+## 7. 趋势
+
+| 周期 | Issue 数 | 总体体验分 | 变化 | I0 | I1 | I2 | I3 | G |
+| ---- | --------: | ----------: | ---- | ----: | ----: | ----: | ----: | ----: |
+| 2026-07-06_to_2026-07-12 | 188 | 44.7 | 首期基线 | 79.3 | 59.9 | 51.3 | 40.2 | 65.4 |
+
+本期作为首期基线，后续周报会基于同一口径展示趋势变化。
+
+## 8. 社区响应者
+
+本周期共有 **13 位社区响应者**贡献 **51 次评论响应**。
+
+| 响应者 | 评论数 |
+| ------ | ------: |
+| `yolic` | 27 |
+| `chenxingyu18` | 7 |
+| `Apricityh` | 4 |
+| `east_yang` | 2 |
+| `liu-wei` | 2 |
+
+Top1 响应占比 **52.9%**。以上人员仅作为行动承接候选，不代表责任归属已经确认。
+
+## 9. 数据说明
+
+- 数据范围：2026-07-06_to_2026-07-12 创建的 Issue，按创建时间归入本期。
+- 数据性质：回溯统计，不是真实用户体验测试。
+- 文本判断：来自模型代读 Issue 线程。
+- 分数口径：总体体验分采用当前报告口径计算；Bot/Agent 治理仅作参考，不计入总分。
+- 数据完整性：89.3/100，整体置信度 高。
+- 平台限制：GitCode API 不返回 author_association 与关联 PR，维护者识别与关联 PR 率不可信，已从对比剔除；无 closed_by / closed 事件，自关闭无法判定。
+- 数据文件：`/home/shengbao/Cogito/issue_experience_agent/outputs/report/cann-ops-nn/report_cann-ops-nn_2026-07-06_to_2026-07-12.json`。

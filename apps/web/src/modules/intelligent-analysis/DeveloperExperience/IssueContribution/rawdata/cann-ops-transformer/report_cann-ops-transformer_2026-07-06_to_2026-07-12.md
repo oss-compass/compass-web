@@ -1,0 +1,3051 @@
+# Issue 贡献体验周报 · cann/ops-transformer
+
+**周期：2026-07-06_to_2026-07-12**
+
+> 本报告基于本周期内创建的 Issue 历史记录生成。体验判断来自模型对 Issue 线程的代读，不代表用户访谈或真实上手测试结果。
+
+## 1. 执行摘要
+
++ 本周 `cann/ops-transformer` 共收到 **132** 个 Issue
++ **Open 24 / Closed 108**，关闭率 **81.8%**。
++ 总体体验分为 **47.6/100（D）**，本期作为首期基线。
+
+当前主要短板集中在三个环节：
+
+| 优先级 | 环节 | 分数 | 核心问题 |
+| ------ | ---- | ----: | -------- |
+| P0 | I3 · 总结与关闭 | 46.0 | 关闭质量极低缺乏解决证据 |
+| P0 | I2 · 讨论与解决 | 57.0 | 讨论推进严重停滞缺乏跟进 |
+| P1 | I1 · 分配与首次响应 | 62.3 | 标签分类不足影响分流精度 |
+
+本周建议 3 个 REC：
+
+| REC-ID | 优先级 | 行动 |
+| ------ | ------ | ---- |
+| REC-01 | P0 | 自动提醒assignee回复技术评估或更新状态 |
+| REC-02 | P0 | 要求附解决说明或PR链接，校验问题是否完全解决 |
+| REC-03 | P1 | 校验Issue评论中是否有关键词'待上库''未完全''剩余'等，有则阻止自动关闭 |
+
+## 2. 本周关键数据
+
+| 指标 | 结果 |
+| ---- | ---- |
+| Issue 总数 | 132 |
+| Open / Closed | 24 / 108 |
+| 关闭率 | 81.8% |
+| 类型构成 | 缺陷 53 / 需求 37 / 咨询 3 / 其他 39 |
+| 总体体验分 | 47.6/100（D） |
+| 首次响应时间 | 中位 0.4h；均值 4.9h |
+| 关闭周期 | 中位 15.8h；均值 2.1天 |
+| 7天响应率 | 97.0% |
+| 评论数/Issue | 1.05 |
+| 标签覆盖率 | 86.4% |
+| 指派覆盖率 | 92.4% |
+| 数据完整性 | 92.1/100 |
+| 置信度 | 高 |
+
+## 3. 体验路径总览
+
+| 阶段 | 分数 | 痛点 Issue | 判断 | 主要拖累指标 |
+| ---- | ----: | ---------- | ---- | ------------ |
+| I0 · 创建 | 77.7 | 14/132（10.6%） | 相对可控 | `SUB_INPUT_QUALITY` 65.3 |
+| I1 · 分配与首次响应 | 62.3 | 37/132（28.0%） | 相对可控 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 12.6 |
+| I2 · 讨论与解决 | 57.0 | 52/132（39.4%） | P0 | `OBJ_SOLUTION_EVIDENCE` 23.3 |
+| I3 · 总结与关闭 | 46.0 | 114/132（86.4%） | P0 | `OBJ_CLOSURE_REUSE` 13.6 |
+| G · Bot/Agent 治理（参考） | 66.0 | 12/132（9.1%） | 参考项 | `OBJ_BOT_GOVERNANCE` 27.7 |
+
+## 4. 主要问题
+
+| PP-ID | 优先级 | 阶段 | 问题 | 关键指标 | 影响 |
+| ----- | ------ | ---- | ---- | -------- | ---- |
+| PP-01 | P0 | I2 · 讨论与解决 | 讨论推进严重停滞缺乏跟进 | OBJ_SOLUTION_EVIDENCE：均值 23.3，低分 126/132；OBJ_RESULT_FORMATION_TIMELINESS：均值 78.8，低分 26/132 | 需求悬而未决，用户目标无法满足，社区活跃度下降 |
+| PP-02 | P0 | I3 · 总结与关闭 | 关闭质量极低缺乏解决证据 | OBJ_CLOSURE_REUSE：均值 13.6，低分 132/132；OBJ_DECISION_TRANSPARENCY：均值 55.1，低分 59/132 | 社区知识无法积累，类似问题无法参考，关闭可信度低 |
+| PP-03 | P1 | G · Bot/Agent 治理 | Bot误关闭率高且关闭逻辑有缺陷 | OBJ_BOT_GOVERNANCE：均值 27.7，低分 106/132；OBJ_BOT_MISCLOSE_REVERSE：均值 94.5，低分 0/132 | 问题未解决被标记为已解决，用户信任度下降，需人工重开 |
+| PP-04 | P1 | I1 · 分配与首次响应 | 标签分类不足影响分流精度 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 12.6，低分 115/132；OBJ_RESPONSE_SPEED：均值 89.5，低分 5/132 | Issue无法有效分类检索，分流精度不足，影响后续处理效率 |
+| PP-05 | P2 | I1 · 分配与首次响应 | 需求模板填写不完整 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 12.6，低分 115/132；OBJ_RESPONSE_SPEED：均值 89.5，低分 5/132 | 需求评估困难，开发方向不明确，增加沟通成本 |
+| PP-06 | P2 | G · Bot/Agent 治理 | Bot治理覆盖不足且功能单一 | OBJ_BOT_GOVERNANCE：均值 27.7，低分 106/132；OBJ_BOT_MISCLOSE_REVERSE：均值 94.5，低分 0/132 | Issue缺乏自动化分流和跟进，流程效率降低，人工负担重 |
+
+### 4.1 低分 Issue 明细
+
+#### PP-01 讨论推进严重停滞缺乏跟进（I2 · 讨论与解决）
+
+- **[#3718](https://gitcode.com/cann/ops-transformer/issues/3718) [Requirement|需求建议]: 【生态算子贡献】新增斜视诊断专用算子 EyeDecoupledAttention 与 CausalTopoGCN** — 0分
+  - 痛点原因：关联PR处于未合并状态，且无commit、文档及release引用等实质解决证据。
+  - 原文依据：
+    - [关联PR #8613（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8613)    - `m0_64571491`：/assign    - `cann-robot`：assigned to @m0_64571491
+- **[#3709](https://gitcode.com/cann/ops-transformer/issues/3709) [Requirement|需求建议]: MatmulReduceScatterV2 AICPU场景限制tiling切分最大4轮** — 0分
+  - 痛点原因：虽关联已合并PR，但无commit引用、文档链接及release说明，仅靠机器人自动关闭打标签，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #8154（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8154)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3709    - `andingfangt`：add label requirement    - `cann-robot`：add label resolved    - `andingfangt`：assigned to @andingfangt
+- **[#3708](https://gitcode.com/cann/ops-transformer/issues/3708) 【mc2】matmul_all_reduce在vec上使用了升精度累加，和小算子行为不一致，需要修改** — 0分
+  - 痛点原因：仅靠机器人关联PR和自动关闭，无commit引用、文档链接及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #8544（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8544)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3708    - `cann-robot`：add label resolved
+- **[#3704](https://gitcode.com/cann/ops-transformer/issues/3704) [Requirement|需求建议]: MatmulReduceScatterV2新增mxfp4量化场景** — 0分
+  - 痛点原因：虽关联PR已合并，但缺乏commit、文档或release等直接解决证据引用。
+  - 原文依据：
+    - [关联PR #7195（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7195)    - [关联PR #8596（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8596)    - `Kiana1216`：add label requirement
+- **[#3697](https://gitcode.com/cann/ops-transformer/issues/3697) [Requirement|需求建议]: QLIV2批跑pytest功能适配** — 0分
+  - 痛点原因：仅添加需求标签并询问细节，未关联PR、commit、文档或关闭评论等任何解决痕迹。
+  - 原文依据：
+    - `weihao18`：你好，QLIV2批跑功能缺失，可以描述得更具体一些吗    - `zzzyh22`：add label requirement
+- **[#3694](https://gitcode.com/cann/ops-transformer/issues/3694) [Requirement|需求建议]: 算子原型迁移至所属仓** — 0分
+  - 痛点原因：虽有关联已合并PR，但无commit引用、文档链接或关闭评论等直接证据证明问题已解决。
+  - 原文依据：
+    - [关联PR #8540（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8540)    - [关联PR #8552（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8552)    - [关联PR #8554（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8554)    - [关联PR #8564（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8564)    - [关联PR #8566（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8566)    - `weihao18`：/assign [@Hana77](https://gitcode.com/Hana77)
+- **[#3688](https://gitcode.com/cann/ops-transformer/issues/3688) [Requirement|需求建议]: inplace_partial_rotary_mul 算子支持autograd 自动微分** — 0分
+  - 痛点原因：虽有合并的关联PR，但仅靠机器人自动关闭，缺乏人工关闭评论、文档链接及release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8493（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8493)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3688    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved
+- **[#3683](https://gitcode.com/cann/ops-transformer/issues/3683) dispatch 算子的 token 分配在 TP>1 + PP>1 时，micro batch 边界的 token 在不同 rank 上被分配到不同的专家** — 0分
+  - 痛点原因：仅停留在任务分配和路径询问阶段，无关联PR、commit引用或关闭评论等解决证据。
+  - 原文依据：
+    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cpy_123456`：您好，方便提供下算子文件路径吗，dispatch有多个算子，便于我们找到相关专家处理    - `cann-robot`：assigned to @cpy_123456
+- **[#3675](https://gitcode.com/cann/ops-transformer/issues/3675) [Bug-Report|缺陷反馈]: 变量定义 和 函数定义 不合理导致 代码编译过程产生告警，建议修改代码实现消除告警，详见问题单正文** — 0分
+  - 痛点原因：未关联PR、commit或文档链接，且无关闭评论说明，完全缺乏问题已解决的实质性证据。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢您的反馈，处理中    - `cann-robot`：assigned to @captainmiaow
+- **[#3670](https://gitcode.com/cann/ops-transformer/issues/3670) [Bug-Report|缺陷反馈]: prompt_flash_attention算子的UB内存问题** — 0分
+  - 痛点原因：仅关联已关闭PR，无commit引用、文档链接及关闭评论，仅靠状态变更缺乏实质解决证据。
+  - 原文依据：
+    - [关联PR #8459（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8459)    - `wangsong96`：closed from codehub    - `wangsong96`：changed custom state from 进行中 to 已完成    - `wangsong96`：add label bug-report    - `cann-robot`：add label Accepted
+- **[#3669](https://gitcode.com/cann/ops-transformer/issues/3669) [Bug-Report|缺陷反馈]: SFAG算子偶现卡死问题** — 0分
+  - 痛点原因：虽关联PR已合并，但无commit、文档及release引用，且无人工关闭评论总结方案，仅靠机器人自动关闭。
+  - 原文依据：
+    - [关联PR #8443（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8443)    - [关联PR #8445（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8445)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3669    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00
+- **[#3668](https://gitcode.com/cann/ops-transformer/issues/3668) MegaMoe get_mega_moe_ccl_buffer_size和get_symm_buffer_for_mega_moe接口入参一致性** — 0分
+  - 痛点原因：仅关联已关闭PR，缺乏commit引用、文档链接及关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #8457（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8457)    - `weixin_49300047`：assigned to @weixin_49300047
+- **[#3664](https://gitcode.com/cann/ops-transformer/issues/3664) [Bug-Report|缺陷反馈]: FIA tiling写死核数，不兼容Ascend950** — 0分
+  - 痛点原因：仅通过codehub直接关闭，未关联任何PR、commit或文档链接，无实质修复证据留存。
+  - 原文依据：
+    - `demoauguste`：closed from codehub
+- **[#3661](https://gitcode.com/cann/ops-transformer/issues/3661) [Bug-Report|缺陷反馈]: allgathermm的test文件夹下atk测试代码修复** — 0分
+  - 痛点原因：仅有关联PR合并，无commit引用、文档链接、release引用及关闭评论等明确解决证据。
+  - 原文依据：
+    - [关联PR #8385（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8385)    - `sangzhenguo`：assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `sangzhenguo`：/assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `cann-robot`：assigned to @sangzhenguo
+- **[#3651](https://gitcode.com/cann/ops-transformer/issues/3651) [Requirement|需求建议]: 提供新接口mixed_quant_flash_attn的torch_extension适配** — 0分
+  - 痛点原因：虽关联PR已合并，但无commit引用、文档链接、release引用及关闭评论，缺乏明确的解决证据。
+  - 原文依据：
+    - [关联PR #5014（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/5014)    - `weihao18`：/assign [@yangyibin](https://gitcode.com/yangyibin)    - `yangyibin`：add label requirement    - `cann-robot`：assigned to @yangyibin
+- **[#3644](https://gitcode.com/cann/ops-transformer/issues/3644) [Requirement|需求建议]: 新增stem_oam_prep_varlen_q算子** — 0分
+  - 痛点原因：未关联PR、commit或文档，评论仅涉及补充信息和分配负责人，未留下任何实质性的解决证据。
+  - 原文依据：
+    - `liudan12`：您好，对于您的需求描述，是否可以补充详细点信息呢？ 可以参照： https://gitcode.com/cann/ops-transformer/issues/3    - `fengjiawei1`：add label requirement    - `fengjiawei1`：assigned to @fengjiawei1
+- **[#3643](https://gitcode.com/cann/ops-transformer/issues/3643) [Requirement|需求建议]: 新增quant_compressor算子，及其torch-extension适配** — 0分
+  - 痛点原因：关联的PR仍处于未合并状态，且无commit引用、文档链接及关闭评论等实质解决证据。
+  - 原文依据：
+    - [关联PR #8387（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8387)    - `guigui_jzh`：/assign [@guigui_jzh](https://gitcode.com/guigui_jzh)    - `guigui_jzh`：add label requirement    - `cann-robot`：assigned to @guigui_jzh
+- **[#3641](https://gitcode.com/cann/ops-transformer/issues/3641) [Bug-Report|缺陷反馈]: moe_finalize_routing_v2_grad缺少同步信号，导致内存越界** — 0分
+  - 痛点原因：虽有关联PR合并并自动关闭，但无commit引用、文档链接、release引用及人工关闭评论，缺乏明确解决说明。
+  - 原文依据：
+    - [关联PR #8348（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8348)    - [关联PR #8356（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8356)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3641    - `yangziqi_007`：add label bug-report    - `cann-robot`：add label resolved    - `yangziqi_007`：assigned to @yangziqi_007
+- **[#3640](https://gitcode.com/cann/ops-transformer/issues/3640) [Bug-Report|缺陷反馈]: FAG在maxworkspace接口计算时，无法获得effectiveT1/effectiveT2，此时会导致计算的wo…** — 0分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，导致证据不足。
+  - 原文依据：
+    - [关联PR #8281（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8281)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3640    - `yuhao_`：add label bug-report    - `cann-robot`：add label resolved    - `yuhao_`：assigned to @yuhao_
+- **[#3639](https://gitcode.com/cann/ops-transformer/issues/3639) [Bug-Report|缺陷反馈]: StemIndexer计算topkCountNum时decayLen应该在小于等于1时直接返回，等于1时后续计算无意义** — 0分
+  - 痛点原因：虽关联已合并PR，但缺乏commit、文档及release等直接引用证据，且无人工关闭评论说明，仅靠机器人关闭。
+  - 原文依据：
+    - [关联PR #8372（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8372)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3639    - `skykone1`：add label bug-report    - `cann-robot`：add label resolved    - `skykone1`：assigned to @skykone1
+- **[#3638](https://gitcode.com/cann/ops-transformer/issues/3638) [Requirement|需求建议]: LightningIndexer可支持0轴非连续** — 0分
+  - 痛点原因：关联的PR已被关闭，且无合并提交、文档或发布说明等实质解决证据，关闭时也无评论说明。
+  - 原文依据：
+    - [关联PR #7620（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7620)    - `weihao18`：/assign [@arcticius](https://gitcode.com/arcticius)    - `cann-robot`：assigned to @arcticius
+- **[#3636](https://gitcode.com/cann/ops-transformer/issues/3636) [Requirement|需求建议]: inplace_partial_rotary_mul_grad算子缺少torch api接口** — 0分
+  - 痛点原因：仅靠机器人自动关闭与状态流转，缺乏commit引用、文档链接、release引用及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #8368（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8368)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3636    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `alfengyuan`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted
+- **[#3635](https://gitcode.com/cann/ops-transformer/issues/3635) [Bug-Report|缺陷反馈]: NsaCompAtten内存检测问题** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit引用、文档链接、release引用及人工关闭评论，仅靠机器人自动关闭，证据强度不足。
+  - 原文依据：
+    - [关联PR #8365（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8365)    - [关联PR #8367（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8367)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3635    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00
+- **[#3634](https://gitcode.com/cann/ops-transformer/issues/3634) [Requirement|需求建议]: FA要接入ttk框架** — 0分
+  - 痛点原因：仅靠机器人关联PR并自动关闭，缺乏commit引用、文档链接、release说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8185（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8185)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3634    - `SH_jingsong`：add label requirement    - `cann-robot`：add label resolved
+- **[#3629](https://gitcode.com/cann/ops-transformer/issues/3629) [Requirement|需求建议]: 修复smlag metadata在A2/A3被拦截的问题** — 0分
+  - 痛点原因：仅靠机器人关联PR关闭，缺乏commit引用、文档链接、release引用及人工关闭评论等实质证据。
+  - 原文依据：
+    - [关联PR #8342（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8342)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3629    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved
+- **[#3626](https://gitcode.com/cann/ops-transformer/issues/3626) [Bug-Report|缺陷反馈]: GroupedMatmulSwigluQuant 关闭 auto sync 后需补充显式同步** — 0分
+  - 痛点原因：关联的两个修复PR均未合并且处于open状态，无commit引用与关闭评论，缺乏实质解决证据。
+  - 原文依据：
+    - [关联PR #8338（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8338)    - [关联PR #8349（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8349)    - `weihao18`：/assign [@Wei_NaChuan](https://gitcode.com/Wei_NaChuan)    - `Wei_NaChuan`：Create issue mr links: **修复 GroupedMatmulSwigluQuant 关闭自动同步后的显式同步** #8338    - `Wei_NaChuan`：add label bug-report    - `cann-robot`：assigned to @Wei_NaChuan
+- **[#3625](https://gitcode.com/cann/ops-transformer/issues/3625) fix moe_ep_dispatch accuracy** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性证据。
+  - 原文依据：
+    - [关联PR #8336（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8336)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3625    - `cann-robot`：add label resolved
+- **[#3624](https://gitcode.com/cann/ops-transformer/issues/3624) [Requirement|需求建议]: nsa_compress_attention_infer 算子需要支持310p系列** — 0分
+  - 痛点原因：仅通过评论说明暂不做规划并指派人员，未关联任何PR、commit或文档等实质性解决凭证。
+  - 原文依据：
+    - `huang-chuhong`：/assign [@L_Euler](https://gitcode.com/L_Euler)    - `monologue815`：你好，此前NSA在910B系列作为尝试，目前主流模型没有使用， 1. 当前在310P系列上暂不做规划； 2. 310P系列可以根据模型具体稀疏的算法来看具体算子的需求情况； 如果有相关稀疏的特殊需求，欢迎在SIG例会上讨论一下~    - `wang-minbo`：assigned to @xtqh    - `cann-robot`：assigned to @L_Euler and unassigned @xtqh
+- **[#3623](https://gitcode.com/cann/ops-transformer/issues/3623) [Requirement|需求建议]: matmulallreduce在310p上动态图用例执行失败** — 0分
+  - 痛点原因：虽有合并的关联PR，但无关闭评论、commit引用或文档链接等直接说明问题解决的证据。
+  - 原文依据：
+    - [关联PR #8300（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8300)    - [关联PR #8339（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8339)    - [关联PR #8341（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8341)    - `Kiana1216`：add label requirement
+- **[#3620](https://gitcode.com/cann/ops-transformer/issues/3620) [Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题** — 0分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏人工关闭评论、commit引用或文档链接等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8285（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8285)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3620    - `cann-robot`：add label resolved
+- **[#3616](https://gitcode.com/cann/ops-transformer/issues/3616) [Bug-Report|缺陷反馈]: torch extension导入阶段会触发全量算子编译** — 0分
+  - 痛点原因：虽关联三个已合并PR，但无commit引用、文档链接及人工关闭评论，仅靠机器人自动关闭，解决证据不足。
+  - 原文依据：
+    - [关联PR #8155（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8155)    - [关联PR #8326（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8326)    - [关联PR #8344（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8344)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3616    - `hblnb`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3607](https://gitcode.com/cann/ops-transformer/issues/3607) [Bug-Report|缺陷反馈]: kv_compress_epilog算子bf16格式的scale是零扩展而不是真实的bf16格式** — 0分
+  - 痛点原因：仅有关联PR和机器人自动关闭，缺乏commit引用、文档链接及人工关闭评论等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8307（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8307)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3607    - `zhu-lei0614`：add label bug-report    - `cann-robot`：add label resolved    - `zhu-lei0614`：assigned to @zhu-lei0614
+- **[#3606](https://gitcode.com/cann/ops-transformer/issues/3606) [Bug-Report|缺陷反馈]: MegaMoe A2 Workspace 优化** — 0分
+  - 痛点原因：虽有关联PR合并，但无commit、文档及release引用，且无人工关闭评论说明，仅靠机器人自动关闭，证据不足。
+  - 原文依据：
+    - [关联PR #8266（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8266)    - [关联PR #8337（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8337)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3606    - `urbub`：add label bug-report    - `cann-robot`：add label resolved    - `urbub`：assigned to @urbub
+- **[#3601](https://gitcode.com/cann/ops-transformer/issues/3601) [Bug-Report|缺陷反馈]: sfag存在同步问题** — 0分
+  - 痛点原因：仅关联PR但缺乏commit引用、文档链接和release引用等直接解决证据，且无关闭评论说明解决情况。
+  - 原文依据：
+    - [关联PR #8196（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8196)    - [关联PR #8200（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8200)    - [关联PR #8335（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8335)    - `weihao18`：/assign [@huzhipeng](https://gitcode.com/huzhipeng)    - `huzhipeng`：add label bug-report    - `cann-robot`：assigned to @huzhipeng
+- **[#3598](https://gitcode.com/cann/ops-transformer/issues/3598) [Bug-Report|缺陷反馈]: MoeInitRoutingQuantV2第三个输出结果存在精度问题** — 0分
+  - 痛点原因：仅靠机器人关闭和关联PR，缺乏commit引用、文档链接及人工确认评论，证据不足。
+  - 原文依据：
+    - [关联PR #8259（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8259)    - [关联PR #8354（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8354)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3598    - `wuxiyuan`：add label bug-report    - `cann-robot`：add label resolved    - `wuxiyuan`：assigned to @wuxiyuan
+- **[#3594](https://gitcode.com/cann/ops-transformer/issues/3594) [Bug-Report|缺陷反馈]: 修复MatmulAlltoAll FusionPass兼容性问题** — 0分
+  - 痛点原因：虽关联已合并PR，但无commit引用、文档链接及关闭评论，缺乏直接证明问题被解决的证据。
+  - 原文依据：
+    - [关联PR #8268（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8268)    - [关联PR #8298（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8298)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3594    - `liusixia_gitcode`：add label bug-report    - `cann-robot`：add label resolved    - `liusixia_gitcode`：assigned to @liusixia_gitcode
+- **[#3590](https://gitcode.com/cann/ops-transformer/issues/3590) [Requirement|需求建议]: 【David】【GroupedMatMulSwigluQuantV2】泛化支持N轴非128对齐场景** — 0分
+  - 痛点原因：虽有合并的关联PR，但无人工关闭评论、文档链接及release引用等实质性解决证据，仅靠机器人自动关闭。
+  - 原文依据：
+    - [关联PR #7662（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7662)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3590    - `NeverLCY`：add label requirement    - `cann-robot`：add label resolved    - `NeverLCY`：assigned to @NeverLCY
+- **[#3719](https://gitcode.com/cann/ops-transformer/issues/3719) [Documentation|文档反馈]: MegaMoE补充A2/A3的README资料** — 15分
+  - 痛点原因：仅由机器人因关联issue合并而关闭，缺乏直接commit引用、release引用及人工确认解决的评论。
+  - 原文依据：
+    - [关联PR #8606（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8606)    - [关联PR #8612（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8612)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3719    - `ryan_li`：add label documentation    - `cann-robot`：add label resolved    - `ryan_li`：assigned to @ryan_li
+- **[#3716](https://gitcode.com/cann/ops-transformer/issues/3716) [Bug-Report|缺陷反馈]: mhc_post资料修改** — 15分
+  - 痛点原因：虽有合并PR，但缺乏commit与release引用，且仅靠机器人自动关闭无人工评论，证据链不完整。
+  - 原文依据：
+    - [关联PR #8602（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8602)    - [关联PR #8603（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8603)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3716    - `Annyqw`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3710](https://gitcode.com/cann/ops-transformer/issues/3710) [Documentation|文档反馈]: SMLAG算子torch文档商分资料格式问题** — 15分
+  - 痛点原因：虽有合并的关联PR，但无commit引用、release引用及人工关闭评论，仅靠机器人自动关闭，缺乏明确的解决证据。
+  - 原文依据：
+    - [关联PR #7674（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7674)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3710    - `hz36amy_00`：add label documentation    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00
+- **[#3706](https://gitcode.com/cann/ops-transformer/issues/3706) [Documentation|文档反馈]: trans仓doc tools和aidd内容修改合入9.1.0专项** — 15分
+  - 痛点原因：虽有部分PR已合并，但仍有PR处于open状态，且关闭时无评论说明，缺乏commit和release引用。
+  - 原文依据：
+    - [关联PR #8538（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8538)    - [关联PR #8638（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8638)    - [关联PR #8639（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8639)    - [关联PR #8640（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8640)    - `caiwenwen`：分配给我自己    - `weihao18`：/assign [@caiwenwen](https://gitcode.com/caiwenwen)
+- **[#3685](https://gitcode.com/cann/ops-transformer/issues/3685) [Documentation|文档反馈]: gmm资料修改** — 15分
+  - 痛点原因：仅靠机器人关联PR关闭，缺乏commit引用、release引用及人工确认评论，证据链不完整。
+  - 原文依据：
+    - [关联PR #8462（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8462)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3685    - `szhexin`：add label documentation    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin
+- **[#3679](https://gitcode.com/cann/ops-transformer/issues/3679) [Documentation|文档反馈]: BSAG缺少950相关文档** — 15分
+  - 痛点原因：仅有关联PR和文档链接，缺乏commit引用与release引用，且仅靠机器人自动关闭和打标签，缺乏人工解决证据。
+  - 原文依据：
+    - [关联PR #8229（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8229)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3679    - `xuchengyang`：add label documentation    - `cann-robot`：add label resolved
+- **[#3672](https://gitcode.com/cann/ops-transformer/issues/3672) 修改slig文档示例** — 15分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、release引用及人工关闭说明等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8461（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8461)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3672    - `cann-robot`：add label resolved
+- **[#3671](https://gitcode.com/cann/ops-transformer/issues/3671) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，transformer仓编译工程适配** — 15分
+  - 痛点原因：仅靠机器人因关联MR合并自动关闭，无commit引用、文档链接及人工关闭说明，缺乏直接解决证据。
+  - 原文依据：
+    - [关联PR #8460（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8460)    - [关联PR #8725（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8725)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3671    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo
+- **[#3662](https://gitcode.com/cann/ops-transformer/issues/3662) [Documentation|文档反馈]: 修复gmm weightnz资料若干问题** — 15分
+  - 痛点原因：仅靠机器人因关联PR合并自动关闭并打标签，缺乏commit引用、release引用及人工关闭评论等直接解决证据。
+  - 原文依据：
+    - [关联PR #8441（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8441)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3662    - `zhangzhizhuo`：add label documentation    - `cann-robot`：add label resolved
+- **[#3656](https://gitcode.com/cann/ops-transformer/issues/3656) [Bug-Report|缺陷反馈]: mhc_pre_sinkhorn() takes from 6 to 8 positional arguments bu…** — 15分
+  - 痛点原因：关联PR未合并且无commit与关闭评论，仅停留在分配负责人阶段，缺乏实际解决证据。
+  - 原文依据：
+    - [关联PR #8902（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8902)    - `weihao18`：/assign [@taochangmin](https://gitcode.com/taochangmin)    - `cann-robot`：### Notice This issue can not be assigned to ***taochangmin***. Please try to assign to the repository members.    - `weihao18`：assigned to @taochangmin
+- **[#3618](https://gitcode.com/cann/ops-transformer/issues/3618) [Documentation|文档反馈]: 修改SLIG算子文档格式** — 15分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、release引用及人工关闭评论等关键证据，导致证据链不完整。
+  - 原文依据：
+    - [关联PR #8327（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8327)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3618    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `llwy0320`：assigned to @llwy0320
+- **[#3595](https://gitcode.com/cann/ops-transformer/issues/3595) [Documentation|文档反馈]: matmulallreduce文档markdown问题清理** — 15分
+  - 痛点原因：虽有关联PR，但无commit引用、release引用及关闭评论，仅靠机器人自动关闭，解决证据链不完整。
+  - 原文依据：
+    - [关联PR #8269（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8269)    - [关联PR #8271（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8271)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3595    - `Kiana1216`：add label documentation    - `cann-robot`：add label resolved
+- **[#3724](https://gitcode.com/cann/ops-transformer/issues/3724) [Requirement|需求建议]: matmulAlltoAll在aicpu场景下性能需要提升** — 23分
+  - 痛点原因：虽有关联PR，但无commit引用与文档链接，仅靠机器人自动关闭，缺乏人工实质性解决说明。
+  - 原文依据：
+    - [关联PR #7966（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7966)    - `weihao18`：/assign [@adamlwang](https://gitcode.com/adamlwang)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3724    - `adamlwang`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @adamlwang
+- **[#3723](https://gitcode.com/cann/ops-transformer/issues/3723) [Requirement|需求建议]: mhc_post实现hres可选支持** — 23分
+  - 痛点原因：仅凭机器人合并PR的评论关闭，缺乏commit引用、文档链接和release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8550（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8550)    - `xuejinghui`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3723    - `xuejinghui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui
+- **[#3721](https://gitcode.com/cann/ops-transformer/issues/3721) gatherV2算子新增simd小尾轴模板** — 23分
+  - 痛点原因：仅靠机器人自动关闭和关联PR，缺乏commit引用、文档链接及release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7349（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7349)    - `z30075199`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-transformer#issue3721    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z30075199
+- **[#3720](https://gitcode.com/cann/ops-transformer/issues/3720) fix tiling check** — 23分
+  - 痛点原因：虽有合并的关联PR，但仅靠机器人自动关闭，缺乏commit、文档及release等实质性修复证据。
+  - 原文依据：
+    - [关联PR #8610（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8610)    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3720    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i
+- **[#3715](https://gitcode.com/cann/ops-transformer/issues/3715) [Requirement|需求建议]: moe_token_permute for Ascend950** — 23分
+  - 痛点原因：虽关联已合并PR，但实际因需求必要性不强而无修改关闭，缺乏代码提交、文档及release等实质解决证据。
+  - 原文依据：
+    - [关联PR #8671（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8671)    - `weihao18`：/assign [@alfengyuan](https://gitcode.com/alfengyuan)    - `alfengyuan`：经过讨论，此需求必要性不强，现有aclnn通路已经稳定运行，不需要做修改。 结论： 无修改关闭。    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3715    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `alfengyuan`：add label requirement
+- **[#3712](https://gitcode.com/cann/ops-transformer/issues/3712) [Requirement|需求建议]: MegaMoE增加异常Dump维测能力** — 23分
+  - 痛点原因：虽有合并的关联PR和机器人关闭评论，但缺乏commit、文档及release等直接解决证据，且无人工解决说明。
+  - 原文依据：
+    - [关联PR #8567（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8567)    - [关联PR #8569（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8569)    - `weihao18`：/assign [@ryan_li](https://gitcode.com/ryan_li)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3712    - `ryan_li`：add label requirement    - `cann-robot`：add label resolved
+- **[#3703](https://gitcode.com/cann/ops-transformer/issues/3703) [Bug-Report|缺陷反馈]: BlockSparseAttention算子缺少ST看护** — 23分
+  - 痛点原因：虽关联PR已合并，但无commit、文档和release引用，且关闭评论仅为机器人自动回复，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #8578（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8578)    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3703    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96
+- **[#3702](https://gitcode.com/cann/ops-transformer/issues/3702) [Bug-Report|缺陷反馈]: GMM伪量化中存在变量未使用、魔鬼数字等问题** — 23分
+  - 痛点原因：仅靠机器人因关联MR合并自动关闭，缺乏commit引用、文档及release链接等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8031（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8031)    - `weihao18`：/assign [@shi-rui](https://gitcode.com/shi-rui)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3702    - `shi-rui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui
+- **[#3699](https://gitcode.com/cann/ops-transformer/issues/3699) [Requirement|需求建议]: 移除 ComputeAxisIdxByBnAndGs1 未使用的 multiCoreInnerIdx 参数** — 23分
+  - 痛点原因：仅依赖机器人自动关闭关联PR，缺乏commit、文档和release等直接证据，且无人工对解决细节的实质性说明。
+  - 原文依据：
+    - [关联PR #8549（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8549)    - `PerrySkywalker`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3699    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker
+- **[#3698](https://gitcode.com/cann/ops-transformer/issues/3698) [Requirement|需求建议]: MhcPreSinkhorn正反向算子支持GE图模式** — 23分
+  - 痛点原因：虽有关联PR，但无commit、文档及release引用，且关闭评论仅为assign指令，无实质性解决说明。
+  - 原文依据：
+    - [关联PR #8382（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8382)    - [关联PR #8608（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8608)    - `taochangmin`：/asign    - `taochangmin`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3698    - `taochangmin`：add label requirement
+- **[#3696](https://gitcode.com/cann/ops-transformer/issues/3696) 通信数据量切分发送** — 23分
+  - 痛点原因：仅靠机器人自动关闭并关联已合并PR，缺乏commit引用、文档链接和release引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8539（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8539)    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3696    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i
+- **[#3689](https://gitcode.com/cann/ops-transformer/issues/3689) moe_init_routing_v3 算子 INT4 动态量化路径优化（双缓冲 + 边界修复）** — 23分
+  - 痛点原因：仅靠关联PR和机器人自动关闭评论支撑，无commit、文档或release等直接解决证据。
+  - 原文依据：
+    - [关联PR #7492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7492)    - `weihao18`：/assign [@Huang-Peng](https://gitcode.com/Huang-Peng)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3689    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Huang-Peng
+- **[#3687](https://gitcode.com/cann/ops-transformer/issues/3687) [Bug-Report|缺陷反馈]: MC2基础算子存在cleancode问题需要整改** — 23分
+  - 痛点原因：仅靠关联PR合并与机器人自动关闭，缺乏commit引用、文档链接和release引用等完整解决证据。
+  - 原文依据：
+    - [关联PR #8479（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8479)    - [关联PR #8507（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8507)    - `weihao18`：/assign [@ouyf](https://gitcode.com/ouyf)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3687    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ouyf
+- **[#3680](https://gitcode.com/cann/ops-transformer/issues/3680) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 23分
+  - 痛点原因：仅有关联PR，无commit、文档或release引用，且评论多为重复分配操作，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #8466（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8466)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `cann-robot`：### Notice This issue is already assigned to ***peijingjing***. Please do not assign repeatedly.    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3680    - `peijingjing`：add label bug-report
+- **[#3678](https://gitcode.com/cann/ops-transformer/issues/3678) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 23分
+  - 痛点原因：仅有关联PR和机器人自动关闭评论，缺乏commit引用、文档链接等实质性修复证据，且关闭说明过于简略。
+  - 原文依据：
+    - [关联PR #8428（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8428)    - `weihao18`：/assign [@cardiac_index](https://gitcode.com/cardiac_index)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3678    - `cardiac_index`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cardiac_index
+- **[#3676](https://gitcode.com/cann/ops-transformer/issues/3676) test issue mhc optional** — 23分
+  - 痛点原因：无关联PR、commit或文档等实质解决证据，仅凭测试评论和状态变更关闭。
+  - 原文依据：
+    - `weihao18`：测试issue请及时关闭    - `weixin_44156099`：closed from codehub    - `weixin_44156099`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3674](https://gitcode.com/cann/ops-transformer/issues/3674) 修复SAB BN matmulNZ出尾块搬运处理** — 23分
+  - 痛点原因：仅靠关联PR和机器人关闭，无commit引用、文档及release等直接解决证据，证据链单薄。
+  - 原文依据：
+    - [关联PR #8467（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8467)    - [关联PR #8502（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8502)    - `weihao18`：/assign @cjz_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3674    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cjz_
+- **[#3667](https://gitcode.com/cann/ops-transformer/issues/3667) [Bug-Report|缺陷反馈]: aclnn调用方式下，CANN包中profiling工具读出MhcPost算子OP Type, OP Name均不符合预期** — 23分
+  - 痛点原因：仅有关联PR和机器人自动关闭评论，缺乏commit引用、文档链接及人工对根因与修复方案的实质性说明。
+  - 原文依据：
+    - [关联PR #8447（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8447)    - `xuejinghui`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3667    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui
+- **[#3666](https://gitcode.com/cann/ops-transformer/issues/3666) [UT] quant_block_sparse_attn 算子 UT 框架搭建与覆盖率提升** — 23分
+  - 痛点原因：仅靠关联PR和机器人自动关闭，缺乏commit引用、文档及release链接等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8451（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8451)    - `weihao18`：/assign [@chenglongyu](https://gitcode.com/chenglongyu)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3666    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chenglongyu
+- **[#3663](https://gitcode.com/cann/ops-transformer/issues/3663) [Requirement|需求建议]: Support optional topk weights for MTE low latency** — 23分
+  - 痛点原因：仅靠机器人因PR合并自动关闭，缺少文档链接、release引用及commit引用等实质性解决证据。
+  - 原文依据：
+    - [关联PR #7350（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7350)    - `weihao18`：/assign [@Yuyu-Li](https://gitcode.com/Yuyu-Li)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3663    - `Yuyu-Li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Yuyu-Li
+- **[#3658](https://gitcode.com/cann/ops-transformer/issues/3658) 为MC2通算融合模板库建立目录树** — 23分
+  - 痛点原因：仅有关联PR和机器人自动关闭评论，缺乏commit、文档及release等直接解决证据。
+  - 原文依据：
+    - [关联PR #8384（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8384)    - `weihao18`：/assign [@codehjp423](https://gitcode.com/codehjp423)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3658    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @codehjp423
+- **[#3657](https://gitcode.com/cann/ops-transformer/issues/3657) [Bug-Report|缺陷反馈]: slikg同步检测修复** — 23分
+  - 痛点原因：虽有合并的PR，但缺少commit引用、文档链接及release引用，导致证据链不完整，强度不足。
+  - 原文依据：
+    - [关联PR #8416（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8416)    - [关联PR #8437（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8437)    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3657    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3654](https://gitcode.com/cann/ops-transformer/issues/3654) [Requirement|需求建议]: 增加MegaMoe跨超原型可选参数** — 23分
+  - 痛点原因：仅关联了已合并PR，但无commit引用、文档链接及release引用等直接解决证据，仅靠机器人自动关闭，证据强度不足。
+  - 原文依据：
+    - [关联PR #8309（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8309)    - `weihao18`：/assign [@zzg_code](https://gitcode.com/zzg_code)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3654    - `zzg_code`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zzg_code
+- **[#3652](https://gitcode.com/cann/ops-transformer/issues/3652) [Bug-Report|缺陷反馈]: 期望增加根据用例信息判断是否开启FD的开关** — 23分
+  - 痛点原因：虽有两个已合并PR，但无commit引用、文档链接和release引用，关闭评论仅为自动化触发，缺乏直接修复说明。
+  - 原文依据：
+    - [关联PR #8325（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8325)    - [关联PR #8366（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8366)    - `weihao18`：/assign [@zhangh2417](https://gitcode.com/zhangh2417)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3652    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangh2417
+- **[#3650](https://gitcode.com/cann/ops-transformer/issues/3650) [Bug-Report|缺陷反馈]: allgathermm CCU最大通信次数为63** — 23分
+  - 痛点原因：仅有关联PR但无commit、文档及release引用，且关闭评论仅为指派命令，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #8402（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8402)    - [关联PR #8404（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8404)    - [关联PR #8405（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8405)    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成
+- **[#3649](https://gitcode.com/cann/ops-transformer/issues/3649) [Requirement|需求建议]: qkv_rms_norm_rope_cache_with_k_scale的torch_extention载入未使能延迟…** — 23分
+  - 痛点原因：关联PR被关闭且无commit、文档或release引用，仅靠状态变更为已完成，缺乏实质性解决证据。
+  - 原文依据：
+    - [关联PR #8400（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8400)    - `shi-rui`：/assign    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成    - `shi-rui`：add label requirement    - `cann-robot`：add label Accepted
+- **[#3647](https://gitcode.com/cann/ops-transformer/issues/3647) [Requirement|需求建议]: 提升mc2算子ut覆盖率** — 23分
+  - 痛点原因：仅有关联PR与机器人自动关闭，无commit引用、文档链接及release等实质性解决证据。
+  - 原文依据：
+    - [关联PR #8395（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8395)    - `weihao18`：/assign [@mutex_lock](https://gitcode.com/mutex_lock)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3647    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @mutex_lock
+- **[#3646](https://gitcode.com/cann/ops-transformer/issues/3646) [Bug-Report|缺陷反馈]: SLIKG算子内存检测报错** — 23分
+  - 痛点原因：虽关联已合并PR，但缺乏commit引用、文档链接及release记录，仅靠机器人自动关闭，证据不足。
+  - 原文依据：
+    - [关联PR #8369（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8369)    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3646    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy
+- **[#3645](https://gitcode.com/cann/ops-transformer/issues/3645) [Requirement|需求建议]: 代码清理调整声明与检查块顺序** — 23分
+  - 痛点原因：仅靠关联PR合并与机器人自动关闭，缺乏commit引用、文档及release链接等直接解决证据。
+  - 原文依据：
+    - [关联PR #8393（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8393)    - [关联PR #8394（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8394)    - `PerrySkywalker`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3645    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker
+- **[#3642](https://gitcode.com/cann/ops-transformer/issues/3642) [Bug-Report|缺陷反馈]: 当bias为2维时，mlapo会报错** — 23分
+  - 痛点原因：仅关联了已合并PR，但无commit、文档或release链接等直接修复证据，且关闭评论仅为分配提示，导致证据强度不足。
+  - 原文依据：
+    - [关联PR #8237（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8237)    - [关联PR #8238（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8238)    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：### Notice This issue is already assigned to ***yolic***. Please do not assign repeatedly.    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3642    - `yolic`：add label bug-report
+- **[#3632](https://gitcode.com/cann/ops-transformer/issues/3632) [Bug-Report|缺陷反馈]: engram算子优化** — 23分
+  - 痛点原因：仅由机器人通过关联PR自动关闭，缺乏commit引用和文档链接等实质性修复证据。
+  - 原文依据：
+    - [关联PR #7998（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7998)    - `wuchenhao123`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***wuchenhao123***. Please do not assign repeatedly.    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3632    - `wuchenhao123`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3630](https://gitcode.com/cann/ops-transformer/issues/3630) [Requirement|需求建议]: combine发送token时可能存在连续往相同卡发送的热点访问情况，影响性能，建议修改；另外仍存在同地址偏移问题，需…** — 23分
+  - 痛点原因：虽有关联PR被合并，但缺乏commit引用、文档链接和release引用等直接证明落地的证据。
+  - 原文依据：
+    - [关联PR #7752（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7752)    - [关联PR #8212（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8212)    - `weihao18`：/assign [@zhong-zixin](https://gitcode.com/zhong-zixin)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3630    - `zhong-zixin`：add label requirement    - `cann-robot`：add label resolved
+- **[#3621](https://gitcode.com/cann/ops-transformer/issues/3621) [Bug-Report|缺陷反馈]: torch_npu.npu_moe_gating_top_k_softmax 310Pbatch过大精度异常** — 23分
+  - 痛点原因：仅有关联PR和机器人自动关闭，缺乏commit引用、文档链接及release引用等直接解决证据。
+  - 原文依据：
+    - [关联PR #8302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8302)    - [关联PR #8316（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8316)    - `weihao18`：/assign [@gcw_kTZ5XeTb](https://gitcode.com/gcw_kTZ5XeTb)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3621    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gcw_kTZ5XeTb
+- **[#3619](https://gitcode.com/cann/ops-transformer/issues/3619) [Bug-Report|缺陷反馈]: MhcPost N=4用例边界场景存在精度问题** — 23分
+  - 痛点原因：仅有关联PR和机器人关闭评论，缺乏commit、文档及release等直接解决证据引用，导致证据链薄弱。
+  - 原文依据：
+    - [关联PR #8263（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8263)    - `xuejinghui`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3619    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui
+- **[#3615](https://gitcode.com/cann/ops-transformer/issues/3615) [Bug-Report|缺陷反馈]: all_gather_matmul_aiv_mode_tiling.h 头文件中使用了uint32_t数据类型，但是没有…** — 23分
+  - 痛点原因：虽关联已合并PR，但无commit引用、文档及release等实质性修复证据，且关闭时缺乏详细的解决说明。
+  - 原文依据：
+    - [关联PR #8824（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8824)    - `wang-minbo`：好的，确认是问题，我们会尽快修复    - `zhu-mingzhe71`：closed from codehub    - `cann-robot`：add label resolved    - `wang-minbo`：assigned to @liuboxi    - `liuboxi`：assigned to @zhu-mingzhe71
+- **[#3614](https://gitcode.com/cann/ops-transformer/issues/3614) [Requirement|需求建议]: chunk_gated_delta_rule 支持 ascend950 架构** — 23分
+  - 痛点原因：仅依赖机器人自动关闭和关联PR，缺少commit、文档或release等直接解决证据链接。
+  - 原文依据：
+    - [关联PR #8318（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8318)    - `huang-chuhong`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3614    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-chuhong
+- **[#3613](https://gitcode.com/cann/ops-transformer/issues/3613) [Bug-Report|缺陷反馈]: nsa_compress_attention_infer算子的UB内存问题** — 23分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用、文档链接与release记录，仅靠机器人自动关闭导致证据薄弱。
+  - 原文依据：
+    - [关联PR #8310（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8310)    - [关联PR #8317（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8317)    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3613    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3603](https://gitcode.com/cann/ops-transformer/issues/3603) [Requirement|需求建议]: 修复qliv2和liv2算子部分参数缺省场景报错问题** — 23分
+  - 痛点原因：仅靠关联PR及关联issue的MR合并关闭，缺乏commit、文档或release等直接解决证据。
+  - 原文依据：
+    - [关联PR #8158（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8158)    - `weihao18`：/assign [@LZH_unofficial](https://gitcode.com/LZH_unofficial)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3603    - `LZH_unofficial`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @LZH_unofficial
+- **[#3593](https://gitcode.com/cann/ops-transformer/issues/3593) [Question|问题咨询]: all_gather_matmul和all_gather_matmul_v2的差别是什么，在A2和A3上是否有区别？** — 23分
+  - 痛点原因：仅通过评论文字解答，未关联PR、commit或文档链接等客观证据支撑即关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：@cdw 感谢您的反馈，我们将尽快处理    - `zhu-mingzhe71`：您好，感谢您的关注，这三个问题的说明如下： 1、这两个算子的区别主要体现在两个方面： - 功能上：all_gather_matmul算子不支持量化后的低精度输入类型，而all_gather_matmul_v2支持a8w8与a4w4两种低精…    - `captainmiaow`：无后续问题，可以关闭该issue    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成
+- **[#3592](https://gitcode.com/cann/ops-transformer/issues/3592) [Requirement|需求建议]: 需要支持新算子，支持Rms、RoPe、Norm、Quant、kvCache等算子的融合** — 23分
+  - 痛点原因：仅靠机器人自动关闭并关联PR，缺乏commit、文档及release等直接解决证据支撑。
+  - 原文依据：
+    - [关联PR #7023（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7023)    - `shi-rui`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3592    - `shi-rui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui
+- **[#3707](https://gitcode.com/cann/ops-transformer/issues/3707) [Bug-Report|缺陷反馈]: gmm类算子空指针解引用、整数溢出及除零风险** — 31分
+  - 痛点原因：关联PR仍为open状态，且无release引用和关闭评论等证明问题已修复的实质证据。
+  - 原文依据：
+    - [关联PR #8584（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8584)    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label bug-report    - `cann-robot`：assigned to @zhoushaolong
+- **[#3690](https://gitcode.com/cann/ops-transformer/issues/3690) [Bug-Report|缺陷反馈]: gmm 单多单特性存在若干问题** — 31分
+  - 痛点原因：虽有合并PR与commit，但无文档链接、release引用及人工关闭评论，仅由机器人自动关闭，缺乏详实解决说明。
+  - 原文依据：
+    - [关联PR #8515（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8515)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3690    - `zhangzhizhuo`：add label bug-report    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo
+- **[#3684](https://gitcode.com/cann/ops-transformer/issues/3684) MLA preprocess 算子在 prefix caching prefetch 场景下，prefill 阶段的 kv cache 区域在 decode …** — 31分
+  - 痛点原因：无关联PR、文档和release等解决证据，仅处于等待反馈状态，无明确解决结论或关闭说明。
+  - 原文依据：
+    - `weihao18`：/assign [@chaotang233](https://gitcode.com/chaotang233)    - `yolic`：您好，算子写k cache用的是slotmapping，batch offset是读输入x做matmul的行偏移，与cache写位置无关。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `cann-robot`：assigned to @chaotang233
+- **[#3677](https://gitcode.com/cann/ops-transformer/issues/3677) fix(mhc): mhc_pre_sinkhorn optional outputs allow nullptr when need_backward=fa…** — 31分
+  - 痛点原因：关联PR均处于关闭状态且无合并说明，无文档与release引用，关闭时未留任何解决评论。
+  - 原文依据：
+    - [关联PR #8481（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8481)    - [关联PR #8482（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8482)    - `weihao18`：/assign [@weixin_44156099](https://gitcode.com/weixin_44156099)    - `cann-robot`：assigned to @weixin_44156099
+- **[#3633](https://gitcode.com/cann/ops-transformer/issues/3633) 【bug】torch_extension没有按照mc2/mega_moe的op_tiling修改** — 31分
+  - 痛点原因：虽关联PR，但无commit引用且关闭时无评论说明，导致解决证据不充分。
+  - 原文依据：
+    - [关联PR #8313（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8313)    - [关联PR #8364（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8364)    - [关联PR #8520（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8520)    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：assigned to @SimpleBright_Man
+- **[#3628](https://gitcode.com/cann/ops-transformer/issues/3628) [Bug-Report|缺陷反馈]: cleancode重复代码整改** — 31分
+  - 痛点原因：虽有合并的PR和机器人自动关闭，但无人工关闭评论、文档链接及release引用，证据链不完整。
+  - 原文依据：
+    - [关联PR #8287（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8287)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3628    - `cann-robot`：add label resolved
+- **[#3604](https://gitcode.com/cann/ops-transformer/issues/3604) [Requirement|需求建议]: gmm mx 量化weightnz 支持weight多 tensor** — 31分
+  - 痛点原因：虽有合并PR，但缺乏文档链接与release引用，且关闭评论仅为机器人自动关闭，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #6739（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/6739)    - [关联PR #82（merged）](https://gitcode.com/cann/ops-tensor/merge_requests/82)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3604    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo
+- **[#3591](https://gitcode.com/cann/ops-transformer/issues/3591) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 31分
+  - 痛点原因：维护者未在issue内提供实质性技术解答或根因分析，仅多次引导用户提工单，缺乏具体解决证据。
+  - 原文依据：
+    - `yu-xinjie62`：您好，310P镜像相关问题建议您上昇腾社区https://www.hiascend.com/feedback/add?referrer=/zh提交工单，工单处理人将为您第一时间解决。    - `easel`：>您好，310P镜像相关问题建议您上昇腾社区https://www.hiascend.com/feedback/add?referrer=/zh提交工单，工单处理人将为您第一时间解决。 [@yu-xinjie62](https://git…    - `yu-xinjie62`：请问能否确定到是哪个具体的.so？目前本仓库负责transformer类算子，如果有该类别算子内存异常占用情况我们进一步定位分析。如果是整个CANN的问题，建议您上昇腾社区提相应工单获得完整的分析与答复。    - `easel`：>请问能否确定到是哪个具体的.so？目前本仓库负责transformer类算子，如果有该类别算子内存异常占用情况我们进一步定位分析。如果是整个CANN的问题，建议您上昇腾社区提相应工单获得完整的分析与答复。 [@yu-xinjie62](…    - `yu-xinjie62`：您好，您这里占比比较多的.so分属不同的组件，包含了框架、算子等，涉及mindspore、ops-legacy、ops-nn、ops-transformer、compiler、ge等，建议您直接在昇腾社区上提工单。    - `wang-minbo`：assigned to @yu-xinjie62
+- **[#3713](https://gitcode.com/cann/ops-transformer/issues/3713) mega_moe maxRecvTokenNum自动计算(A2、A3)** — 38分
+  - 痛点原因：虽有两个已合并的关联PR，但缺少commit引用与release引用，导致证据链不完整、强度不足。
+  - 原文依据：
+    - [关联PR #8576（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8576)    - [关联PR #8594（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8594)    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3713    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @SimpleBright_Man
+- **[#3711](https://gitcode.com/cann/ops-transformer/issues/3711) [Documentation|文档反馈]: 修复SLIG算子S1 S2校验放开** — 38分
+  - 痛点原因：缺少commit和release引用，关闭评论仅为机器人自动提示，缺乏人工验证及详细解决说明。
+  - 原文依据：
+    - [关联PR #8585（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8585)    - `weihao18`：/assign [@llwy0320](https://gitcode.com/llwy0320)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3711    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llwy0320
+- **[#3701](https://gitcode.com/cann/ops-transformer/issues/3701) [Documentation|文档反馈]:** — 38分
+  - 痛点原因：仅靠机器人自动关闭与关联PR，缺乏commit和release引用等强证据，且无人工对解决细节的说明。
+  - 原文依据：
+    - [关联PR #8574（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8574)    - `zhangjinru`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3701    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangjinru
+- **[#3695](https://gitcode.com/cann/ops-transformer/issues/3695) [Documentation|文档反馈]: 文档算子数据类型描述问题：文档中的x1_scale/x2_scale数据类型描述与算子中的定义不一致，详见问题描述…** — 38分
+  - 痛点原因：虽关联了已合并PR，但缺少commit和release引用，且仅有处理中等模糊评论，导致证据链不完整。
+  - 原文依据：
+    - [关联PR #8615（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8615)    - [关联PR #8648（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8648)    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢反馈，处理中    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3695    - `cann-robot`：add label resolved
+- **[#3693](https://gitcode.com/cann/ops-transformer/issues/3693) [Question|问题咨询]: matmul --不可用** — 38分
+  - 痛点原因：仅建议转移仓库并直接关闭标记完成，无关联PR、commit或文档等实质性修复证据，无法证明问题已解决。
+  - 原文依据：
+    - `weihao18`：你好，runtime的错误建议到这里提issue 咨询：https://gitcode.com/cann/runtime    - `weihao18`：closed from codehub    - `weihao18`：changed custom state from 进行中 to 已完成
+- **[#3691](https://gitcode.com/cann/ops-transformer/issues/3691) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache regbase recompute 模板 dv 单块场景 Σx² 未计算，tota…** — 38分
+  - 痛点原因：仅有关联PR与机器人自动关闭评论，缺乏commit引用、文档链接及人工对解决结果的详细说明与验证证据。
+  - 原文依据：
+    - [关联PR #8518（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8518)    - [关联PR #8533（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8533)    - `qianzehong`：/assign [@qianzehong](https://gitcode.com/qianzehong)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3660](https://gitcode.com/cann/ops-transformer/issues/3660) [Documentation|文档反馈]: inplace_fused_causal_conv1d的max_query_len默认值限制** — 38分
+  - 痛点原因：虽有关联PR和机器人自动关闭，但缺乏具体commit引用及人工对修复结果的明确验证说明。
+  - 原文依据：
+    - [关联PR #8430（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8430)    - `weihao18`：/assign [@xiapengcheng5](https://gitcode.com/xiapengcheng5)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3660    - `xiapengcheng5`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xiapengcheng5
+- **[#3627](https://gitcode.com/cann/ops-transformer/issues/3627) [Documentation|文档反馈]: aclnnGroupedMatmulAddV2、aclnnGroupedMatmulFinalizeRouting…** — 38分
+  - 痛点原因：关联PR未全部合并，缺少commit和release引用，且关闭评论仅为路由分配，缺乏实质解决证据。
+  - 原文依据：
+    - [关联PR #8838（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8838)    - [关联PR #8840（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8840)    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：收到问题，已路由给相关责任人修复。    - `kknan`：https://gitcode.com/cann/ops-transformer/blob/master/gmm/grouped_matmul_add/docs/aclnnGroupedMatmulAddV2.md 已修复，剩余问题待上库    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3627
+- **[#3622](https://gitcode.com/cann/ops-transformer/issues/3622) [Documentation|文档反馈]: BlitzSparseAttention** — 38分
+  - 痛点原因：解决证据强度得分38，低于合格线 60
+  - 原文依据：
+    - [关联PR #8333（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8333)    - `weihao18`：/assign [@kostyab](https://gitcode.com/kostyab)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3622    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kostyab
+- **[#3612](https://gitcode.com/cann/ops-transformer/issues/3612) [Documentation|文档反馈]: aclnnNsaSelectedAttentionInfer算子md文档格式修复** — 38分
+  - 痛点原因：虽有关联PR和机器人关闭说明，但缺失commit引用与release引用，导致证据链不完整。
+  - 原文依据：
+    - [关联PR #8288（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8288)    - `weihao18`：/assign [@yyt_hw](https://gitcode.com/yyt_hw)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3612    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yyt_hw
+- **[#3610](https://gitcode.com/cann/ops-transformer/issues/3610) [Documentation|文档反馈]: 删除dispatch&combine算子文档tp2相关描述** — 38分
+  - 痛点原因：虽有关联PR，但缺乏commit和release引用，关闭评论仅为机器人模板回复，无人工对解决结果的详细说明。
+  - 原文依据：
+    - [关联PR #8279（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8279)    - `weihao18`：/assign [@yangzeheng](https://gitcode.com/yangzeheng)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3610    - `yangzeheng`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yangzeheng
+- **[#3609](https://gitcode.com/cann/ops-transformer/issues/3609) [Documentation|文档反馈]: 资料格式修复** — 38分
+  - 痛点原因：虽关联多个已合并PR，但缺少commit直接引用与release引用，导致证据链不完整。
+  - 原文依据：
+    - [关联PR #8305（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8305)    - [关联PR #8306（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8306)    - [关联PR #8359（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8359)    - [关联PR #8360（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8360)    - `weihao18`：/assign [@fazhenyao123](https://gitcode.com/fazhenyao123)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3609
+- **[#3608](https://gitcode.com/cann/ops-transformer/issues/3608) QuantGroupedMatmulInplaceAdd算子的参数说明长时间未更新** — 38分
+  - 痛点原因：虽有已合并的关联PR，但缺乏commit和release引用，且关闭评论未明确说明修复结果，导致修复过程难以追溯。
+  - 原文依据：
+    - [关联PR #8831（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8831)    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：第二个问题：是的，量化模式支持对应的已支持数据类型没问题。 第一个问题能麻烦再详细描述下吗    - `yunjuanya123`：这个链接https://gitcode.com/cann/ops-transformer/blob/master/gmm/quant_grouped_matmul_inplace_add/README.md里面的，参数说明一直没更新 ![…    - `kknan`：收到，修复代码上库中    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3608
+- **[#3605](https://gitcode.com/cann/ops-transformer/issues/3605) [Requirement|需求建议]: 增加训练metadata文档资料** — 38分
+  - 痛点原因：虽关联已合并PR，但无commit和release引用，仅靠机器人自动关闭，缺乏人工解决总结，证据链不完整。
+  - 原文依据：
+    - [关联PR #8153（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8153)    - `weihao18`：/assign [@qq_32807861](https://gitcode.com/qq_32807861)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3605    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qq_32807861
+- **[#3602](https://gitcode.com/cann/ops-transformer/issues/3602) [Documentation|文档反馈]: Mlaprolog v1和v2的README.md中有部分跳转链接失效，需整改** — 38分
+  - 痛点原因：虽有合并PR，但无commit引用，且关闭评论仅为系统自动关闭，缺乏人工确认解决的有效证据。
+  - 原文依据：
+    - [关联PR #8178（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8178)    - [关联PR #8209（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8209)    - `weihao18`：/assign [@wangss21](https://gitcode.com/wangss21)    - `wangss21`：closed from codehub    - `wangss21`：changed custom state from 进行中 to 已完成    - `wangss21`：add label documentation
+- **[#3599](https://gitcode.com/cann/ops-transformer/issues/3599) [Bug-Report|缺陷反馈]: flash_attn 测试框架 run_case_load 函数 LSE 精度对比因 inf 哨兵值不一致误报失败** — 38分
+  - 痛点原因：虽有合并的关联PR，但缺乏commit引用与文档链接，且仅由机器人自动关闭，缺乏人工验证与修复细节说明。
+  - 原文依据：
+    - [关联PR #8286（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8286)    - `weihao18`：/assign [@ChenYiran](https://gitcode.com/ChenYiran)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3599    - `ChenYiran`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ChenYiran
+- **[#3596](https://gitcode.com/cann/ops-transformer/issues/3596) [Documentation|文档反馈]: alltoallvgmm,.gmmalltoallv文档markdown问题清理** — 38分
+  - 痛点原因：虽有合并的关联PR，但缺少commit引用，且由机器人自动关闭，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #8272（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8272)    - [关联PR #8278（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8278)    - `weihao18`：/assign [@wuziyu](https://gitcode.com/wuziyu)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3596    - `wuziyu`：add label documentation    - `cann-robot`：add label resolved
+- **[#3700](https://gitcode.com/cann/ops-transformer/issues/3700) [Bug-Report|缺陷反馈]: posembedding/inplace_partial_rotary_mul_grad/tests/ut/op_hos…** — 46分
+  - 痛点原因：虽有合并的关联PR，但缺少人工确认解决的关闭评论，仅靠机器人自动关闭导致证据不足。
+  - 原文依据：
+    - [关联PR #8562（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8562)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3700    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `huang-chuhong`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved
+- **[#3600](https://gitcode.com/cann/ops-transformer/issues/3600) [Requirement|需求建议]: （A2/A3）FlashAttentionScore 算子在 D>128 情况下开启 L1 Reuse** — 46分
+  - 痛点原因：缺乏关联 PR 和 release 引用，仅有指派操作而无解决结论或关闭评论，导致解决证据不足。
+  - 原文依据：
+    - `weihao18`：/assign [@monologue815](https://gitcode.com/monologue815)    - `cann-robot`：assigned to @monologue815    - `yu-xinjie62`：assigned to @huang-wei-chen
+- **[#3714](https://gitcode.com/cann/ops-transformer/issues/3714) [Bug-Report|缺陷反馈]: 超大shape时（MN 超过 uint32最大值时），算子计算结果出现精度异常问题，经代码检视发现存在中间结果溢出的情况…** — 54分
+  - 痛点原因：虽有关联PR和commit，但缺少文档链接与release引用，且关闭评论仅表示修复处理中，缺乏最终解决确认。
+  - 原文依据：
+    - [关联PR #8687（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8687)    - [关联PR #8864（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8864)    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：[@LetsAiGo](https://gitcode.com/LetsAiGo) 感谢您的反馈，修复处理中    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3714    - `cann-robot`：add label resolved
+- **[#3705](https://gitcode.com/cann/ops-transformer/issues/3705) [Bug-Report|缺陷反馈]: flash_attn arch35头文件包含路径在安装布局下编译失败** — 54分
+  - 痛点原因：关联的两个PR均处于关闭状态且无最终合并证据，关闭评论仅为命令操作，缺乏实质解决说明。
+  - 原文依据：
+    - [关联PR #8586（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8586)    - [关联PR #8587（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8587)    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成
+- **[#3692](https://gitcode.com/cann/ops-transformer/issues/3692) [Bug-Report|缺陷反馈]: aclnnFlashAttentionScore参数校验** — 54分
+  - 痛点原因：虽有合并的PR和commit，但缺乏文档链接与release引用，且仅靠机器人自动关闭，证据链不完整。
+  - 原文依据：
+    - [关联PR #8517（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8517)    - [关联PR #8530（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8530)    - `weihao18`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3692    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149
+- **[#3686](https://gitcode.com/cann/ops-transformer/issues/3686) [Bug-Report|缺陷反馈]: FlashAttentionScore多个模板存在内存竞争问题** — 54分
+  - 痛点原因：虽有关联PR和commit引用，但缺少文档链接与release引用，导致证据链不完整而强度不足。
+  - 原文依据：
+    - [关联PR #8415（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8415)    - [关联PR #8498（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8498)    - `weihao18`：/assign [@huang-wei-chen](https://gitcode.com/huang-wei-chen)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3686    - `huang-wei-chen`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3682](https://gitcode.com/cann/ops-transformer/issues/3682) FA TND 布局的 CombineSplitKVRes 在 batch 间 S1 长度不同时，lseOffset 的预填值覆盖了有效 batch 的 LSE…** — 54分
+  - 痛点原因：无关联PR佐证代码修复，且维护者先称问题不存在后又称已解决，结论矛盾导致证据不足。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-chuhong](https://gitcode.com/huang-chuhong)    - `huang-chuhong`：感谢补充。经分析，#3682 描述的问题不存在，具体说明如下： ## 1. 不存在 lseOffset 重复覆盖问题 #3681 的修复中 `lseBatchOffset` 取累积有效 S1（`actualSeqQlenAddr[bIdx…    - `huang-chuhong`：您好，当前问题已经解决，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted
+- **[#3681](https://gitcode.com/cann/ops-transformer/issues/3681) [Bug-Report|缺陷反馈]: FlashAttention TND布局下lseOffset越界写导致LSE输出inf** — 54分
+  - 痛点原因：虽有合并的PR和commit，但缺乏文档链接与release引用，且部分关联PR被关闭，导致解决证据链不完整。
+  - 原文依据：
+    - [关联PR #8490（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8490)    - [关联PR #8491（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8491)    - [关联PR #8492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8492)    - `huang-chuhong`：/assign    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成
+- **[#3673](https://gitcode.com/cann/ops-transformer/issues/3673) [Bug-Report|缺陷反馈]: mlapo cachemode为2时，当传入cache storage shape为nd时会error** — 54分
+  - 痛点原因：缺少文档与release引用，且关闭评论仅为机器人自动关闭的模板回复，缺乏人工解决说明。
+  - 原文依据：
+    - [关联PR #8422（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8422)    - [关联PR #8423（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8423)    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3673    - `yolic`：add label bug-report    - `cann-robot`：add label resolved
+- **[#3655](https://gitcode.com/cann/ops-transformer/issues/3655) [Bug-Report|缺陷反馈]: cleancode超大圈复杂度函数整改** — 54分
+  - 痛点原因：虽有合并PR与commit引用，但缺少文档链接和release引用，且仅靠机器人自动关闭，缺乏人工验证解决的证据。
+  - 原文依据：
+    - [关联PR #8380（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8380)    - [关联PR #8444（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8444)    - `weihao18`：/assign [@wangyijing](https://gitcode.com/wangyijing)    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3655    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangyijing
+- **[#3631](https://gitcode.com/cann/ops-transformer/issues/3631) [Requirement|需求建议]: GroupedMatmulSwigluQuantV2算子mx weightnz场景需支持 weight多tensor** — 54分
+  - 痛点原因：虽有合并的关联PR，但缺乏文档链接与release引用，且关闭评论仅为机器人自动回复，无人工详细说明解决结果。
+  - 原文依据：
+    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7302)    - `fengxingpan1`：/assign    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3631    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fengxingpan1
+- **[#3611](https://gitcode.com/cann/ops-transformer/issues/3611) [Bug-Report|缺陷反馈]: FA MLA noquant场景下skip的batch导致attention_out计算错误** — 54分
+  - 痛点原因：关联的4个PR均为closed而非merged状态，且无文档链接与release引用，修复落地证据不足。
+  - 原文依据：
+    - [关联PR #8311（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8311)    - [关联PR #8312（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8312)    - [关联PR #8314（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8314)    - [关联PR #8315（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8315)    - [关联PR #8319（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8319)    - [关联PR #8320（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8320)
+#### PP-02 关闭质量极低缺乏解决证据（I3 · 总结与关闭）
+
+- **[#3723](https://gitcode.com/cann/ops-transformer/issues/3723) [Requirement|需求建议]: mhc_post实现hres可选支持** — 0分
+  - 痛点原因：仅由机器人因MR合并自动关闭，无方案文档沉淀且关闭说明极简，缺乏后续复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3723    - `xuejinghui`：add label requirement    - `cann-robot`：add label resolved    - `xuejinghui`：/assign    - `cann-robot`：assigned to @xuejinghui    - [关联PR #8550（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8550)
+- **[#3721](https://gitcode.com/cann/ops-transformer/issues/3721) gatherV2算子新增simd小尾轴模板** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档沉淀与复用链接，未留下可供其他用户参考的解决方案。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-transformer#issue3721    - `cann-robot`：add label resolved    - `z30075199`：/assign    - `cann-robot`：assigned to @z30075199    - [关联PR #7349（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7349)
+- **[#3720](https://gitcode.com/cann/ops-transformer/issues/3720) fix tiling check** — 0分
+  - 痛点原因：关闭说明仅由机器人自动关联合并请求，无方案文档化记录且未链接重复主issue，缺乏复用细节。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3720    - `cann-robot`：add label resolved    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：assigned to @z1017i    - [关联PR #8610（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8610)
+- **[#3718](https://gitcode.com/cann/ops-transformer/issues/3718) [Requirement|需求建议]: 【生态算子贡献】新增斜视诊断专用算子 EyeDecoupledAttention 与 CausalTopoGCN** — 0分
+  - 痛点原因：关闭时无任何说明，缺乏方案文档与可复用链接，且关联PR未合并，未留下任何可复用的产出。
+  - 原文依据：
+    - `m0_64571491`：/assign    - `cann-robot`：assigned to @m0_64571491    - [关联PR #8613（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8613)
+- **[#3712](https://gitcode.com/cann/ops-transformer/issues/3712) [Requirement|需求建议]: MegaMoE增加异常Dump维测能力** — 0分
+  - 痛点原因：仅由机器人自动关联MR合并关闭，缺乏人工总结的最终方案与文档沉淀，无法提供复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3712    - `ryan_li`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@ryan_li](https://gitcode.com/ryan_li)    - `cann-robot`：assigned to @ryan_li    - [关联PR #8567（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8567)
+- **[#3709](https://gitcode.com/cann/ops-transformer/issues/3709) [Requirement|需求建议]: MatmulReduceScatterV2 AICPU场景限制tiling切分最大4轮** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化，仅由机器人因关联MR合并自动关闭，未留下供社区复用的有效信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3709    - `andingfangt`：add label requirement    - `cann-robot`：add label resolved    - `andingfangt`：assigned to @andingfangt    - [关联PR #8154（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8154)
+- **[#3708](https://gitcode.com/cann/ops-transformer/issues/3708) 【mc2】matmul_all_reduce在vec上使用了升精度累加，和小算子行为不一致，需要修改** — 0分
+  - 痛点原因：仅由机器人随关联PR合并自动关闭，关闭说明为0字且无方案文档化，未留下可复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3708    - `cann-robot`：add label resolved    - [关联PR #8544（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8544)
+- **[#3707](https://gitcode.com/cann/ops-transformer/issues/3707) [Bug-Report|缺陷反馈]: gmm类算子空指针解引用、整数溢出及除零风险** — 0分
+  - 痛点原因：缺乏关闭说明、方案文档及复现链接，且关联PR未合并，无任何复用价值。
+  - 原文依据：
+    - `zhoushaolong`：add label bug-report    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `cann-robot`：assigned to @zhoushaolong    - [关联PR #8584（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8584)
+- **[#3706](https://gitcode.com/cann/ops-transformer/issues/3706) [Documentation|文档反馈]: trans仓doc tools和aidd内容修改合入9.1.0专项** — 0分
+  - 痛点原因：关闭说明为空且关联PR未合并，未沉淀任何可供后续复用的经验或方案。
+  - 原文依据：
+    - `caiwenwen`：分配给我自己    - `weihao18`：/assign [@caiwenwen](https://gitcode.com/caiwenwen)    - `cann-robot`：assigned to @caiwenwen    - [关联PR #8538（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8538)    - [关联PR #8638（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8638)    - [关联PR #8639（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8639)
+- **[#3705](https://gitcode.com/cann/ops-transformer/issues/3705) [Bug-Report|缺陷反馈]: flash_attn arch35头文件包含路径在安装布局下编译失败** — 0分
+  - 痛点原因：仅靠机器人指令自动关闭且说明仅7字，无解决方案文档化记录与关联链接，无法供他人复用解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：assigned to @PerrySkywalker    - [关联PR #8586（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8586)
+- **[#3704](https://gitcode.com/cann/ops-transformer/issues/3704) [Requirement|需求建议]: MatmulReduceScatterV2新增mxfp4量化场景** — 0分
+  - 痛点原因：关闭时未留下任何文字说明、方案文档或重复链接，未沉淀解决经验供后续复用。
+  - 原文依据：
+    - `Kiana1216`：add label requirement    - [关联PR #7195（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7195)    - [关联PR #8596（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8596)
+- **[#3702](https://gitcode.com/cann/ops-transformer/issues/3702) [Bug-Report|缺陷反馈]: GMM伪量化中存在变量未使用、魔鬼数字等问题** — 0分
+  - 痛点原因：关闭说明仅机器人自动回复且字数少，无方案文档化及关联链接，未沉淀问题原因与解决方案，无法供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3702    - `shi-rui`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@shi-rui](https://gitcode.com/shi-rui)    - `cann-robot`：assigned to @shi-rui    - [关联PR #8031（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8031)
+- **[#3699](https://gitcode.com/cann/ops-transformer/issues/3699) [Requirement|需求建议]: 移除 ComputeAxisIdxByBnAndGs1 未使用的 multiCoreInnerIdx 参数** — 0分
+  - 痛点原因：仅由机器人随MR合并自动关闭，无方案文档沉淀且关闭说明仅7字，未留下任何可复用的参考信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3699    - `cann-robot`：add label resolved    - `PerrySkywalker`：/assign    - `cann-robot`：assigned to @PerrySkywalker    - [关联PR #8549（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8549)
+- **[#3698](https://gitcode.com/cann/ops-transformer/issues/3698) [Requirement|需求建议]: MhcPreSinkhorn正反向算子支持GE图模式** — 0分
+  - 痛点原因：关闭说明仅6字且由机器人自动触发，无方案文档沉淀与复用指引，对其他用户无参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3698    - `taochangmin`：add label requirement    - `cann-robot`：add label resolved    - `taochangmin`：/asign    - `taochangmin`：/assign    - `cann-robot`：assigned to @taochangmin
+- **[#3697](https://gitcode.com/cann/ops-transformer/issues/3697) [Requirement|需求建议]: QLIV2批跑pytest功能适配** — 0分
+  - 痛点原因：关闭时零字说明且无方案文档与重复链接，未沉淀任何可复用信息。
+  - 原文依据：
+    - `zzzyh22`：add label requirement    - `weihao18`：你好，QLIV2批跑功能缺失，可以描述得更具体一些吗
+- **[#3696](https://gitcode.com/cann/ops-transformer/issues/3696) 通信数据量切分发送** — 0分
+  - 痛点原因：关闭说明仅45字且无方案文档与重复链接，仅靠机器人随MR合并自动关闭，未沉淀可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3696    - `cann-robot`：add label resolved    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：assigned to @z1017i    - [关联PR #8539（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8539)
+- **[#3694](https://gitcode.com/cann/ops-transformer/issues/3694) [Requirement|需求建议]: 算子原型迁移至所属仓** — 0分
+  - 痛点原因：关闭时无任何文字说明，且缺乏方案文档与重复issue链接，导致关闭后无可追溯与复用的信息。
+  - 原文依据：
+    - `weihao18`：/assign [@Hana77](https://gitcode.com/Hana77)    - `cann-robot`：assigned to @Hana77    - [关联PR #8540（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8540)    - [关联PR #8552（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8552)    - [关联PR #8554（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8554)    - [关联PR #8564（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8564)
+- **[#3690](https://gitcode.com/cann/ops-transformer/issues/3690) [Bug-Report|缺陷反馈]: gmm 单多单特性存在若干问题** — 0分
+  - 痛点原因：无关闭说明、方案文档及复用链接，仅由机器人自动关联MR关闭，未沉淀任何复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3690    - `zhangzhizhuo`：add label bug-report    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - [关联PR #8515（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8515)
+- **[#3688](https://gitcode.com/cann/ops-transformer/issues/3688) [Requirement|需求建议]: inplace_partial_rotary_mul 算子支持autograd 自动微分** — 0分
+  - 痛点原因：仅由机器人关联MR自动关闭，无关闭说明、方案文档及重复链接，未沉淀复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3688    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan
+- **[#3687](https://gitcode.com/cann/ops-transformer/issues/3687) [Bug-Report|缺陷反馈]: MC2基础算子存在cleancode问题需要整改** — 0分
+  - 痛点原因：关闭说明仅由机器人自动生成，无方案文档化与人工沉淀的解决方案，导致后续无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3687    - `cann-robot`：add label resolved    - `weihao18`：/assign [@ouyf](https://gitcode.com/ouyf)    - `cann-robot`：assigned to @ouyf    - [关联PR #8479（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8479)    - [关联PR #8507（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8507)
+- **[#3684](https://gitcode.com/cann/ops-transformer/issues/3684) MLA preprocess 算子在 prefix caching prefetch 场景下，prefill 阶段的 kv cache 区域在 decode …** — 0分
+  - 痛点原因：因长期无反馈被机器人自动关闭，关闭说明为0字且未沉淀解决方案，无复用价值。
+  - 原文依据：
+    - `yolic`：add label wait-feedback    - `weihao18`：/assign [@chaotang233](https://gitcode.com/chaotang233)    - `yolic`：您好，算子写k cache用的是slotmapping，batch offset是读输入x做matmul的行偏移，与cache写位置无关。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `cann-robot`：assigned to @chaotang233
+- **[#3683](https://gitcode.com/cann/ops-transformer/issues/3683) dispatch 算子的 token 分配在 TP>1 + PP>1 时，micro batch 边界的 token 在不同 rank 上被分配到不同的专家** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档，仅停留在分配负责人和索要路径阶段，未留存可复用的解决信息。
+  - 原文依据：
+    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cpy_123456`：您好，方便提供下算子文件路径吗，dispatch有多个算子，便于我们找到相关专家处理    - `cann-robot`：assigned to @cpy_123456
+- **[#3681](https://gitcode.com/cann/ops-transformer/issues/3681) [Bug-Report|缺陷反馈]: FlashAttention TND布局下lseOffset越界写导致LSE输出inf** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档，未记录问题原因与修复方案，无法为其他用户提供复用参考。
+  - 原文依据：
+    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `huang-chuhong`：/assign    - `cann-robot`：assigned to @huang-chuhong    - [关联PR #8490（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8490)
+- **[#3677](https://gitcode.com/cann/ops-transformer/issues/3677) fix(mhc): mhc_pre_sinkhorn optional outputs allow nullptr when need_backward=fa…** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化，仅关联已关闭PR，未留下任何可复用的排查与解决经验。
+  - 原文依据：
+    - `weihao18`：/assign [@weixin_44156099](https://gitcode.com/weixin_44156099)    - `cann-robot`：assigned to @weixin_44156099    - [关联PR #8481（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8481)    - [关联PR #8482（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8482)
+- **[#3676](https://gitcode.com/cann/ops-transformer/issues/3676) test issue mhc optional** — 0分
+  - 痛点原因：该测试issue无方案文档与重复链接，关闭说明仅12字且为系统自动生成，缺乏任何复用价值。
+  - 原文依据：
+    - `weixin_44156099`：closed from codehub    - `weixin_44156099`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `weihao18`：测试issue请及时关闭
+- **[#3675](https://gitcode.com/cann/ops-transformer/issues/3675) [Bug-Report|缺陷反馈]: 变量定义 和 函数定义 不合理导致 代码编译过程产生告警，建议修改代码实现消除告警，详见问题单正文** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，未记录任何解决方案供后续参考。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢您的反馈，处理中    - `cann-robot`：assigned to @captainmiaow
+- **[#3674](https://gitcode.com/cann/ops-transformer/issues/3674) 修复SAB BN matmulNZ出尾块搬运处理** — 0分
+  - 痛点原因：关闭说明仅13字且无方案文档，仅由机器人随MR合并自动关闭，未留下任何技术细节供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3674    - `cann-robot`：add label resolved    - `weihao18`：/assign @cjz_    - `cann-robot`：assigned to @cjz_    - [关联PR #8467（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8467)    - [关联PR #8502（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8502)
+- **[#3673](https://gitcode.com/cann/ops-transformer/issues/3673) [Bug-Report|缺陷反馈]: mlapo cachemode为2时，当传入cache storage shape为nd时会error** — 0分
+  - 痛点原因：关闭说明仅为机器人关联MR合并的自动回复，无实质解决方案及文档沉淀，无法供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3673    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：assigned to @yolic    - [关联PR #8422（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8422)
+- **[#3671](https://gitcode.com/cann/ops-transformer/issues/3671) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，transformer仓编译工程适配** — 0分
+  - 痛点原因：关闭说明为空且无方案文档与重复链接，仅由机器人自动关闭，未沉淀任何可供复用的上下文信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3671    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - [关联PR #8460（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8460)    - [关联PR #8725（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8725)
+- **[#3670](https://gitcode.com/cann/ops-transformer/issues/3670) [Bug-Report|缺陷反馈]: prompt_flash_attention算子的UB内存问题** — 0分
+  - 痛点原因：关闭时无任何文字说明与方案文档，仅通过系统操作直接关闭，缺乏复用指引，无法为后续类似问题提供参考价值。
+  - 原文依据：
+    - `wangsong96`：closed from codehub    - `wangsong96`：changed custom state from 进行中 to 已完成    - `wangsong96`：add label bug-report    - `cann-robot`：add label Accepted    - [关联PR #8459（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8459)
+- **[#3669](https://gitcode.com/cann/ops-transformer/issues/3669) [Bug-Report|缺陷反馈]: SFAG算子偶现卡死问题** — 0分
+  - 痛点原因：仅由机器人随关联MR合并自动关闭，关闭说明为空且无方案文档，未留下可供其他用户参考的解决方案信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3669    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - [关联PR #8443（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8443)    - [关联PR #8445（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8445)
+- **[#3668](https://gitcode.com/cann/ops-transformer/issues/3668) MegaMoe get_mega_moe_ccl_buffer_size和get_symm_buffer_for_mega_moe接口入参一致性** — 0分
+  - 痛点原因：关闭时未留下任何文字说明，且无方案文档与重复链接，导致解决经验无法被后续复用。
+  - 原文依据：
+    - `weixin_49300047`：assigned to @weixin_49300047    - [关联PR #8457（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8457)
+- **[#3667](https://gitcode.com/cann/ops-transformer/issues/3667) [Bug-Report|缺陷反馈]: aclnn调用方式下，CANN包中profiling工具读出MhcPost算子OP Type, OP Name均不符合预期** — 0分
+  - 痛点原因：机器人因MR合并自动关闭，关闭说明仅7字且无方案文档化，未留存任何可供复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3667    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `xuejinghui`：/assign    - `cann-robot`：assigned to @xuejinghui    - [关联PR #8447（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8447)
+- **[#3664](https://gitcode.com/cann/ops-transformer/issues/3664) [Bug-Report|缺陷反馈]: FIA tiling写死核数，不兼容Ascend950** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档与链接，仅由系统直接关闭，未留存任何解决经验供他人参考。
+  - 原文依据：
+    - `demoauguste`：closed from codehub
+- **[#3663](https://gitcode.com/cann/ops-transformer/issues/3663) [Requirement|需求建议]: Support optional topk weights for MTE low latency** — 0分
+  - 痛点原因：关闭说明仅机器人自动关联相似issue，无人工方案文档总结，未提供主issue链接，缺乏复用参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3663    - `Yuyu-Li`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@Yuyu-Li](https://gitcode.com/Yuyu-Li)    - `cann-robot`：assigned to @Yuyu-Li    - [关联PR #7350（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7350)
+- **[#3661](https://gitcode.com/cann/ops-transformer/issues/3661) [Bug-Report|缺陷反馈]: allgathermm的test文件夹下atk测试代码修复** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化记录，仅关联PR关闭，未沉淀任何复用信息。
+  - 原文依据：
+    - `sangzhenguo`：assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `sangzhenguo`：/assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `cann-robot`：assigned to @sangzhenguo    - [关联PR #8385（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8385)
+- **[#3656](https://gitcode.com/cann/ops-transformer/issues/3656) [Bug-Report|缺陷反馈]: mhc_pre_sinkhorn() takes from 6 to 8 positional arguments bu…** — 0分
+  - 痛点原因：关闭时无任何文字说明，且关联的PR仍处于open状态，未沉淀问题解决过程，缺乏复用价值。
+  - 原文依据：
+    - `weihao18`：/assign [@taochangmin](https://gitcode.com/taochangmin)    - `cann-robot`：### Notice This issue can not be assigned to ***taochangmin***. Please try to assign to the repository members.    - `weihao18`：assigned to @taochangmin    - [关联PR #8902（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8902)
+- **[#3654](https://gitcode.com/cann/ops-transformer/issues/3654) [Requirement|需求建议]: 增加MegaMoe跨超原型可选参数** — 0分
+  - 痛点原因：关闭时未提供方案文档或关联主issue链接，仅以49字说明因MR合并而关闭，缺乏可复用的解决路径信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3654    - `zzg_code`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@zzg_code](https://gitcode.com/zzg_code)    - `cann-robot`：assigned to @zzg_code    - [关联PR #8309（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8309)
+- **[#3651](https://gitcode.com/cann/ops-transformer/issues/3651) [Requirement|需求建议]: 提供新接口mixed_quant_flash_attn的torch_extension适配** — 0分
+  - 痛点原因：关闭时无任何文字说明，未沉淀方案文档或关联重复issue链接，导致解决经验无法复用。
+  - 原文依据：
+    - `yangyibin`：add label requirement    - `weihao18`：/assign [@yangyibin](https://gitcode.com/yangyibin)    - `cann-robot`：assigned to @yangyibin    - [关联PR #5014（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/5014)
+- **[#3649](https://gitcode.com/cann/ops-transformer/issues/3649) [Requirement|需求建议]: qkv_rms_norm_rope_cache_with_k_scale的torch_extention载入未使能延迟…** — 0分
+  - 痛点原因：无方案文档与重复链接，关闭说明仅7字，仅由代码库自动关闭，未留下任何可复用经验。
+  - 原文依据：
+    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成    - `shi-rui`：add label requirement    - `cann-robot`：add label Accepted    - `shi-rui`：/assign    - `cann-robot`：assigned to @shi-rui
+- **[#3645](https://gitcode.com/cann/ops-transformer/issues/3645) [Requirement|需求建议]: 代码清理调整声明与检查块顺序** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档沉淀，仅由机器人因MR合并自动关闭，未留下可供复用的经验总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3645    - `cann-robot`：add label resolved    - `PerrySkywalker`：/assign    - `cann-robot`：assigned to @PerrySkywalker    - [关联PR #8393（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8393)    - [关联PR #8394（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8394)
+- **[#3644](https://gitcode.com/cann/ops-transformer/issues/3644) [Requirement|需求建议]: 新增stem_oam_prep_varlen_q算子** — 0分
+  - 痛点原因：因无方案文档、无重复链接且关闭说明为0字，未沉淀任何可复用信息。
+  - 原文依据：
+    - `fengjiawei1`：add label requirement    - `liudan12`：您好，对于您的需求描述，是否可以补充详细点信息呢？ 可以参照： https://gitcode.com/cann/ops-transformer/issues/3    - `fengjiawei1`：assigned to @fengjiawei1
+- **[#3643](https://gitcode.com/cann/ops-transformer/issues/3643) [Requirement|需求建议]: 新增quant_compressor算子，及其torch-extension适配** — 0分
+  - 痛点原因：关闭说明为空，未沉淀方案文档且无重复issue链接，未留下任何可复用信息。
+  - 原文依据：
+    - `guigui_jzh`：add label requirement    - `guigui_jzh`：/assign [@guigui_jzh](https://gitcode.com/guigui_jzh)    - `cann-robot`：assigned to @guigui_jzh    - [关联PR #8387（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8387)
+- **[#3642](https://gitcode.com/cann/ops-transformer/issues/3642) [Bug-Report|缺陷反馈]: 当bias为2维时，mlapo会报错** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，无人工方案总结与文档沉淀，无法为后续类似问题提供参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3642    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：### Notice This issue is already assigned to ***yolic***. Please do not assign repeatedly.    - `yolic`：assigned to @yolic
+- **[#3641](https://gitcode.com/cann/ops-transformer/issues/3641) [Bug-Report|缺陷反馈]: moe_finalize_routing_v2_grad缺少同步信号，导致内存越界** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档化，仅由机器人因关联MR合并自动关闭，未沉淀任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3641    - `yangziqi_007`：add label bug-report    - `cann-robot`：add label resolved    - `yangziqi_007`：assigned to @yangziqi_007    - [关联PR #8348（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8348)    - [关联PR #8356（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8356)
+- **[#3640](https://gitcode.com/cann/ops-transformer/issues/3640) [Bug-Report|缺陷反馈]: FAG在maxworkspace接口计算时，无法获得effectiveT1/effectiveT2，此时会导致计算的wo…** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，仅靠机器人因关联MR合并自动关闭，未留下任何可供复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3640    - `yuhao_`：add label bug-report    - `cann-robot`：add label resolved    - `yuhao_`：assigned to @yuhao_    - [关联PR #8281（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8281)
+- **[#3639](https://gitcode.com/cann/ops-transformer/issues/3639) [Bug-Report|缺陷反馈]: StemIndexer计算topkCountNum时decayLen应该在小于等于1时直接返回，等于1时后续计算无意义** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，仅由机器人关联合并请求自动关闭，未沉淀任何可供复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3639    - `skykone1`：add label bug-report    - `cann-robot`：add label resolved    - `skykone1`：assigned to @skykone1    - [关联PR #8372（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8372)
+- **[#3638](https://gitcode.com/cann/ops-transformer/issues/3638) [Requirement|需求建议]: LightningIndexer可支持0轴非连续** — 0分
+  - 痛点原因：关闭时无任何文字说明，缺乏方案文档与重复链接，且关联PR已关闭，导致无复用价值。
+  - 原文依据：
+    - `weihao18`：/assign [@arcticius](https://gitcode.com/arcticius)    - `cann-robot`：assigned to @arcticius    - [关联PR #7620（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7620)
+- **[#3636](https://gitcode.com/cann/ops-transformer/issues/3636) [Requirement|需求建议]: inplace_partial_rotary_mul_grad算子缺少torch api接口** — 0分
+  - 痛点原因：关闭说明为空且无方案文档与重复链接，仅由机器人随MR合并自动关闭，缺乏参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3636    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `alfengyuan`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted    - `alfengyuan`：assigned to @alfengyuan
+- **[#3635](https://gitcode.com/cann/ops-transformer/issues/3635) [Bug-Report|缺陷反馈]: NsaCompAtten内存检测问题** — 0分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，无任何关闭说明与方案文档，未沉淀复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3635    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - [关联PR #8365（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8365)    - [关联PR #8367（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8367)
+- **[#3634](https://gitcode.com/cann/ops-transformer/issues/3634) [Requirement|需求建议]: FA要接入ttk框架** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，仅由机器人随关联PR合并自动关闭，未沉淀任何复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3634    - `SH_jingsong`：add label requirement    - `cann-robot`：add label resolved    - [关联PR #8185（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8185)
+- **[#3633](https://gitcode.com/cann/ops-transformer/issues/3633) 【bug】torch_extension没有按照mc2/mega_moe的op_tiling修改** — 0分
+  - 痛点原因：关闭时未留下任何文字说明，仅关联PR，导致后续无法复用其解决经验。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：assigned to @SimpleBright_Man    - [关联PR #8313（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8313)    - [关联PR #8364（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8364)    - [关联PR #8520（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8520)
+- **[#3632](https://gitcode.com/cann/ops-transformer/issues/3632) [Bug-Report|缺陷反馈]: engram算子优化** — 0分
+  - 痛点原因：关闭说明仅7字且为机器人自动触发，无方案文档沉淀与dup主链接，未留下供他人参考的复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3632    - `wuchenhao123`：add label bug-report    - `cann-robot`：add label resolved    - `wuchenhao123`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***wuchenhao123***. Please do not assign repeatedly.    - [关联PR #7998（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7998)
+- **[#3631](https://gitcode.com/cann/ops-transformer/issues/3631) [Requirement|需求建议]: GroupedMatmulSwigluQuantV2算子mx weightnz场景需支持 weight多tensor** — 0分
+  - 痛点原因：关闭说明仅7字且无方案文档与关联链接，仅由机器人随代码合并自动关闭，未沉淀任何可复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3631    - `cann-robot`：add label resolved    - `fengxingpan1`：/assign    - `cann-robot`：assigned to @fengxingpan1    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7302)
+- **[#3629](https://gitcode.com/cann/ops-transformer/issues/3629) [Requirement|需求建议]: 修复smlag metadata在A2/A3被拦截的问题** — 0分
+  - 痛点原因：关闭说明为0字，仅由机器人关联PR自动关闭，缺乏方案文档化与复用指引，无法为后续类似问题提供参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3629    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - [关联PR #8342（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8342)
+- **[#3628](https://gitcode.com/cann/ops-transformer/issues/3628) [Bug-Report|缺陷反馈]: cleancode重复代码整改** — 0分
+  - 痛点原因：仅靠机器人关联PR自动关闭，无人工关闭说明、方案文档及重复链接，未沉淀任何复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3628    - `cann-robot`：add label resolved    - [关联PR #8287（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8287)
+- **[#3626](https://gitcode.com/cann/ops-transformer/issues/3626) [Bug-Report|缺陷反馈]: GroupedMatmulSwigluQuant 关闭 auto sync 后需补充显式同步** — 0分
+  - 痛点原因：关闭时无说明文字，未提供方案文档与主链接，无法为后续类似问题提供复用参考。
+  - 原文依据：
+    - `Wei_NaChuan`：Create issue mr links: **修复 GroupedMatmulSwigluQuant 关闭自动同步后的显式同步** #8338    - `Wei_NaChuan`：add label bug-report    - `weihao18`：/assign [@Wei_NaChuan](https://gitcode.com/Wei_NaChuan)    - `cann-robot`：assigned to @Wei_NaChuan    - [关联PR #8338（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8338)    - [关联PR #8349（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8349)
+- **[#3625](https://gitcode.com/cann/ops-transformer/issues/3625) fix moe_ep_dispatch accuracy** — 0分
+  - 痛点原因：仅由机器人自动关闭，关闭说明为0字，无方案文档化及复用链接，未留下任何可供后续参考的复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3625    - `cann-robot`：add label resolved    - [关联PR #8336（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8336)
+- **[#3624](https://gitcode.com/cann/ops-transformer/issues/3624) [Requirement|需求建议]: nsa_compress_attention_infer 算子需要支持310p系列** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，未沉淀暂不做规划的决策依据，导致后续无法复用。
+  - 原文依据：
+    - `huang-chuhong`：/assign [@L_Euler](https://gitcode.com/L_Euler)    - `monologue815`：你好，此前NSA在910B系列作为尝试，目前主流模型没有使用， 1. 当前在310P系列上暂不做规划； 2. 310P系列可以根据模型具体稀疏的算法来看具体算子的需求情况； 如果有相关稀疏的特殊需求，欢迎在SIG例会上讨论一下~    - `wang-minbo`：assigned to @xtqh    - `cann-robot`：assigned to @L_Euler and unassigned @xtqh
+- **[#3623](https://gitcode.com/cann/ops-transformer/issues/3623) [Requirement|需求建议]: matmulallreduce在310p上动态图用例执行失败** — 0分
+  - 痛点原因：关闭说明为0字且无方案文档，未沉淀任何解决经验，导致其他用户无法复用。
+  - 原文依据：
+    - `Kiana1216`：add label requirement    - [关联PR #8300（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8300)    - [关联PR #8339（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8339)    - [关联PR #8341（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8341)
+- **[#3620](https://gitcode.com/cann/ops-transformer/issues/3620) [Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题** — 0分
+  - 痛点原因：关闭说明为空且无方案文档，仅由机器人关联PR自动关闭，未沉淀任何可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3620    - `cann-robot`：add label resolved    - [关联PR #8285（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8285)
+- **[#3619](https://gitcode.com/cann/ops-transformer/issues/3619) [Bug-Report|缺陷反馈]: MhcPost N=4用例边界场景存在精度问题** — 0分
+  - 痛点原因：关闭说明仅7字且仅提及关联合并，无方案文档沉淀，未留下可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3619    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `xuejinghui`：/assign    - `cann-robot`：assigned to @xuejinghui    - [关联PR #8263（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8263)
+- **[#3616](https://gitcode.com/cann/ops-transformer/issues/3616) [Bug-Report|缺陷反馈]: torch extension导入阶段会触发全量算子编译** — 0分
+  - 痛点原因：仅由机器人因关联合并自动关闭，无方案文档、无重复主链接且关闭说明为空，未沉淀任何可复用经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3616    - `hblnb`：add label bug-report    - `cann-robot`：add label resolved    - `hblnb`：assigned to @hblnb    - [关联PR #8155（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8155)    - [关联PR #8326（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8326)
+- **[#3615](https://gitcode.com/cann/ops-transformer/issues/3615) [Bug-Report|缺陷反馈]: all_gather_matmul_aiv_mode_tiling.h 头文件中使用了uint32_t数据类型，但是没有…** — 0分
+  - 痛点原因：关闭说明仅16字且无方案文档化，未记录排查过程或修复代码链接，无法供他人参考。
+  - 原文依据：
+    - `zhu-mingzhe71`：closed from codehub    - `cann-robot`：add label resolved    - `wang-minbo`：好的，确认是问题，我们会尽快修复    - `wang-minbo`：assigned to @liuboxi    - `liuboxi`：assigned to @zhu-mingzhe71    - `liuboxi`：unassigned @liuboxi
+- **[#3614](https://gitcode.com/cann/ops-transformer/issues/3614) [Requirement|需求建议]: chunk_gated_delta_rule 支持 ascend950 架构** — 0分
+  - 痛点原因：关闭说明仅7字且由机器人自动生成，无方案文档沉淀与重复issue链接，缺乏可复用的解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3614    - `cann-robot`：add label resolved    - `huang-chuhong`：/assign    - `cann-robot`：assigned to @huang-chuhong    - [关联PR #8318（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8318)
+- **[#3611](https://gitcode.com/cann/ops-transformer/issues/3611) [Bug-Report|缺陷反馈]: FA MLA noquant场景下skip的batch导致attention_out计算错误** — 0分
+  - 痛点原因：关闭说明仅 7 字且无方案文档化，仅由机器人自动关闭，缺乏问题原因与解决方案总结，无复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：assigned to @PerrySkywalker
+- **[#3607](https://gitcode.com/cann/ops-transformer/issues/3607) [Bug-Report|缺陷反馈]: kv_compress_epilog算子bf16格式的scale是零扩展而不是真实的bf16格式** — 0分
+  - 痛点原因：关闭说明为0字，仅由机器人因关联MR合并自动关闭，无方案文档沉淀，无法供他人复用解决经验。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3607    - `zhu-lei0614`：add label bug-report    - `cann-robot`：add label resolved    - `zhu-lei0614`：assigned to @zhu-lei0614    - [关联PR #8307（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8307)
+- **[#3606](https://gitcode.com/cann/ops-transformer/issues/3606) [Bug-Report|缺陷反馈]: MegaMoe A2 Workspace 优化** — 0分
+  - 痛点原因：关闭说明为空且无方案文档化，仅由机器人因关联MR合并自动关闭，未留下任何可复用的解决信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3606    - `urbub`：add label bug-report    - `cann-robot`：add label resolved    - `urbub`：assigned to @urbub    - [关联PR #8266（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8266)    - [关联PR #8337（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8337)
+- **[#3604](https://gitcode.com/cann/ops-transformer/issues/3604) [Requirement|需求建议]: gmm mx 量化weightnz 支持weight多 tensor** — 0分
+  - 痛点原因：关闭说明为0字且未沉淀方案文档或关联重复链接，仅由机器人随MR合并自动关闭，导致经验无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3604    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - [关联PR #6739（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/6739)    - [关联PR #82（merged）](https://gitcode.com/cann/ops-tensor/merge_requests/82)
+- **[#3601](https://gitcode.com/cann/ops-transformer/issues/3601) [Bug-Report|缺陷反馈]: sfag存在同步问题** — 0分
+  - 痛点原因：关闭说明为空，未提供方案文档或重复主链接，无法为后续同类问题提供参考。
+  - 原文依据：
+    - `huzhipeng`：add label bug-report    - `weihao18`：/assign [@huzhipeng](https://gitcode.com/huzhipeng)    - `cann-robot`：assigned to @huzhipeng    - [关联PR #8196（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8196)    - [关联PR #8200（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8200)    - [关联PR #8335（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8335)
+- **[#3600](https://gitcode.com/cann/ops-transformer/issues/3600) [Requirement|需求建议]: （A2/A3）FlashAttentionScore 算子在 D>128 情况下开启 L1 Reuse** — 0分
+  - 痛点原因：关闭时无任何文字说明，仅记录了任务分配操作，未留下可复用的经验总结。
+  - 原文依据：
+    - `weihao18`：/assign [@monologue815](https://gitcode.com/monologue815)    - `cann-robot`：assigned to @monologue815    - `yu-xinjie62`：assigned to @huang-wei-chen
+- **[#3598](https://gitcode.com/cann/ops-transformer/issues/3598) [Bug-Report|缺陷反馈]: MoeInitRoutingQuantV2第三个输出结果存在精度问题** — 0分
+  - 痛点原因：关闭说明为空且未沉淀方案文档，仅由机器人因关联MR合并自动关闭，无任何可复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3598    - `wuxiyuan`：add label bug-report    - `cann-robot`：add label resolved    - `wuxiyuan`：assigned to @wuxiyuan    - [关联PR #8259（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8259)    - [关联PR #8354（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8354)
+- **[#3594](https://gitcode.com/cann/ops-transformer/issues/3594) [Bug-Report|缺陷反馈]: 修复MatmulAlltoAll FusionPass兼容性问题** — 0分
+  - 痛点原因：关闭说明为空且无方案文档与关联链接，仅由机器人随代码合并自动关闭，缺乏经验沉淀。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3594    - `liusixia_gitcode`：add label bug-report    - `cann-robot`：add label resolved    - `liusixia_gitcode`：assigned to @liusixia_gitcode    - [关联PR #8268（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8268)    - [关联PR #8298（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8298)
+- **[#3592](https://gitcode.com/cann/ops-transformer/issues/3592) [Requirement|需求建议]: 需要支持新算子，支持Rms、RoPe、Norm、Quant、kvCache等算子的融合** — 0分
+  - 痛点原因：关闭说明仅7字且由机器人自动触发，无方案文档与复用指引，无法为其他用户提供有效参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3592    - `shi-rui`：add label requirement    - `cann-robot`：add label resolved    - `shi-rui`：/assign    - `cann-robot`：assigned to @shi-rui    - [关联PR #7023（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7023)
+- **[#3591](https://gitcode.com/cann/ops-transformer/issues/3591) [Question|问题咨询]: 边缘场景外置带卡服务拉起时，容器空载情况下host侧占用内存较多（是中心场景的几倍），请问这是cann的什么机制吗？** — 0分
+  - 痛点原因：关闭时未沉淀任何解决方案或文档说明，仅引导用户去其他平台提工单，无复用价值。
+  - 原文依据：
+    - `yu-xinjie62`：您好，310P镜像相关问题建议您上昇腾社区https://www.hiascend.com/feedback/add?referrer=/zh提交工单，工单处理人将为您第一时间解决。    - `easel`：>您好，310P镜像相关问题建议您上昇腾社区https://www.hiascend.com/feedback/add?referrer=/zh提交工单，工单处理人将为您第一时间解决。 [@yu-xinjie62](https://git…    - `yu-xinjie62`：请问能否确定到是哪个具体的.so？目前本仓库负责transformer类算子，如果有该类别算子内存异常占用情况我们进一步定位分析。如果是整个CANN的问题，建议您上昇腾社区提相应工单获得完整的分析与答复。    - `easel`：>请问能否确定到是哪个具体的.so？目前本仓库负责transformer类算子，如果有该类别算子内存异常占用情况我们进一步定位分析。如果是整个CANN的问题，建议您上昇腾社区提相应工单获得完整的分析与答复。 [@yu-xinjie62](…    - `yu-xinjie62`：您好，您这里占比比较多的.so分属不同的组件，包含了框架、算子等，涉及mindspore、ops-legacy、ops-nn、ops-transformer、compiler、ge等，建议您直接在昇腾社区上提工单。    - `wang-minbo`：assigned to @yu-xinjie62
+- **[#3590](https://gitcode.com/cann/ops-transformer/issues/3590) [Requirement|需求建议]: 【David】【GroupedMatMulSwigluQuantV2】泛化支持N轴非128对齐场景** — 0分
+  - 痛点原因：关闭说明为空，仅由机器人因关联MR合并自动关闭，无方案文档与复用指引。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3590    - `NeverLCY`：add label requirement    - `cann-robot`：add label resolved    - `NeverLCY`：assigned to @NeverLCY    - [关联PR #7662（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7662)
+- **[#3724](https://gitcode.com/cann/ops-transformer/issues/3724) [Requirement|需求建议]: matmulAlltoAll在aicpu场景下性能需要提升** — 25分
+  - 痛点原因：关闭说明仅提及随关联MR合并而关闭，缺乏具体的解决方案说明与文档沉淀，导致后人无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3724    - `adamlwang`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@adamlwang](https://gitcode.com/adamlwang)    - `cann-robot`：assigned to @adamlwang    - [关联PR #7966（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7966)
+- **[#3715](https://gitcode.com/cann/ops-transformer/issues/3715) [Requirement|需求建议]: moe_token_permute for Ascend950** — 25分
+  - 痛点原因：关闭说明仅依赖关联MR合并自动触发，无方案文档与详细解决记录，未沉淀可复用知识。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3715    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `weihao18`：/assign [@alfengyuan](https://gitcode.com/alfengyuan)
+- **[#3714](https://gitcode.com/cann/ops-transformer/issues/3714) [Bug-Report|缺陷反馈]: 超大shape时（MN 超过 uint32最大值时），算子计算结果出现精度异常问题，经代码检视发现存在中间结果溢出的情况…** — 25分
+  - 痛点原因：仅由机器人关联MR自动关闭，无方案文档化记录，开发者仅回复修复处理中，缺乏具体解决细节供社区参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3714    - `cann-robot`：add label resolved    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：[@LetsAiGo](https://gitcode.com/LetsAiGo) 感谢您的反馈，修复处理中    - `cann-robot`：assigned to @captainmiaow    - [关联PR #8687（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8687)
+- **[#3703](https://gitcode.com/cann/ops-transformer/issues/3703) [Bug-Report|缺陷反馈]: BlockSparseAttention算子缺少ST看护** — 25分
+  - 痛点原因：机器人自动关联关闭且说明极简，无方案文档与重复链接，缺乏人工总结的根因分析与解决方案，难以提供有效参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3703    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `cann-robot`：assigned to @wangsong96    - [关联PR #8578（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8578)
+- **[#3693](https://gitcode.com/cann/ops-transformer/issues/3693) [Question|问题咨询]: matmul --不可用** — 25分
+  - 痛点原因：仅引导用户去其他仓库提问，未提供具体解决方案或文档化沉淀，对其他用户无参考价值。
+  - 原文依据：
+    - `weihao18`：closed from codehub    - `weihao18`：changed custom state from 进行中 to 已完成    - `weihao18`：你好，runtime的错误建议到这里提issue 咨询：https://gitcode.com/cann/runtime
+- **[#3692](https://gitcode.com/cann/ops-transformer/issues/3692) [Bug-Report|缺陷反馈]: aclnnFlashAttentionScore参数校验** — 25分
+  - 痛点原因：关闭说明仅55字且无方案文档化，仅靠机器人因MR合并自动关闭，缺乏人工总结的解决方案与根因分析供他人参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3692    - `cann-robot`：add label resolved    - `weihao18`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：assigned to @m0_55003149    - [关联PR #8517（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8517)    - [关联PR #8530（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8530)
+- **[#3691](https://gitcode.com/cann/ops-transformer/issues/3691) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache regbase recompute 模板 dv 单块场景 Σx² 未计算，tota…** — 25分
+  - 痛点原因：关闭说明仅为机器人关联其他issue及MR合并的简短记录，无方案文档沉淀与重复主链接，无法提供有效复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `qianzehong`：/assign [@qianzehong](https://gitcode.com/qianzehong)    - `cann-robot`：assigned to @qianzehong    - [关联PR #8518（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8518)
+- **[#3689](https://gitcode.com/cann/ops-transformer/issues/3689) moe_init_routing_v3 算子 INT4 动态量化路径优化（双缓冲 + 边界修复）** — 25分
+  - 痛点原因：无方案文档沉淀与关联主链接，仅由机器人随MR合并自动关闭，缺乏人工复用总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3689    - `cann-robot`：add label resolved    - `weihao18`：/assign [@Huang-Peng](https://gitcode.com/Huang-Peng)    - `cann-robot`：assigned to @Huang-Peng    - [关联PR #7492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7492)
+- **[#3686](https://gitcode.com/cann/ops-transformer/issues/3686) [Bug-Report|缺陷反馈]: FlashAttentionScore多个模板存在内存竞争问题** — 25分
+  - 痛点原因：仅靠机器人关联合并请求自动关闭，无方案文档与排查细节，无法为后续类似问题提供有效参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3686    - `huang-wei-chen`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@huang-wei-chen](https://gitcode.com/huang-wei-chen)    - `cann-robot`：assigned to @huang-wei-chen    - [关联PR #8415（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8415)
+- **[#3682](https://gitcode.com/cann/ops-transformer/issues/3682) FA TND 布局的 CombineSplitKVRes 在 batch 间 S1 长度不同时，lseOffset 的预填值覆盖了有效 batch 的 LSE…** — 25分
+  - 痛点原因：无方案文档沉淀与重复issue关联，且关闭说明仅60字过于简略，导致关闭后缺乏有效参考价值。
+  - 原文依据：
+    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `weihao18`：/assign [@huang-chuhong](https://gitcode.com/huang-chuhong)    - `huang-chuhong`：感谢补充。经分析，#3682 描述的问题不存在，具体说明如下： ## 1. 不存在 lseOffset 重复覆盖问题 #3681 的修复中 `lseBatchOffset` 取累积有效 S1（`actualSeqQlenAddr[bIdx…    - `huang-chuhong`：您好，当前问题已经解决，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。
+- **[#3680](https://gitcode.com/cann/ops-transformer/issues/3680) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 25分
+  - 痛点原因：无方案文档与重复问题主链接，关闭说明仅为机器人自动关联合并关闭，缺乏人工复用总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3680    - `peijingjing`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `cann-robot`：### Notice This issue is already assigned to ***peijingjing***. Please do not assign repeatedly.
+- **[#3678](https://gitcode.com/cann/ops-transformer/issues/3678) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 25分
+  - 痛点原因：关闭说明仅机械提及随MR合并关闭，无方案文档化与主链接沉淀，缺乏可复用的解决方案信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3678    - `cardiac_index`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@cardiac_index](https://gitcode.com/cardiac_index)    - `cann-robot`：assigned to @cardiac_index    - [关联PR #8428（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8428)
+- **[#3666](https://gitcode.com/cann/ops-transformer/issues/3666) [UT] quant_block_sparse_attn 算子 UT 框架搭建与覆盖率提升** — 25分
+  - 痛点原因：关闭说明仅由机器人自动触发且仅提及关联MR合并，无方案文档沉淀，缺乏有效总结，无法供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3666    - `cann-robot`：add label resolved    - `weihao18`：/assign [@chenglongyu](https://gitcode.com/chenglongyu)    - `cann-robot`：assigned to @chenglongyu    - [关联PR #8451（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8451)
+- **[#3658](https://gitcode.com/cann/ops-transformer/issues/3658) 为MC2通算融合模板库建立目录树** — 25分
+  - 痛点原因：关闭说明仅提及随MR合并关闭关联issue，无方案文档化与重复主链接，未沉淀有效复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3658    - `cann-robot`：add label resolved    - `weihao18`：/assign [@codehjp423](https://gitcode.com/codehjp423)    - `cann-robot`：assigned to @codehjp423    - [关联PR #8384（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8384)
+- **[#3657](https://gitcode.com/cann/ops-transformer/issues/3657) [Bug-Report|缺陷反馈]: slikg同步检测修复** — 25分
+  - 痛点原因：无方案文档化记录且未提供重复issue主链接，关闭说明仅由机器人自动生成且过于简略，缺乏复用价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3657    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `cann-robot`：assigned to @xuanyuandy    - [关联PR #8416（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8416)
+- **[#3655](https://gitcode.com/cann/ops-transformer/issues/3655) [Bug-Report|缺陷反馈]: cleancode超大圈复杂度函数整改** — 25分
+  - 痛点原因：无方案文档与主链接，关闭说明仅为机器人关联MR合并的自动回复，缺乏人工复用总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3655    - `cann-robot`：add label resolved    - `weihao18`：/assign [@wangyijing](https://gitcode.com/wangyijing)    - `cann-robot`：assigned to @wangyijing    - [关联PR #8380（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8380)    - [关联PR #8444（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8444)
+- **[#3652](https://gitcode.com/cann/ops-transformer/issues/3652) [Bug-Report|缺陷反馈]: 期望增加根据用例信息判断是否开启FD的开关** — 25分
+  - 痛点原因：关闭说明仅为机器人自动关联合并的模板语，无方案文档沉淀与人工复用总结，缺乏后续参考价值。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3652    - `cann-robot`：add label resolved    - `weihao18`：/assign [@zhangh2417](https://gitcode.com/zhangh2417)    - `cann-robot`：assigned to @zhangh2417    - [关联PR #8325（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8325)    - [关联PR #8366（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8366)
+- **[#3650](https://gitcode.com/cann/ops-transformer/issues/3650) [Bug-Report|缺陷反馈]: allgathermm CCU最大通信次数为63** — 25分
+  - 痛点原因：无方案文档沉淀且无关联主链接，仅由系统自动关闭，关闭说明简短，缺乏可复用的解决方案信息。
+  - 原文依据：
+    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成    - `captainmiaow`：add label bug-report    - `cann-robot`：add label Accepted    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `cann-robot`：assigned to @captainmiaow
+- **[#3647](https://gitcode.com/cann/ops-transformer/issues/3647) [Requirement|需求建议]: 提升mc2算子ut覆盖率** — 25分
+  - 痛点原因：关闭说明仅为机器人自动生成的简短关联信息，无方案文档沉淀与重复issue关联，缺乏人工总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3647    - `cann-robot`：add label resolved    - `weihao18`：/assign [@mutex_lock](https://gitcode.com/mutex_lock)    - `cann-robot`：assigned to @mutex_lock    - [关联PR #8395（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8395)
+- **[#3646](https://gitcode.com/cann/ops-transformer/issues/3646) [Bug-Report|缺陷反馈]: SLIKG算子内存检测报错** — 25分
+  - 痛点原因：仅由机器人关联MR合并关闭，无方案文档化记录与复现链接，无法为其他用户提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3646    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `cann-robot`：assigned to @xuanyuandy    - [关联PR #8369（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8369)
+- **[#3630](https://gitcode.com/cann/ops-transformer/issues/3630) [Requirement|需求建议]: combine发送token时可能存在连续往相同卡发送的热点访问情况，影响性能，建议修改；另外仍存在同地址偏移问题，需…** — 25分
+  - 痛点原因：关闭说明仅为机器人自动生成的合并关联信息，缺乏方案文档化记录，未沉淀可供复用的解决方案。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3630    - `zhong-zixin`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@zhong-zixin](https://gitcode.com/zhong-zixin)    - `cann-robot`：assigned to @zhong-zixin    - [关联PR #7752（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7752)
+- **[#3621](https://gitcode.com/cann/ops-transformer/issues/3621) [Bug-Report|缺陷反馈]: torch_npu.npu_moe_gating_top_k_softmax 310Pbatch过大精度异常** — 25分
+  - 痛点原因：仅由机器人因关联MR合并自动关闭，未人工补充具体解决方案与排查细节，导致经验无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3621    - `cann-robot`：add label resolved    - `weihao18`：/assign [@gcw_kTZ5XeTb](https://gitcode.com/gcw_kTZ5XeTb)    - `cann-robot`：assigned to @gcw_kTZ5XeTb    - [关联PR #8302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8302)    - [关联PR #8316（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8316)
+- **[#3613](https://gitcode.com/cann/ops-transformer/issues/3613) [Bug-Report|缺陷反馈]: nsa_compress_attention_infer算子的UB内存问题** — 25分
+  - 痛点原因：仅因关联其他issue而关闭，缺乏具体解决方案记录与文档化沉淀，无法提供复用参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3613    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `cann-robot`：assigned to @wangsong96    - [关联PR #8310（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8310)
+- **[#3603](https://gitcode.com/cann/ops-transformer/issues/3603) [Requirement|需求建议]: 修复qliv2和liv2算子部分参数缺省场景报错问题** — 25分
+  - 痛点原因：缺乏方案文档化与重复主链接，关闭说明仅为机器人自动合并提示，无人工总结供后续参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3603    - `LZH_unofficial`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@LZH_unofficial](https://gitcode.com/LZH_unofficial)    - `cann-robot`：assigned to @LZH_unofficial    - [关联PR #8158（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8158)
+- **[#3599](https://gitcode.com/cann/ops-transformer/issues/3599) [Bug-Report|缺陷反馈]: flash_attn 测试框架 run_case_load 函数 LSE 精度对比因 inf 哨兵值不一致误报失败** — 25分
+  - 痛点原因：关闭说明仅为随MR合并自动关闭的关联回复，无方案文档化记录，未沉淀具体解决方案供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3599    - `ChenYiran`：add label bug-report    - `cann-robot`：add label resolved    - `weihao18`：/assign [@ChenYiran](https://gitcode.com/ChenYiran)    - `cann-robot`：assigned to @ChenYiran    - [关联PR #8286（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8286)
+- **[#3593](https://gitcode.com/cann/ops-transformer/issues/3593) [Question|问题咨询]: all_gather_matmul和all_gather_matmul_v2的差别是什么，在A2和A3上是否有区别？** — 25分
+  - 痛点原因：仅由系统自动关闭，无方案文档化且关闭说明简短，未沉淀实质性解答，对社区缺乏参考价值。
+  - 原文依据：
+    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成    - `cann-robot`：add label Accepted    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：@cdw 感谢您的反馈，我们将尽快处理    - `zhu-mingzhe71`：您好，感谢您的关注，这三个问题的说明如下： 1、这两个算子的区别主要体现在两个方面： - 功能上：all_gather_matmul算子不支持量化后的低精度输入类型，而all_gather_matmul_v2支持a8w8与a4w4两种低精…
+- **[#3719](https://gitcode.com/cann/ops-transformer/issues/3719) [Documentation|文档反馈]: MegaMoE补充A2/A3的README资料** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人提示关联MR合并关闭，缺乏人工补充的复用价值总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3719    - `ryan_li`：add label documentation    - `cann-robot`：add label resolved    - `ryan_li`：assigned to @ryan_li    - [关联PR #8606（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8606)    - [关联PR #8612（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8612)
+- **[#3716](https://gitcode.com/cann/ops-transformer/issues/3716) [Bug-Report|缺陷反馈]: mhc_post资料修改** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人随MR合并自动关闭，未沉淀任何供后续复用的有效信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3716    - `Annyqw`：add label bug-report    - `cann-robot`：add label resolved    - [关联PR #8602（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8602)    - [关联PR #8603（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8603)
+- **[#3711](https://gitcode.com/cann/ops-transformer/issues/3711) [Documentation|文档反馈]: 修复SLIG算子S1 S2校验放开** — 30分
+  - 痛点原因：关闭说明仅49字且为机器人自动回复，未提供人工编写的详细解决方案或文档链接，复用信息不足。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3711    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `weihao18`：/assign [@llwy0320](https://gitcode.com/llwy0320)    - `cann-robot`：assigned to @llwy0320    - [关联PR #8585（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8585)
+- **[#3710](https://gitcode.com/cann/ops-transformer/issues/3710) [Documentation|文档反馈]: SMLAG算子torch文档商分资料格式问题** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人随MR合并自动关闭，未留下任何人工总结或复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3710    - `hz36amy_00`：add label documentation    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - [关联PR #7674（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7674)
+- **[#3701](https://gitcode.com/cann/ops-transformer/issues/3701) [Documentation|文档反馈]:** — 30分
+  - 痛点原因：关闭说明仅7字且无主链接，虽有方案文档化但缺乏具体解决过程追溯，难以复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3701    - `cann-robot`：add label resolved    - `zhangjinru`：/assign    - `cann-robot`：assigned to @zhangjinru    - [关联PR #8574（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8574)
+- **[#3700](https://gitcode.com/cann/ops-transformer/issues/3700) [Bug-Report|缺陷反馈]: posembedding/inplace_partial_rotary_mul_grad/tests/ut/op_hos…** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人因关联MR合并自动关闭，缺乏供他人复用的经验总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3700    - `alfengyuan`：changed custom state from 进行中 to 已完成    - `huang-chuhong`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan
+- **[#3685](https://gitcode.com/cann/ops-transformer/issues/3685) [Documentation|文档反馈]: gmm资料修改** — 30分
+  - 痛点原因：关闭说明为0字且无重复主链接，仅由机器人因MR合并自动关闭，缺乏人工补充总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3685    - `szhexin`：add label documentation    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - [关联PR #8462（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8462)
+- **[#3679](https://gitcode.com/cann/ops-transformer/issues/3679) [Documentation|文档反馈]: BSAG缺少950相关文档** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人因关联PR合并自动关闭，未补充文档更新总结，缺乏复用指引。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3679    - `xuchengyang`：add label documentation    - `cann-robot`：add label resolved    - [关联PR #8229（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8229)
+- **[#3672](https://gitcode.com/cann/ops-transformer/issues/3672) 修改slig文档示例** — 30分
+  - 痛点原因：关闭说明为0字，仅靠机器人自动关闭并关联PR，缺乏人工总结的复用信息。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3672    - `cann-robot`：add label resolved    - [关联PR #8461（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8461)
+- **[#3662](https://gitcode.com/cann/ops-transformer/issues/3662) [Documentation|文档反馈]: 修复gmm weightnz资料若干问题** — 30分
+  - 痛点原因：仅由机器人随MR合并自动关闭，无任何人工关闭说明与总结，导致后续无法复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3662    - `zhangzhizhuo`：add label documentation    - `cann-robot`：add label resolved    - [关联PR #8441（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8441)
+- **[#3648](https://gitcode.com/cann/ops-transformer/issues/3648) [Documentation|文档反馈]: aclnnGatherPaKvCache算子文档对数据类型说明不准确** — 30分
+  - 痛点原因：仅由机器人以关联MR合并为由自动关闭，关闭说明仅49字，未沉淀具体文档修改细节与解决方案供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3648    - `cann-robot`：add label resolved    - `weihao18`：/assign [@gt0cd001](https://gitcode.com/gt0cd001)    - `cann-robot`：assigned to @gt0cd001    - [关联PR #8398（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8398)
+- **[#3627](https://gitcode.com/cann/ops-transformer/issues/3627) [Documentation|文档反馈]: aclnnGroupedMatmulAddV2、aclnnGroupedMatmulFinalizeRouting…** — 30分
+  - 痛点原因：关闭说明仅43字且为系统自动关闭，仅提及关联issue合并，缺乏对问题解决方案的具体总结，导致其他用户难以复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3627    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：收到问题，已路由给相关责任人修复。    - `kknan`：https://gitcode.com/cann/ops-transformer/blob/master/gmm/grouped_matmul_add/docs/aclnnGroupedMatmulAddV2.md 已修复，剩余问题待上库    - `cann-robot`：assigned to @kknan    - `weihao18`：assigned to @captainmiaow
+- **[#3622](https://gitcode.com/cann/ops-transformer/issues/3622) [Documentation|文档反馈]: BlitzSparseAttention** — 30分
+  - 痛点原因：关闭说明仅47字且由机器人自动关联内部issue，无dup主链接及具体解决方案，难以供社区复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3622    - `cann-robot`：add label resolved    - `weihao18`：/assign [@kostyab](https://gitcode.com/kostyab)    - `cann-robot`：assigned to @kostyab    - [关联PR #8333（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8333)
+- **[#3618](https://gitcode.com/cann/ops-transformer/issues/3618) [Documentation|文档反馈]: 修改SLIG算子文档格式** — 30分
+  - 痛点原因：关闭说明为0字，仅靠机器人自动关联合并请求关闭，未补充任何人工复用价值说明。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3618    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `llwy0320`：assigned to @llwy0320    - [关联PR #8327（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8327)
+- **[#3617](https://gitcode.com/cann/ops-transformer/issues/3617) [Documentation|文档反馈]:aclnnLightningIndexerGrad、aclnnNormRopeConcat、aclnnNormRop…** — 30分
+  - 痛点原因：机器人自动关闭且说明简短，缺少关联主issue链接，未沉淀具体排查过程或方案细节供他人复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3617    - `cann-robot`：add label resolved    - `wang-minbo`：好的，我们attention、posembedding的专家马上来处理    - `fazhenyao123`：aclnnMoeTokenPermuteWithRoutingMapGrad.md资料修复已合入    - `cann-robot`：### Notice This issue can not be assigned to ***jiangjiawei***. Please try to assign to the repository members.    - `cann-robot`：### Notice This issue can not be assigned to ***何宇航***. Please try to assign to the repository members.
+- **[#3612](https://gitcode.com/cann/ops-transformer/issues/3612) [Documentation|文档反馈]: aclnnNsaSelectedAttentionInfer算子md文档格式修复** — 30分
+  - 痛点原因：仅由机器人因MR合并自动关闭，关闭说明仅45字且未关联重复问题，缺乏人工沉淀的解决方案。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3612    - `cann-robot`：add label resolved    - `weihao18`：/assign [@yyt_hw](https://gitcode.com/yyt_hw)    - `cann-robot`：assigned to @yyt_hw    - [关联PR #8288（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8288)
+- **[#3608](https://gitcode.com/cann/ops-transformer/issues/3608) QuantGroupedMatmulInplaceAdd算子的参数说明长时间未更新** — 30分
+  - 痛点原因：关闭说明仅为机器人自动回复关联合并，缺乏具体解决过程沉淀，无重复链接供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3608    - `cann-robot`：add label resolved    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：第二个问题：是的，量化模式支持对应的已支持数据类型没问题。 第一个问题能麻烦再详细描述下吗    - `yunjuanya123`：这个链接https://gitcode.com/cann/ops-transformer/blob/master/gmm/quant_grouped_matmul_inplace_add/README.md里面的，参数说明一直没更新 ![…    - `kknan`：收到，修复代码上库中
+- **[#3602](https://gitcode.com/cann/ops-transformer/issues/3602) [Documentation|文档反馈]: Mlaprolog v1和v2的README.md中有部分跳转链接失效，需整改** — 30分
+  - 痛点原因：关闭说明仅49字且无修复主链接，仅靠系统状态变更关闭，未提供可复用的具体解决方案详情。
+  - 原文依据：
+    - `wangss21`：closed from codehub    - `wangss21`：changed custom state from 进行中 to 已完成    - `wangss21`：add label documentation    - `cann-robot`：add label Accepted    - `weihao18`：/assign [@wangss21](https://gitcode.com/wangss21)    - `cann-robot`：assigned to @wangss21
+- **[#3596](https://gitcode.com/cann/ops-transformer/issues/3596) [Documentation|文档反馈]: alltoallvgmm,.gmmalltoallv文档markdown问题清理** — 30分
+  - 痛点原因：关闭说明仅45字且由机器人因MR合并自动关闭，缺乏对问题方案复用价值的沉淀总结。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3596    - `wuziyu`：add label documentation    - `cann-robot`：add label resolved    - `weihao18`：/assign [@wuziyu](https://gitcode.com/wuziyu)    - `cann-robot`：assigned to @wuziyu    - [关联PR #8272（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8272)
+- **[#3595](https://gitcode.com/cann/ops-transformer/issues/3595) [Documentation|文档反馈]: matmulallreduce文档markdown问题清理** — 30分
+  - 痛点原因：关闭说明为0字，仅由机器人机械关闭并关联PR，缺乏人工总结与方案沉淀，难以复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3595    - `Kiana1216`：add label documentation    - `cann-robot`：add label resolved    - [关联PR #8269（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8269)    - [关联PR #8271（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8271)
+- **[#3597](https://gitcode.com/cann/ops-transformer/issues/3597) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache 与 Abs（非连续输入）同卡并发/多流混跑时出现 aic error** — 45分
+  - 痛点原因：关闭说明仅堆砌复现代码且由机器人自动关闭，缺乏方案文档化，未明确根因与修复细节，难以供他人参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `qianzehong`：`import torch, torch_npu, traceback, sys dev = 'npu:0' torch.npu.set_device(0) print("torch", torch.__version__, "torch…    - `weihao18`：/assign [@hz36amy_00](https://gitcode.com/hz36amy_00)    - `qianzehong`：已提交修复 PR:cann/ops-transformer!8340(预搬 index 到 UB 的 GetIndex 封装,规避跨进程并发下 GlobalTensor::GetValue 触发的 aivec 越界)。上板并发 18/18…
+- **[#3722](https://gitcode.com/cann/ops-transformer/issues/3722) [Requirement|需求建议]: moeInitRoutingV3: 性能优化 mxfp8透传场景多buffer+读一次搬多行 mxfp8量化场景双bu…** — 55分
+  - 痛点原因：关闭说明由机器人自动触发且仅53字，缺乏对最终方案的总结，且未提供重复问题主链接，影响后续查阅。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3722    - `cpy_123456`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cann-robot`：assigned to @cpy_123456    - [关联PR #8543（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8543)
+- **[#3713](https://gitcode.com/cann/ops-transformer/issues/3713) mega_moe maxRecvTokenNum自动计算(A2、A3)** — 55分
+  - 痛点原因：关闭说明仅为机器人合并代码时的自动关闭，缺乏人工对解决方案的总结与复用指引，且未提供重复主链接。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3713    - `cann-robot`：add label resolved    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：assigned to @SimpleBright_Man    - [关联PR #8576（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8576)    - [关联PR #8594（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8594)
+- **[#3695](https://gitcode.com/cann/ops-transformer/issues/3695) [Documentation|文档反馈]: 文档算子数据类型描述问题：文档中的x1_scale/x2_scale数据类型描述与算子中的定义不一致，详见问题描述…** — 55分
+  - 痛点原因：关闭说明仅由机器人自动关联MR合并，缺乏对具体修复内容或解决方案的直接说明，参考价值有限。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3695    - `cann-robot`：add label resolved    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢反馈，处理中    - `cann-robot`：assigned to @captainmiaow    - [关联PR #8615（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8615)
+- **[#3660](https://gitcode.com/cann/ops-transformer/issues/3660) [Documentation|文档反馈]: inplace_fused_causal_conv1d的max_query_len默认值限制** — 55分
+  - 痛点原因：关闭说明仅由机器人自动生成并提及关联MR，缺乏对文档修改细节的人工总结与复用指引。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3660    - `xiapengcheng5`：add label documentation    - `cann-robot`：add label resolved    - `weihao18`：/assign [@xiapengcheng5](https://gitcode.com/xiapengcheng5)    - `cann-robot`：assigned to @xiapengcheng5    - [关联PR #8430（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8430)
+- **[#3659](https://gitcode.com/cann/ops-transformer/issues/3659) [Bug-Report|缺陷反馈]: mc2/mega_moe 算子编码风格存在一些问题，需要优化** — 55分
+  - 痛点原因：关闭说明仅58字且无主链接，仅因MR合并自动关闭，未沉淀具体优化方案供后续复用。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3659    - `liudan12`：add label bug-report    - `cann-robot`：add label resolved    - `jy_du`：[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我    - `liudan12`：>[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我 [@jy_du](https://gitcode.com/jy_du) 欢迎欢迎    - `liudan12`：assigned to @jy_du
+- **[#3653](https://gitcode.com/cann/ops-transformer/issues/3653) [Requirement|需求建议]: 完善 GroupedMatmulActivationQuantWeightNz 算子资料并补充 arch35 示例** — 55分
+  - 痛点原因：关闭说明仅57字且由机器人自动关闭，缺乏人工总结的解决细节与复用指引，难以供他人参考。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3653    - `zhoushaolong`：add label requirement    - `cann-robot`：add label resolved    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `cann-robot`：assigned to @zhoushaolong    - [关联PR #8381（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8381)
+- **[#3610](https://gitcode.com/cann/ops-transformer/issues/3610) [Documentation|文档反馈]: 删除dispatch&combine算子文档tp2相关描述** — 55分
+  - 痛点原因：关闭说明仅由机器人自动触发且未关联主issue链接，缺乏人工对解决方案的详细总结，导致复用价值不足。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3610    - `yangzeheng`：add label documentation    - `cann-robot`：add label resolved    - `weihao18`：/assign [@yangzeheng](https://gitcode.com/yangzeheng)    - `cann-robot`：assigned to @yangzeheng    - [关联PR #8279（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8279)
+- **[#3609](https://gitcode.com/cann/ops-transformer/issues/3609) [Documentation|文档反馈]: 资料格式修复** — 55分
+  - 痛点原因：关闭说明仅为机器人自动回复，缺乏重复issue主链接，复用参考信息不足。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3609    - `fazhenyao123`：add label documentation    - `cann-robot`：add label resolved    - `weihao18`：/assign [@fazhenyao123](https://gitcode.com/fazhenyao123)    - `cann-robot`：assigned to @fazhenyao123    - [关联PR #8305（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8305)
+- **[#3605](https://gitcode.com/cann/ops-transformer/issues/3605) [Requirement|需求建议]: 增加训练metadata文档资料** — 55分
+  - 痛点原因：关闭说明仅55字且未提供关联主issue链接，导致后续复用追溯困难。
+  - 原文依据：
+    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3605    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `weihao18`：/assign [@qq_32807861](https://gitcode.com/qq_32807861)    - `cann-robot`：assigned to @qq_32807861    - [关联PR #8153（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8153)
+#### PP-03 Bot误关闭率高且关闭逻辑有缺陷（G · Bot/Agent 治理）
+
+- **[#3705](https://gitcode.com/cann/ops-transformer/issues/3705) [Bug-Report|缺陷反馈]: flash_attn arch35头文件包含路径在安装布局下编译失败** — 0分
+  - 痛点原因：Bot仅响应分配与关闭指令，未进行自动打标或有效评论，治理动作过于单一。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成    - [关联PR #8586（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8586)
+- **[#3627](https://gitcode.com/cann/ops-transformer/issues/3627) [Documentation|文档反馈]: aclnnGroupedMatmulAddV2、aclnnGroupedMatmulFinalizeRouting…** — 0分
+  - 痛点原因：Bot仅执行指派动作，无自动打标与评论回复，缺乏实质性的自动化治理能力。
+  - 原文依据：
+    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：收到问题，已路由给相关责任人修复。    - `kknan`：https://gitcode.com/cann/ops-transformer/blob/master/gmm/grouped_matmul_add/docs/aclnnGroupedMatmulAddV2.md 已修复，剩余问题待上库    - `cann-robot`：assigned to @kknan    - `weihao18`：assigned to @captainmiaow    - `kknan`：unassigned @kknan
+- **[#3684](https://gitcode.com/cann/ops-transformer/issues/3684) MLA preprocess 算子在 prefix caching prefetch 场景下，prefill 阶段的 kv cache 区域在 decode …** — 15分
+  - 痛点原因：Bot仅发送一条模板催促评论，未执行自动打标或关闭等实际治理动作，状态管理完全依赖人工。
+  - 原文依据：
+    - `weihao18`：/assign [@chaotang233](https://gitcode.com/chaotang233)    - `yolic`：您好，算子写k cache用的是slotmapping，batch offset是读输入x做matmul的行偏移，与cache写位置无关。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `cann-robot`：assigned to @chaotang233
+- **[#3656](https://gitcode.com/cann/ops-transformer/issues/3656) [Bug-Report|缺陷反馈]: mhc_pre_sinkhorn() takes from 6 to 8 positional arguments bu…** — 15分
+  - 痛点原因：Bot仅有一条报错评论，未能有效拦截用户将issue分配给非仓库成员，且无打标或关闭动作，治理失效。
+  - 原文依据：
+    - `weihao18`：/assign [@taochangmin](https://gitcode.com/taochangmin)    - `cann-robot`：### Notice This issue can not be assigned to ***taochangmin***. Please try to assign to the repository members.    - `weihao18`：assigned to @taochangmin    - [关联PR #8902（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8902)
+- **[#3724](https://gitcode.com/cann/ops-transformer/issues/3724) [Requirement|需求建议]: matmulAlltoAll在aicpu场景下性能需要提升** — 20分
+  - 痛点原因：Bot直接打标resolved并关闭，但全程零评论，缺乏有效说明与沟通，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@adamlwang](https://gitcode.com/adamlwang)    - `adamlwang`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @adamlwang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3724    - [关联PR #7966（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7966)
+- **[#3723](https://gitcode.com/cann/ops-transformer/issues/3723) [Requirement|需求建议]: mhc_post实现hres可选支持** — 20分
+  - 痛点原因：Bot无任何评论交互，仅机械打标分配，且直接将需求建议标记为resolved，治理行为无效。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3723    - [关联PR #8550（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8550)
+- **[#3722](https://gitcode.com/cann/ops-transformer/issues/3722) [Requirement|需求建议]: moeInitRoutingV3: 性能优化 mxfp8透传场景多buffer+读一次搬多行 mxfp8量化场景双bu…** — 20分
+  - 痛点原因：Bot对需求类issue机械打标resolved并关闭，全程无评论沟通，治理流于形式且存在误判。
+  - 原文依据：
+    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cpy_123456`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cpy_123456    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3722    - [关联PR #8543（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8543)
+- **[#3721](https://gitcode.com/cann/ops-transformer/issues/3721) gatherV2算子新增simd小尾轴模板** — 20分
+  - 痛点原因：Bot仅执行分配、打标和关闭操作，但全程无任何评论反馈，缺乏状态变更通知与有效互动。
+  - 原文依据：
+    - `z30075199`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z30075199    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-transformer#issue3721    - [关联PR #7349（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7349)
+- **[#3720](https://gitcode.com/cann/ops-transformer/issues/3720) fix tiling check** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，全程零评论无任何解释说明，治理过程缺乏透明度与用户沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3720    - [关联PR #8610（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8610)
+- **[#3719](https://gitcode.com/cann/ops-transformer/issues/3719) [Documentation|文档反馈]: MegaMoE补充A2/A3的README资料** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，无任何评论与用户互动，缺乏有效沟通。
+  - 原文依据：
+    - `ryan_li`：add label documentation    - `cann-robot`：add label resolved    - `ryan_li`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3719    - [关联PR #8606（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8606)    - [关联PR #8612（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8612)
+- **[#3716](https://gitcode.com/cann/ops-transformer/issues/3716) [Bug-Report|缺陷反馈]: mhc_post资料修改** — 20分
+  - 痛点原因：Bot仅机械打标并随PR合并关闭，全程无任何有效评论，缺乏治理透明度与用户互动。
+  - 原文依据：
+    - `Annyqw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3716    - [关联PR #8602（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8602)    - [关联PR #8603（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8603)
+- **[#3715](https://gitcode.com/cann/ops-transformer/issues/3715) [Requirement|需求建议]: moe_token_permute for Ascend950** — 20分
+  - 痛点原因：Bot错误打上Accepted标签，与人工最终无修改关闭的结论相矛盾，且无引导评论，治理失效。
+  - 原文依据：
+    - `weihao18`：/assign [@alfengyuan](https://gitcode.com/alfengyuan)    - `alfengyuan`：经过讨论，此需求必要性不强，现有aclnn通路已经稳定运行，不需要做修改。 结论： 无修改关闭。    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @alfengyuan
+- **[#3714](https://gitcode.com/cann/ops-transformer/issues/3714) [Bug-Report|缺陷反馈]: 超大shape时（MN 超过 uint32最大值时），算子计算结果出现精度异常问题，经代码检视发现存在中间结果溢出的情况…** — 20分
+  - 痛点原因：Bot仅执行打标与分配等机械操作，无任何评论互动，缺乏有效沟通反馈，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：[@LetsAiGo](https://gitcode.com/LetsAiGo) 感谢您的反馈，修复处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3714    - [关联PR #8687（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8687)
+- **[#3713](https://gitcode.com/cann/ops-transformer/issues/3713) mega_moe maxRecvTokenNum自动计算(A2、A3)** — 20分
+  - 痛点原因：Bot虽执行了指派、打标和关闭操作，但全程无评论反馈，缺乏状态交互与治理透明度。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @SimpleBright_Man    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3713    - [关联PR #8576（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8576)    - [关联PR #8594（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8594)
+- **[#3712](https://gitcode.com/cann/ops-transformer/issues/3712) [Requirement|需求建议]: MegaMoE增加异常Dump维测能力** — 20分
+  - 痛点原因：Bot直接给需求建议打上resolved标签且无评论解释，自动化操作存在误判，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@ryan_li](https://gitcode.com/ryan_li)    - `ryan_li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3712    - [关联PR #8567（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8567)
+- **[#3711](https://gitcode.com/cann/ops-transformer/issues/3711) [Documentation|文档反馈]: 修复SLIG算子S1 S2校验放开** — 20分
+  - 痛点原因：Bot机械重复人工指派与打标动作，直接打resolved标签关闭，无任何有效评论交互，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@llwy0320](https://gitcode.com/llwy0320)    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3711    - [关联PR #8585（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8585)
+- **[#3710](https://gitcode.com/cann/ops-transformer/issues/3710) [Documentation|文档反馈]: SMLAG算子torch文档商分资料格式问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，无任何评论互动，缺乏有效沟通与人工确认。
+  - 原文依据：
+    - `hz36amy_00`：add label documentation    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3710    - [关联PR #7674（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7674)
+- **[#3709](https://gitcode.com/cann/ops-transformer/issues/3709) [Requirement|需求建议]: MatmulReduceScatterV2 AICPU场景限制tiling切分最大4轮** — 20分
+  - 痛点原因：Bot执行打标和关闭操作时评论数为零，未留下任何操作说明，导致治理过程不透明。
+  - 原文依据：
+    - `andingfangt`：add label requirement    - `cann-robot`：add label resolved    - `andingfangt`：assigned to @andingfangt    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3709    - [关联PR #8154（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8154)
+- **[#3708](https://gitcode.com/cann/ops-transformer/issues/3708) 【mc2】matmul_all_reduce在vec上使用了升精度累加，和小算子行为不一致，需要修改** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论互动，且关闭时关联信息有误，导致治理过程不透明。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3708    - [关联PR #8544（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8544)
+- **[#3703](https://gitcode.com/cann/ops-transformer/issues/3703) [Bug-Report|缺陷反馈]: BlockSparseAttention算子缺少ST看护** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派动作，无任何评论互动，缺乏对用户的实质性指引与反馈，导致有效性极低。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3703    - [关联PR #8578（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8578)
+- **[#3702](https://gitcode.com/cann/ops-transformer/issues/3702) [Bug-Report|缺陷反馈]: GMM伪量化中存在变量未使用、魔鬼数字等问题** — 20分
+  - 痛点原因：Bot在指派后直接打标resolved且无任何评论交互，机械执行导致治理无效。
+  - 原文依据：
+    - `weihao18`：/assign [@shi-rui](https://gitcode.com/shi-rui)    - `shi-rui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3702    - [关联PR #8031（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8031)
+- **[#3701](https://gitcode.com/cann/ops-transformer/issues/3701) [Documentation|文档反馈]:** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，无任何评论互动，缺乏对用户的反馈与引导，导致治理效果不佳。
+  - 原文依据：
+    - `zhangjinru`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangjinru    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3701    - [关联PR #8574（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8574)
+- **[#3700](https://gitcode.com/cann/ops-transformer/issues/3700) [Bug-Report|缺陷反馈]: posembedding/inplace_partial_rotary_mul_grad/tests/ut/op_hos…** — 20分
+  - 痛点原因：Bot仅默默打标和关闭，未留下任何评论与用户互动，且初始打标与分配均依赖人工，自动化治理不足。
+  - 原文依据：
+    - `huang-chuhong`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3700    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3699](https://gitcode.com/cann/ops-transformer/issues/3699) [Requirement|需求建议]: 移除 ComputeAxisIdxByBnAndGs1 未使用的 multiCoreInnerIdx 参数** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配和关闭操作，全程无评论互动，缺乏状态变更通知与有效沟通，治理过程不透明。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3699    - [关联PR #8549（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8549)
+- **[#3698](https://gitcode.com/cann/ops-transformer/issues/3698) [Requirement|需求建议]: MhcPreSinkhorn正反向算子支持GE图模式** — 20分
+  - 痛点原因：Bot仅执行打标与关闭动作，全程无任何评论反馈，缺乏对用户指令的响应与治理透明度。
+  - 原文依据：
+    - `taochangmin`：/asign    - `taochangmin`：/assign    - `taochangmin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3698
+- **[#3696](https://gitcode.com/cann/ops-transformer/issues/3696) 通信数据量切分发送** — 20分
+  - 痛点原因：Bot仅执行分配、打标和关闭操作，评论数为零，缺乏状态反馈与沟通说明，互动严重缺失。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3696    - [关联PR #8539（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8539)
+- **[#3695](https://gitcode.com/cann/ops-transformer/issues/3695) [Documentation|文档反馈]: 文档算子数据类型描述问题：文档中的x1_scale/x2_scale数据类型描述与算子中的定义不一致，详见问题描述…** — 20分
+  - 痛点原因：Bot仅完成打标、分配和关闭操作，评论数为零，缺乏实质性互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢反馈，处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3695    - [关联PR #8615（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8615)
+- **[#3692](https://gitcode.com/cann/ops-transformer/issues/3692) [Bug-Report|缺陷反馈]: aclnnFlashAttentionScore参数校验** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为0，未留下任何交互说明，导致治理过程缺乏透明度与有效沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3692    - [关联PR #8517（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8517)    - [关联PR #8530（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8530)
+- **[#3691](https://gitcode.com/cann/ops-transformer/issues/3691) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache regbase recompute 模板 dv 单块场景 Σx² 未计算，tota…** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派，评论数为零，缺乏自动化回复与互动反馈，治理深度不足。
+  - 原文依据：
+    - `qianzehong`：/assign [@qianzehong](https://gitcode.com/qianzehong)    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qianzehong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - [关联PR #8518（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8518)
+- **[#3690](https://gitcode.com/cann/ops-transformer/issues/3690) [Bug-Report|缺陷反馈]: gmm 单多单特性存在若干问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和随MR合并静默关闭，全程无任何评论向用户同步进展或解释原因，缺乏有效反馈。
+  - 原文依据：
+    - `zhangzhizhuo`：add label bug-report    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3690    - [关联PR #8515（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8515)
+- **[#3689](https://gitcode.com/cann/ops-transformer/issues/3689) moe_init_routing_v3 算子 INT4 动态量化路径优化（双缓冲 + 边界修复）** — 20分
+  - 痛点原因：Bot虽完成打标、指派与关闭，但全程无任何公开评论反馈，导致治理过程不透明，缺乏与用户的有效沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@Huang-Peng](https://gitcode.com/Huang-Peng)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Huang-Peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3689    - [关联PR #7492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7492)
+- **[#3688](https://gitcode.com/cann/ops-transformer/issues/3688) [Requirement|需求建议]: inplace_partial_rotary_mul 算子支持autograd 自动微分** — 20分
+  - 痛点原因：Bot在无任何评论沟通的情况下直接关闭issue并打上resolved标签，治理行为机械且缺乏有效解释。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3688    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3687](https://gitcode.com/cann/ops-transformer/issues/3687) [Bug-Report|缺陷反馈]: MC2基础算子存在cleancode问题需要整改** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭操作，全程无任何评论互动，缺乏透明度与社区沟通导致治理无效。
+  - 原文依据：
+    - `weihao18`：/assign [@ouyf](https://gitcode.com/ouyf)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ouyf    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3687    - [关联PR #8479（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8479)    - [关联PR #8507（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8507)
+- **[#3686](https://gitcode.com/cann/ops-transformer/issues/3686) [Bug-Report|缺陷反馈]: FlashAttentionScore多个模板存在内存竞争问题** — 20分
+  - 痛点原因：Bot仅机械打标并关闭issue，无任何治理评论互动，治理过程流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-wei-chen](https://gitcode.com/huang-wei-chen)    - `huang-wei-chen`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-wei-chen    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3686    - [关联PR #8415（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8415)
+- **[#3685](https://gitcode.com/cann/ops-transformer/issues/3685) [Documentation|文档反馈]: gmm资料修改** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何评论向用户解释原因，缺乏有效沟通导致治理过程不透明。
+  - 原文依据：
+    - `szhexin`：add label documentation    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3685    - [关联PR #8462（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8462)
+- **[#3682](https://gitcode.com/cann/ops-transformer/issues/3682) FA TND 布局的 CombineSplitKVRes 在 batch 间 S1 长度不同时，lseOffset 的预填值覆盖了有效 batch 的 LSE…** — 20分
+  - 痛点原因：Bot仅执行打标，未根据人工回复自动关闭issue且无评论互动，治理动作不完整。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-chuhong](https://gitcode.com/huang-chuhong)    - `huang-chuhong`：感谢补充。经分析，#3682 描述的问题不存在，具体说明如下： ## 1. 不存在 lseOffset 重复覆盖问题 #3681 的修复中 `lseBatchOffset` 取累积有效 S1（`actualSeqQlenAddr[bIdx…    - `huang-chuhong`：您好，当前问题已经解决，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @huang-chuhong    - `huang-chuhong`：closed from codehub
+- **[#3681](https://gitcode.com/cann/ops-transformer/issues/3681) [Bug-Report|缺陷反馈]: FlashAttention TND布局下lseOffset越界写导致LSE输出inf** — 20分
+  - 痛点原因：Bot仅完成打标与指派，无评论互动，且最终由人工通过codehub直接关闭，未发挥Bot在关闭环节的治理作用。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @huang-chuhong    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - [关联PR #8490（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8490)
+- **[#3679](https://gitcode.com/cann/ops-transformer/issues/3679) [Documentation|文档反馈]: BSAG缺少950相关文档** — 20分
+  - 痛点原因：Bot仅执行打标和关闭动作，未留下任何解释性评论，导致用户无法获知关闭原因及关联PR情况，缺乏有效沟通。
+  - 原文依据：
+    - `xuchengyang`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3679    - [关联PR #8229（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8229)
+- **[#3678](https://gitcode.com/cann/ops-transformer/issues/3678) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 20分
+  - 痛点原因：Bot仅执行打标、指派和关闭等机械操作，无任何评论互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@cardiac_index](https://gitcode.com/cardiac_index)    - `cardiac_index`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cardiac_index    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3678    - [关联PR #8428（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8428)
+- **[#3676](https://gitcode.com/cann/ops-transformer/issues/3676) test issue mhc optional** — 20分
+  - 痛点原因：Bot仅完成打标，未执行关闭或评论提醒，测试issue最终依赖人工关闭，治理动作严重缺失。
+  - 原文依据：
+    - `weihao18`：测试issue请及时关闭    - `cann-robot`：add label Accepted    - `weixin_44156099`：closed from codehub    - `weixin_44156099`：changed custom state from 进行中 to 已完成
+- **[#3674](https://gitcode.com/cann/ops-transformer/issues/3674) 修复SAB BN matmulNZ出尾块搬运处理** — 20分
+  - 痛点原因：Bot虽完成了分配、打标和关闭，但全程无评论互动，缺乏状态同步与关闭原因说明。
+  - 原文依据：
+    - `weihao18`：/assign @cjz_    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cjz_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3674    - [关联PR #8467（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8467)    - [关联PR #8502（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8502)
+- **[#3673](https://gitcode.com/cann/ops-transformer/issues/3673) [Bug-Report|缺陷反馈]: mlapo cachemode为2时，当传入cache storage shape为nd时会error** — 20分
+  - 痛点原因：Bot仅机械打标和关闭issue，零评论无任何治理引导，未与开发者有效互动。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3673    - [关联PR #8422（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8422)
+- **[#3672](https://gitcode.com/cann/ops-transformer/issues/3672) 修改slig文档示例** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未发布任何评论说明关闭原因及关联PR，治理过程缺乏透明度。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3672    - [关联PR #8461（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8461)
+- **[#3671](https://gitcode.com/cann/ops-transformer/issues/3671) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，transformer仓编译工程适配** — 20分
+  - 痛点原因：Bot虽执行了打标和关闭，但全程无任何评论说明原因，缺乏对用户的反馈与解释，治理透明度低。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3671    - [关联PR #8460（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8460)    - [关联PR #8725（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8725)
+- **[#3670](https://gitcode.com/cann/ops-transformer/issues/3670) [Bug-Report|缺陷反馈]: prompt_flash_attention算子的UB内存问题** — 20分
+  - 痛点原因：Bot仅完成自动打标，未参与评论，且issue关闭与状态流转均由人工完成，治理作用极其有限。
+  - 原文依据：
+    - `wangsong96`：add label bug-report    - `cann-robot`：add label Accepted    - `wangsong96`：closed from codehub    - `wangsong96`：changed custom state from 进行中 to 已完成    - [关联PR #8459（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8459)
+- **[#3669](https://gitcode.com/cann/ops-transformer/issues/3669) [Bug-Report|缺陷反馈]: SFAG算子偶现卡死问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无任何评论向用户解释关闭原因或提供有效引导。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3669    - [关联PR #8443（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8443)    - [关联PR #8445（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8445)
+- **[#3667](https://gitcode.com/cann/ops-transformer/issues/3667) [Bug-Report|缺陷反馈]: aclnn调用方式下，CANN包中profiling工具读出MhcPost算子OP Type, OP Name均不符合预期** — 20分
+  - 痛点原因：Bot仅机械执行打标与分配，无任何评论互动，且直接打resolved标签关闭，缺乏有效沟通与实际治理作用。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3667    - [关联PR #8447（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8447)
+- **[#3666](https://gitcode.com/cann/ops-transformer/issues/3666) [UT] quant_block_sparse_attn 算子 UT 框架搭建与覆盖率提升** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭操作，全程无任何过程性评论或状态同步互动，缺乏有效治理。
+  - 原文依据：
+    - `weihao18`：/assign [@chenglongyu](https://gitcode.com/chenglongyu)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chenglongyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3666    - [关联PR #8451（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8451)
+- **[#3663](https://gitcode.com/cann/ops-transformer/issues/3663) [Requirement|需求建议]: Support optional topk weights for MTE low latency** — 20分
+  - 痛点原因：Bot仅执行打标和分配操作，未产生任何评论，缺乏状态同步与有效沟通，治理过程不透明。
+  - 原文依据：
+    - `weihao18`：/assign [@Yuyu-Li](https://gitcode.com/Yuyu-Li)    - `Yuyu-Li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Yuyu-Li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3663    - [关联PR #7350（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7350)
+- **[#3662](https://gitcode.com/cann/ops-transformer/issues/3662) [Documentation|文档反馈]: 修复gmm weightnz资料若干问题** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，但评论数为0，未说明关闭原因或状态变更，缺乏有效反馈导致治理不透明。
+  - 原文依据：
+    - `zhangzhizhuo`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3662    - [关联PR #8441（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8441)
+- **[#3660](https://gitcode.com/cann/ops-transformer/issues/3660) [Documentation|文档反馈]: inplace_fused_causal_conv1d的max_query_len默认值限制** — 20分
+  - 痛点原因：机器人重复人工指派操作，机械打标关闭且无任何有效评论，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@xiapengcheng5](https://gitcode.com/xiapengcheng5)    - `xiapengcheng5`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xiapengcheng5    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3660    - [关联PR #8430（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8430)
+- **[#3659](https://gitcode.com/cann/ops-transformer/issues/3659) [Bug-Report|缺陷反馈]: mc2/mega_moe 算子编码风格存在一些问题，需要优化** — 20分
+  - 痛点原因：Bot仅机械打标resolved并关闭，无任何有效互动与引导，治理流于表面。
+  - 原文依据：
+    - `jy_du`：[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我    - `liudan12`：>[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我 [@jy_du](https://gitcode.com/jy_du) 欢迎欢迎    - `liudan12`：add label bug-report    - `cann-robot`：add label resolved    - `liudan12`：assigned to @jy_du    - `liudan12`：unassigned @jy_du
+- **[#3658](https://gitcode.com/cann/ops-transformer/issues/3658) 为MC2通算融合模板库建立目录树** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配和联动关闭，未产生任何评论与用户进行有效互动。
+  - 原文依据：
+    - `weihao18`：/assign [@codehjp423](https://gitcode.com/codehjp423)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @codehjp423    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3658    - [关联PR #8384（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8384)
+- **[#3657](https://gitcode.com/cann/ops-transformer/issues/3657) [Bug-Report|缺陷反馈]: slikg同步检测修复** — 20分
+  - 痛点原因：Bot仅机械响应指派与打标，无任何评论互动，未能发挥主动治理与引导作用。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3657    - [关联PR #8416（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8416)
+- **[#3655](https://gitcode.com/cann/ops-transformer/issues/3655) [Bug-Report|缺陷反馈]: cleancode超大圈复杂度函数整改** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配和关闭操作，评论数为零，未对关闭原因进行互动解释，治理效果差。
+  - 原文依据：
+    - `weihao18`：/assign [@wangyijing](https://gitcode.com/wangyijing)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangyijing    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3655    - [关联PR #8380（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8380)    - [关联PR #8444（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8444)
+- **[#3654](https://gitcode.com/cann/ops-transformer/issues/3654) [Requirement|需求建议]: 增加MegaMoe跨超原型可选参数** — 20分
+  - 痛点原因：Bot错误地将需求类issue直接标记为resolved且无任何评论说明，治理行为机械无效。
+  - 原文依据：
+    - `weihao18`：/assign [@zzg_code](https://gitcode.com/zzg_code)    - `zzg_code`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zzg_code    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3654    - [关联PR #8309（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8309)
+- **[#3653](https://gitcode.com/cann/ops-transformer/issues/3653) [Requirement|需求建议]: 完善 GroupedMatmulActivationQuantWeightNz 算子资料并补充 arch35 示例** — 20分
+  - 痛点原因：Bot仅被动执行打标与分配，无任何治理评论，缺乏自动化引导与关闭说明。
+  - 原文依据：
+    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhoushaolong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3653    - [关联PR #8381（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8381)
+- **[#3652](https://gitcode.com/cann/ops-transformer/issues/3652) [Bug-Report|缺陷反馈]: 期望增加根据用例信息判断是否开启FD的开关** — 20分
+  - 痛点原因：Bot仅机械执行打标分配与关闭操作，全程无评论互动，缺乏有效治理沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@zhangh2417](https://gitcode.com/zhangh2417)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangh2417    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3652    - [关联PR #8325（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8325)    - [关联PR #8366（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8366)
+- **[#3650](https://gitcode.com/cann/ops-transformer/issues/3650) [Bug-Report|缺陷反馈]: allgathermm CCU最大通信次数为63** — 20分
+  - 痛点原因：Bot仅执行了打标与指派，无评论互动且未关闭issue，缺乏闭环治理动作导致得分低。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @captainmiaow    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成
+- **[#3649](https://gitcode.com/cann/ops-transformer/issues/3649) [Requirement|需求建议]: qkv_rms_norm_rope_cache_with_k_scale的torch_extention载入未使能延迟…** — 20分
+  - 痛点原因：Bot仅被动响应人工指令进行打标和指派，无任何主动评论互动且未自动关闭，缺乏实质性治理。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @shi-rui    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成
+- **[#3648](https://gitcode.com/cann/ops-transformer/issues/3648) [Documentation|文档反馈]: aclnnGatherPaKvCache算子文档对数据类型说明不准确** — 20分
+  - 痛点原因：Bot仅执行指派、打标和关闭等机械操作，无任何评论互动，缺乏实质性治理沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@gt0cd001](https://gitcode.com/gt0cd001)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gt0cd001    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3648    - [关联PR #8398（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8398)
+- **[#3647](https://gitcode.com/cann/ops-transformer/issues/3647) [Requirement|需求建议]: 提升mc2算子ut覆盖率** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭动作，全程零评论互动，缺乏过程说明与用户沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@mutex_lock](https://gitcode.com/mutex_lock)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @mutex_lock    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3647    - [关联PR #8395（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8395)
+- **[#3646](https://gitcode.com/cann/ops-transformer/issues/3646) [Bug-Report|缺陷反馈]: SLIKG算子内存检测报错** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派，无任何评论互动，且直接打resolved标签缺乏有效沟通，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3646    - [关联PR #8369（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8369)
+- **[#3645](https://gitcode.com/cann/ops-transformer/issues/3645) [Requirement|需求建议]: 代码清理调整声明与检查块顺序** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配与关闭操作，未在评论区进行任何互动或解释说明，缺乏有效沟通。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3645    - [关联PR #8393（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8393)    - [关联PR #8394（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8394)
+- **[#3641](https://gitcode.com/cann/ops-transformer/issues/3641) [Bug-Report|缺陷反馈]: moe_finalize_routing_v2_grad缺少同步信号，导致内存越界** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，未产生任何评论与用户沟通，缺乏状态说明导致反馈缺失。
+  - 原文依据：
+    - `yangziqi_007`：add label bug-report    - `cann-robot`：add label resolved    - `yangziqi_007`：assigned to @yangziqi_007    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3641    - [关联PR #8348（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8348)    - [关联PR #8356（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8356)
+- **[#3640](https://gitcode.com/cann/ops-transformer/issues/3640) [Bug-Report|缺陷反馈]: FAG在maxworkspace接口计算时，无法获得effectiveT1/effectiveT2，此时会导致计算的wo…** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，无任何状态流转或进度同步评论，治理动作单一且缺乏有效反馈。
+  - 原文依据：
+    - `yuhao_`：add label bug-report    - `cann-robot`：add label resolved    - `yuhao_`：assigned to @yuhao_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3640    - [关联PR #8281（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8281)
+- **[#3639](https://gitcode.com/cann/ops-transformer/issues/3639) [Bug-Report|缺陷反馈]: StemIndexer计算topkCountNum时decayLen应该在小于等于1时直接返回，等于1时后续计算无意义** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，无任何有效评论与用户互动，治理流于形式。
+  - 原文依据：
+    - `skykone1`：add label bug-report    - `cann-robot`：add label resolved    - `skykone1`：assigned to @skykone1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3639    - [关联PR #8372（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8372)
+- **[#3636](https://gitcode.com/cann/ops-transformer/issues/3636) [Requirement|需求建议]: inplace_partial_rotary_mul_grad算子缺少torch api接口** — 20分
+  - 痛点原因：Bot仅完成打标与关闭，无任何评论互动，缺乏有效的状态同步与用户引导。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3636    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3635](https://gitcode.com/cann/ops-transformer/issues/3635) [Bug-Report|缺陷反馈]: NsaCompAtten内存检测问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无任何评论与用户沟通，缺乏治理反馈导致得分低。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3635    - [关联PR #8365（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8365)    - [关联PR #8367（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8367)
+- **[#3634](https://gitcode.com/cann/ops-transformer/issues/3634) [Requirement|需求建议]: FA要接入ttk框架** — 20分
+  - 痛点原因：Bot仅机械打标并在关联PR合并后自动关闭，全程无任何评论说明，导致治理过程不透明且缺乏有效沟通。
+  - 原文依据：
+    - `SH_jingsong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3634    - [关联PR #8185（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8185)
+- **[#3631](https://gitcode.com/cann/ops-transformer/issues/3631) [Requirement|需求建议]: GroupedMatmulSwigluQuantV2算子mx weightnz场景需支持 weight多tensor** — 20分
+  - 痛点原因：Bot仅机械执行打标分配与关闭，无任何评论互动与说明，治理过程缺乏透明度。
+  - 原文依据：
+    - `fengxingpan1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fengxingpan1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3631    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7302)
+- **[#3630](https://gitcode.com/cann/ops-transformer/issues/3630) [Requirement|需求建议]: combine发送token时可能存在连续往相同卡发送的热点访问情况，影响性能，建议修改；另外仍存在同地址偏移问题，需…** — 20分
+  - 痛点原因：Bot仅机械执行打标resolved并关闭，无任何评论互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@zhong-zixin](https://gitcode.com/zhong-zixin)    - `zhong-zixin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhong-zixin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3630    - [关联PR #7752（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7752)
+- **[#3629](https://gitcode.com/cann/ops-transformer/issues/3629) [Requirement|需求建议]: 修复smlag metadata在A2/A3被拦截的问题** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，但评论数为0，缺乏有效沟通导致治理过程不透明。
+  - 原文依据：
+    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3629    - [关联PR #8342（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8342)
+- **[#3628](https://gitcode.com/cann/ops-transformer/issues/3628) [Bug-Report|缺陷反馈]: cleancode重复代码整改** — 20分
+  - 痛点原因：Bot仅机械打标并在关联PR合并后自动关闭，无任何有效评论与解释说明，治理过程缺乏透明度与互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3628    - [关联PR #8287（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8287)
+- **[#3625](https://gitcode.com/cann/ops-transformer/issues/3625) fix moe_ep_dispatch accuracy** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无解释性评论，导致治理过程不透明，缺乏对用户的反馈。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3625    - [关联PR #8336（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8336)
+- **[#3622](https://gitcode.com/cann/ops-transformer/issues/3622) [Documentation|文档反馈]: BlitzSparseAttention** — 20分
+  - 痛点原因：Bot仅执行打标、分配和关闭等机械操作，未留下任何评论与用户互动或解释原因，缺乏有效沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@kostyab](https://gitcode.com/kostyab)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kostyab    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3622    - [关联PR #8333（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8333)
+- **[#3621](https://gitcode.com/cann/ops-transformer/issues/3621) [Bug-Report|缺陷反馈]: torch_npu.npu_moe_gating_top_k_softmax 310Pbatch过大精度异常** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和自动关闭，无任何评论互动，缺乏有效治理反馈。
+  - 原文依据：
+    - `weihao18`：/assign [@gcw_kTZ5XeTb](https://gitcode.com/gcw_kTZ5XeTb)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gcw_kTZ5XeTb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3621    - [关联PR #8302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8302)    - [关联PR #8316（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8316)
+- **[#3620](https://gitcode.com/cann/ops-transformer/issues/3620) [Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何解释性评论，导致用户无法获知关闭原因及关联PR情况，缺乏透明度。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3620    - [关联PR #8285（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8285)
+- **[#3619](https://gitcode.com/cann/ops-transformer/issues/3619) [Bug-Report|缺陷反馈]: MhcPost N=4用例边界场景存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行指派与打标，无任何有效评论互动，且直接打resolved标签，治理流于形式。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3619    - [关联PR #8263（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8263)
+- **[#3618](https://gitcode.com/cann/ops-transformer/issues/3618) [Documentation|文档反馈]: 修改SLIG算子文档格式** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，未发表任何评论，缺乏有效治理信息输出。
+  - 原文依据：
+    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `llwy0320`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3618    - [关联PR #8327（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8327)
+- **[#3616](https://gitcode.com/cann/ops-transformer/issues/3616) [Bug-Report|缺陷反馈]: torch extension导入阶段会触发全量算子编译** — 20分
+  - 痛点原因：Bot仅机械打标并因关联MR合并直接关闭，全程零评论无进度同步，治理流于形式。
+  - 原文依据：
+    - `hblnb`：add label bug-report    - `cann-robot`：add label resolved    - `hblnb`：assigned to @hblnb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3616    - [关联PR #8155（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8155)    - [关联PR #8326（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8326)
+- **[#3615](https://gitcode.com/cann/ops-transformer/issues/3615) [Bug-Report|缺陷反馈]: all_gather_matmul_aiv_mode_tiling.h 头文件中使用了uint32_t数据类型，但是没有…** — 20分
+  - 痛点原因：Bot仅打标resolved但未关闭issue且无评论，未有效协助流转，分配与确认均依赖人工完成。
+  - 原文依据：
+    - `wang-minbo`：好的，确认是问题，我们会尽快修复    - `cann-robot`：add label resolved    - `wang-minbo`：assigned to @liuboxi    - `liuboxi`：assigned to @zhu-mingzhe71    - `liuboxi`：unassigned @liuboxi    - `zhu-mingzhe71`：closed from codehub
+- **[#3614](https://gitcode.com/cann/ops-transformer/issues/3614) [Requirement|需求建议]: chunk_gated_delta_rule 支持 ascend950 架构** — 20分
+  - 痛点原因：Bot仅执行打标和关闭等机械操作，评论数为0，缺乏对用户的状态变更说明与交互。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-chuhong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3614    - [关联PR #8318（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8318)
+- **[#3613](https://gitcode.com/cann/ops-transformer/issues/3613) [Bug-Report|缺陷反馈]: nsa_compress_attention_infer算子的UB内存问题** — 20分
+  - 痛点原因：Bot仅执行了打标和分配动作，但全程无任何评论互动，缺乏有效沟通反馈导致治理效果差。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3613    - [关联PR #8310（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8310)
+- **[#3612](https://gitcode.com/cann/ops-transformer/issues/3612) [Documentation|文档反馈]: aclnnNsaSelectedAttentionInfer算子md文档格式修复** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无评论互动，缺乏有效的治理信息同步。
+  - 原文依据：
+    - `weihao18`：/assign [@yyt_hw](https://gitcode.com/yyt_hw)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yyt_hw    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3612    - [关联PR #8288（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8288)
+- **[#3611](https://gitcode.com/cann/ops-transformer/issues/3611) [Bug-Report|缺陷反馈]: FA MLA noquant场景下skip的batch导致attention_out计算错误** — 20分
+  - 痛点原因：Bot仅静默执行打标与分配指令，无任何评论互动，且issue被直接关闭，治理过程流于形式。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成
+- **[#3610](https://gitcode.com/cann/ops-transformer/issues/3610) [Documentation|文档反馈]: 删除dispatch&combine算子文档tp2相关描述** — 20分
+  - 痛点原因：Bot直接打上resolved标签且无任何评论说明，仅机械执行分配动作，治理流于形式缺乏有效反馈。
+  - 原文依据：
+    - `weihao18`：/assign [@yangzeheng](https://gitcode.com/yangzeheng)    - `yangzeheng`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yangzeheng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3610    - [关联PR #8279（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8279)
+- **[#3609](https://gitcode.com/cann/ops-transformer/issues/3609) [Documentation|文档反馈]: 资料格式修复** — 20分
+  - 痛点原因：Bot仅机械执行指派与关闭打标，无评论互动，核心分类标签依赖人工添加，未发挥实际治理作用。
+  - 原文依据：
+    - `weihao18`：/assign [@fazhenyao123](https://gitcode.com/fazhenyao123)    - `fazhenyao123`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fazhenyao123    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3609    - [关联PR #8305（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8305)
+- **[#3608](https://gitcode.com/cann/ops-transformer/issues/3608) QuantGroupedMatmulInplaceAdd算子的参数说明长时间未更新** — 20分
+  - 痛点原因：Bot误判真实有效的用户反馈为无效并关闭，且无任何自动回复引导，治理完全失效。
+  - 原文依据：
+    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：第二个问题：是的，量化模式支持对应的已支持数据类型没问题。 第一个问题能麻烦再详细描述下吗    - `yunjuanya123`：这个链接https://gitcode.com/cann/ops-transformer/blob/master/gmm/quant_grouped_matmul_inplace_add/README.md里面的，参数说明一直没更新 ![…    - `kknan`：收到，修复代码上库中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kknan
+- **[#3607](https://gitcode.com/cann/ops-transformer/issues/3607) [Bug-Report|缺陷反馈]: kv_compress_epilog算子bf16格式的scale是零扩展而不是真实的bf16格式** — 20分
+  - 痛点原因：Bot仅机械打标和关联关闭，全程无任何评论互动与解释说明，缺乏有效沟通导致治理体验差。
+  - 原文依据：
+    - `zhu-lei0614`：add label bug-report    - `cann-robot`：add label resolved    - `zhu-lei0614`：assigned to @zhu-lei0614    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3607    - [关联PR #8307（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8307)
+- **[#3606](https://gitcode.com/cann/ops-transformer/issues/3606) [Bug-Report|缺陷反馈]: MegaMoe A2 Workspace 优化** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，无任何实质性评论与用户互动，治理流于形式。
+  - 原文依据：
+    - `urbub`：add label bug-report    - `cann-robot`：add label resolved    - `urbub`：assigned to @urbub    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3606    - [关联PR #8266（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8266)    - [关联PR #8337（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8337)
+- **[#3605](https://gitcode.com/cann/ops-transformer/issues/3605) [Requirement|需求建议]: 增加训练metadata文档资料** — 20分
+  - 痛点原因：Bot仅机械打标并直接标记resolved关闭，无任何实质性评论互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@qq_32807861](https://gitcode.com/qq_32807861)    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qq_32807861    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3605    - [关联PR #8153（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8153)
+- **[#3604](https://gitcode.com/cann/ops-transformer/issues/3604) [Requirement|需求建议]: gmm mx 量化weightnz 支持weight多 tensor** — 20分
+  - 痛点原因：Bot仅机械执行打标与自动关闭，全程零评论，缺乏状态同步与进度反馈，治理过程不透明。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3604    - [关联PR #6739（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/6739)    - [关联PR #82（merged）](https://gitcode.com/cann/ops-tensor/merge_requests/82)
+- **[#3603](https://gitcode.com/cann/ops-transformer/issues/3603) [Requirement|需求建议]: 修复qliv2和liv2算子部分参数缺省场景报错问题** — 20分
+  - 痛点原因：Bot错误给需求建议打resolved标签并自动关闭，全程无有效评论说明，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@LZH_unofficial](https://gitcode.com/LZH_unofficial)    - `LZH_unofficial`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @LZH_unofficial    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3603    - [关联PR #8158（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8158)
+- **[#3602](https://gitcode.com/cann/ops-transformer/issues/3602) [Documentation|文档反馈]: Mlaprolog v1和v2的README.md中有部分跳转链接失效，需整改** — 20分
+  - 痛点原因：Bot仅完成基础打标与分配，无自动关闭及有效评论动作，未能实现issue的闭环治理。
+  - 原文依据：
+    - `weihao18`：/assign [@wangss21](https://gitcode.com/wangss21)    - `wangss21`：add label documentation    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @wangss21    - `wangss21`：closed from codehub    - `wangss21`：changed custom state from 进行中 to 已完成
+- **[#3599](https://gitcode.com/cann/ops-transformer/issues/3599) [Bug-Report|缺陷反馈]: flash_attn 测试框架 run_case_load 函数 LSE 精度对比因 inf 哨兵值不一致误报失败** — 20分
+  - 痛点原因：Bot虽执行打标和分配操作，但全程无评论互动，治理过程不透明，用户无法获知操作意图。
+  - 原文依据：
+    - `weihao18`：/assign [@ChenYiran](https://gitcode.com/ChenYiran)    - `ChenYiran`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ChenYiran    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3599    - [关联PR #8286（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8286)
+- **[#3598](https://gitcode.com/cann/ops-transformer/issues/3598) [Bug-Report|缺陷反馈]: MoeInitRoutingQuantV2第三个输出结果存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭操作，未留下任何解释或引导性评论，缺乏有效互动导致治理流于形式。
+  - 原文依据：
+    - `wuxiyuan`：add label bug-report    - `cann-robot`：add label resolved    - `wuxiyuan`：assigned to @wuxiyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3598    - [关联PR #8259（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8259)    - [关联PR #8354（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8354)
+- **[#3597](https://gitcode.com/cann/ops-transformer/issues/3597) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache 与 Abs（非连续输入）同卡并发/多流混跑时出现 aic error** — 20分
+  - 痛点原因：Bot无有效评论引导，且需人工重复手动打标，治理动作无效。
+  - 原文依据：
+    - `qianzehong`：`import torch, torch_npu, traceback, sys dev = 'npu:0' torch.npu.set_device(0) print("torch", torch.__version__, "torch…    - `weihao18`：/assign [@hz36amy_00](https://gitcode.com/hz36amy_00)    - `qianzehong`：已提交修复 PR:cann/ops-transformer!8340(预搬 index 到 UB 的 GetIndex 封装,规避跨进程并发下 GlobalTensor::GetValue 触发的 aivec 越界)。上板并发 18/18…    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @hz36amy_00
+- **[#3596](https://gitcode.com/cann/ops-transformer/issues/3596) [Documentation|文档反馈]: alltoallvgmm,.gmmalltoallv文档markdown问题清理** — 20分
+  - 痛点原因：Bot未对疑似异常标题进行拦截或评论提示，直接打标resolved并分配人员，治理失效。
+  - 原文依据：
+    - `weihao18`：/assign [@wuziyu](https://gitcode.com/wuziyu)    - `wuziyu`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wuziyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3596    - [关联PR #8272（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8272)
+- **[#3595](https://gitcode.com/cann/ops-transformer/issues/3595) [Documentation|文档反馈]: matmulallreduce文档markdown问题清理** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，未产生任何评论与用户互动，缺乏有效反馈。
+  - 原文依据：
+    - `Kiana1216`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3595    - [关联PR #8269（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8269)    - [关联PR #8271（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8271)
+- **[#3594](https://gitcode.com/cann/ops-transformer/issues/3594) [Bug-Report|缺陷反馈]: 修复MatmulAlltoAll FusionPass兼容性问题** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，全程无评论互动，缺乏有效沟通与状态同步。
+  - 原文依据：
+    - `liusixia_gitcode`：add label bug-report    - `cann-robot`：add label resolved    - `liusixia_gitcode`：assigned to @liusixia_gitcode    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3594    - [关联PR #8268（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8268)    - [关联PR #8298（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8298)
+- **[#3593](https://gitcode.com/cann/ops-transformer/issues/3593) [Question|问题咨询]: all_gather_matmul和all_gather_matmul_v2的差别是什么，在A2和A3上是否有区别？** — 20分
+  - 痛点原因：Bot仅完成打标，在人工明确要求关闭时未自动执行关闭操作，导致治理流程未闭环。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：@cdw 感谢您的反馈，我们将尽快处理    - `zhu-mingzhe71`：您好，感谢您的关注，这三个问题的说明如下： 1、这两个算子的区别主要体现在两个方面： - 功能上：all_gather_matmul算子不支持量化后的低精度输入类型，而all_gather_matmul_v2支持a8w8与a4w4两种低精…    - `captainmiaow`：无后续问题，可以关闭该issue    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @captainmiaow
+- **[#3592](https://gitcode.com/cann/ops-transformer/issues/3592) [Requirement|需求建议]: 需要支持新算子，支持Rms、RoPe、Norm、Quant、kvCache等算子的融合** — 20分
+  - 痛点原因：Bot未留任何说明评论便直接打标并关闭需求issue，缺乏有效沟通，治理过程不透明。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3592    - [关联PR #7023（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7023)
+- **[#3590](https://gitcode.com/cann/ops-transformer/issues/3590) [Requirement|需求建议]: 【David】【GroupedMatMulSwigluQuantV2】泛化支持N轴非128对齐场景** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论交互，缺乏有效沟通与处理说明，导致治理体验差。
+  - 原文依据：
+    - `NeverLCY`：add label requirement    - `cann-robot`：add label resolved    - `NeverLCY`：assigned to @NeverLCY    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3590    - [关联PR #7662（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7662)
+- **[#3680](https://gitcode.com/cann/ops-transformer/issues/3680) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 35分
+  - 痛点原因：Bot仅对重复指派做简单提示，缺乏自动拦截等实质性治理动作，未能有效阻止重复指派。
+  - 原文依据：
+    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `cann-robot`：### Notice This issue is already assigned to ***peijingjing***. Please do not assign repeatedly.    - `peijingjing`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @peijingjing
+- **[#3642](https://gitcode.com/cann/ops-transformer/issues/3642) [Bug-Report|缺陷反馈]: 当bias为2维时，mlapo会报错** — 35分
+  - 痛点原因：Bot误报重复分配干扰流程，且自动打标resolved，治理动作不准确。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：### Notice This issue is already assigned to ***yolic***. Please do not assign repeatedly.    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3642
+#### PP-04 标签分类不足影响分流精度（I1 · 分配与首次响应）
+
+- **[#3724](https://gitcode.com/cann/ops-transformer/issues/3724) [Requirement|需求建议]: matmulAlltoAll在aicpu场景下性能需要提升** — 0分
+  - 痛点原因：全程仅通过机器人执行指派和打标签操作，无任何针对需求内容的实质性人工回应。
+  - 原文依据：
+    - `weihao18`：/assign [@adamlwang](https://gitcode.com/adamlwang)    - `adamlwang`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @adamlwang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3724    - [关联PR #7966（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7966)
+- **[#3723](https://gitcode.com/cann/ops-transformer/issues/3723) [Requirement|需求建议]: mhc_post实现hres可选支持** — 0分
+  - 痛点原因：负责人仅执行分配和打标签操作，全程无任何实质性技术回应，最终由机器人直接关闭。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3723    - [关联PR #8550（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8550)
+- **[#3722](https://gitcode.com/cann/ops-transformer/issues/3722) [Requirement|需求建议]: moeInitRoutingV3: 性能优化 mxfp8透传场景多buffer+读一次搬多行 mxfp8量化场景双bu…** — 0分
+  - 痛点原因：仅执行分配和加标签操作，无针对需求的技术实质回应，且被机器人直接关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cpy_123456`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cpy_123456    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3722    - [关联PR #8543（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8543)
+- **[#3721](https://gitcode.com/cann/ops-transformer/issues/3721) gatherV2算子新增simd小尾轴模板** — 0分
+  - 痛点原因：全程仅有机器人指派与自动关闭操作，缺乏任何人工实质性技术回应。
+  - 原文依据：
+    - `z30075199`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z30075199    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-transformer#issue3721    - [关联PR #7349（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7349)
+- **[#3720](https://gitcode.com/cann/ops-transformer/issues/3720) fix tiling check** — 0分
+  - 痛点原因：全程仅有机器人指派和自动关闭操作，无任何人工实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3720    - [关联PR #8610（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8610)
+- **[#3719](https://gitcode.com/cann/ops-transformer/issues/3719) [Documentation|文档反馈]: MegaMoE补充A2/A3的README资料** — 0分
+  - 痛点原因：全程仅打标签和分配人员，无任何人工实质回应，最终由机器人因关联MR合并自动关闭。
+  - 原文依据：
+    - `ryan_li`：add label documentation    - `cann-robot`：add label resolved    - `ryan_li`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3719    - [关联PR #8606（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8606)    - [关联PR #8612（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8612)
+- **[#3718](https://gitcode.com/cann/ops-transformer/issues/3718) [Requirement|需求建议]: 【生态算子贡献】新增斜视诊断专用算子 EyeDecoupledAttention 与 CausalTopoGCN** — 0分
+  - 痛点原因：仅有认领和分配操作，全程未提供任何技术讨论或审查反馈等实质性回应。
+  - 原文依据：
+    - `m0_64571491`：/assign    - `cann-robot`：assigned to @m0_64571491    - [关联PR #8613（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8613)
+- **[#3716](https://gitcode.com/cann/ops-transformer/issues/3716) [Bug-Report|缺陷反馈]: mhc_post资料修改** — 0分
+  - 痛点原因：全程仅打标签及机器人随PR合并自动关闭，无任何实质回应内容，故得分为0。
+  - 原文依据：
+    - `Annyqw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3716    - [关联PR #8602（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8602)    - [关联PR #8603（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8603)
+- **[#3714](https://gitcode.com/cann/ops-transformer/issues/3714) [Bug-Report|缺陷反馈]: 超大shape时（MN 超过 uint32最大值时），算子计算结果出现精度异常问题，经代码检视发现存在中间结果溢出的情况…** — 0分
+  - 痛点原因：仅简单分配任务并回复修复处理中，未针对中间结果溢出问题提供技术分析或方案，缺乏实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：[@LetsAiGo](https://gitcode.com/LetsAiGo) 感谢您的反馈，修复处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3714    - [关联PR #8687（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8687)
+- **[#3713](https://gitcode.com/cann/ops-transformer/issues/3713) mega_moe maxRecvTokenNum自动计算(A2、A3)** — 0分
+  - 痛点原因：全程仅机器人自动分配和关闭，无任何人工实质回复，缺乏对问题的有效沟通与解答。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @SimpleBright_Man    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3713    - [关联PR #8576（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8576)    - [关联PR #8594（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8594)
+- **[#3712](https://gitcode.com/cann/ops-transformer/issues/3712) [Requirement|需求建议]: MegaMoE增加异常Dump维测能力** — 0分
+  - 痛点原因：仅快速分配任务和加标签，全程无针对需求的技术讨论，且被机器人直接标记为resolved，导致无实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@ryan_li](https://gitcode.com/ryan_li)    - `ryan_li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3712    - [关联PR #8567（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8567)
+- **[#3711](https://gitcode.com/cann/ops-transformer/issues/3711) [Documentation|文档反馈]: 修复SLIG算子S1 S2校验放开** — 0分
+  - 痛点原因：仅执行分配和加标签操作，全程无任何人工实质内容回应即被关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@llwy0320](https://gitcode.com/llwy0320)    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3711    - [关联PR #8585（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8585)
+- **[#3710](https://gitcode.com/cann/ops-transformer/issues/3710) [Documentation|文档反馈]: SMLAG算子torch文档商分资料格式问题** — 0分
+  - 痛点原因：仅打标签和分配负责人后因关联MR合并直接关闭，全程无实质性人工回复。
+  - 原文依据：
+    - `hz36amy_00`：add label documentation    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3710    - [关联PR #7674（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7674)
+- **[#3709](https://gitcode.com/cann/ops-transformer/issues/3709) [Requirement|需求建议]: MatmulReduceScatterV2 AICPU场景限制tiling切分最大4轮** — 0分
+  - 痛点原因：全程仅由机器人打标签、分配及自动关闭，无任何针对需求内容的实质性人工回应。
+  - 原文依据：
+    - `andingfangt`：add label requirement    - `cann-robot`：add label resolved    - `andingfangt`：assigned to @andingfangt    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3709    - [关联PR #8154（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8154)
+- **[#3708](https://gitcode.com/cann/ops-transformer/issues/3708) 【mc2】matmul_all_reduce在vec上使用了升精度累加，和小算子行为不一致，需要修改** — 0分
+  - 痛点原因：全程仅机器人自动关闭并关联PR，缺乏任何实质性技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3708    - [关联PR #8544（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8544)
+- **[#3707](https://gitcode.com/cann/ops-transformer/issues/3707) [Bug-Report|缺陷反馈]: gmm类算子空指针解引用、整数溢出及除零风险** — 0分
+  - 痛点原因：仅执行了分配和加标签等机械操作，未对缺陷内容提供任何实质性技术回应。
+  - 原文依据：
+    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label bug-report    - `cann-robot`：assigned to @zhoushaolong    - [关联PR #8584（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8584)
+- **[#3706](https://gitcode.com/cann/ops-transformer/issues/3706) [Documentation|文档反馈]: trans仓doc tools和aidd内容修改合入9.1.0专项** — 0分
+  - 痛点原因：仅进行了任务指派和关联PR，未给出任何实质性的解答或反馈。
+  - 原文依据：
+    - `caiwenwen`：分配给我自己    - `weihao18`：/assign [@caiwenwen](https://gitcode.com/caiwenwen)    - `cann-robot`：assigned to @caiwenwen    - [关联PR #8538（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8538)    - [关联PR #8638（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8638)    - [关联PR #8639（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8639)
+- **[#3705](https://gitcode.com/cann/ops-transformer/issues/3705) [Bug-Report|缺陷反馈]: flash_attn arch35头文件包含路径在安装布局下编译失败** — 0分
+  - 痛点原因：维护者仅用指令分配并关闭了该缺陷，全程未提供任何针对编译失败的技术性回复。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成    - [关联PR #8586（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8586)
+- **[#3704](https://gitcode.com/cann/ops-transformer/issues/3704) [Requirement|需求建议]: MatmulReduceScatterV2新增mxfp4量化场景** — 0分
+  - 痛点原因：仅添加了需求标签并关联PR，全程无任何实质性的文字回应。
+  - 原文依据：
+    - `Kiana1216`：add label requirement    - [关联PR #7195（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7195)    - [关联PR #8596（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8596)
+- **[#3703](https://gitcode.com/cann/ops-transformer/issues/3703) [Bug-Report|缺陷反馈]: BlockSparseAttention算子缺少ST看护** — 0分
+  - 痛点原因：仅快速分配负责人和添加标签，全程无任何人工实质性的技术回应即被机器人标记为resolved。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3703    - [关联PR #8578（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8578)
+- **[#3702](https://gitcode.com/cann/ops-transformer/issues/3702) [Bug-Report|缺陷反馈]: GMM伪量化中存在变量未使用、魔鬼数字等问题** — 0分
+  - 痛点原因：仅进行了指派和加标签等机械操作，未对缺陷进行任何技术层面的实质性解答或确认。
+  - 原文依据：
+    - `weihao18`：/assign [@shi-rui](https://gitcode.com/shi-rui)    - `shi-rui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3702    - [关联PR #8031（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8031)
+- **[#3701](https://gitcode.com/cann/ops-transformer/issues/3701) [Documentation|文档反馈]:** — 0分
+  - 痛点原因：全程仅由机器人自动分配并随MR合并关闭，无任何人工实质回应。
+  - 原文依据：
+    - `zhangjinru`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangjinru    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3701    - [关联PR #8574（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8574)
+- **[#3700](https://gitcode.com/cann/ops-transformer/issues/3700) [Bug-Report|缺陷反馈]: posembedding/inplace_partial_rotary_mul_grad/tests/ut/op_hos…** — 0分
+  - 痛点原因：仅进行了加标签和指派操作，未提供任何实质性的技术回复。
+  - 原文依据：
+    - `huang-chuhong`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3700    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3699](https://gitcode.com/cann/ops-transformer/issues/3699) [Requirement|需求建议]: 移除 ComputeAxisIdxByBnAndGs1 未使用的 multiCoreInnerIdx 参数** — 0分
+  - 痛点原因：仅分配任务无人工实质回应，最终由机器人直接关闭，全程缺乏实质性解答。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3699    - [关联PR #8549（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8549)
+- **[#3698](https://gitcode.com/cann/ops-transformer/issues/3698) [Requirement|需求建议]: MhcPreSinkhorn正反向算子支持GE图模式** — 0分
+  - 痛点原因：仅快速指派和打标签，全程无人工实质回应，且被机器人误加resolved标签。
+  - 原文依据：
+    - `taochangmin`：/asign    - `taochangmin`：/assign    - `taochangmin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3698
+- **[#3697](https://gitcode.com/cann/ops-transformer/issues/3697) [Requirement|需求建议]: QLIV2批跑pytest功能适配** — 0分
+  - 痛点原因：响应耗时近13小时且仅停留在追问细节与打标签，始终未提供实质性解答或处理方案。
+  - 原文依据：
+    - `weihao18`：你好，QLIV2批跑功能缺失，可以描述得更具体一些吗    - `zzzyh22`：add label requirement
+- **[#3696](https://gitcode.com/cann/ops-transformer/issues/3696) 通信数据量切分发送** — 0分
+  - 痛点原因：首次响应仅为机器人指派与打标签，全程无人工实质技术回应，最终被机器人自动关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3696    - [关联PR #8539（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8539)
+- **[#3695](https://gitcode.com/cann/ops-transformer/issues/3695) [Documentation|文档反馈]: 文档算子数据类型描述问题：文档中的x1_scale/x2_scale数据类型描述与算子中的定义不一致，详见问题描述…** — 0分
+  - 痛点原因：仅回复感谢反馈及处理中等流程性话语，未针对文档数据类型不一致问题给出实质性解答。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢反馈，处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3695    - [关联PR #8615（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8615)
+- **[#3694](https://gitcode.com/cann/ops-transformer/issues/3694) [Requirement|需求建议]: 算子原型迁移至所属仓** — 0分
+  - 痛点原因：仅有分配负责人的系统响应，但负责人未给出任何实质性回应。
+  - 原文依据：
+    - `weihao18`：/assign [@Hana77](https://gitcode.com/Hana77)    - `cann-robot`：assigned to @Hana77    - [关联PR #8540（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8540)    - [关联PR #8552（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8552)    - [关联PR #8554（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8554)    - [关联PR #8564（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8564)
+- **[#3692](https://gitcode.com/cann/ops-transformer/issues/3692) [Bug-Report|缺陷反馈]: aclnnFlashAttentionScore参数校验** — 0分
+  - 痛点原因：首次响应仅分配人员，后续直接因关联MR合并被机器人关闭，全程无人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3692    - [关联PR #8517（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8517)    - [关联PR #8530（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8530)
+- **[#3691](https://gitcode.com/cann/ops-transformer/issues/3691) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache regbase recompute 模板 dv 单块场景 Σx² 未计算，tota…** — 0分
+  - 痛点原因：仅执行指派和加标签操作，机器人直接标记resolved，全程无任何实质性技术回应。
+  - 原文依据：
+    - `qianzehong`：/assign [@qianzehong](https://gitcode.com/qianzehong)    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qianzehong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - [关联PR #8518（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8518)
+- **[#3690](https://gitcode.com/cann/ops-transformer/issues/3690) [Bug-Report|缺陷反馈]: gmm 单多单特性存在若干问题** — 0分
+  - 痛点原因：全程无针对缺陷内容的实质技术回应，仅通过打标签和关联合并请求直接关闭了问题。
+  - 原文依据：
+    - `zhangzhizhuo`：add label bug-report    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3690    - [关联PR #8515（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8515)
+- **[#3689](https://gitcode.com/cann/ops-transformer/issues/3689) moe_init_routing_v3 算子 INT4 动态量化路径优化（双缓冲 + 边界修复）** — 0分
+  - 痛点原因：全程仅机器人执行分配和关闭，无任何人工实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@Huang-Peng](https://gitcode.com/Huang-Peng)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Huang-Peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3689    - [关联PR #7492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7492)
+- **[#3688](https://gitcode.com/cann/ops-transformer/issues/3688) [Requirement|需求建议]: inplace_partial_rotary_mul 算子支持autograd 自动微分** — 0分
+  - 痛点原因：仅执行打标签和分配负责人操作，全程未提供任何实质性的技术解答或沟通。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3688    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3687](https://gitcode.com/cann/ops-transformer/issues/3687) [Bug-Report|缺陷反馈]: MC2基础算子存在cleancode问题需要整改** — 0分
+  - 痛点原因：仅由机器人分配任务并随关联MR合并自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@ouyf](https://gitcode.com/ouyf)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ouyf    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3687    - [关联PR #8479（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8479)    - [关联PR #8507（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8507)
+- **[#3686](https://gitcode.com/cann/ops-transformer/issues/3686) [Bug-Report|缺陷反馈]: FlashAttentionScore多个模板存在内存竞争问题** — 0分
+  - 痛点原因：仅执行指派和打标签，机器人直接标记resolved，全程无人工实质技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-wei-chen](https://gitcode.com/huang-wei-chen)    - `huang-wei-chen`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-wei-chen    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3686    - [关联PR #8415（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8415)
+- **[#3685](https://gitcode.com/cann/ops-transformer/issues/3685) [Documentation|文档反馈]: gmm资料修改** — 0分
+  - 痛点原因：维护者仅打标签和分配任务，机器人因关联MR合并直接关闭issue，全程无人工实质回应。
+  - 原文依据：
+    - `szhexin`：add label documentation    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3685    - [关联PR #8462（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8462)
+- **[#3681](https://gitcode.com/cann/ops-transformer/issues/3681) [Bug-Report|缺陷反馈]: FlashAttention TND布局下lseOffset越界写导致LSE输出inf** — 0分
+  - 痛点原因：仅进行了分配和关闭操作，全程无针对缺陷的技术分析或解决方案等实质性人工回应。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @huang-chuhong    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - [关联PR #8490（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8490)
+- **[#3680](https://gitcode.com/cann/ops-transformer/issues/3680) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 0分
+  - 痛点原因：响应仅为指派和加标签操作，无针对缺陷内容的实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `cann-robot`：### Notice This issue is already assigned to ***peijingjing***. Please do not assign repeatedly.    - `peijingjing`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @peijingjing
+- **[#3679](https://gitcode.com/cann/ops-transformer/issues/3679) [Documentation|文档反馈]: BSAG缺少950相关文档** — 0分
+  - 痛点原因：首次响应仅打标签，后续直接由机器人关联PR关闭，全程无人工实质回应。
+  - 原文依据：
+    - `xuchengyang`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3679    - [关联PR #8229（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8229)
+- **[#3678](https://gitcode.com/cann/ops-transformer/issues/3678) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 0分
+  - 痛点原因：仅进行了指派和打标签操作，全程无任何实质性技术回复，即被机器人标记为resolved。
+  - 原文依据：
+    - `weihao18`：/assign [@cardiac_index](https://gitcode.com/cardiac_index)    - `cardiac_index`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cardiac_index    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3678    - [关联PR #8428（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8428)
+- **[#3677](https://gitcode.com/cann/ops-transformer/issues/3677) fix(mhc): mhc_pre_sinkhorn optional outputs allow nullptr when need_backward=fa…** — 0分
+  - 痛点原因：虽快速指派负责人，但始终未提供任何实质性技术回应，且关联PR均已关闭，导致得分为零。
+  - 原文依据：
+    - `weihao18`：/assign [@weixin_44156099](https://gitcode.com/weixin_44156099)    - `cann-robot`：assigned to @weixin_44156099    - [关联PR #8481（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8481)    - [关联PR #8482（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8482)
+- **[#3675](https://gitcode.com/cann/ops-transformer/issues/3675) [Bug-Report|缺陷反馈]: 变量定义 和 函数定义 不合理导致 代码编译过程产生告警，建议修改代码实现消除告警，详见问题单正文** — 0分
+  - 痛点原因：维护者仅回复处理中等客套话，耗时超16小时且全程未提供任何实质性技术解答。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢您的反馈，处理中    - `cann-robot`：assigned to @captainmiaow
+- **[#3674](https://gitcode.com/cann/ops-transformer/issues/3674) 修复SAB BN matmulNZ出尾块搬运处理** — 0分
+  - 痛点原因：首次响应仅为机器人自动分配和关闭操作，全程无人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign @cjz_    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cjz_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3674    - [关联PR #8467（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8467)    - [关联PR #8502（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8502)
+- **[#3673](https://gitcode.com/cann/ops-transformer/issues/3673) [Bug-Report|缺陷反馈]: mlapo cachemode为2时，当传入cache storage shape为nd时会error** — 0分
+  - 痛点原因：被指派人仅添加标签且由机器人自动关闭，未对缺陷提供任何技术解释或实质处理回复。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3673    - [关联PR #8422（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8422)
+- **[#3672](https://gitcode.com/cann/ops-transformer/issues/3672) 修改slig文档示例** — 0分
+  - 痛点原因：全程仅由机器人自动打标签并在关联PR合并后关闭，无任何人工实质回应，故得分为0。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3672    - [关联PR #8461（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8461)
+- **[#3671](https://gitcode.com/cann/ops-transformer/issues/3671) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，transformer仓编译工程适配** — 0分
+  - 痛点原因：仅打标签和分配负责人，最终由机器人自动关闭，全程无任何实质性技术回应。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3671    - [关联PR #8460（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8460)    - [关联PR #8725（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8725)
+- **[#3670](https://gitcode.com/cann/ops-transformer/issues/3670) [Bug-Report|缺陷反馈]: prompt_flash_attention算子的UB内存问题** — 0分
+  - 痛点原因：首次响应超44小时且全程无实质技术回复，仅通过打标签和修改状态直接关闭了issue。
+  - 原文依据：
+    - `wangsong96`：add label bug-report    - `cann-robot`：add label Accepted    - `wangsong96`：closed from codehub    - `wangsong96`：changed custom state from 进行中 to 已完成    - [关联PR #8459（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8459)
+- **[#3669](https://gitcode.com/cann/ops-transformer/issues/3669) [Bug-Report|缺陷反馈]: SFAG算子偶现卡死问题** — 0分
+  - 痛点原因：维护者仅打标签和分配负责人，未给出任何实质性文字回复便直接关闭。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3669    - [关联PR #8443（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8443)    - [关联PR #8445（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8445)
+- **[#3668](https://gitcode.com/cann/ops-transformer/issues/3668) MegaMoe get_mega_moe_ccl_buffer_size和get_symm_buffer_for_mega_moe接口入参一致性** — 0分
+  - 痛点原因：仅分配负责人并关联已关闭PR，始终未提供任何实质性的文字回应。
+  - 原文依据：
+    - `weixin_49300047`：assigned to @weixin_49300047    - [关联PR #8457（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8457)
+- **[#3667](https://gitcode.com/cann/ops-transformer/issues/3667) [Bug-Report|缺陷反馈]: aclnn调用方式下，CANN包中profiling工具读出MhcPost算子OP Type, OP Name均不符合预期** — 0分
+  - 痛点原因：仅存在分配任务和打标签的自动化操作，且被机器人误标为已解决，全程无任何人工实质回应。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3667    - [关联PR #8447（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8447)
+- **[#3666](https://gitcode.com/cann/ops-transformer/issues/3666) [UT] quant_block_sparse_attn 算子 UT 框架搭建与覆盖率提升** — 0分
+  - 痛点原因：仅机器人分配任务并因关联MR合并自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@chenglongyu](https://gitcode.com/chenglongyu)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chenglongyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3666    - [关联PR #8451（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8451)
+- **[#3664](https://gitcode.com/cann/ops-transformer/issues/3664) [Bug-Report|缺陷反馈]: FIA tiling写死核数，不兼容Ascend950** — 0分
+  - 痛点原因：该缺陷反馈被直接从代码库关闭，全程未提供任何首次响应与实质回应。
+  - 原文依据：
+    - `demoauguste`：closed from codehub
+- **[#3663](https://gitcode.com/cann/ops-transformer/issues/3663) [Requirement|需求建议]: Support optional topk weights for MTE low latency** — 0分
+  - 痛点原因：首次响应仅为分配任务和加标签，全程无人工技术讨论或实质性反馈，直接被机器人标记为已解决。
+  - 原文依据：
+    - `weihao18`：/assign [@Yuyu-Li](https://gitcode.com/Yuyu-Li)    - `Yuyu-Li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Yuyu-Li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3663    - [关联PR #7350（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7350)
+- **[#3662](https://gitcode.com/cann/ops-transformer/issues/3662) [Documentation|文档反馈]: 修复gmm weightnz资料若干问题** — 0分
+  - 痛点原因：仅打标签后由机器人随PR合并自动关闭，全程无人工实质回应。
+  - 原文依据：
+    - `zhangzhizhuo`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3662    - [关联PR #8441（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8441)
+- **[#3661](https://gitcode.com/cann/ops-transformer/issues/3661) [Bug-Report|缺陷反馈]: allgathermm的test文件夹下atk测试代码修复** — 0分
+  - 痛点原因：仅有自动分配和关联PR操作，未对缺陷进行任何实质性的文字回应。
+  - 原文依据：
+    - `sangzhenguo`：assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `sangzhenguo`：/assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `cann-robot`：assigned to @sangzhenguo    - [关联PR #8385（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8385)
+- **[#3660](https://gitcode.com/cann/ops-transformer/issues/3660) [Documentation|文档反馈]: inplace_fused_causal_conv1d的max_query_len默认值限制** — 0分
+  - 痛点原因：维护者仅指派人员和添加标签，未对文档反馈内容提供任何实质性解答，且直接被机器人关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@xiapengcheng5](https://gitcode.com/xiapengcheng5)    - `xiapengcheng5`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xiapengcheng5    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3660    - [关联PR #8430（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8430)
+- **[#3659](https://gitcode.com/cann/ops-transformer/issues/3659) [Bug-Report|缺陷反馈]: mc2/mega_moe 算子编码风格存在一些问题，需要优化** — 0分
+  - 痛点原因：互动仅限于认领和打招呼，无针对缺陷的技术分析或解决措施等实质回应。
+  - 原文依据：
+    - `jy_du`：[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我    - `liudan12`：>[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我 [@jy_du](https://gitcode.com/jy_du) 欢迎欢迎    - `liudan12`：add label bug-report    - `cann-robot`：add label resolved    - `liudan12`：assigned to @jy_du    - `liudan12`：unassigned @jy_du
+- **[#3657](https://gitcode.com/cann/ops-transformer/issues/3657) [Bug-Report|缺陷反馈]: slikg同步检测修复** — 0分
+  - 痛点原因：仅分配任务和添加标签，机器人直接标记已解决，全程无任何实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3657    - [关联PR #8416（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8416)
+- **[#3656](https://gitcode.com/cann/ops-transformer/issues/3656) [Bug-Report|缺陷反馈]: mhc_pre_sinkhorn() takes from 6 to 8 positional arguments bu…** — 0分
+  - 痛点原因：因指派非仓库成员失败导致无人实质接手，虽关联PR但未合并，始终无实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@taochangmin](https://gitcode.com/taochangmin)    - `cann-robot`：### Notice This issue can not be assigned to ***taochangmin***. Please try to assign to the repository members.    - `weihao18`：assigned to @taochangmin    - [关联PR #8902（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8902)
+- **[#3655](https://gitcode.com/cann/ops-transformer/issues/3655) [Bug-Report|缺陷反馈]: cleancode超大圈复杂度函数整改** — 0分
+  - 痛点原因：仅由机器人分配任务并随MR合并关闭，全程无人工实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@wangyijing](https://gitcode.com/wangyijing)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangyijing    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3655    - [关联PR #8380（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8380)    - [关联PR #8444（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8444)
+- **[#3654](https://gitcode.com/cann/ops-transformer/issues/3654) [Requirement|需求建议]: 增加MegaMoe跨超原型可选参数** — 0分
+  - 痛点原因：仅进行了任务分配和打标签操作，全程未对需求内容进行任何实质性解答或讨论。
+  - 原文依据：
+    - `weihao18`：/assign [@zzg_code](https://gitcode.com/zzg_code)    - `zzg_code`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zzg_code    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3654    - [关联PR #8309（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8309)
+- **[#3653](https://gitcode.com/cann/ops-transformer/issues/3653) [Requirement|需求建议]: 完善 GroupedMatmulActivationQuantWeightNz 算子资料并补充 arch35 示例** — 0分
+  - 痛点原因：开发者仅执行指派和打标签操作，机器人直接添加resolved标签，全程无针对需求内容的实质性技术解答。
+  - 原文依据：
+    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhoushaolong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3653    - [关联PR #8381（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8381)
+- **[#3652](https://gitcode.com/cann/ops-transformer/issues/3652) [Bug-Report|缺陷反馈]: 期望增加根据用例信息判断是否开启FD的开关** — 0分
+  - 痛点原因：全程仅机器人分配标签和关闭，无任何人工对问题的实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@zhangh2417](https://gitcode.com/zhangh2417)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangh2417    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3652    - [关联PR #8325（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8325)    - [关联PR #8366（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8366)
+- **[#3650](https://gitcode.com/cann/ops-transformer/issues/3650) [Bug-Report|缺陷反馈]: allgathermm CCU最大通信次数为63** — 0分
+  - 痛点原因：仅完成指派和打标签，被指派人始终未提供任何实质性的技术解答或处理意见。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @captainmiaow    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成
+- **[#3649](https://gitcode.com/cann/ops-transformer/issues/3649) [Requirement|需求建议]: qkv_rms_norm_rope_cache_with_k_scale的torch_extention载入未使能延迟…** — 0分
+  - 痛点原因：仅执行了分配和打标签操作，未对需求问题提供任何实质性解答。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @shi-rui    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成
+- **[#3648](https://gitcode.com/cann/ops-transformer/issues/3648) [Documentation|文档反馈]: aclnnGatherPaKvCache算子文档对数据类型说明不准确** — 0分
+  - 痛点原因：仅机器人分配任务并加标签后直接关闭，全程无人工实质性回应。
+  - 原文依据：
+    - `weihao18`：/assign [@gt0cd001](https://gitcode.com/gt0cd001)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gt0cd001    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3648    - [关联PR #8398（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8398)
+- **[#3647](https://gitcode.com/cann/ops-transformer/issues/3647) [Requirement|需求建议]: 提升mc2算子ut覆盖率** — 0分
+  - 痛点原因：仅有机器人分配和自动关闭操作，全程无任何人工实质性回应。
+  - 原文依据：
+    - `weihao18`：/assign [@mutex_lock](https://gitcode.com/mutex_lock)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @mutex_lock    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3647    - [关联PR #8395（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8395)
+- **[#3646](https://gitcode.com/cann/ops-transformer/issues/3646) [Bug-Report|缺陷反馈]: SLIKG算子内存检测报错** — 0分
+  - 痛点原因：仅分配任务和加标签，无任何人工实质技术解答或排查建议。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3646    - [关联PR #8369（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8369)
+- **[#3645](https://gitcode.com/cann/ops-transformer/issues/3645) [Requirement|需求建议]: 代码清理调整声明与检查块顺序** — 0分
+  - 痛点原因：仅机器人自动分配并关闭issue，全程无人工针对需求内容的实质性技术回应。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3645    - [关联PR #8393（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8393)    - [关联PR #8394（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8394)
+- **[#3643](https://gitcode.com/cann/ops-transformer/issues/3643) [Requirement|需求建议]: 新增quant_compressor算子，及其torch-extension适配** — 0分
+  - 痛点原因：仅有指派和打标签的机械响应，始终未对需求进行任何实质性的技术讨论或确认。
+  - 原文依据：
+    - `guigui_jzh`：/assign [@guigui_jzh](https://gitcode.com/guigui_jzh)    - `guigui_jzh`：add label requirement    - `cann-robot`：assigned to @guigui_jzh    - [关联PR #8387（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8387)
+- **[#3642](https://gitcode.com/cann/ops-transformer/issues/3642) [Bug-Report|缺陷反馈]: 当bias为2维时，mlapo会报错** — 0分
+  - 痛点原因：仅分配任务和添加标签，全程无针对该报错问题的实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：### Notice This issue is already assigned to ***yolic***. Please do not assign repeatedly.    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3642
+- **[#3641](https://gitcode.com/cann/ops-transformer/issues/3641) [Bug-Report|缺陷反馈]: moe_finalize_routing_v2_grad缺少同步信号，导致内存越界** — 0分
+  - 痛点原因：全程仅有打标签和分配操作，无任何人工实质技术回应，最终被机器人直接关闭。
+  - 原文依据：
+    - `yangziqi_007`：add label bug-report    - `cann-robot`：add label resolved    - `yangziqi_007`：assigned to @yangziqi_007    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3641    - [关联PR #8348（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8348)    - [关联PR #8356（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8356)
+- **[#3640](https://gitcode.com/cann/ops-transformer/issues/3640) [Bug-Report|缺陷反馈]: FAG在maxworkspace接口计算时，无法获得effectiveT1/effectiveT2，此时会导致计算的wo…** — 0分
+  - 痛点原因：首次响应仅打标签分配，随后由机器人直接关闭，全程无人工实质回应。
+  - 原文依据：
+    - `yuhao_`：add label bug-report    - `cann-robot`：add label resolved    - `yuhao_`：assigned to @yuhao_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3640    - [关联PR #8281（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8281)
+- **[#3639](https://gitcode.com/cann/ops-transformer/issues/3639) [Bug-Report|缺陷反馈]: StemIndexer计算topkCountNum时decayLen应该在小于等于1时直接返回，等于1时后续计算无意义** — 0分
+  - 痛点原因：全程仅有打标签、分配和机器人关闭操作，缺乏任何人工实质技术回应。
+  - 原文依据：
+    - `skykone1`：add label bug-report    - `cann-robot`：add label resolved    - `skykone1`：assigned to @skykone1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3639    - [关联PR #8372（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8372)
+- **[#3638](https://gitcode.com/cann/ops-transformer/issues/3638) [Requirement|需求建议]: LightningIndexer可支持0轴非连续** — 0分
+  - 痛点原因：仅有机器人分配操作，无针对需求的人工实质回复，且关联PR已关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@arcticius](https://gitcode.com/arcticius)    - `cann-robot`：assigned to @arcticius    - [关联PR #7620（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7620)
+- **[#3636](https://gitcode.com/cann/ops-transformer/issues/3636) [Requirement|需求建议]: inplace_partial_rotary_mul_grad算子缺少torch api接口** — 0分
+  - 痛点原因：全程仅打标签和分配负责人，未对算子接口需求提供任何实质性技术回应。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3636    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3635](https://gitcode.com/cann/ops-transformer/issues/3635) [Bug-Report|缺陷反馈]: NsaCompAtten内存检测问题** — 0分
+  - 痛点原因：全程仅有打标签、分配及机器人自动关闭等机械操作，无任何人工实质性技术回应。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3635    - [关联PR #8365（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8365)    - [关联PR #8367（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8367)
+- **[#3634](https://gitcode.com/cann/ops-transformer/issues/3634) [Requirement|需求建议]: FA要接入ttk框架** — 0分
+  - 痛点原因：全程仅机器人打标签及关联PR自动关闭，无任何人工实质回应。
+  - 原文依据：
+    - `SH_jingsong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3634    - [关联PR #8185（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8185)
+- **[#3633](https://gitcode.com/cann/ops-transformer/issues/3633) 【bug】torch_extension没有按照mc2/mega_moe的op_tiling修改** — 0分
+  - 痛点原因：仅进行了负责人指派，未在讨论区留下任何实质性的技术回应或沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：assigned to @SimpleBright_Man    - [关联PR #8313（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8313)    - [关联PR #8364（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8364)    - [关联PR #8520（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8520)
+- **[#3632](https://gitcode.com/cann/ops-transformer/issues/3632) [Bug-Report|缺陷反馈]: engram算子优化** — 0分
+  - 痛点原因：维护者仅执行指派和加标签操作，机器人直接标记resolved，全程无任何人工实质性技术回应。
+  - 原文依据：
+    - `wuchenhao123`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***wuchenhao123***. Please do not assign repeatedly.    - `wuchenhao123`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3632    - [关联PR #7998（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7998)
+- **[#3631](https://gitcode.com/cann/ops-transformer/issues/3631) [Requirement|需求建议]: GroupedMatmulSwigluQuantV2算子mx weightnz场景需支持 weight多tensor** — 0分
+  - 痛点原因：仅经机器人分配和关联合并关闭，全程无任何人工实质技术回应。
+  - 原文依据：
+    - `fengxingpan1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fengxingpan1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3631    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7302)
+- **[#3630](https://gitcode.com/cann/ops-transformer/issues/3630) [Requirement|需求建议]: combine发送token时可能存在连续往相同卡发送的热点访问情况，影响性能，建议修改；另外仍存在同地址偏移问题，需…** — 0分
+  - 痛点原因：仅分配任务和加标签，全程无针对需求内容的实质性技术回应，最终被机器人直接标记完成。
+  - 原文依据：
+    - `weihao18`：/assign [@zhong-zixin](https://gitcode.com/zhong-zixin)    - `zhong-zixin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhong-zixin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3630    - [关联PR #7752（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7752)
+- **[#3629](https://gitcode.com/cann/ops-transformer/issues/3629) [Requirement|需求建议]: 修复smlag metadata在A2/A3被拦截的问题** — 0分
+  - 痛点原因：仅打标签后由机器人自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3629    - [关联PR #8342（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8342)
+- **[#3628](https://gitcode.com/cann/ops-transformer/issues/3628) [Bug-Report|缺陷反馈]: cleancode重复代码整改** — 0分
+  - 痛点原因：仅靠机器人快速响应并随关联PR合并自动关闭，全程无实质性技术沟通。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3628    - [关联PR #8287（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8287)
+- **[#3626](https://gitcode.com/cann/ops-transformer/issues/3626) [Bug-Report|缺陷反馈]: GroupedMatmulSwigluQuant 关闭 auto sync 后需补充显式同步** — 0分
+  - 痛点原因：仅有指派、加标签和关联MR等流程操作，始终未提供技术解答或复现确认等实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@Wei_NaChuan](https://gitcode.com/Wei_NaChuan)    - `Wei_NaChuan`：add label bug-report    - `cann-robot`：assigned to @Wei_NaChuan    - `Wei_NaChuan`：Create issue mr links: **修复 GroupedMatmulSwigluQuant 关闭自动同步后的显式同步** #8338    - [关联PR #8338（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8338)    - [关联PR #8349（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8349)
+- **[#3625](https://gitcode.com/cann/ops-transformer/issues/3625) fix moe_ep_dispatch accuracy** — 0分
+  - 痛点原因：仅由机器人因关联PR合并自动关闭，全程无人工实质回应，故得分为0。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3625    - [关联PR #8336（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8336)
+- **[#3623](https://gitcode.com/cann/ops-transformer/issues/3623) [Requirement|需求建议]: matmulallreduce在310p上动态图用例执行失败** — 0分
+  - 痛点原因：全程仅添加标签和关联PR，无任何实质性的文字交流与回应。
+  - 原文依据：
+    - `Kiana1216`：add label requirement    - [关联PR #8300（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8300)    - [关联PR #8339（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8339)    - [关联PR #8341（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8341)
+- **[#3622](https://gitcode.com/cann/ops-transformer/issues/3622) [Documentation|文档反馈]: BlitzSparseAttention** — 0分
+  - 痛点原因：仅机器人分配标签和关联MR自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@kostyab](https://gitcode.com/kostyab)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kostyab    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3622    - [关联PR #8333（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8333)
+- **[#3621](https://gitcode.com/cann/ops-transformer/issues/3621) [Bug-Report|缺陷反馈]: torch_npu.npu_moe_gating_top_k_softmax 310Pbatch过大精度异常** — 0分
+  - 痛点原因：全程无人工实质回应，仅机器人指派并关联合并请求后直接关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@gcw_kTZ5XeTb](https://gitcode.com/gcw_kTZ5XeTb)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gcw_kTZ5XeTb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3621    - [关联PR #8302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8302)    - [关联PR #8316（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8316)
+- **[#3620](https://gitcode.com/cann/ops-transformer/issues/3620) [Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题** — 0分
+  - 痛点原因：机器人自动加标签并因关联PR合并而关闭，全程无人工实质技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3620    - [关联PR #8285（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8285)
+- **[#3619](https://gitcode.com/cann/ops-transformer/issues/3619) [Bug-Report|缺陷反馈]: MhcPost N=4用例边界场景存在精度问题** — 0分
+  - 痛点原因：维护者仅分配任务和打标签，机器人直接标记resolved，无任何人工实质性技术回应。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3619    - [关联PR #8263（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8263)
+- **[#3618](https://gitcode.com/cann/ops-transformer/issues/3618) [Documentation|文档反馈]: 修改SLIG算子文档格式** — 0分
+  - 痛点原因：全程仅有打标签和机器人关闭操作，无任何人工实质回应，故得分为零。
+  - 原文依据：
+    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `llwy0320`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3618    - [关联PR #8327（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8327)
+- **[#3616](https://gitcode.com/cann/ops-transformer/issues/3616) [Bug-Report|缺陷反馈]: torch extension导入阶段会触发全量算子编译** — 0分
+  - 痛点原因：全程无人工实质回应，仅通过机器人打标签和关联MR合并直接关闭issue。
+  - 原文依据：
+    - `hblnb`：add label bug-report    - `cann-robot`：add label resolved    - `hblnb`：assigned to @hblnb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3616    - [关联PR #8155（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8155)    - [关联PR #8326（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8326)
+- **[#3614](https://gitcode.com/cann/ops-transformer/issues/3614) [Requirement|需求建议]: chunk_gated_delta_rule 支持 ascend950 架构** — 0分
+  - 痛点原因：全程仅有指派和机器人自动关闭操作，未提供任何针对该需求的实质回应。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-chuhong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3614    - [关联PR #8318（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8318)
+- **[#3613](https://gitcode.com/cann/ops-transformer/issues/3613) [Bug-Report|缺陷反馈]: nsa_compress_attention_infer算子的UB内存问题** — 0分
+  - 痛点原因：被指派者仅添加标签，机器人直接标记resolved，全程无任何实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3613    - [关联PR #8310（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8310)
+- **[#3612](https://gitcode.com/cann/ops-transformer/issues/3612) [Documentation|文档反馈]: aclnnNsaSelectedAttentionInfer算子md文档格式修复** — 0分
+  - 痛点原因：仅执行分配并由机器人自动关闭，全程无人工实质回应，导致得分为零。
+  - 原文依据：
+    - `weihao18`：/assign [@yyt_hw](https://gitcode.com/yyt_hw)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yyt_hw    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3612    - [关联PR #8288（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8288)
+- **[#3611](https://gitcode.com/cann/ops-transformer/issues/3611) [Bug-Report|缺陷反馈]: FA MLA noquant场景下skip的batch导致attention_out计算错误** — 0分
+  - 痛点原因：维护者仅通过命令认领并直接关闭该缺陷，未提供任何技术排查或实质性解答。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成
+- **[#3610](https://gitcode.com/cann/ops-transformer/issues/3610) [Documentation|文档反馈]: 删除dispatch&combine算子文档tp2相关描述** — 0分
+  - 痛点原因：仅执行了分配和加标签操作，全程无任何针对文档反馈的实质性回复。
+  - 原文依据：
+    - `weihao18`：/assign [@yangzeheng](https://gitcode.com/yangzeheng)    - `yangzeheng`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yangzeheng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3610    - [关联PR #8279（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8279)
+- **[#3609](https://gitcode.com/cann/ops-transformer/issues/3609) [Documentation|文档反馈]: 资料格式修复** — 0分
+  - 痛点原因：仅进行了指派和打标签操作，全程无任何实质性文字回应，直接被机器人标记为已解决。
+  - 原文依据：
+    - `weihao18`：/assign [@fazhenyao123](https://gitcode.com/fazhenyao123)    - `fazhenyao123`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fazhenyao123    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3609    - [关联PR #8305（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8305)
+- **[#3607](https://gitcode.com/cann/ops-transformer/issues/3607) [Bug-Report|缺陷反馈]: kv_compress_epilog算子bf16格式的scale是零扩展而不是真实的bf16格式** — 0分
+  - 痛点原因：全程仅由机器人加标签并关联关闭，无任何人工针对缺陷本身进行实质性技术回应。
+  - 原文依据：
+    - `zhu-lei0614`：add label bug-report    - `cann-robot`：add label resolved    - `zhu-lei0614`：assigned to @zhu-lei0614    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3607    - [关联PR #8307（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8307)
+- **[#3606](https://gitcode.com/cann/ops-transformer/issues/3606) [Bug-Report|缺陷反馈]: MegaMoe A2 Workspace 优化** — 0分
+  - 痛点原因：全程仅机器人打标签与分配人员，无任何人工实质回应即被关联合并请求关闭。
+  - 原文依据：
+    - `urbub`：add label bug-report    - `cann-robot`：add label resolved    - `urbub`：assigned to @urbub    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3606    - [关联PR #8266（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8266)    - [关联PR #8337（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8337)
+- **[#3605](https://gitcode.com/cann/ops-transformer/issues/3605) [Requirement|需求建议]: 增加训练metadata文档资料** — 0分
+  - 痛点原因：仅进行了任务分配和打标签操作，未对需求内容提供任何实质性解答。
+  - 原文依据：
+    - `weihao18`：/assign [@qq_32807861](https://gitcode.com/qq_32807861)    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qq_32807861    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3605    - [关联PR #8153（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8153)
+- **[#3604](https://gitcode.com/cann/ops-transformer/issues/3604) [Requirement|需求建议]: gmm mx 量化weightnz 支持weight多 tensor** — 0分
+  - 痛点原因：因关联 MR 合并被机器人自动关闭，全程仅有打标签和分配操作，无任何人工实质回应。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3604    - [关联PR #6739（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/6739)    - [关联PR #82（merged）](https://gitcode.com/cann/ops-tensor/merge_requests/82)
+- **[#3603](https://gitcode.com/cann/ops-transformer/issues/3603) [Requirement|需求建议]: 修复qliv2和liv2算子部分参数缺省场景报错问题** — 0分
+  - 痛点原因：仅进行了任务分配和打标签操作，全程无任何针对需求的技术讨论或实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@LZH_unofficial](https://gitcode.com/LZH_unofficial)    - `LZH_unofficial`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @LZH_unofficial    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3603    - [关联PR #8158（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8158)
+- **[#3602](https://gitcode.com/cann/ops-transformer/issues/3602) [Documentation|文档反馈]: Mlaprolog v1和v2的README.md中有部分跳转链接失效，需整改** — 0分
+  - 痛点原因：虽然任务分配较快，但被指派人仅添加标签，未对链接失效问题提供任何实质性解答或处理方案。
+  - 原文依据：
+    - `weihao18`：/assign [@wangss21](https://gitcode.com/wangss21)    - `wangss21`：add label documentation    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @wangss21    - `wangss21`：closed from codehub    - `wangss21`：changed custom state from 进行中 to 已完成
+- **[#3601](https://gitcode.com/cann/ops-transformer/issues/3601) [Bug-Report|缺陷反馈]: sfag存在同步问题** — 0分
+  - 痛点原因：仅执行了分配负责人和添加标签操作，始终未对问题提供任何实质性的技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@huzhipeng](https://gitcode.com/huzhipeng)    - `huzhipeng`：add label bug-report    - `cann-robot`：assigned to @huzhipeng    - [关联PR #8196（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8196)    - [关联PR #8200（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8200)    - [关联PR #8335（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8335)
+- **[#3600](https://gitcode.com/cann/ops-transformer/issues/3600) [Requirement|需求建议]: （A2/A3）FlashAttentionScore 算子在 D>128 情况下开启 L1 Reuse** — 0分
+  - 痛点原因：首次响应仅为指派任务，后续始终未提供任何实质性的技术解答。
+  - 原文依据：
+    - `weihao18`：/assign [@monologue815](https://gitcode.com/monologue815)    - `cann-robot`：assigned to @monologue815    - `yu-xinjie62`：assigned to @huang-wei-chen
+- **[#3599](https://gitcode.com/cann/ops-transformer/issues/3599) [Bug-Report|缺陷反馈]: flash_attn 测试框架 run_case_load 函数 LSE 精度对比因 inf 哨兵值不一致误报失败** — 0分
+  - 痛点原因：负责人仅被指派和添加标签，全程未针对缺陷内容提供任何实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@ChenYiran](https://gitcode.com/ChenYiran)    - `ChenYiran`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ChenYiran    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3599    - [关联PR #8286（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8286)
+- **[#3598](https://gitcode.com/cann/ops-transformer/issues/3598) [Bug-Report|缺陷反馈]: MoeInitRoutingQuantV2第三个输出结果存在精度问题** — 0分
+  - 痛点原因：仅进行了打标签和分配，全程无人工实质性技术回应，最终被机器人直接关联合并请求关闭。
+  - 原文依据：
+    - `wuxiyuan`：add label bug-report    - `cann-robot`：add label resolved    - `wuxiyuan`：assigned to @wuxiyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3598    - [关联PR #8259（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8259)    - [关联PR #8354（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8354)
+- **[#3596](https://gitcode.com/cann/ops-transformer/issues/3596) [Documentation|文档反馈]: alltoallvgmm,.gmmalltoallv文档markdown问题清理** — 0分
+  - 痛点原因：仅执行了分配和加标签等机械操作，全程无任何针对问题的实质性解答。
+  - 原文依据：
+    - `weihao18`：/assign [@wuziyu](https://gitcode.com/wuziyu)    - `wuziyu`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wuziyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3596    - [关联PR #8272（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8272)
+- **[#3595](https://gitcode.com/cann/ops-transformer/issues/3595) [Documentation|文档反馈]: matmulallreduce文档markdown问题清理** — 0分
+  - 痛点原因：仅打标签无人工实质回应，直接由机器人关联PR合并关闭。
+  - 原文依据：
+    - `Kiana1216`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3595    - [关联PR #8269（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8269)    - [关联PR #8271（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8271)
+- **[#3594](https://gitcode.com/cann/ops-transformer/issues/3594) [Bug-Report|缺陷反馈]: 修复MatmulAlltoAll FusionPass兼容性问题** — 0分
+  - 痛点原因：首次响应超29小时且全程无人工实质回应，仅由机器人打标签并关联MR直接关闭。
+  - 原文依据：
+    - `liusixia_gitcode`：add label bug-report    - `cann-robot`：add label resolved    - `liusixia_gitcode`：assigned to @liusixia_gitcode    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3594    - [关联PR #8268（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8268)    - [关联PR #8298（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8298)
+- **[#3592](https://gitcode.com/cann/ops-transformer/issues/3592) [Requirement|需求建议]: 需要支持新算子，支持Rms、RoPe、Norm、Quant、kvCache等算子的融合** — 0分
+  - 痛点原因：维护者仅执行分配和打标签操作，机器人直接标记resolved，全程无针对需求的技术讨论或实质回应。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3592    - [关联PR #7023（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7023)
+- **[#3590](https://gitcode.com/cann/ops-transformer/issues/3590) [Requirement|需求建议]: 【David】【GroupedMatMulSwigluQuantV2】泛化支持N轴非128对齐场景** — 0分
+  - 痛点原因：全程仅有打标签、分配及机器人自动关闭等机械操作，始终未提供任何实质性的技术或业务回应。
+  - 原文依据：
+    - `NeverLCY`：add label requirement    - `cann-robot`：add label resolved    - `NeverLCY`：assigned to @NeverLCY    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3590    - [关联PR #7662（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7662)
+#### PP-05 需求模板填写不完整（I1 · 分配与首次响应）
+
+- **[#3724](https://gitcode.com/cann/ops-transformer/issues/3724) [Requirement|需求建议]: matmulAlltoAll在aicpu场景下性能需要提升** — 0分
+  - 痛点原因：全程仅通过机器人执行指派和打标签操作，无任何针对需求内容的实质性人工回应。
+  - 原文依据：
+    - `weihao18`：/assign [@adamlwang](https://gitcode.com/adamlwang)    - `adamlwang`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @adamlwang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3724    - [关联PR #7966（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7966)
+- **[#3723](https://gitcode.com/cann/ops-transformer/issues/3723) [Requirement|需求建议]: mhc_post实现hres可选支持** — 0分
+  - 痛点原因：负责人仅执行分配和打标签操作，全程无任何实质性技术回应，最终由机器人直接关闭。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3723    - [关联PR #8550（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8550)
+- **[#3722](https://gitcode.com/cann/ops-transformer/issues/3722) [Requirement|需求建议]: moeInitRoutingV3: 性能优化 mxfp8透传场景多buffer+读一次搬多行 mxfp8量化场景双bu…** — 0分
+  - 痛点原因：仅执行分配和加标签操作，无针对需求的技术实质回应，且被机器人直接关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cpy_123456`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cpy_123456    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3722    - [关联PR #8543（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8543)
+- **[#3721](https://gitcode.com/cann/ops-transformer/issues/3721) gatherV2算子新增simd小尾轴模板** — 0分
+  - 痛点原因：全程仅有机器人指派与自动关闭操作，缺乏任何人工实质性技术回应。
+  - 原文依据：
+    - `z30075199`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z30075199    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-transformer#issue3721    - [关联PR #7349（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7349)
+- **[#3720](https://gitcode.com/cann/ops-transformer/issues/3720) fix tiling check** — 0分
+  - 痛点原因：全程仅有机器人指派和自动关闭操作，无任何人工实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3720    - [关联PR #8610（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8610)
+- **[#3719](https://gitcode.com/cann/ops-transformer/issues/3719) [Documentation|文档反馈]: MegaMoE补充A2/A3的README资料** — 0分
+  - 痛点原因：全程仅打标签和分配人员，无任何人工实质回应，最终由机器人因关联MR合并自动关闭。
+  - 原文依据：
+    - `ryan_li`：add label documentation    - `cann-robot`：add label resolved    - `ryan_li`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3719    - [关联PR #8606（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8606)    - [关联PR #8612（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8612)
+- **[#3718](https://gitcode.com/cann/ops-transformer/issues/3718) [Requirement|需求建议]: 【生态算子贡献】新增斜视诊断专用算子 EyeDecoupledAttention 与 CausalTopoGCN** — 0分
+  - 痛点原因：仅有认领和分配操作，全程未提供任何技术讨论或审查反馈等实质性回应。
+  - 原文依据：
+    - `m0_64571491`：/assign    - `cann-robot`：assigned to @m0_64571491    - [关联PR #8613（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8613)
+- **[#3716](https://gitcode.com/cann/ops-transformer/issues/3716) [Bug-Report|缺陷反馈]: mhc_post资料修改** — 0分
+  - 痛点原因：全程仅打标签及机器人随PR合并自动关闭，无任何实质回应内容，故得分为0。
+  - 原文依据：
+    - `Annyqw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3716    - [关联PR #8602（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8602)    - [关联PR #8603（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8603)
+- **[#3714](https://gitcode.com/cann/ops-transformer/issues/3714) [Bug-Report|缺陷反馈]: 超大shape时（MN 超过 uint32最大值时），算子计算结果出现精度异常问题，经代码检视发现存在中间结果溢出的情况…** — 0分
+  - 痛点原因：仅简单分配任务并回复修复处理中，未针对中间结果溢出问题提供技术分析或方案，缺乏实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：[@LetsAiGo](https://gitcode.com/LetsAiGo) 感谢您的反馈，修复处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3714    - [关联PR #8687（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8687)
+- **[#3713](https://gitcode.com/cann/ops-transformer/issues/3713) mega_moe maxRecvTokenNum自动计算(A2、A3)** — 0分
+  - 痛点原因：全程仅机器人自动分配和关闭，无任何人工实质回复，缺乏对问题的有效沟通与解答。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @SimpleBright_Man    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3713    - [关联PR #8576（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8576)    - [关联PR #8594（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8594)
+- **[#3712](https://gitcode.com/cann/ops-transformer/issues/3712) [Requirement|需求建议]: MegaMoE增加异常Dump维测能力** — 0分
+  - 痛点原因：仅快速分配任务和加标签，全程无针对需求的技术讨论，且被机器人直接标记为resolved，导致无实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@ryan_li](https://gitcode.com/ryan_li)    - `ryan_li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3712    - [关联PR #8567（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8567)
+- **[#3711](https://gitcode.com/cann/ops-transformer/issues/3711) [Documentation|文档反馈]: 修复SLIG算子S1 S2校验放开** — 0分
+  - 痛点原因：仅执行分配和加标签操作，全程无任何人工实质内容回应即被关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@llwy0320](https://gitcode.com/llwy0320)    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3711    - [关联PR #8585（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8585)
+- **[#3710](https://gitcode.com/cann/ops-transformer/issues/3710) [Documentation|文档反馈]: SMLAG算子torch文档商分资料格式问题** — 0分
+  - 痛点原因：仅打标签和分配负责人后因关联MR合并直接关闭，全程无实质性人工回复。
+  - 原文依据：
+    - `hz36amy_00`：add label documentation    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3710    - [关联PR #7674（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7674)
+- **[#3709](https://gitcode.com/cann/ops-transformer/issues/3709) [Requirement|需求建议]: MatmulReduceScatterV2 AICPU场景限制tiling切分最大4轮** — 0分
+  - 痛点原因：全程仅由机器人打标签、分配及自动关闭，无任何针对需求内容的实质性人工回应。
+  - 原文依据：
+    - `andingfangt`：add label requirement    - `cann-robot`：add label resolved    - `andingfangt`：assigned to @andingfangt    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3709    - [关联PR #8154（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8154)
+- **[#3708](https://gitcode.com/cann/ops-transformer/issues/3708) 【mc2】matmul_all_reduce在vec上使用了升精度累加，和小算子行为不一致，需要修改** — 0分
+  - 痛点原因：全程仅机器人自动关闭并关联PR，缺乏任何实质性技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3708    - [关联PR #8544（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8544)
+- **[#3707](https://gitcode.com/cann/ops-transformer/issues/3707) [Bug-Report|缺陷反馈]: gmm类算子空指针解引用、整数溢出及除零风险** — 0分
+  - 痛点原因：仅执行了分配和加标签等机械操作，未对缺陷内容提供任何实质性技术回应。
+  - 原文依据：
+    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label bug-report    - `cann-robot`：assigned to @zhoushaolong    - [关联PR #8584（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8584)
+- **[#3706](https://gitcode.com/cann/ops-transformer/issues/3706) [Documentation|文档反馈]: trans仓doc tools和aidd内容修改合入9.1.0专项** — 0分
+  - 痛点原因：仅进行了任务指派和关联PR，未给出任何实质性的解答或反馈。
+  - 原文依据：
+    - `caiwenwen`：分配给我自己    - `weihao18`：/assign [@caiwenwen](https://gitcode.com/caiwenwen)    - `cann-robot`：assigned to @caiwenwen    - [关联PR #8538（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8538)    - [关联PR #8638（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8638)    - [关联PR #8639（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8639)
+- **[#3705](https://gitcode.com/cann/ops-transformer/issues/3705) [Bug-Report|缺陷反馈]: flash_attn arch35头文件包含路径在安装布局下编译失败** — 0分
+  - 痛点原因：维护者仅用指令分配并关闭了该缺陷，全程未提供任何针对编译失败的技术性回复。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成    - [关联PR #8586（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8586)
+- **[#3704](https://gitcode.com/cann/ops-transformer/issues/3704) [Requirement|需求建议]: MatmulReduceScatterV2新增mxfp4量化场景** — 0分
+  - 痛点原因：仅添加了需求标签并关联PR，全程无任何实质性的文字回应。
+  - 原文依据：
+    - `Kiana1216`：add label requirement    - [关联PR #7195（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7195)    - [关联PR #8596（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8596)
+- **[#3703](https://gitcode.com/cann/ops-transformer/issues/3703) [Bug-Report|缺陷反馈]: BlockSparseAttention算子缺少ST看护** — 0分
+  - 痛点原因：仅快速分配负责人和添加标签，全程无任何人工实质性的技术回应即被机器人标记为resolved。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3703    - [关联PR #8578（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8578)
+- **[#3702](https://gitcode.com/cann/ops-transformer/issues/3702) [Bug-Report|缺陷反馈]: GMM伪量化中存在变量未使用、魔鬼数字等问题** — 0分
+  - 痛点原因：仅进行了指派和加标签等机械操作，未对缺陷进行任何技术层面的实质性解答或确认。
+  - 原文依据：
+    - `weihao18`：/assign [@shi-rui](https://gitcode.com/shi-rui)    - `shi-rui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3702    - [关联PR #8031（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8031)
+- **[#3701](https://gitcode.com/cann/ops-transformer/issues/3701) [Documentation|文档反馈]:** — 0分
+  - 痛点原因：全程仅由机器人自动分配并随MR合并关闭，无任何人工实质回应。
+  - 原文依据：
+    - `zhangjinru`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangjinru    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3701    - [关联PR #8574（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8574)
+- **[#3700](https://gitcode.com/cann/ops-transformer/issues/3700) [Bug-Report|缺陷反馈]: posembedding/inplace_partial_rotary_mul_grad/tests/ut/op_hos…** — 0分
+  - 痛点原因：仅进行了加标签和指派操作，未提供任何实质性的技术回复。
+  - 原文依据：
+    - `huang-chuhong`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3700    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3699](https://gitcode.com/cann/ops-transformer/issues/3699) [Requirement|需求建议]: 移除 ComputeAxisIdxByBnAndGs1 未使用的 multiCoreInnerIdx 参数** — 0分
+  - 痛点原因：仅分配任务无人工实质回应，最终由机器人直接关闭，全程缺乏实质性解答。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3699    - [关联PR #8549（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8549)
+- **[#3698](https://gitcode.com/cann/ops-transformer/issues/3698) [Requirement|需求建议]: MhcPreSinkhorn正反向算子支持GE图模式** — 0分
+  - 痛点原因：仅快速指派和打标签，全程无人工实质回应，且被机器人误加resolved标签。
+  - 原文依据：
+    - `taochangmin`：/asign    - `taochangmin`：/assign    - `taochangmin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3698
+- **[#3697](https://gitcode.com/cann/ops-transformer/issues/3697) [Requirement|需求建议]: QLIV2批跑pytest功能适配** — 0分
+  - 痛点原因：响应耗时近13小时且仅停留在追问细节与打标签，始终未提供实质性解答或处理方案。
+  - 原文依据：
+    - `weihao18`：你好，QLIV2批跑功能缺失，可以描述得更具体一些吗    - `zzzyh22`：add label requirement
+- **[#3696](https://gitcode.com/cann/ops-transformer/issues/3696) 通信数据量切分发送** — 0分
+  - 痛点原因：首次响应仅为机器人指派与打标签，全程无人工实质技术回应，最终被机器人自动关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3696    - [关联PR #8539（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8539)
+- **[#3695](https://gitcode.com/cann/ops-transformer/issues/3695) [Documentation|文档反馈]: 文档算子数据类型描述问题：文档中的x1_scale/x2_scale数据类型描述与算子中的定义不一致，详见问题描述…** — 0分
+  - 痛点原因：仅回复感谢反馈及处理中等流程性话语，未针对文档数据类型不一致问题给出实质性解答。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢反馈，处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3695    - [关联PR #8615（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8615)
+- **[#3694](https://gitcode.com/cann/ops-transformer/issues/3694) [Requirement|需求建议]: 算子原型迁移至所属仓** — 0分
+  - 痛点原因：仅有分配负责人的系统响应，但负责人未给出任何实质性回应。
+  - 原文依据：
+    - `weihao18`：/assign [@Hana77](https://gitcode.com/Hana77)    - `cann-robot`：assigned to @Hana77    - [关联PR #8540（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8540)    - [关联PR #8552（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8552)    - [关联PR #8554（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8554)    - [关联PR #8564（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8564)
+- **[#3692](https://gitcode.com/cann/ops-transformer/issues/3692) [Bug-Report|缺陷反馈]: aclnnFlashAttentionScore参数校验** — 0分
+  - 痛点原因：首次响应仅分配人员，后续直接因关联MR合并被机器人关闭，全程无人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3692    - [关联PR #8517（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8517)    - [关联PR #8530（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8530)
+- **[#3691](https://gitcode.com/cann/ops-transformer/issues/3691) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache regbase recompute 模板 dv 单块场景 Σx² 未计算，tota…** — 0分
+  - 痛点原因：仅执行指派和加标签操作，机器人直接标记resolved，全程无任何实质性技术回应。
+  - 原文依据：
+    - `qianzehong`：/assign [@qianzehong](https://gitcode.com/qianzehong)    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qianzehong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - [关联PR #8518（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8518)
+- **[#3690](https://gitcode.com/cann/ops-transformer/issues/3690) [Bug-Report|缺陷反馈]: gmm 单多单特性存在若干问题** — 0分
+  - 痛点原因：全程无针对缺陷内容的实质技术回应，仅通过打标签和关联合并请求直接关闭了问题。
+  - 原文依据：
+    - `zhangzhizhuo`：add label bug-report    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3690    - [关联PR #8515（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8515)
+- **[#3689](https://gitcode.com/cann/ops-transformer/issues/3689) moe_init_routing_v3 算子 INT4 动态量化路径优化（双缓冲 + 边界修复）** — 0分
+  - 痛点原因：全程仅机器人执行分配和关闭，无任何人工实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@Huang-Peng](https://gitcode.com/Huang-Peng)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Huang-Peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3689    - [关联PR #7492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7492)
+- **[#3688](https://gitcode.com/cann/ops-transformer/issues/3688) [Requirement|需求建议]: inplace_partial_rotary_mul 算子支持autograd 自动微分** — 0分
+  - 痛点原因：仅执行打标签和分配负责人操作，全程未提供任何实质性的技术解答或沟通。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3688    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3687](https://gitcode.com/cann/ops-transformer/issues/3687) [Bug-Report|缺陷反馈]: MC2基础算子存在cleancode问题需要整改** — 0分
+  - 痛点原因：仅由机器人分配任务并随关联MR合并自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@ouyf](https://gitcode.com/ouyf)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ouyf    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3687    - [关联PR #8479（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8479)    - [关联PR #8507（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8507)
+- **[#3686](https://gitcode.com/cann/ops-transformer/issues/3686) [Bug-Report|缺陷反馈]: FlashAttentionScore多个模板存在内存竞争问题** — 0分
+  - 痛点原因：仅执行指派和打标签，机器人直接标记resolved，全程无人工实质技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-wei-chen](https://gitcode.com/huang-wei-chen)    - `huang-wei-chen`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-wei-chen    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3686    - [关联PR #8415（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8415)
+- **[#3685](https://gitcode.com/cann/ops-transformer/issues/3685) [Documentation|文档反馈]: gmm资料修改** — 0分
+  - 痛点原因：维护者仅打标签和分配任务，机器人因关联MR合并直接关闭issue，全程无人工实质回应。
+  - 原文依据：
+    - `szhexin`：add label documentation    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3685    - [关联PR #8462（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8462)
+- **[#3681](https://gitcode.com/cann/ops-transformer/issues/3681) [Bug-Report|缺陷反馈]: FlashAttention TND布局下lseOffset越界写导致LSE输出inf** — 0分
+  - 痛点原因：仅进行了分配和关闭操作，全程无针对缺陷的技术分析或解决方案等实质性人工回应。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @huang-chuhong    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - [关联PR #8490（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8490)
+- **[#3680](https://gitcode.com/cann/ops-transformer/issues/3680) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 0分
+  - 痛点原因：响应仅为指派和加标签操作，无针对缺陷内容的实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `cann-robot`：### Notice This issue is already assigned to ***peijingjing***. Please do not assign repeatedly.    - `peijingjing`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @peijingjing
+- **[#3679](https://gitcode.com/cann/ops-transformer/issues/3679) [Documentation|文档反馈]: BSAG缺少950相关文档** — 0分
+  - 痛点原因：首次响应仅打标签，后续直接由机器人关联PR关闭，全程无人工实质回应。
+  - 原文依据：
+    - `xuchengyang`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3679    - [关联PR #8229（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8229)
+- **[#3678](https://gitcode.com/cann/ops-transformer/issues/3678) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 0分
+  - 痛点原因：仅进行了指派和打标签操作，全程无任何实质性技术回复，即被机器人标记为resolved。
+  - 原文依据：
+    - `weihao18`：/assign [@cardiac_index](https://gitcode.com/cardiac_index)    - `cardiac_index`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cardiac_index    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3678    - [关联PR #8428（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8428)
+- **[#3677](https://gitcode.com/cann/ops-transformer/issues/3677) fix(mhc): mhc_pre_sinkhorn optional outputs allow nullptr when need_backward=fa…** — 0分
+  - 痛点原因：虽快速指派负责人，但始终未提供任何实质性技术回应，且关联PR均已关闭，导致得分为零。
+  - 原文依据：
+    - `weihao18`：/assign [@weixin_44156099](https://gitcode.com/weixin_44156099)    - `cann-robot`：assigned to @weixin_44156099    - [关联PR #8481（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8481)    - [关联PR #8482（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8482)
+- **[#3675](https://gitcode.com/cann/ops-transformer/issues/3675) [Bug-Report|缺陷反馈]: 变量定义 和 函数定义 不合理导致 代码编译过程产生告警，建议修改代码实现消除告警，详见问题单正文** — 0分
+  - 痛点原因：维护者仅回复处理中等客套话，耗时超16小时且全程未提供任何实质性技术解答。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢您的反馈，处理中    - `cann-robot`：assigned to @captainmiaow
+- **[#3674](https://gitcode.com/cann/ops-transformer/issues/3674) 修复SAB BN matmulNZ出尾块搬运处理** — 0分
+  - 痛点原因：首次响应仅为机器人自动分配和关闭操作，全程无人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign @cjz_    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cjz_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3674    - [关联PR #8467（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8467)    - [关联PR #8502（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8502)
+- **[#3673](https://gitcode.com/cann/ops-transformer/issues/3673) [Bug-Report|缺陷反馈]: mlapo cachemode为2时，当传入cache storage shape为nd时会error** — 0分
+  - 痛点原因：被指派人仅添加标签且由机器人自动关闭，未对缺陷提供任何技术解释或实质处理回复。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3673    - [关联PR #8422（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8422)
+- **[#3672](https://gitcode.com/cann/ops-transformer/issues/3672) 修改slig文档示例** — 0分
+  - 痛点原因：全程仅由机器人自动打标签并在关联PR合并后关闭，无任何人工实质回应，故得分为0。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3672    - [关联PR #8461（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8461)
+- **[#3671](https://gitcode.com/cann/ops-transformer/issues/3671) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，transformer仓编译工程适配** — 0分
+  - 痛点原因：仅打标签和分配负责人，最终由机器人自动关闭，全程无任何实质性技术回应。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3671    - [关联PR #8460（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8460)    - [关联PR #8725（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8725)
+- **[#3670](https://gitcode.com/cann/ops-transformer/issues/3670) [Bug-Report|缺陷反馈]: prompt_flash_attention算子的UB内存问题** — 0分
+  - 痛点原因：首次响应超44小时且全程无实质技术回复，仅通过打标签和修改状态直接关闭了issue。
+  - 原文依据：
+    - `wangsong96`：add label bug-report    - `cann-robot`：add label Accepted    - `wangsong96`：closed from codehub    - `wangsong96`：changed custom state from 进行中 to 已完成    - [关联PR #8459（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8459)
+- **[#3669](https://gitcode.com/cann/ops-transformer/issues/3669) [Bug-Report|缺陷反馈]: SFAG算子偶现卡死问题** — 0分
+  - 痛点原因：维护者仅打标签和分配负责人，未给出任何实质性文字回复便直接关闭。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3669    - [关联PR #8443（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8443)    - [关联PR #8445（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8445)
+- **[#3668](https://gitcode.com/cann/ops-transformer/issues/3668) MegaMoe get_mega_moe_ccl_buffer_size和get_symm_buffer_for_mega_moe接口入参一致性** — 0分
+  - 痛点原因：仅分配负责人并关联已关闭PR，始终未提供任何实质性的文字回应。
+  - 原文依据：
+    - `weixin_49300047`：assigned to @weixin_49300047    - [关联PR #8457（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8457)
+- **[#3667](https://gitcode.com/cann/ops-transformer/issues/3667) [Bug-Report|缺陷反馈]: aclnn调用方式下，CANN包中profiling工具读出MhcPost算子OP Type, OP Name均不符合预期** — 0分
+  - 痛点原因：仅存在分配任务和打标签的自动化操作，且被机器人误标为已解决，全程无任何人工实质回应。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3667    - [关联PR #8447（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8447)
+- **[#3666](https://gitcode.com/cann/ops-transformer/issues/3666) [UT] quant_block_sparse_attn 算子 UT 框架搭建与覆盖率提升** — 0分
+  - 痛点原因：仅机器人分配任务并因关联MR合并自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@chenglongyu](https://gitcode.com/chenglongyu)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chenglongyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3666    - [关联PR #8451（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8451)
+- **[#3664](https://gitcode.com/cann/ops-transformer/issues/3664) [Bug-Report|缺陷反馈]: FIA tiling写死核数，不兼容Ascend950** — 0分
+  - 痛点原因：该缺陷反馈被直接从代码库关闭，全程未提供任何首次响应与实质回应。
+  - 原文依据：
+    - `demoauguste`：closed from codehub
+- **[#3663](https://gitcode.com/cann/ops-transformer/issues/3663) [Requirement|需求建议]: Support optional topk weights for MTE low latency** — 0分
+  - 痛点原因：首次响应仅为分配任务和加标签，全程无人工技术讨论或实质性反馈，直接被机器人标记为已解决。
+  - 原文依据：
+    - `weihao18`：/assign [@Yuyu-Li](https://gitcode.com/Yuyu-Li)    - `Yuyu-Li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Yuyu-Li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3663    - [关联PR #7350（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7350)
+- **[#3662](https://gitcode.com/cann/ops-transformer/issues/3662) [Documentation|文档反馈]: 修复gmm weightnz资料若干问题** — 0分
+  - 痛点原因：仅打标签后由机器人随PR合并自动关闭，全程无人工实质回应。
+  - 原文依据：
+    - `zhangzhizhuo`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3662    - [关联PR #8441（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8441)
+- **[#3661](https://gitcode.com/cann/ops-transformer/issues/3661) [Bug-Report|缺陷反馈]: allgathermm的test文件夹下atk测试代码修复** — 0分
+  - 痛点原因：仅有自动分配和关联PR操作，未对缺陷进行任何实质性的文字回应。
+  - 原文依据：
+    - `sangzhenguo`：assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `sangzhenguo`：/assign [@sangzhenguo](https://gitcode.com/sangzhenguo)    - `cann-robot`：assigned to @sangzhenguo    - [关联PR #8385（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8385)
+- **[#3660](https://gitcode.com/cann/ops-transformer/issues/3660) [Documentation|文档反馈]: inplace_fused_causal_conv1d的max_query_len默认值限制** — 0分
+  - 痛点原因：维护者仅指派人员和添加标签，未对文档反馈内容提供任何实质性解答，且直接被机器人关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@xiapengcheng5](https://gitcode.com/xiapengcheng5)    - `xiapengcheng5`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xiapengcheng5    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3660    - [关联PR #8430（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8430)
+- **[#3659](https://gitcode.com/cann/ops-transformer/issues/3659) [Bug-Report|缺陷反馈]: mc2/mega_moe 算子编码风格存在一些问题，需要优化** — 0分
+  - 痛点原因：互动仅限于认领和打招呼，无针对缺陷的技术分析或解决措施等实质回应。
+  - 原文依据：
+    - `jy_du`：[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我    - `liudan12`：>[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我 [@jy_du](https://gitcode.com/jy_du) 欢迎欢迎    - `liudan12`：add label bug-report    - `cann-robot`：add label resolved    - `liudan12`：assigned to @jy_du    - `liudan12`：unassigned @jy_du
+- **[#3657](https://gitcode.com/cann/ops-transformer/issues/3657) [Bug-Report|缺陷反馈]: slikg同步检测修复** — 0分
+  - 痛点原因：仅分配任务和添加标签，机器人直接标记已解决，全程无任何实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3657    - [关联PR #8416（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8416)
+- **[#3656](https://gitcode.com/cann/ops-transformer/issues/3656) [Bug-Report|缺陷反馈]: mhc_pre_sinkhorn() takes from 6 to 8 positional arguments bu…** — 0分
+  - 痛点原因：因指派非仓库成员失败导致无人实质接手，虽关联PR但未合并，始终无实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@taochangmin](https://gitcode.com/taochangmin)    - `cann-robot`：### Notice This issue can not be assigned to ***taochangmin***. Please try to assign to the repository members.    - `weihao18`：assigned to @taochangmin    - [关联PR #8902（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8902)
+- **[#3655](https://gitcode.com/cann/ops-transformer/issues/3655) [Bug-Report|缺陷反馈]: cleancode超大圈复杂度函数整改** — 0分
+  - 痛点原因：仅由机器人分配任务并随MR合并关闭，全程无人工实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@wangyijing](https://gitcode.com/wangyijing)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangyijing    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3655    - [关联PR #8380（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8380)    - [关联PR #8444（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8444)
+- **[#3654](https://gitcode.com/cann/ops-transformer/issues/3654) [Requirement|需求建议]: 增加MegaMoe跨超原型可选参数** — 0分
+  - 痛点原因：仅进行了任务分配和打标签操作，全程未对需求内容进行任何实质性解答或讨论。
+  - 原文依据：
+    - `weihao18`：/assign [@zzg_code](https://gitcode.com/zzg_code)    - `zzg_code`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zzg_code    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3654    - [关联PR #8309（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8309)
+- **[#3653](https://gitcode.com/cann/ops-transformer/issues/3653) [Requirement|需求建议]: 完善 GroupedMatmulActivationQuantWeightNz 算子资料并补充 arch35 示例** — 0分
+  - 痛点原因：开发者仅执行指派和打标签操作，机器人直接添加resolved标签，全程无针对需求内容的实质性技术解答。
+  - 原文依据：
+    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhoushaolong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3653    - [关联PR #8381（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8381)
+- **[#3652](https://gitcode.com/cann/ops-transformer/issues/3652) [Bug-Report|缺陷反馈]: 期望增加根据用例信息判断是否开启FD的开关** — 0分
+  - 痛点原因：全程仅机器人分配标签和关闭，无任何人工对问题的实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@zhangh2417](https://gitcode.com/zhangh2417)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangh2417    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3652    - [关联PR #8325（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8325)    - [关联PR #8366（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8366)
+- **[#3650](https://gitcode.com/cann/ops-transformer/issues/3650) [Bug-Report|缺陷反馈]: allgathermm CCU最大通信次数为63** — 0分
+  - 痛点原因：仅完成指派和打标签，被指派人始终未提供任何实质性的技术解答或处理意见。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @captainmiaow    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成
+- **[#3649](https://gitcode.com/cann/ops-transformer/issues/3649) [Requirement|需求建议]: qkv_rms_norm_rope_cache_with_k_scale的torch_extention载入未使能延迟…** — 0分
+  - 痛点原因：仅执行了分配和打标签操作，未对需求问题提供任何实质性解答。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @shi-rui    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成
+- **[#3648](https://gitcode.com/cann/ops-transformer/issues/3648) [Documentation|文档反馈]: aclnnGatherPaKvCache算子文档对数据类型说明不准确** — 0分
+  - 痛点原因：仅机器人分配任务并加标签后直接关闭，全程无人工实质性回应。
+  - 原文依据：
+    - `weihao18`：/assign [@gt0cd001](https://gitcode.com/gt0cd001)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gt0cd001    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3648    - [关联PR #8398（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8398)
+- **[#3647](https://gitcode.com/cann/ops-transformer/issues/3647) [Requirement|需求建议]: 提升mc2算子ut覆盖率** — 0分
+  - 痛点原因：仅有机器人分配和自动关闭操作，全程无任何人工实质性回应。
+  - 原文依据：
+    - `weihao18`：/assign [@mutex_lock](https://gitcode.com/mutex_lock)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @mutex_lock    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3647    - [关联PR #8395（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8395)
+- **[#3646](https://gitcode.com/cann/ops-transformer/issues/3646) [Bug-Report|缺陷反馈]: SLIKG算子内存检测报错** — 0分
+  - 痛点原因：仅分配任务和加标签，无任何人工实质技术解答或排查建议。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3646    - [关联PR #8369（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8369)
+- **[#3645](https://gitcode.com/cann/ops-transformer/issues/3645) [Requirement|需求建议]: 代码清理调整声明与检查块顺序** — 0分
+  - 痛点原因：仅机器人自动分配并关闭issue，全程无人工针对需求内容的实质性技术回应。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3645    - [关联PR #8393（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8393)    - [关联PR #8394（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8394)
+- **[#3643](https://gitcode.com/cann/ops-transformer/issues/3643) [Requirement|需求建议]: 新增quant_compressor算子，及其torch-extension适配** — 0分
+  - 痛点原因：仅有指派和打标签的机械响应，始终未对需求进行任何实质性的技术讨论或确认。
+  - 原文依据：
+    - `guigui_jzh`：/assign [@guigui_jzh](https://gitcode.com/guigui_jzh)    - `guigui_jzh`：add label requirement    - `cann-robot`：assigned to @guigui_jzh    - [关联PR #8387（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8387)
+- **[#3642](https://gitcode.com/cann/ops-transformer/issues/3642) [Bug-Report|缺陷反馈]: 当bias为2维时，mlapo会报错** — 0分
+  - 痛点原因：仅分配任务和添加标签，全程无针对该报错问题的实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：### Notice This issue is already assigned to ***yolic***. Please do not assign repeatedly.    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3642
+- **[#3641](https://gitcode.com/cann/ops-transformer/issues/3641) [Bug-Report|缺陷反馈]: moe_finalize_routing_v2_grad缺少同步信号，导致内存越界** — 0分
+  - 痛点原因：全程仅有打标签和分配操作，无任何人工实质技术回应，最终被机器人直接关闭。
+  - 原文依据：
+    - `yangziqi_007`：add label bug-report    - `cann-robot`：add label resolved    - `yangziqi_007`：assigned to @yangziqi_007    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3641    - [关联PR #8348（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8348)    - [关联PR #8356（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8356)
+- **[#3640](https://gitcode.com/cann/ops-transformer/issues/3640) [Bug-Report|缺陷反馈]: FAG在maxworkspace接口计算时，无法获得effectiveT1/effectiveT2，此时会导致计算的wo…** — 0分
+  - 痛点原因：首次响应仅打标签分配，随后由机器人直接关闭，全程无人工实质回应。
+  - 原文依据：
+    - `yuhao_`：add label bug-report    - `cann-robot`：add label resolved    - `yuhao_`：assigned to @yuhao_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3640    - [关联PR #8281（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8281)
+- **[#3639](https://gitcode.com/cann/ops-transformer/issues/3639) [Bug-Report|缺陷反馈]: StemIndexer计算topkCountNum时decayLen应该在小于等于1时直接返回，等于1时后续计算无意义** — 0分
+  - 痛点原因：全程仅有打标签、分配和机器人关闭操作，缺乏任何人工实质技术回应。
+  - 原文依据：
+    - `skykone1`：add label bug-report    - `cann-robot`：add label resolved    - `skykone1`：assigned to @skykone1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3639    - [关联PR #8372（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8372)
+- **[#3638](https://gitcode.com/cann/ops-transformer/issues/3638) [Requirement|需求建议]: LightningIndexer可支持0轴非连续** — 0分
+  - 痛点原因：仅有机器人分配操作，无针对需求的人工实质回复，且关联PR已关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@arcticius](https://gitcode.com/arcticius)    - `cann-robot`：assigned to @arcticius    - [关联PR #7620（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/7620)
+- **[#3636](https://gitcode.com/cann/ops-transformer/issues/3636) [Requirement|需求建议]: inplace_partial_rotary_mul_grad算子缺少torch api接口** — 0分
+  - 痛点原因：全程仅打标签和分配负责人，未对算子接口需求提供任何实质性技术回应。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3636    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3635](https://gitcode.com/cann/ops-transformer/issues/3635) [Bug-Report|缺陷反馈]: NsaCompAtten内存检测问题** — 0分
+  - 痛点原因：全程仅有打标签、分配及机器人自动关闭等机械操作，无任何人工实质性技术回应。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3635    - [关联PR #8365（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8365)    - [关联PR #8367（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8367)
+- **[#3634](https://gitcode.com/cann/ops-transformer/issues/3634) [Requirement|需求建议]: FA要接入ttk框架** — 0分
+  - 痛点原因：全程仅机器人打标签及关联PR自动关闭，无任何人工实质回应。
+  - 原文依据：
+    - `SH_jingsong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3634    - [关联PR #8185（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8185)
+- **[#3633](https://gitcode.com/cann/ops-transformer/issues/3633) 【bug】torch_extension没有按照mc2/mega_moe的op_tiling修改** — 0分
+  - 痛点原因：仅进行了负责人指派，未在讨论区留下任何实质性的技术回应或沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：assigned to @SimpleBright_Man    - [关联PR #8313（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8313)    - [关联PR #8364（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8364)    - [关联PR #8520（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8520)
+- **[#3632](https://gitcode.com/cann/ops-transformer/issues/3632) [Bug-Report|缺陷反馈]: engram算子优化** — 0分
+  - 痛点原因：维护者仅执行指派和加标签操作，机器人直接标记resolved，全程无任何人工实质性技术回应。
+  - 原文依据：
+    - `wuchenhao123`：/assign    - `cann-robot`：### Notice This issue is already assigned to ***wuchenhao123***. Please do not assign repeatedly.    - `wuchenhao123`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3632    - [关联PR #7998（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7998)
+- **[#3631](https://gitcode.com/cann/ops-transformer/issues/3631) [Requirement|需求建议]: GroupedMatmulSwigluQuantV2算子mx weightnz场景需支持 weight多tensor** — 0分
+  - 痛点原因：仅经机器人分配和关联合并关闭，全程无任何人工实质技术回应。
+  - 原文依据：
+    - `fengxingpan1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fengxingpan1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3631    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7302)
+- **[#3630](https://gitcode.com/cann/ops-transformer/issues/3630) [Requirement|需求建议]: combine发送token时可能存在连续往相同卡发送的热点访问情况，影响性能，建议修改；另外仍存在同地址偏移问题，需…** — 0分
+  - 痛点原因：仅分配任务和加标签，全程无针对需求内容的实质性技术回应，最终被机器人直接标记完成。
+  - 原文依据：
+    - `weihao18`：/assign [@zhong-zixin](https://gitcode.com/zhong-zixin)    - `zhong-zixin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhong-zixin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3630    - [关联PR #7752（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7752)
+- **[#3629](https://gitcode.com/cann/ops-transformer/issues/3629) [Requirement|需求建议]: 修复smlag metadata在A2/A3被拦截的问题** — 0分
+  - 痛点原因：仅打标签后由机器人自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3629    - [关联PR #8342（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8342)
+- **[#3628](https://gitcode.com/cann/ops-transformer/issues/3628) [Bug-Report|缺陷反馈]: cleancode重复代码整改** — 0分
+  - 痛点原因：仅靠机器人快速响应并随关联PR合并自动关闭，全程无实质性技术沟通。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3628    - [关联PR #8287（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8287)
+- **[#3626](https://gitcode.com/cann/ops-transformer/issues/3626) [Bug-Report|缺陷反馈]: GroupedMatmulSwigluQuant 关闭 auto sync 后需补充显式同步** — 0分
+  - 痛点原因：仅有指派、加标签和关联MR等流程操作，始终未提供技术解答或复现确认等实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@Wei_NaChuan](https://gitcode.com/Wei_NaChuan)    - `Wei_NaChuan`：add label bug-report    - `cann-robot`：assigned to @Wei_NaChuan    - `Wei_NaChuan`：Create issue mr links: **修复 GroupedMatmulSwigluQuant 关闭自动同步后的显式同步** #8338    - [关联PR #8338（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8338)    - [关联PR #8349（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8349)
+- **[#3625](https://gitcode.com/cann/ops-transformer/issues/3625) fix moe_ep_dispatch accuracy** — 0分
+  - 痛点原因：仅由机器人因关联PR合并自动关闭，全程无人工实质回应，故得分为0。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3625    - [关联PR #8336（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8336)
+- **[#3623](https://gitcode.com/cann/ops-transformer/issues/3623) [Requirement|需求建议]: matmulallreduce在310p上动态图用例执行失败** — 0分
+  - 痛点原因：全程仅添加标签和关联PR，无任何实质性的文字交流与回应。
+  - 原文依据：
+    - `Kiana1216`：add label requirement    - [关联PR #8300（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8300)    - [关联PR #8339（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8339)    - [关联PR #8341（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8341)
+- **[#3622](https://gitcode.com/cann/ops-transformer/issues/3622) [Documentation|文档反馈]: BlitzSparseAttention** — 0分
+  - 痛点原因：仅机器人分配标签和关联MR自动关闭，全程无任何人工实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@kostyab](https://gitcode.com/kostyab)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kostyab    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3622    - [关联PR #8333（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8333)
+- **[#3621](https://gitcode.com/cann/ops-transformer/issues/3621) [Bug-Report|缺陷反馈]: torch_npu.npu_moe_gating_top_k_softmax 310Pbatch过大精度异常** — 0分
+  - 痛点原因：全程无人工实质回应，仅机器人指派并关联合并请求后直接关闭。
+  - 原文依据：
+    - `weihao18`：/assign [@gcw_kTZ5XeTb](https://gitcode.com/gcw_kTZ5XeTb)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gcw_kTZ5XeTb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3621    - [关联PR #8302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8302)    - [关联PR #8316（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8316)
+- **[#3620](https://gitcode.com/cann/ops-transformer/issues/3620) [Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题** — 0分
+  - 痛点原因：机器人自动加标签并因关联PR合并而关闭，全程无人工实质技术回应。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3620    - [关联PR #8285（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8285)
+- **[#3619](https://gitcode.com/cann/ops-transformer/issues/3619) [Bug-Report|缺陷反馈]: MhcPost N=4用例边界场景存在精度问题** — 0分
+  - 痛点原因：维护者仅分配任务和打标签，机器人直接标记resolved，无任何人工实质性技术回应。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3619    - [关联PR #8263（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8263)
+- **[#3618](https://gitcode.com/cann/ops-transformer/issues/3618) [Documentation|文档反馈]: 修改SLIG算子文档格式** — 0分
+  - 痛点原因：全程仅有打标签和机器人关闭操作，无任何人工实质回应，故得分为零。
+  - 原文依据：
+    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `llwy0320`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3618    - [关联PR #8327（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8327)
+- **[#3616](https://gitcode.com/cann/ops-transformer/issues/3616) [Bug-Report|缺陷反馈]: torch extension导入阶段会触发全量算子编译** — 0分
+  - 痛点原因：全程无人工实质回应，仅通过机器人打标签和关联MR合并直接关闭issue。
+  - 原文依据：
+    - `hblnb`：add label bug-report    - `cann-robot`：add label resolved    - `hblnb`：assigned to @hblnb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3616    - [关联PR #8155（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8155)    - [关联PR #8326（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8326)
+- **[#3614](https://gitcode.com/cann/ops-transformer/issues/3614) [Requirement|需求建议]: chunk_gated_delta_rule 支持 ascend950 架构** — 0分
+  - 痛点原因：全程仅有指派和机器人自动关闭操作，未提供任何针对该需求的实质回应。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-chuhong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3614    - [关联PR #8318（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8318)
+- **[#3613](https://gitcode.com/cann/ops-transformer/issues/3613) [Bug-Report|缺陷反馈]: nsa_compress_attention_infer算子的UB内存问题** — 0分
+  - 痛点原因：被指派者仅添加标签，机器人直接标记resolved，全程无任何实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3613    - [关联PR #8310（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8310)
+- **[#3612](https://gitcode.com/cann/ops-transformer/issues/3612) [Documentation|文档反馈]: aclnnNsaSelectedAttentionInfer算子md文档格式修复** — 0分
+  - 痛点原因：仅执行分配并由机器人自动关闭，全程无人工实质回应，导致得分为零。
+  - 原文依据：
+    - `weihao18`：/assign [@yyt_hw](https://gitcode.com/yyt_hw)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yyt_hw    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3612    - [关联PR #8288（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8288)
+- **[#3611](https://gitcode.com/cann/ops-transformer/issues/3611) [Bug-Report|缺陷反馈]: FA MLA noquant场景下skip的batch导致attention_out计算错误** — 0分
+  - 痛点原因：维护者仅通过命令认领并直接关闭该缺陷，未提供任何技术排查或实质性解答。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成
+- **[#3610](https://gitcode.com/cann/ops-transformer/issues/3610) [Documentation|文档反馈]: 删除dispatch&combine算子文档tp2相关描述** — 0分
+  - 痛点原因：仅执行了分配和加标签操作，全程无任何针对文档反馈的实质性回复。
+  - 原文依据：
+    - `weihao18`：/assign [@yangzeheng](https://gitcode.com/yangzeheng)    - `yangzeheng`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yangzeheng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3610    - [关联PR #8279（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8279)
+- **[#3609](https://gitcode.com/cann/ops-transformer/issues/3609) [Documentation|文档反馈]: 资料格式修复** — 0分
+  - 痛点原因：仅进行了指派和打标签操作，全程无任何实质性文字回应，直接被机器人标记为已解决。
+  - 原文依据：
+    - `weihao18`：/assign [@fazhenyao123](https://gitcode.com/fazhenyao123)    - `fazhenyao123`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fazhenyao123    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3609    - [关联PR #8305（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8305)
+- **[#3607](https://gitcode.com/cann/ops-transformer/issues/3607) [Bug-Report|缺陷反馈]: kv_compress_epilog算子bf16格式的scale是零扩展而不是真实的bf16格式** — 0分
+  - 痛点原因：全程仅由机器人加标签并关联关闭，无任何人工针对缺陷本身进行实质性技术回应。
+  - 原文依据：
+    - `zhu-lei0614`：add label bug-report    - `cann-robot`：add label resolved    - `zhu-lei0614`：assigned to @zhu-lei0614    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3607    - [关联PR #8307（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8307)
+- **[#3606](https://gitcode.com/cann/ops-transformer/issues/3606) [Bug-Report|缺陷反馈]: MegaMoe A2 Workspace 优化** — 0分
+  - 痛点原因：全程仅机器人打标签与分配人员，无任何人工实质回应即被关联合并请求关闭。
+  - 原文依据：
+    - `urbub`：add label bug-report    - `cann-robot`：add label resolved    - `urbub`：assigned to @urbub    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3606    - [关联PR #8266（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8266)    - [关联PR #8337（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8337)
+- **[#3605](https://gitcode.com/cann/ops-transformer/issues/3605) [Requirement|需求建议]: 增加训练metadata文档资料** — 0分
+  - 痛点原因：仅进行了任务分配和打标签操作，未对需求内容提供任何实质性解答。
+  - 原文依据：
+    - `weihao18`：/assign [@qq_32807861](https://gitcode.com/qq_32807861)    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qq_32807861    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3605    - [关联PR #8153（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8153)
+- **[#3604](https://gitcode.com/cann/ops-transformer/issues/3604) [Requirement|需求建议]: gmm mx 量化weightnz 支持weight多 tensor** — 0分
+  - 痛点原因：因关联 MR 合并被机器人自动关闭，全程仅有打标签和分配操作，无任何人工实质回应。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3604    - [关联PR #6739（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/6739)    - [关联PR #82（merged）](https://gitcode.com/cann/ops-tensor/merge_requests/82)
+- **[#3603](https://gitcode.com/cann/ops-transformer/issues/3603) [Requirement|需求建议]: 修复qliv2和liv2算子部分参数缺省场景报错问题** — 0分
+  - 痛点原因：仅进行了任务分配和打标签操作，全程无任何针对需求的技术讨论或实质回应。
+  - 原文依据：
+    - `weihao18`：/assign [@LZH_unofficial](https://gitcode.com/LZH_unofficial)    - `LZH_unofficial`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @LZH_unofficial    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3603    - [关联PR #8158（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8158)
+- **[#3602](https://gitcode.com/cann/ops-transformer/issues/3602) [Documentation|文档反馈]: Mlaprolog v1和v2的README.md中有部分跳转链接失效，需整改** — 0分
+  - 痛点原因：虽然任务分配较快，但被指派人仅添加标签，未对链接失效问题提供任何实质性解答或处理方案。
+  - 原文依据：
+    - `weihao18`：/assign [@wangss21](https://gitcode.com/wangss21)    - `wangss21`：add label documentation    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @wangss21    - `wangss21`：closed from codehub    - `wangss21`：changed custom state from 进行中 to 已完成
+- **[#3601](https://gitcode.com/cann/ops-transformer/issues/3601) [Bug-Report|缺陷反馈]: sfag存在同步问题** — 0分
+  - 痛点原因：仅执行了分配负责人和添加标签操作，始终未对问题提供任何实质性的技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@huzhipeng](https://gitcode.com/huzhipeng)    - `huzhipeng`：add label bug-report    - `cann-robot`：assigned to @huzhipeng    - [关联PR #8196（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8196)    - [关联PR #8200（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8200)    - [关联PR #8335（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8335)
+- **[#3600](https://gitcode.com/cann/ops-transformer/issues/3600) [Requirement|需求建议]: （A2/A3）FlashAttentionScore 算子在 D>128 情况下开启 L1 Reuse** — 0分
+  - 痛点原因：首次响应仅为指派任务，后续始终未提供任何实质性的技术解答。
+  - 原文依据：
+    - `weihao18`：/assign [@monologue815](https://gitcode.com/monologue815)    - `cann-robot`：assigned to @monologue815    - `yu-xinjie62`：assigned to @huang-wei-chen
+- **[#3599](https://gitcode.com/cann/ops-transformer/issues/3599) [Bug-Report|缺陷反馈]: flash_attn 测试框架 run_case_load 函数 LSE 精度对比因 inf 哨兵值不一致误报失败** — 0分
+  - 痛点原因：负责人仅被指派和添加标签，全程未针对缺陷内容提供任何实质性技术回应。
+  - 原文依据：
+    - `weihao18`：/assign [@ChenYiran](https://gitcode.com/ChenYiran)    - `ChenYiran`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ChenYiran    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3599    - [关联PR #8286（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8286)
+- **[#3598](https://gitcode.com/cann/ops-transformer/issues/3598) [Bug-Report|缺陷反馈]: MoeInitRoutingQuantV2第三个输出结果存在精度问题** — 0分
+  - 痛点原因：仅进行了打标签和分配，全程无人工实质性技术回应，最终被机器人直接关联合并请求关闭。
+  - 原文依据：
+    - `wuxiyuan`：add label bug-report    - `cann-robot`：add label resolved    - `wuxiyuan`：assigned to @wuxiyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3598    - [关联PR #8259（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8259)    - [关联PR #8354（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8354)
+- **[#3596](https://gitcode.com/cann/ops-transformer/issues/3596) [Documentation|文档反馈]: alltoallvgmm,.gmmalltoallv文档markdown问题清理** — 0分
+  - 痛点原因：仅执行了分配和加标签等机械操作，全程无任何针对问题的实质性解答。
+  - 原文依据：
+    - `weihao18`：/assign [@wuziyu](https://gitcode.com/wuziyu)    - `wuziyu`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wuziyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3596    - [关联PR #8272（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8272)
+- **[#3595](https://gitcode.com/cann/ops-transformer/issues/3595) [Documentation|文档反馈]: matmulallreduce文档markdown问题清理** — 0分
+  - 痛点原因：仅打标签无人工实质回应，直接由机器人关联PR合并关闭。
+  - 原文依据：
+    - `Kiana1216`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3595    - [关联PR #8269（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8269)    - [关联PR #8271（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8271)
+- **[#3594](https://gitcode.com/cann/ops-transformer/issues/3594) [Bug-Report|缺陷反馈]: 修复MatmulAlltoAll FusionPass兼容性问题** — 0分
+  - 痛点原因：首次响应超29小时且全程无人工实质回应，仅由机器人打标签并关联MR直接关闭。
+  - 原文依据：
+    - `liusixia_gitcode`：add label bug-report    - `cann-robot`：add label resolved    - `liusixia_gitcode`：assigned to @liusixia_gitcode    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3594    - [关联PR #8268（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8268)    - [关联PR #8298（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8298)
+- **[#3592](https://gitcode.com/cann/ops-transformer/issues/3592) [Requirement|需求建议]: 需要支持新算子，支持Rms、RoPe、Norm、Quant、kvCache等算子的融合** — 0分
+  - 痛点原因：维护者仅执行分配和打标签操作，机器人直接标记resolved，全程无针对需求的技术讨论或实质回应。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3592    - [关联PR #7023（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7023)
+- **[#3590](https://gitcode.com/cann/ops-transformer/issues/3590) [Requirement|需求建议]: 【David】【GroupedMatMulSwigluQuantV2】泛化支持N轴非128对齐场景** — 0分
+  - 痛点原因：全程仅有打标签、分配及机器人自动关闭等机械操作，始终未提供任何实质性的技术或业务回应。
+  - 原文依据：
+    - `NeverLCY`：add label requirement    - `cann-robot`：add label resolved    - `NeverLCY`：assigned to @NeverLCY    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3590    - [关联PR #7662（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7662)
+#### PP-06 Bot治理覆盖不足且功能单一（G · Bot/Agent 治理）
+
+- **[#3705](https://gitcode.com/cann/ops-transformer/issues/3705) [Bug-Report|缺陷反馈]: flash_attn arch35头文件包含路径在安装布局下编译失败** — 0分
+  - 痛点原因：Bot仅响应分配与关闭指令，未进行自动打标或有效评论，治理动作过于单一。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成    - [关联PR #8586（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8586)
+- **[#3627](https://gitcode.com/cann/ops-transformer/issues/3627) [Documentation|文档反馈]: aclnnGroupedMatmulAddV2、aclnnGroupedMatmulFinalizeRouting…** — 0分
+  - 痛点原因：Bot仅执行指派动作，无自动打标与评论回复，缺乏实质性的自动化治理能力。
+  - 原文依据：
+    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：收到问题，已路由给相关责任人修复。    - `kknan`：https://gitcode.com/cann/ops-transformer/blob/master/gmm/grouped_matmul_add/docs/aclnnGroupedMatmulAddV2.md 已修复，剩余问题待上库    - `cann-robot`：assigned to @kknan    - `weihao18`：assigned to @captainmiaow    - `kknan`：unassigned @kknan
+- **[#3684](https://gitcode.com/cann/ops-transformer/issues/3684) MLA preprocess 算子在 prefix caching prefetch 场景下，prefill 阶段的 kv cache 区域在 decode …** — 15分
+  - 痛点原因：Bot仅发送一条模板催促评论，未执行自动打标或关闭等实际治理动作，状态管理完全依赖人工。
+  - 原文依据：
+    - `weihao18`：/assign [@chaotang233](https://gitcode.com/chaotang233)    - `yolic`：您好，算子写k cache用的是slotmapping，batch offset是读输入x做matmul的行偏移，与cache写位置无关。    - `cann-robot`：您好，为了更准确地定位和解决问题，我们需要您提供上述提到的相关信息。如果 14 天内没有进一步更新，我们将暂时关闭此 Issue。感谢您的理解与配合。    - `yolic`：add label wait-feedback    - `cann-robot`：assigned to @chaotang233
+- **[#3656](https://gitcode.com/cann/ops-transformer/issues/3656) [Bug-Report|缺陷反馈]: mhc_pre_sinkhorn() takes from 6 to 8 positional arguments bu…** — 15分
+  - 痛点原因：Bot仅有一条报错评论，未能有效拦截用户将issue分配给非仓库成员，且无打标或关闭动作，治理失效。
+  - 原文依据：
+    - `weihao18`：/assign [@taochangmin](https://gitcode.com/taochangmin)    - `cann-robot`：### Notice This issue can not be assigned to ***taochangmin***. Please try to assign to the repository members.    - `weihao18`：assigned to @taochangmin    - [关联PR #8902（open）](https://gitcode.com/cann/ops-transformer/merge_requests/8902)
+- **[#3724](https://gitcode.com/cann/ops-transformer/issues/3724) [Requirement|需求建议]: matmulAlltoAll在aicpu场景下性能需要提升** — 20分
+  - 痛点原因：Bot直接打标resolved并关闭，但全程零评论，缺乏有效说明与沟通，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@adamlwang](https://gitcode.com/adamlwang)    - `adamlwang`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @adamlwang    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3724    - [关联PR #7966（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7966)
+- **[#3723](https://gitcode.com/cann/ops-transformer/issues/3723) [Requirement|需求建议]: mhc_post实现hres可选支持** — 20分
+  - 痛点原因：Bot无任何评论交互，仅机械打标分配，且直接将需求建议标记为resolved，治理行为无效。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3723    - [关联PR #8550（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8550)
+- **[#3722](https://gitcode.com/cann/ops-transformer/issues/3722) [Requirement|需求建议]: moeInitRoutingV3: 性能优化 mxfp8透传场景多buffer+读一次搬多行 mxfp8量化场景双bu…** — 20分
+  - 痛点原因：Bot对需求类issue机械打标resolved并关闭，全程无评论沟通，治理流于形式且存在误判。
+  - 原文依据：
+    - `weihao18`：/assign [@cpy_123456](https://gitcode.com/cpy_123456)    - `cpy_123456`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cpy_123456    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3722    - [关联PR #8543（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8543)
+- **[#3721](https://gitcode.com/cann/ops-transformer/issues/3721) gatherV2算子新增simd小尾轴模板** — 20分
+  - 痛点原因：Bot仅执行分配、打标和关闭操作，但全程无任何评论反馈，缺乏状态变更通知与有效互动。
+  - 原文依据：
+    - `z30075199`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z30075199    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: cann/ops-transformer#issue3721    - [关联PR #7349（merged）](https://gitcode.com/cann/ops-nn/merge_requests/7349)
+- **[#3720](https://gitcode.com/cann/ops-transformer/issues/3720) fix tiling check** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，全程零评论无任何解释说明，治理过程缺乏透明度与用户沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3720    - [关联PR #8610（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8610)
+- **[#3719](https://gitcode.com/cann/ops-transformer/issues/3719) [Documentation|文档反馈]: MegaMoE补充A2/A3的README资料** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，无任何评论与用户互动，缺乏有效沟通。
+  - 原文依据：
+    - `ryan_li`：add label documentation    - `cann-robot`：add label resolved    - `ryan_li`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3719    - [关联PR #8606（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8606)    - [关联PR #8612（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8612)
+- **[#3716](https://gitcode.com/cann/ops-transformer/issues/3716) [Bug-Report|缺陷反馈]: mhc_post资料修改** — 20分
+  - 痛点原因：Bot仅机械打标并随PR合并关闭，全程无任何有效评论，缺乏治理透明度与用户互动。
+  - 原文依据：
+    - `Annyqw`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3716    - [关联PR #8602（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8602)    - [关联PR #8603（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8603)
+- **[#3715](https://gitcode.com/cann/ops-transformer/issues/3715) [Requirement|需求建议]: moe_token_permute for Ascend950** — 20分
+  - 痛点原因：Bot错误打上Accepted标签，与人工最终无修改关闭的结论相矛盾，且无引导评论，治理失效。
+  - 原文依据：
+    - `weihao18`：/assign [@alfengyuan](https://gitcode.com/alfengyuan)    - `alfengyuan`：经过讨论，此需求必要性不强，现有aclnn通路已经稳定运行，不需要做修改。 结论： 无修改关闭。    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @alfengyuan
+- **[#3714](https://gitcode.com/cann/ops-transformer/issues/3714) [Bug-Report|缺陷反馈]: 超大shape时（MN 超过 uint32最大值时），算子计算结果出现精度异常问题，经代码检视发现存在中间结果溢出的情况…** — 20分
+  - 痛点原因：Bot仅执行打标与分配等机械操作，无任何评论互动，缺乏有效沟通反馈，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：[@LetsAiGo](https://gitcode.com/LetsAiGo) 感谢您的反馈，修复处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3714    - [关联PR #8687（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8687)
+- **[#3713](https://gitcode.com/cann/ops-transformer/issues/3713) mega_moe maxRecvTokenNum自动计算(A2、A3)** — 20分
+  - 痛点原因：Bot虽执行了指派、打标和关闭操作，但全程无评论反馈，缺乏状态交互与治理透明度。
+  - 原文依据：
+    - `weihao18`：/assign [@SimpleBright_Man](https://gitcode.com/SimpleBright_Man)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @SimpleBright_Man    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3713    - [关联PR #8576（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8576)    - [关联PR #8594（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8594)
+- **[#3712](https://gitcode.com/cann/ops-transformer/issues/3712) [Requirement|需求建议]: MegaMoE增加异常Dump维测能力** — 20分
+  - 痛点原因：Bot直接给需求建议打上resolved标签且无评论解释，自动化操作存在误判，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@ryan_li](https://gitcode.com/ryan_li)    - `ryan_li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ryan_li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3712    - [关联PR #8567（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8567)
+- **[#3711](https://gitcode.com/cann/ops-transformer/issues/3711) [Documentation|文档反馈]: 修复SLIG算子S1 S2校验放开** — 20分
+  - 痛点原因：Bot机械重复人工指派与打标动作，直接打resolved标签关闭，无任何有效评论交互，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@llwy0320](https://gitcode.com/llwy0320)    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3711    - [关联PR #8585（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8585)
+- **[#3710](https://gitcode.com/cann/ops-transformer/issues/3710) [Documentation|文档反馈]: SMLAG算子torch文档商分资料格式问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，无任何评论互动，缺乏有效沟通与人工确认。
+  - 原文依据：
+    - `hz36amy_00`：add label documentation    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3710    - [关联PR #7674（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7674)
+- **[#3709](https://gitcode.com/cann/ops-transformer/issues/3709) [Requirement|需求建议]: MatmulReduceScatterV2 AICPU场景限制tiling切分最大4轮** — 20分
+  - 痛点原因：Bot执行打标和关闭操作时评论数为零，未留下任何操作说明，导致治理过程不透明。
+  - 原文依据：
+    - `andingfangt`：add label requirement    - `cann-robot`：add label resolved    - `andingfangt`：assigned to @andingfangt    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3709    - [关联PR #8154（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8154)
+- **[#3708](https://gitcode.com/cann/ops-transformer/issues/3708) 【mc2】matmul_all_reduce在vec上使用了升精度累加，和小算子行为不一致，需要修改** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论互动，且关闭时关联信息有误，导致治理过程不透明。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3708    - [关联PR #8544（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8544)
+- **[#3703](https://gitcode.com/cann/ops-transformer/issues/3703) [Bug-Report|缺陷反馈]: BlockSparseAttention算子缺少ST看护** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派动作，无任何评论互动，缺乏对用户的实质性指引与反馈，导致有效性极低。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3703    - [关联PR #8578（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8578)
+- **[#3702](https://gitcode.com/cann/ops-transformer/issues/3702) [Bug-Report|缺陷反馈]: GMM伪量化中存在变量未使用、魔鬼数字等问题** — 20分
+  - 痛点原因：Bot在指派后直接打标resolved且无任何评论交互，机械执行导致治理无效。
+  - 原文依据：
+    - `weihao18`：/assign [@shi-rui](https://gitcode.com/shi-rui)    - `shi-rui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3702    - [关联PR #8031（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8031)
+- **[#3701](https://gitcode.com/cann/ops-transformer/issues/3701) [Documentation|文档反馈]:** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，无任何评论互动，缺乏对用户的反馈与引导，导致治理效果不佳。
+  - 原文依据：
+    - `zhangjinru`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangjinru    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3701    - [关联PR #8574（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8574)
+- **[#3700](https://gitcode.com/cann/ops-transformer/issues/3700) [Bug-Report|缺陷反馈]: posembedding/inplace_partial_rotary_mul_grad/tests/ut/op_hos…** — 20分
+  - 痛点原因：Bot仅默默打标和关闭，未留下任何评论与用户互动，且初始打标与分配均依赖人工，自动化治理不足。
+  - 原文依据：
+    - `huang-chuhong`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3700    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3699](https://gitcode.com/cann/ops-transformer/issues/3699) [Requirement|需求建议]: 移除 ComputeAxisIdxByBnAndGs1 未使用的 multiCoreInnerIdx 参数** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配和关闭操作，全程无评论互动，缺乏状态变更通知与有效沟通，治理过程不透明。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3699    - [关联PR #8549（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8549)
+- **[#3698](https://gitcode.com/cann/ops-transformer/issues/3698) [Requirement|需求建议]: MhcPreSinkhorn正反向算子支持GE图模式** — 20分
+  - 痛点原因：Bot仅执行打标与关闭动作，全程无任何评论反馈，缺乏对用户指令的响应与治理透明度。
+  - 原文依据：
+    - `taochangmin`：/asign    - `taochangmin`：/assign    - `taochangmin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @taochangmin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3698
+- **[#3696](https://gitcode.com/cann/ops-transformer/issues/3696) 通信数据量切分发送** — 20分
+  - 痛点原因：Bot仅执行分配、打标和关闭操作，评论数为零，缺乏状态反馈与沟通说明，互动严重缺失。
+  - 原文依据：
+    - `weihao18`：/assign [@z1017i](https://gitcode.com/z1017i)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @z1017i    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3696    - [关联PR #8539（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8539)
+- **[#3695](https://gitcode.com/cann/ops-transformer/issues/3695) [Documentation|文档反馈]: 文档算子数据类型描述问题：文档中的x1_scale/x2_scale数据类型描述与算子中的定义不一致，详见问题描述…** — 20分
+  - 痛点原因：Bot仅完成打标、分配和关闭操作，评论数为零，缺乏实质性互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：感谢反馈，处理中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @captainmiaow    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3695    - [关联PR #8615（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8615)
+- **[#3692](https://gitcode.com/cann/ops-transformer/issues/3692) [Bug-Report|缺陷反馈]: aclnnFlashAttentionScore参数校验** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为0，未留下任何交互说明，导致治理过程缺乏透明度与有效沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@m0_55003149](https://gitcode.com/m0_55003149)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @m0_55003149    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3692    - [关联PR #8517（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8517)    - [关联PR #8530（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8530)
+- **[#3691](https://gitcode.com/cann/ops-transformer/issues/3691) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache regbase recompute 模板 dv 单块场景 Σx² 未计算，tota…** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派，评论数为零，缺乏自动化回复与互动反馈，治理深度不足。
+  - 原文依据：
+    - `qianzehong`：/assign [@qianzehong](https://gitcode.com/qianzehong)    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qianzehong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3597,issue3691    - [关联PR #8518（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8518)
+- **[#3690](https://gitcode.com/cann/ops-transformer/issues/3690) [Bug-Report|缺陷反馈]: gmm 单多单特性存在若干问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和随MR合并静默关闭，全程无任何评论向用户同步进展或解释原因，缺乏有效反馈。
+  - 原文依据：
+    - `zhangzhizhuo`：add label bug-report    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3690    - [关联PR #8515（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8515)
+- **[#3689](https://gitcode.com/cann/ops-transformer/issues/3689) moe_init_routing_v3 算子 INT4 动态量化路径优化（双缓冲 + 边界修复）** — 20分
+  - 痛点原因：Bot虽完成打标、指派与关闭，但全程无任何公开评论反馈，导致治理过程不透明，缺乏与用户的有效沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@Huang-Peng](https://gitcode.com/Huang-Peng)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Huang-Peng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3689    - [关联PR #7492（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7492)
+- **[#3688](https://gitcode.com/cann/ops-transformer/issues/3688) [Requirement|需求建议]: inplace_partial_rotary_mul 算子支持autograd 自动微分** — 20分
+  - 痛点原因：Bot在无任何评论沟通的情况下直接关闭issue并打上resolved标签，治理行为机械且缺乏有效解释。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：add label resolved    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3688    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3687](https://gitcode.com/cann/ops-transformer/issues/3687) [Bug-Report|缺陷反馈]: MC2基础算子存在cleancode问题需要整改** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭操作，全程无任何评论互动，缺乏透明度与社区沟通导致治理无效。
+  - 原文依据：
+    - `weihao18`：/assign [@ouyf](https://gitcode.com/ouyf)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ouyf    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3687    - [关联PR #8479（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8479)    - [关联PR #8507（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8507)
+- **[#3686](https://gitcode.com/cann/ops-transformer/issues/3686) [Bug-Report|缺陷反馈]: FlashAttentionScore多个模板存在内存竞争问题** — 20分
+  - 痛点原因：Bot仅机械打标并关闭issue，无任何治理评论互动，治理过程流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-wei-chen](https://gitcode.com/huang-wei-chen)    - `huang-wei-chen`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-wei-chen    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3686    - [关联PR #8415（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8415)
+- **[#3685](https://gitcode.com/cann/ops-transformer/issues/3685) [Documentation|文档反馈]: gmm资料修改** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何评论向用户解释原因，缺乏有效沟通导致治理过程不透明。
+  - 原文依据：
+    - `szhexin`：add label documentation    - `cann-robot`：add label resolved    - `szhexin`：assigned to @szhexin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3685    - [关联PR #8462（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8462)
+- **[#3682](https://gitcode.com/cann/ops-transformer/issues/3682) FA TND 布局的 CombineSplitKVRes 在 batch 间 S1 长度不同时，lseOffset 的预填值覆盖了有效 batch 的 LSE…** — 20分
+  - 痛点原因：Bot仅执行打标，未根据人工回复自动关闭issue且无评论互动，治理动作不完整。
+  - 原文依据：
+    - `weihao18`：/assign [@huang-chuhong](https://gitcode.com/huang-chuhong)    - `huang-chuhong`：感谢补充。经分析，#3682 描述的问题不存在，具体说明如下： ## 1. 不存在 lseOffset 重复覆盖问题 #3681 的修复中 `lseBatchOffset` 取累积有效 S1（`actualSeqQlenAddr[bIdx…    - `huang-chuhong`：您好，当前问题已经解决，我们计划关闭此ISSUE，后续您如果还有疑问，欢迎您重新给我们提ISSUE，我们会继续提供问题支撑。    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @huang-chuhong    - `huang-chuhong`：closed from codehub
+- **[#3681](https://gitcode.com/cann/ops-transformer/issues/3681) [Bug-Report|缺陷反馈]: FlashAttention TND布局下lseOffset越界写导致LSE输出inf** — 20分
+  - 痛点原因：Bot仅完成打标与指派，无评论互动，且最终由人工通过codehub直接关闭，未发挥Bot在关闭环节的治理作用。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @huang-chuhong    - `huang-chuhong`：closed from codehub    - `huang-chuhong`：changed custom state from 进行中 to 已完成    - [关联PR #8490（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8490)
+- **[#3679](https://gitcode.com/cann/ops-transformer/issues/3679) [Documentation|文档反馈]: BSAG缺少950相关文档** — 20分
+  - 痛点原因：Bot仅执行打标和关闭动作，未留下任何解释性评论，导致用户无法获知关闭原因及关联PR情况，缺乏有效沟通。
+  - 原文依据：
+    - `xuchengyang`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3679    - [关联PR #8229（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8229)
+- **[#3678](https://gitcode.com/cann/ops-transformer/issues/3678) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 20分
+  - 痛点原因：Bot仅执行打标、指派和关闭等机械操作，无任何评论互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@cardiac_index](https://gitcode.com/cardiac_index)    - `cardiac_index`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cardiac_index    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3678    - [关联PR #8428（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8428)
+- **[#3676](https://gitcode.com/cann/ops-transformer/issues/3676) test issue mhc optional** — 20分
+  - 痛点原因：Bot仅完成打标，未执行关闭或评论提醒，测试issue最终依赖人工关闭，治理动作严重缺失。
+  - 原文依据：
+    - `weihao18`：测试issue请及时关闭    - `cann-robot`：add label Accepted    - `weixin_44156099`：closed from codehub    - `weixin_44156099`：changed custom state from 进行中 to 已完成
+- **[#3674](https://gitcode.com/cann/ops-transformer/issues/3674) 修复SAB BN matmulNZ出尾块搬运处理** — 20分
+  - 痛点原因：Bot虽完成了分配、打标和关闭，但全程无评论互动，缺乏状态同步与关闭原因说明。
+  - 原文依据：
+    - `weihao18`：/assign @cjz_    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @cjz_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3674    - [关联PR #8467（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8467)    - [关联PR #8502（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8502)
+- **[#3673](https://gitcode.com/cann/ops-transformer/issues/3673) [Bug-Report|缺陷反馈]: mlapo cachemode为2时，当传入cache storage shape为nd时会error** — 20分
+  - 痛点原因：Bot仅机械打标和关闭issue，零评论无任何治理引导，未与开发者有效互动。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3673    - [关联PR #8422（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8422)
+- **[#3672](https://gitcode.com/cann/ops-transformer/issues/3672) 修改slig文档示例** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未发布任何评论说明关闭原因及关联PR，治理过程缺乏透明度。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3672    - [关联PR #8461（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8461)
+- **[#3671](https://gitcode.com/cann/ops-transformer/issues/3671) [Requirement|需求建议]: ops-tensor引入asc-devkit的特性分支作为submodule，transformer仓编译工程适配** — 20分
+  - 痛点原因：Bot虽执行了打标和关闭，但全程无任何评论说明原因，缺乏对用户的反馈与解释，治理透明度低。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3671    - [关联PR #8460（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8460)    - [关联PR #8725（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8725)
+- **[#3670](https://gitcode.com/cann/ops-transformer/issues/3670) [Bug-Report|缺陷反馈]: prompt_flash_attention算子的UB内存问题** — 20分
+  - 痛点原因：Bot仅完成自动打标，未参与评论，且issue关闭与状态流转均由人工完成，治理作用极其有限。
+  - 原文依据：
+    - `wangsong96`：add label bug-report    - `cann-robot`：add label Accepted    - `wangsong96`：closed from codehub    - `wangsong96`：changed custom state from 进行中 to 已完成    - [关联PR #8459（closed）](https://gitcode.com/cann/ops-transformer/merge_requests/8459)
+- **[#3669](https://gitcode.com/cann/ops-transformer/issues/3669) [Bug-Report|缺陷反馈]: SFAG算子偶现卡死问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无任何评论向用户解释关闭原因或提供有效引导。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3669    - [关联PR #8443（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8443)    - [关联PR #8445（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8445)
+- **[#3667](https://gitcode.com/cann/ops-transformer/issues/3667) [Bug-Report|缺陷反馈]: aclnn调用方式下，CANN包中profiling工具读出MhcPost算子OP Type, OP Name均不符合预期** — 20分
+  - 痛点原因：Bot仅机械执行打标与分配，无任何评论互动，且直接打resolved标签关闭，缺乏有效沟通与实际治理作用。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3667    - [关联PR #8447（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8447)
+- **[#3666](https://gitcode.com/cann/ops-transformer/issues/3666) [UT] quant_block_sparse_attn 算子 UT 框架搭建与覆盖率提升** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭操作，全程无任何过程性评论或状态同步互动，缺乏有效治理。
+  - 原文依据：
+    - `weihao18`：/assign [@chenglongyu](https://gitcode.com/chenglongyu)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @chenglongyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3666    - [关联PR #8451（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8451)
+- **[#3663](https://gitcode.com/cann/ops-transformer/issues/3663) [Requirement|需求建议]: Support optional topk weights for MTE low latency** — 20分
+  - 痛点原因：Bot仅执行打标和分配操作，未产生任何评论，缺乏状态同步与有效沟通，治理过程不透明。
+  - 原文依据：
+    - `weihao18`：/assign [@Yuyu-Li](https://gitcode.com/Yuyu-Li)    - `Yuyu-Li`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @Yuyu-Li    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3663    - [关联PR #7350（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7350)
+- **[#3662](https://gitcode.com/cann/ops-transformer/issues/3662) [Documentation|文档反馈]: 修复gmm weightnz资料若干问题** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，但评论数为0，未说明关闭原因或状态变更，缺乏有效反馈导致治理不透明。
+  - 原文依据：
+    - `zhangzhizhuo`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3662    - [关联PR #8441（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8441)
+- **[#3660](https://gitcode.com/cann/ops-transformer/issues/3660) [Documentation|文档反馈]: inplace_fused_causal_conv1d的max_query_len默认值限制** — 20分
+  - 痛点原因：机器人重复人工指派操作，机械打标关闭且无任何有效评论，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@xiapengcheng5](https://gitcode.com/xiapengcheng5)    - `xiapengcheng5`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xiapengcheng5    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3660    - [关联PR #8430（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8430)
+- **[#3659](https://gitcode.com/cann/ops-transformer/issues/3659) [Bug-Report|缺陷反馈]: mc2/mega_moe 算子编码风格存在一些问题，需要优化** — 20分
+  - 痛点原因：Bot仅机械打标resolved并关闭，无任何有效互动与引导，治理流于表面。
+  - 原文依据：
+    - `jy_du`：[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我    - `liudan12`：>[@liudan12](https://gitcode.com/liudan12) 我感兴趣，可以assign给我 [@jy_du](https://gitcode.com/jy_du) 欢迎欢迎    - `liudan12`：add label bug-report    - `cann-robot`：add label resolved    - `liudan12`：assigned to @jy_du    - `liudan12`：unassigned @jy_du
+- **[#3658](https://gitcode.com/cann/ops-transformer/issues/3658) 为MC2通算融合模板库建立目录树** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配和联动关闭，未产生任何评论与用户进行有效互动。
+  - 原文依据：
+    - `weihao18`：/assign [@codehjp423](https://gitcode.com/codehjp423)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @codehjp423    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3658    - [关联PR #8384（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8384)
+- **[#3657](https://gitcode.com/cann/ops-transformer/issues/3657) [Bug-Report|缺陷反馈]: slikg同步检测修复** — 20分
+  - 痛点原因：Bot仅机械响应指派与打标，无任何评论互动，未能发挥主动治理与引导作用。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3657    - [关联PR #8416（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8416)
+- **[#3655](https://gitcode.com/cann/ops-transformer/issues/3655) [Bug-Report|缺陷反馈]: cleancode超大圈复杂度函数整改** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配和关闭操作，评论数为零，未对关闭原因进行互动解释，治理效果差。
+  - 原文依据：
+    - `weihao18`：/assign [@wangyijing](https://gitcode.com/wangyijing)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangyijing    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3655    - [关联PR #8380（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8380)    - [关联PR #8444（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8444)
+- **[#3654](https://gitcode.com/cann/ops-transformer/issues/3654) [Requirement|需求建议]: 增加MegaMoe跨超原型可选参数** — 20分
+  - 痛点原因：Bot错误地将需求类issue直接标记为resolved且无任何评论说明，治理行为机械无效。
+  - 原文依据：
+    - `weihao18`：/assign [@zzg_code](https://gitcode.com/zzg_code)    - `zzg_code`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zzg_code    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3654    - [关联PR #8309（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8309)
+- **[#3653](https://gitcode.com/cann/ops-transformer/issues/3653) [Requirement|需求建议]: 完善 GroupedMatmulActivationQuantWeightNz 算子资料并补充 arch35 示例** — 20分
+  - 痛点原因：Bot仅被动执行打标与分配，无任何治理评论，缺乏自动化引导与关闭说明。
+  - 原文依据：
+    - `zhoushaolong`：/assign [@zhoushaolong](https://gitcode.com/zhoushaolong)    - `zhoushaolong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhoushaolong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3653    - [关联PR #8381（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8381)
+- **[#3652](https://gitcode.com/cann/ops-transformer/issues/3652) [Bug-Report|缺陷反馈]: 期望增加根据用例信息判断是否开启FD的开关** — 20分
+  - 痛点原因：Bot仅机械执行打标分配与关闭操作，全程无评论互动，缺乏有效治理沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@zhangh2417](https://gitcode.com/zhangh2417)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhangh2417    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3652    - [关联PR #8325（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8325)    - [关联PR #8366（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8366)
+- **[#3650](https://gitcode.com/cann/ops-transformer/issues/3650) [Bug-Report|缺陷反馈]: allgathermm CCU最大通信次数为63** — 20分
+  - 痛点原因：Bot仅执行了打标与指派，无评论互动且未关闭issue，缺乏闭环治理动作导致得分低。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：add label bug-report    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @captainmiaow    - `captainmiaow`：closed from codehub    - `captainmiaow`：changed custom state from 进行中 to 已完成
+- **[#3649](https://gitcode.com/cann/ops-transformer/issues/3649) [Requirement|需求建议]: qkv_rms_norm_rope_cache_with_k_scale的torch_extention载入未使能延迟…** — 20分
+  - 痛点原因：Bot仅被动响应人工指令进行打标和指派，无任何主动评论互动且未自动关闭，缺乏实质性治理。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @shi-rui    - `shi-rui`：closed from codehub    - `shi-rui`：changed custom state from 进行中 to 已完成
+- **[#3648](https://gitcode.com/cann/ops-transformer/issues/3648) [Documentation|文档反馈]: aclnnGatherPaKvCache算子文档对数据类型说明不准确** — 20分
+  - 痛点原因：Bot仅执行指派、打标和关闭等机械操作，无任何评论互动，缺乏实质性治理沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@gt0cd001](https://gitcode.com/gt0cd001)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gt0cd001    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3648    - [关联PR #8398（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8398)
+- **[#3647](https://gitcode.com/cann/ops-transformer/issues/3647) [Requirement|需求建议]: 提升mc2算子ut覆盖率** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和关闭动作，全程零评论互动，缺乏过程说明与用户沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@mutex_lock](https://gitcode.com/mutex_lock)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @mutex_lock    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3647    - [关联PR #8395（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8395)
+- **[#3646](https://gitcode.com/cann/ops-transformer/issues/3646) [Bug-Report|缺陷反馈]: SLIKG算子内存检测报错** — 20分
+  - 痛点原因：Bot仅机械执行打标与指派，无任何评论互动，且直接打resolved标签缺乏有效沟通，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@xuanyuandy](https://gitcode.com/xuanyuandy)    - `xuanyuandy`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuanyuandy    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3646    - [关联PR #8369（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8369)
+- **[#3645](https://gitcode.com/cann/ops-transformer/issues/3645) [Requirement|需求建议]: 代码清理调整声明与检查块顺序** — 20分
+  - 痛点原因：Bot仅机械执行打标、分配与关闭操作，未在评论区进行任何互动或解释说明，缺乏有效沟通。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3645    - [关联PR #8393（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8393)    - [关联PR #8394（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8394)
+- **[#3641](https://gitcode.com/cann/ops-transformer/issues/3641) [Bug-Report|缺陷反馈]: moe_finalize_routing_v2_grad缺少同步信号，导致内存越界** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，未产生任何评论与用户沟通，缺乏状态说明导致反馈缺失。
+  - 原文依据：
+    - `yangziqi_007`：add label bug-report    - `cann-robot`：add label resolved    - `yangziqi_007`：assigned to @yangziqi_007    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3641    - [关联PR #8348（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8348)    - [关联PR #8356（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8356)
+- **[#3640](https://gitcode.com/cann/ops-transformer/issues/3640) [Bug-Report|缺陷反馈]: FAG在maxworkspace接口计算时，无法获得effectiveT1/effectiveT2，此时会导致计算的wo…** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，无任何状态流转或进度同步评论，治理动作单一且缺乏有效反馈。
+  - 原文依据：
+    - `yuhao_`：add label bug-report    - `cann-robot`：add label resolved    - `yuhao_`：assigned to @yuhao_    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3640    - [关联PR #8281（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8281)
+- **[#3639](https://gitcode.com/cann/ops-transformer/issues/3639) [Bug-Report|缺陷反馈]: StemIndexer计算topkCountNum时decayLen应该在小于等于1时直接返回，等于1时后续计算无意义** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭动作，无任何有效评论与用户互动，治理流于形式。
+  - 原文依据：
+    - `skykone1`：add label bug-report    - `cann-robot`：add label resolved    - `skykone1`：assigned to @skykone1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3639    - [关联PR #8372（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8372)
+- **[#3636](https://gitcode.com/cann/ops-transformer/issues/3636) [Requirement|需求建议]: inplace_partial_rotary_mul_grad算子缺少torch api接口** — 20分
+  - 痛点原因：Bot仅完成打标与关闭，无任何评论互动，缺乏有效的状态同步与用户引导。
+  - 原文依据：
+    - `alfengyuan`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：add label Accepted    - `alfengyuan`：assigned to @alfengyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3636    - `alfengyuan`：changed custom state from 进行中 to 已完成
+- **[#3635](https://gitcode.com/cann/ops-transformer/issues/3635) [Bug-Report|缺陷反馈]: NsaCompAtten内存检测问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无任何评论与用户沟通，缺乏治理反馈导致得分低。
+  - 原文依据：
+    - `hz36amy_00`：add label bug-report    - `cann-robot`：add label resolved    - `hz36amy_00`：assigned to @hz36amy_00    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3635    - [关联PR #8365（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8365)    - [关联PR #8367（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8367)
+- **[#3634](https://gitcode.com/cann/ops-transformer/issues/3634) [Requirement|需求建议]: FA要接入ttk框架** — 20分
+  - 痛点原因：Bot仅机械打标并在关联PR合并后自动关闭，全程无任何评论说明，导致治理过程不透明且缺乏有效沟通。
+  - 原文依据：
+    - `SH_jingsong`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3634    - [关联PR #8185（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8185)
+- **[#3631](https://gitcode.com/cann/ops-transformer/issues/3631) [Requirement|需求建议]: GroupedMatmulSwigluQuantV2算子mx weightnz场景需支持 weight多tensor** — 20分
+  - 痛点原因：Bot仅机械执行打标分配与关闭，无任何评论互动与说明，治理过程缺乏透明度。
+  - 原文依据：
+    - `fengxingpan1`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fengxingpan1    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3631    - [关联PR #7302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7302)
+- **[#3630](https://gitcode.com/cann/ops-transformer/issues/3630) [Requirement|需求建议]: combine发送token时可能存在连续往相同卡发送的热点访问情况，影响性能，建议修改；另外仍存在同地址偏移问题，需…** — 20分
+  - 痛点原因：Bot仅机械执行打标resolved并关闭，无任何评论互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@zhong-zixin](https://gitcode.com/zhong-zixin)    - `zhong-zixin`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @zhong-zixin    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3630    - [关联PR #7752（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7752)
+- **[#3629](https://gitcode.com/cann/ops-transformer/issues/3629) [Requirement|需求建议]: 修复smlag metadata在A2/A3被拦截的问题** — 20分
+  - 痛点原因：Bot仅执行打标与关闭操作，但评论数为0，缺乏有效沟通导致治理过程不透明。
+  - 原文依据：
+    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3629    - [关联PR #8342（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8342)
+- **[#3628](https://gitcode.com/cann/ops-transformer/issues/3628) [Bug-Report|缺陷反馈]: cleancode重复代码整改** — 20分
+  - 痛点原因：Bot仅机械打标并在关联PR合并后自动关闭，无任何有效评论与解释说明，治理过程缺乏透明度与互动。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3628    - [关联PR #8287（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8287)
+- **[#3625](https://gitcode.com/cann/ops-transformer/issues/3625) fix moe_ep_dispatch accuracy** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无解释性评论，导致治理过程不透明，缺乏对用户的反馈。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3625    - [关联PR #8336（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8336)
+- **[#3622](https://gitcode.com/cann/ops-transformer/issues/3622) [Documentation|文档反馈]: BlitzSparseAttention** — 20分
+  - 痛点原因：Bot仅执行打标、分配和关闭等机械操作，未留下任何评论与用户互动或解释原因，缺乏有效沟通。
+  - 原文依据：
+    - `weihao18`：/assign [@kostyab](https://gitcode.com/kostyab)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kostyab    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3622    - [关联PR #8333（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8333)
+- **[#3621](https://gitcode.com/cann/ops-transformer/issues/3621) [Bug-Report|缺陷反馈]: torch_npu.npu_moe_gating_top_k_softmax 310Pbatch过大精度异常** — 20分
+  - 痛点原因：Bot仅机械执行打标、指派和自动关闭，无任何评论互动，缺乏有效治理反馈。
+  - 原文依据：
+    - `weihao18`：/assign [@gcw_kTZ5XeTb](https://gitcode.com/gcw_kTZ5XeTb)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @gcw_kTZ5XeTb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3621    - [关联PR #8302（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8302)    - [关联PR #8316（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8316)
+- **[#3620](https://gitcode.com/cann/ops-transformer/issues/3620) [Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何解释性评论，导致用户无法获知关闭原因及关联PR情况，缺乏透明度。
+  - 原文依据：
+    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3620    - [关联PR #8285（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8285)
+- **[#3619](https://gitcode.com/cann/ops-transformer/issues/3619) [Bug-Report|缺陷反馈]: MhcPost N=4用例边界场景存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行指派与打标，无任何有效评论互动，且直接打resolved标签，治理流于形式。
+  - 原文依据：
+    - `xuejinghui`：/assign    - `xuejinghui`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @xuejinghui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3619    - [关联PR #8263（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8263)
+- **[#3618](https://gitcode.com/cann/ops-transformer/issues/3618) [Documentation|文档反馈]: 修改SLIG算子文档格式** — 20分
+  - 痛点原因：Bot仅执行打标和关闭操作，未发表任何评论，缺乏有效治理信息输出。
+  - 原文依据：
+    - `llwy0320`：add label documentation    - `cann-robot`：add label resolved    - `llwy0320`：assigned to @llwy0320    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3618    - [关联PR #8327（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8327)
+- **[#3616](https://gitcode.com/cann/ops-transformer/issues/3616) [Bug-Report|缺陷反馈]: torch extension导入阶段会触发全量算子编译** — 20分
+  - 痛点原因：Bot仅机械打标并因关联MR合并直接关闭，全程零评论无进度同步，治理流于形式。
+  - 原文依据：
+    - `hblnb`：add label bug-report    - `cann-robot`：add label resolved    - `hblnb`：assigned to @hblnb    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3616    - [关联PR #8155（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8155)    - [关联PR #8326（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8326)
+- **[#3615](https://gitcode.com/cann/ops-transformer/issues/3615) [Bug-Report|缺陷反馈]: all_gather_matmul_aiv_mode_tiling.h 头文件中使用了uint32_t数据类型，但是没有…** — 20分
+  - 痛点原因：Bot仅打标resolved但未关闭issue且无评论，未有效协助流转，分配与确认均依赖人工完成。
+  - 原文依据：
+    - `wang-minbo`：好的，确认是问题，我们会尽快修复    - `cann-robot`：add label resolved    - `wang-minbo`：assigned to @liuboxi    - `liuboxi`：assigned to @zhu-mingzhe71    - `liuboxi`：unassigned @liuboxi    - `zhu-mingzhe71`：closed from codehub
+- **[#3614](https://gitcode.com/cann/ops-transformer/issues/3614) [Requirement|需求建议]: chunk_gated_delta_rule 支持 ascend950 架构** — 20分
+  - 痛点原因：Bot仅执行打标和关闭等机械操作，评论数为0，缺乏对用户的状态变更说明与交互。
+  - 原文依据：
+    - `huang-chuhong`：/assign    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @huang-chuhong    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3614    - [关联PR #8318（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8318)
+- **[#3613](https://gitcode.com/cann/ops-transformer/issues/3613) [Bug-Report|缺陷反馈]: nsa_compress_attention_infer算子的UB内存问题** — 20分
+  - 痛点原因：Bot仅执行了打标和分配动作，但全程无任何评论互动，缺乏有效沟通反馈导致治理效果差。
+  - 原文依据：
+    - `weihao18`：/assign [@wangsong96](https://gitcode.com/wangsong96)    - `wangsong96`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wangsong96    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3613    - [关联PR #8310（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8310)
+- **[#3612](https://gitcode.com/cann/ops-transformer/issues/3612) [Documentation|文档反馈]: aclnnNsaSelectedAttentionInfer算子md文档格式修复** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭操作，全程无评论互动，缺乏有效的治理信息同步。
+  - 原文依据：
+    - `weihao18`：/assign [@yyt_hw](https://gitcode.com/yyt_hw)    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yyt_hw    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3612    - [关联PR #8288（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8288)
+- **[#3611](https://gitcode.com/cann/ops-transformer/issues/3611) [Bug-Report|缺陷反馈]: FA MLA noquant场景下skip的batch导致attention_out计算错误** — 20分
+  - 痛点原因：Bot仅静默执行打标与分配指令，无任何评论互动，且issue被直接关闭，治理过程流于形式。
+  - 原文依据：
+    - `PerrySkywalker`：/assign    - `PerrySkywalker`：/close    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @PerrySkywalker    - `cann-robot`：closed from codehub    - `cann-robot`：changed custom state from 进行中 to 已完成
+- **[#3610](https://gitcode.com/cann/ops-transformer/issues/3610) [Documentation|文档反馈]: 删除dispatch&combine算子文档tp2相关描述** — 20分
+  - 痛点原因：Bot直接打上resolved标签且无任何评论说明，仅机械执行分配动作，治理流于形式缺乏有效反馈。
+  - 原文依据：
+    - `weihao18`：/assign [@yangzeheng](https://gitcode.com/yangzeheng)    - `yangzeheng`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @yangzeheng    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3610    - [关联PR #8279（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8279)
+- **[#3609](https://gitcode.com/cann/ops-transformer/issues/3609) [Documentation|文档反馈]: 资料格式修复** — 20分
+  - 痛点原因：Bot仅机械执行指派与关闭打标，无评论互动，核心分类标签依赖人工添加，未发挥实际治理作用。
+  - 原文依据：
+    - `weihao18`：/assign [@fazhenyao123](https://gitcode.com/fazhenyao123)    - `fazhenyao123`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @fazhenyao123    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3609    - [关联PR #8305（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8305)
+- **[#3608](https://gitcode.com/cann/ops-transformer/issues/3608) QuantGroupedMatmulInplaceAdd算子的参数说明长时间未更新** — 20分
+  - 痛点原因：Bot误判真实有效的用户反馈为无效并关闭，且无任何自动回复引导，治理完全失效。
+  - 原文依据：
+    - `weihao18`：/assign [@kknan](https://gitcode.com/kknan)    - `kknan`：第二个问题：是的，量化模式支持对应的已支持数据类型没问题。 第一个问题能麻烦再详细描述下吗    - `yunjuanya123`：这个链接https://gitcode.com/cann/ops-transformer/blob/master/gmm/quant_grouped_matmul_inplace_add/README.md里面的，参数说明一直没更新 ![…    - `kknan`：收到，修复代码上库中    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @kknan
+- **[#3607](https://gitcode.com/cann/ops-transformer/issues/3607) [Bug-Report|缺陷反馈]: kv_compress_epilog算子bf16格式的scale是零扩展而不是真实的bf16格式** — 20分
+  - 痛点原因：Bot仅机械打标和关联关闭，全程无任何评论互动与解释说明，缺乏有效沟通导致治理体验差。
+  - 原文依据：
+    - `zhu-lei0614`：add label bug-report    - `cann-robot`：add label resolved    - `zhu-lei0614`：assigned to @zhu-lei0614    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3607    - [关联PR #8307（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8307)
+- **[#3606](https://gitcode.com/cann/ops-transformer/issues/3606) [Bug-Report|缺陷反馈]: MegaMoe A2 Workspace 优化** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，无任何实质性评论与用户互动，治理流于形式。
+  - 原文依据：
+    - `urbub`：add label bug-report    - `cann-robot`：add label resolved    - `urbub`：assigned to @urbub    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3606    - [关联PR #8266（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8266)    - [关联PR #8337（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8337)
+- **[#3605](https://gitcode.com/cann/ops-transformer/issues/3605) [Requirement|需求建议]: 增加训练metadata文档资料** — 20分
+  - 痛点原因：Bot仅机械打标并直接标记resolved关闭，无任何实质性评论互动，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@qq_32807861](https://gitcode.com/qq_32807861)    - `qq_32807861`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @qq_32807861    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3605    - [关联PR #8153（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8153)
+- **[#3604](https://gitcode.com/cann/ops-transformer/issues/3604) [Requirement|需求建议]: gmm mx 量化weightnz 支持weight多 tensor** — 20分
+  - 痛点原因：Bot仅机械执行打标与自动关闭，全程零评论，缺乏状态同步与进度反馈，治理过程不透明。
+  - 原文依据：
+    - `zhangzhizhuo`：add label requirement    - `cann-robot`：add label resolved    - `zhangzhizhuo`：assigned to @zhangzhizhuo    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3604    - [关联PR #6739（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/6739)    - [关联PR #82（merged）](https://gitcode.com/cann/ops-tensor/merge_requests/82)
+- **[#3603](https://gitcode.com/cann/ops-transformer/issues/3603) [Requirement|需求建议]: 修复qliv2和liv2算子部分参数缺省场景报错问题** — 20分
+  - 痛点原因：Bot错误给需求建议打resolved标签并自动关闭，全程无有效评论说明，治理流于形式。
+  - 原文依据：
+    - `weihao18`：/assign [@LZH_unofficial](https://gitcode.com/LZH_unofficial)    - `LZH_unofficial`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @LZH_unofficial    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3603    - [关联PR #8158（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8158)
+- **[#3602](https://gitcode.com/cann/ops-transformer/issues/3602) [Documentation|文档反馈]: Mlaprolog v1和v2的README.md中有部分跳转链接失效，需整改** — 20分
+  - 痛点原因：Bot仅完成基础打标与分配，无自动关闭及有效评论动作，未能实现issue的闭环治理。
+  - 原文依据：
+    - `weihao18`：/assign [@wangss21](https://gitcode.com/wangss21)    - `wangss21`：add label documentation    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @wangss21    - `wangss21`：closed from codehub    - `wangss21`：changed custom state from 进行中 to 已完成
+- **[#3599](https://gitcode.com/cann/ops-transformer/issues/3599) [Bug-Report|缺陷反馈]: flash_attn 测试框架 run_case_load 函数 LSE 精度对比因 inf 哨兵值不一致误报失败** — 20分
+  - 痛点原因：Bot虽执行打标和分配操作，但全程无评论互动，治理过程不透明，用户无法获知操作意图。
+  - 原文依据：
+    - `weihao18`：/assign [@ChenYiran](https://gitcode.com/ChenYiran)    - `ChenYiran`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @ChenYiran    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3599    - [关联PR #8286（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8286)
+- **[#3598](https://gitcode.com/cann/ops-transformer/issues/3598) [Bug-Report|缺陷反馈]: MoeInitRoutingQuantV2第三个输出结果存在精度问题** — 20分
+  - 痛点原因：Bot仅机械执行打标和关闭操作，未留下任何解释或引导性评论，缺乏有效互动导致治理流于形式。
+  - 原文依据：
+    - `wuxiyuan`：add label bug-report    - `cann-robot`：add label resolved    - `wuxiyuan`：assigned to @wuxiyuan    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3598    - [关联PR #8259（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8259)    - [关联PR #8354（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8354)
+- **[#3597](https://gitcode.com/cann/ops-transformer/issues/3597) [Bug-Report|缺陷反馈]: KvRmsNormRopeCache 与 Abs（非连续输入）同卡并发/多流混跑时出现 aic error** — 20分
+  - 痛点原因：Bot无有效评论引导，且需人工重复手动打标，治理动作无效。
+  - 原文依据：
+    - `qianzehong`：`import torch, torch_npu, traceback, sys dev = 'npu:0' torch.npu.set_device(0) print("torch", torch.__version__, "torch…    - `weihao18`：/assign [@hz36amy_00](https://gitcode.com/hz36amy_00)    - `qianzehong`：已提交修复 PR:cann/ops-transformer!8340(预搬 index 到 UB 的 GetIndex 封装,规避跨进程并发下 GlobalTensor::GetValue 触发的 aivec 越界)。上板并发 18/18…    - `qianzehong`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @hz36amy_00
+- **[#3596](https://gitcode.com/cann/ops-transformer/issues/3596) [Documentation|文档反馈]: alltoallvgmm,.gmmalltoallv文档markdown问题清理** — 20分
+  - 痛点原因：Bot未对疑似异常标题进行拦截或评论提示，直接打标resolved并分配人员，治理失效。
+  - 原文依据：
+    - `weihao18`：/assign [@wuziyu](https://gitcode.com/wuziyu)    - `wuziyu`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @wuziyu    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3596    - [关联PR #8272（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8272)
+- **[#3595](https://gitcode.com/cann/ops-transformer/issues/3595) [Documentation|文档反馈]: matmulallreduce文档markdown问题清理** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，未产生任何评论与用户互动，缺乏有效反馈。
+  - 原文依据：
+    - `Kiana1216`：add label documentation    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3595    - [关联PR #8269（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8269)    - [关联PR #8271（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8271)
+- **[#3594](https://gitcode.com/cann/ops-transformer/issues/3594) [Bug-Report|缺陷反馈]: 修复MatmulAlltoAll FusionPass兼容性问题** — 20分
+  - 痛点原因：Bot仅机械打标并随MR合并自动关闭，全程无评论互动，缺乏有效沟通与状态同步。
+  - 原文依据：
+    - `liusixia_gitcode`：add label bug-report    - `cann-robot`：add label resolved    - `liusixia_gitcode`：assigned to @liusixia_gitcode    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3594    - [关联PR #8268（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8268)    - [关联PR #8298（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/8298)
+- **[#3593](https://gitcode.com/cann/ops-transformer/issues/3593) [Question|问题咨询]: all_gather_matmul和all_gather_matmul_v2的差别是什么，在A2和A3上是否有区别？** — 20分
+  - 痛点原因：Bot仅完成打标，在人工明确要求关闭时未自动执行关闭操作，导致治理流程未闭环。
+  - 原文依据：
+    - `weihao18`：/assign [@captainmiaow](https://gitcode.com/captainmiaow)    - `captainmiaow`：@cdw 感谢您的反馈，我们将尽快处理    - `zhu-mingzhe71`：您好，感谢您的关注，这三个问题的说明如下： 1、这两个算子的区别主要体现在两个方面： - 功能上：all_gather_matmul算子不支持量化后的低精度输入类型，而all_gather_matmul_v2支持a8w8与a4w4两种低精…    - `captainmiaow`：无后续问题，可以关闭该issue    - `cann-robot`：add label Accepted    - `cann-robot`：assigned to @captainmiaow
+- **[#3592](https://gitcode.com/cann/ops-transformer/issues/3592) [Requirement|需求建议]: 需要支持新算子，支持Rms、RoPe、Norm、Quant、kvCache等算子的融合** — 20分
+  - 痛点原因：Bot未留任何说明评论便直接打标并关闭需求issue，缺乏有效沟通，治理过程不透明。
+  - 原文依据：
+    - `shi-rui`：/assign    - `shi-rui`：add label requirement    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @shi-rui    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3592    - [关联PR #7023（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7023)
+- **[#3590](https://gitcode.com/cann/ops-transformer/issues/3590) [Requirement|需求建议]: 【David】【GroupedMatMulSwigluQuantV2】泛化支持N轴非128对齐场景** — 20分
+  - 痛点原因：Bot仅机械执行打标与关闭，全程无评论交互，缺乏有效沟通与处理说明，导致治理体验差。
+  - 原文依据：
+    - `NeverLCY`：add label requirement    - `cann-robot`：add label resolved    - `NeverLCY`：assigned to @NeverLCY    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3590    - [关联PR #7662（merged）](https://gitcode.com/cann/ops-transformer/merge_requests/7662)
+- **[#3680](https://gitcode.com/cann/ops-transformer/issues/3680) [Bug-Report|缺陷反馈]: Tiling重构检视意见** — 35分
+  - 痛点原因：Bot仅对重复指派做简单提示，缺乏自动拦截等实质性治理动作，未能有效阻止重复指派。
+  - 原文依据：
+    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `weihao18`：/assign [@peijingjing](https://gitcode.com/peijingjing)    - `cann-robot`：### Notice This issue is already assigned to ***peijingjing***. Please do not assign repeatedly.    - `peijingjing`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：assigned to @peijingjing
+- **[#3642](https://gitcode.com/cann/ops-transformer/issues/3642) [Bug-Report|缺陷反馈]: 当bias为2维时，mlapo会报错** — 35分
+  - 痛点原因：Bot误报重复分配干扰流程，且自动打标resolved，治理动作不准确。
+  - 原文依据：
+    - `weihao18`：/assign [@yolic](https://gitcode.com/yolic)    - `cann-robot`：### Notice This issue is already assigned to ***yolic***. Please do not assign repeatedly.    - `yolic`：add label bug-report    - `cann-robot`：add label resolved    - `yolic`：assigned to @yolic    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue3642
+
+## 5. 本周行动清单
+
+### REC-01 · 补齐技术讨论并补充解决方案与验证结论
+
+| 字段 | 内容 |
+| ---- | ---- |
+| 优先级 | P0 |
+| 对应问题 | PP-01 |
+| 影响环节 | 讨论与解决 |
+| 承接方 | 社区维护者；候选负责人 `weihao18` |
+| 触发条件 | Issue assign后7天无新评论 |
+| 具体动作 | 自动提醒assignee回复技术评估或更新状态 |
+| 目标 | `OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升；平均评论数提升至 2 以上 |
+| 相关证据 | OBJ_SOLUTION_EVIDENCE：均值 23.3，低分 126/132；OBJ_RESULT_FORMATION_TIMELINESS：均值 78.8，低分 26/132 |
+
+**对应给分点**
+
+| 指标 | 当前问题 | 预期改善 |
+| ---- | -------- | -------- |
+| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 均值 78.8，低分 26/132 | 加快形成明确结果的速度 |
+| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 均值 23.3，低分 126/132 | 补充修改内容、关联变更和影响范围 |
+| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | 无实质技术讨论，仅assign命令，但通过关联PR合并实现了推进。 | 明确下一步动作、阶段结论和推进记录 |
+
+### REC-02 · 规范关闭原因和关闭摘要
+
+| 字段 | 内容 |
+| ---- | ---- |
+| 优先级 | P0 |
+| 对应问题 | PP-02 |
+| 影响环节 | 总结与关闭 |
+| 承接方 | 社区维护者；候选负责人 `weihao18` |
+| 触发条件 | Issue关闭前 |
+| 具体动作 | 要求附解决说明或PR链接，校验问题是否完全解决 |
+| 目标 | `OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升至 60 以上 |
+| 相关证据 | OBJ_CLOSURE_REUSE：均值 13.6，低分 132/132；OBJ_DECISION_TRANSPARENCY：均值 55.1，低分 59/132 |
+
+**对应给分点**
+
+| 指标 | 当前问题 | 预期改善 |
+| ---- | -------- | -------- |
+| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 均值 13.6，低分 132/132 | 关闭时沉淀解决方案文档、FAQ和规避方案 |
+| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 均值 55.1，低分 59/132 | 补齐关闭原因、关闭评论和结构化总结 |
+| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 关闭时未说明后续反馈路径或重新开启条件，信息不足。 | 关闭时明确说明后续反馈路径和重新开启条件 |
+
+### REC-03 · 提升 Bot 治理覆盖
+
+| 字段 | 内容 |
+| ---- | ---- |
+| 优先级 | P1 |
+| 对应问题 | PP-03 |
+| 影响环节 | Bot/Agent 治理 |
+| 承接方 | Bot开发者；候选负责人 `weihao18` |
+| 触发条件 | bot执行关闭动作前 |
+| 具体动作 | 校验Issue评论中是否有关键词'待上库''未完全''剩余'等，有则阻止自动关闭 |
+| 目标 | `OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升；相关低分样本降至 5 以下 |
+| 相关证据 | OBJ_BOT_GOVERNANCE：均值 27.7，低分 106/132；OBJ_BOT_MISCLOSE_REVERSE：均值 94.5，低分 0/132 |
+
+**对应给分点**
+
+| 指标 | 当前问题 | 预期改善 |
+| ---- | -------- | -------- |
+| `OBJ_BOT_GOVERNANCE` Bot治理有效性 | 均值 27.7，低分 106/132 | 提升自动标签、分流、提醒和关闭校验覆盖 |
+| `OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分 | 均值 94.5，低分 0/132 | 减少 Bot 误关、错关和状态矛盾 |
+| `SUB_BOT_HANDOFF_QUALITY` 人机交接质量 | Bot assign后人工创建PR并合并，bot随后正确关闭，交接顺畅。 | 改善 Bot 到人工处理的交接质量 |
+
+
+## 6. 各阶段简析
+
+### I0 · 创建
+
+本阶段分数为 **77.7/100**，整体相对可控，但仍需关注：模板填写不完整，多个需求Issue的Benefit和Design部…。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `SUB_AGENT_NOISE_RISK` AI噪音风险 | 90.0 | 真实内部开发任务，无AI生成或幻觉迹象 |
+| `SUB_INPUT_QUALITY` 输入质量 | 65.3 | 有模板结构但内容过于简略，Benefit和Design部分基本为空，缺乏细节。 |
+
+代表低分 Issue：[#3672](https://gitcode.com/cann/ops-transformer/issues/3672)
+问题：修改slig文档示例。
+
+### I1 · 分配与首次响应
+
+本阶段分数为 **62.3/100**，整体相对可控，但仍需关注：标签分类不足影响分流精度。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 12.6 | 均值 12.6，低分 115/132 |
+| `OBJ_RESPONSE_SPEED` 响应速度 | 89.5 | 均值 89.5，低分 5/132 |
+| `SUB_OWNER_CLARITY` 责任归属清晰度 | 82.0 | 作者自认领，bot执行分配，责任归属明确 |
+| `SUB_ROUTING_CORRECTNESS` 分流正确性 | 76.3 | 正确标记requirement标签并分配责任人，进入处理流程，路由合理。 |
+
+代表低分 Issue：[#3668](https://gitcode.com/cann/ops-transformer/issues/3668)
+问题：MegaMoe get_mega_moe_ccl_buffer_size和get_symm_buffer_for_mega_moe接口入参一致性。
+
+### I2 · 讨论与解决
+
+本阶段分数为 **57.0/100**，本阶段需要改进，主要问题是：讨论推进严重停滞缺乏跟进。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 78.8 | 均值 78.8，低分 26/132 |
+| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 23.3 | 均值 23.3，低分 126/132 |
+| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | 57.2 | 无实质技术讨论，仅assign命令，但通过关联PR合并实现了推进。 |
+| `SUB_USER_GOAL_RESULT` 用户目标处理结果 | 74.6 | 关联PR#7966已合并，需求得到实现，issue标记resolved关闭。 |
+
+代表低分 Issue：[#3697](https://gitcode.com/cann/ops-transformer/issues/3697)
+问题：[Requirement|需求建议]: QLIV2批跑pytest功能适配。
+
+### I3 · 总结与关闭
+
+本阶段分数为 **46.0/100**，本阶段需要改进，主要问题是：关闭质量极低缺乏解决证据。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 13.6 | 均值 13.6，低分 132/132 |
+| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 55.1 | 均值 55.1，低分 59/132 |
+| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 45.2 | 关闭时未说明后续反馈路径或重新开启条件，信息不足。 |
+| `SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分 | 82.0 | Issue仍处于open状态，不存在过早关闭风险。 |
+
+代表低分 Issue：[#3620](https://gitcode.com/cann/ops-transformer/issues/3620)
+问题：[Bug-Report|缺陷反馈]: MatmulAllReduce int8低比特通信时存在精度问题。
+
+### G · Bot/Agent 治理
+
+本阶段分数为 **66.0/100**，仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。
+
+| 指标 | 得分 | 给分原因 |
+| ---- | ----: | -------- |
+| `OBJ_BOT_GOVERNANCE` Bot治理有效性 | 27.7 | 均值 27.7，低分 106/132 |
+| `OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分 | 94.5 | 均值 94.5，低分 0/132 |
+| `SUB_BOT_HANDOFF_QUALITY` 人机交接质量 | 75.0 | Bot assign后人工创建PR并合并，bot随后正确关闭，交接顺畅。 |
+| `SUB_BOT_HELPFULNESS` 自动化帮助度 | 70.1 | bot在MR合并后自动关闭并加resolved标签，流程治理有效 |
+| `SUB_BOT_INTERVENTION_QUALITY` 介入动作质量 | 75.2 | assign响应命令、close因MR合并、label resolved，动作… |
+
+代表低分 Issue：[#3627](https://gitcode.com/cann/ops-transformer/issues/3627)
+问题：[Documentation|文档反馈]: aclnnGroupedMatmulAddV2、aclnnGroupedMatmulFinalizeRouting…。
+
+
+## 7. 趋势
+
+| 周期 | Issue 数 | 总体体验分 | 变化 | I0 | I1 | I2 | I3 | G |
+| ---- | --------: | ----------: | ---- | ----: | ----: | ----: | ----: | ----: |
+| 2026-07-06_to_2026-07-12 | 132 | 47.6 | 首期基线 | 77.7 | 62.3 | 57.0 | 46.0 | 66.0 |
+
+本期作为首期基线，后续周报会基于同一口径展示趋势变化。
+
+## 8. 社区响应者
+
+本周期共有 **14 位社区响应者**贡献 **93 次评论响应**。
+
+| 响应者 | 评论数 |
+| ------ | ------: |
+| `weihao18` | 67 |
+| `captainmiaow` | 5 |
+| `kknan` | 4 |
+| `huang-chuhong` | 3 |
+| `yu-xinjie62` | 3 |
+
+Top1 响应占比 **72.0%**。以上人员仅作为行动承接候选，不代表责任归属已经确认。
+
+## 9. 数据说明
+
+- 数据范围：2026-07-06_to_2026-07-12 创建的 Issue，按创建时间归入本期。
+- 数据性质：回溯统计，不是真实用户体验测试。
+- 文本判断：来自模型代读 Issue 线程。
+- 分数口径：总体体验分采用当前报告口径计算；Bot/Agent 治理仅作参考，不计入总分。
+- 数据完整性：92.1/100，整体置信度 高。
+- 平台限制：GitCode API 不返回 author_association 与关联 PR，维护者识别与关联 PR 率不可信，已从对比剔除；无 closed_by / closed 事件，自关闭无法判定。
+- 数据文件：`/home/shengbao/Cogito/issue_experience_agent/outputs/report/cann-ops-transformer/report_cann-ops-transformer_2026-07-06_to_2026-07-12.json`。
