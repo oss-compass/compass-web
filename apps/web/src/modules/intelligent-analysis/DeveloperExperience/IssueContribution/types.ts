@@ -54,6 +54,13 @@ export type IssueReportStage = {
     title: string;
     desc: string;
   }>;
+  pain_issues?: Array<{
+    no: string;
+    url: string;
+    score: number;
+    title: string;
+    state: string;
+  }>;
   root_cause: string;
   judgment: string;
   core_problem: string;

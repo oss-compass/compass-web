@@ -62,6 +62,11 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
 
   const [metricsOpen, setMetricsOpen] = useState(true);
   const [detailExpanded, setDetailExpanded] = useState(true);
+  const [painIssuesExpanded, setPainIssuesExpanded] = useState(false);
+
+  useEffect(() => {
+    setPainIssuesExpanded(false);
+  }, [activeStageId]);
 
   if (!activeStage) return null;
 
@@ -128,6 +133,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   };
   const stagePains = getStagePains(activeStage);
   const stageRecommendations = getStageRecommendations(activeStage, stagePains);
+  const painIssues = activeStage.pain_issues?.length
+    ? activeStage.pain_issues
+    : activeStage.low_issues.map((issue) => ({ ...issue, state: '' }));
+  const visiblePainIssues = painIssuesExpanded
+    ? painIssues
+    : painIssues.slice(0, 3);
 
   return (
     <section
@@ -169,7 +180,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
             {stages.map((stage, index) => {
               const active = stage.id === activeStageId;
               const cardPains = getStagePains(stage);
-              const actionCount = getStageRecommendations(
+              const recommendationCount = getStageRecommendations(
                 stage,
                 cardPains
               ).length;
@@ -254,13 +265,13 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         </span>
                         <span
                           className="flex flex-col items-center py-1"
-                          title="本阶段进入行动清单的改进项数量，对应下方“本周行动清单”"
+                          title="本阶段关联的改进建议数量，对应下方“本周行动清单”"
                         >
                           <strong className="text-[20px] font-bold leading-none text-emerald-600">
-                            {actionCount}
+                            {recommendationCount}
                           </strong>
                           <span className="mt-1 text-[14px] text-slate-400">
-                            行动
+                            建议
                           </span>
                         </span>
                       </div>
@@ -676,39 +687,75 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                 ) : null}
               </div>
 
-              {activeStage.low_issues.length ? (
+              {painIssues.length ? (
                 <div className=">md:p-5 border-t border-slate-200 bg-white/70 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <h4 className="text-base font-semibold text-slate-900">
-                      代表痛点 Issue
-                    </h4>
-                    <span
-                      className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600"
-                      title="对应卡片“低分”：本阶段代表性低分 Issue 数"
-                    >
-                      低分 {activeStage.low_issues.length}
-                      {activeStage.low_issues.length > 3
-                        ? '（展示前 3 条）'
-                        : ''}
-                    </span>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h4 className="text-base font-semibold text-slate-900">
+                        痛点 Issue
+                      </h4>
+                      <p className="mt-1 text-[11px] leading-5 text-slate-500">
+                        按本阶段得分从低到高排列，点击标题可查看原始 Issue。
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold text-sky-600">
+                        共 {painIssues.length} 个 · 当前展示{' '}
+                        {visiblePainIssues.length} 个
+                      </span>
+                      {painIssues.length > 3 ? (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPainIssuesExpanded((expanded) => !expanded)
+                          }
+                          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:border-sky-200 hover:text-sky-600"
+                        >
+                          {painIssuesExpanded ? '收起' : '查看全部'}
+                          <DownOutlined
+                            className={`text-[9px] transition-transform ${
+                              painIssuesExpanded ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                   <div className=">md:grid-cols-3 mt-3 grid gap-3">
-                    {activeStage.low_issues.slice(0, 3).map((issue) => (
+                    {visiblePainIssues.map((issue) => (
                       <a
                         key={issue.url}
                         href={issue.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex min-w-0 items-start gap-2 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-[0_10px_20px_rgba(15,23,42,0.04)] transition-colors hover:border-sky-200 hover:bg-sky-50/40"
+                        className="group flex min-w-0 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-[0_10px_20px_rgba(15,23,42,0.04)] transition-colors hover:border-sky-200 hover:bg-sky-50/40"
                       >
-                        <LinkOutlined className="mt-0.5 shrink-0 text-slate-400 group-hover:text-sky-600" />
-                        <span className="min-w-0">
-                          <span className="block text-[11px] font-semibold text-slate-500">
-                            {issue.no} · {issue.score} 分
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center justify-between gap-2">
+                            <span className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+                              <LinkOutlined className="shrink-0 text-slate-400 group-hover:text-sky-600" />
+                              {issue.no}
+                            </span>
+                            <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600">
+                              {issue.score} 分
+                            </span>
                           </span>
-                          <span className="mt-1 line-clamp-2 block text-xs leading-5 text-slate-700">
+                          <span className="mt-2 line-clamp-2 block text-xs font-medium leading-5 text-slate-700">
                             {issue.title}
                           </span>
+                          {issue.state ? (
+                            <span
+                              className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                                issue.state.toLowerCase() === 'open'
+                                  ? 'bg-emerald-50 text-emerald-600'
+                                  : 'bg-slate-100 text-slate-500'
+                              }`}
+                            >
+                              {issue.state.toLowerCase() === 'open'
+                                ? 'Open'
+                                : 'Closed'}
+                            </span>
+                          ) : null}
                         </span>
                       </a>
                     ))}
