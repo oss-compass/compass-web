@@ -1,7 +1,63 @@
 import React from 'react';
+import { Tag } from 'antd';
 import type { CiWeeklyProb } from '../types';
 import { ScrollX, Table, Td, Th } from './Table';
 import { EmptyState, PriBadge } from './shared';
+
+/**
+ * 状态标签配色（取自总览 OverviewDashboard 的 tag 色板）：
+ * 仍活跃=红危险、已消退=青绿收敛、待回填=橙黄待办。
+ */
+const STATUS_TAG_CFG: Record<
+  string,
+  { tagBg: string; tagColor: string; tagBorder: string }
+> = {
+  仍活跃: { tagBg: '#fff1f0', tagColor: '#d14343', tagBorder: '#ffccc7' },
+  已消退: { tagBg: '#e6fffb', tagColor: '#08979c', tagBorder: '#87e8de' },
+  待回填: { tagBg: '#fff7e8', tagColor: '#d46b08', tagBorder: '#ffd591' },
+};
+
+const FALLBACK_STATUS_TAG = {
+  tagBg: '#f8fafc',
+  tagColor: '#94a3b8',
+  tagBorder: '#dbe3ee',
+};
+
+/** 状态列：按「·」拆分为多个状态，每个状态用一个 Tag 标识 */
+const StatusTags: React.FC<{ status: string }> = ({ status }) => {
+  const segments = status
+    .split('·')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!segments.length) {
+    return <span className="text-slate-300">--</span>;
+  }
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1">
+      {segments.map((seg, i) => {
+        const cfg = STATUS_TAG_CFG[seg] ?? FALLBACK_STATUS_TAG;
+        return (
+          <Tag
+            key={`${seg}-${i}`}
+            style={{
+              margin: 0,
+              borderRadius: 8,
+              padding: '2px 8px',
+              fontSize: 11,
+              lineHeight: '18px',
+              fontWeight: 600,
+              background: cfg.tagBg,
+              color: cfg.tagColor,
+              borderColor: cfg.tagBorder,
+            }}
+          >
+            {seg}
+          </Tag>
+        );
+      })}
+    </span>
+  );
+};
 
 /** 迷你日走势柱（周一→周日） */
 const MiniTrend: React.FC<{ trend: number[]; tdays: string[] }> = ({
@@ -10,7 +66,7 @@ const MiniTrend: React.FC<{ trend: number[]; tdays: string[] }> = ({
 }) => {
   const mx = Math.max(...trend, 1);
   return (
-    <div className="flex h-6 items-end gap-0.5">
+    <div className="flex h-6 items-end justify-center gap-0.5">
       {trend.map((v, i) => (
         <span
           key={i}
@@ -39,14 +95,13 @@ const WeeklyProblemBoard: React.FC<{ probs: CiWeeklyProb[] }> = ({ probs }) => {
             <Th numeric>首现</Th>
             <Th numeric>命中天数</Th>
             <Th numeric>累计 run / PR</Th>
-            <Th>日走势（周一→周日）</Th>
+            <Th className="!text-center">趋势</Th>
             <Th>状态</Th>
             <Th>建议动作 → 去向</Th>
           </tr>
         </thead>
         <tbody>
           {probs.map((p, i) => {
-            const active = p.status.startsWith('仍活跃');
             return (
               <tr key={`${p.kb}-${i}`}>
                 <Td>
@@ -66,15 +121,11 @@ const WeeklyProblemBoard: React.FC<{ probs: CiWeeklyProb[] }> = ({ probs }) => {
                 <Td numeric>
                   {p.runs} / {p.prs}
                 </Td>
-                <Td>
+                <Td className="!text-center">
                   <MiniTrend trend={p.trend} tdays={p.tdays} />
                 </Td>
                 <Td>
-                  {active ? (
-                    <b className="font-semibold text-rose-600">{p.status}</b>
-                  ) : (
-                    p.status
-                  )}
+                  <StatusTags status={p.status} />
                 </Td>
                 <Td className="text-[11.5px] text-slate-400">
                   {p.action}

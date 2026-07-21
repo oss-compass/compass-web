@@ -21,6 +21,7 @@ import type {
   IssueReportRecommendation,
   IssueReportStage,
 } from '../types';
+import HintIcon from './HintIcon';
 
 type IssueExperiencePathProps = {
   projectName: string;
@@ -147,16 +148,15 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
       className=">lg:scroll-mt-6 scroll-mt-20 border-slate-100 pt-5"
     >
       <div className="mb-3">
-        <h2
-          id="issue-path-title"
-          className="text-xl font-semibold text-slate-900"
-        >
-          体验路径总览
-        </h2>
-        <p className="mt-1.5 text-xs leading-5 text-slate-500">
-          点击阶段卡片展开该阶段的诊断详情（关键指标、痛点、行动与代表
-          Issue）；G 为 Bot / Agent 治理参考镜头，不计入总分。
-        </p>
+        <div className="flex items-center gap-1.5">
+          <h2
+            id="issue-path-title"
+            className="text-xl font-semibold text-slate-900"
+          >
+            体验路径总览
+          </h2>
+          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点、行动与代表 Issue）；G 为 Bot / Agent 治理参考镜头，不计入总分。" />
+        </div>
       </div>
 
       <div className=">md:px-6 rounded-[28px] border border-slate-200 bg-white px-4 py-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
@@ -544,12 +544,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                   <div className="border-t border-slate-200 pt-6">
                     <div className="flex flex-wrap items-end justify-between gap-3">
                       <div>
-                        <h4 className="text-base font-semibold text-slate-900">
-                          阶段改进闭环
-                        </h4>
-                        <p className="mt-1 text-xs leading-5 text-slate-500">
-                          将本阶段的主要问题与可执行行动放在一起，便于从诊断直接进入改进。
-                        </p>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="text-base font-semibold text-slate-900">
+                            阶段改进闭环
+                          </h4>
+                          <HintIcon title="将本阶段的主要问题与可执行行动放在一起，便于从诊断直接进入改进。" />
+                        </div>
                       </div>
                       <div className="flex items-center gap-2 text-[11px] font-semibold">
                         <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-rose-600">
@@ -691,12 +691,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                 <div className=">md:p-5 border-t border-slate-200 bg-white/70 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <h4 className="text-base font-semibold text-slate-900">
-                        痛点 Issue
-                      </h4>
-                      <p className="mt-1 text-[11px] leading-5 text-slate-500">
-                        按本阶段得分从低到高排列，点击标题可查看原始 Issue。
-                      </p>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="text-base font-semibold text-slate-900">
+                          痛点 Issue
+                        </h4>
+                        <HintIcon title="按本阶段得分从低到高排列，点击标题可查看原始 Issue。" />
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold text-sky-600">

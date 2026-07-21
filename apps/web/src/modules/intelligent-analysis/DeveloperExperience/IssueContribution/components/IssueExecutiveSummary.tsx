@@ -6,6 +6,7 @@ import {
   getScoreTone,
 } from '../presentation';
 import type { IssueExperienceReportData } from '../types';
+import HintIcon from './HintIcon';
 
 type ReportContext = IssueExperienceReportData['report_context'];
 
@@ -34,15 +35,15 @@ const IssueExecutiveSummary: React.FC<IssueExecutiveSummaryProps> = ({
       className="mt-6 border-t border-slate-100 pt-6"
     >
       <div className="mb-3">
-        <h2
-          id="issue-executive-summary-title"
-          className="text-xl font-semibold text-slate-900"
-        >
-          执行摘要
-        </h2>
-        <p className="mt-1.5 text-xs leading-5 text-slate-500">
-          本周最需要关注的薄弱环节，以及对应的重点改进建议；完整行动清单见下方“本周行动清单”。
-        </p>
+        <div className="flex items-center gap-1.5">
+          <h2
+            id="issue-executive-summary-title"
+            className="text-xl font-semibold text-slate-900"
+          >
+            执行摘要
+          </h2>
+          <HintIcon title="本周最需要关注的薄弱环节，以及对应的重点改进建议；完整行动清单见下方“本周行动清单”。" />
+        </div>
       </div>
 
       <div className=">xl:grid-cols-2 grid grid-cols-1 gap-4">
@@ -68,7 +69,7 @@ const IssueExecutiveSummary: React.FC<IssueExecutiveSummaryProps> = ({
                   >
                     <div className="flex w-[70px] shrink-0 flex-col items-center justify-center gap-0.5 border-r border-slate-100 bg-slate-50/70 py-3">
                       <span
-                        className={`text-[22px] font-bold leading-none tabular-nums ${scoreTone.text}`}
+                        className={`text-[22px] font-bold tabular-nums leading-none ${scoreTone.text}`}
                       >
                         {row.score}
                       </span>

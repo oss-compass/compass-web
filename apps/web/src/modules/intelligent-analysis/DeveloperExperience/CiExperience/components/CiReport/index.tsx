@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { CiDimKey, CiRepoData, CiRepoKey } from '../../types';
-import { DIM_NAME, daySeries } from '../../helpers';
-import { Collapsible, EmptyState } from '../shared';
+import { Collapsible, EmptyState, HintIcon } from '../shared';
 import ImprovementCandidates from '../ImprovementCandidates';
 import TrendCharts from '../TrendCharts';
 import MachineHourBill from '../MachineHourBill';
 import BackfillLedger from '../BackfillLedger';
 import ScoreCards, { type CiGrain } from './ScoreCards';
-import DimTrendCharts from './DimTrendCharts';
 import ProblemLocation from './ProblemLocation';
 import DeepAnalysis from './DeepAnalysis';
 
@@ -31,13 +29,9 @@ const ReportCard: React.FC<{
   children: React.ReactNode;
 }> = ({ title, anno, children }) => (
   <section className=">md:p-5 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
-    <div className="mb-3">
+    <div className="mb-3 flex items-center gap-1.5">
       <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-      {anno ? (
-        <p className="mt-1 text-[11.5px] leading-relaxed text-slate-500">
-          {anno}
-        </p>
-      ) : null}
+      {anno ? <HintIcon title={anno} /> : null}
     </div>
     {children}
   </section>
@@ -46,7 +40,7 @@ const ReportCard: React.FC<{
 /**
  * 报告部分（维度驱动联动区）：
  * 自管 grain / day / dim 状态（切仓重置到最后一天与该日默认维度）。
- * 组织：体验得分 → 关键指标趋势 → 问题定位 →（周级专属卡）→ 深度分析。
+ * 组织：体验得分（卡内含指标缩略图）→ 问题定位 →（周级专属卡）→ 深度分析。
  */
 const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
   const [grain, setGrain] = useState<CiGrain>('daily');
@@ -74,8 +68,6 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
     [data]
   );
 
-  const series = useMemo(() => daySeries(data), [data]);
-
   if (!data.days.length) {
     return (
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
@@ -90,7 +82,7 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 体验得分（含日级/周级切换 + 维度联动入口）；关键指标趋势与问题定位同处一卡 */}
+      {/* 体验得分（含日级/周级切换 + 维度联动入口）；卡内指标内嵌缩略图，问题定位同处一卡 */}
       <ScoreCards
         data={data}
         grain={grain}
@@ -100,29 +92,14 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
         onSelectDay={handleSelectDay}
         onSelectDim={setDim}
       >
-        {/* 关键指标趋势（随维度联动） */}
-        <div>
-          <h3 className="text-[15px] font-semibold text-slate-900">
-            关键指标趋势 · {DIM_NAME[dim]}
-          </h3>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-slate-500">
-            逐日窗口序列；面积+折线，末点为最新观测日，判读较窗口初变化
-          </p>
-          <div className="mt-3">
-            <DimTrendCharts dim={dim} series={series} />
-          </div>
-        </div>
-
         {/* 问题定位（随维度 + 日/周联动） */}
-        <div className="mt-5 border-t border-slate-200/70 pt-5">
-          <ProblemLocation
-            data={data}
-            repo={repo}
-            grain={grain}
-            day={currentDay}
-            dim={dim}
-          />
-        </div>
+        <ProblemLocation
+          data={data}
+          repo={repo}
+          grain={grain}
+          day={currentDay}
+          dim={dim}
+        />
       </ScoreCards>
 
       {/* 周级专属卡 */}

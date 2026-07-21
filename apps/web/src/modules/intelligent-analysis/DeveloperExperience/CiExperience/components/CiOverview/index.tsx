@@ -2,7 +2,7 @@ import React, { type ReactNode, useState } from 'react';
 import { Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { CiRepoData, CiRepoKey } from '../../types';
-import { EmptyState } from '../shared';
+import { EmptyState, HintIcon } from '../shared';
 import WeeklyProblemBoard from '../WeeklyProblemBoard';
 import PlatformObservability from '../PlatformObservability';
 import { computeOverview, type CiOverviewLevel } from './metrics';
@@ -132,13 +132,9 @@ const PanelSection: React.FC<{
   children: ReactNode;
 }> = ({ title, anno, children }) => (
   <div className=">md:p-5 mt-4 rounded-2xl border border-slate-200 bg-white p-4">
-    <div className="mb-3 flex flex-wrap items-baseline gap-2">
+    <div className="mb-3 flex items-center gap-1.5">
       <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-      {anno ? (
-        <span className="text-[11.5px] leading-relaxed text-slate-400">
-          {anno}
-        </span>
-      ) : null}
+      {anno ? <HintIcon title={anno} /> : null}
     </div>
     {children}
   </div>
@@ -193,14 +189,13 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data, repo }) => {
   return (
     <section className="w-full min-w-0 overflow-hidden rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
       {/* 标题 */}
-      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+      <div className="mb-3 flex flex-wrap items-center gap-1.5">
         <div className="text-base font-semibold text-slate-800">
           总览 · {repo === 'opsnn' ? 'ops-nn' : 'runtime'}
         </div>
-        <span className="text-xs text-slate-400">
-          全 {m.dayCount} 个实测日汇总 · 点「在跟踪的问题 /
-          平台能力就绪」查看详情
-        </span>
+        <HintIcon
+          title={`全 ${m.dayCount} 个实测日汇总 · 点「在跟踪的问题 / 平台能力就绪」查看详情`}
+        />
       </div>
 
       {/* hero 状态行 */}

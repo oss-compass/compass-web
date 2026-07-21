@@ -1,93 +1,66 @@
-import type { CiDimKey, CiRepoData, CiPri } from '../../types';
+import type { CiDimKey, CiLabeledVal, CiRepoData, CiPri } from '../../types';
 import {
   daySeries,
   firstNZ,
   lastNZ,
   median,
   metaNum,
+  pick,
   sum,
-  type CiDaySeries,
 } from '../../helpers';
 
-// 迷你图配色（对齐 dashboard CSS 变量 → 社区软色）
-const COLOR = {
-  critical: '#e11d48', // rose-600
-  series: '#2563eb', // blue-600
-  series2: '#7c3aed', // violet-600
-  warning: '#d97706', // amber-600
+// ============ 卡片内嵌指标缩略趋势（每个维度卡 val 逐日窗口序列） ============
+
+/** 维度主色（对齐 ScoreCards DIM_META 图标色） */
+const DIM_TREND_COLOR: Record<CiDimKey, string> = {
+  stability: '#0284c7',
+  efficiency: '#d97706',
+  interaction: '#7c3aed',
+  cost: '#059669',
 };
 
-/** 单张迷你趋势图配置（移植 dashboard dimTrends → miniChart 入参） */
-export type CiMiniChart = {
-  title: string;
-  meaning: string;
+/** 从显示值解析尾部单位（去掉数字与千分位，保留单位文本，如 % / min / 机时 / 起） */
+const parseUnit = (v: string): string => {
+  const m = String(v)
+    .trim()
+    .match(/-?[\d,]*\.?\d+\s*(.*)$/);
+  return m ? (m[1] || '').trim() : '';
+};
+
+/** 卡片指标是否越低越好（成本维仅「无效机时」越低越好，机时观察量除外） */
+const metricLowerBetter = (dimKey: CiDimKey, label: string): boolean =>
+  dimKey === 'cost' ? /无效/.test(label) : true;
+
+/** 单个指标缩略趋势数据（供卡片缩略图 + 弹窗完整图共用） */
+export type CiMetricTrend = {
+  label: string;
+  valueText: string;
   series: (number | null)[];
+  days: string[];
   unit: string;
   color: string;
   lowerBetter: boolean;
 };
 
-/** 选中维度对应的关键指标趋势（逐日窗口序列） */
-export const dimTrends = (k: CiDimKey, s: CiDaySeries): CiMiniChart[] => {
-  const M: Record<CiDimKey, CiMiniChart[]> = {
-    stability: [
-      {
-        title: '流水线失败率',
-        meaning: '完结 run 里失败的比例',
-        series: s.finish,
-        unit: '%',
-        color: COLOR.critical,
-        lowerBetter: true,
-      },
-      {
-        title: '平台故障占比',
-        meaning: '失败里属平台自身故障的比例',
-        series: s.plat,
-        unit: '%',
-        color: COLOR.critical,
-        lowerBetter: true,
-      },
-    ],
-    efficiency: [
-      {
-        title: '流水线时长(中位)',
-        meaning: '开发者等一次结果的典型时长',
-        series: s.dur,
-        unit: 'min',
-        color: COLOR.series,
-        lowerBetter: true,
-      },
-    ],
-    interaction: [
-      {
-        title: '被 CI 卡住的 PR',
-        meaning: '被失败流水线阻塞的 PR 数',
-        series: s.block,
-        unit: '个',
-        color: COLOR.series2,
-        lowerBetter: true,
-      },
-    ],
-    cost: [
-      {
-        title: '无效机时',
-        meaning: '浪费在非代码失败上的算力',
-        series: s.waste,
-        unit: '机时',
-        color: COLOR.warning,
-        lowerBetter: true,
-      },
-      {
-        title: '每日机时',
-        meaning: '当日 CI 总算力消耗(观察量)',
-        series: s.hours,
-        unit: '机时',
-        color: COLOR.warning,
-        lowerBetter: false,
-      },
-    ],
-  };
-  return M[k] || [];
+/** 为维度卡的每个 val 构建逐日窗口序列（标签跨日一致，用 pick 按标签取数） */
+export const buildCardMetricTrends = (
+  data: CiRepoData,
+  dimKey: CiDimKey,
+  vals: CiLabeledVal[]
+): CiMetricTrend[] => {
+  const { days, boards } = data;
+  const color = DIM_TREND_COLOR[dimKey];
+  return vals.map(([label, val]) => ({
+    label,
+    valueText: val?.v ?? '—',
+    series: days.map((dt) =>
+      boards[dt] ? pick(boards[dt], dimKey, label) : null
+    ),
+    days,
+    unit: parseUnit(val?.v ?? ''),
+    color,
+    lowerBetter: metricLowerBetter(dimKey, label),
+  }));
 };
 
 /** 深度分析头号稳定性问题 / 效率问题的裁剪视图 */

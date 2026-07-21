@@ -1,10 +1,27 @@
 import React, { type ReactNode, useState } from 'react';
+import { Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import type { CiPri, CiVal } from '../types';
 import { fmt, priBadgeClass } from '../helpers';
 
+/**
+ * 标题旁的说明图标：默认隐藏副标题描述，改用感叹号/信息图标，鼠标移入后以 Tooltip 展示。
+ * 交互与外观对齐总览指标卡片（如流水线失败率卡片旁的图标）。
+ */
+export const HintIcon: React.FC<{ title: ReactNode; className?: string }> = ({
+  title,
+  className = '',
+}) => (
+  <Tooltip title={title}>
+    <InfoCircleOutlined
+      className={`shrink-0 cursor-help text-slate-400 ${className}`}
+    />
+  </Tooltip>
+);
+
 /** 示例数据徽标〔示〕 */
 export const DemoTag: React.FC = () => (
-  <span className="ml-1 inline-block rounded border border-dashed border-amber-300 px-1 text-[10px] font-medium text-amber-600 align-[1px]">
+  <span className="ml-1 inline-block rounded border border-dashed border-amber-300 px-1 align-[1px] text-[10px] font-medium text-amber-600">
     示
   </span>
 );
@@ -48,14 +65,16 @@ export const DimTag: React.FC<{ children: ReactNode }> = ({ children }) => (
 );
 
 /** 空态卡（社区 dashed 风格） */
-export const EmptyState: React.FC<{ children: ReactNode; className?: string }> =
-  ({ children, className = '' }) => (
-    <div
-      className={`rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-sm text-slate-500 ${className}`}
-    >
-      {children}
-    </div>
-  );
+export const EmptyState: React.FC<{
+  children: ReactNode;
+  className?: string;
+}> = ({ children, className = '' }) => (
+  <div
+    className={`rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-sm text-slate-500 ${className}`}
+  >
+    {children}
+  </div>
+);
 
 /** 折叠块（对齐社区 EvidenceBlock 交互与外观） */
 export const Collapsible: React.FC<{

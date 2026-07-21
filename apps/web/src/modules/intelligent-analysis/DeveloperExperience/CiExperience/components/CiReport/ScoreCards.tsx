@@ -16,7 +16,9 @@ import type {
   CiStatus,
 } from '../../types';
 import { DIM_KEYS, DIM_NAME, delta, num, statusWordClass } from '../../helpers';
-import { ValText } from '../shared';
+import { ValText, HintIcon } from '../shared';
+import { buildCardMetricTrends } from './metrics';
+import { MetricTrendCell } from './MetricTrend';
 
 export type CiGrain = 'daily' | 'weekly';
 
@@ -28,7 +30,7 @@ type ScoreCardsProps = {
   onSelectGrain: (grain: CiGrain) => void;
   onSelectDay: (day: string) => void;
   onSelectDim: (dim: CiDimKey) => void;
-  /** 选中维度的联动详情（关键指标趋势 + 问题定位），渲染在同一卡片内 */
+  /** 选中维度的联动详情（问题定位），渲染在同一卡片内 */
   children?: React.ReactNode;
 };
 
@@ -156,7 +158,7 @@ const CardShell: React.FC<{
     aria-selected={active}
     onClick={onClick}
     title={ask}
-    className={`flex min-h-[260px] w-[258px] flex-none flex-col rounded-[20px] border px-4 pb-3 pt-4 text-left shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
+    className={`flex min-h-[296px] w-[258px] flex-none flex-col rounded-[20px] border px-4 pb-3 pt-4 text-left shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
       status ? CARD_TONE[status] : 'border-slate-200/80 bg-white/90'
     } ${
       active
@@ -169,53 +171,48 @@ const CardShell: React.FC<{
 );
 
 /** 日级维度卡内容 */
-const DailyCard: React.FC<{ d: CiDim }> = ({ d }) => (
-  <>
-    <DimCardHeader dim={d.key} title={d.name} />
-    <div className="mt-1.5 text-center text-[11.5px] text-slate-400">
-      {DIM_ASK[d.key]}
-    </div>
-    <div
-      className={`mt-3 flex items-center justify-center gap-1.5 text-[14px] font-semibold ${
-        statusWordClass[d.s]
-      }`}
-    >
-      <StatusIcon status={d.s} />
-      <span>{d.word}</span>
-    </div>
-    <div className="mt-3 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-1.5">
-      <ul className="flex flex-col divide-y divide-slate-100">
-        {d.vals.slice(0, 3).map((v, i) => (
-          <li
-            key={`${v[0]}-${i}`}
-            className="flex items-center justify-between gap-2 py-1.5 text-[12.5px]"
-          >
-            <span className="min-w-0 truncate text-slate-500">{v[0]}</span>
-            <ValText
-              value={v[1]}
-              className="shrink-0 font-semibold tabular-nums text-slate-800"
-            />
-          </li>
-        ))}
-      </ul>
-      {d.probn || d.note ? (
-        <div className="mt-auto flex items-start gap-1.5 border-t border-slate-100 pt-2 text-[10.5px] leading-relaxed text-slate-400">
-          {d.probn ? (
-            <span className="inline-flex shrink-0 items-center rounded-md border border-rose-200 bg-rose-50 px-1.5 py-0.5 font-semibold text-rose-700">
-              {d.toppri ? `${d.toppri} · ` : ''}
-              {d.probn} 问题
-            </span>
-          ) : null}
-          {d.note ? (
-            <span className="line-clamp-2" title={d.note}>
-              ⚠ {d.note}
-            </span>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  </>
-);
+const DailyCard: React.FC<{ d: CiDim; data: CiRepoData }> = ({ d, data }) => {
+  const metricVals = d.vals.slice(0, 3);
+  const trends = React.useMemo(
+    () => buildCardMetricTrends(data, d.key, metricVals),
+    [data, d.key, metricVals]
+  );
+  return (
+    <>
+      <DimCardHeader dim={d.key} title={d.name} />
+      <div className="mt-1.5 text-center text-[11.5px] text-slate-400">
+        {DIM_ASK[d.key]}
+      </div>
+      <div
+        className={`mt-3 flex items-center justify-center gap-1.5 text-[14px] font-semibold ${
+          statusWordClass[d.s]
+        }`}
+      >
+        <StatusIcon status={d.s} />
+        <span>{d.word}</span>
+      </div>
+      <div className="mt-3 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-1.5">
+        <ul className="flex flex-col divide-y divide-slate-100">
+          {metricVals.map((v, i) => (
+            <li
+              key={`${v[0]}-${i}`}
+              className="flex items-center justify-between gap-1.5 py-2.5 text-[12px]"
+            >
+              <span className="min-w-0 truncate text-slate-500">{v[0]}</span>
+              <span className="flex shrink-0 items-center justify-end gap-1">
+                <ValText
+                  value={v[1]}
+                  className="text-[11px] font-semibold tabular-nums text-slate-800"
+                />
+                {trends[i] ? <MetricTrendCell trend={trends[i]} /> : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+};
 
 /** 周级维度卡内容（本周 vs 上周） */
 const WeeklyCard: React.FC<{ k: CiDimKey; row?: CiDimCmpRow }> = ({
@@ -315,8 +312,8 @@ const ScoreCards: React.FC<ScoreCardsProps> = ({
       : `体验得分 · 周级 · ${w.period}`;
   const anno =
     grain === 'daily'
-      ? '四个维度当日指标；点卡片联动下方趋势与问题定位'
-      : '四个维度本周 vs 上周；点卡片联动下方趋势与问题定位';
+      ? '四个维度当日指标（点指标缩略图看完整趋势）；点卡片联动下方问题定位'
+      : '四个维度本周 vs 上周；点卡片联动下方问题定位';
 
   const dims: CiDim[] = board ? board.dims : [];
   const [detailExpanded, setDetailExpanded] = React.useState(true);
@@ -324,11 +321,9 @@ const ScoreCards: React.FC<ScoreCardsProps> = ({
   return (
     <section className=">md:p-5 overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
       <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
+        <div className="flex min-w-0 items-center gap-1.5">
           <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-slate-500">
-            {anno}
-          </p>
+          <HintIcon title={anno} />
         </div>
         <GrainToggle grain={grain} onSelectGrain={onSelectGrain} />
       </div>
@@ -387,7 +382,7 @@ const ScoreCards: React.FC<ScoreCardsProps> = ({
                   ask={DIM_ASK[d.key]}
                   onClick={() => onSelectDim(d.key)}
                 >
-                  <DailyCard d={d} />
+                  <DailyCard d={d} data={data} />
                 </CardShell>
               ))
             : DIM_KEYS.map((k) => (
@@ -423,7 +418,7 @@ const ScoreCards: React.FC<ScoreCardsProps> = ({
                 }`}
               >
                 <span className="font-semibold">{DIM_NAME[dim]}</span>
-                <span className="text-slate-400">· 关键指标趋势与问题定位</span>
+                <span className="text-slate-400">· 问题定位</span>
                 <DownOutlined
                   className={`text-[10px] text-slate-400 transition-transform duration-200 ${
                     detailExpanded ? '' : '-rotate-90'

@@ -11,7 +11,7 @@ import { MatrixCost, MatrixEff, MatrixStab } from '../matrices';
 import ProblemPanel from '../ProblemPanel';
 import WeeklyProblemBoard from '../WeeklyProblemBoard';
 import DiagBlock from '../DiagBlock';
-import { ValText } from '../shared';
+import { ValText, HintIcon } from '../shared';
 import type { CiGrain } from './ScoreCards';
 
 type ProblemLocationProps = {
@@ -104,12 +104,12 @@ const ProblemLocation: React.FC<ProblemLocationProps> = ({
     return (
       <div>
         <div className="mb-3">
-          <h3 className="text-[15px] font-semibold text-slate-900">
-            问题定位 · 日级 · {dimName}
-          </h3>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-slate-500">
-            先识别问题，再定位到阶段与责任；随维度联动
-          </p>
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-[15px] font-semibold text-slate-900">
+              问题定位 · 日级 · {dimName}
+            </h3>
+            <HintIcon title="先识别问题，再定位到阶段与责任；随维度联动" />
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           <LocBlock
@@ -138,12 +138,12 @@ const ProblemLocation: React.FC<ProblemLocationProps> = ({
   return (
     <div>
       <div className="mb-3">
-        <h3 className="text-[15px] font-semibold text-slate-900">
-          问题定位 · 周级 · {dimName}
-        </h3>
-        <p className="mt-1 text-[11.5px] leading-relaxed text-slate-500">
-          先识别本周问题，再定位到阶段与责任；随维度联动
-        </p>
+        <div className="flex items-center gap-1.5">
+          <h3 className="text-[15px] font-semibold text-slate-900">
+            问题定位 · 周级 · {dimName}
+          </h3>
+          <HintIcon title="先识别本周问题，再定位到阶段与责任；随维度联动" />
+        </div>
       </div>
       <div className="flex flex-col gap-3">
         <LocBlock step={1} title="识别 · 本周问题与环比">
