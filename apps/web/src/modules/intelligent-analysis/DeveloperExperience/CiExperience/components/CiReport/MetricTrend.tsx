@@ -78,7 +78,7 @@ export const MetricSparkline: React.FC<{
               d={line}
               fill="none"
               stroke={color}
-              strokeWidth={1.5}
+              strokeWidth={1}
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -165,7 +165,7 @@ export const MetricTrendChart: React.FC<{ trend: CiMetricTrend }> = ({
             <text
               x={P_L - 8}
               y={y + 3.5}
-              fontSize={10}
+              fontSize={9}
               fill="#94a3b8"
               textAnchor="end"
             >
@@ -190,7 +190,7 @@ export const MetricTrendChart: React.FC<{ trend: CiMetricTrend }> = ({
               d={line}
               fill="none"
               stroke={color}
-              strokeWidth={2}
+              strokeWidth={1.25}
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -206,12 +206,12 @@ export const MetricTrendChart: React.FC<{ trend: CiMetricTrend }> = ({
             r={3}
             fill="#fff"
             stroke={color}
-            strokeWidth={1.75}
+            strokeWidth={1.25}
           />
           <text
             x={p.x}
             y={Math.max(P_T - 4, p.y - 10)}
-            fontSize={10.5}
+            fontSize={9.5}
             fill="#475569"
             fontWeight={600}
             textAnchor="middle"
@@ -226,7 +226,7 @@ export const MetricTrendChart: React.FC<{ trend: CiMetricTrend }> = ({
           key={`x-${d}-${i}`}
           x={xOf(i)}
           y={FULL_H - 14}
-          fontSize={11}
+          fontSize={10}
           fill="#94a3b8"
           textAnchor={
             i === 0 ? 'start' : i === days.length - 1 ? 'end' : 'middle'

@@ -71,6 +71,20 @@ describe('Issue contribution report registry', () => {
         }),
       ])
     );
+    context.stages.forEach((stage) => {
+      expect(stage.pain_issues).toHaveLength(stage.pain_count);
+    });
+    expect(
+      context.stages.find((stage) => stage.id === 'I1')?.pain_issues
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          no: '#221',
+          score: 33,
+          state: 'open',
+        }),
+      ])
+    );
   });
 
   it('keeps organization and platform scope atomic', () => {

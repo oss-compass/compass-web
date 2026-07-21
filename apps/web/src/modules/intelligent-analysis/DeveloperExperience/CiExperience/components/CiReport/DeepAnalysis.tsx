@@ -1,7 +1,6 @@
 import React, { type ReactNode } from 'react';
 import type { CiRepoData } from '../../types';
 import { Collapsible } from '../shared';
-import Appendix from '../Appendix';
 import { computeFindings, type CiFindingsModel } from './metrics';
 
 type FindingTone = 'crit' | 'warn' | 'good';
@@ -122,7 +121,7 @@ const buildFindings = (m: CiFindingsModel): Finding[] => {
 };
 
 /**
- * 深度分析卡（默认折叠）：四条结论 + 口径附录。
+ * 深度分析卡（默认折叠）：四条结论与建议行动。
  */
 const DeepAnalysis: React.FC<{ data: CiRepoData }> = ({ data }) => {
   if (!data.days.length) {
@@ -142,7 +141,7 @@ const DeepAnalysis: React.FC<{ data: CiRepoData }> = ({ data }) => {
               深度分析
             </span>
             <span className="text-[11.5px] font-normal text-slate-400">
-              结论与建议行动 · 口径附录（点击展开）
+              结论与建议行动（点击展开）
             </span>
           </span>
         }
@@ -193,13 +192,6 @@ const DeepAnalysis: React.FC<{ data: CiRepoData }> = ({ data }) => {
               &lt;10%）；待回填条目 <B>{m.backfill}</B> 条。改进效果 = 指标曲线
               + 改进项落地标注 + 前后对比，不打总分。
             </p>
-          </div>
-
-          <div>
-            <h3 className="mb-3 text-[13.5px] font-semibold text-slate-800">
-              附录 · 口径与来源
-            </h3>
-            <Appendix />
           </div>
         </div>
       </Collapsible>

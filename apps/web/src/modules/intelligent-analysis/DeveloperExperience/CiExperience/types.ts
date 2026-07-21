@@ -262,10 +262,4 @@ export type CiRepoData = {
   days: string[];
   boards: Record<string, CiBoard>;
   weekly: CiWeekly;
-  /** 报告概览卡直接读取的顶层数值（数字取自设计稿数据声明全窗口径） */
-  runs: number;
-  prs: number;
-  finFail: string;
-  runsPerPR: string;
-  window: string;
 };

@@ -36,10 +36,10 @@ type ScoreCardsProps = {
 
 /** 每个维度的引导问句（对齐 dashboard DIM.ask） */
 const DIM_ASK: Record<CiDimKey, string> = {
-  stability: '构建结果可信吗?',
-  efficiency: '反馈够快吗?',
-  interaction: '开发者顺畅吗?',
-  cost: '算力花得值吗?',
+  stability: '构建结果可信吗？',
+  efficiency: '反馈够快吗？',
+  interaction: '开发者顺畅吗？',
+  cost: '算力花得值吗？',
 };
 
 const DIM_META: Record<

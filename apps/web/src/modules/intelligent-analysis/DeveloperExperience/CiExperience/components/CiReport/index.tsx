@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { CiDimKey, CiRepoData, CiRepoKey } from '../../types';
 import { Collapsible, EmptyState, HintIcon } from '../shared';
 import ImprovementCandidates from '../ImprovementCandidates';
-import TrendCharts from '../TrendCharts';
 import MachineHourBill from '../MachineHourBill';
 import BackfillLedger from '../BackfillLedger';
+import Appendix from '../Appendix';
 import ScoreCards, { type CiGrain } from './ScoreCards';
 import ProblemLocation from './ProblemLocation';
 import DeepAnalysis from './DeepAnalysis';
@@ -40,7 +40,7 @@ const ReportCard: React.FC<{
 /**
  * 报告部分（维度驱动联动区）：
  * 自管 grain / day / dim 状态（切仓重置到最后一天与该日默认维度）。
- * 组织：体验得分（卡内含指标缩略图）→ 问题定位 →（周级专属卡）→ 深度分析。
+ * 组织：体验得分（卡内含指标缩略图）→ 问题定位 →（周级专属卡）→ 深度分析 → 附录。
  */
 const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
   const [grain, setGrain] = useState<CiGrain>('daily');
@@ -112,13 +112,6 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
             <ImprovementCandidates imps={w.imps} />
           </ReportCard>
 
-          <ReportCard
-            title="改进效果 · 结果指标趋势与改进项标注"
-            anno="改进项落地日画在曲线上；回验 = 落地前后对比 + 跨 2 周期看复发"
-          >
-            <TrendCharts trends={w.trends} />
-          </ReportCard>
-
           <Collapsible
             className="!rounded-2xl !border-slate-200 shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
             summary={
@@ -155,6 +148,23 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo }) => {
 
       {/* 深度分析（默认折叠） */}
       <DeepAnalysis data={data} />
+
+      {/* 附录 · 口径与来源（默认折叠，与深度分析同级） */}
+      <Collapsible
+        className="!rounded-2xl !border-slate-200 shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
+        summary={
+          <span className="flex flex-wrap items-baseline gap-2">
+            <span className="text-base font-semibold text-slate-900">
+              附录 · 口径与来源
+            </span>
+            <span className="text-[11.5px] font-normal text-slate-400">
+              指标口径与数据来源说明（点击展开）
+            </span>
+          </span>
+        }
+      >
+        <Appendix />
+      </Collapsible>
     </div>
   );
 };

@@ -48,6 +48,9 @@ import {
   toDashboardIssue,
 } from './utils';
 import { buildTeamScoreTrend, buildTeamSuccessRateTrend } from './scoreTrend';
+import OverviewModuleTabs, { type OverviewModule } from './OverviewModuleTabs';
+import CiOverview from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverview';
+import { CI_DATA } from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/data';
 
 type OverviewDashboardProps = {
   org?: string;
@@ -55,6 +58,9 @@ type OverviewDashboardProps = {
 
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const router = useRouter();
+  const [activeModule, setActiveModule] = useState<OverviewModule>(
+    'community-onboarding'
+  );
   const [issueModal, setIssueModal] = useState<IssueModalState>({
     open: false,
     title: '',
@@ -706,78 +712,111 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
 
   return (
     <div className="oj-page">
+      <header className=">md:px-6 sticky top-0 z-30 flex h-16 flex-none items-center gap-3 border-b border-slate-200/90 bg-white/95 px-4 shadow-[0_1px_0_rgba(15,23,42,0.02)] backdrop-blur">
+        <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <OverviewModuleTabs
+            active={activeModule}
+            onChange={setActiveModule}
+          />
+        </div>
+        {org ? (
+          <div className=">md:flex ml-4 hidden flex-none items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+            {org}
+          </div>
+        ) : null}
+      </header>
       <div className="detail-panel-body">
-        <OverviewSummarySection
-          overviewSummary={overviewSummary}
-          overviewTrend={overviewTrend}
-          overviewIssues={summaryIssues}
-          summaryScore={summaryScore}
-          summarySuccessRate={summarySuccessRate}
-          summaryScoreTrend={summaryScoreTrend}
-          summarySuccessRateTrend={summarySuccessRateTrend}
-          summaryAvgExecutionTime={summaryAvgExecutionTime}
-          repoCount={summaryRepoCount}
-          issueSourceMode={issueSourceMode}
-          includeCommonIssues={includeCommonIssues}
-          commonIssues={commonIssues}
-          trendWindow={trendWindow}
-          isTrendLoading={isCloseRateTrendsLoading}
-          onTrendWindowChange={setTrendWindow}
-          onIssueSourceModeChange={setIssueSourceMode}
-          onIncludeCommonIssuesChange={setIncludeCommonIssues}
-          onOpenIssues={openSummaryIssues}
-        />
+        {activeModule === 'community-onboarding' ? (
+          <>
+            <OverviewSummarySection
+              overviewSummary={overviewSummary}
+              overviewTrend={overviewTrend}
+              overviewIssues={summaryIssues}
+              summaryScore={summaryScore}
+              summarySuccessRate={summarySuccessRate}
+              summaryScoreTrend={summaryScoreTrend}
+              summarySuccessRateTrend={summarySuccessRateTrend}
+              summaryAvgExecutionTime={summaryAvgExecutionTime}
+              repoCount={summaryRepoCount}
+              issueSourceMode={issueSourceMode}
+              includeCommonIssues={includeCommonIssues}
+              commonIssues={commonIssues}
+              trendWindow={trendWindow}
+              isTrendLoading={isCloseRateTrendsLoading}
+              onTrendWindowChange={setTrendWindow}
+              onIssueSourceModeChange={setIssueSourceMode}
+              onIncludeCommonIssuesChange={setIncludeCommonIssues}
+              onOpenIssues={openSummaryIssues}
+            />
 
-        <CapabilityBenchmarkOverview
-          data={capabilityBenchmarkSummaryResp ?? null}
-          isLoading={isBenchmarkSummaryLoading}
-        />
+            <CapabilityBenchmarkOverview
+              data={capabilityBenchmarkSummaryResp ?? null}
+              isLoading={isBenchmarkSummaryLoading}
+            />
 
-        <RepoProgressSection
-          captureMode={captureMode}
-          progressView={progressView}
-          onProgressViewChange={setProgressView}
-          currentTab={currentTab}
-          onTabChange={setCurrentTab}
-          hideBeatRepos={captureMode}
-          org={org}
-          commonOnly={commonOnly}
-          repoFilter={repoFilter}
-          repoOptions={displayRepoOptions}
-          onRepoFilterChange={setRepoFilter}
-          teamFilter={teamFilter}
-          teamOptions={teamOptions}
-          onTeamFilterChange={setTeamFilter}
-          hardwareEnvFilter={hardwareEnvFilter}
-          hardwareEnvOptions={hardwareEnvOptions}
-          onHardwareEnvFilterChange={setHardwareEnvFilter}
-          isLoading={isLoading}
-          teamRows={sortedTeamRows}
-          repoRows={sortedRepoRows}
-          autoExpandAllTeams={autoExpandAllTeams}
-          repoSortKey={repoSortKey}
-          repoSortAsc={repoSortAsc}
-          repoSortArrow={repoSortArrow}
-          teamSortArrow={teamSortArrow}
-          teamSortKey={teamSortKey}
-          teamSortAsc={teamSortAsc}
-          onRepoSort={handleRepoSort}
-          onTeamSort={handleTeamSort}
-          onOpenRepoIssues={openRepoIssues}
-          onOpenTeamIssues={openTeamIssues}
-        />
+            <RepoProgressSection
+              captureMode={captureMode}
+              progressView={progressView}
+              onProgressViewChange={setProgressView}
+              currentTab={currentTab}
+              onTabChange={setCurrentTab}
+              hideBeatRepos={captureMode}
+              org={org}
+              commonOnly={commonOnly}
+              repoFilter={repoFilter}
+              repoOptions={displayRepoOptions}
+              onRepoFilterChange={setRepoFilter}
+              teamFilter={teamFilter}
+              teamOptions={teamOptions}
+              onTeamFilterChange={setTeamFilter}
+              hardwareEnvFilter={hardwareEnvFilter}
+              hardwareEnvOptions={hardwareEnvOptions}
+              onHardwareEnvFilterChange={setHardwareEnvFilter}
+              isLoading={isLoading}
+              teamRows={sortedTeamRows}
+              repoRows={sortedRepoRows}
+              autoExpandAllTeams={autoExpandAllTeams}
+              repoSortKey={repoSortKey}
+              repoSortAsc={repoSortAsc}
+              repoSortArrow={repoSortArrow}
+              teamSortArrow={teamSortArrow}
+              teamSortKey={teamSortKey}
+              teamSortAsc={teamSortAsc}
+              onRepoSort={handleRepoSort}
+              onTeamSort={handleTeamSort}
+              onOpenRepoIssues={openRepoIssues}
+              onOpenTeamIssues={openTeamIssues}
+            />
 
-        <CapabilityBenchmarkDetails
-          data={capabilityBenchmarkDetailsResp ?? null}
-          isLoading={isBenchmarkDetailsLoading}
-        />
+            <CapabilityBenchmarkDetails
+              data={capabilityBenchmarkDetailsResp ?? null}
+              isLoading={isBenchmarkDetailsLoading}
+            />
 
-        <CommonIssuesSection
-          commonIssues={commonIssues}
-          onOpenIssueModal={openIssueModal}
-        />
+            <CommonIssuesSection
+              commonIssues={commonIssues}
+              onOpenIssueModal={openIssueModal}
+            />
 
-        {!captureMode && <ExperienceScoreRuleQASection />}
+            {!captureMode && <ExperienceScoreRuleQASection />}
+          </>
+        ) : null}
+
+        {activeModule === 'ci' ? <CiOverview data={CI_DATA} /> : null}
+
+        {activeModule === 'issue' ? (
+          <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-white/80 bg-white/90 p-6 text-center shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+            <div className="flex flex-col items-center gap-3">
+              <div className="text-base font-semibold text-slate-700">
+                Issue 贡献总览 · 建设中
+              </div>
+              <div className="max-w-md text-[13px] leading-relaxed text-slate-400">
+                该模块的总览内容正在规划中，敬请期待。
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         <IssueDetailModal
           state={issueModal}

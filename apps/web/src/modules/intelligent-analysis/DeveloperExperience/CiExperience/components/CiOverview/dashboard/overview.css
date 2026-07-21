@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Cogito · CANN GitCode Action — 社区 CI/CD 总览看板 · 专属样式
+   复用 dashboard.css 的设计令牌与通用组件(.card/.kpi/.tcell/.pri/.pill/table…),
+   此处仅补充总览页独有的:分角色面板 / 优先级闭环卡 / 仓库对比卡 / hero 增强。
+   ========================================================================== */
+
+/* ---------- 顶栏:标题与副标题 ---------- */
+.ov-title{display:flex;flex-direction:column;gap:1px}
+.ov-title .t1{font-weight:800;font-size:15px;letter-spacing:.2px}
+.ov-title .t1 .logo{color:var(--series);margin-right:4px}
+.ov-title .t2{font-size:11.5px;color:var(--muted)}
+.linkbtn{border:1px solid var(--border);background:var(--surface);color:var(--series);
+  border-radius:8px;padding:5px 12px;font-size:12.5px;cursor:pointer;text-decoration:none;font-weight:600}
+.linkbtn:hover{background:var(--surface-2);text-decoration:none}
+
+/* ---------- Hero 顶部整体健康(跨仓) ---------- */
+.ovhead h2 .anno{margin-left:2px}
+.ovkpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:12px}
+.ovkpis .kpi .k-t{font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+.kpi .k-badge{float:right;font-size:10px;font-weight:800;border-radius:5px;padding:0 6px}
+.kpi .k-badge.up{color:var(--critical-text);background:var(--critical-soft)}
+.kpi .k-badge.down{color:var(--good-text);background:var(--good-soft)}
+.kpi .k-badge.flat{color:var(--muted);background:var(--surface-3)}
+
+/* ---------- 分角色视角(两栏) ---------- */
+.rolegrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.rolepanel{border:1px solid var(--border);border-radius:14px;background:var(--surface);
+  box-shadow:var(--shadow);overflow:hidden}
+.rolepanel .rp-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.rolepanel.infra .rp-head{background:linear-gradient(90deg,var(--series-soft),transparent)}
+.rolepanel.exp .rp-head{background:linear-gradient(90deg,rgba(124,77,214,.16),transparent)}
+.rp-ic{width:32px;height:32px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:17px;flex:none;background:var(--surface);border:1px solid var(--border)}
+.rp-tt{line-height:1.25}
+.rp-tt .rp-role{font-size:14px;font-weight:800}
+.rp-tt .rp-focus{font-size:11px;color:var(--muted)}
+.rp-body{padding:6px 16px 14px}
+
+/* 单条指标行 */
+.metricrow{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;
+  padding:11px 0;border-bottom:1px dashed var(--grid)}
+.metricrow:last-child{border-bottom:0}
+.mr-l{min-width:0}
+.mr-name{font-size:13px;font-weight:600}
+.mr-mean{font-size:11px;color:var(--muted);margin-top:1px}
+.mr-r{text-align:right;white-space:nowrap}
+.mr-v{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
+.mr-v .mr-u{font-size:11px;font-weight:600;color:var(--muted);margin-left:2px}
+.mr-v.bad{color:var(--critical-text)}
+.mr-d{font-size:11px;font-weight:700;margin-top:1px}
+.mr-d.bad{color:var(--critical-text)} .mr-d.good{color:var(--good-text)} .mr-d.flat{color:var(--muted)}
+.mr-spark{grid-column:1 / -1;margin-top:2px}
+
+/* ---------- 优先级闭环进展(参考 oss-compass「各优先级闭环进展」) ---------- */
+.closehead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:4px 0 14px}
+.prigrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pricard{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--surface-2);
+  border-top:3px solid var(--muted)}
+.pricard.P0{border-top-color:var(--critical)}
+.pricard.P1{border-top-color:var(--serious)}
+.pricard.P2{border-top-color:var(--warning)}
+.pricard .pc-h{display:flex;align-items:center;gap:8px}
+.pricard .pc-desc{font-size:11px;color:var(--muted);margin:6px 0 8px;line-height:1.45;min-height:30px}
+.pricard .pc-stats{display:flex;gap:14px}
+.pc-stat{text-align:center}
+.pc-stat .n{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;display:block;line-height:1.1}
+.pc-stat .l{font-size:10.5px;color:var(--muted)}
+.pc-stat .n.active{color:var(--critical-text)}
+.pc-stat .n.faded{color:var(--good-text)}
+.pc-stat .n.backfill{color:var(--warning-text)}
+.pc-bar{height:7px;border-radius:999px;background:var(--grid);overflow:hidden;margin-top:10px;display:flex}
+.pc-bar i{display:block;height:100%}
+.pc-bar .b-faded{background:var(--good)}
+.pc-bar .b-active{background:var(--critical)}
+.pc-bar .b-backfill{background:var(--warning)}
+.pc-rate{font-size:11px;color:var(--ink-2);margin-top:5px}
+.pc-rate b{font-variant-numeric:tabular-nums}
+
+/* ---------- 各仓库对比卡(参考「各仓库对标结果」) ---------- */
+.cmpgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px}
+.cmpcard{border:1px solid var(--border);border-radius:12px;background:var(--surface-2);
+  border-left:5px solid var(--series);padding:14px 16px}
+.cmpcard.crit{border-left-color:var(--critical)}
+.cmpcard.warn{border-left-color:var(--warning)}
+.cmpcard.good{border-left-color:var(--good)}
+.cmp-h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.cmp-repo{font-size:15px;font-weight:800}
+.cmp-wf{font-size:11px;color:var(--muted)}
+.cmp-status{margin-left:auto;font-size:12px;font-weight:800;padding:2px 10px;border-radius:999px;border:1px solid var(--border)}
+.cmpcard.crit .cmp-status{color:var(--critical-text);border-color:var(--critical);background:var(--critical-soft)}
+.cmpcard.warn .cmp-status{color:var(--warning-text);border-color:var(--warning);background:var(--warning-soft)}
+.cmpcard.good .cmp-status{color:var(--good-text);border-color:var(--good);background:var(--good-soft)}
+.cmp-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px}
+.cmp-m{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 10px}
+.cmp-m .m-l{font-size:10.5px;color:var(--muted)}
+.cmp-m .m-v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:1px}
+.cmp-m .m-v.bad{color:var(--critical-text)}
+.cmp-foot{margin-top:11px;font-size:11.5px;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* ---------- Top 待办问题表 ---------- */
+.repo-chip{display:inline-block;border-radius:5px;padding:0 7px;font-size:11px;font-weight:700;
+  border:1px solid var(--border);color:var(--ink-2);background:var(--surface-2)}
+
+/* ---------- 数据口径脚注 ---------- */
+.ov-note{font-size:11px;color:var(--muted);line-height:1.6;margin-top:6px}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:980px){
+  .ovkpis{grid-template-columns:repeat(3,1fr)}
+  .rolegrid{grid-template-columns:1fr}
+  .prigrid{grid-template-columns:1fr}
+  .cmpgrid{grid-template-columns:1fr}
+  .cmp-metrics{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:640px){
+  .ovkpis{grid-template-columns:repeat(2,1fr)}
+  .cmp-metrics{grid-template-columns:repeat(2,1fr)}
+}

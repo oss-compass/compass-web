@@ -1,0 +1,3435 @@
+{
+  "schema_version": "issue_experience_report_data_v1",
+  "generated_at": "2026-07-21T07:49:48.030182+00:00",
+  "community_name": "cann/cann-samples",
+  "platform": "gitcode",
+  "period": "2026-07-13_to_2026-07-19",
+  "since": "2026-07-13",
+  "until": "2026-07-19",
+  "report_md_file": "report_cann-cann-samples_2026-07-13_to_2026-07-19.md",
+  "stage_scores_csv_file": "scores_cann-cann-samples_2026-07-13_to_2026-07-19.csv",
+  "raw_issues_cache_file": "rawdata_cann-cann-samples_2026-07-13_to_2026-07-19.json",
+  "report_context": {
+    "project": {
+      "org": "cann",
+      "repo": "cann-samples",
+      "platform": "gitcode"
+    },
+    "period": "2026-07-13_to_2026-07-19",
+    "prev_period": "—",
+    "period_label": "2026-07-13_to_2026-07-19",
+    "prev_period_label": "—",
+    "report_id": "cann_cann-samples_2026-07-13_to_2026-07-19_v3",
+    "n_total": 2,
+    "n_open": 0,
+    "n_closed": 2,
+    "close_rate": 100.0,
+    "confidence": "低",
+    "idx_total": 47.6,
+    "grade": "D",
+    "prev_idx_total": null,
+    "delta_total": "首期基线",
+    "delta_total_plain": "首期基线",
+    "comparability": "comparable",
+    "prev_n": 0,
+    "biggest_change": {
+      "desc": "首期基线，无上期可比"
+    },
+    "cadence": "自然周",
+    "render_mode": "demo",
+    "rubric_version": "v0.2-draft",
+    "data_completeness": 85.0,
+    "platform_limitations": "GitCode API 不返回 author_association 与关联 PR，维护者识别与关联 PR 率不可信，已从对比剔除；无 closed_by / closed 事件，自关闭无法判定",
+    "json_path": "/home/shengbao/Cogito/issue_experience_agent/outputs/cann-cann-samples/report_cann-cann-samples_2026-07-13_to_2026-07-19.json",
+    "type_breakdown": "缺陷 1 / 需求 1",
+    "short_stage_rows": [
+      {
+        "prio": "P1",
+        "stage": "I3 · 总结与关闭",
+        "score": 38.0,
+        "problem": "存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。"
+      },
+      {
+        "prio": "P2",
+        "stage": "I1 · 分配与首次响应",
+        "score": 53.0,
+        "problem": "存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。"
+      },
+      {
+        "prio": "P2",
+        "stage": "I2 · 讨论与解决",
+        "score": 69.3,
+        "problem": "该阶段表现尚可，无明显痛点，但讨论深度可能依赖直接提交而非文字交流。"
+      }
+    ],
+    "short_board_primary": {
+      "id": "I3",
+      "name": "总结与关闭",
+      "icon": "📦",
+      "is_lens": false,
+      "weight": 0.2,
+      "mixed": 38.0,
+      "obj": 26.2,
+      "subj": 55.8,
+      "stars": "★★☆☆☆",
+      "grade": "F",
+      "flag_emoji": "🔴",
+      "pain_count": 1,
+      "pain_pct": 50.0,
+      "delta": "首期基线",
+      "incomparable": false,
+      "confidence": "低",
+      "best_metric": {
+        "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+        "name_cn": "过早关闭风险反向分",
+        "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+        "value": 81.5
+      },
+      "worst_metric": {
+        "code": "OBJ_CLOSURE_REUSE",
+        "name_cn": "关闭复用价值",
+        "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+        "value": 0.0
+      },
+      "distribution": "<40:1 ｜ 40-60:1 ｜ 60-80:0 ｜ ≥80:0",
+      "metrics_obj": [
+        {
+          "code": "OBJ_DECISION_TRANSPARENCY",
+          "key": "obj-decision-transparency",
+          "name_cn": "决策透明度",
+          "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+          "mean": 52.5,
+          "median": 52.5,
+          "flag": "🟡",
+          "cover": 2,
+          "evidence": "OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 75.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 30.0
+            }
+          ],
+          "_mean": 52.5
+        },
+        {
+          "code": "OBJ_CLOSURE_REUSE",
+          "key": "obj-closure-reuse",
+          "name_cn": "关闭复用价值",
+          "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+          "mean": 0.0,
+          "median": 0.0,
+          "flag": "🔴",
+          "cover": 2,
+          "evidence": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 0.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 0.0
+            }
+          ],
+          "_mean": 0.0
+        }
+      ],
+      "metrics_sub": [
+        {
+          "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+          "key": "sub-closure-premature-close-risk-reverse",
+          "name_cn": "过早关闭风险反向分",
+          "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+          "mean": 81.5,
+          "median": 81.5,
+          "cover": 2,
+          "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR已合并后由bot关闭，有resolved标签，无过早关闭风险",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 88.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 75.0
+            }
+          ],
+          "_mean": 81.5
+        },
+        {
+          "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
+          "key": "sub-followup-path-completeness",
+          "name_cn": "后续路径完整性",
+          "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+          "mean": 30.0,
+          "median": 30.0,
+          "cover": 2,
+          "main_reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭后未明确说明后续反馈路径或重新开启条件，信息不足",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 45.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 15.0
+            }
+          ],
+          "_mean": 30.0
+        }
+      ],
+      "low_issues": [
+        {
+          "no": "#224",
+          "url": "https://gitcode.com/cann/cann-samples/issues/224",
+          "score": 49,
+          "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+          "desc": ""
+        }
+      ],
+      "root_cause": "存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。",
+      "is_short_board": true,
+      "pain": null,
+      "pain_title": "",
+      "judgment": "需改进",
+      "core_problem": "存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。",
+      "brief_metrics": [
+        {
+          "code": "OBJ_CLOSURE_REUSE",
+          "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
+          "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+          "score": 0.0,
+          "reason": "均值 0.0，低分 2/2",
+          "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
+        },
+        {
+          "code": "OBJ_DECISION_TRANSPARENCY",
+          "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
+          "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+          "score": 52.5,
+          "reason": "均值 52.5，低分 1/2",
+          "expected": "补齐关闭原因、关闭评论和结构化总结"
+        },
+        {
+          "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
+          "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
+          "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+          "score": 30.0,
+          "reason": "关闭后未明确说明后续反馈路径或重新开启条件，信息不足",
+          "expected": "关闭时明确说明后续反馈路径和重新开启条件"
+        },
+        {
+          "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+          "metric": "`SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分",
+          "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+          "score": 81.5,
+          "reason": "MR已合并后由bot关闭，有resolved标签，无过早关闭风险",
+          "expected": "避免缺少讨论、验证时过早关闭"
+        }
+      ],
+      "intro": "本阶段是本周短板之一，主要问题是：存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。。"
+    },
+    "short_board_secondary": {
+      "id": "I1",
+      "name": "分配与首次响应",
+      "icon": "🏷️",
+      "is_lens": false,
+      "weight": 0.2,
+      "mixed": 53.0,
+      "obj": 45.0,
+      "subj": 65.0,
+      "stars": "★★★☆☆",
+      "grade": "D",
+      "flag_emoji": "🟡",
+      "pain_count": 0,
+      "pain_pct": 0.0,
+      "delta": "首期基线",
+      "incomparable": false,
+      "confidence": "低",
+      "best_metric": {
+        "code": "OBJ_RESPONSE_SPEED",
+        "name_cn": "响应速度",
+        "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+        "value": 90.0
+      },
+      "worst_metric": {
+        "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+        "name_cn": "首次实质回应时效",
+        "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+        "value": 0.0
+      },
+      "distribution": "<40:0 ｜ 40-60:1 ｜ 60-80:1 ｜ ≥80:0",
+      "metrics_obj": [
+        {
+          "code": "OBJ_RESPONSE_SPEED",
+          "key": "obj-response-speed",
+          "name_cn": "响应速度",
+          "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+          "mean": 90.0,
+          "median": 90.0,
+          "flag": "🟢",
+          "cover": 2,
+          "evidence": "OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 100.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 80.0
+            }
+          ],
+          "_mean": 90.0
+        },
+        {
+          "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+          "key": "obj-first-substantive-response-time",
+          "name_cn": "首次实质回应时效",
+          "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+          "mean": 0.0,
+          "median": 0.0,
+          "flag": "🔴",
+          "cover": 2,
+          "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 0.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 0.0
+            }
+          ],
+          "_mean": 0.0
+        }
+      ],
+      "metrics_sub": [
+        {
+          "code": "SUB_ROUTING_CORRECTNESS",
+          "key": "sub-triage-routing-correctness",
+          "name_cn": "分流正确性",
+          "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+          "mean": 62.5,
+          "median": 62.5,
+          "cover": 2,
+          "main_reason": "SUB_ROUTING_CORRECTNESS：bot正确执行assign，issue关联MR#337并最终resolved，…",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 80.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 45.0
+            }
+          ],
+          "_mean": 62.5
+        },
+        {
+          "code": "SUB_OWNER_CLARITY",
+          "key": "sub-triage-owner-clarity",
+          "name_cn": "责任归属清晰度",
+          "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+          "mean": 67.5,
+          "median": 67.5,
+          "cover": 2,
+          "main_reason": "SUB_OWNER_CLARITY：用户自我认领/assign，bot确认assignee，责任归属清晰",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 85.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 50.0
+            }
+          ],
+          "_mean": 67.5
+        }
+      ],
+      "low_issues": [],
+      "root_cause": "存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。",
+      "is_short_board": true,
+      "pain": null,
+      "pain_title": "",
+      "judgment": "需改进",
+      "core_problem": "存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。",
+      "brief_metrics": [
+        {
+          "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+          "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
+          "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+          "score": 0.0,
+          "reason": "均值 0.0，低分 2/2",
+          "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
+        },
+        {
+          "code": "OBJ_RESPONSE_SPEED",
+          "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
+          "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+          "score": 90.0,
+          "reason": "均值 90.0，低分 0/2",
+          "expected": "缩短首次响应时间，提高 7 天响应率"
+        },
+        {
+          "code": "SUB_OWNER_CLARITY",
+          "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
+          "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+          "score": 67.5,
+          "reason": "用户自我认领/assign，bot确认assignee，责任归属清晰",
+          "expected": "明确责任人、候选负责人和下一步动作"
+        },
+        {
+          "code": "SUB_ROUTING_CORRECTNESS",
+          "metric": "`SUB_ROUTING_CORRECTNESS` 分流正确性",
+          "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+          "score": 62.5,
+          "reason": "bot正确执行assign，issue关联MR#337并最终resolved，…",
+          "expected": "让 Issue 进入正确处理路径"
+        }
+      ],
+      "intro": "本阶段需要改进，主要问题是：存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。。"
+    },
+    "suggested_pair": "catlass↔cutlass / hccl↔nccl",
+    "benchmark": null,
+    "stage_ids": [
+      "I0",
+      "I1",
+      "I2",
+      "I3",
+      "G"
+    ],
+    "stage_align": [
+      "----:",
+      "----:",
+      "----:",
+      "----:",
+      "----:"
+    ],
+    "trend": [
+      {
+        "period": "2026-07-13_to_2026-07-19",
+        "n": 2,
+        "idx": 47.6,
+        "period_label": "2026-07-13_to_2026-07-19",
+        "delta": "首期基线",
+        "stage_scores": [
+          80.8,
+          53.0,
+          69.3,
+          38.0,
+          67.6
+        ],
+        "incomparable": false
+      }
+    ],
+    "trend_summary": "本期作为首期基线，后续周报会基于同一口径展示趋势变化。",
+    "prev_recs": [],
+    "top_pains": [
+      {
+        "prio": "P2",
+        "id": "PP-01",
+        "title": "关闭后缺乏复用沉淀与反馈路径",
+        "stage_id": "I3",
+        "stage_name": "总结与关闭",
+        "evidence": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2；OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2",
+        "impact": "社区用户无法了解关闭后的跟进机制，知识沉淀流失。",
+        "action": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+        "rec_id": "REC-01",
+        "low_score_issues": [
+          {
+            "number": "224",
+            "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+            "url": "https://gitcode.com/cann/cann-samples/issues/224",
+            "score": 0,
+            "metric_code": "obj-closure-reuse",
+            "reason": "关闭说明仅7字且为机器人自动提示，无方案文档沉淀及关联链接，未留下可供复用的解决经验。",
+            "evidence": [
+              {
+                "type": "close",
+                "actor": "cann-robot",
+                "text": "closed from codehub, Due to close relation issue when mr merged: issue224",
+                "url": "",
+                "time": "2026-07-17T14:09:09"
+              },
+              {
+                "type": "label",
+                "actor": "cann-robot",
+                "text": "add label resolved",
+                "url": "",
+                "time": "2026-07-17T14:47:20"
+              },
+              {
+                "type": "comment",
+                "actor": "liuyufan0725",
+                "text": "/assign",
+                "url": "",
+                "time": "2026-07-17T03:56:10"
+              },
+              {
+                "type": "assign",
+                "actor": "cann-robot",
+                "text": "assigned to @liuyufan0725",
+                "url": "",
+                "time": "2026-07-17T11:56:11"
+              },
+              {
+                "type": "pr",
+                "actor": "",
+                "text": "关联PR #337（merged）",
+                "url": "https://gitcode.com/cann/cann-samples/merge_requests/337",
+                "time": "2026-07-16T18:11:15"
+              }
+            ]
+          },
+          {
+            "number": "223",
+            "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit…",
+            "url": "https://gitcode.com/cann/cann-samples/issues/223",
+            "score": 0,
+            "metric_code": "obj-closure-reuse",
+            "reason": "关闭说明为空，未沉淀方案文档且无重复链接，无法为后续类似问题提供参考。",
+            "evidence": [
+              {
+                "type": "close",
+                "actor": "chenkang30",
+                "text": "closed from codehub",
+                "url": "",
+                "time": "2026-07-17T10:13:19"
+              },
+              {
+                "type": "close",
+                "actor": "chenkang30",
+                "text": "changed custom state from 进行中 to 已完成",
+                "url": "",
+                "time": "2026-07-17T10:13:19"
+              },
+              {
+                "type": "assign",
+                "actor": "yangyang016",
+                "text": "assigned to @yangyang016",
+                "url": "",
+                "time": "2026-07-16T20:01:17"
+              },
+              {
+                "type": "assign",
+                "actor": "yangyang016",
+                "text": "unassigned @yangyang016",
+                "url": "",
+                "time": "2026-07-16T20:02:24"
+              }
+            ]
+          }
+        ],
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P2",
+        "id": "PP-02",
+        "title": "分流与响应阶段客观得分偏低",
+        "stage_id": "I1",
+        "stage_name": "分配与首次响应",
+        "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2；OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2",
+        "impact": "用户可能仅得到模板回复，缺乏深入交流，影响问题推进效率。",
+        "action": "在快速响应后补充实质性技术回复或明确分流计划",
+        "rec_id": "REC-02",
+        "low_score_issues": [
+          {
+            "number": "224",
+            "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+            "url": "https://gitcode.com/cann/cann-samples/issues/224",
+            "score": 0,
+            "metric_code": "obj-first-substantive-response-time",
+            "reason": "仅有机器人指派及随MR合并自动关闭的操作，全程无人工实质性回应。",
+            "evidence": [
+              {
+                "type": "comment",
+                "actor": "liuyufan0725",
+                "text": "/assign",
+                "url": "",
+                "time": "2026-07-17T03:56:10"
+              },
+              {
+                "type": "label",
+                "actor": "cann-robot",
+                "text": "add label resolved",
+                "url": "",
+                "time": "2026-07-17T14:47:20"
+              },
+              {
+                "type": "assign",
+                "actor": "cann-robot",
+                "text": "assigned to @liuyufan0725",
+                "url": "",
+                "time": "2026-07-17T11:56:11"
+              },
+              {
+                "type": "close",
+                "actor": "cann-robot",
+                "text": "closed from codehub, Due to close relation issue when mr merged: issue224",
+                "url": "",
+                "time": "2026-07-17T14:09:09"
+              },
+              {
+                "type": "pr",
+                "actor": "",
+                "text": "关联PR #337（merged）",
+                "url": "https://gitcode.com/cann/cann-samples/merge_requests/337",
+                "time": "2026-07-16T18:11:15"
+              }
+            ]
+          },
+          {
+            "number": "223",
+            "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit…",
+            "url": "https://gitcode.com/cann/cann-samples/issues/223",
+            "score": 0,
+            "metric_code": "obj-first-substantive-response-time",
+            "reason": "仅进行了指派和关闭等状态流转操作，全程未提供任何实质性的技术解答或沟通。",
+            "evidence": [
+              {
+                "type": "assign",
+                "actor": "yangyang016",
+                "text": "assigned to @yangyang016",
+                "url": "",
+                "time": "2026-07-16T20:01:17"
+              },
+              {
+                "type": "assign",
+                "actor": "yangyang016",
+                "text": "unassigned @yangyang016",
+                "url": "",
+                "time": "2026-07-16T20:02:24"
+              },
+              {
+                "type": "close",
+                "actor": "chenkang30",
+                "text": "closed from codehub",
+                "url": "",
+                "time": "2026-07-17T10:13:19"
+              },
+              {
+                "type": "close",
+                "actor": "chenkang30",
+                "text": "changed custom state from 进行中 to 已完成",
+                "url": "",
+                "time": "2026-07-17T10:13:19"
+              }
+            ]
+          }
+        ],
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P2",
+        "id": "PP-03",
+        "title": "Bot 自动化覆盖率存在缺口",
+        "stage_id": "G",
+        "stage_name": "Bot/Agent 治理",
+        "evidence": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2；OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2",
+        "impact": "自动化治理覆盖不全，部分流程依赖人工，增加维护负担。",
+        "action": "扩大 Bot 自动响应与分流配置的覆盖范围",
+        "rec_id": "REC-03",
+        "low_score_issues": [
+          {
+            "number": "224",
+            "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+            "url": "https://gitcode.com/cann/cann-samples/issues/224",
+            "score": 20,
+            "metric_code": "obj-bot-governance",
+            "reason": "Bot仅机械执行打标、分配与关闭，无任何评论交互，缺乏有效说明与引导，治理深度不足。",
+            "evidence": [
+              {
+                "type": "comment",
+                "actor": "liuyufan0725",
+                "text": "/assign",
+                "url": "",
+                "time": "2026-07-17T03:56:10"
+              },
+              {
+                "type": "label",
+                "actor": "cann-robot",
+                "text": "add label resolved",
+                "url": "",
+                "time": "2026-07-17T14:47:20"
+              },
+              {
+                "type": "assign",
+                "actor": "cann-robot",
+                "text": "assigned to @liuyufan0725",
+                "url": "",
+                "time": "2026-07-17T11:56:11"
+              },
+              {
+                "type": "close",
+                "actor": "cann-robot",
+                "text": "closed from codehub, Due to close relation issue when mr merged: issue224",
+                "url": "",
+                "time": "2026-07-17T14:09:09"
+              },
+              {
+                "type": "pr",
+                "actor": "",
+                "text": "关联PR #337（merged）",
+                "url": "https://gitcode.com/cann/cann-samples/merge_requests/337",
+                "time": "2026-07-16T18:11:15"
+              }
+            ]
+          }
+        ],
+        "state": "新增（待跟踪）"
+      }
+    ],
+    "recs": [
+      {
+        "id": "REC-01",
+        "title": "关闭后缺乏复用沉淀与反馈路径",
+        "action_title": "规范关闭原因和关闭摘要",
+        "prio": "P2",
+        "stage_name": "总结与关闭",
+        "pp_id": "PP-01",
+        "stage_key": "closure",
+        "owner_team": "维护者",
+        "owner_candidate": "—",
+        "trigger": "Issue 关闭时",
+        "action": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+        "goal": "`OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升",
+        "action_short": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+        "metric_evidence": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2；OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+            "score": 0.0,
+            "reason": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+            "score": 52.5,
+            "reason": "OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+            "score": 30.0,
+            "reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭后未明确说明后续反馈路径或重新开启条件，信息不足"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_CLOSURE_REUSE",
+            "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
+            "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+            "score": 0.0,
+            "reason": "均值 0.0，低分 2/2",
+            "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
+          },
+          {
+            "code": "OBJ_DECISION_TRANSPARENCY",
+            "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
+            "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+            "score": 52.5,
+            "reason": "均值 52.5，低分 1/2",
+            "expected": "补齐关闭原因、关闭评论和结构化总结"
+          },
+          {
+            "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
+            "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
+            "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+            "score": 30.0,
+            "reason": "关闭后未明确说明后续反馈路径或重新开启条件，信息不足",
+            "expected": "关闭时明确说明后续反馈路径和重新开启条件"
+          }
+        ],
+        "baseline_score": 38.0,
+        "baseline_value": "总结与关闭阶段分 38.0"
+      },
+      {
+        "id": "REC-02",
+        "title": "分流与响应阶段客观得分偏低",
+        "action_title": "提升分流响应",
+        "prio": "P2",
+        "stage_name": "分配与首次响应",
+        "pp_id": "PP-02",
+        "stage_key": "triage",
+        "owner_team": "维护者",
+        "owner_candidate": "—",
+        "trigger": "首次响应时",
+        "action": "在快速响应后补充实质性技术回复或明确分流计划",
+        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
+        "action_short": "在快速响应后补充实质性技术回复或明确分流计划",
+        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2；OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 0.0,
+            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 90.0,
+            "reason": "OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+            "score": 62.5,
+            "reason": "SUB_ROUTING_CORRECTNESS：bot正确执行assign，issue关联MR#337并最终resolved，…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+            "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
+            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 0.0,
+            "reason": "均值 0.0，低分 2/2",
+            "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
+          },
+          {
+            "code": "OBJ_RESPONSE_SPEED",
+            "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
+            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 90.0,
+            "reason": "均值 90.0，低分 0/2",
+            "expected": "缩短首次响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 67.5,
+            "reason": "用户自我认领/assign，bot确认assignee，责任归属清晰",
+            "expected": "明确责任人、候选负责人和下一步动作"
+          }
+        ],
+        "baseline_score": 53.0,
+        "baseline_value": "分配与首次响应阶段分 53.0"
+      },
+      {
+        "id": "REC-03",
+        "title": "Bot 自动化覆盖率存在缺口",
+        "action_title": "提升 Bot 治理覆盖",
+        "prio": "P2",
+        "stage_name": "Bot/Agent 治理",
+        "pp_id": "PP-03",
+        "stage_key": "bot-agent",
+        "owner_team": "Bot 维护者",
+        "owner_candidate": "—",
+        "trigger": "Issue 创建时",
+        "action": "扩大 Bot 自动响应与分流配置的覆盖范围",
+        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升",
+        "action_short": "扩大 Bot 自动响应与分流配置的覆盖范围",
+        "metric_evidence": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2；OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+            "score": 40.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+            "score": 100.0,
+            "reason": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
+            "score": 62.5,
+            "reason": "SUB_BOT_HELPFULNESS：bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+            "score": 40.0,
+            "reason": "均值 40.0，低分 1/2",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "OBJ_BOT_MISCLOSE_REVERSE",
+            "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
+            "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+            "score": 100.0,
+            "reason": "均值 100.0，低分 0/2",
+            "expected": "减少 Bot 误关、错关和状态矛盾"
+          },
+          {
+            "code": "SUB_BOT_HANDOFF_QUALITY",
+            "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
+            "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+            "score": 65.0,
+            "reason": "bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞",
+            "expected": "改善 Bot 到人工处理的交接质量"
+          }
+        ],
+        "baseline_score": 67.6,
+        "baseline_value": "Bot/Agent 治理阶段分 67.6"
+      }
+    ],
+    "top_recs": [
+      {
+        "id": "REC-01",
+        "title": "关闭后缺乏复用沉淀与反馈路径",
+        "action_title": "规范关闭原因和关闭摘要",
+        "prio": "P2",
+        "stage_name": "总结与关闭",
+        "pp_id": "PP-01",
+        "stage_key": "closure",
+        "owner_team": "维护者",
+        "owner_candidate": "—",
+        "trigger": "Issue 关闭时",
+        "action": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+        "goal": "`OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升",
+        "action_short": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+        "metric_evidence": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2；OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+            "score": 0.0,
+            "reason": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+            "score": 52.5,
+            "reason": "OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+            "score": 30.0,
+            "reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭后未明确说明后续反馈路径或重新开启条件，信息不足"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_CLOSURE_REUSE",
+            "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
+            "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+            "score": 0.0,
+            "reason": "均值 0.0，低分 2/2",
+            "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
+          },
+          {
+            "code": "OBJ_DECISION_TRANSPARENCY",
+            "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
+            "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+            "score": 52.5,
+            "reason": "均值 52.5，低分 1/2",
+            "expected": "补齐关闭原因、关闭评论和结构化总结"
+          },
+          {
+            "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
+            "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
+            "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+            "score": 30.0,
+            "reason": "关闭后未明确说明后续反馈路径或重新开启条件，信息不足",
+            "expected": "关闭时明确说明后续反馈路径和重新开启条件"
+          }
+        ],
+        "baseline_score": 38.0,
+        "baseline_value": "总结与关闭阶段分 38.0"
+      },
+      {
+        "id": "REC-02",
+        "title": "分流与响应阶段客观得分偏低",
+        "action_title": "提升分流响应",
+        "prio": "P2",
+        "stage_name": "分配与首次响应",
+        "pp_id": "PP-02",
+        "stage_key": "triage",
+        "owner_team": "维护者",
+        "owner_candidate": "—",
+        "trigger": "首次响应时",
+        "action": "在快速响应后补充实质性技术回复或明确分流计划",
+        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
+        "action_short": "在快速响应后补充实质性技术回复或明确分流计划",
+        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2；OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 0.0,
+            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 90.0,
+            "reason": "OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+            "score": 62.5,
+            "reason": "SUB_ROUTING_CORRECTNESS：bot正确执行assign，issue关联MR#337并最终resolved，…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+            "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
+            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 0.0,
+            "reason": "均值 0.0，低分 2/2",
+            "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
+          },
+          {
+            "code": "OBJ_RESPONSE_SPEED",
+            "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
+            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 90.0,
+            "reason": "均值 90.0，低分 0/2",
+            "expected": "缩短首次响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 67.5,
+            "reason": "用户自我认领/assign，bot确认assignee，责任归属清晰",
+            "expected": "明确责任人、候选负责人和下一步动作"
+          }
+        ],
+        "baseline_score": 53.0,
+        "baseline_value": "分配与首次响应阶段分 53.0"
+      },
+      {
+        "id": "REC-03",
+        "title": "Bot 自动化覆盖率存在缺口",
+        "action_title": "提升 Bot 治理覆盖",
+        "prio": "P2",
+        "stage_name": "Bot/Agent 治理",
+        "pp_id": "PP-03",
+        "stage_key": "bot-agent",
+        "owner_team": "Bot 维护者",
+        "owner_candidate": "—",
+        "trigger": "Issue 创建时",
+        "action": "扩大 Bot 自动响应与分流配置的覆盖范围",
+        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升",
+        "action_short": "扩大 Bot 自动响应与分流配置的覆盖范围",
+        "metric_evidence": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2；OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+            "score": 40.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+            "score": 100.0,
+            "reason": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
+            "score": 62.5,
+            "reason": "SUB_BOT_HELPFULNESS：bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+            "score": 40.0,
+            "reason": "均值 40.0，低分 1/2",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "OBJ_BOT_MISCLOSE_REVERSE",
+            "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
+            "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+            "score": 100.0,
+            "reason": "均值 100.0，低分 0/2",
+            "expected": "减少 Bot 误关、错关和状态矛盾"
+          },
+          {
+            "code": "SUB_BOT_HANDOFF_QUALITY",
+            "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
+            "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+            "score": 65.0,
+            "reason": "bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞",
+            "expected": "改善 Bot 到人工处理的交接质量"
+          }
+        ],
+        "baseline_score": 67.6,
+        "baseline_value": "Bot/Agent 治理阶段分 67.6"
+      }
+    ],
+    "ref_metrics": [
+      {
+        "name_cn": "首次响应时间",
+        "median": "1.4h",
+        "mean": "1.4h",
+        "caliber_note": "首个非作者评论距创建；无响应不计入中位"
+      },
+      {
+        "name_cn": "关闭周期",
+        "median": "9.7h",
+        "mean": "9.7h",
+        "caliber_note": "closed_at−created_at；仅已关闭 Issue"
+      },
+      {
+        "name_cn": "7天响应率",
+        "median": "—",
+        "mean": "100.0%",
+        "caliber_note": "168h 内出现非作者评论的占比"
+      },
+      {
+        "name_cn": "评论数/Issue",
+        "median": "—",
+        "mean": "0.50",
+        "caliber_note": "含 bot 评论；均值"
+      },
+      {
+        "name_cn": "标签覆盖率",
+        "median": "—",
+        "mean": "50.0%",
+        "caliber_note": "至少 1 个标签的 Issue 占比"
+      },
+      {
+        "name_cn": "指派覆盖率",
+        "median": "—",
+        "mean": "50.0%",
+        "caliber_note": "有 assignee 的 Issue 占比"
+      }
+    ],
+    "stages": [
+      {
+        "id": "I0",
+        "name": "创建",
+        "icon": "📝",
+        "is_lens": false,
+        "weight": 0.15,
+        "mixed": 80.8,
+        "obj": 0.0,
+        "subj": 80.8,
+        "stars": "★★★★☆",
+        "grade": "B",
+        "flag_emoji": "🟢",
+        "pain_count": 0,
+        "pain_pct": 0.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "SUB_AGENT_NOISE_RISK",
+          "name_cn": "AI噪音风险",
+          "display_name": "SUB_AGENT_NOISE_RISK（AI噪音风险）",
+          "value": 92.5
+        },
+        "worst_metric": {
+          "code": "SUB_INPUT_QUALITY",
+          "name_cn": "输入质量",
+          "display_name": "SUB_INPUT_QUALITY（输入质量）",
+          "value": 69.0
+        },
+        "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:1 ｜ ≥80:1",
+        "metrics_obj": [],
+        "metrics_sub": [
+          {
+            "code": "SUB_INPUT_QUALITY",
+            "key": "sub-input-quality",
+            "name_cn": "输入质量",
+            "display_name": "SUB_INPUT_QUALITY（输入质量）",
+            "mean": 69.0,
+            "median": 69.0,
+            "cover": 2,
+            "main_reason": "SUB_INPUT_QUALITY：结构化章节完整，含背景、价值、设计方案，但作为需求缺少更详细技术方案细节",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 78.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 60.0
+              }
+            ],
+            "_mean": 69.0
+          },
+          {
+            "code": "SUB_AGENT_NOISE_RISK",
+            "key": "sub-agent-noise-risk",
+            "name_cn": "AI噪音风险",
+            "display_name": "SUB_AGENT_NOISE_RISK（AI噪音风险）",
+            "mean": 92.5,
+            "median": 92.5,
+            "cover": 2,
+            "main_reason": "SUB_AGENT_NOISE_RISK：内部贡献者提交的真实需求，内容具体合理，无幻觉或噪音迹象",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 90.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 95.0
+              }
+            ],
+            "_mean": 92.5
+          }
+        ],
+        "low_issues": [],
+        "root_cause": "该阶段表现良好，无明显痛点，需求创建结构化程度较高。",
+        "is_short_board": false,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "相对可控",
+        "core_problem": "该阶段表现良好，无明显痛点，需求创建结构化程度较高。",
+        "brief_metrics": [
+          {
+            "code": "SUB_AGENT_NOISE_RISK",
+            "metric": "`SUB_AGENT_NOISE_RISK` AI噪音风险",
+            "display_name": "SUB_AGENT_NOISE_RISK（AI噪音风险）",
+            "score": 92.5,
+            "reason": "内部贡献者提交的真实需求，内容具体合理，无幻觉或噪音迹象",
+            "expected": "减少AI生成的低质量和幻觉内容"
+          },
+          {
+            "code": "SUB_INPUT_QUALITY",
+            "metric": "`SUB_INPUT_QUALITY` 输入质量",
+            "display_name": "SUB_INPUT_QUALITY（输入质量）",
+            "score": 69.0,
+            "reason": "结构化章节完整，含背景、价值、设计方案，但作为需求缺少更详细技术方案细节",
+            "expected": "补齐复现步骤、环境信息、日志代码和预期对比"
+          }
+        ],
+        "intro": "整体相对可控，但仍需关注：该阶段表现良好，无明显痛点，需求创建结构化程度较高。。"
+      },
+      {
+        "id": "I1",
+        "name": "分配与首次响应",
+        "icon": "🏷️",
+        "is_lens": false,
+        "weight": 0.2,
+        "mixed": 53.0,
+        "obj": 45.0,
+        "subj": 65.0,
+        "stars": "★★★☆☆",
+        "grade": "D",
+        "flag_emoji": "🟡",
+        "pain_count": 0,
+        "pain_pct": 0.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "OBJ_RESPONSE_SPEED",
+          "name_cn": "响应速度",
+          "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+          "value": 90.0
+        },
+        "worst_metric": {
+          "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+          "name_cn": "首次实质回应时效",
+          "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+          "value": 0.0
+        },
+        "distribution": "<40:0 ｜ 40-60:1 ｜ 60-80:1 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_RESPONSE_SPEED",
+            "key": "obj-response-speed",
+            "name_cn": "响应速度",
+            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "mean": 90.0,
+            "median": 90.0,
+            "flag": "🟢",
+            "cover": 2,
+            "evidence": "OBJ_RESPONSE_SPEED：均值 90.0，低分 0/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 100.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 80.0
+              }
+            ],
+            "_mean": 90.0
+          },
+          {
+            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+            "key": "obj-first-substantive-response-time",
+            "name_cn": "首次实质回应时效",
+            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "mean": 0.0,
+            "median": 0.0,
+            "flag": "🔴",
+            "cover": 2,
+            "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 0.0，低分 2/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 0.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 0.0
+              }
+            ],
+            "_mean": 0.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_ROUTING_CORRECTNESS",
+            "key": "sub-triage-routing-correctness",
+            "name_cn": "分流正确性",
+            "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+            "mean": 62.5,
+            "median": 62.5,
+            "cover": 2,
+            "main_reason": "SUB_ROUTING_CORRECTNESS：bot正确执行assign，issue关联MR#337并最终resolved，…",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 80.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 45.0
+              }
+            ],
+            "_mean": 62.5
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "key": "sub-triage-owner-clarity",
+            "name_cn": "责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "mean": 67.5,
+            "median": 67.5,
+            "cover": 2,
+            "main_reason": "SUB_OWNER_CLARITY：用户自我认领/assign，bot确认assignee，责任归属清晰",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 85.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 50.0
+              }
+            ],
+            "_mean": 67.5
+          }
+        ],
+        "low_issues": [],
+        "root_cause": "存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。",
+        "is_short_board": true,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "需改进",
+        "core_problem": "存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。",
+        "brief_metrics": [
+          {
+            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+            "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
+            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 0.0,
+            "reason": "均值 0.0，低分 2/2",
+            "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
+          },
+          {
+            "code": "OBJ_RESPONSE_SPEED",
+            "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
+            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 90.0,
+            "reason": "均值 90.0，低分 0/2",
+            "expected": "缩短首次响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 67.5,
+            "reason": "用户自我认领/assign，bot确认assignee，责任归属清晰",
+            "expected": "明确责任人、候选负责人和下一步动作"
+          },
+          {
+            "code": "SUB_ROUTING_CORRECTNESS",
+            "metric": "`SUB_ROUTING_CORRECTNESS` 分流正确性",
+            "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+            "score": 62.5,
+            "reason": "bot正确执行assign，issue关联MR#337并最终resolved，…",
+            "expected": "让 Issue 进入正确处理路径"
+          }
+        ],
+        "intro": "本阶段需要改进，主要问题是：存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。。"
+      },
+      {
+        "id": "I2",
+        "name": "讨论与解决",
+        "icon": "💬",
+        "is_lens": false,
+        "weight": 0.25,
+        "mixed": 69.3,
+        "obj": 71.2,
+        "subj": 66.8,
+        "stars": "★★★☆☆",
+        "grade": "C",
+        "flag_emoji": "🟢",
+        "pain_count": 0,
+        "pain_pct": 0.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "OBJ_RESULT_FORMATION_TIMELINESS",
+          "name_cn": "形成结果时效",
+          "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+          "value": 100.0
+        },
+        "worst_metric": {
+          "code": "OBJ_SOLUTION_EVIDENCE",
+          "name_cn": "解决证据强度",
+          "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
+          "value": 42.3
+        },
+        "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:2 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "key": "obj-solution-evidence",
+            "name_cn": "解决证据强度",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
+            "mean": 42.3,
+            "median": 42.3,
+            "flag": "🟡",
+            "cover": 2,
+            "evidence": "OBJ_SOLUTION_EVIDENCE：均值 42.3，低分 2/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 38.46153846153847
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 46.15384615384615
+              }
+            ],
+            "_mean": 42.30769230769231
+          },
+          {
+            "code": "OBJ_RESULT_FORMATION_TIMELINESS",
+            "key": "obj-result-formation-timeliness",
+            "name_cn": "形成结果时效",
+            "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+            "mean": 100.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 2,
+            "evidence": "OBJ_RESULT_FORMATION_TIMELINESS：均值 100.0，低分 0/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 100.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 100.0
+              }
+            ],
+            "_mean": 100.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_DISCUSSION_PROGRESSION",
+            "key": "sub-discussion-progression",
+            "name_cn": "讨论推进性",
+            "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
+            "mean": 53.5,
+            "median": 53.5,
+            "cover": 2,
+            "main_reason": "SUB_DISCUSSION_PROGRESSION：无文字讨论，但用户直接创建MR推进，从创建到关闭仅2.2小时，行动推进高效",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 72.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 35.0
+              }
+            ],
+            "_mean": 53.5
+          },
+          {
+            "code": "SUB_USER_GOAL_RESULT",
+            "key": "sub-user-goal-result",
+            "name_cn": "用户目标处理结果",
+            "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
+            "mean": 80.0,
+            "median": 80.0,
+            "cover": 2,
+            "main_reason": "SUB_USER_GOAL_RESULT：用户需求通过MR#337合并实现，issue标记resolved关闭，目标有效…",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 90.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 70.0
+              }
+            ],
+            "_mean": 80.0
+          }
+        ],
+        "low_issues": [],
+        "root_cause": "该阶段表现尚可，无明显痛点，但讨论深度可能依赖直接提交而非文字交流。",
+        "is_short_board": false,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "相对可控",
+        "core_problem": "该阶段表现尚可，无明显痛点，但讨论深度可能依赖直接提交而非文字交流。",
+        "brief_metrics": [
+          {
+            "code": "OBJ_RESULT_FORMATION_TIMELINESS",
+            "metric": "`OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效",
+            "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+            "score": 100.0,
+            "reason": "均值 100.0，低分 0/2",
+            "expected": "加快形成明确结果的速度"
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "metric": "`OBJ_SOLUTION_EVIDENCE` 解决证据强度",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
+            "score": 42.3,
+            "reason": "均值 42.3，低分 2/2",
+            "expected": "补充修改内容、关联变更和影响范围"
+          },
+          {
+            "code": "SUB_DISCUSSION_PROGRESSION",
+            "metric": "`SUB_DISCUSSION_PROGRESSION` 讨论推进性",
+            "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
+            "score": 53.5,
+            "reason": "无文字讨论，但用户直接创建MR推进，从创建到关闭仅2.2小时，行动推进高效",
+            "expected": "明确下一步动作、阶段结论和推进记录"
+          },
+          {
+            "code": "SUB_USER_GOAL_RESULT",
+            "metric": "`SUB_USER_GOAL_RESULT` 用户目标处理结果",
+            "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
+            "score": 80.0,
+            "reason": "用户需求通过MR#337合并实现，issue标记resolved关闭，目标有效…",
+            "expected": "确保用户主要目标得到有效满足或合理处置"
+          }
+        ],
+        "intro": "整体相对可控，但仍需关注：该阶段表现尚可，无明显痛点，但讨论深度可能依赖直接提交而非文字交流。。"
+      },
+      {
+        "id": "I3",
+        "name": "总结与关闭",
+        "icon": "📦",
+        "is_lens": false,
+        "weight": 0.2,
+        "mixed": 38.0,
+        "obj": 26.2,
+        "subj": 55.8,
+        "stars": "★★☆☆☆",
+        "grade": "F",
+        "flag_emoji": "🔴",
+        "pain_count": 1,
+        "pain_pct": 50.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+          "name_cn": "过早关闭风险反向分",
+          "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+          "value": 81.5
+        },
+        "worst_metric": {
+          "code": "OBJ_CLOSURE_REUSE",
+          "name_cn": "关闭复用价值",
+          "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+          "value": 0.0
+        },
+        "distribution": "<40:1 ｜ 40-60:1 ｜ 60-80:0 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_DECISION_TRANSPARENCY",
+            "key": "obj-decision-transparency",
+            "name_cn": "决策透明度",
+            "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+            "mean": 52.5,
+            "median": 52.5,
+            "flag": "🟡",
+            "cover": 2,
+            "evidence": "OBJ_DECISION_TRANSPARENCY：均值 52.5，低分 1/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 75.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 30.0
+              }
+            ],
+            "_mean": 52.5
+          },
+          {
+            "code": "OBJ_CLOSURE_REUSE",
+            "key": "obj-closure-reuse",
+            "name_cn": "关闭复用价值",
+            "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+            "mean": 0.0,
+            "median": 0.0,
+            "flag": "🔴",
+            "cover": 2,
+            "evidence": "OBJ_CLOSURE_REUSE：均值 0.0，低分 2/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 0.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 0.0
+              }
+            ],
+            "_mean": 0.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+            "key": "sub-closure-premature-close-risk-reverse",
+            "name_cn": "过早关闭风险反向分",
+            "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+            "mean": 81.5,
+            "median": 81.5,
+            "cover": 2,
+            "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR已合并后由bot关闭，有resolved标签，无过早关闭风险",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 88.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 75.0
+              }
+            ],
+            "_mean": 81.5
+          },
+          {
+            "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
+            "key": "sub-followup-path-completeness",
+            "name_cn": "后续路径完整性",
+            "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+            "mean": 30.0,
+            "median": 30.0,
+            "cover": 2,
+            "main_reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭后未明确说明后续反馈路径或重新开启条件，信息不足",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 45.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 15.0
+              }
+            ],
+            "_mean": 30.0
+          }
+        ],
+        "low_issues": [
+          {
+            "no": "#224",
+            "url": "https://gitcode.com/cann/cann-samples/issues/224",
+            "score": 49,
+            "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+            "desc": ""
+          }
+        ],
+        "root_cause": "存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。",
+        "is_short_board": true,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "需改进",
+        "core_problem": "存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。",
+        "brief_metrics": [
+          {
+            "code": "OBJ_CLOSURE_REUSE",
+            "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
+            "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
+            "score": 0.0,
+            "reason": "均值 0.0，低分 2/2",
+            "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
+          },
+          {
+            "code": "OBJ_DECISION_TRANSPARENCY",
+            "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
+            "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
+            "score": 52.5,
+            "reason": "均值 52.5，低分 1/2",
+            "expected": "补齐关闭原因、关闭评论和结构化总结"
+          },
+          {
+            "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
+            "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
+            "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
+            "score": 30.0,
+            "reason": "关闭后未明确说明后续反馈路径或重新开启条件，信息不足",
+            "expected": "关闭时明确说明后续反馈路径和重新开启条件"
+          },
+          {
+            "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
+            "metric": "`SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分",
+            "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
+            "score": 81.5,
+            "reason": "MR已合并后由bot关闭，有resolved标签，无过早关闭风险",
+            "expected": "避免缺少讨论、验证时过早关闭"
+          }
+        ],
+        "intro": "本阶段是本周短板之一，主要问题是：存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。。"
+      },
+      {
+        "id": "G",
+        "name": "Bot/Agent 治理",
+        "icon": "🤖",
+        "is_lens": true,
+        "weight": 0.0,
+        "mixed": 67.6,
+        "obj": 70.0,
+        "subj": 64.0,
+        "stars": "★★★☆☆",
+        "grade": "C",
+        "flag_emoji": "🟢",
+        "pain_count": 0,
+        "pain_pct": 0.0,
+        "delta": "首期基线",
+        "incomparable": false,
+        "confidence": "低",
+        "best_metric": {
+          "code": "OBJ_BOT_MISCLOSE_REVERSE",
+          "name_cn": "Bot误关闭风险反向分",
+          "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+          "value": 100.0
+        },
+        "worst_metric": {
+          "code": "OBJ_BOT_GOVERNANCE",
+          "name_cn": "Bot治理有效性",
+          "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+          "value": 40.0
+        },
+        "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:2 ｜ ≥80:0",
+        "metrics_obj": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "key": "obj-bot-governance",
+            "name_cn": "Bot治理有效性",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+            "mean": 40.0,
+            "median": 40.0,
+            "flag": "🟡",
+            "cover": 2,
+            "evidence": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 20.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 60.0
+              }
+            ],
+            "_mean": 40.0
+          },
+          {
+            "code": "OBJ_BOT_MISCLOSE_REVERSE",
+            "key": "obj-bot-misclose-reverse",
+            "name_cn": "Bot误关闭风险反向分",
+            "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+            "mean": 100.0,
+            "median": 100.0,
+            "flag": "🟢",
+            "cover": 2,
+            "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 100.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 100.0
+              }
+            ],
+            "_mean": 100.0
+          }
+        ],
+        "metrics_sub": [
+          {
+            "code": "SUB_BOT_HELPFULNESS",
+            "key": "sub-bot-agent-helpfulness",
+            "name_cn": "自动化帮助度",
+            "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
+            "mean": 62.5,
+            "median": 62.5,
+            "cover": 2,
+            "main_reason": "SUB_BOT_HELPFULNESS：bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，…",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 75.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 50.0
+              }
+            ],
+            "_mean": 62.5
+          },
+          {
+            "code": "SUB_BOT_INTERVENTION_QUALITY",
+            "key": "sub-bot-agent-intervention-quality",
+            "name_cn": "介入动作质量",
+            "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
+            "mean": 65.0,
+            "median": 65.0,
+            "cover": 2,
+            "main_reason": "SUB_BOT_INTERVENTION_QUALITY：assign、close、label三个动作均准确合规且时机合适，无错误阻断或…",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 80.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 50.0
+              }
+            ],
+            "_mean": 65.0
+          },
+          {
+            "code": "SUB_BOT_HANDOFF_QUALITY",
+            "key": "sub-bot-agent-human-handoff-quality",
+            "name_cn": "人机交接质量",
+            "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+            "mean": 65.0,
+            "median": 65.0,
+            "cover": 2,
+            "main_reason": "SUB_BOT_HANDOFF_QUALITY：bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞",
+            "issues": [
+              {
+                "issue_number": "224",
+                "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+                "url": "https://gitcode.com/cann/cann-samples/issues/224",
+                "score": 80.0
+              },
+              {
+                "issue_number": "223",
+                "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+                "url": "https://gitcode.com/cann/cann-samples/issues/223",
+                "score": 50.0
+              }
+            ],
+            "_mean": 65.0
+          }
+        ],
+        "low_issues": [],
+        "root_cause": "Bot 治理在已介入样本中表现良好，但社区级 Bot 覆盖率存在缺口。",
+        "is_short_board": false,
+        "pain": null,
+        "pain_title": "",
+        "judgment": "参考项",
+        "core_problem": "Bot 治理在已介入样本中表现良好，但社区级 Bot 覆盖率存在缺…",
+        "brief_metrics": [
+          {
+            "code": "OBJ_BOT_GOVERNANCE",
+            "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
+            "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+            "score": 40.0,
+            "reason": "均值 40.0，低分 1/2",
+            "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+          },
+          {
+            "code": "OBJ_BOT_MISCLOSE_REVERSE",
+            "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
+            "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+            "score": 100.0,
+            "reason": "均值 100.0，低分 0/2",
+            "expected": "减少 Bot 误关、错关和状态矛盾"
+          },
+          {
+            "code": "SUB_BOT_HANDOFF_QUALITY",
+            "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
+            "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+            "score": 65.0,
+            "reason": "bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞",
+            "expected": "改善 Bot 到人工处理的交接质量"
+          },
+          {
+            "code": "SUB_BOT_HELPFULNESS",
+            "metric": "`SUB_BOT_HELPFULNESS` 自动化帮助度",
+            "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
+            "score": 62.5,
+            "reason": "bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，…",
+            "expected": "让 Bot 介入对分流和推进有实际帮助"
+          },
+          {
+            "code": "SUB_BOT_INTERVENTION_QUALITY",
+            "metric": "`SUB_BOT_INTERVENTION_QUALITY` 介入动作质量",
+            "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
+            "score": 65.0,
+            "reason": "assign、close、label三个动作均准确合规且时机合适，无错误阻断或…",
+            "expected": "提升 Bot 提示、校验和提醒质量"
+          }
+        ],
+        "intro": "仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。"
+      }
+    ],
+    "lens_g": {
+      "id": "G",
+      "name": "Bot/Agent 治理",
+      "icon": "🤖",
+      "is_lens": true,
+      "weight": 0.0,
+      "mixed": 67.6,
+      "obj": 70.0,
+      "subj": 64.0,
+      "stars": "★★★☆☆",
+      "grade": "C",
+      "flag_emoji": "🟢",
+      "pain_count": 0,
+      "pain_pct": 0.0,
+      "delta": "首期基线",
+      "incomparable": false,
+      "confidence": "低",
+      "best_metric": {
+        "code": "OBJ_BOT_MISCLOSE_REVERSE",
+        "name_cn": "Bot误关闭风险反向分",
+        "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+        "value": 100.0
+      },
+      "worst_metric": {
+        "code": "OBJ_BOT_GOVERNANCE",
+        "name_cn": "Bot治理有效性",
+        "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+        "value": 40.0
+      },
+      "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:2 ｜ ≥80:0",
+      "metrics_obj": [
+        {
+          "code": "OBJ_BOT_GOVERNANCE",
+          "key": "obj-bot-governance",
+          "name_cn": "Bot治理有效性",
+          "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+          "mean": 40.0,
+          "median": 40.0,
+          "flag": "🟡",
+          "cover": 2,
+          "evidence": "OBJ_BOT_GOVERNANCE：均值 40.0，低分 1/2",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 20.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 60.0
+            }
+          ],
+          "_mean": 40.0
+        },
+        {
+          "code": "OBJ_BOT_MISCLOSE_REVERSE",
+          "key": "obj-bot-misclose-reverse",
+          "name_cn": "Bot误关闭风险反向分",
+          "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+          "mean": 100.0,
+          "median": 100.0,
+          "flag": "🟢",
+          "cover": 2,
+          "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 100.0，低分 0/2",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 100.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 100.0
+            }
+          ],
+          "_mean": 100.0
+        }
+      ],
+      "metrics_sub": [
+        {
+          "code": "SUB_BOT_HELPFULNESS",
+          "key": "sub-bot-agent-helpfulness",
+          "name_cn": "自动化帮助度",
+          "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
+          "mean": 62.5,
+          "median": 62.5,
+          "cover": 2,
+          "main_reason": "SUB_BOT_HELPFULNESS：bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，…",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 75.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 50.0
+            }
+          ],
+          "_mean": 62.5
+        },
+        {
+          "code": "SUB_BOT_INTERVENTION_QUALITY",
+          "key": "sub-bot-agent-intervention-quality",
+          "name_cn": "介入动作质量",
+          "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
+          "mean": 65.0,
+          "median": 65.0,
+          "cover": 2,
+          "main_reason": "SUB_BOT_INTERVENTION_QUALITY：assign、close、label三个动作均准确合规且时机合适，无错误阻断或…",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 80.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 50.0
+            }
+          ],
+          "_mean": 65.0
+        },
+        {
+          "code": "SUB_BOT_HANDOFF_QUALITY",
+          "key": "sub-bot-agent-human-handoff-quality",
+          "name_cn": "人机交接质量",
+          "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+          "mean": 65.0,
+          "median": 65.0,
+          "cover": 2,
+          "main_reason": "SUB_BOT_HANDOFF_QUALITY：bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞",
+          "issues": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "score": 80.0
+            },
+            {
+              "issue_number": "223",
+              "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+              "url": "https://gitcode.com/cann/cann-samples/issues/223",
+              "score": 50.0
+            }
+          ],
+          "_mean": 65.0
+        }
+      ],
+      "low_issues": [],
+      "root_cause": "Bot 治理在已介入样本中表现良好，但社区级 Bot 覆盖率存在缺口。",
+      "is_short_board": false,
+      "pain": null,
+      "pain_title": "",
+      "judgment": "参考项",
+      "core_problem": "Bot 治理在已介入样本中表现良好，但社区级 Bot 覆盖率存在缺…",
+      "brief_metrics": [
+        {
+          "code": "OBJ_BOT_GOVERNANCE",
+          "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
+          "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
+          "score": 40.0,
+          "reason": "均值 40.0，低分 1/2",
+          "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
+        },
+        {
+          "code": "OBJ_BOT_MISCLOSE_REVERSE",
+          "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
+          "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
+          "score": 100.0,
+          "reason": "均值 100.0，低分 0/2",
+          "expected": "减少 Bot 误关、错关和状态矛盾"
+        },
+        {
+          "code": "SUB_BOT_HANDOFF_QUALITY",
+          "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
+          "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
+          "score": 65.0,
+          "reason": "bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞",
+          "expected": "改善 Bot 到人工处理的交接质量"
+        },
+        {
+          "code": "SUB_BOT_HELPFULNESS",
+          "metric": "`SUB_BOT_HELPFULNESS` 自动化帮助度",
+          "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
+          "score": 62.5,
+          "reason": "bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，…",
+          "expected": "让 Bot 介入对分流和推进有实际帮助"
+        },
+        {
+          "code": "SUB_BOT_INTERVENTION_QUALITY",
+          "metric": "`SUB_BOT_INTERVENTION_QUALITY` 介入动作质量",
+          "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
+          "score": 65.0,
+          "reason": "assign、close、label三个动作均准确合规且时机合适，无错误阻断或…",
+          "expected": "提升 Bot 提示、校验和提醒质量"
+        }
+      ],
+      "intro": "仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。",
+      "suspected_agent_pct": 0.0,
+      "bot_pct": 0.0
+    },
+    "participants": {
+      "summary": "分析期共 0 位社区响应者贡献 0 次评论响应",
+      "responder_count": 0,
+      "response_count": 0,
+      "top_responders": [
+        {
+          "name": "—",
+          "count": 0
+        }
+      ],
+      "top1_concentration": 0.0,
+      "_top1_name": "—"
+    }
+  },
+  "state": {
+    "period": "2026-07-13_to_2026-07-19",
+    "n_total": 2,
+    "idx_total": 47.6,
+    "stage_mixed": {
+      "creation": 80.8,
+      "triage": 53.0,
+      "discussion_resolution": 69.3,
+      "closure": 38.0,
+      "bot-agent": 67.6
+    },
+    "recs": [
+      {
+        "id": "REC-01",
+        "title": "关闭后缺乏复用沉淀与反馈路径",
+        "prio": "P2",
+        "stage_key": "closure",
+        "stage_name": "总结与关闭",
+        "pp_id": "PP-01",
+        "action": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+        "goal": "`OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升",
+        "baseline_score": 38.0,
+        "baseline_value": "总结与关闭阶段分 38.0",
+        "state": "待跟踪"
+      },
+      {
+        "id": "REC-02",
+        "title": "分流与响应阶段客观得分偏低",
+        "prio": "P2",
+        "stage_key": "triage",
+        "stage_name": "分配与首次响应",
+        "pp_id": "PP-02",
+        "action": "在快速响应后补充实质性技术回复或明确分流计划",
+        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
+        "baseline_score": 53.0,
+        "baseline_value": "分配与首次响应阶段分 53.0",
+        "state": "待跟踪"
+      },
+      {
+        "id": "REC-03",
+        "title": "Bot 自动化覆盖率存在缺口",
+        "prio": "P2",
+        "stage_key": "bot-agent",
+        "stage_name": "Bot/Agent 治理",
+        "pp_id": "PP-03",
+        "action": "扩大 Bot 自动响应与分流配置的覆盖范围",
+        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升",
+        "baseline_score": 67.6,
+        "baseline_value": "Bot/Agent 治理阶段分 67.6",
+        "state": "待跟踪"
+      }
+    ]
+  },
+  "source_data": {
+    "community_metrics": {
+      "platform": "gitcode",
+      "total_issues": 2,
+      "open_issues": 0,
+      "closed_issues": 2,
+      "close_rate": 1.0,
+      "close_rate_30d": 1.0,
+      "avg_first_response_hours": 1.45,
+      "median_first_response_hours": 1.45,
+      "response_rate_7d": 1.0,
+      "no_response_rate": 0.0,
+      "avg_resolution_hours": 9.66,
+      "median_resolution_hours": 9.66,
+      "reopen_rate": 0.0,
+      "label_rate": 0.5,
+      "assignee_rate": 0.5,
+      "linked_pr_rate": 0.5,
+      "avg_comments": 0.5,
+      "bot_involvement_rate": 0.0,
+      "bot_absence_rate": 0.5,
+      "bot_low_eff_rate": 0.0,
+      "bot_misclose_rate": 0.0,
+      "agent_noise_rate": 0.0,
+      "agent_filter_gap_rate": 0.0,
+      "avg_overall_score": 85.0,
+      "avg_data_completeness": 85.0,
+      "community_name": "cann/cann-samples"
+    },
+    "stage_data": {
+      "creation": {
+        "label": "Creation",
+        "avg_score": 80.8,
+        "objective_avg_score": 0.0,
+        "subjective_avg_score": 80.8,
+        "pain_point_count": 0,
+        "total_count": 2,
+        "pain_point_ratio": 0.0,
+        "pain_point_issues": []
+      },
+      "triage": {
+        "label": "Triage & Response",
+        "avg_score": 53.0,
+        "objective_avg_score": 45.0,
+        "subjective_avg_score": 65.0,
+        "pain_point_count": 0,
+        "total_count": 2,
+        "pain_point_ratio": 0.0,
+        "pain_point_issues": []
+      },
+      "discussion_resolution": {
+        "label": "Discussion & Resolution",
+        "avg_score": 69.3,
+        "objective_avg_score": 71.2,
+        "subjective_avg_score": 66.8,
+        "pain_point_count": 0,
+        "total_count": 2,
+        "pain_point_ratio": 0.0,
+        "pain_point_issues": []
+      },
+      "closure": {
+        "label": "Closure",
+        "avg_score": 38.0,
+        "objective_avg_score": 26.2,
+        "subjective_avg_score": 55.8,
+        "pain_point_count": 1,
+        "total_count": 2,
+        "pain_point_ratio": 0.5,
+        "pain_point_issues": [
+          {
+            "issue_number": "224",
+            "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+            "url": "https://gitcode.com/cann/cann-samples/issues/224",
+            "score": 49.1,
+            "objective_score": 37.5,
+            "subjective_score": 66.5,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      "bot-agent": {
+        "label": "Bot/Agent Governance",
+        "avg_score": 67.6,
+        "objective_avg_score": 70.0,
+        "subjective_avg_score": 64.0,
+        "pain_point_count": 0,
+        "total_count": 2,
+        "pain_point_ratio": 0.0,
+        "pain_point_issues": []
+      }
+    },
+    "llm_diagnoses": {
+      "stage_diagnoses": {
+        "creation": {
+          "diagnosis": "该阶段表现良好，无明显痛点，需求创建结构化程度较高。",
+          "pain_level": "none",
+          "evidence": [
+            "Creation 阶段平均得分 80.8",
+            "痛点 Issue 占比为 0.0"
+          ],
+          "unlisted_issue": "none",
+          "confidence": "low"
+        },
+        "triage": {
+          "diagnosis": "存在响应效率与分流质量偏低的潜在痛点，客观得分仅 45.0。",
+          "pain_level": "mild",
+          "evidence": [
+            "Triage 阶段平均得分 53.0",
+            "客观平均得分 45.0"
+          ],
+          "unlisted_issue": "none",
+          "confidence": "low"
+        },
+        "discussion_resolution": {
+          "diagnosis": "该阶段表现尚可，无明显痛点，但讨论深度可能依赖直接提交而非文字交流。",
+          "pain_level": "none",
+          "evidence": [
+            "Discussion & Resolution 阶段平均得分 69.3",
+            "痛点 Issue 占比为 0.0"
+          ],
+          "unlisted_issue": "none",
+          "confidence": "low"
+        },
+        "closure": {
+          "diagnosis": "存在关闭沉淀不足的痛点，缺乏后续反馈路径和经验复用。",
+          "pain_level": "moderate",
+          "evidence": [
+            "Closure 阶段平均得分 38.0",
+            "痛点 Issue 占比 0.5",
+            "obj-closure-reuse 得分 0.0"
+          ],
+          "unlisted_issue": "none",
+          "confidence": "low"
+        },
+        "bot-agent": {
+          "diagnosis": "Bot 治理在已介入样本中表现良好，但社区级 Bot 覆盖率存在缺口。",
+          "pain_level": "mild",
+          "evidence": [
+            "Bot/Agent Governance 阶段平均得分 67.6",
+            "bot_absence_rate 达 0.5"
+          ],
+          "unlisted_issue": "none",
+          "confidence": "low"
+        }
+      },
+      "pain_points": [
+        {
+          "id": "PP-01",
+          "priority": "P2",
+          "dimension": "关闭沉淀",
+          "title": "关闭后缺乏复用沉淀与反馈路径",
+          "phenomenon": "Issue 关闭时未明确说明后续反馈路径或重新开启条件，且缺乏经验复用沉淀。",
+          "impact": "社区用户无法了解关闭后的跟进机制，知识沉淀流失。",
+          "metric_evidence": [
+            "Closure 阶段平均得分 38.0",
+            "obj-closure-reuse 得分 0.0",
+            "sub-followup-path-completeness 得分 45.0"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "224",
+              "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+              "url": "https://gitcode.com/cann/cann-samples/issues/224",
+              "reason": "关闭后未明确说明后续反馈路径或重新开启条件，信息不足"
+            }
+          ],
+          "root_cause": "关闭流程缺乏标准化模板或检查清单要求沉淀总结与路径说明。",
+          "actions": [
+            {
+              "owner": "维护者",
+              "trigger": "Issue 关闭时",
+              "action": "补充关闭评论模板，要求填写解决方案摘要及后续反馈路径",
+              "target_metric": "obj-closure-reuse"
+            }
+          ]
+        },
+        {
+          "id": "PP-02",
+          "priority": "P2",
+          "dimension": "响应效率|分流质量",
+          "title": "分流与响应阶段客观得分偏低",
+          "phenomenon": "Triage 阶段客观平均得分仅 45.0，尽管响应速度快，但实质性响应质量可能不足。",
+          "impact": "用户可能仅得到模板回复，缺乏深入交流，影响问题推进效率。",
+          "metric_evidence": [
+            "Triage 阶段客观平均得分 45.0",
+            "Triage 阶段平均得分 53.0"
+          ],
+          "sample_evidence": [],
+          "root_cause": "响应流程偏重速度而忽视实质性内容，或缺乏响应质量校验。",
+          "actions": [
+            {
+              "owner": "维护者",
+              "trigger": "首次响应时",
+              "action": "在快速响应后补充实质性技术回复或明确分流计划",
+              "target_metric": "Triage 阶段客观得分"
+            }
+          ]
+        },
+        {
+          "id": "PP-03",
+          "priority": "P2",
+          "dimension": "Bot治理",
+          "title": "Bot 自动化覆盖率存在缺口",
+          "phenomenon": "社区级 bot_absence_rate 达 0.5，部分 Issue 无 Bot 参与自动化治理。",
+          "impact": "自动化治理覆盖不全，部分流程依赖人工，增加维护负担。",
+          "metric_evidence": [
+            "bot_absence_rate 0.5",
+            "bot_involvement_rate 0.0"
+          ],
+          "sample_evidence": [],
+          "root_cause": "自动化触发条件或 Bot 配置范围有限，未覆盖所有 Issue 类型。",
+          "actions": [
+            {
+              "owner": "Bot 维护者",
+              "trigger": "Issue 创建时",
+              "action": "扩大 Bot 自动响应与分流配置的覆盖范围",
+              "target_metric": "bot_absence_rate"
+            }
+          ]
+        }
+      ],
+      "community_summary": {
+        "top_pain_points": [
+          "关闭后缺乏复用沉淀与反馈路径",
+          "分流与响应阶段客观得分偏低",
+          "Bot 自动化覆盖率存在缺口"
+        ],
+        "structural_issues": [
+          "样本量极小（仅2个Issue），难以全面反映社区整体治理状况，但已暴露出关闭阶段沉淀不足的结构性倾向"
+        ],
+        "automation_issues": [
+          "Bot 在已介入的 Issue 中表现准确合规，但整体覆盖率存在缺口，bot_absence_rate 达 0.5"
+        ],
+        "data_uncertainty": [
+          "由于样本量仅2，所有诊断置信度均较低",
+          "GitCode 平台限制导致 linked_pr_rate 和 author_association 数据缺失，无法评估关联 PR 和维护者响应情况"
+        ],
+        "priority_recommendations": [
+          "制定并执行 Issue 关闭标准模板，强制要求沉淀解决方案及后续路径",
+          "审查并扩大 Bot 自动化治理的触发条件与覆盖范围",
+          "提升首次响应的实质性内容质量，避免仅停留在模板回复"
+        ]
+      }
+    },
+    "scored_issues": [
+      {
+        "issue_number": "224",
+        "title": "[Requirement|需求建议]: 更新ops-tensor submodule的版本",
+        "body": "\n\nThanks for sending an requirement! Please fill in the following template to help quickly solve your problem.\n\n\n\n####  一、背景信息 （必填）\n<!-- 新需求的功能是什么，解决了什么问题 -->\n更新ops-tensor submodule的版本，优先include ops-tensor仓下的tensor_api和c_api，从而在9.0.0版本的CANN包也支持tensor_api特性\n\n####  二、价值/作用 （必填）\n<!-- 请描述下该需求的价值，应用场景等 -->\n9.0.0版本的CANN包中c_api接口不全，支持在9.0.0版本的CANN包下使用tensor_api特性\n####  三、设计方案 （必填）\n<!-- 请描述/解释设计的总体思路（可以使用伪代码） -->\n更新ops-tensor submodule的版本至最新，优先include ops-tensor仓中的tensor_api和c_api\n\n💡 备注（选填）\n\n",
+        "state": "closed",
+        "labels": [
+          "resolved"
+        ],
+        "created_at": "2026-07-17T03:56:01Z",
+        "closed_at": "2026-07-17T06:09:09Z",
+        "author": "liuyufan0725",
+        "comments_data": [
+          {
+            "author": "liuyufan0725",
+            "author_association": "",
+            "created_at": "2026-07-17T03:56:10Z",
+            "body": "/assign"
+          }
+        ],
+        "events_data": [
+          {
+            "id": 180484711,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "add label resolved",
+            "created_at": "2026-07-17T14:47:20+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-17T14:47:20+08:00",
+            "issue_id": "4171803",
+            "event": "labeled",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 180474763,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue224",
+            "created_at": "2026-07-17T14:09:09+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-17T14:09:09+08:00",
+            "issue_id": "4171803",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 180463123,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/ec/ee/ec54e76e264fb48a4fddbc6800847c3d0fc26dc75ee13b3df8d98e82465d7705.png",
+              "html_url": "https://gitcode.com/liuyufan0725",
+              "id": "67e8036e7162f321ab5446de",
+              "login": "liuyufan0725",
+              "name": "liuyufan"
+            },
+            "content": "Create issue mr links: **update ops-tensor submodule** #337",
+            "created_at": "2026-07-17T11:57:15+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-17T11:57:15+08:00",
+            "title": "update ops-tensor submodule",
+            "body": "## 描述\n<!--在这里详细描述你的改动，包括改动的原因和所采取的方法。-->\n更新samples仓的ops-tensor submodule，并优先include其中的tensor_api和c_api实现，从而解决包间兼容性\n## 关联的Issue\n<!-- 如果这个PR是为了解决特定的Issue，请在这里提供Issue链接。-->\n<!-- 如果这个PR是为了解决特定的问题单，请在这里描述问题单单号。-->\n关联 [Issue224](https://gitcode.com/cann/cann-samples/issues/224)\n## 测试\n<!--描述进行了哪些测试来验证你的改动。包括但不限于二级冒烟、算子泛化等。-->\n编译通过\n## 文档更新\n<!--如果这个PR包含文档的更新，请在这里指出。例如：更新了README.md文件。-->\n\n## 类型标签\n<!--  [x] 表示选中 -->\n- [x] Bug修复\n- [ ] 新特性\n- [ ] 性能优化\n- [ ] 文档更新\n- [ ] 其他，请描述：\n\n\n",
+            "head": {
+              "ref": "fix",
+              "sha": "2c7c9ed3e1970bae6f756f8094f63b7dab52ef05",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "liuyufan0725/cann-samples"
+              },
+              "assigner": {
+                "login": "liuyufan0725",
+                "name": "liuyufan"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "06a2fb7762d65ff16918a4139ba0feea843103e6",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4171803",
+            "event": "operate_log",
+            "actor": {
+              "login": "liuyufan0725",
+              "id": "67e8036e7162f321ab5446de",
+              "name": "liuyufan",
+              "type": null
+            }
+          },
+          {
+            "id": 180462851,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "assigned to @liuyufan0725",
+            "created_at": "2026-07-17T11:56:11+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-17T11:56:11+08:00",
+            "issue_id": "4171803",
+            "event": "assigned",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 180484711,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "add label resolved",
+            "created_at": "2026-07-17T14:47:20+08:00",
+            "action_type": "enterprise_label",
+            "update_at": "2026-07-17T14:47:20+08:00",
+            "issue_id": "4171803",
+            "event": "labeled",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 180474763,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "closed from codehub, Due to close relation issue when mr merged: issue224",
+            "created_at": "2026-07-17T14:09:09+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-17T14:09:09+08:00",
+            "issue_id": "4171803",
+            "event": "closed",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          },
+          {
+            "id": 180463123,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/ec/ee/ec54e76e264fb48a4fddbc6800847c3d0fc26dc75ee13b3df8d98e82465d7705.png",
+              "html_url": "https://gitcode.com/liuyufan0725",
+              "id": "67e8036e7162f321ab5446de",
+              "login": "liuyufan0725",
+              "name": "liuyufan"
+            },
+            "content": "Create issue mr links: **update ops-tensor submodule** #337",
+            "created_at": "2026-07-17T11:57:15+08:00",
+            "action_type": "add_issue_mr_link",
+            "update_at": "2026-07-17T11:57:15+08:00",
+            "title": "update ops-tensor submodule",
+            "body": "## 描述\n<!--在这里详细描述你的改动，包括改动的原因和所采取的方法。-->\n更新samples仓的ops-tensor submodule，并优先include其中的tensor_api和c_api实现，从而解决包间兼容性\n## 关联的Issue\n<!-- 如果这个PR是为了解决特定的Issue，请在这里提供Issue链接。-->\n<!-- 如果这个PR是为了解决特定的问题单，请在这里描述问题单单号。-->\n关联 [Issue224](https://gitcode.com/cann/cann-samples/issues/224)\n## 测试\n<!--描述进行了哪些测试来验证你的改动。包括但不限于二级冒烟、算子泛化等。-->\n编译通过\n## 文档更新\n<!--如果这个PR包含文档的更新，请在这里指出。例如：更新了README.md文件。-->\n\n## 类型标签\n<!--  [x] 表示选中 -->\n- [x] Bug修复\n- [ ] 新特性\n- [ ] 性能优化\n- [ ] 文档更新\n- [ ] 其他，请描述：\n\n\n",
+            "head": {
+              "ref": "fix",
+              "sha": "2c7c9ed3e1970bae6f756f8094f63b7dab52ef05",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "liuyufan0725/cann-samples"
+              },
+              "assigner": {
+                "login": "liuyufan0725",
+                "name": "liuyufan"
+              }
+            },
+            "base": {
+              "ref": "master",
+              "sha": "06a2fb7762d65ff16918a4139ba0feea843103e6",
+              "repo": {
+                "path": "cann-samples",
+                "name": "cann-samples",
+                "full_name": "cann/cann-samples"
+              }
+            },
+            "issue_id": "4171803",
+            "event": "operate_log",
+            "actor": {
+              "login": "liuyufan0725",
+              "id": "67e8036e7162f321ab5446de",
+              "name": "liuyufan",
+              "type": null
+            }
+          },
+          {
+            "id": 180462851,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/bf/ad/b7f29486a040d7b2f52bf6c78414692d7d585eb1ec628cea3eb01c9d63f68618.png?time=1755691472703",
+              "html_url": "https://gitcode.com/cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "login": "cann-robot",
+              "name": "CANN-robot"
+            },
+            "content": "assigned to @liuyufan0725",
+            "created_at": "2026-07-17T11:56:11+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-17T11:56:11+08:00",
+            "issue_id": "4171803",
+            "event": "assigned",
+            "actor": {
+              "login": "cann-robot",
+              "id": "673c1552584fe8295cfd4a13",
+              "name": "CANN-robot",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [
+          {
+            "type": "pr",
+            "url": "https://gitcode.com/cann/cann-samples/merge_requests/337",
+            "state": "merged",
+            "number": 337,
+            "created_at": "2026-07-16T18:11:15.208+08:00",
+            "merged_at": "2026-07-17T14:09:09.934+08:00",
+            "match_source": null,
+            "confidence": null
+          }
+        ],
+        "close_reason": "进行中",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/224",
+        "features": {
+          "has_body": true,
+          "body_length": 489,
+          "has_repro": false,
+          "has_env": true,
+          "has_expected": false,
+          "has_logs": false,
+          "has_sections": true,
+          "first_response_hours": 0.0,
+          "first_responder": "cann-robot",
+          "comment_count": 1,
+          "maintainer_comment_count": 1,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": true,
+          "has_code_in_comments": false,
+          "has_resolution_kw": false,
+          "days_since_last_activity": 4,
+          "has_labels": true,
+          "label_count": 1,
+          "has_assignee": true,
+          "has_milestone": false,
+          "has_linked_pr": true,
+          "linked_artifact_types": [
+            "pr"
+          ],
+          "has_commit_ref": false,
+          "has_doc_link": false,
+          "has_release_ref": true,
+          "is_closed": true,
+          "resolution_hours": 2.22,
+          "has_close_comment": true,
+          "close_comment_length": 7,
+          "close_reason": "进行中",
+          "reopened_count": 0,
+          "is_self_closed": false,
+          "self_close_data_available": true,
+          "closure_disposition": "fix",
+          "has_wontfix_or_dup": false,
+          "has_closure_summary": false,
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": true,
+          "bot_labeled": true,
+          "bot_linked_duplicate": false,
+          "bot_closed_stale": false,
+          "bot_misclose_signal": false,
+          "bot_misclose_reopened": false,
+          "bot_misclose_maintainer_continued": false,
+          "bot_misclose_artifact_added": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": true,
+          "is_task_type": true,
+          "has_internal_design": true,
+          "mentions_ai": false,
+          "long_body_no_logs": true,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": false,
+          "req_fields_present": 5,
+          "imp_fields_present": 4,
+          "opt_fields_present": 3,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4,
+          "first_substantive_response_hours": null,
+          "result_formation_hours": 2.22,
+          "first_substantive_response_confidence": 0.3,
+          "result_formation_confidence": 0.5
+        },
+        "metric_scores": {
+          "obj-response-speed": 100.0,
+          "obj-first-substantive-response-time": 0.0,
+          "obj-solution-evidence": 38.46153846153847,
+          "obj-result-formation-timeliness": 100.0,
+          "obj-decision-transparency": 75.0,
+          "obj-closure-reuse": 0.0,
+          "obj-bot-governance": 20.0,
+          "obj-bot-misclose-reverse": 100.0,
+          "obj-data-completeness": 97.5,
+          "obj-bot-misclose-risk": 0.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 0.0,
+            "subjective_score": 0.0,
+            "score": 0.0,
+            "is_pain_point": true
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 50.0,
+            "subjective_score": 0.0,
+            "score": 30.0,
+            "is_pain_point": true
+          },
+          "discussion_resolution": {
+            "label": "Discussion & Resolution",
+            "objective_score": 69.2,
+            "subjective_score": 0.0,
+            "score": 41.5,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 37.5,
+            "subjective_score": 0.0,
+            "score": 22.5,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 60.0,
+            "subjective_score": 0.0,
+            "score": 36.0,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 0.0,
+            "subjective_score": 84.0,
+            "score": 84.0,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 50.0,
+            "subjective_score": 82.5,
+            "score": 63.0,
+            "is_pain_point": false
+          },
+          "discussion_resolution": {
+            "label": "Discussion & Resolution",
+            "objective_score": 69.2,
+            "subjective_score": 81.0,
+            "score": 73.9,
+            "is_pain_point": false
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 37.5,
+            "subjective_score": 66.5,
+            "score": 49.1,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 60.0,
+            "subjective_score": 78.1,
+            "score": 67.2,
+            "is_pain_point": false
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": false,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": false,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "无明显bot/agent治理风险"
+        },
+        "subjective_metric_scores": {
+          "sub-input-quality": {
+            "score": 78.0,
+            "reason": "结构化章节完整，含背景、价值、设计方案，但作为需求缺少更详细技术方案细节"
+          },
+          "sub-agent-noise-risk": {
+            "score": 90.0,
+            "reason": "内部贡献者提交的真实需求，内容具体合理，无幻觉或噪音迹象"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 80.0,
+            "reason": "bot正确执行assign，issue关联MR#337并最终resolved，分流路径正确"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 85.0,
+            "reason": "用户自我认领/assign，bot确认assignee，责任归属清晰"
+          },
+          "sub-discussion-progression": {
+            "score": 72.0,
+            "reason": "无文字讨论，但用户直接创建MR推进，从创建到关闭仅2.2小时，行动推进高效"
+          },
+          "sub-user-goal-result": {
+            "score": 90.0,
+            "reason": "用户需求通过MR#337合并实现，issue标记resolved关闭，目标有效满足"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 88.0,
+            "reason": "MR已合并后由bot关闭，有resolved标签，无过早关闭风险"
+          },
+          "sub-followup-path-completeness": {
+            "score": 45.0,
+            "reason": "关闭后未明确说明后续反馈路径或重新开启条件，信息不足"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 75.0,
+            "reason": "bot执行assign响应命令、MR合并后自动关闭、添加resolved标签，流程帮助有效"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 80.0,
+            "reason": "assign、close、label三个动作均准确合规且时机合适，无错误阻断或误判"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 80.0,
+            "reason": "bot assign后用户自行创建MR推进，MR合并后bot关闭，交接顺畅无停滞"
+          }
+        }
+      },
+      {
+        "issue_number": "223",
+        "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+        "body": "\n\nThanks for sending an issue! Please fill in the following template to help quickly solve your problem.\n\n\n\n####  一、问题描述 （必填）\n<!-- 可粘贴错误日志或描述截图 -->\ncann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式。 \n1、ops-tensor仓代码在持续演进中，使用commit id方式可保证cann-samples仓样例功能稳定；\n2、cann-samples仓通过显示更新commit id的方式，增加自验环节，保证ops-tensor仓新特性不影响cann-samples仓样例功能；\n\n####  二、环境信息 （可选）\n<!--\n• 昇腾硬件型号：\n• CANN版本:\n• 操作系统：\n• 其他相关软件版本：\n -->\n\n####  三、重现步骤 （可选）\n<!-- 提供尽可能多的信息描述如何重现该缺陷 -->\n\n####  四、预期结果 （可选）\n<!-- 描述预期的行为应该是什么样子的 -->\n\n\n💡 备注（选填）\n\n",
+        "state": "closed",
+        "labels": [],
+        "created_at": "2026-07-16T09:07:05Z",
+        "closed_at": "2026-07-17T02:13:19Z",
+        "author": "chenkang30",
+        "comments_data": [],
+        "events_data": [
+          {
+            "id": 180433092,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/fe/ac/6fea71c32ba6524182e040c77cc74299e9cbff6953f80c3fc114303b35e60036.png",
+              "html_url": "https://gitcode.com/chenkang30",
+              "id": "680b67997740957d853d456f",
+              "login": "chenkang30",
+              "name": "chen-kang30"
+            },
+            "content": "closed from codehub",
+            "created_at": "2026-07-17T10:13:19+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-17T10:13:19+08:00",
+            "issue_id": "4169956",
+            "event": "closed",
+            "actor": {
+              "login": "chenkang30",
+              "id": "680b67997740957d853d456f",
+              "name": "chen-kang30",
+              "type": null
+            }
+          },
+          {
+            "id": 180433091,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/fe/ac/6fea71c32ba6524182e040c77cc74299e9cbff6953f80c3fc114303b35e60036.png",
+              "html_url": "https://gitcode.com/chenkang30",
+              "id": "680b67997740957d853d456f",
+              "login": "chenkang30",
+              "name": "chen-kang30"
+            },
+            "content": "changed custom state from 进行中 to 已完成",
+            "created_at": "2026-07-17T10:13:19+08:00",
+            "action_type": "changed_issue_custom_state",
+            "update_at": "2026-07-17T10:13:19+08:00",
+            "issue_id": "4169956",
+            "event": "closed",
+            "actor": {
+              "login": "chenkang30",
+              "id": "680b67997740957d853d456f",
+              "name": "chen-kang30",
+              "type": null
+            }
+          },
+          {
+            "id": 180378531,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "unassigned @yangyang016",
+            "created_at": "2026-07-16T20:02:24+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-16T20:02:24+08:00",
+            "issue_id": "4169956",
+            "event": "unassigned",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          },
+          {
+            "id": 180378286,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "assigned to @yangyang016",
+            "created_at": "2026-07-16T20:01:17+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-16T20:01:17+08:00",
+            "issue_id": "4169956",
+            "event": "assigned",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          }
+        ],
+        "timeline_events": [
+          {
+            "id": 180433092,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/fe/ac/6fea71c32ba6524182e040c77cc74299e9cbff6953f80c3fc114303b35e60036.png",
+              "html_url": "https://gitcode.com/chenkang30",
+              "id": "680b67997740957d853d456f",
+              "login": "chenkang30",
+              "name": "chen-kang30"
+            },
+            "content": "closed from codehub",
+            "created_at": "2026-07-17T10:13:19+08:00",
+            "action_type": "closed",
+            "update_at": "2026-07-17T10:13:19+08:00",
+            "issue_id": "4169956",
+            "event": "closed",
+            "actor": {
+              "login": "chenkang30",
+              "id": "680b67997740957d853d456f",
+              "name": "chen-kang30",
+              "type": null
+            }
+          },
+          {
+            "id": 180433091,
+            "user": {
+              "avatar_url": "https://cdn-img.gitcode.com/fe/ac/6fea71c32ba6524182e040c77cc74299e9cbff6953f80c3fc114303b35e60036.png",
+              "html_url": "https://gitcode.com/chenkang30",
+              "id": "680b67997740957d853d456f",
+              "login": "chenkang30",
+              "name": "chen-kang30"
+            },
+            "content": "changed custom state from 进行中 to 已完成",
+            "created_at": "2026-07-17T10:13:19+08:00",
+            "action_type": "changed_issue_custom_state",
+            "update_at": "2026-07-17T10:13:19+08:00",
+            "issue_id": "4169956",
+            "event": "closed",
+            "actor": {
+              "login": "chenkang30",
+              "id": "680b67997740957d853d456f",
+              "name": "chen-kang30",
+              "type": null
+            }
+          },
+          {
+            "id": 180378531,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "unassigned @yangyang016",
+            "created_at": "2026-07-16T20:02:24+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-16T20:02:24+08:00",
+            "issue_id": "4169956",
+            "event": "unassigned",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          },
+          {
+            "id": 180378286,
+            "user": {
+              "html_url": "https://gitcode.com/yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "login": "yangyang016",
+              "name": "yangyang016"
+            },
+            "content": "assigned to @yangyang016",
+            "created_at": "2026-07-16T20:01:17+08:00",
+            "action_type": "assignee",
+            "update_at": "2026-07-16T20:01:17+08:00",
+            "issue_id": "4169956",
+            "event": "assigned",
+            "actor": {
+              "login": "yangyang016",
+              "id": "6822c8b559bdd61f837dbd1c",
+              "name": "yangyang016",
+              "type": null
+            }
+          }
+        ],
+        "linked_artifacts": [],
+        "close_reason": "已完成",
+        "community_name": "cann/cann-samples",
+        "repo_name": "cann-samples",
+        "url": "https://gitcode.com/cann/cann-samples/issues/223",
+        "features": {
+          "has_body": true,
+          "body_length": 527,
+          "has_repro": true,
+          "has_env": true,
+          "has_expected": true,
+          "has_logs": true,
+          "has_sections": true,
+          "first_response_hours": 2.9,
+          "first_responder": "yangyang016",
+          "comment_count": 0,
+          "maintainer_comment_count": 0,
+          "bot_comment_count": 0,
+          "has_maintainer_comment": false,
+          "has_code_in_comments": false,
+          "has_resolution_kw": false,
+          "days_since_last_activity": 4,
+          "has_labels": false,
+          "label_count": 0,
+          "has_assignee": false,
+          "has_milestone": false,
+          "has_linked_pr": false,
+          "linked_artifact_types": [],
+          "has_commit_ref": true,
+          "has_doc_link": false,
+          "has_release_ref": true,
+          "is_closed": true,
+          "resolution_hours": 17.1,
+          "has_close_comment": false,
+          "close_comment_length": 0,
+          "close_reason": "已完成",
+          "reopened_count": 0,
+          "is_self_closed": true,
+          "self_close_data_available": true,
+          "closure_disposition": "silent",
+          "has_wontfix_or_dup": false,
+          "has_closure_summary": false,
+          "author_confirmed": false,
+          "maintainer_confirmed": false,
+          "not_reopened": true,
+          "has_verified_label": false,
+          "bot_closed": false,
+          "bot_labeled": false,
+          "bot_linked_duplicate": false,
+          "bot_closed_stale": false,
+          "bot_misclose_signal": false,
+          "bot_misclose_reopened": false,
+          "bot_misclose_maintainer_continued": false,
+          "bot_misclose_artifact_added": false,
+          "is_internal_contribution": true,
+          "is_self_assigned": false,
+          "is_task_type": true,
+          "has_internal_design": false,
+          "mentions_ai": false,
+          "long_body_no_logs": false,
+          "maintainer_flagged_halluc": false,
+          "has_no_repro_no_env": false,
+          "req_fields_present": 5,
+          "imp_fields_present": 1,
+          "opt_fields_present": 2,
+          "req_fields_total": 5,
+          "imp_fields_total": 4,
+          "opt_fields_total": 4,
+          "first_substantive_response_hours": null,
+          "result_formation_hours": 17.1,
+          "first_substantive_response_confidence": 1.0,
+          "result_formation_confidence": 0.7
+        },
+        "metric_scores": {
+          "obj-response-speed": 80.0,
+          "obj-first-substantive-response-time": 0.0,
+          "obj-solution-evidence": 46.15384615384615,
+          "obj-result-formation-timeliness": 100.0,
+          "obj-decision-transparency": 30.0,
+          "obj-closure-reuse": 0.0,
+          "obj-bot-governance": 60.0,
+          "obj-bot-misclose-reverse": 100.0,
+          "obj-data-completeness": 72.5,
+          "obj-bot-misclose-risk": 0.0
+        },
+        "objective_stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 0.0,
+            "subjective_score": 0.0,
+            "score": 0.0,
+            "is_pain_point": true
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 40.0,
+            "subjective_score": 0.0,
+            "score": 24.0,
+            "is_pain_point": true
+          },
+          "discussion_resolution": {
+            "label": "Discussion & Resolution",
+            "objective_score": 73.1,
+            "subjective_score": 0.0,
+            "score": 43.8,
+            "is_pain_point": true
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 15.0,
+            "subjective_score": 0.0,
+            "score": 9.0,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 80.0,
+            "subjective_score": 0.0,
+            "score": 48.0,
+            "is_pain_point": true
+          }
+        },
+        "stage_scores": {
+          "creation": {
+            "label": "Creation",
+            "objective_score": 0.0,
+            "subjective_score": 77.5,
+            "score": 77.5,
+            "is_pain_point": false
+          },
+          "triage": {
+            "label": "Triage & Response",
+            "objective_score": 40.0,
+            "subjective_score": 47.5,
+            "score": 43.0,
+            "is_pain_point": true
+          },
+          "discussion_resolution": {
+            "label": "Discussion & Resolution",
+            "objective_score": 73.1,
+            "subjective_score": 52.5,
+            "score": 64.8,
+            "is_pain_point": false
+          },
+          "closure": {
+            "label": "Closure",
+            "objective_score": 15.0,
+            "subjective_score": 45.0,
+            "score": 27.0,
+            "is_pain_point": true
+          },
+          "bot-agent": {
+            "label": "Bot/Agent Governance",
+            "objective_score": 80.0,
+            "subjective_score": 50.0,
+            "score": 68.0,
+            "is_pain_point": false
+          }
+        },
+        "bot_agent": {
+          "bot_absence_risk": true,
+          "bot_low_effectiveness_risk": false,
+          "suspicious_bot_misclose": false,
+          "suspected_agent_issue": false,
+          "agent_filtering_gap_risk": false,
+          "bot_agent_diagnosis": "bot缺位（无标签或无响应）"
+        },
+        "subjective_metric_scores": {
+          "sub-input-quality": {
+            "score": 60.0,
+            "reason": "有结构化章节和清晰描述，但环境、复现步骤、预期结果等可选字段均未填写。"
+          },
+          "sub-agent-noise-risk": {
+            "score": 95.0,
+            "reason": "内部贡献者提交，内容真实具体，无AI生成或幻觉迹象。"
+          },
+          "sub-triage-routing-correctness": {
+            "score": 45.0,
+            "reason": "有assignee分配但随后取消，无标签分类，分流路径不清晰。"
+          },
+          "sub-triage-owner-clarity": {
+            "score": 50.0,
+            "reason": "曾分配给yangyang016但随后取消分配，最终由提交者自行关闭。"
+          },
+          "sub-discussion-progression": {
+            "score": 35.0,
+            "reason": "无任何评论讨论，仅通过事件流转完成，缺乏可见的推进过程。"
+          },
+          "sub-user-goal-result": {
+            "score": 70.0,
+            "reason": "提交者自行关闭且状态为已完成，推测目标已达成，但无评论佐证。"
+          },
+          "sub-closure-premature-close-risk-reverse": {
+            "score": 75.0,
+            "reason": "由提交者本人关闭并标记已完成，不存在过早关闭的明显风险。"
+          },
+          "sub-followup-path-completeness": {
+            "score": 15.0,
+            "reason": "静默关闭，未说明后续反馈路径或重新评估条件。"
+          },
+          "sub-bot-agent-helpfulness": {
+            "score": 50.0,
+            "reason": "无bot介入记录，无法评估帮助性，给中性分。"
+          },
+          "sub-bot-agent-intervention-quality": {
+            "score": 50.0,
+            "reason": "无bot动作可评估，给中性保守分。"
+          },
+          "sub-bot-agent-human-handoff-quality": {
+            "score": 50.0,
+            "reason": "无bot介入，人工直接处理并关闭，无交接问题但也无交接证据。"
+          }
+        }
+      }
+    ],
+    "suspicious_cases": [],
+    "review_cases": [
+      {
+        "issue_number": "223",
+        "title": "[Bug-Report|缺陷反馈]: cann-samples中matmul类样例依赖ops-tensor仓代码，引用ops-tensor仓时使用commit id的方式",
+        "url": "https://gitcode.com/cann/cann-samples/issues/223",
+        "risk_type": "Closure得分极低(27)",
+        "stage": "Closure",
+        "evidence": "bot缺位（无标签或无响应）",
+        "reason": "风险分 3，Closure得分极低(27)",
+        "action": "建议人工审查流程处理记录"
+      }
+    ],
+    "duplicate_clusters": []
+  }
+}

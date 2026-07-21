@@ -68,6 +68,24 @@ export type IssueReportStage = {
   intro: string;
 };
 
+export type IssueReportPainIssueEvidence = {
+  type: string;
+  actor: string;
+  text: string;
+  url: string;
+  time: string;
+};
+
+export type IssueReportPainIssue = {
+  number: string;
+  title: string;
+  url: string;
+  score: number;
+  metric_code: string;
+  reason: string;
+  evidence: IssueReportPainIssueEvidence[];
+};
+
 export type IssueReportPain = {
   prio: string;
   id: string;
@@ -79,6 +97,7 @@ export type IssueReportPain = {
   action: string;
   rec_id: string;
   state: string;
+  low_score_issues?: IssueReportPainIssue[];
 };
 
 export type IssueReportRecommendation = {

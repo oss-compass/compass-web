@@ -33,6 +33,193 @@ type IssueExperiencePathProps = {
   onStageChange: (stageId: string) => void;
 };
 
+const EVIDENCE_TYPE_META: Record<string, { label: string; cls: string }> = {
+  open: { label: '创建', cls: 'bg-sky-50 text-sky-600' },
+  comment: { label: '评论', cls: 'bg-slate-100 text-slate-600' },
+  assign: { label: '指派', cls: 'bg-violet-50 text-violet-600' },
+  label: { label: '打标', cls: 'bg-amber-50 text-amber-600' },
+  close: { label: '关闭', cls: 'bg-rose-50 text-rose-600' },
+  reopen: { label: '重开', cls: 'bg-emerald-50 text-emerald-600' },
+  pr: { label: '关联 PR', cls: 'bg-indigo-50 text-indigo-600' },
+};
+
+const getEvidenceMeta = (type: string) =>
+  EVIDENCE_TYPE_META[type] ?? {
+    label: type || '动作',
+    cls: 'bg-slate-100 text-slate-500',
+  };
+
+/**
+ * 单个痛点卡：可展开查看关键证据、体验影响，以及涉及的具体 Issue 明细表
+ *（对齐 CI 报告「问题定位」中每个问题以表格展示关联记录的形式）。
+ */
+const StagePainCard: React.FC<{ pain: IssueReportPain }> = ({ pain }) => {
+  const tone = getPriorityTone(pain.prio);
+  const issues = pain.low_score_issues ?? [];
+  const [open, setOpen] = useState(true);
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-rose-200/70 bg-white shadow-[0_10px_24px_rgba(244,63,94,0.06)]">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-rose-50/40"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
+            >
+              {pain.prio}
+            </span>
+            <span className="font-mono text-[11px] font-semibold text-slate-400">
+              {pain.id}
+            </span>
+            {pain.state ? (
+              <span className="text-[10px] text-slate-400">{pain.state}</span>
+            ) : null}
+            {issues.length ? (
+              <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-600">
+                {issues.length} 个 Issue
+              </span>
+            ) : null}
+          </span>
+          <span className="mt-2 block text-sm font-semibold leading-6 text-slate-900">
+            {pain.title}
+          </span>
+        </span>
+        <span className="shrink-0 pt-1 text-slate-400">
+          <DownOutlined
+            className={`text-[11px] transition-transform ${
+              open ? 'rotate-180' : ''
+            }`}
+          />
+        </span>
+      </button>
+
+      {open ? (
+        <div className="border-t border-rose-100 px-4 py-4">
+          <div className="grid gap-2 text-xs leading-5">
+            <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600">
+              <span className="font-semibold text-slate-400">关键证据 · </span>
+              {pain.evidence}
+            </p>
+            <p className="px-1 text-slate-600">
+              <span className="font-semibold text-slate-400">体验影响 · </span>
+              {pain.impact}
+            </p>
+          </div>
+
+          {issues.length ? (
+            <div className="mt-3">
+              <div className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold text-slate-500">
+                <FlagOutlined className="text-rose-400" />
+                涉及 Issue 明细 · {issues.length} 个
+              </div>
+              <div className="overflow-x-auto rounded-xl border border-slate-200">
+                <table className="w-full min-w-[720px] border-collapse text-[12px]">
+                  <thead className="bg-slate-50/80">
+                    <tr>
+                      <th className="w-[220px] border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                        Issue
+                      </th>
+                      <th className="w-[56px] border-b border-slate-200 px-3 py-2 text-center text-[11px] font-semibold text-slate-500">
+                        得分
+                      </th>
+                      <th className="w-[220px] border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                        低分原因
+                      </th>
+                      <th className="border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                        原文依据
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {issues.map((issue) => {
+                      const issueTone = getScoreTone(issue.score);
+                      return (
+                        <tr key={issue.number} className="align-top">
+                          <td className="border-b border-slate-100 px-3 py-2.5">
+                            <a
+                              href={issue.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
+                            >
+                              <LinkOutlined className="text-[11px]" />#
+                              {issue.number}
+                            </a>
+                            <div className="mt-1 leading-5 text-slate-600">
+                              {issue.title}
+                            </div>
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2.5 text-center">
+                            <span
+                              className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold ${issueTone.badge}`}
+                            >
+                              {issue.score}
+                            </span>
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2.5 leading-5 text-slate-600">
+                            {issue.reason}
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2.5">
+                            {issue.evidence.length ? (
+                              <ul className="space-y-1">
+                                {issue.evidence.map((ev, i) => {
+                                  const meta = getEvidenceMeta(ev.type);
+                                  return (
+                                    <li
+                                      key={`${ev.type}-${i}`}
+                                      className="flex items-start gap-1.5"
+                                    >
+                                      <span
+                                        className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${meta.cls}`}
+                                      >
+                                        {meta.label}
+                                      </span>
+                                      <span className="min-w-0 leading-5 text-slate-600">
+                                        {ev.actor ? (
+                                          <span className="font-medium text-slate-500">
+                                            {ev.actor}：
+                                          </span>
+                                        ) : null}
+                                        {ev.url ? (
+                                          <a
+                                            href={ev.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:underline"
+                                          >
+                                            {ev.text}
+                                          </a>
+                                        ) : (
+                                          ev.text
+                                        )}
+                                      </span>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            ) : (
+                              <span className="text-slate-400">—</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   projectName,
   stages,
@@ -63,11 +250,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
 
   const [metricsOpen, setMetricsOpen] = useState(true);
   const [detailExpanded, setDetailExpanded] = useState(true);
-  const [painIssuesExpanded, setPainIssuesExpanded] = useState(false);
-
-  useEffect(() => {
-    setPainIssuesExpanded(false);
-  }, [activeStageId]);
 
   if (!activeStage) return null;
 
@@ -134,12 +316,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   };
   const stagePains = getStagePains(activeStage);
   const stageRecommendations = getStageRecommendations(activeStage, stagePains);
-  const painIssues = activeStage.pain_issues?.length
-    ? activeStage.pain_issues
-    : activeStage.low_issues.map((issue) => ({ ...issue, state: '' }));
-  const visiblePainIssues = painIssuesExpanded
-    ? painIssues
-    : painIssues.slice(0, 3);
 
   return (
     <section
@@ -155,7 +331,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           >
             体验路径总览
           </h2>
-          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点、行动与代表 Issue）；G 为 Bot / Agent 治理参考镜头，不计入总分。" />
+          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点及其涉及的 Issue 明细、行动清单）；G 为 Bot / Agent 治理参考镜头，不计入总分。" />
         </div>
       </div>
 
@@ -254,10 +430,10 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         </span>
                         <span
                           className="flex flex-col items-center py-1"
-                          title="本阶段被判定存在痛点的 Issue 数，对应下方“痛点分析”"
+                          title="本阶段主要问题的痛点数量，对应下方“痛点”"
                         >
                           <strong className="text-[20px] font-bold leading-none text-rose-500">
-                            {stage.pain_count}
+                            {cardPains.length}
                           </strong>
                           <span className="mt-1 text-[14px] text-slate-400">
                             痛点
@@ -540,228 +716,99 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                   </div>
                 </div>
 
-                {stagePains.length || stageRecommendations.length ? (
+                {stagePains.length ? (
                   <div className="border-t border-slate-200 pt-6">
                     <div className="flex flex-wrap items-end justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="text-base font-semibold text-slate-900">
-                            阶段改进闭环
-                          </h4>
-                          <HintIcon title="将本阶段的主要问题与可执行行动放在一起，便于从诊断直接进入改进。" />
-                        </div>
+                      <div className="flex items-center gap-1.5">
+                        <FlagOutlined className="text-rose-500" />
+                        <h4 className="text-base font-semibold text-slate-900">
+                          痛点
+                        </h4>
+                        <HintIcon title="本阶段的主要问题及其涉及的具体 Issue 明细，点击卡片可展开查看关联 Issue 的低分原因与原文依据。" />
                       </div>
-                      <div className="flex items-center gap-2 text-[11px] font-semibold">
-                        <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-rose-600">
-                          {stagePains.length} 个问题
-                        </span>
-                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-emerald-700">
-                          {stageRecommendations.length} 项行动
-                        </span>
-                      </div>
+                      <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
+                        {stagePains.length} 个问题
+                      </span>
                     </div>
 
-                    <div
-                      className={`mt-4 grid grid-cols-1 gap-4 ${
-                        stagePains.length && stageRecommendations.length
-                          ? '>xl:grid-cols-2'
-                          : ''
-                      }`}
-                    >
-                      {stagePains.length ? (
-                        <div className="overflow-hidden rounded-2xl border border-rose-200/70 bg-white">
-                          <div className="flex items-center gap-2 border-b border-rose-100 bg-rose-50/70 px-4 py-3">
-                            <FlagOutlined className="text-rose-500" />
-                            <span className="text-sm font-semibold text-slate-800">
-                              主要问题
-                            </span>
-                          </div>
-                          <div className="divide-y divide-slate-100">
-                            {stagePains.map((pain) => {
-                              const tone = getPriorityTone(pain.prio);
-                              return (
-                                <article key={pain.id} className="p-4">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <span
-                                      className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
-                                    >
-                                      {pain.prio}
-                                    </span>
-                                    <span className="font-mono text-[11px] font-semibold text-slate-400">
-                                      {pain.id}
-                                    </span>
-                                    <span className="text-[10px] text-slate-400">
-                                      {pain.state}
-                                    </span>
-                                  </div>
-                                  <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
-                                    {pain.title}
-                                  </h5>
-                                  <div className="mt-3 grid gap-2 text-xs leading-5">
-                                    <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600">
-                                      <span className="font-semibold text-slate-400">
-                                        关键证据 ·{' '}
-                                      </span>
-                                      {pain.evidence}
-                                    </p>
-                                    <p className="px-1 text-slate-600">
-                                      <span className="font-semibold text-slate-400">
-                                        体验影响 ·{' '}
-                                      </span>
-                                      {pain.impact}
-                                    </p>
-                                  </div>
-                                </article>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ) : null}
+                    <div className="mt-4 flex flex-col gap-4">
+                      {stagePains.map((pain) => (
+                        <StagePainCard key={pain.id} pain={pain} />
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
 
-                      {stageRecommendations.length ? (
-                        <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-white">
-                          <div className="flex items-center gap-2 border-b border-emerald-100 bg-emerald-50/70 px-4 py-3">
-                            <RocketOutlined className="text-emerald-600" />
-                            <span className="text-sm font-semibold text-slate-800">
-                              本周行动清单
-                            </span>
-                          </div>
-                          <div className="divide-y divide-slate-100">
-                            {stageRecommendations.map((recommendation) => {
-                              const tone = getPriorityTone(recommendation.prio);
-                              return (
-                                <article
-                                  key={recommendation.id}
-                                  className="p-4"
-                                >
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <span
-                                      className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
-                                    >
-                                      {recommendation.prio}
-                                    </span>
-                                    <span className="font-mono text-[11px] font-semibold text-emerald-600">
-                                      {recommendation.id}
-                                    </span>
-                                    <span className="text-[10px] text-slate-400">
-                                      对应 {recommendation.pp_id}
-                                    </span>
-                                  </div>
-                                  <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
-                                    {recommendation.action_title}
-                                  </h5>
-                                  <p className="mt-1 text-xs leading-5 text-slate-600">
-                                    {cleanReportText(recommendation.action)}
-                                  </p>
-                                  <div className="mt-3 rounded-xl bg-emerald-50/60 px-3 py-2 text-[11px] leading-5 text-slate-600">
-                                    <div>
-                                      <span className="font-semibold text-slate-400">
-                                        承接 ·{' '}
-                                      </span>
-                                      {recommendation.owner_team}
-                                      {recommendation.owner_candidate
-                                        ? ` / 候选 ${recommendation.owner_candidate}`
-                                        : ''}
-                                    </div>
-                                    <div>
-                                      <span className="font-semibold text-slate-400">
-                                        触发 ·{' '}
-                                      </span>
-                                      {recommendation.trigger}
-                                    </div>
-                                  </div>
-                                  <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-5 text-slate-600">
-                                    <AimOutlined className="mt-1 shrink-0 text-emerald-600" />
-                                    <span>
-                                      {normalizeGoal(recommendation.goal)}
-                                    </span>
-                                  </p>
-                                </article>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ) : null}
+                {stageRecommendations.length ? (
+                  <div className="border-t border-slate-200 pt-6">
+                    <div className="flex flex-wrap items-end justify-between gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <RocketOutlined className="text-emerald-600" />
+                        <h4 className="text-base font-semibold text-slate-900">
+                          本周行动清单
+                        </h4>
+                        <HintIcon title="针对本阶段痛点的可执行改进建议，便于从诊断直接进入改进。" />
+                      </div>
+                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                        {stageRecommendations.length} 项行动
+                      </span>
+                    </div>
+
+                    <div className=">xl:grid-cols-2 mt-4 grid grid-cols-1 gap-4">
+                      {stageRecommendations.map((recommendation) => {
+                        const tone = getPriorityTone(recommendation.prio);
+                        return (
+                          <article
+                            key={recommendation.id}
+                            className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-white p-4"
+                          >
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span
+                                className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
+                              >
+                                {recommendation.prio}
+                              </span>
+                              <span className="font-mono text-[11px] font-semibold text-emerald-600">
+                                {recommendation.id}
+                              </span>
+                              <span className="text-[10px] text-slate-400">
+                                对应 {recommendation.pp_id}
+                              </span>
+                            </div>
+                            <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
+                              {recommendation.action_title}
+                            </h5>
+                            <p className="mt-1 text-xs leading-5 text-slate-600">
+                              {cleanReportText(recommendation.action)}
+                            </p>
+                            <div className="mt-3 rounded-xl bg-emerald-50/60 px-3 py-2 text-[11px] leading-5 text-slate-600">
+                              <div>
+                                <span className="font-semibold text-slate-400">
+                                  承接 ·{' '}
+                                </span>
+                                {recommendation.owner_team}
+                                {recommendation.owner_candidate
+                                  ? ` / 候选 ${recommendation.owner_candidate}`
+                                  : ''}
+                              </div>
+                              <div>
+                                <span className="font-semibold text-slate-400">
+                                  触发 ·{' '}
+                                </span>
+                                {recommendation.trigger}
+                              </div>
+                            </div>
+                            <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-5 text-slate-600">
+                              <AimOutlined className="mt-1 shrink-0 text-emerald-600" />
+                              <span>{normalizeGoal(recommendation.goal)}</span>
+                            </p>
+                          </article>
+                        );
+                      })}
                     </div>
                   </div>
                 ) : null}
               </div>
-
-              {painIssues.length ? (
-                <div className=">md:p-5 border-t border-slate-200 bg-white/70 p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <h4 className="text-base font-semibold text-slate-900">
-                          痛点 Issue
-                        </h4>
-                        <HintIcon title="按本阶段得分从低到高排列，点击标题可查看原始 Issue。" />
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-semibold text-sky-600">
-                        共 {painIssues.length} 个 · 当前展示{' '}
-                        {visiblePainIssues.length} 个
-                      </span>
-                      {painIssues.length > 3 ? (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setPainIssuesExpanded((expanded) => !expanded)
-                          }
-                          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:border-sky-200 hover:text-sky-600"
-                        >
-                          {painIssuesExpanded ? '收起' : '查看全部'}
-                          <DownOutlined
-                            className={`text-[9px] transition-transform ${
-                              painIssuesExpanded ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </button>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className=">md:grid-cols-3 mt-3 grid gap-3">
-                    {visiblePainIssues.map((issue) => (
-                      <a
-                        key={issue.url}
-                        href={issue.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex min-w-0 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-[0_10px_20px_rgba(15,23,42,0.04)] transition-colors hover:border-sky-200 hover:bg-sky-50/40"
-                      >
-                        <span className="min-w-0 flex-1">
-                          <span className="flex items-center justify-between gap-2">
-                            <span className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                              <LinkOutlined className="shrink-0 text-slate-400 group-hover:text-sky-600" />
-                              {issue.no}
-                            </span>
-                            <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600">
-                              {issue.score} 分
-                            </span>
-                          </span>
-                          <span className="mt-2 line-clamp-2 block text-xs font-medium leading-5 text-slate-700">
-                            {issue.title}
-                          </span>
-                          {issue.state ? (
-                            <span
-                              className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                                issue.state.toLowerCase() === 'open'
-                                  ? 'bg-emerald-50 text-emerald-600'
-                                  : 'bg-slate-100 text-slate-500'
-                              }`}
-                            >
-                              {issue.state.toLowerCase() === 'open'
-                                ? 'Open'
-                                : 'Closed'}
-                            </span>
-                          ) : null}
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
             </div>
           ) : null}
         </div>
