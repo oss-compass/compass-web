@@ -100,24 +100,34 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
     })),
   ];
 
-  const matchesStage = (stageId: string, stageName: string) => {
-    if (stageId) return stageId === activeStage.id;
+  const matchesStage = (
+    stage: IssueReportStage,
+    stageId: string,
+    stageName: string
+  ) => {
+    if (stageId) return stageId === stage.id;
     const normalizedName = stageName.trim();
     return (
-      normalizedName === activeStage.name ||
-      activeStage.name.includes(normalizedName) ||
-      normalizedName.includes(activeStage.name)
+      normalizedName === stage.name ||
+      stage.name.includes(normalizedName) ||
+      normalizedName.includes(stage.name)
     );
   };
-  const stagePains = pains.filter((pain) =>
-    matchesStage(pain.stage_id, pain.stage_name)
-  );
-  const stagePainIds = new Set(stagePains.map((pain) => pain.id));
-  const stageRecommendations = recommendations.filter(
-    (recommendation) =>
-      stagePainIds.has(recommendation.pp_id) ||
-      matchesStage('', recommendation.stage_name)
-  );
+  const getStagePains = (stage: IssueReportStage) =>
+    pains.filter((pain) => matchesStage(stage, pain.stage_id, pain.stage_name));
+  const getStageRecommendations = (
+    stage: IssueReportStage,
+    matchedPains: IssueReportPain[]
+  ) => {
+    const painIds = new Set(matchedPains.map((pain) => pain.id));
+    return recommendations.filter(
+      (recommendation) =>
+        painIds.has(recommendation.pp_id) ||
+        matchesStage(stage, '', recommendation.stage_name)
+    );
+  };
+  const stagePains = getStagePains(activeStage);
+  const stageRecommendations = getStageRecommendations(activeStage, stagePains);
 
   return (
     <section
@@ -133,8 +143,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           体验路径总览
         </h2>
         <p className="mt-1.5 text-xs leading-5 text-slate-500">
-          点击阶段卡片展开该阶段的诊断详情（关键指标、痛点与代表 Issue）；G 为
-          Bot / Agent 治理参考镜头，不计入总分。
+          点击阶段卡片展开该阶段的诊断详情（关键指标、痛点、行动与代表
+          Issue）；G 为 Bot / Agent 治理参考镜头，不计入总分。
         </p>
       </div>
 
@@ -158,6 +168,11 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           >
             {stages.map((stage, index) => {
               const active = stage.id === activeStageId;
+              const cardPains = getStagePains(stage);
+              const actionCount = getStageRecommendations(
+                stage,
+                cardPains
+              ).length;
               const tone = getScoreTone(stage.mixed);
               const cardTone = stage.is_lens
                 ? 'border-dashed border-slate-300 bg-slate-50/80'
@@ -239,13 +254,13 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         </span>
                         <span
                           className="flex flex-col items-center py-1"
-                          title="本阶段代表性低分 Issue 数，对应下方“代表痛点 Issue”"
+                          title="本阶段进入行动清单的改进项数量，对应下方“本周行动清单”"
                         >
-                          <strong className="text-[20px] font-bold leading-none text-sky-500">
-                            {stage.low_issues.length}
+                          <strong className="text-[20px] font-bold leading-none text-emerald-600">
+                            {actionCount}
                           </strong>
                           <span className="mt-1 text-[14px] text-slate-400">
-                            低分
+                            行动
                           </span>
                         </span>
                       </div>

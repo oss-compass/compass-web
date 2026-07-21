@@ -74,6 +74,11 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
       ? firstResponseMetric.median
       : firstResponseMetric.mean
     : '—';
+  const firstResponseParts = firstResponseValue.match(
+    /^(\d+(?:\.\d+)?)\s*(.*)$/
+  );
+  const firstResponseNumber = firstResponseParts?.[1] ?? firstResponseValue;
+  const firstResponseUnit = firstResponseParts?.[2] || undefined;
   const firstResponseDescription = firstResponseMetric
     ? hasFirstResponseMedian
       ? `中位数 ${firstResponseMetric.median} · 均值 ${firstResponseMetric.mean}`
@@ -127,7 +132,8 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
             />
             <OverviewMetricCard
               label="首次响应时间"
-              value={firstResponseValue}
+              value={firstResponseNumber}
+              suffix={firstResponseUnit}
               badge="中位数"
               description={firstResponseDescription}
             />
