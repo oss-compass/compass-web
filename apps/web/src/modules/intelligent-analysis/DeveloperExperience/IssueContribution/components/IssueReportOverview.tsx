@@ -108,7 +108,7 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
         {/* ── 左侧：报告总览（50%）── */}
         <div className=">lg:w-1/2 flex w-full min-w-0 flex-col">
           <div className="mb-2 text-base font-semibold text-slate-800">
-            报告总览
+            报告概览
           </div>
           <div className="grid flex-1 grid-cols-2 gap-4">
             <OverviewMetricCard

@@ -10,6 +10,8 @@ export type IssueKpi = {
   label: string;
   value: string;
   sub: string;
+  /** 评分等级；存在时由总览卡片展示等级口径提示 */
+  grade?: string;
   /** 关联的跨仓逐周趋势序列（有时序的指标才有），用于卡内缩略图 */
   trend?: number[];
   /** 缩略图纵轴上界（百分比类固定 100，计数类取序列最大值） */
@@ -25,17 +27,16 @@ export type IssueStageAgg = {
   score: number;
   grade: string;
   painCount: number;
+  painPriorityCounts: { p0: number; p1: number; p2: number };
 };
 
-export type IssueClosure = {
-  /** 主要问题数：各仓最新一期 top_pains 合计（真实总量，不受表格截断影响） */
-  mainProblems: number;
+export type IssuePainSummary = {
+  /** 全部仓库、全部报告周期的 top_pains 合计 */
   total: number;
-  closed: number;
-  open: number;
-  closeRate: number;
+  p0: number;
+  p1: number;
+  p2: number;
   repoCount: number;
-  topPainCount: number;
 };
 
 export type IssueOverviewModel = {
@@ -43,7 +44,7 @@ export type IssueOverviewModel = {
   idxWeighted: number;
   idxGrade: string;
   kpis: IssueKpi[];
-  closure: IssueClosure;
+  painSummary: IssuePainSummary;
   stages: IssueStageAgg[];
 };
 
@@ -58,14 +59,13 @@ export const gradeFromScore = (score: number): string => {
 
 const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
-const isP01 = (prio: string) => /P0|P1/i.test(prio);
-
 /** 计算 Issue 贡献总览全部模块所需派生数据（跨仓聚合）。 */
 export const computeIssueOverview = (
   data: IssueOverviewData
 ): IssueOverviewModel => {
   const repos = data.repos;
   const hasData = repos.length > 0;
+  const repoCount = new Set(repos.map((repo) => repo.community)).size;
 
   const totalIssues = sum(repos.map((r) => r.nTotal));
   const closedIssues = sum(repos.map((r) => r.nClosed));
@@ -74,7 +74,7 @@ export const computeIssueOverview = (
     ? Math.round((closedIssues / totalIssues) * 100)
     : 0;
 
-  // 综合体验指数：按问题数加权；问题数为 0 时退化为简单平均
+  // 综合体验评分：按问题数加权；问题数为 0 时退化为简单平均
   const idxWeighted = totalIssues
     ? +(sum(repos.map((r) => r.idxTotal * r.nTotal)) / totalIssues).toFixed(1)
     : repos.length
@@ -82,16 +82,15 @@ export const computeIssueOverview = (
     : 0;
   const idxGrade = gradeFromScore(idxWeighted);
 
-  const avgCompleteness = repos.length
-    ? Math.round(sum(repos.map((r) => r.dataCompleteness)) / repos.length)
-    : 0;
-  const topPainCount = data.topPains.filter((p) => isP01(p.prio)).length;
+  const topPainCount =
+    data.topPainPriorityCounts.p0 + data.topPainPriorityCounts.p1;
 
   // 阶段聚合：按问题数加权各仓同一阶段的综合分
   const stages: IssueStageAgg[] = data.stageOrder.map((s) => {
     let wSum = 0;
     let nSum = 0;
     let painSum = 0;
+    const painPriorityCounts = { p0: 0, p1: 0, p2: 0 };
     repos.forEach((r) => {
       const st = r.stages.find((x) => x.id === s.id);
       if (!st) return;
@@ -99,6 +98,9 @@ export const computeIssueOverview = (
       wSum += st.score * w;
       nSum += w;
       painSum += st.painCount;
+      painPriorityCounts.p0 += st.painPriorityCounts.p0;
+      painPriorityCounts.p1 += st.painPriorityCounts.p1;
+      painPriorityCounts.p2 += st.painPriorityCounts.p2;
     });
     const score = nSum ? +(wSum / nSum).toFixed(1) : 0;
     return {
@@ -108,25 +110,27 @@ export const computeIssueOverview = (
       score,
       grade: gradeFromScore(score),
       painCount: painSum,
+      painPriorityCounts,
     };
   });
 
   const kpis: IssueKpi[] = [
     {
-      label: '综合体验指数',
+      label: '综合体验评分',
       value: idxWeighted.toFixed(1),
-      sub: `等级 ${idxGrade} · 跨 ${repos.length} 仓加权`,
+      sub: `跨 ${repoCount} 仓全周期加权`,
+      grade: idxGrade,
       trend: data.agg.idx,
       trendMax: 100,
     },
     {
-      label: '问题总数',
+      label: 'Issue 总数',
       value: String(totalIssues),
-      sub: `覆盖 ${repos.length} 个仓库`,
+      sub: `覆盖 ${repoCount} 个仓库的全部周期`,
       trend: data.agg.nTotal,
     },
     {
-      label: '关闭率',
+      label: 'Issue 关闭率',
       value: `${closeRate}%`,
       sub: `已关闭 ${closedIssues} / 未关闭 ${openIssues}`,
       trend: data.agg.closeRate,
@@ -134,19 +138,9 @@ export const computeIssueOverview = (
       trendUnit: '%',
     },
     {
-      label: '未关闭问题',
-      value: String(openIssues),
-      sub: '待跟进 issue 总数',
-    },
-    {
       label: '重点待办(P0/P1)',
       value: String(topPainCount),
       sub: '高优先级痛点',
-    },
-    {
-      label: '平均数据完整度',
-      value: `${avgCompleteness}%`,
-      sub: '报告口径可信度',
     },
   ];
 
@@ -155,14 +149,12 @@ export const computeIssueOverview = (
     idxWeighted,
     idxGrade,
     kpis,
-    closure: {
-      mainProblems: data.topPainTotal,
-      total: totalIssues,
-      closed: closedIssues,
-      open: openIssues,
-      closeRate,
-      repoCount: repos.length,
-      topPainCount,
+    painSummary: {
+      total: data.topPainTotal,
+      p0: data.topPainPriorityCounts.p0,
+      p1: data.topPainPriorityCounts.p1,
+      p2: data.topPainPriorityCounts.p2,
+      repoCount,
     },
     stages,
   };

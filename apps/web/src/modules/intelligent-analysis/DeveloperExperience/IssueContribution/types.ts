@@ -222,7 +222,7 @@ export type IssueReportApiResponse = {
 
 export type IssueOverviewLevel = 'crit' | 'warn' | 'good';
 
-/** 单仓单阶段概览（取自最新一期报告的阶段维度分） */
+/** 单仓单周期的阶段概览 */
 export type IssueOverviewStage = {
   id: string;
   name: string;
@@ -230,10 +230,10 @@ export type IssueOverviewStage = {
   score: number;
   grade: string;
   painCount: number;
-  painPct: number;
+  painPriorityCounts: { p0: number; p1: number; p2: number };
 };
 
-/** 单仓概览（取自该仓最新一期报告） */
+/** 单仓单周期概览 */
 export type IssueOverviewRepo = {
   community: string; // 例：cann/cann-samples（报告页 repo 查询值）
   repoShort: string; // 例：cann-samples（展示用短名）
@@ -248,7 +248,6 @@ export type IssueOverviewRepo = {
   nClosed: number;
   closeRate: number;
   confidence: string;
-  dataCompleteness: number;
   responderCount: number;
   responseCount: number;
   level: IssueOverviewLevel;
@@ -262,6 +261,8 @@ export type IssueOverviewTopPain = {
   key: string;
   community: string;
   repoShort: string;
+  period: string;
+  periodLabel: string;
   prio: string;
   stageName: string;
   title: string;
@@ -285,8 +286,10 @@ export type IssueOverviewData = {
   /** 阶段展示顺序（各仓阶段并集，保持报告内出现顺序） */
   stageOrder: Array<{ id: string; name: string; icon: string }>;
   topPains: IssueOverviewTopPain[];
-  /** 各仓最新一期 top_pains 合计（未截断的真实主要问题数） */
+  /** 全部仓库、全部报告周期的 top_pains 合计 */
   topPainTotal: number;
+  /** 全部仓库、全部报告周期的 top_pains 按优先级汇总 */
+  topPainPriorityCounts: { p0: number; p1: number; p2: number };
   agg: IssueOverviewAggSeries;
 };
 

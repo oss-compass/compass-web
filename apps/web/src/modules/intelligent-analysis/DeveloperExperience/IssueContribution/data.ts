@@ -36,7 +36,10 @@ export const fetchIssueOverview = async (
   signal?: AbortSignal
 ): Promise<IssueOverviewApiResponse> => {
   const query = org ? `?org=${encodeURIComponent(org)}` : '';
-  const response = await fetch(`${OVERVIEW_API_PATH}${query}`, { signal });
+  const response = await fetch(`${OVERVIEW_API_PATH}${query}`, {
+    signal,
+    cache: 'no-store',
+  });
 
   if (!response.ok) {
     throw new Error(`Issue overview request failed: ${response.status}`);

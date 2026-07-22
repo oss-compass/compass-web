@@ -19,10 +19,7 @@ const issueContributionOverview = (
     org: getSingleQueryValue(request.query.org),
   });
 
-  response.setHeader(
-    'Cache-Control',
-    'public, s-maxage=300, stale-while-revalidate=600'
-  );
+  response.setHeader('Cache-Control', 'no-store');
   response.status(200).json({ overview });
 };
 

@@ -6,12 +6,18 @@ type CiControlsProps = {
   repo: CiRepoKey;
   onRepoChange: (repo: CiRepoKey) => void;
   data: CiRepoData;
+  day: string;
+  days: string[];
+  onDayChange: (day: string) => void;
 };
 
 const CiControls: React.FC<CiControlsProps> = ({
   repo,
   onRepoChange,
   data,
+  day,
+  days,
+  onDayChange,
 }) => (
   <div className="flex flex-wrap items-center gap-2">
     <LabeledReportSelect
@@ -36,6 +42,13 @@ const CiControls: React.FC<CiControlsProps> = ({
       options={[{ value: data.workflow, label: data.workflow }]}
       minWidth={170}
       valueClassName="[&_.ant-select-selection-item]:!font-mono [&_.ant-select-selection-item]:!text-[13px]"
+    />
+    <LabeledReportSelect
+      label="日期"
+      value={day}
+      onChange={onDayChange}
+      options={days.map((d) => ({ value: d, label: d.slice(5) }))}
+      minWidth={110}
     />
   </div>
 );

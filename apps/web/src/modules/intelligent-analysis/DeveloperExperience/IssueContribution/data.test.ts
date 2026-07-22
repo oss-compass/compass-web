@@ -3,6 +3,7 @@ import path from 'path';
 import {
   getIssueReport,
   getIssueReportCatalog,
+  getIssueOverview,
   ISSUE_REPORTS,
 } from './serverData';
 
@@ -90,5 +91,13 @@ describe('Issue contribution report registry', () => {
       expect(record.data).not.toHaveProperty('source_data');
       expect(record.data).not.toHaveProperty('state');
     });
+  });
+
+  it('returns the complete pain list with consistent priority totals', () => {
+    const overview = getIssueOverview({ org: 'cann' });
+    const { p0, p1, p2 } = overview.topPainPriorityCounts;
+
+    expect(p0 + p1 + p2).toBe(overview.topPainTotal);
+    expect(overview.topPains).toHaveLength(overview.topPainTotal);
   });
 });

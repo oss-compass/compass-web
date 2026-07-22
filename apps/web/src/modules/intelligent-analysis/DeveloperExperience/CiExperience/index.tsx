@@ -4,7 +4,6 @@ import { CI_DATA } from './data';
 import { normalizeRepoKey, repoKeyToQuery } from './helpers';
 import type { CiRepoKey } from './types';
 import CiControls from './components/CiControls';
-import CiBanner from './components/CiBanner';
 import CiReport from './components/CiReport';
 
 type CiExperienceProps = {
@@ -39,6 +38,16 @@ const CiExperience: React.FC<CiExperienceProps> = () => {
 
   const data = CI_DATA[repo];
 
+  // 观测日：默认落在最新一天；切换仓库时重置为该仓最新一天。
+  const [day, setDay] = useState<string>(() => {
+    const list = CI_DATA[normalizeRepoKey(router.query.repo)].days;
+    return list[list.length - 1] ?? '';
+  });
+  useEffect(() => {
+    const list = CI_DATA[repo].days;
+    setDay(list[list.length - 1] ?? '');
+  }, [repo]);
+
   return (
     <div className="min-h-full bg-[linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)]">
       <div className="flex min-h-full flex-col gap-5 p-5">
@@ -49,14 +58,18 @@ const CiExperience: React.FC<CiExperienceProps> = () => {
               CI 体验诊断
             </h1>
           </div>
-          <CiControls repo={repo} onRepoChange={handleRepoChange} data={data} />
+          <CiControls
+            repo={repo}
+            onRepoChange={handleRepoChange}
+            data={data}
+            day={day}
+            days={data.days}
+            onDayChange={setDay}
+          />
         </div>
 
-        {/* 数据声明 */}
-        <CiBanner />
-
-        {/* 报告部分（维度驱动联动区）；总览已迁至总览看板 OverviewDashboard */}
-        <CiReport data={data} repo={repo} />
+        {/* 报告部分（开发者旅程全景图驱动）；总览已迁至总览看板 OverviewDashboard */}
+        <CiReport data={data} repo={repo} day={day} />
 
         <footer className="px-1 py-2 text-[11.5px] leading-relaxed text-slate-400">
           Cogito · CI 体验诊断 · 数字由验证仓 gitcode-ci-lab

@@ -219,38 +219,28 @@ const repoLevel = (idxTotal: number, grade: string): IssueOverviewLevel => {
   return 'good';
 };
 
-/** 按社区分组，取每个社区的最新一期报告（records 已按 period 降序可取首个）。 */
-const latestByCommunity = (
-  records: IssueReportRecord[]
-): IssueReportRecord[] => {
-  const seen: Record<string, IssueReportRecord> = {};
-  const order: string[] = [];
-  for (const record of records) {
-    const existing = seen[record.community];
-    if (!existing) {
-      seen[record.community] = record;
-      order.push(record.community);
-    } else if (record.period.localeCompare(existing.period) > 0) {
-      seen[record.community] = record;
-    }
-  }
-  return order.map((community) => seen[community]);
-};
-
 const buildRepoSummary = (
   record: IssueReportRecord,
   scoreHistory?: Array<{ period: string; idx: number }>
 ): IssueOverviewRepo => {
   const ctx = record.data.report_context;
-  const stages: IssueOverviewStage[] = ctx.stages.map((stage) => ({
-    id: stage.id,
-    name: stage.name,
-    icon: stage.icon,
-    score: stage.mixed,
-    grade: stage.grade,
-    painCount: stage.pain_count,
-    painPct: stage.pain_pct,
-  }));
+  const topPains = ctx.top_pains ?? [];
+  const stages: IssueOverviewStage[] = ctx.stages.map((stage) => {
+    const stagePains = topPains.filter((pain) => pain.stage_id === stage.id);
+    return {
+      id: stage.id,
+      name: stage.name,
+      icon: stage.icon,
+      score: stage.mixed,
+      grade: stage.grade,
+      painCount: stagePains.length,
+      painPriorityCounts: {
+        p0: stagePains.filter((pain) => prioRank(pain.prio) === 0).length,
+        p1: stagePains.filter((pain) => prioRank(pain.prio) === 1).length,
+        p2: stagePains.filter((pain) => prioRank(pain.prio) === 2).length,
+      },
+    };
+  });
   // 得分趋势：跨该仓各周报告的综合指数（时间升序），单期时退化为当前值。
   const hasHistory = scoreHistory && scoreHistory.length > 1;
   const idxTrend = hasHistory
@@ -273,7 +263,6 @@ const buildRepoSummary = (
     nClosed: ctx.n_closed,
     closeRate: ctx.close_rate,
     confidence: ctx.confidence,
-    dataCompleteness: ctx.data_completeness,
     responderCount: ctx.participants?.responder_count ?? 0,
     responseCount: ctx.participants?.response_count ?? 0,
     level: repoLevel(ctx.idx_total, ctx.grade),
@@ -283,15 +272,19 @@ const buildRepoSummary = (
   };
 };
 
-const buildTopPains = (latest: IssueReportRecord[]): IssueOverviewTopPain[] => {
+const buildTopPains = (
+  records: IssueReportRecord[]
+): IssueOverviewTopPain[] => {
   const pains: IssueOverviewTopPain[] = [];
-  latest.forEach((record) => {
+  records.forEach((record) => {
     const repoShort = repoShortName(record.community);
     (record.data.report_context.top_pains ?? []).forEach((pain, i) => {
       pains.push({
-        key: `${record.community}-${pain.id || i}`,
+        key: `${record.community}-${record.period}-${pain.id || i}`,
         community: record.community,
         repoShort,
+        period: record.period,
+        periodLabel: record.periodLabel,
         prio: pain.prio,
         stageName: pain.stage_name,
         title: pain.title,
@@ -302,7 +295,7 @@ const buildTopPains = (latest: IssueReportRecord[]): IssueOverviewTopPain[] => {
       });
     });
   });
-  return pains.sort((a, b) => prioRank(a.prio) - prioRank(b.prio)).slice(0, 24);
+  return pains.sort((a, b) => prioRank(a.prio) - prioRank(b.prio));
 };
 
 /** 跨仓逐周聚合序列（按问题数加权综合指数 / 问题总数 / 关闭率）。 */
@@ -349,7 +342,9 @@ export const getIssueOverview = (
   const all = loadAllRecords().filter(
     (record) => !filters.org || record.org === filters.org
   );
-  const latest = latestByCommunity(all);
+  const overviewRecords = all
+    .slice()
+    .sort((a, b) => b.period.localeCompare(a.period));
 
   // 各仓得分历史：按周（period 升序）收集综合指数，供「得分趋势」缩略图/弹窗使用。
   const historyByCommunity: Record<
@@ -368,12 +363,15 @@ export const getIssueOverview = (
       historyByCommunity[record.community] = list;
     });
 
-  const repos = latest.map((record) =>
+  const repos = overviewRecords.map((record) =>
     buildRepoSummary(record, historyByCommunity[record.community])
+  );
+  const allTopPains = all.flatMap(
+    (record) => record.data.report_context.top_pains ?? []
   );
 
   // 阶段展示顺序：取阶段数最多的一份报告作为模板（各仓阶段口径一致）。
-  const stageTemplate = latest.reduce<IssueReportRecord | null>(
+  const stageTemplate = overviewRecords.reduce<IssueReportRecord | null>(
     (best, record) =>
       !best ||
       record.data.report_context.stages.length >
@@ -387,14 +385,16 @@ export const getIssueOverview = (
   );
 
   return {
-    generatedAt: latest[0]?.data.generated_at ?? '',
+    generatedAt: overviewRecords[0]?.data.generated_at ?? '',
     repos,
     stageOrder,
-    topPains: buildTopPains(latest),
-    topPainTotal: latest.reduce(
-      (a, r) => a + (r.data.report_context.top_pains?.length ?? 0),
-      0
-    ),
+    topPains: buildTopPains(all),
+    topPainTotal: allTopPains.length,
+    topPainPriorityCounts: {
+      p0: allTopPains.filter((pain) => prioRank(pain.prio) === 0).length,
+      p1: allTopPains.filter((pain) => prioRank(pain.prio) === 1).length,
+      p2: allTopPains.filter((pain) => prioRank(pain.prio) === 2).length,
+    },
     agg: buildAggSeries(all),
   };
 };
