@@ -124,6 +124,11 @@ export const computeIssueOverview = (
       trendMax: 100,
     },
     {
+      label: '重点待办(P0/P1)',
+      value: String(topPainCount),
+      sub: '高优先级痛点',
+    },
+    {
       label: 'Issue 总数',
       value: String(totalIssues),
       sub: `覆盖 ${repoCount} 个仓库的全部周期`,
@@ -136,11 +141,6 @@ export const computeIssueOverview = (
       trend: data.agg.closeRate,
       trendMax: 100,
       trendUnit: '%',
-    },
-    {
-      label: '重点待办(P0/P1)',
-      value: String(topPainCount),
-      sub: '高优先级痛点',
     },
   ];
 

@@ -214,16 +214,21 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
     },
     {
       title: '涉及阶段',
-      dataIndex: 'stages',
-      key: 'stages',
+      dataIndex: 'journeyStages',
+      key: 'journeyStages',
       width: 180,
       responsive: ['lg'],
       ellipsis: true,
-      render: (stages: string) => (
-        <Tooltip title={stages}>
-          <span>{stages}</span>
-        </Tooltip>
-      ),
+      filters: m.journeyStageOrder.map((s) => ({ text: s, value: s })),
+      onFilter: (value, r) => r.journeyStages.includes(value as string),
+      render: (segs: string[]) => {
+        const text = segs.length ? segs.join(' · ') : '—';
+        return (
+          <Tooltip title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '累计 run·PR',
@@ -300,13 +305,13 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
 
   return (
     <>
-      {/* ① 社区 CI/CD 总览 · 六 KPI（含趋势缩略图，点击查看大图） */}
+      {/* ① 报告概览五项得分 · 全期均值（综合 + 四维，两仓所有观测日池化平均，含趋势缩略图） */}
       <Title level={4} className="oj-section-title">
         社区 CI/CD 总览
       </Title>
       <div
         className="overview-bottom-row"
-        style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}
+        style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
       >
         {m.kpis.map((k) => (
           <div key={k.label} className="bottom-metric">
@@ -440,14 +445,11 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
           {m.repos.map((r: CiRepoSummary) => {
             const lv = LEVEL_META[r.level];
             const stats = [
-              { label: '失败率', value: `${r.failRate.toFixed(1)}%` },
-              {
-                label: '平台故障占比',
-                value: `${r.platMed != null ? r.platMed.toFixed(0) : '—'}%`,
-              },
-              { label: '卡住 PR', value: r.blkL != null ? r.blkL : '—' },
-              { label: '无效机时', value: r.totWaste.toFixed(0) },
-              { label: '无效占比', value: `${r.wasteShare}%` },
+              { label: '综合', value: r.scoreOverall ?? '—' },
+              { label: '稳定性', value: r.scoreStability ?? '—' },
+              { label: '效率', value: r.scoreEfficiency ?? '—' },
+              { label: '交互体验', value: r.scoreInteraction ?? '—' },
+              { label: '成本', value: r.scoreCost ?? '—' },
               { label: '活跃 P0/P1', value: r.activeP01 },
             ];
             return (

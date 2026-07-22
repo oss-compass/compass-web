@@ -1,7 +1,12 @@
-import type { CiPri, CiRepoData, CiRepoKey, CiWeeklyProb } from '../../types';
+import type {
+  CiPri,
+  CiRepoData,
+  CiRepoKey,
+  CiWeeklyProb,
+  CiDimKey,
+  CiJourneyScores,
+} from '../../types';
 import {
-  CI_CAP_OK,
-  CI_CAP_TOTAL,
   daySeries,
   delta,
   firstNZ,
@@ -14,6 +19,7 @@ import {
   type CiDaySeries,
   type CiDelta,
 } from '../../helpers';
+import { CI_JOURNEY } from '../CiReport/journeyData';
 
 /**
  * 社区 CI/CD 总览 · 跨仓聚合计算层
@@ -74,10 +80,33 @@ export type CiRepoSummary = {
   blk0: number | null;
   blkL: number | null;
   activeP01: number;
+  scoreOverall: number | null;
+  scoreStability: number | null;
+  scoreEfficiency: number | null;
+  scoreInteraction: number | null;
+  scoreCost: number | null;
   faded: number;
   backfill: number;
   hasP0: boolean;
   level: CiLevel;
+};
+
+/** 单仓报告概览得分 · 全期均值（该仓所有观测日的非空日分求平均，口径同 CI 报告页概览） */
+const repoScoreAvg = (
+  repo: CiRepoKey,
+  sel: (sc: CiJourneyScores) => number | null
+): number | null => {
+  const j = CI_JOURNEY[repo];
+  if (!j) return null;
+  const vals: number[] = [];
+  j.days.forEach((day) => {
+    const b = j.boards[day];
+    const v = b?.scores ? sel(b.scores) : null;
+    if (v != null) vals.push(v);
+  });
+  return vals.length
+    ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length)
+    : null;
 };
 
 const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
@@ -127,6 +156,17 @@ const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
     blk0,
     blkL,
     activeP01,
+    scoreOverall: repoScoreAvg(repo, (sc) => sc.total),
+    scoreStability: repoScoreAvg(repo, (sc) => sc.dims.stability?.score ?? null),
+    scoreEfficiency: repoScoreAvg(
+      repo,
+      (sc) => sc.dims.efficiency?.score ?? null
+    ),
+    scoreInteraction: repoScoreAvg(
+      repo,
+      (sc) => sc.dims.interaction?.score ?? null
+    ),
+    scoreCost: repoScoreAvg(repo, (sc) => sc.dims.cost?.score ?? null),
     faded,
     backfill,
     hasP0,
@@ -266,6 +306,8 @@ export type CiTopIssue = {
   dim: string;
   kb: string;
   stages: string;
+  /** 映射后的开发者旅程全景图段名（按旅程顺序去重） */
+  journeyStages: string[];
   runs: number;
   prs: number;
   daysHit: number;
@@ -295,6 +337,8 @@ export type CiCommunityOverview = {
   };
   trends: CiTrendItem[];
   topIssues: CiTopIssue[];
+  /** 开发者旅程全景图段顺序（供「涉及阶段」列筛选与排序） */
+  journeyStageOrder: string[];
 };
 
 type ProbWithRepo = CiWeeklyProb & { repo: CiRepoKey; slug: string };
@@ -305,6 +349,48 @@ const TREND_SERIES2 = '#7c4dd6';
 const TREND_WARNING = '#fab219';
 
 const last = <T>(a: T[]): T | undefined => a[a.length - 1];
+
+/**
+ * workflow 原生阶段短名 → 开发者旅程全景图段名 + 段顺序。
+ * 口径同旅程全景图：取各仓最新观测日的八段定义并集，由 bare（如 image/compile/ut/PreSmoke）反查段名。
+ */
+const buildJourneyStageMap = (): {
+  bareToSeg: Record<string, string>;
+  order: string[];
+} => {
+  const bareToSeg: Record<string, string> = {};
+  const order: string[] = [];
+  REPO_ORDER.forEach((repo) => {
+    const j = CI_JOURNEY[repo];
+    if (!j || !j.days.length) return;
+    const board = j.boards[j.days[j.days.length - 1]];
+    (board?.stages ?? []).forEach((st) => {
+      if (!order.includes(st.seg)) order.push(st.seg);
+      st.bare.forEach((b) => {
+        if (b) bareToSeg[b] = st.seg;
+      });
+    });
+  });
+  return { bareToSeg, order };
+};
+
+/** 将周问题的 workflow 阶段串（如 "compile/ut"）映射为旅程全景图段名（按段顺序去重，无法映射的注释 token 丢弃） */
+const mapProbStages = (
+  raw: string,
+  bareToSeg: Record<string, string>,
+  order: string[]
+): string[] => {
+  const segs: string[] = [];
+  String(raw || '')
+    .split('/')
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .forEach((t) => {
+      const seg = bareToSeg[t];
+      if (seg && !segs.includes(seg)) segs.push(seg);
+    });
+  return segs.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+};
 
 /** 计算社区 CI/CD 总览全部模块所需数据（跨仓聚合）。 */
 export const computeCommunityOverview = (
@@ -323,9 +409,7 @@ export const computeCommunityOverview = (
     )
   );
 
-  const totRunAll = sum(repos.map((x) => x.totRun));
   const totFailAll = sum(repos.map((x) => x.totFail));
-  const failRateAll = totRunAll ? (totFailAll / totRunAll) * 100 : 0;
   const platShareAll =
     totFailAll > 0
       ? sum(repos.map((x) => (x.platMed || 0) * x.totFail)) / totFailAll
@@ -338,8 +422,6 @@ export const computeCommunityOverview = (
   const wasteShareAll = wasteDenAll
     ? Math.round((wasteNumAll / wasteDenAll) * 100)
     : 0;
-  const activeP01All = sum(repos.map((x) => x.activeP01));
-  const fadedAll = sum(repos.map((x) => x.faded));
   const overallLevel: CiLevel = repos.some((x) => x.level === 'crit')
     ? 'crit'
     : repos.some((x) => x.level === 'warn')
@@ -354,47 +436,98 @@ export const computeCommunityOverview = (
   const dBlk = delta(blocked0All, blockedAll, true);
   const dWaste = delta(agg.waste[0] ?? null, last(agg.waste) ?? null, true);
 
-  const kpis: CiKpi[] = [
+  // 报告概览五项得分 · 全期均值：将两仓所有观测日的非空日分池化后求平均，
+  // 得分权威口径取自 CI_JOURNEY[repo].boards[day].scores（与 CI 报告页概览同源）。
+  const scoreDayAvg = (
+    sel: (s: CiJourneyScores) => number | null
+  ): { avg: number | null; series: (number | null)[] } => {
+    const pooled: number[] = [];
+    const series = agg.days.map((dt) => {
+      const perDay: number[] = [];
+      repos.forEach((x) => {
+        const b = CI_JOURNEY[x.repo]?.boards[dt];
+        const v = b?.scores ? sel(b.scores) : null;
+        if (v != null) {
+          perDay.push(v);
+          pooled.push(v);
+        }
+      });
+      return perDay.length
+        ? +(perDay.reduce((a, b) => a + b, 0) / perDay.length).toFixed(1)
+        : null;
+    });
+    const avg = pooled.length
+      ? Math.round(pooled.reduce((a, b) => a + b, 0) / pooled.length)
+      : null;
+    return { avg, series };
+  };
+
+  const scoreDefs: Array<{
+    key: 'overall' | CiDimKey;
+    label: string;
+    sub: string;
+    color: string;
+    sel: (s: CiJourneyScores) => number | null;
+  }> = [
     {
-      label: '流水线失败率',
-      value: `${failRateAll.toFixed(1)}%`,
-      sub: `全窗 ${totFailAll}/${totRunAll} run`,
-      bad: failRateAll >= 30,
-      delta: dFail,
+      key: 'overall',
+      label: '综合体验评分',
+      sub: '四维加权综合 · 全期均值',
+      color: TREND_SERIES2,
+      sel: (s) => s.total,
     },
     {
-      label: '平台故障占比',
-      value: `${platShareAll != null ? platShareAll.toFixed(0) : '—'}%`,
-      sub: '失败里属平台自身故障',
-      bad: platShareAll != null && platShareAll >= 40,
+      key: 'stability',
+      label: '稳定性',
+      sub: '稳定性维度 · 全期均值',
+      color: TREND_CRITICAL,
+      sel: (s) => s.dims.stability?.score ?? null,
     },
     {
-      label: '被 CI 卡住的 PR',
-      value: String(blockedAll),
-      sub: `窗口 ${blocked0All} → ${blockedAll} 个`,
-      bad: blockedAll > blocked0All,
-      delta: dBlk,
+      key: 'efficiency',
+      label: '效率',
+      sub: '效率维度 · 全期均值',
+      color: TREND_WARNING,
+      sel: (s) => s.dims.efficiency?.score ?? null,
     },
     {
-      label: '无效机时(可回收)',
-      value: wasteAll.toFixed(0),
-      sub: `占总机时约 ${wasteShareAll}%`,
-      bad: wasteShareAll >= 20,
-      delta: dWaste,
+      key: 'interaction',
+      label: '交互体验',
+      sub: '交互体验维度 · 全期均值',
+      color: TREND_SERIES2,
+      sel: (s) => s.dims.interaction?.score ?? null,
     },
     {
-      label: '在跟踪 P0/P1',
-      value: String(activeP01All),
-      sub: `全仓活跃 · 已消退 ${fadedAll}`,
-      bad: activeP01All > 0,
-    },
-    {
-      label: '平台能力就绪',
-      value: `${CI_CAP_OK} / ${CI_CAP_TOTAL}`,
-      sub: '缺口即对平台的需求',
-      bad: false,
+      key: 'cost',
+      label: '成本',
+      sub: '成本维度 · 全期均值',
+      color: TREND_WARNING,
+      sel: (s) => s.dims.cost?.score ?? null,
     },
   ];
+
+  const kpis: CiKpi[] = scoreDefs.map((def) => {
+    const { avg, series } = scoreDayAvg(def.sel);
+    const first = firstNZ(series);
+    const lastVal = lastNZ(series);
+    const d = delta(first, lastVal, false);
+    return {
+      label: def.label,
+      value: avg != null ? String(avg) : '—',
+      sub: def.sub,
+      bad: avg != null && avg < 60,
+      delta: d,
+      trend: {
+        title: def.label,
+        meaning: def.sub,
+        values: series,
+        unit: '分',
+        color: def.color,
+        last: lastVal,
+        delta: d,
+      },
+    };
+  });
 
   const total = allProbs.length;
   const activeCount = allProbs.filter(isActive).length;
@@ -465,25 +598,19 @@ export const computeCommunityOverview = (
     },
   ];
 
-  // 将时序趋势并入对应 KPI 卡（前四个指标有逐日序列）
-  kpis[0].trend = trends[0];
-  kpis[1].trend = trends[1];
-  kpis[2].trend = trends[2];
-  kpis[3].trend = trends[3];
-
   const order: Record<CiPri, number> = { P0: 0, P1: 1, P2: 2 };
   // 状态排序权重：仍活跃优先靠前，其次待回填，最后已消退
   const statusRank = (p: { status: string }) =>
     isActive(p) ? 0 : isBackfill(p) ? 1 : isFaded(p) ? 2 : 3;
+  const { bareToSeg: stageBareToSeg, order: journeyStageOrder } =
+    buildJourneyStageMap();
   const topIssues: CiTopIssue[] = allProbs
-    .filter((p) => p.pri !== 'P2')
     .sort(
       (a, b) =>
         statusRank(a) - statusRank(b) ||
         order[a.pri] - order[b.pri] ||
         b.runs - a.runs
     )
-    .slice(0, 20)
     .map((p, i) => ({
       key: `${p.repo}-${p.kb}-${i}`,
       slug: p.slug,
@@ -493,6 +620,7 @@ export const computeCommunityOverview = (
       dim: p.dim,
       kb: p.kb,
       stages: p.stages,
+      journeyStages: mapProbStages(p.stages, stageBareToSeg, journeyStageOrder),
       runs: p.runs,
       prs: p.prs,
       daysHit: p.days_hit,
@@ -522,5 +650,6 @@ export const computeCommunityOverview = (
     },
     trends,
     topIssues,
+    journeyStageOrder,
   };
 };

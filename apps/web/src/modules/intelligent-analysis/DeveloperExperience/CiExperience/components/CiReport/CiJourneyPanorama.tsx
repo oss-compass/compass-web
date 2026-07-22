@@ -336,7 +336,7 @@ const StageSpark: React.FC<{ series: number[] }> = ({ series }) => {
   return (
     <svg
       viewBox={`0 0 ${w} ${h}`}
-      style={{ width: '100%', maxWidth: 240, height: 'auto' }}
+      className="h-auto w-[240px] max-w-full"
       role="img"
       aria-label="近 7 个观测日趋势"
     >
@@ -695,7 +695,7 @@ const StageDetailPanel: React.FC<{
               </div>
 
               {/* 段趋势缩略折线 */}
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_20px_rgba(15,23,42,0.04)]">
+              <div className="mt-3 w-[320px] max-w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_20px_rgba(15,23,42,0.04)]">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <span className="text-[12px] font-semibold text-slate-500">
                     {stage.trend.name}

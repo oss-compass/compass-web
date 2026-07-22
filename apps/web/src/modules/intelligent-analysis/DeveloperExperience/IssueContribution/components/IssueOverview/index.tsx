@@ -403,9 +403,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       width: 300,
       render: (_v, r) => {
         const priorities = [
-          { key: 'p0' as const, label: 'P0', color: PRI_META.P0.color },
-          { key: 'p1' as const, label: 'P1', color: PRI_META.P1.color },
-          { key: 'p2' as const, label: 'P2', color: PRI_META.P2.color },
+          { key: 'p0' as const, label: 'P0', color: '#f4840c' },
+          { key: 'p1' as const, label: 'P1', color: '#4791ff' },
+          { key: 'p2' as const, label: 'P2', color: '#2eb78a' },
         ];
         return (
           <div className="overview-progress-cell">
