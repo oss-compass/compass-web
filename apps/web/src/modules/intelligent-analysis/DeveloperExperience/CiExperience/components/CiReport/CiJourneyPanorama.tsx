@@ -621,77 +621,102 @@ const StageDetailPanel: React.FC<{
           </button>
           {dimsOpen ? (
             <>
-              <div className=">lg:grid-cols-4 mt-3 grid grid-cols-2 gap-3">
-                {DIM_META.map(({ key, label }) => {
-                  const cell = stage.cells[key];
-                  const cellTone = scoreTone(cell.score);
-                  const attention = cell.word === '需处理';
-                  const scoreText =
-                    cell.score != null ? `${cell.score}分` : '—';
-                  if (cell.fallback) {
-                    return (
-                      <div
-                        key={label}
-                        className="flex h-full flex-col rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-4 py-4"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <span className="truncate text-[13px] font-semibold text-slate-500">
+              <div className="mt-3 overflow-x-auto rounded-2xl border border-slate-200">
+                <table className="w-full min-w-[760px] border-collapse text-[13px]">
+                  <thead>
+                    <tr>
+                      {[
+                        '维度',
+                        '分数',
+                        '状态',
+                        '代表指标（当日值）',
+                        '改进责任方',
+                        '问题',
+                      ].map((heading, index) => (
+                        <th
+                          key={heading}
+                          className={`border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-[11.5px] font-semibold text-slate-500 ${
+                            index === 1 || index === 5
+                              ? 'text-right'
+                              : 'text-left'
+                          }`}
+                        >
+                          {heading}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {DIM_META.map(({ key, label }) => {
+                      const cell = stage.cells[key];
+                      const cellTone = scoreTone(
+                        cell.fallback ? null : cell.score
+                      );
+                      const attention = cell.word === '需处理';
+                      return (
+                        <tr
+                          key={label}
+                          className={cell.fallback ? 'bg-slate-50/50' : ''}
+                        >
+                          <td className="border-b border-slate-100 px-3 py-2 font-medium text-slate-700">
                             {label}
-                          </span>
-                          <span className="shrink-0 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[12px] font-bold leading-none text-slate-500">
-                            {scoreText}
-                          </span>
-                        </div>
-                        <div className="mt-3 text-[13px] leading-5 text-slate-400">
-                          仓级回退 · 该段无此维度日度信号
-                        </div>
-                        <div className="mt-auto border-t border-slate-100 pt-2 text-[11px] text-slate-400">
-                          仓级维度分，不参与段综合分
-                        </div>
-                      </div>
-                    );
-                  }
-                  return (
-                    <div
-                      key={label}
-                      className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="truncate text-[13px] font-semibold text-slate-700">
-                          {label}
-                        </span>
-                        <span
-                          className={`shrink-0 rounded-full border px-2 py-0.5 text-[12px] font-bold leading-none ${SCORE_BADGE[cellTone]}`}
-                        >
-                          {scoreText}
-                        </span>
-                      </div>
-                      <div className="mt-3 text-[22px] font-semibold tabular-nums leading-none text-slate-900">
-                        {cell.disp}
-                      </div>
-                      <div
-                        className="mt-1 truncate text-[11px] text-slate-400"
-                        title={cell.name}
-                      >
-                        {cell.name}
-                      </div>
-                      <div className="mt-auto flex items-center gap-3 border-t border-slate-100 pt-2 text-[11px]">
-                        <span
-                          className={
-                            attention
-                              ? 'font-semibold text-rose-600'
-                              : 'text-slate-400'
-                          }
-                        >
-                          {cell.word}
-                        </span>
-                        <span className="text-slate-400">
-                          问题 {cell.probn}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
+                          </td>
+                          <td
+                            className={`border-b border-slate-100 px-3 py-2 text-right font-semibold tabular-nums ${SCORE_TONE_TEXT[cellTone]}`}
+                          >
+                            {cell.fallback ? '—' : cell.score ?? '—'}
+                          </td>
+                          <td
+                            className={`border-b border-slate-100 px-3 py-2 ${
+                              attention
+                                ? 'font-semibold text-rose-600'
+                                : 'text-slate-500'
+                            }`}
+                          >
+                            {cell.fallback ? '—' : cell.word}
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2 text-slate-500">
+                            {cell.fallback ? (
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-[11.5px] text-slate-400">
+                                  该阶段无{label}日度信号
+                                </span>
+                                {cell.score != null ? (
+                                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10.5px] font-medium text-slate-500">
+                                    仓库{label} {cell.score} 分 · 仅参考
+                                  </span>
+                                ) : null}
+                              </div>
+                            ) : (
+                              <>
+                                <span className="text-[11.5px] text-slate-400">
+                                  {cell.name}
+                                </span>{' '}
+                              <b className="font-semibold text-slate-800">
+                                {cell.disp}
+                              </b>
+                              </>
+                            )}
+                          </td>
+                          <td
+                            className={`border-b border-slate-100 px-3 py-2 font-semibold ${
+                              cell.owner?.startsWith('混合')
+                                ? 'text-amber-600'
+                                : cell.owner
+                                ? 'text-sky-600'
+                                : 'text-slate-400'
+                            }`}
+                          >
+                            {cell.owner || '—'}
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2 text-right tabular-nums text-slate-600">
+                            {cell.fallback || !cell.probn ? '·' : cell.probn}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
 
               {/* 段趋势缩略折线 */}

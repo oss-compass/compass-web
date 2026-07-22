@@ -305,7 +305,7 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
 
   return (
     <>
-      {/* ① 报告概览五项得分 · 全期均值（综合 + 四维，两仓所有观测日池化平均，含趋势缩略图） */}
+            {/* ① 报告概览五项得分 · 最新日期（综合 + 四维，两仓最新观测日池化值，含趋势缩略图） */}
       <Title level={4} className="oj-section-title">
         社区 CI/CD 总览
       </Title>

@@ -1,4 +1,4 @@
-import type { IssueOverviewData } from '../../types';
+import type { IssueOverviewData, IssueOverviewRepo } from '../../types';
 
 /**
  * Issue 贡献总览 · 客户端派生计算层
@@ -59,6 +59,21 @@ export const gradeFromScore = (score: number): string => {
 
 const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
+/**
+ * 取各仓“最新一周”的报告记录：同一仓库（community）可能含多个周期记录，
+ * 按 period 字典序取最大者（period 形如 'YYYY-MM-DD_to_YYYY-MM-DD'，字典序即时间序）。
+ */
+const latestReposByPeriod = (
+  repos: IssueOverviewRepo[]
+): IssueOverviewRepo[] => {
+  const byCommunity = new Map<string, IssueOverviewRepo>();
+  repos.forEach((r) => {
+    const cur = byCommunity.get(r.community);
+    if (!cur || r.period > cur.period) byCommunity.set(r.community, r);
+  });
+  return Array.from(byCommunity.values());
+};
+
 /** 计算 Issue 贡献总览全部模块所需派生数据（跨仓聚合）。 */
 export const computeIssueOverview = (
   data: IssueOverviewData
@@ -66,6 +81,9 @@ export const computeIssueOverview = (
   const repos = data.repos;
   const hasData = repos.length > 0;
   const repoCount = new Set(repos.map((repo) => repo.community)).size;
+  // 得分类指标只看各仓最新一周报告（与 CI 总览页“最新日期”口径对齐）
+  const latestRepos = latestReposByPeriod(repos);
+  const latestIssues = sum(latestRepos.map((r) => r.nTotal));
 
   const totalIssues = sum(repos.map((r) => r.nTotal));
   const closedIssues = sum(repos.map((r) => r.nClosed));
@@ -74,29 +92,36 @@ export const computeIssueOverview = (
     ? Math.round((closedIssues / totalIssues) * 100)
     : 0;
 
-  // 综合体验评分：按问题数加权；问题数为 0 时退化为简单平均
-  const idxWeighted = totalIssues
-    ? +(sum(repos.map((r) => r.idxTotal * r.nTotal)) / totalIssues).toFixed(1)
-    : repos.length
-    ? +(sum(repos.map((r) => r.idxTotal)) / repos.length).toFixed(1)
+  // 综合体验评分：只取各仓最新一周报告，按问题数加权；问题数为 0 时退化为简单平均
+  const idxWeighted = latestIssues
+    ? +(
+        sum(latestRepos.map((r) => r.idxTotal * r.nTotal)) / latestIssues
+      ).toFixed(1)
+    : latestRepos.length
+    ? +(sum(latestRepos.map((r) => r.idxTotal)) / latestRepos.length).toFixed(1)
     : 0;
   const idxGrade = gradeFromScore(idxWeighted);
 
   const topPainCount =
     data.topPainPriorityCounts.p0 + data.topPainPriorityCounts.p1;
 
-  // 阶段聚合：按问题数加权各仓同一阶段的综合分
+  // 阶段聚合：综合分只取各仓最新一周报告、按问题数加权；
+  // 痛点数仍按全周期合计（与「痛点概览」口径一致）。
   const stages: IssueStageAgg[] = data.stageOrder.map((s) => {
     let wSum = 0;
     let nSum = 0;
-    let painSum = 0;
-    const painPriorityCounts = { p0: 0, p1: 0, p2: 0 };
-    repos.forEach((r) => {
+    latestRepos.forEach((r) => {
       const st = r.stages.find((x) => x.id === s.id);
       if (!st) return;
       const w = r.nTotal || 1;
       wSum += st.score * w;
       nSum += w;
+    });
+    let painSum = 0;
+    const painPriorityCounts = { p0: 0, p1: 0, p2: 0 };
+    repos.forEach((r) => {
+      const st = r.stages.find((x) => x.id === s.id);
+      if (!st) return;
       painSum += st.painCount;
       painPriorityCounts.p0 += st.painPriorityCounts.p0;
       painPriorityCounts.p1 += st.painPriorityCounts.p1;
@@ -118,7 +143,7 @@ export const computeIssueOverview = (
     {
       label: '综合体验评分',
       value: idxWeighted.toFixed(1),
-      sub: `跨 ${repoCount} 仓全周期加权`,
+      sub: `跨 ${repoCount} 仓最新一周加权`,
       grade: idxGrade,
       trend: data.agg.idx,
       trendMax: 100,

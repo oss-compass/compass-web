@@ -91,22 +91,19 @@ export type CiRepoSummary = {
   level: CiLevel;
 };
 
-/** 单仓报告概览得分 · 全期均值（该仓所有观测日的非空日分求平均，口径同 CI 报告页概览） */
-const repoScoreAvg = (
+/** 单仓报告概览得分 · 最新日期（该仓最新非空观测日的日分，口径同 CI 报告页概览） */
+const repoScoreLatest = (
   repo: CiRepoKey,
   sel: (sc: CiJourneyScores) => number | null
 ): number | null => {
   const j = CI_JOURNEY[repo];
   if (!j) return null;
-  const vals: number[] = [];
-  j.days.forEach((day) => {
-    const b = j.boards[day];
+  for (let i = j.days.length - 1; i >= 0; i--) {
+    const b = j.boards[j.days[i]];
     const v = b?.scores ? sel(b.scores) : null;
-    if (v != null) vals.push(v);
-  });
-  return vals.length
-    ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length)
-    : null;
+    if (v != null) return v;
+  }
+  return null;
 };
 
 const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
@@ -156,17 +153,20 @@ const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
     blk0,
     blkL,
     activeP01,
-    scoreOverall: repoScoreAvg(repo, (sc) => sc.total),
-    scoreStability: repoScoreAvg(repo, (sc) => sc.dims.stability?.score ?? null),
-    scoreEfficiency: repoScoreAvg(
+    scoreOverall: repoScoreLatest(repo, (sc) => sc.total),
+    scoreStability: repoScoreLatest(
+      repo,
+      (sc) => sc.dims.stability?.score ?? null
+    ),
+    scoreEfficiency: repoScoreLatest(
       repo,
       (sc) => sc.dims.efficiency?.score ?? null
     ),
-    scoreInteraction: repoScoreAvg(
+    scoreInteraction: repoScoreLatest(
       repo,
       (sc) => sc.dims.interaction?.score ?? null
     ),
-    scoreCost: repoScoreAvg(repo, (sc) => sc.dims.cost?.score ?? null),
+    scoreCost: repoScoreLatest(repo, (sc) => sc.dims.cost?.score ?? null),
     faded,
     backfill,
     hasP0,
@@ -436,12 +436,11 @@ export const computeCommunityOverview = (
   const dBlk = delta(blocked0All, blockedAll, true);
   const dWaste = delta(agg.waste[0] ?? null, last(agg.waste) ?? null, true);
 
-  // 报告概览五项得分 · 全期均值：将两仓所有观测日的非空日分池化后求平均，
+  // 报告概览五项得分 · 最新日期：取两仓最新非空观测日的非空日分池化后的当日值，
   // 得分权威口径取自 CI_JOURNEY[repo].boards[day].scores（与 CI 报告页概览同源）。
-  const scoreDayAvg = (
+  const scoreDayLatest = (
     sel: (s: CiJourneyScores) => number | null
-  ): { avg: number | null; series: (number | null)[] } => {
-    const pooled: number[] = [];
+  ): { latest: number | null; series: (number | null)[] } => {
     const series = agg.days.map((dt) => {
       const perDay: number[] = [];
       repos.forEach((x) => {
@@ -449,17 +448,15 @@ export const computeCommunityOverview = (
         const v = b?.scores ? sel(b.scores) : null;
         if (v != null) {
           perDay.push(v);
-          pooled.push(v);
         }
       });
       return perDay.length
         ? +(perDay.reduce((a, b) => a + b, 0) / perDay.length).toFixed(1)
         : null;
     });
-    const avg = pooled.length
-      ? Math.round(pooled.reduce((a, b) => a + b, 0) / pooled.length)
-      : null;
-    return { avg, series };
+    const lastVal = lastNZ(series);
+    const latest = lastVal != null ? Math.round(lastVal) : null;
+    return { latest, series };
   };
 
   const scoreDefs: Array<{
@@ -472,50 +469,50 @@ export const computeCommunityOverview = (
     {
       key: 'overall',
       label: '综合体验评分',
-      sub: '四维加权综合 · 全期均值',
+      sub: '四维加权综合 · 最新日期',
       color: TREND_SERIES2,
       sel: (s) => s.total,
     },
     {
       key: 'stability',
       label: '稳定性',
-      sub: '稳定性维度 · 全期均值',
+      sub: '稳定性维度 · 最新日期',
       color: TREND_CRITICAL,
       sel: (s) => s.dims.stability?.score ?? null,
     },
     {
       key: 'efficiency',
       label: '效率',
-      sub: '效率维度 · 全期均值',
+      sub: '效率维度 · 最新日期',
       color: TREND_WARNING,
       sel: (s) => s.dims.efficiency?.score ?? null,
     },
     {
       key: 'interaction',
       label: '交互体验',
-      sub: '交互体验维度 · 全期均值',
+      sub: '交互体验维度 · 最新日期',
       color: TREND_SERIES2,
       sel: (s) => s.dims.interaction?.score ?? null,
     },
     {
       key: 'cost',
       label: '成本',
-      sub: '成本维度 · 全期均值',
+      sub: '成本维度 · 最新日期',
       color: TREND_WARNING,
       sel: (s) => s.dims.cost?.score ?? null,
     },
   ];
 
   const kpis: CiKpi[] = scoreDefs.map((def) => {
-    const { avg, series } = scoreDayAvg(def.sel);
+    const { latest, series } = scoreDayLatest(def.sel);
     const first = firstNZ(series);
     const lastVal = lastNZ(series);
     const d = delta(first, lastVal, false);
     return {
       label: def.label,
-      value: avg != null ? String(avg) : '—',
+      value: latest != null ? String(latest) : '—',
       sub: def.sub,
-      bad: avg != null && avg < 60,
+      bad: latest != null && latest < 60,
       delta: d,
       trend: {
         title: def.label,

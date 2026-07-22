@@ -611,8 +611,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                 <p>
                   综合体验指数按 issue
                   全生命周期切分为以下阶段，每阶段结合客观信号与
-                  主观评审打分后加权汇总；总览页综合所有仓库、所有报告周期，
-                  按各期「Issue 数」加权平均。
+                  主观评审打分后加权汇总；总览页综合得分只取各仓最新一周报告，
+                  按「Issue 数」加权平均；痛点数与 Issue 总数 / 关闭率仍按全部报告周期统计。
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {data.stageOrder.map((s) => (
