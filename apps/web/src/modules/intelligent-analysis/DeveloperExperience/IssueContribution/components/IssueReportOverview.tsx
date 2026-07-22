@@ -101,7 +101,7 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
   return (
     <Card
       bordered={false}
-      className="w-full min-w-0 overflow-hidden rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
+      className="w-full min-w-0 overflow-x-clip rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
       bodyStyle={{ padding: 24 }}
     >
       <div className=">lg:flex-row >lg:items-stretch flex flex-col gap-5">

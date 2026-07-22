@@ -214,3 +214,82 @@ export type IssueReportApiResponse = {
   catalog: IssueReportCatalogRecord[];
   report: IssueReportRecord | null;
 };
+
+// ─────────────────────────────────────────────────────────────
+// Issue 贡献总览（跨仓聚合）—— 服务端裁剪为紧凑视图模型后经 API 下发，
+// 原始报告体量巨大且仅存于服务端，不进入浏览器包。
+// ─────────────────────────────────────────────────────────────
+
+export type IssueOverviewLevel = 'crit' | 'warn' | 'good';
+
+/** 单仓单阶段概览（取自最新一期报告的阶段维度分） */
+export type IssueOverviewStage = {
+  id: string;
+  name: string;
+  icon: string;
+  score: number;
+  grade: string;
+  painCount: number;
+  painPct: number;
+};
+
+/** 单仓概览（取自该仓最新一期报告） */
+export type IssueOverviewRepo = {
+  community: string; // 例：cann/cann-samples（报告页 repo 查询值）
+  repoShort: string; // 例：cann-samples（展示用短名）
+  org: string;
+  period: string;
+  periodLabel: string;
+  idxTotal: number;
+  grade: string;
+  deltaTotal: string;
+  nTotal: number;
+  nOpen: number;
+  nClosed: number;
+  closeRate: number;
+  confidence: string;
+  dataCompleteness: number;
+  responderCount: number;
+  responseCount: number;
+  level: IssueOverviewLevel;
+  stages: IssueOverviewStage[];
+  idxTrend: number[]; // 该仓综合指数按周（时间升序）
+  idxTrendPeriods: string[]; // 与 idxTrend 对齐的周期标签（时间升序）
+};
+
+/** 重点待办痛点（跨仓汇总，P0/P1 优先） */
+export type IssueOverviewTopPain = {
+  key: string;
+  community: string;
+  repoShort: string;
+  prio: string;
+  stageName: string;
+  title: string;
+  evidence: string;
+  impact: string;
+  action: string;
+  state: string;
+};
+
+/** 跨仓逐周聚合序列（用于顶部 KPI 缩略图） */
+export type IssueOverviewAggSeries = {
+  periods: string[];
+  idx: number[]; // 各周综合指数（按问题数加权）
+  nTotal: number[]; // 各周问题总数
+  closeRate: number[]; // 各周关闭率
+};
+
+export type IssueOverviewData = {
+  generatedAt: string;
+  repos: IssueOverviewRepo[];
+  /** 阶段展示顺序（各仓阶段并集，保持报告内出现顺序） */
+  stageOrder: Array<{ id: string; name: string; icon: string }>;
+  topPains: IssueOverviewTopPain[];
+  /** 各仓最新一期 top_pains 合计（未截断的真实主要问题数） */
+  topPainTotal: number;
+  agg: IssueOverviewAggSeries;
+};
+
+export type IssueOverviewApiResponse = {
+  overview: IssueOverviewData;
+};

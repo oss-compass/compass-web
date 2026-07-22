@@ -5,10 +5,12 @@ import {
   BulbOutlined,
   DownOutlined,
   FlagOutlined,
+  InfoCircleOutlined,
   LinkOutlined,
   RocketOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
+import { Popover } from 'antd';
 import {
   cleanReportText,
   getPriorityTone,
@@ -16,12 +18,15 @@ import {
   normalizeGoal,
   stripMetricCode,
 } from '../presentation';
+import { getMetricDefinition } from '../metricDefinitions';
+import type { MetricDefinition } from '../metricDefinitions';
 import type {
   IssueReportPain,
   IssueReportRecommendation,
   IssueReportStage,
 } from '../types';
 import HintIcon from './HintIcon';
+import IssueStageDirectory from './IssueStageDirectory';
 
 type IssueExperiencePathProps = {
   projectName: string;
@@ -48,6 +53,61 @@ const getEvidenceMeta = (type: string) =>
     label: type || '动作',
     cls: 'bg-slate-100 text-slate-500',
   };
+
+/**
+ * 关键指标卡片 hover 浮窗内容：展示「指标含义」文字 + 「算分算法」评分表。
+ * 表格分数列复用 getScoreTone 着色，与卡片评分徽章保持一致视觉语言。
+ */
+const MetricDefinitionContent: React.FC<{
+  name: string;
+  definition: MetricDefinition;
+}> = ({ name, definition }) => (
+  <div className="w-[480px] max-w-[86vw]">
+    <div className="text-[13px] font-semibold text-slate-900">{name}</div>
+    <div className="mt-2">
+      <div className="text-[11px] font-semibold text-slate-400">指标含义</div>
+      <p className="mt-1 text-[12px] leading-5 text-slate-600">
+        {definition.meaning}
+      </p>
+    </div>
+    <div className="mt-3">
+      <div className="text-[11px] font-semibold text-slate-400">算分算法</div>
+      <div className="mt-1.5 overflow-hidden rounded-lg border border-slate-200">
+        <table className="w-full border-collapse text-[12px]">
+          <thead className="bg-slate-50">
+            <tr>
+              <th className="w-[52px] border-b border-slate-200 px-2 py-1.5 text-center text-[11px] font-semibold text-slate-500">
+                分数
+              </th>
+              <th className="border-b border-slate-200 px-2 py-1.5 text-left text-[11px] font-semibold text-slate-500">
+                判定条件
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {definition.rubric.map((row) => {
+              const rowTone = getScoreTone(row.score);
+              return (
+                <tr key={row.score} className="align-top">
+                  <td className="border-b border-slate-100 px-2 py-1.5 text-center">
+                    <span
+                      className={`inline-flex rounded-full border px-1.5 py-0.5 text-[11px] font-bold leading-none ${rowTone.badge}`}
+                    >
+                      {row.score}
+                    </span>
+                  </td>
+                  <td className="border-b border-slate-100 px-2 py-1.5 leading-5 text-slate-600">
+                    {row.condition}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
 
 /**
  * 单个痛点卡：可展开查看关键证据、体验影响，以及涉及的具体 Issue 明细表
@@ -249,19 +309,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   }, [activeStageId]);
 
   const [metricsOpen, setMetricsOpen] = useState(true);
-  const [detailExpanded, setDetailExpanded] = useState(true);
 
   if (!activeStage) return null;
 
   const scoreTone = getScoreTone(activeStage.mixed);
-  const panelVisible = Boolean(selectedStage) && detailExpanded;
 
   const handleCardClick = (stageId: string) => {
-    if (stageId === activeStageId) {
-      onStageChange('');
-      return;
-    }
-    setDetailExpanded(true);
     onStageChange(stageId);
   };
 
@@ -465,131 +518,89 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           </div>
         </div>
 
-        <div className="mt-6">
-          <button
-            type="button"
-            onClick={() => selectedStage && setDetailExpanded((v) => !v)}
-            className={`group flex w-full items-center gap-3 text-left ${
-              selectedStage ? 'cursor-pointer' : 'cursor-default'
-            }`}
-          >
-            <div className="h-px flex-1 bg-slate-200" />
-            {selectedStage ? (
-              <div
-                className={`flex items-center gap-2 rounded-full border px-3 py-1 text-sm transition-colors duration-150 ${
-                  detailExpanded
-                    ? 'border-slate-300 bg-white text-slate-700 shadow-sm'
-                    : 'border-slate-200 bg-slate-100 text-slate-500'
-                }`}
-              >
-                <span className="font-semibold">
-                  {activeStage.id} · {activeStage.name}
-                </span>
-                <span className="text-slate-400">· 阶段诊断</span>
-                <DownOutlined
-                  className={`text-[10px] text-slate-400 transition-transform duration-200 ${
-                    detailExpanded ? '' : '-rotate-90'
-                  }`}
-                />
-              </div>
-            ) : (
-              <span className="text-base font-medium text-slate-400">
-                阶段诊断
-              </span>
-            )}
-            <div className="h-px flex-1 bg-slate-200" />
-          </button>
+        <div className=">md:p-4 mt-6 rounded-[24px] border border-slate-200 bg-slate-50/70 p-3">
+          <div className="flex flex-col gap-4 >lg:flex-row">
+          <div className=">lg:w-[240px] >lg:flex-none">
+            <div className=">lg:sticky >lg:top-5">
+              <IssueStageDirectory
+                stages={stages}
+                activeStageId={activeStageId}
+                onStageChange={onStageChange}
+              />
+            </div>
+          </div>
 
-          {panelVisible ? (
+          <div className="min-w-0 flex-1">
             <div
               id={`issue-stage-panel-${activeStage.id}`}
               role="tabpanel"
               aria-labelledby={`issue-stage-card-${activeStage.id}`}
-              className="mt-4 overflow-hidden rounded-[24px] border border-slate-200/80 bg-[linear-gradient(180deg,#fbfdff_0%,#f8fbff_100%)]"
+              className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
             >
-              <div className=">md:px-5 border-b border-slate-200 bg-white px-4 py-4">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="flex min-w-0 items-start gap-3">
-                    <span
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-lg ${scoreTone.badge}`}
-                    >
-                      {activeStage.icon}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="text-base font-semibold text-slate-900">
-                          {activeStage.id} · {activeStage.name}
-                        </h3>
-                        <span
-                          className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${scoreTone.badge}`}
-                        >
-                          {activeStage.judgment}
-                        </span>
-                      </div>
-                      <p className="mt-1.5 max-w-3xl text-xs leading-5 text-slate-500">
-                        {activeStage.intro}
-                      </p>
+              <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
+                <div className="flex items-start gap-4">
+                  <span
+                    className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border text-xl ${scoreTone.badge}`}
+                  >
+                    {activeStage.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-lg font-semibold text-slate-900">
+                      {activeStage.id} {activeStage.name}
                     </div>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <div className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
-                      阶段得分
-                    </div>
-                    <div
-                      className={`mt-1 text-3xl font-bold ${scoreTone.text}`}
-                    >
-                      {activeStage.mixed}
-                    </div>
+                    <p className="mt-0.5 text-sm leading-6 text-slate-500">
+                      {activeStage.intro}
+                    </p>
                   </div>
                 </div>
-              </div>
-
-              <div className=">lg:grid-cols-4 grid grid-cols-2 border-b border-slate-200 bg-white/70">
-                {[
-                  {
-                    label: '痛点 Issue',
-                    value: `${activeStage.pain_count}/${sampleSize}`,
-                    note: `占比 ${activeStage.pain_pct.toFixed(1)}%`,
-                    valueClass: 'text-rose-500',
-                  },
-                  {
-                    label: '客观 / 主观',
-                    value: `${activeStage.obj.toFixed(
-                      1
-                    )} / ${activeStage.subj.toFixed(1)}`,
-                    note: '双轨评分',
-                    valueClass: 'text-slate-900',
-                  },
-                  {
-                    label: '最佳表现',
-                    value: activeStage.best_metric.value,
-                    note: activeStage.best_metric.name_cn,
-                    valueClass: 'text-emerald-600',
-                  },
-                  {
-                    label: '主要拖累',
-                    value: activeStage.worst_metric.value,
-                    note: activeStage.worst_metric.name_cn,
-                    valueClass: 'text-rose-500',
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className=">lg:border-b-0 border-b border-r border-slate-200 p-4 last:border-r-0"
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${scoreTone.badge}`}
                   >
-                    <div className="text-[11px] font-medium text-slate-400">
-                      {item.label}
-                    </div>
-                    <div
-                      className={`mt-2 text-xl font-bold tabular-nums tracking-[-0.03em] ${item.valueClass}`}
+                    <span>阶段得分</span>
+                    <span className="text-base leading-none">
+                      {activeStage.mixed}
+                    </span>
+                  </span>
+                  {[
+                    {
+                      label: '痛点 Issue',
+                      value: `${activeStage.pain_count}/${sampleSize}`,
+                      badgeClass: 'bg-rose-50 text-rose-600',
+                    },
+                    {
+                      label: '客观 / 主观',
+                      value: `${activeStage.obj.toFixed(
+                        1
+                      )} / ${activeStage.subj.toFixed(1)}`,
+                      badgeClass: 'bg-slate-100 text-slate-700',
+                    },
+                    {
+                      label: '最佳表现',
+                      value: activeStage.best_metric.value,
+                      badgeClass: 'bg-emerald-50 text-emerald-700',
+                    },
+                    {
+                      label: '主要拖累',
+                      value: activeStage.worst_metric.value,
+                      badgeClass: 'bg-rose-50 text-rose-600',
+                    },
+                  ].map((item) => (
+                    <span
+                      key={item.label}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm"
                     >
-                      {item.value}
-                    </div>
-                    <div className="mt-1 truncate text-[10px] text-slate-500">
-                      {item.note}
-                    </div>
-                  </div>
-                ))}
+                      <span className="font-medium text-slate-600">
+                        {item.label}
+                      </span>
+                      <span
+                        className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none tabular-nums ${item.badgeClass}`}
+                      >
+                        {item.value}
+                      </span>
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className=">md:p-5 space-y-6 p-4">
@@ -630,15 +641,22 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     <div className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3">
                       {stageMetrics.map((metric) => {
                         const metricTone = getScoreTone(metric.score);
-                        return (
+                        const metricDef = getMetricDefinition(metric.code);
+                        const card = (
                           <div
-                            key={metric.key}
-                            className="flex flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                            className={`flex h-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)] ${
+                              metricDef
+                                ? 'cursor-help transition-shadow hover:border-slate-300 hover:shadow-[0_12px_26px_rgba(15,23,42,0.08)]'
+                                : ''
+                            }`}
                           >
                             <div className="flex items-start justify-between gap-2">
-                              <div className="min-w-0">
+                              <div className="flex min-w-0 items-center gap-1.5">
+                                <span className="truncate text-[13px] font-semibold leading-5 text-slate-700">
+                                  {metric.name}
+                                </span>
                                 <span
-                                  className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                                  className={`inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
                                     metric.kind === 'obj'
                                       ? 'bg-sky-50 text-sky-600'
                                       : 'bg-violet-50 text-violet-600'
@@ -646,9 +664,9 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                 >
                                   {metric.kind === 'obj' ? '客观' : '主观'}
                                 </span>
-                                <div className="mt-1.5 truncate text-[13px] font-semibold leading-5 text-slate-700">
-                                  {metric.name}
-                                </div>
+                                {metricDef ? (
+                                  <InfoCircleOutlined className="shrink-0 text-[11px] text-slate-300" />
+                                ) : null}
                               </div>
                               <span
                                 className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[12px] font-bold leading-none ${metricTone.badge}`}
@@ -656,9 +674,9 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                 {metric.score}分
                               </span>
                             </div>
-                            {metric.reason ? (
+                            {metricDef?.meaning || metric.reason ? (
                               <p className="mt-2 line-clamp-3 text-[12px] leading-5 text-slate-500">
-                                {metric.reason}
+                                {metricDef?.meaning || metric.reason}
                               </p>
                             ) : null}
                             <div className="mt-auto flex items-center gap-3 border-t border-slate-100 pt-2 text-[10px] text-slate-400">
@@ -667,53 +685,32 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                             </div>
                           </div>
                         );
+                        if (!metricDef) {
+                          return (
+                            <div key={metric.key} className="flex">
+                              {card}
+                            </div>
+                          );
+                        }
+                        return (
+                          <Popover
+                            key={metric.key}
+                            trigger="hover"
+                            placement="top"
+                            mouseEnterDelay={0.15}
+                            content={
+                              <MetricDefinitionContent
+                                name={metric.name}
+                                definition={metricDef}
+                              />
+                            }
+                          >
+                            <div className="flex">{card}</div>
+                          </Popover>
+                        );
                       })}
                     </div>
                   ) : null}
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between gap-3">
-                    <h4 className="text-base font-semibold text-slate-900">
-                      痛点分析
-                    </h4>
-                    <span
-                      className="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-semibold text-rose-600"
-                      title="对应卡片“痛点”：本阶段被判定存在痛点的 Issue 数"
-                    >
-                      痛点 {activeStage.pain_count}/{sampleSize}
-                    </span>
-                  </div>
-                  <div className="mt-3 overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow-[0_10px_24px_rgba(245,158,11,0.08)]">
-                    <div className="flex items-start gap-3 bg-[linear-gradient(180deg,#fffdf7_0%,#fff7ed_100%)] px-5 py-4">
-                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
-                        <WarningOutlined className="text-sm" />
-                      </span>
-                      <div className="min-w-0">
-                        <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-700">
-                          核心问题
-                        </div>
-                        <p className="mt-1 text-[15px] font-medium leading-7 text-slate-800">
-                          {activeStage.core_problem}
-                        </p>
-                      </div>
-                    </div>
-                    {activeStage.root_cause ? (
-                      <div className="flex items-start gap-3 border-t border-amber-100 px-5 py-4">
-                        <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                          <BulbOutlined className="text-sm" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                            根因判断
-                          </div>
-                          <p className="mt-1 text-[13px] leading-6 text-slate-600">
-                            {activeStage.root_cause}
-                          </p>
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
                 </div>
 
                 {stagePains.length ? (
@@ -729,6 +726,37 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                       <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
                         {stagePains.length} 个问题
                       </span>
+                    </div>
+
+                    <div className="mt-4 overflow-hidden rounded-xl border border-amber-200/70 bg-white shadow-[0_6px_16px_rgba(245,158,11,0.06)]">
+                      <div className="flex items-start gap-2.5 bg-[linear-gradient(180deg,#fffdf7_0%,#fff7ed_100%)] px-3.5 py-2.5">
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-600">
+                          <WarningOutlined className="text-[12px]" />
+                        </span>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-700">
+                            核心问题
+                          </div>
+                          <p className="mt-0.5 text-[13px] leading-6 text-slate-800">
+                            {activeStage.core_problem}
+                          </p>
+                        </div>
+                      </div>
+                      {activeStage.root_cause ? (
+                        <div className="flex items-start gap-2.5 border-t border-amber-100 px-3.5 py-2.5">
+                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-500">
+                            <BulbOutlined className="text-[12px]" />
+                          </span>
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                              根因判断
+                            </div>
+                            <p className="mt-0.5 text-[12px] leading-5 text-slate-600">
+                              {activeStage.root_cause}
+                            </p>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
 
                     <div className="mt-4 flex flex-col gap-4">
@@ -810,7 +838,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                 ) : null}
               </div>
             </div>
-          ) : null}
+          </div>
+        </div>
         </div>
       </div>
     </section>

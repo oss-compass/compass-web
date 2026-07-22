@@ -50,6 +50,7 @@ import {
 import { buildTeamScoreTrend, buildTeamSuccessRateTrend } from './scoreTrend';
 import OverviewModuleTabs, { type OverviewModule } from './OverviewModuleTabs';
 import CiOverview from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverview';
+import IssueOverview from '@modules/intelligent-analysis/DeveloperExperience/IssueContribution/components/IssueOverview';
 import { CI_DATA } from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/data';
 
 type OverviewDashboardProps = {
@@ -805,18 +806,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
 
         {activeModule === 'ci' ? <CiOverview data={CI_DATA} /> : null}
 
-        {activeModule === 'issue' ? (
-          <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-white/80 bg-white/90 p-6 text-center shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-            <div className="flex flex-col items-center gap-3">
-              <div className="text-base font-semibold text-slate-700">
-                Issue 贡献总览 · 建设中
-              </div>
-              <div className="max-w-md text-[13px] leading-relaxed text-slate-400">
-                该模块的总览内容正在规划中，敬请期待。
-              </div>
-            </div>
-          </section>
-        ) : null}
+        {activeModule === 'issue' ? <IssueOverview org={org} /> : null}
 
         <IssueDetailModal
           state={issueModal}

@@ -46,7 +46,7 @@ const IssueStageDirectory: React.FC<IssueStageDirectoryProps> = ({
   return (
     <Card
       bordered={false}
-      className="w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_20px_48px_rgba(15,23,42,0.08)]"
+      className="w-full rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.05)]"
       bodyStyle={{ padding: 16 }}
     >
       <h2 className="mb-4 text-base font-semibold text-slate-800">步骤名称</h2>

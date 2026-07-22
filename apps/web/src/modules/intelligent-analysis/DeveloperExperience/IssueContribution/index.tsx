@@ -175,7 +175,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   };
 
   return (
-    <div className="min-h-full overflow-x-hidden bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
+    <div className="min-h-full bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
       <div className="flex min-h-full w-full min-w-0 flex-col gap-5 p-5">
         <div className="flex justify-end">
           <IssueReportControls
@@ -198,7 +198,6 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
         ) : report ? (
           <>
             <IssueReportOverview report={report}>
-              <IssueExecutiveSummary context={report.data.report_context} />
               <IssueExperiencePath
                 projectName={report.data.community_name}
                 stages={report.data.report_context.stages}
@@ -208,6 +207,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 activeStageId={activeStageId}
                 onStageChange={setActiveStageId}
               />
+              <IssueExecutiveSummary context={report.data.report_context} />
             </IssueReportOverview>
 
             <footer className="px-1 pb-2 text-[11px] leading-5 text-slate-500">

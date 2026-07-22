@@ -2,6 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import type {
   IssueExperienceReportData,
+  IssueOverviewData,
+  IssueOverviewLevel,
+  IssueOverviewRepo,
+  IssueOverviewStage,
+  IssueOverviewTopPain,
   IssueReportCatalogRecord,
   IssueReportFilters,
   IssueReportRecord,
@@ -190,3 +195,206 @@ export const getIssueReportCatalog = (
 
 export const getIssueReport = (filters: IssueReportFilters) =>
   loadAllRecords().find((record) => matchesFilters(record, filters));
+
+// ──────────────────────────────────────────────────────────────
+// Issue 贡献总览 · 跨仓聚合（服务端裁剪为紧凑视图模型）
+// ──────────────────────────────────────────────────────────────
+
+const repoShortName = (community: string) => {
+  const seg = community.split('/');
+  return seg[seg.length - 1] || community;
+};
+
+const prioRank = (prio: string) => {
+  const upper = prio.toUpperCase();
+  if (upper.indexOf('P0') >= 0) return 0;
+  if (upper.indexOf('P1') >= 0) return 1;
+  if (upper.indexOf('P2') >= 0) return 2;
+  return 3;
+};
+
+const repoLevel = (idxTotal: number, grade: string): IssueOverviewLevel => {
+  if (grade.toUpperCase() === 'F' || idxTotal < 50) return 'crit';
+  if (idxTotal < 70) return 'warn';
+  return 'good';
+};
+
+/** 按社区分组，取每个社区的最新一期报告（records 已按 period 降序可取首个）。 */
+const latestByCommunity = (
+  records: IssueReportRecord[]
+): IssueReportRecord[] => {
+  const seen: Record<string, IssueReportRecord> = {};
+  const order: string[] = [];
+  for (const record of records) {
+    const existing = seen[record.community];
+    if (!existing) {
+      seen[record.community] = record;
+      order.push(record.community);
+    } else if (record.period.localeCompare(existing.period) > 0) {
+      seen[record.community] = record;
+    }
+  }
+  return order.map((community) => seen[community]);
+};
+
+const buildRepoSummary = (
+  record: IssueReportRecord,
+  scoreHistory?: Array<{ period: string; idx: number }>
+): IssueOverviewRepo => {
+  const ctx = record.data.report_context;
+  const stages: IssueOverviewStage[] = ctx.stages.map((stage) => ({
+    id: stage.id,
+    name: stage.name,
+    icon: stage.icon,
+    score: stage.mixed,
+    grade: stage.grade,
+    painCount: stage.pain_count,
+    painPct: stage.pain_pct,
+  }));
+  // 得分趋势：跨该仓各周报告的综合指数（时间升序），单期时退化为当前值。
+  const hasHistory = scoreHistory && scoreHistory.length > 1;
+  const idxTrend = hasHistory
+    ? scoreHistory.map((h) => h.idx)
+    : [ctx.idx_total];
+  const idxTrendPeriods = hasHistory
+    ? scoreHistory.map((h) => h.period)
+    : [record.period];
+  return {
+    community: record.community,
+    repoShort: repoShortName(record.community),
+    org: ctx.project.org,
+    period: record.period,
+    periodLabel: record.periodLabel,
+    idxTotal: ctx.idx_total,
+    grade: ctx.grade,
+    deltaTotal: ctx.delta_total,
+    nTotal: ctx.n_total,
+    nOpen: ctx.n_open,
+    nClosed: ctx.n_closed,
+    closeRate: ctx.close_rate,
+    confidence: ctx.confidence,
+    dataCompleteness: ctx.data_completeness,
+    responderCount: ctx.participants?.responder_count ?? 0,
+    responseCount: ctx.participants?.response_count ?? 0,
+    level: repoLevel(ctx.idx_total, ctx.grade),
+    stages,
+    idxTrend,
+    idxTrendPeriods,
+  };
+};
+
+const buildTopPains = (latest: IssueReportRecord[]): IssueOverviewTopPain[] => {
+  const pains: IssueOverviewTopPain[] = [];
+  latest.forEach((record) => {
+    const repoShort = repoShortName(record.community);
+    (record.data.report_context.top_pains ?? []).forEach((pain, i) => {
+      pains.push({
+        key: `${record.community}-${pain.id || i}`,
+        community: record.community,
+        repoShort,
+        prio: pain.prio,
+        stageName: pain.stage_name,
+        title: pain.title,
+        evidence: pain.evidence,
+        impact: pain.impact,
+        action: pain.action,
+        state: (pain.state ?? '').trim(),
+      });
+    });
+  });
+  return pains.sort((a, b) => prioRank(a.prio) - prioRank(b.prio)).slice(0, 24);
+};
+
+/** 跨仓逐周聚合序列（按问题数加权综合指数 / 问题总数 / 关闭率）。 */
+const buildAggSeries = (records: IssueReportRecord[]) => {
+  const byPeriod: Record<
+    string,
+    { n: number; idxWeighted: number; closed: number }
+  > = {};
+  const periods: string[] = [];
+  records.forEach((record) => {
+    const ctx = record.data.report_context;
+    const bucket = byPeriod[record.period];
+    if (!bucket) {
+      byPeriod[record.period] = {
+        n: ctx.n_total,
+        idxWeighted: ctx.idx_total * ctx.n_total,
+        closed: ctx.n_closed,
+      };
+      periods.push(record.period);
+    } else {
+      bucket.n += ctx.n_total;
+      bucket.idxWeighted += ctx.idx_total * ctx.n_total;
+      bucket.closed += ctx.n_closed;
+    }
+  });
+  periods.sort((a, b) => a.localeCompare(b));
+  return {
+    periods,
+    idx: periods.map((p) => {
+      const b = byPeriod[p];
+      return b.n ? +(b.idxWeighted / b.n).toFixed(1) : 0;
+    }),
+    nTotal: periods.map((p) => byPeriod[p].n),
+    closeRate: periods.map((p) => {
+      const b = byPeriod[p];
+      return b.n ? +((b.closed / b.n) * 100).toFixed(1) : 0;
+    }),
+  };
+};
+
+export const getIssueOverview = (
+  filters: Pick<IssueReportFilters, 'org'> = {}
+): IssueOverviewData => {
+  const all = loadAllRecords().filter(
+    (record) => !filters.org || record.org === filters.org
+  );
+  const latest = latestByCommunity(all);
+
+  // 各仓得分历史：按周（period 升序）收集综合指数，供「得分趋势」缩略图/弹窗使用。
+  const historyByCommunity: Record<
+    string,
+    Array<{ period: string; idx: number }>
+  > = {};
+  all
+    .slice()
+    .sort((a, b) => a.period.localeCompare(b.period))
+    .forEach((record) => {
+      const list = historyByCommunity[record.community] || [];
+      list.push({
+        period: record.period,
+        idx: record.data.report_context.idx_total,
+      });
+      historyByCommunity[record.community] = list;
+    });
+
+  const repos = latest.map((record) =>
+    buildRepoSummary(record, historyByCommunity[record.community])
+  );
+
+  // 阶段展示顺序：取阶段数最多的一份报告作为模板（各仓阶段口径一致）。
+  const stageTemplate = latest.reduce<IssueReportRecord | null>(
+    (best, record) =>
+      !best ||
+      record.data.report_context.stages.length >
+        best.data.report_context.stages.length
+        ? record
+        : best,
+    null
+  );
+  const stageOrder = (stageTemplate?.data.report_context.stages ?? []).map(
+    (stage) => ({ id: stage.id, name: stage.name, icon: stage.icon })
+  );
+
+  return {
+    generatedAt: latest[0]?.data.generated_at ?? '',
+    repos,
+    stageOrder,
+    topPains: buildTopPains(latest),
+    topPainTotal: latest.reduce(
+      (a, r) => a + (r.data.report_context.top_pains?.length ?? 0),
+      0
+    ),
+    agg: buildAggSeries(all),
+  };
+};
