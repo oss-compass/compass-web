@@ -112,7 +112,7 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
     return (
       <>
         <Title level={4} className="oj-section-title">
-          社区 CI/CD 总览
+          总览信息
         </Title>
         <div className="section-card">
           <EmptyState>CI 数据落库中，暂无总览内容。</EmptyState>
@@ -305,9 +305,9 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
 
   return (
     <>
-            {/* ① 报告概览五项得分 · 最新日期（综合 + 四维，两仓最新观测日池化值，含趋势缩略图） */}
+      {/* ① 报告概览五项得分 · 最新日期（综合 + 四维，两仓最新观测日池化值，含趋势缩略图） */}
       <Title level={4} className="oj-section-title">
-        社区 CI/CD 总览
+        总览信息
       </Title>
       <div
         className="overview-bottom-row"

@@ -445,7 +445,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     <>
       {/* ① Issue 贡献总览 · 四 KPI（含跨仓逐周趋势缩略图） */}
       <Title level={4} className="oj-section-title">
-        Issue 贡献总览
+        总览信息
       </Title>
       <div
         className="overview-bottom-row"

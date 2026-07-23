@@ -38,6 +38,7 @@ type OverviewSummarySectionProps = {
   summaryAvgExecutionTime: number | null;
   repoCount: number;
   titleExtra?: React.ReactNode;
+  benchmarkSlot?: React.ReactNode;
   issueSourceMode: IssueSourceMode;
   includeCommonIssues: boolean;
   commonIssues: CommonIssueGroup[];
@@ -64,6 +65,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summaryAvgExecutionTime,
   repoCount,
   titleExtra,
+  benchmarkSlot,
   issueSourceMode,
   includeCommonIssues,
   commonIssues,
@@ -240,6 +242,9 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
             </div>
           </div>
         </div>
+        {benchmarkSlot ? (
+          <div className="overview-summary-benchmark-slot">{benchmarkSlot}</div>
+        ) : null}
         <OverviewSummaryBlock
           title={
             <div className="flex items-center gap-2">

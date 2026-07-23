@@ -749,11 +749,12 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
               onIssueSourceModeChange={setIssueSourceMode}
               onIncludeCommonIssuesChange={setIncludeCommonIssues}
               onOpenIssues={openSummaryIssues}
-            />
-
-            <CapabilityBenchmarkOverview
-              data={capabilityBenchmarkSummaryResp ?? null}
-              isLoading={isBenchmarkSummaryLoading}
+              benchmarkSlot={
+                <CapabilityBenchmarkOverview
+                  data={capabilityBenchmarkSummaryResp ?? null}
+                  isLoading={isBenchmarkSummaryLoading}
+                />
+              }
             />
 
             <RepoProgressSection
