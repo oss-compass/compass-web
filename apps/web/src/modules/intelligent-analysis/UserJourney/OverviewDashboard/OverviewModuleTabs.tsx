@@ -1,6 +1,6 @@
 import React from 'react';
 
-/** 总览看板模块：社区入门体验 / Issue 贡献 / CI 体验 */
+/** 总览看板模块：社区入门 / 社区贡献 / 社区工程 */
 export type OverviewModule = 'community-onboarding' | 'issue' | 'ci';
 
 type OverviewModuleTabsProps = {
@@ -9,9 +9,9 @@ type OverviewModuleTabsProps = {
 };
 
 const MODULES: { key: OverviewModule; label: string }[] = [
-  { key: 'community-onboarding', label: '社区入门体验' },
-  { key: 'issue', label: 'Issue 贡献' },
-  { key: 'ci', label: 'CI 体验' },
+  { key: 'community-onboarding', label: '社区入门' },
+  { key: 'issue', label: '社区贡献' },
+  { key: 'ci', label: '社区工程' },
 ];
 
 /**

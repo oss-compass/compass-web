@@ -16,22 +16,22 @@ export type ExperienceModuleDefinition = {
 export const EXPERIENCE_MODULES: ExperienceModuleDefinition[] = [
   {
     type: 'community-onboarding',
-    label: '社区入门体验',
+    label: '社区入门',
     shortLabel: '社区入门',
     status: 'available',
     showInOverview: true,
   },
   {
     type: 'issue-contribution',
-    label: 'Issue 贡献体验',
-    shortLabel: 'Issue 贡献',
+    label: '社区贡献',
+    shortLabel: '社区贡献',
     status: 'available',
     showInOverview: false,
   },
   {
     type: 'ci-experience',
-    label: 'CI 体验',
-    shortLabel: 'CI 体验',
+    label: '社区工程',
+    shortLabel: '社区工程',
     status: 'available',
     showInOverview: false,
   },
