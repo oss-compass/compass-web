@@ -56,13 +56,13 @@ interface RepoData {
 interface RepoTableProps {
   projectType?: string;
   selectedRegions?: string[];
-  shwoTitle?: boolean;
+  showTitle?: boolean;
 }
 
 const RepoTable: React.FC<RepoTableProps> = ({
   projectType = '',
   selectedRegions = [],
-  shwoTitle = false,
+  showTitle = false,
 }) => {
   const [data, setData] = useState<RepoData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -222,7 +222,7 @@ const RepoTable: React.FC<RepoTableProps> = ({
   ];
 
   return (
-    <Card title={shwoTitle ? '仓库信息' : ''} className="mb-6">
+    <Card title={showTitle ? '仓库信息' : ''} className="mb-6">
       <div className="mb-6">
         <Space>
           <Input
