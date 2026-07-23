@@ -440,7 +440,11 @@ export const computeCommunityOverview = (
   // 得分权威口径取自 CI_JOURNEY[repo].boards[day].scores（与 CI 报告页概览同源）。
   const scoreDayLatest = (
     sel: (s: CiJourneyScores) => number | null
-  ): { latest: number | null; series: (number | null)[] } => {
+  ): {
+    latest: number | null;
+    lastVal: number | null;
+    series: (number | null)[];
+  } => {
     const series = agg.days.map((dt) => {
       const perDay: number[] = [];
       repos.forEach((x) => {
@@ -454,9 +458,10 @@ export const computeCommunityOverview = (
         ? +(perDay.reduce((a, b) => a + b, 0) / perDay.length).toFixed(1)
         : null;
     });
-    const lastVal = lastNZ(series);
+    const lastVal =
+      [...series].reverse().find((value) => value != null) ?? null;
     const latest = lastVal != null ? Math.round(lastVal) : null;
-    return { latest, series };
+    return { latest, lastVal, series };
   };
 
   const scoreDefs: Array<{
@@ -504,9 +509,8 @@ export const computeCommunityOverview = (
   ];
 
   const kpis: CiKpi[] = scoreDefs.map((def) => {
-    const { latest, series } = scoreDayLatest(def.sel);
+    const { latest, lastVal, series } = scoreDayLatest(def.sel);
     const first = firstNZ(series);
-    const lastVal = lastNZ(series);
     const d = delta(first, lastVal, false);
     return {
       label: def.label,
