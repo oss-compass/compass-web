@@ -10,7 +10,8 @@
   "2026-07-18",
   "2026-07-19",
   "2026-07-20",
-  "2026-07-21"
+  "2026-07-21",
+  "2026-07-22"
  ],
  "boards": {
   "2026-07-12": {
@@ -8681,7 +8682,7 @@
        184
       ]
      },
-     "score": 74,
+     "score": 70,
      "mscores": [
       [
        "无效机时占比",
@@ -8689,7 +8690,7 @@
       ],
       [
        "重复执行机时占比",
-       58
+       51
       ]
      ]
     }
@@ -9737,7 +9738,7 @@
    }
   },
   "2026-07-21": {
-   "date": "2026-07-21(最新完整日,实测)",
+   "date": "2026-07-21(实测)",
    "meta": [
     [
      "当日 run",
@@ -9974,7 +9975,7 @@
        364
       ]
      },
-     "score": 70,
+     "score": 68,
      "mscores": [
       [
        "无效机时占比",
@@ -9982,7 +9983,7 @@
       ],
       [
        "重复执行机时占比",
-       55
+       53
       ]
      ]
     }
@@ -11957,23 +11958,1853 @@
      }
     }
    }
+  },
+  "2026-07-22": {
+   "date": "2026-07-22(最新完整日,实测)",
+   "meta": [
+    [
+     "当日 run",
+     {
+      "v": "165"
+     }
+    ],
+    [
+     "失败",
+     {
+      "v": "82"
+     }
+    ],
+    [
+     "完结失败率",
+     {
+      "v": "51.2%"
+     }
+    ],
+    [
+     "待定率",
+     {
+      "v": "11.0%"
+     }
+    ]
+   ],
+   "default_dim": "stability",
+   "dims": [
+    {
+     "key": "stability",
+     "name": "稳定性",
+     "s": "red",
+     "word": "需处理",
+     "note": "",
+     "probn": 3,
+     "toppri": "P0",
+     "vals": [
+      [
+       "Action 平台失败率",
+       {
+        "v": "24.4%"
+       }
+      ],
+      [
+       "Flaky 率(代理)",
+       {
+        "v": "1.2%"
+       }
+      ],
+      [
+       "流水线挂死",
+       {
+        "v": "5 起"
+       }
+      ]
+     ],
+     "spark": {
+      "label": "Action 平台失败率至当日(%)",
+      "pts": [
+       35,
+       61,
+       0,
+       0,
+       24,
+       44,
+       24
+      ]
+     },
+     "score": 58,
+     "mscores": [
+      [
+       "Action 平台失败率",
+       76
+      ],
+      [
+       "Flaky 率",
+       99
+      ],
+      [
+       "流水线挂死数",
+       0
+      ]
+     ]
+    },
+    {
+     "key": "efficiency",
+     "name": "效率",
+     "s": "yellow",
+     "word": "关注",
+     "note": "",
+     "probn": 1,
+     "toppri": "P2",
+     "vals": [
+      [
+       "流水线时长 中位",
+       {
+        "v": "23.5 min"
+       }
+      ],
+      [
+       "流水线时长 90 分位",
+       {
+        "v": "74.2 min"
+       }
+      ],
+      [
+       "排队时长(近似)",
+       {
+        "v": "21 s"
+       }
+      ]
+     ],
+     "spark": {
+      "label": "流水线时长中位至当日(min)",
+      "pts": [
+       15,
+       18,
+       13,
+       11,
+       16,
+       27,
+       24
+      ]
+     },
+     "score": 57,
+     "mscores": [
+      [
+       "流水线时长 中位",
+       35
+      ],
+      [
+       "流水线时长 90 分位",
+       79
+      ]
+     ]
+    },
+    {
+     "key": "interaction",
+     "name": "交互体验",
+     "s": "yellow",
+     "word": "关注",
+     "note": "水位超阈:CI 阻塞 PR 88 个 ≥ 阈 10 —— 慢性项,入周复盘议程",
+     "probn": 0,
+     "toppri": null,
+     "vals": [
+      [
+       "首次失败耗时",
+       {
+        "v": "3.2 min"
+       }
+      ],
+      [
+       "CI 阻塞 PR",
+       {
+        "v": "88 个"
+       }
+      ],
+      [
+       "重试失败率",
+       {
+        "v": "61.5%"
+       }
+      ]
+     ],
+     "spark": {
+      "label": "CI 阻塞 PR 数至当日",
+      "pts": [
+       30,
+       47,
+       47,
+       47,
+       62,
+       72,
+       88
+      ]
+     },
+     "score": 47,
+     "mscores": [
+      [
+       "首次失败耗时",
+       79
+      ],
+      [
+       "PR 转绿 90 分位",
+       10
+      ],
+      [
+       "失败反馈率",
+       17
+      ],
+      [
+       "失败修复时长",
+       81
+      ]
+     ]
+    },
+    {
+     "key": "cost",
+     "name": "成本",
+     "s": "yellow",
+     "word": "关注",
+     "note": "水位超阈:无效机时 29.4 机时 ≥ 阈 2 —— 慢性项,入周复盘议程",
+     "probn": 1,
+     "toppri": "P2",
+     "vals": [
+      [
+       "机时(全部池)",
+       {
+        "v": "313 机时"
+       }
+      ],
+      [
+       "其中 NPU",
+       {
+        "v": "54.2 机时"
+       }
+      ],
+      [
+       "无效机时",
+       {
+        "v": "29.4 机时"
+       }
+      ]
+     ],
+     "spark": {
+      "label": "机时至当日",
+      "pts": [
+       303,
+       392,
+       88,
+       24,
+       184,
+       364,
+       313
+      ]
+     },
+     "score": 69,
+     "mscores": [
+      [
+       "无效机时占比",
+       91
+      ],
+      [
+       "重复执行机时占比",
+       47
+      ]
+     ]
+    }
+   ],
+   "problems": [
+    {
+     "pri": "P0",
+     "dim": "稳定性",
+     "kb": "执行机注册",
+     "cls": "Action 平台失败",
+     "mech": "执行机注册",
+     "owner": "CANN 基础设施团队",
+     "title": "20 个 run 在 PreSmoke 阶段因「Self-hosted的执行机未注册。」失败,涉及 19 个 PR;自 07-20 起持续第 3 天,窗口累计 135 起",
+     "stages": {
+      "PreSmoke": 20
+     },
+     "impact": {
+      "runs": 20,
+      "prs": 19,
+      "streak_days": 3,
+      "window_total": 135,
+      "wasted_min": 1764,
+      "cross": [
+       "19 个 PR 当日被此问题拦住(交互体验)",
+       "关联 run 全程机时 29.4 机时按「平台失败废弃」计入成本矩阵"
+      ]
+     },
+     "runs": [
+      {
+       "n": 2243,
+       "id": "abf4cc82cb6c489a8d968a68b7d2a3ec",
+       "pr": "7120",
+       "t": "09:10",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2244,
+       "id": "9cd56ca02d70451286545be057fd8cea",
+       "pr": "7794",
+       "t": "09:10",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2247,
+       "id": "58101127e0ab470284b8ea166d534c53",
+       "pr": "7788",
+       "t": "09:18",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2278,
+       "id": "d00645ff26844c3fb332cf93c90e5f60",
+       "pr": "7481",
+       "t": "10:49",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2287,
+       "id": "72e2c3d8813c4893b146b98eae3d3712",
+       "pr": "7796",
+       "t": "11:17",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2293,
+       "id": "a46eca094b2b4923889215879fc96bc9",
+       "pr": "7569",
+       "t": "11:32",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2297,
+       "id": "6cd50331360b4232b4db3083489cfa3f",
+       "pr": "7120",
+       "t": "11:50",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2304,
+       "id": "bec53882fad74c34b7e07a7de678908c",
+       "pr": "7813",
+       "t": "13:25",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2309,
+       "id": "bcf63d7a962f4c1f938ee89ba4ff7858",
+       "pr": "7815",
+       "t": "14:34",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2317,
+       "id": "65782fe9ee124356be75e1dc907afbb9",
+       "pr": "7666",
+       "t": "15:03",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2320,
+       "id": "637c4eaa736b4a3ca682617d8e522481",
+       "pr": "7820",
+       "t": "15:09",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2329,
+       "id": "58a41647296f4a94a23e67fe39e07cc2",
+       "pr": "7821",
+       "t": "15:27",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2338,
+       "id": "de75ed7e73dd412a8d2583fbdc4ada62",
+       "pr": "7289",
+       "t": "16:00",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2340,
+       "id": "ffa46f3c545649858c5876a14c75e887",
+       "pr": "7827",
+       "t": "16:03",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2345,
+       "id": "5d10a44a355041efb4d587603b547ed0",
+       "pr": "7789",
+       "t": "16:21",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2352,
+       "id": "cded547fa2d34d98b23c3b73d38bdb92",
+       "pr": "7237",
+       "t": "16:51",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2354,
+       "id": "ce867986eef648a48eebb3270a30fa40",
+       "pr": "7823",
+       "t": "17:00",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2358,
+       "id": "a157c7944e9441b1a83656b6197b6398",
+       "pr": "7603",
+       "t": "17:05",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2360,
+       "id": "27b14b0d3a81413cac92e56f7391b36a",
+       "pr": "7783",
+       "t": "17:16",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      },
+      {
+       "n": 2365,
+       "id": "233ab99a368c4f4c8230e2426f7be71f",
+       "pr": "7833",
+       "t": "17:29",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "Self-hosted的执行机未注册。"
+      }
+     ],
+     "seg": "系统测试",
+     "dimkey": "stability",
+     "root": {
+      "status": "known",
+      "cause": "PreSmoke 真机冒烟 job 派发到 self-hosted NPU 执行机;该执行机由 ModelArts 动态注册,注册链路断开时组内无在线执行机,job 触达即失败(零耗时瞬挂)。瞬挂本身不烧机时,但废掉该 run 此前 image/compile/ut 已消耗的全部机时。",
+      "evidence": [
+       "失败信息原文「Self-hosted的执行机未注册。」,全部集中 PreSmoke 阶段 self-hosted 池",
+       "org runner-groups 实测:modelarts_runner 组成员列表为空、在线执行机 0(2026-07-18 快照,fetch_runners.py)",
+       "失败 job 均无执行起始时间(start_time 为空、end_time 即报错时刻)——未被派发即失败,自身不消耗机时"
+      ],
+      "guess": "ModelArts 侧注册服务或配额异常导致动态注册失败(待基础设施团队确认)",
+      "action": "排查 ModelArts 动态注册链路;为『注册失败/在线数为 0』加告警;恢复前在受影响 PR 回帖提示勿反复重试(实测存在同 PR 反复触发撞死机)",
+      "dest": "cann/infrastructure Issue · 双周例会"
+     }
+    },
+    {
+     "pri": "P1",
+     "dim": "稳定性",
+     "kb": "疑似系统性同挂",
+     "cls": "代码失败",
+     "mech": "疑似系统性同挂",
+     "owner": "CANN 基础设施团队(排查共因)",
+     "title": "疑似系统性同挂:48 个 run 在 compile/ut 阶段大面积同挂或同一步骤跨 PR 失败,涉及 20 个 PR(暂缓归责贡献者)",
+     "stages": {
+      "compile": 34,
+      "ut": 14
+     },
+     "impact": {
+      "runs": 48,
+      "prs": 20,
+      "streak_days": 1,
+      "window_total": 48,
+      "wasted_min": 0,
+      "cross": [
+       "若确认共因,48 个 run 的代码失败判定将回填改判"
+      ]
+     },
+     "runs": [
+      {
+       "n": 2240,
+       "id": "13f4e5c71b2d4c86aa7d424f8c351ee3",
+       "pr": "7590",
+       "t": "08:40",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2242,
+       "id": "621693ea18d54ed2a67e59b0092adeb8",
+       "pr": "7590",
+       "t": "09:01",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2248,
+       "id": "5854fb1aa25c48ff9050881d31507261",
+       "pr": "7590",
+       "t": "09:24",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2250,
+       "id": "6fb79796cd3347d6a3a3f72d82323ac5",
+       "pr": "7795",
+       "t": "09:42",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2251,
+       "id": "bfee94554b4743c39ed863460735e6c0",
+       "pr": "7592",
+       "t": "09:43",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2254,
+       "id": "4d793c11758f4a11a1951c553c7bbdbd",
+       "pr": "7590",
+       "t": "09:53",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2256,
+       "id": "bc7a676cb36741f48e7618473ea0a4dd",
+       "pr": "7272",
+       "t": "09:58",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2258,
+       "id": "d4348c6a25584983a56fa5fa573826a1",
+       "pr": "7795",
+       "t": "10:07",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2262,
+       "id": "b74a82a8cb094f35a5ae2f0b94767eda",
+       "pr": "7590",
+       "t": "10:10",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2263,
+       "id": "1b000f8ce703414f8539cc01606aa370",
+       "pr": "7789",
+       "t": "10:12",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2264,
+       "id": "c59b0faa498c45449351e41d58ba5edb",
+       "pr": "7791",
+       "t": "10:13",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2265,
+       "id": "3397c6e48eab49998f2873af73d66cec",
+       "pr": "7784",
+       "t": "10:20",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2268,
+       "id": "7177fc7aede74a3e9410576c884d8d7d",
+       "pr": "7797",
+       "t": "10:23",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2270,
+       "id": "7b6ba804e8ea4044b830b41357a0a0b3",
+       "pr": "7590",
+       "t": "10:32",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2277,
+       "id": "753103626d734ee29e6938b87c21bd74",
+       "pr": "7590",
+       "t": "10:46",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2283,
+       "id": "d9a15fc5324a4f67875a59996b6769d7",
+       "pr": "7442",
+       "t": "11:07",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2294,
+       "id": "a92b214a157a4e018c5e06e39beb846a",
+       "pr": "7791",
+       "t": "11:36",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2303,
+       "id": "4d5c653488ab48fdb9be740ae05e2593",
+       "pr": "7599",
+       "t": "13:07",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2305,
+       "id": "205baffb4aa84a3abe776a508931a8ad",
+       "pr": "7592",
+       "t": "14:02",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2307,
+       "id": "9add2a325fcb44038d25b02be84c90b8",
+       "pr": "7725",
+       "t": "14:24",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2314,
+       "id": "3634288741dd41c6946172c5dbd66666",
+       "pr": "7725",
+       "t": "14:55",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2316,
+       "id": "2ae5f53184b5410d9ffd71522afa071a",
+       "pr": "7791",
+       "t": "15:01",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2319,
+       "id": "4e7cc421f89140e794d5112b96b40411",
+       "pr": "7817",
+       "t": "15:05",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2323,
+       "id": "4f6bb9d0a7f54d86a83931bd844e677b",
+       "pr": "7650",
+       "t": "15:16",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2324,
+       "id": "0a130fce6fb14ae2b5c803a962f02a0d",
+       "pr": "7725",
+       "t": "15:18",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2325,
+       "id": "86c53472118b4c2695fdac88a9740043",
+       "pr": "7756",
+       "t": "15:23",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2327,
+       "id": "9656b506922c4f7ebcb13eb25ff7707d",
+       "pr": "7272",
+       "t": "15:24",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2330,
+       "id": "960988d8793a4cc8bbbcd19116d278b5",
+       "pr": "7725",
+       "t": "15:34",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2332,
+       "id": "0f8e4dbf48b443c1b545627ee007fb2d",
+       "pr": "7823",
+       "t": "15:38",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2333,
+       "id": "a1d7a74bd02040a69fa3f6f01bd2f3eb",
+       "pr": "7823",
+       "t": "15:41",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2334,
+       "id": "d8c813fd894449a7807a777936be8649",
+       "pr": "7756",
+       "t": "15:43",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2335,
+       "id": "2ee7d451e3e14b7a8de37fb0efeee59e",
+       "pr": "7704",
+       "t": "15:50",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2339,
+       "id": "d9004dd640354fbfa731ba973cfa062f",
+       "pr": "7756",
+       "t": "16:00",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2353,
+       "id": "0ad5bba7ce5f4816a57f486ea2c7e621",
+       "pr": "7272",
+       "t": "16:57",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2361,
+       "id": "7f10175b798940b7ba76f60376a72252",
+       "pr": "7272",
+       "t": "17:19",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2366,
+       "id": "f66cf9b3aedb404bbba67905a0a0d279",
+       "pr": "7272",
+       "t": "17:33",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2368,
+       "id": "1773b54882ee415e82e34086781687f9",
+       "pr": "7650",
+       "t": "17:38",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2376,
+       "id": "c19c08042f354876a34bc7df49720ef7",
+       "pr": "7719",
+       "t": "18:09",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2386,
+       "id": "764c3a5520a74def84f9fb137ec44e11",
+       "pr": "7272",
+       "t": "19:56",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2387,
+       "id": "81fda3218b37447498681562f418175a",
+       "pr": "7839",
+       "t": "20:14",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2393,
+       "id": "401ef640119041169e55c022aa4b6318",
+       "pr": "7272",
+       "t": "21:10",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2394,
+       "id": "c27a0ad587e64e4cb2c102ee9e1387a0",
+       "pr": "7843",
+       "t": "21:16",
+       "stage": "ut",
+       "job": "ut",
+       "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2395,
+       "id": "0324c9297bf2437cbc4b37c4bb13f8f6",
+       "pr": "7272",
+       "t": "21:46",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2396,
+       "id": "89c07c864d574097a5e386b679611d10",
+       "pr": "7756",
+       "t": "22:01",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2397,
+       "id": "f3583b8433ab42c088d689f8aa3ca0ce",
+       "pr": "4945",
+       "t": "22:33",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2399,
+       "id": "e91d49b1ca0a43d190ebf08a82645cde",
+       "pr": "7756",
+       "t": "22:39",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2400,
+       "id": "a57ada616ab340948b51c7014c29013c",
+       "pr": "7756",
+       "t": "22:44",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      },
+      {
+       "n": 2403,
+       "id": "71091b9edcdf491cb9e7895b9cbc9b21",
+       "pr": "7756",
+       "t": "23:27",
+       "stage": "compile",
+       "job": "staticcheck",
+       "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+      }
+     ],
+     "seg_cross": [
+      "编译",
+      "单元测试"
+     ],
+     "seg": "编译",
+     "dimkey": "stability",
+     "root": {
+      "status": "partial",
+      "cause": "判定规则①(广度守卫)命中:同 run ≥3 个独立 UT 域/编译变体同挂,或同失败步骤当日跨 ≥5 个 PR——按规则暂缓归责贡献者,待排查后回填改判。",
+      "evidence": [
+       "广度守卫触发条件与命中明细见关联 run 列表"
+      ],
+      "guess": "存在共因(依赖版本变更/环境漂移/平台变更)而非各 PR 各自代码错(需基础设施排查确认)",
+      "action": "基础设施排查共因;确认后回填改判(系统性→平台失败,或解除暂缓→代码失败)",
+      "dest": "cann/infrastructure Issue · 双周例会"
+     }
+    },
+    {
+     "pri": "P2",
+     "dim": "效率",
+     "kb": "阶段耗时上浮",
+     "cls": "",
+     "mech": "阶段耗时上浮",
+     "owner": "CANN 基础设施团队",
+     "title": "PreSmoke 阶段当日中位耗时 7.0 min,较前 7 日中位 4.2 min 上浮 69%(成功 run 样本 77)",
+     "stages": {
+      "PreSmoke": 77
+     },
+     "impact": {
+      "runs": 27,
+      "prs": 24,
+      "streak_days": 1,
+      "window_total": 27,
+      "wasted_min": 0,
+      "cross": [
+       "超基线成功 run 27 个;流水线整体时长与 PR 反馈同受影响(交互体验)"
+      ]
+     },
+     "runs": [
+      {
+       "n": 2271,
+       "id": "6466e636746e4744bb1a36690c19a216",
+       "pr": "7670",
+       "t": "10:34",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 85.3 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2290,
+       "id": "68c85c5334f54aa289a82f1481c723c4",
+       "pr": "7787",
+       "t": "11:24",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 72.9 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2348,
+       "id": "0a826d5b08954564b76e543b425ee6f6",
+       "pr": "7822",
+       "t": "16:40",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 63.0 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2362,
+       "id": "6ef40f6dc731499daae16ff1ac47f323",
+       "pr": "7756",
+       "t": "17:26",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 61.6 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2274,
+       "id": "84febdcf4d71473fbe8c4484925ce45a",
+       "pr": "7678",
+       "t": "10:36",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 61.0 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2288,
+       "id": "a3b662f22ec4414cb64fb0f55ad0bf46",
+       "pr": "7603",
+       "t": "11:23",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 59.0 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2357,
+       "id": "20c88c708bd34bddb4fc0db98d2712b0",
+       "pr": "7788",
+       "t": "17:05",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 54.6 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2369,
+       "id": "4e3c53d0b40f4877bddb07378e537478",
+       "pr": "7834",
+       "t": "17:40",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 54.4 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2296,
+       "id": "b0345adc0d674760917e4888144ff71c",
+       "pr": "7625",
+       "t": "11:38",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 53.8 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2291,
+       "id": "6bcd931e57324995b216cd1164aaeec8",
+       "pr": "7809",
+       "t": "11:26",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 53.3 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2295,
+       "id": "8a9675d01b574d23bc5a0a42b27dae0b",
+       "pr": "7120",
+       "t": "11:37",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 50.8 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2367,
+       "id": "904d1a760eff496fb588f41234016783",
+       "pr": "7837",
+       "t": "17:36",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 48.9 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2351,
+       "id": "c1a42bae802d4de991f3744eeba15879",
+       "pr": "7832",
+       "t": "16:46",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 48.7 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2286,
+       "id": "d52c3e5e86f14419bacb91100df021a3",
+       "pr": "7769",
+       "t": "11:16",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 45.5 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2285,
+       "id": "5a2e71595ad74cd8bc61b058f4a973aa",
+       "pr": "7807",
+       "t": "11:11",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 38.2 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2350,
+       "id": "e053f8e8f3bc47c08481afa3878432ad",
+       "pr": "6088",
+       "t": "16:42",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 36.7 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2373,
+       "id": "50f21beab7824f9e9d242a380696d379",
+       "pr": "6696",
+       "t": "17:57",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 33.3 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2298,
+       "id": "bcaac6cc88ac49cb87516b959f9544fb",
+       "pr": "7793",
+       "t": "11:53",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 33.0 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2272,
+       "id": "269ef57f265447fcbb4bc9d83439625c",
+       "pr": "7769",
+       "t": "10:34",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 29.1 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2349,
+       "id": "71018a856709409c88f12791f54d8d45",
+       "pr": "7789",
+       "t": "16:41",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 25.2 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2347,
+       "id": "d72b24dc8fbd4a66a20f54bd5a22e24e",
+       "pr": "7830",
+       "t": "16:38",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 22.0 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2343,
+       "id": "a1c9bf9ff5de47a78efc4ae413201eac",
+       "pr": "7683",
+       "t": "16:10",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 20.4 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2284,
+       "id": "a44804bf0cd240dfa0a56ed167a7139b",
+       "pr": "7590",
+       "t": "11:08",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 19.1 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2356,
+       "id": "387222e507ef43179eab04f594d31f6f",
+       "pr": "7756",
+       "t": "17:03",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 17.9 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2267,
+       "id": "501d8dc94e9e4f468eefcdfa5c34941e",
+       "pr": "7120",
+       "t": "10:21",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 17.8 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2312,
+       "id": "173b4236a70b48cbb3e785ba9c57d8db",
+       "pr": "6119",
+       "t": "14:42",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 15.2 min(前 7 日 90 分位 14.9 min)"
+      },
+      {
+       "n": 2292,
+       "id": "74afc8e31ae141edbc456a0d0275e6af",
+       "pr": "7811",
+       "t": "11:31",
+       "stage": "",
+       "job": "",
+       "msg": "PreSmoke 阶段耗时 15.0 min(前 7 日 90 分位 14.9 min)"
+      }
+     ],
+     "seg": "系统测试",
+     "dimkey": "efficiency",
+     "root": {
+      "status": "guide",
+      "cause": "该阶段当日中位耗时显著超前 7 日基线——样本波动/资源降速/用例或编译量膨胀均有可能,需下钻最耗时 job 榜与超基线 run 明细判别。",
+      "evidence": [],
+      "guess": "",
+      "action": "看最耗时 job 榜是否同阶段;抽查超基线 run 的日志;连续 2 日上浮则升级",
+      "dest": "日观测板下钻 · 连续上浮转 infrastructure Issue"
+     }
+    },
+    {
+     "pri": "P2",
+     "dim": "稳定性",
+     "kb": "真机冒烟",
+     "cls": "待定",
+     "mech": "真机冒烟",
+     "owner": "待定(人工判读升级中)",
+     "title": "8 个 run 在 PreSmoke 阶段因「任务排队超时」失败,涉及 6 个 PR;自 07-21 起持续第 2 天,窗口累计 10 起",
+     "stages": {
+      "PreSmoke": 8
+     },
+     "impact": {
+      "runs": 8,
+      "prs": 6,
+      "streak_days": 2,
+      "window_total": 10,
+      "wasted_min": 3545,
+      "cross": [
+       "6 个 PR 当日被此问题拦住(交互体验)",
+       "关联 run 全程机时 59.1 机时按「待定」计入成本矩阵"
+      ]
+     },
+     "runs": [
+      {
+       "n": 2337,
+       "id": "8f6282249f8d4328b77343985898f976",
+       "pr": "7825",
+       "t": "15:55",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2363,
+       "id": "43a6c43d820443429e268bf7fb46bbe9",
+       "pr": "7825",
+       "t": "17:26",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2383,
+       "id": "24781067441a42b48cbf40a37042fa61",
+       "pr": "7840",
+       "t": "19:27",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2384,
+       "id": "b700748406044f2dbed44a67fa1733ea",
+       "pr": "7745",
+       "t": "19:30",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2385,
+       "id": "1f97de1e635445b4810a20497612a340",
+       "pr": "7756",
+       "t": "19:50",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2398,
+       "id": "96cdeebb87c441caa68dc69abbf46662",
+       "pr": "7843",
+       "t": "22:33",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2401,
+       "id": "c0a49c0a59ae4c868f02b9fd17fd1f23",
+       "pr": "4945",
+       "t": "22:50",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      },
+      {
+       "n": 2402,
+       "id": "be0048e2a3e84f019c210caaf6ebe245",
+       "pr": "7843",
+       "t": "23:00",
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "msg": "任务排队超时"
+      }
+     ],
+     "seg": "系统测试",
+     "dimkey": "stability",
+     "root": {
+      "status": "partial",
+      "cause": "PreSmoke 真机执行失败且非执行机注册类——真机环境问题与用例问题混杂,日志分型未上线前归待定。",
+      "evidence": [
+       "失败位置 PreSmoke,信息非执行机注册文案"
+      ],
+      "guess": "",
+      "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
+      "dest": "验证仓待办(冒烟分型)"
+     }
+    },
+    {
+     "pri": "P2",
+     "dim": "成本",
+     "kb": "取消长占",
+     "cls": "",
+     "mech": "取消长占",
+     "owner": "CANN 基础设施团队",
+     "title": "5 个 run 取消前长时间占用资源(≥1h,最长 13.2 h)",
+     "stages": {},
+     "impact": {
+      "runs": 5,
+      "prs": 3,
+      "streak_days": 1,
+      "window_total": 5,
+      "wasted_min": 3,
+      "cross": [
+       "占用机时全额计入成本矩阵「取消占用」列"
+      ]
+     },
+     "runs": [
+      {
+       "n": 2391,
+       "id": "a73615313212400eb47304688dd6ba97",
+       "pr": "7272",
+       "t": "20:53",
+       "stage": "",
+       "job": "",
+       "msg": "取消前占用 12.8 h"
+      },
+      {
+       "n": 2390,
+       "id": "c32cba5240bd4fc0be682a857839c001",
+       "pr": "7756",
+       "t": "20:49",
+       "stage": "",
+       "job": "",
+       "msg": "取消前占用 12.9 h"
+      },
+      {
+       "n": 2392,
+       "id": "e7093e0507c74bbaaf469f8003a9ff8f",
+       "pr": "7272",
+       "t": "20:54",
+       "stage": "",
+       "job": "",
+       "msg": "取消前占用 12.8 h"
+      },
+      {
+       "n": 2388,
+       "id": "3a66594e550f4ce897c3a32266958e53",
+       "pr": "7272",
+       "t": "20:26",
+       "stage": "",
+       "job": "",
+       "msg": "取消前占用 13.2 h"
+      },
+      {
+       "n": 2389,
+       "id": "771552748028492ea4fc13548be82611",
+       "pr": "7839",
+       "t": "20:34",
+       "stage": "",
+       "job": "",
+       "msg": "取消前占用 13.1 h"
+      }
+     ],
+     "seg": null,
+     "dimkey": "cost",
+     "root": {
+      "status": "known",
+      "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+      "evidence": [
+       "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+      ],
+      "guess": "",
+      "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+      "dest": "cann/infrastructure Issue · 平台需求清单"
+     }
+    }
+   ],
+   "metrics": {
+    "stability": [
+     [
+      "Action 平台失败率",
+      {
+       "v": "24.4%"
+      },
+      {
+       "v": "34.8%"
+      },
+      "一级判为「Action 平台失败」的 run ÷ 当日全部失败 run",
+      ""
+     ],
+     [
+      "Flaky 率",
+      {
+       "v": "1.2%"
+      },
+      {
+       "v": "3.8%"
+      },
+      "同代码重跑转绿的失败 ÷ 全部失败(日志分型:用例/环境/待分型)",
+      ""
+     ],
+     [
+      "流水线挂死数",
+      {
+       "v": "5"
+      },
+      {
+       "v": "0/日"
+      },
+      "取消前占用 ≥1h 的 run 数",
+      "历史最长 13.6h(全窗实测)"
+     ]
+    ],
+    "efficiency": [
+     [
+      "流水线时长 中位/90 分位",
+      {
+       "v": "23.5 min / 74.2 min"
+      },
+      {
+       "v": "14.9 min"
+      },
+      "成功 run 实际耗时(结束−开始);90 分位=90% 的 run 比它快",
+      "阶段/job 下钻见细分"
+     ],
+     [
+      "排队时长(近似)〔诊断层〕",
+      {
+       "v": "21 s"
+      },
+      {
+       "v": "21 s"
+      },
+      "触发 → 首个 job 开始执行;平台无排队字段,近似口径",
+      "全窗最大 25 s:拥塞不表现为排队,而表现为抢占取消与重复执行"
+     ]
+    ],
+    "interaction": [
+     [
+      "首次失败耗时 中位",
+      {
+       "v": "3.2 min"
+      },
+      {
+       "v": "3.1 min"
+      },
+      "触发 → 第一个失败 job 结束(多快知道「这次不行」)",
+      "按责任方分列见细分"
+     ],
+     [
+      "PR 转绿 中位/90 分位(滚动 7 日)",
+      {
+       "v": "23.5 min / 5.4 h"
+      },
+      {
+       "v": "—"
+      },
+      "PR 首次触发 CI → 首个全绿",
+      "90 分位是痛点"
+     ],
+     [
+      "失败修复时长 中位(滚动 7 日)",
+      {
+       "v": "2.9 h"
+      },
+      {
+       "v": "—"
+      },
+      "失败 → 同一 PR 下一个成功(每 PR 记首段)",
+      ""
+     ],
+     [
+      "CI 阻塞 PR 数〔诊断层〕",
+      {
+       "v": "88"
+      },
+      {
+       "v": "—"
+      },
+      "最新一次 CI 为失败的 PR 数(滚动 7 日窗)",
+      "重试失败率 61.5%(n=135)"
+     ]
+    ],
+    "cost": [
+     [
+      "机时(全部池)",
+      {
+       "v": "313 机时"
+      },
+      {
+       "v": "185 机时/日"
+      },
+      "Σ 各 job 实际耗时,按资源池分",
+      "细分见机时账单(周复盘)"
+     ],
+     [
+      "无效机时",
+      {
+       "v": "29.4 机时"
+      },
+      {
+       "v": "29.2/日"
+      },
+      "取消/挂死/Action 平台失败 run 消耗的机时(代码失败消耗不计入:属 CI 履职拦截成本)",
+      "构成见成本矩阵"
+     ]
+    ]
+   },
+   "diag": {
+    "stability": {
+     "mech": {
+      "规范检查": 34,
+      "单元测试": 14,
+      "执行机注册": 20,
+      "编译/包校验": 5,
+      "真机冒烟": 8,
+      "Flaky-待分型": 1
+     }
+    },
+    "efficiency": {
+     "stage_bill": [
+      {
+       "stage": "image",
+       "med_s": 35,
+       "p90_s": 38,
+       "n": 77
+      },
+      {
+       "stage": "compile",
+       "med_s": 510,
+       "p90_s": 1715,
+       "n": 77
+      },
+      {
+       "stage": "ut",
+       "med_s": 118,
+       "p90_s": 313,
+       "n": 77
+      },
+      {
+       "stage": "PreSmoke",
+       "med_s": 421,
+       "p90_s": 3265,
+       "n": 77
+      },
+      {
+       "stage": "内容违规已隐藏",
+       "med_s": 284,
+       "p90_s": 3198,
+       "n": 4
+      }
+     ],
+     "top_jobs": [
+      {
+       "stage": "PreSmoke",
+       "job": "A2_pre_smoke",
+       "med_s": 420,
+       "n": 77
+      },
+      {
+       "stage": "compile",
+       "job": "compile",
+       "med_s": 206,
+       "n": 1386
+      },
+      {
+       "stage": "内容违规已隐藏",
+       "job": "内容违规已隐藏",
+       "med_s": 128,
+       "n": 30
+      },
+      {
+       "stage": "ut",
+       "job": "ut",
+       "med_s": 64,
+       "n": 308
+      },
+      {
+       "stage": "compile",
+       "job": "precommit",
+       "med_s": 42,
+       "n": 77
+      },
+      {
+       "stage": "内容违规已隐藏",
+       "job": "compile",
+       "med_s": 36,
+       "n": 3
+      }
+     ]
+    },
+    "interaction": {
+     "ttff_by_owner": {
+      "代码失败": 190,
+      "待定": 188
+     },
+     "retry": {
+      "rate": 61.5,
+      "n": 135
+     }
+    },
+    "cost": {
+     "pools": [
+      [
+       "dedicate-hosted",
+       15431
+      ],
+      [
+       "self-hosted",
+       3254
+      ],
+      [
+       "system",
+       95
+      ],
+      [
+       "codearts-hosted",
+       14
+      ]
+     ]
+    }
+   },
+   "matrices": {
+    "stab": {
+     "note": "实测:2026-07-22 当日失败 run,阶段 × 二级机理(按一级责任方分组)。代码责任列是背景全景(CI 正常拦截),不计入稳定性结果指标;稳定性结果指标只由 Action 平台失败率驱动。",
+     "stages": [
+      "compile",
+      "ut",
+      "PreSmoke"
+     ],
+     "groups": [
+      {
+       "g": "Action 平台责任",
+       "cls": "Action 平台失败",
+       "mechs": [
+        "执行机注册"
+       ]
+      },
+      {
+       "g": "代码责任(背景:CI 正常拦截)",
+       "cls": "代码失败",
+       "mechs": [
+        "编译/包校验",
+        "单元测试",
+        "规范检查"
+       ]
+      },
+      {
+       "g": "待定",
+       "cls": "待定",
+       "mechs": [
+        "真机冒烟",
+        "Flaky-待分型"
+       ]
+      }
+     ],
+     "cells": {
+      "compile": {
+       "规范检查": 34,
+       "编译/包校验": 5,
+       "Flaky-待分型": 1
+      },
+      "ut": {
+       "单元测试": 14
+      },
+      "PreSmoke": {
+       "执行机注册": 20,
+       "真机冒烟": 8
+      }
+     }
+    },
+    "eff": {
+     "note": "实测:成功 run 的阶段耗时统计;基线=前 7 日各日中位的中位(不含当日)。排队/阶段间隙实测≈0(全窗最大 25 s),不设等待列——平台补队列字段后细化;拥塞代价见成本矩阵「取消占用」。",
+     "rows": [
+      {
+       "stage": "image",
+       "med_s": 35,
+       "p90_s": 38,
+       "n": 77,
+       "base_med_s": 32,
+       "dev_pct": 9,
+       "over_n": 36,
+       "total_min": 108
+      },
+      {
+       "stage": "compile",
+       "med_s": 510,
+       "p90_s": 1715,
+       "n": 77,
+       "base_med_s": 374,
+       "dev_pct": 36,
+       "over_n": 7,
+       "total_min": 14595
+      },
+      {
+       "stage": "ut",
+       "med_s": 118,
+       "p90_s": 313,
+       "n": 77,
+       "base_med_s": 115,
+       "dev_pct": 3,
+       "over_n": 6,
+       "total_min": 666
+      },
+      {
+       "stage": "PreSmoke",
+       "med_s": 421,
+       "p90_s": 3265,
+       "n": 77,
+       "base_med_s": 249,
+       "dev_pct": 69,
+       "over_n": 27,
+       "total_min": 3250
+      },
+      {
+       "stage": "内容违规已隐藏",
+       "med_s": 284,
+       "p90_s": 3198,
+       "n": 4,
+       "base_med_s": 344,
+       "dev_pct": -17,
+       "over_n": 1,
+       "total_min": 174
+      }
+     ]
+    },
+    "cost": {
+     "note": "实测:阶段 × 机时归属(分钟),整 run 归属口径——失败 run 的全程机时按其失败责任方计(重试会重放全部阶段)。瞬挂问题(如执行机未注册)自身零耗时,其真实成本显示为上游阶段的「平台失败废弃」。构成映射:无效机时 = 平台失败废弃 + 取消占用(挂死是取消占用的子集);「代码失败消耗」是 CI 履职拦截成本(背景),「待定」列均不计入无效机时,待归责后划转。空置列待池容量数据(团队提供中)。",
+     "cols": [
+      "有效",
+      "代码失败消耗",
+      "平台失败废弃",
+      "待定",
+      "取消占用"
+     ],
+     "rows": [
+      {
+       "stage": "image",
+       "cells": {
+        "有效": 51,
+        "代码失败消耗": 35,
+        "平台失败废弃": 13,
+        "待定": 6,
+        "取消占用": 3
+       }
+      },
+      {
+       "stage": "compile",
+       "cells": {
+        "有效": 6047,
+        "代码失败消耗": 5141,
+        "平台失败废弃": 1643,
+        "待定": 1764,
+        "取消占用": 0
+       }
+      },
+      {
+       "stage": "ut",
+       "cells": {
+        "有效": 424,
+        "代码失败消耗": 92,
+        "平台失败废弃": 108,
+        "待定": 42,
+        "取消占用": 0
+       }
+      },
+      {
+       "stage": "PreSmoke",
+       "cells": {
+        "有效": 1395,
+        "代码失败消耗": 0,
+        "平台失败废弃": 0,
+        "待定": 1856,
+        "取消占用": 0
+       }
+      },
+      {
+       "stage": "内容违规已隐藏",
+       "cells": {
+        "有效": 174,
+        "代码失败消耗": 0,
+        "平台失败废弃": 0,
+        "待定": 0,
+        "取消占用": 0
+       }
+      }
+     ],
+     "total": {
+      "有效": 8091,
+      "代码失败消耗": 5268,
+      "平台失败废弃": 1764,
+      "待定": 3668,
+      "取消占用": 3
+     }
+    }
+   }
   }
  },
  "weekly": {
-  "period": "W30(2026-07-20 → 2026-07-26) · 期中预览(数据截至 2026-07-21,周一定稿) · 周定稿分 66(该周日分中位数;overview 口径)",
+  "period": "W30(2026-07-20 → 2026-07-26) · 期中预览(数据截至 2026-07-22,周一定稿) · 周定稿分 59(该周日分中位数;overview 口径)",
   "probs": [
    {
     "kb": "执行机注册",
     "dim": "稳定性",
     "pri": "P0",
     "first": "07-20",
-    "days_hit": 2,
-    "runs": 45,
-    "prs": 37,
+    "days_hit": 3,
+    "runs": 65,
+    "prs": 55,
     "trend": [
      13,
      32,
-     0,
+     20,
      0,
      0,
      0,
@@ -11998,13 +13829,13 @@
     "dim": "稳定性",
     "pri": "P1",
     "first": "07-20",
-    "days_hit": 2,
-    "runs": 64,
-    "prs": 34,
+    "days_hit": 3,
+    "runs": 112,
+    "prs": 45,
     "trend": [
      34,
      30,
-     0,
+     48,
      0,
      0,
      0,
@@ -12020,7 +13851,7 @@
      "07-26"
     ],
     "status": "仍活跃·待回填",
-    "stages": "ut/compile",
+    "stages": "compile/ut",
     "action": "基础设施排查共因;确认后回填改判(系统性→平台失败,或解除暂缓→代码失败)",
     "dest": "cann/infrastructure Issue · 双周例会"
    },
@@ -12029,13 +13860,13 @@
     "dim": "效率",
     "pri": "P1",
     "first": "07-21",
-    "days_hit": 1,
-    "runs": 41,
-    "prs": 34,
+    "days_hit": 2,
+    "runs": 68,
+    "prs": 56,
     "trend": [
      0,
      41,
-     0,
+     27,
      0,
      0,
      0,
@@ -12081,7 +13912,7 @@
      "07-25",
      "07-26"
     ],
-    "status": "仍活跃",
+    "status": "已消退",
     "stages": "PreSmoke",
     "action": "定位抖动源(内存配额/网络);Flaky-环境计数纳入平台失败率跟踪",
     "dest": "cann/infrastructure Issue"
@@ -12112,7 +13943,7 @@
      "07-25",
      "07-26"
     ],
-    "status": "仍活跃",
+    "status": "已消退",
     "stages": "compile",
     "action": "调度层对派发失败做重试/换池;池故障告警;向平台确认容量与配额口径",
     "dest": "cann/infrastructure Issue"
@@ -12143,10 +13974,72 @@
      "07-25",
      "07-26"
     ],
-    "status": "仍活跃",
+    "status": "已消退",
     "stages": "",
     "action": "按责任方拆分首次反馈耗时;对照效率矩阵看前置阶段是否变慢",
     "dest": "日观测板下钻"
+   },
+   {
+    "kb": "真机冒烟",
+    "dim": "稳定性",
+    "pri": "P2",
+    "first": "07-21",
+    "days_hit": 2,
+    "runs": 10,
+    "prs": 8,
+    "trend": [
+     0,
+     2,
+     8,
+     0,
+     0,
+     0,
+     0
+    ],
+    "tdays": [
+     "07-20",
+     "07-21",
+     "07-22",
+     "07-23",
+     "07-24",
+     "07-25",
+     "07-26"
+    ],
+    "status": "仍活跃·待回填",
+    "stages": "PreSmoke",
+    "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
+    "dest": "验证仓待办(冒烟分型)"
+   },
+   {
+    "kb": "取消长占",
+    "dim": "成本",
+    "pri": "P2",
+    "first": "07-22",
+    "days_hit": 1,
+    "runs": 5,
+    "prs": 3,
+    "trend": [
+     0,
+     0,
+     5,
+     0,
+     0,
+     0,
+     0
+    ],
+    "tdays": [
+     "07-20",
+     "07-21",
+     "07-22",
+     "07-23",
+     "07-24",
+     "07-25",
+     "07-26"
+    ],
+    "status": "仍活跃",
+    "stages": "",
+    "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+    "dest": "cann/infrastructure Issue · 平台需求清单"
    },
    {
     "kb": "未归类",
@@ -12209,37 +14102,6 @@
     "stages": "compile",
     "action": "扩充签名库;人工抽检(目标 N≥30)校准分型准确率",
     "dest": "验证仓待办(Flaky 分型校准)"
-   },
-   {
-    "kb": "真机冒烟",
-    "dim": "稳定性",
-    "pri": "P2",
-    "first": "07-21",
-    "days_hit": 1,
-    "runs": 2,
-    "prs": 2,
-    "trend": [
-     0,
-     2,
-     0,
-     0,
-     0,
-     0,
-     0
-    ],
-    "tdays": [
-     "07-20",
-     "07-21",
-     "07-22",
-     "07-23",
-     "07-24",
-     "07-25",
-     "07-26"
-    ],
-    "status": "仍活跃·待回填",
-    "stages": "PreSmoke",
-    "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
-    "dest": "验证仓待办(冒烟分型)"
    }
   ],
   "imps": [
@@ -12249,7 +14111,7 @@
     "title": "执行机注册 — 排查 ModelArts 动态注册链路",
     "owner": "CANN 基础设施团队",
     "cls": "稳定性 · 执行机注册 · PreSmoke/内容违规已隐藏 阶段",
-    "ev": "本周累计 45 run / 37 PR,2 天命中(首现 07-20),仍活跃;日走势 13-32-0-0-0-0-0",
+    "ev": "本周累计 65 run / 55 PR,3 天命中(首现 07-20),仍活跃;日走势 13-32-20-0-0-0-0",
     "check": "执行机注册失败数/日 → 0,跨 2 周期;辅以执行机在线轮询时间线",
     "st": "候选(自动生成,周复盘确认后提交 Issue)",
     "stOn": 0
@@ -12259,8 +14121,8 @@
     "p": "P1",
     "title": "疑似系统性同挂 — 基础设施排查共因",
     "owner": "CANN 基础设施团队",
-    "cls": "稳定性 · 疑似系统性同挂 · ut/compile 阶段",
-    "ev": "本周累计 64 run / 34 PR,2 天命中(首现 07-20),仍活跃·待回填;日走势 34-30-0-0-0-0-0",
+    "cls": "稳定性 · 疑似系统性同挂 · compile/ut 阶段",
+    "ev": "本周累计 112 run / 45 PR,3 天命中(首现 07-20),仍活跃·待回填;日走势 34-30-48-0-0-0-0",
     "check": "回填改判完成率 100%;误归责贡献者数 = 0,跨 2 周期",
     "st": "候选(自动生成,周复盘确认后提交 Issue)",
     "stOn": 0
@@ -12271,7 +14133,7 @@
     "title": "阶段耗时上浮 — 看最耗时 job 榜是否同阶段",
     "owner": "CANN 基础设施团队",
     "cls": "效率 · 阶段耗时上浮 · PreSmoke 阶段",
-    "ev": "本周累计 41 run / 34 PR,1 天命中(首现 07-21),仍活跃;日走势 0-41-0-0-0-0-0",
+    "ev": "本周累计 68 run / 56 PR,2 天命中(首现 07-21),仍活跃;日走势 0-41-27-0-0-0-0",
     "check": "该阶段当日中位回落至基线 ±10%,连续 2 期",
     "st": "候选(自动生成,周复盘确认后提交 Issue)",
     "stOn": 0
@@ -12282,7 +14144,7 @@
     "title": "Flaky-环境 — 定位抖动源(内存配额/网络)",
     "owner": "CANN 基础设施团队",
     "cls": "稳定性 · Flaky-环境 · PreSmoke 阶段",
-    "ev": "本周累计 2 run / 1 PR,1 天命中(首现 07-21),仍活跃;日走势 0-2-0-0-0-0-0",
+    "ev": "本周累计 2 run / 1 PR,1 天命中(首现 07-21),已消退;日走势 0-2-0-0-0-0-0",
     "check": "绑定结果指标前后对比,连续 2 期达标",
     "st": "候选(自动生成,周复盘确认后提交 Issue)",
     "stOn": 0
@@ -12293,7 +14155,7 @@
     "title": "资源申请 — 调度层对派发失败做重试/换池",
     "owner": "CANN 基础设施团队",
     "cls": "稳定性 · 资源申请 · compile 阶段",
-    "ev": "本周累计 1 run / 1 PR,1 天命中(首现 07-21),仍活跃;日走势 0-1-0-0-0-0-0",
+    "ev": "本周累计 1 run / 1 PR,1 天命中(首现 07-21),已消退;日走势 0-1-0-0-0-0-0",
     "check": "独立池故障事件数(按时间聚类),跨 ≥2 周期——不以 job 计数达标",
     "st": "候选(自动生成,周复盘确认后提交 Issue)",
     "stOn": 0
@@ -12304,7 +14166,7 @@
     "稳定性",
     "Action 平台失败率(周中位)",
     {
-     "v": "34.4%"
+     "v": "24.5%"
     },
     {
      "v": "37.5%"
@@ -12315,7 +14177,7 @@
     "稳定性",
     "流水线挂死(周合计)",
     {
-     "v": "0 起"
+     "v": "5 起"
     },
     {
      "v": "6 起"
@@ -12326,7 +14188,7 @@
     "效率",
     "流水线时长中位(周中位)",
     {
-     "v": "21.3 min"
+     "v": "23.5 min"
     },
     {
      "v": "12.7 min"
@@ -12337,7 +14199,7 @@
     "交互体验",
     "首次失败耗时中位(周中位)",
     {
-     "v": "7.0 min"
+     "v": "3.2 min"
     },
     {
      "v": "3.1 min"
@@ -12348,7 +14210,7 @@
     "交互体验",
     "CI 阻塞 PR(周末值,滚动 7 日)",
     {
-     "v": "72 个"
+     "v": "88 个"
     },
     {
      "v": "—"
@@ -12359,7 +14221,7 @@
     "成本",
     "机时/日(周中位)",
     {
-     "v": "274 机时"
+     "v": "313 机时"
     },
     {
      "v": "187 机时"
@@ -12370,7 +14232,7 @@
     "成本",
     "无效机时(周合计)",
     {
-     "v": "76.9 机时"
+     "v": "106.3 机时"
     },
     {
      "v": "404.1 机时"
@@ -12384,13 +14246,13 @@
     "dim": "稳定性",
     "pri": "P1",
     "first": "07-20",
-    "days_hit": 2,
-    "runs": 64,
-    "prs": 34,
+    "days_hit": 3,
+    "runs": 112,
+    "prs": 45,
     "trend": [
      34,
      30,
-     0,
+     48,
      0,
      0,
      0,
@@ -12406,9 +14268,40 @@
      "07-26"
     ],
     "status": "仍活跃·待回填",
-    "stages": "ut/compile",
+    "stages": "compile/ut",
     "action": "基础设施排查共因;确认后回填改判(系统性→平台失败,或解除暂缓→代码失败)",
     "dest": "cann/infrastructure Issue · 双周例会"
+   },
+   {
+    "kb": "真机冒烟",
+    "dim": "稳定性",
+    "pri": "P2",
+    "first": "07-21",
+    "days_hit": 2,
+    "runs": 10,
+    "prs": 8,
+    "trend": [
+     0,
+     2,
+     8,
+     0,
+     0,
+     0,
+     0
+    ],
+    "tdays": [
+     "07-20",
+     "07-21",
+     "07-22",
+     "07-23",
+     "07-24",
+     "07-25",
+     "07-26"
+    ],
+    "status": "仍活跃·待回填",
+    "stages": "PreSmoke",
+    "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
+    "dest": "验证仓待办(冒烟分型)"
    },
    {
     "kb": "未归类",
@@ -12471,59 +14364,28 @@
     "stages": "compile",
     "action": "扩充签名库;人工抽检(目标 N≥30)校准分型准确率",
     "dest": "验证仓待办(Flaky 分型校准)"
-   },
-   {
-    "kb": "真机冒烟",
-    "dim": "稳定性",
-    "pri": "P2",
-    "first": "07-21",
-    "days_hit": 1,
-    "runs": 2,
-    "prs": 2,
-    "trend": [
-     0,
-     2,
-     0,
-     0,
-     0,
-     0,
-     0
-    ],
-    "tdays": [
-     "07-20",
-     "07-21",
-     "07-22",
-     "07-23",
-     "07-24",
-     "07-25",
-     "07-26"
-    ],
-    "status": "仍活跃·待回填",
-    "stages": "PreSmoke",
-    "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
-    "dest": "验证仓待办(冒烟分型)"
    }
   ],
   "trends": [
    {
     "title": "Action 平台失败率(%,日粒度)",
     "pts": [
-     52,
      35,
      61,
      0,
      0,
      24,
-     44
+     44,
+     24
     ],
     "days": [
-     "07-15",
      "07-16",
      "07-17",
      "07-18",
      "07-19",
      "07-20",
-     "07-21"
+     "07-21",
+     "07-22"
     ],
     "anno": {
      "i": 5,
@@ -12534,29 +14396,29 @@
    {
     "title": "无效机时(机时/日)",
     "pts": [
-     29.2,
      102.8,
      205.2,
      0,
      0,
      19.9,
-     57
+     57,
+     29.4
     ],
     "days": [
-     "07-15",
      "07-16",
      "07-17",
      "07-18",
      "07-19",
      "07-20",
-     "07-21"
+     "07-21",
+     "07-22"
     ],
     "note": "实测曲线:取消/挂死/平台与外部故障 run 消耗的机时。"
    }
   ],
   "matrices": {
    "stab": {
-    "note": "实测:W30(2026-07-20 → 2026-07-26) · 期中预览(数据截至 2026-07-21,周一定稿) · 周定稿分 66(该周日分中位数;overview 口径) 失败 run 周汇总,阶段 × 二级机理(按一级责任方分组);代码责任列为背景。",
+    "note": "实测:W30(2026-07-20 → 2026-07-26) · 期中预览(数据截至 2026-07-22,周一定稿) · 周定稿分 59(该周日分中位数;overview 口径) 失败 run 周汇总,阶段 × 二级机理(按一级责任方分组);代码责任列为背景。",
     "stages": [
      "compile",
      "ut",
@@ -12594,18 +14456,18 @@
     ],
     "cells": {
      "ut": {
-      "单元测试": 38
+      "单元测试": 52
      },
      "compile": {
-      "规范检查": 19,
-      "编译/包校验": 20,
-      "Flaky-待分型": 2,
+      "规范检查": 53,
+      "编译/包校验": 25,
+      "Flaky-待分型": 3,
       "资源申请": 1
      },
      "PreSmoke": {
-      "执行机注册": 44,
+      "执行机注册": 64,
       "Flaky-环境": 2,
-      "真机冒烟": 2
+      "真机冒烟": 10
      },
      "内容违规已隐藏": {
       "未归类": 3,
@@ -12622,49 +14484,49 @@
       "p90_s": 35,
       "base_med_s": 32,
       "dev_pct": 0,
-      "over_n": 25,
-      "total_min": 203,
-      "n": 203
+      "over_n": 61,
+      "total_min": 311,
+      "n": 280
      },
      {
       "stage": "compile",
-      "med_s": 449,
-      "p90_s": 2188,
+      "med_s": 510,
+      "p90_s": 1934,
       "base_med_s": 369,
-      "dev_pct": 22,
-      "over_n": 25,
-      "total_min": 26763,
-      "n": 200
+      "dev_pct": 38,
+      "over_n": 32,
+      "total_min": 41358,
+      "n": 277
      },
      {
       "stage": "ut",
       "med_s": 115,
-      "p90_s": 234,
+      "p90_s": 313,
       "base_med_s": 114,
       "dev_pct": 1,
-      "over_n": 18,
-      "total_min": 1514,
-      "n": 200
+      "over_n": 24,
+      "total_min": 2180,
+      "n": 277
      },
      {
       "stage": "PreSmoke",
-      "med_s": 356,
-      "p90_s": 1964,
+      "med_s": 421,
+      "p90_s": 2972,
       "base_med_s": 200,
-      "dev_pct": 78,
-      "over_n": 62,
-      "total_min": 3700,
-      "n": 202
+      "dev_pct": 110,
+      "over_n": 89,
+      "total_min": 6950,
+      "n": 279
      },
      {
       "stage": "内容违规已隐藏",
-      "med_s": 230,
-      "p90_s": 4344,
+      "med_s": 284,
+      "p90_s": 3198,
       "base_med_s": 362,
-      "dev_pct": -36,
-      "over_n": 5,
-      "total_min": 699,
-      "n": 15
+      "dev_pct": -22,
+      "over_n": 6,
+      "total_min": 873,
+      "n": 19
      }
     ]
    },
@@ -12681,47 +14543,47 @@
      {
       "stage": "image",
       "cells": {
-       "有效": 122,
-       "代码失败消耗": 47,
-       "平台失败废弃": 29,
-       "待定": 4,
-       "取消占用": 0
+       "有效": 173,
+       "代码失败消耗": 82,
+       "平台失败废弃": 42,
+       "待定": 10,
+       "取消占用": 3
       }
      },
      {
       "stage": "compile",
       "cells": {
-       "有效": 16597,
-       "代码失败消耗": 5503,
-       "平台失败废弃": 4268,
-       "待定": 394,
+       "有效": 22644,
+       "代码失败消耗": 10644,
+       "平台失败废弃": 5911,
+       "待定": 2158,
        "取消占用": 0
       }
      },
      {
       "stage": "ut",
       "cells": {
-       "有效": 1020,
-       "代码失败消耗": 226,
-       "平台失败废弃": 249,
-       "待定": 19,
+       "有效": 1444,
+       "代码失败消耗": 318,
+       "平台失败废弃": 357,
+       "待定": 61,
        "取消占用": 0
       }
      },
      {
       "stage": "PreSmoke",
       "cells": {
-       "有效": 3673,
+       "有效": 5068,
        "代码失败消耗": 0,
        "平台失败废弃": 13,
-       "待定": 15,
+       "待定": 1871,
        "取消占用": 0
       }
      },
      {
       "stage": "内容违规已隐藏",
       "cells": {
-       "有效": 596,
+       "有效": 770,
        "代码失败消耗": 0,
        "平台失败废弃": 54,
        "待定": 49,
@@ -12730,16 +14592,16 @@
      }
     ],
     "total": {
-     "有效": 22008,
-     "代码失败消耗": 5776,
-     "平台失败废弃": 4613,
-     "待定": 481,
-     "取消占用": 0
+     "有效": 30099,
+     "代码失败消耗": 11044,
+     "平台失败废弃": 6377,
+     "待定": 4149,
+     "取消占用": 3
     }
    }
   },
   "bill": {
-   "note": "实测:W30(2026-07-20 → 2026-07-26) · 期中预览(数据截至 2026-07-21,周一定稿) · 周定稿分 66(该周日分中位数;overview 口径) 机时账单(实际耗时口径);利用率待池容量(团队提供中)",
+   "note": "实测:W30(2026-07-20 → 2026-07-26) · 期中预览(数据截至 2026-07-22,周一定稿) · 周定稿分 59(该周日分中位数;overview 口径) 机时账单(实际耗时口径);利用率待池容量(团队提供中)",
    "cols": [
     "资源池",
     "image",
@@ -12756,10 +14618,10 @@
      "—",
      "—",
      {
-      "v": "61.7"
+      "v": "115.8"
      },
      {
-      "v": "61.9"
+      "v": "116.1"
      },
      "待容量"
     ],
@@ -12767,40 +14629,40 @@
      "dedicate-hosted(主力)",
      "—",
      {
-      "v": "446.1"
+      "v": "689.3"
      },
      {
-      "v": "25.2"
+      "v": "36.3"
      },
      "—",
      {
-      "v": "482.7"
+      "v": "739.9"
      },
      "待容量"
     ],
     [
      "codearts-hosted(托管)",
      {
-      "v": "0.5"
+      "v": "0.7"
      },
      "—",
      "—",
      "—",
      {
-      "v": "0.5"
+      "v": "0.7"
      },
      "待容量"
     ],
     [
      "system(编排)",
      {
-      "v": "2.9"
+      "v": "4.5"
      },
      "—",
      "—",
      "—",
      {
-      "v": "2.9"
+      "v": "4.5"
      },
      "待容量"
     ]

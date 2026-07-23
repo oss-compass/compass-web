@@ -20,9 +20,9 @@ const tdRowCls =
 const noteCls = 'mt-2 text-[11.5px] leading-relaxed text-slate-400';
 
 const heatClass = (kind: 'hot' | 'warm' | 'cool' | '') => {
-  if (kind === 'hot') return 'bg-rose-50 font-semibold text-rose-700';
-  if (kind === 'warm') return 'bg-amber-50 text-amber-700';
-  if (kind === 'cool') return 'bg-sky-50 text-sky-700';
+  if (kind === 'hot') return 'bg-rose-50 font-semibold';
+  if (kind === 'warm') return 'bg-amber-50';
+  if (kind === 'cool') return 'bg-sky-50';
   return '';
 };
 
@@ -157,7 +157,7 @@ export const MatrixEff: React.FC<{ m: CiMatrixEff }> = ({ m }) => {
                     </td>
                     <td
                       className={`${tdCls} text-right tabular-nums ${
-                        warn ? 'font-semibold text-rose-600' : ''
+                          warn ? 'font-semibold !text-rose-600' : ''
                       }`}
                     >
                       {dev}
