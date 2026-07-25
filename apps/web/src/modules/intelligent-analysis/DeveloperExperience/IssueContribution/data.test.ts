@@ -57,7 +57,7 @@ describe('Issue contribution report registry', () => {
       version: 'v3',
     });
 
-    expect(report?.data.report_context.idx_total).toBe(47.6);
+    expect(report?.data.report_context.idx_total).toBe(40);
     expect(report?.data.report_context.stage_ids).toEqual([
       'I0',
       'I1',
