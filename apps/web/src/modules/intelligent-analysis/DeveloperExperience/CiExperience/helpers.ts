@@ -9,7 +9,8 @@ import type {
   CiVal,
 } from './types';
 
-const repoSlug = (repo: CiRepoKey) => (repo === 'opsnn' ? 'ops-nn' : 'runtime');
+const repoSlug = (repo: CiRepoKey) =>
+  repo === 'opsnn' ? 'ops-nn' : repo === 'opscv' ? 'ops-cv' : 'runtime';
 
 export const runURL = (repo: CiRepoKey, id: string) =>
   `https://gitcode.com/cann/${repoSlug(repo)}/actions/runs/${id}`;
@@ -17,7 +18,7 @@ export const runURL = (repo: CiRepoKey, id: string) =>
 export const prURL = (repo: CiRepoKey, n: string | number) =>
   `https://gitcode.com/cann/${repoSlug(repo)}/merge_requests/${n}`;
 
-/** 归一化 query 中的 repo 值（兼容 ops-nn / opsnn） */
+/** 归一化 query 中的 repo 值（兼容 ops-nn / opsnn / ops-cv / opscv） */
 export const normalizeRepoKey = (
   value: string | string[] | undefined
 ): CiRepoKey => {
@@ -25,12 +26,15 @@ export const normalizeRepoKey = (
   if (raw === 'opsnn' || raw === 'ops-nn') {
     return 'opsnn';
   }
+  if (raw === 'opscv' || raw === 'ops-cv') {
+    return 'opscv';
+  }
   return 'runtime';
 };
 
-/** repo key -> query 参数值（对外用 ops-nn） */
+/** repo key -> query 参数值（对外用 ops-nn / ops-cv） */
 export const repoKeyToQuery = (repo: CiRepoKey) =>
-  repo === 'opsnn' ? 'ops-nn' : 'runtime';
+  repo === 'opsnn' ? 'ops-nn' : repo === 'opscv' ? 'ops-cv' : 'runtime';
 
 /** 维度中文名 */
 export const DIM_NAME: Record<CiDimKey, string> = {

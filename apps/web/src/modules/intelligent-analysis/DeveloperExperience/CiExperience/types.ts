@@ -1,6 +1,6 @@
 // CI 体验诊断 · 数据类型（对齐 v2 设计稿 DATA schema，纯数据、不含 ReactNode）
 
-export type CiRepoKey = 'runtime' | 'opsnn';
+export type CiRepoKey = 'runtime' | 'opsnn' | 'opscv';
 
 export type CiDimKey = 'stability' | 'efficiency' | 'interaction' | 'cost';
 
@@ -18,7 +18,7 @@ export type CiVal = {
   demo?: boolean;
 };
 
-/** [标签, 值] 二元组（维度卡 vals、当日 meta） */
+/** [标签，值] 二元组（维度卡 vals、当日 meta） */
 export type CiLabeledVal = [string, CiVal];
 
 /** 迷你趋势线 */
@@ -88,7 +88,7 @@ export type CiProblem = {
   root: CiProblemRoot;
 };
 
-/** 指标表行：[指标, 当日值, 前 7 日中位, 口径, 备注] */
+/** 指标表行：[指标，当日值，前 7 日中位，口径，备注] */
 export type CiMetricRow = [string, CiVal, CiVal, string, string];
 
 /** 稳定性细分 */
@@ -226,7 +226,7 @@ export type CiImp = {
   stOn: number;
 };
 
-/** 四维度周对比行：[维度, 结果指标, 本周, 上周, 说明] */
+/** 四维度周对比行：[维度，结果指标，本周，上周，说明] */
 export type CiDimCmpRow = [string, string, CiVal, CiVal, string];
 
 /** 趋势图 */

@@ -22,7 +22,7 @@ import CiTrendModal from './CiTrendModal';
 const { Title } = Typography;
 
 type CiOverviewProps = {
-  /** 跨仓数据源（runtime + ops-nn），社区 CI/CD 总览为两仓聚合视图 */
+  /** 跨仓数据源（runtime + ops-nn + ops-cv），社区 CI/CD 总览为多仓聚合视图 */
   data: Record<CiRepoKey, CiRepoData>;
 };
 

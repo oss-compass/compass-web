@@ -28,6 +28,7 @@ const RAWDATA_DIR = path.join(BASE, 'rawdata');
 const OUT_DATA = {
     runtime: path.join(BASE, 'ci-runtime-data.json'),
     opsnn: path.join(BASE, 'ci-opsnn-data.json'),
+    opscv: path.join(BASE, 'ci-opscv-data.json'),
 };
 const OUT_JOURNEY = path.join(BASE, 'components/CiReport/ci-journey.json');
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "issue_experience_report_data_v1",
-  "generated_at": "2026-07-21T07:51:50.922458+00:00",
+  "generated_at": "2026-07-22T02:49:47.800517+00:00",
   "community_name": "cann/cann-samples",
   "platform": "gitcode",
   "period": "2026-07-06_to_2026-07-12",
@@ -24,8 +24,11 @@
     "n_open": 2,
     "n_closed": 3,
     "close_rate": 60.0,
+    "scope_internal": 1,
+    "scope_external": 4,
+    "scope_external_mature": 4,
     "confidence": "低",
-    "idx_total": 48.9,
+    "idx_total": 51.5,
     "grade": "D",
     "prev_idx_total": null,
     "delta_total": "首期基线",
@@ -40,26 +43,26 @@
     "rubric_version": "v0.2-draft",
     "data_completeness": 84.5,
     "platform_limitations": "GitCode API 不返回 author_association 与关联 PR，维护者识别与关联 PR 率不可信，已从对比剔除；无 closed_by / closed 事件，自关闭无法判定",
-    "json_path": "/home/shengbao/Cogito/issue_experience_agent/outputs/cann-cann-samples/report_cann-cann-samples_2026-07-06_to_2026-07-12.json",
+    "json_path": "/home/shengbao/Cogito/issue_experience_agent/outputs/report/cann-cann-samples/report_cann-cann-samples_2026-07-06_to_2026-07-12.json",
     "type_breakdown": "缺陷 3 / 需求 1 / 其他 1",
     "short_stage_rows": [
       {
         "prio": "P0",
         "stage": "I3 · 总结与关闭",
-        "score": 47.8,
-        "problem": "关闭阶段缺乏复用与后续路径"
+        "score": 50.5,
+        "problem": "关闭阶段缺乏沉淀与反馈路径"
       },
       {
         "prio": "P1",
         "stage": "I2 · 讨论与解决",
-        "score": 51.1,
-        "problem": "开放Issue讨论长期停滞无进展"
+        "score": 59.9,
+        "problem": "讨论深度不足且存在停滞"
       },
       {
         "prio": "P1",
         "stage": "I1 · 分配与首次响应",
-        "score": 65.2,
-        "problem": "首次实质性响应严重缺失"
+        "score": 65.4,
+        "problem": "首次响应时间极不稳定"
       }
     ],
     "short_board_primary": {
@@ -68,14 +71,16 @@
       "icon": "📦",
       "is_lens": false,
       "weight": 0.2,
-      "mixed": 47.8,
-      "obj": 34.0,
-      "subj": 68.5,
-      "stars": "★★☆☆☆",
+      "mixed": 50.5,
+      "obj": 38.8,
+      "subj": 68.1,
+      "stars": "★★★☆☆",
       "grade": "D",
       "flag_emoji": "🟡",
-      "pain_count": 4,
-      "pain_pct": 80.0,
+      "pain_count": 3,
+      "pain_pct": 75.0,
+      "n_sample": 4,
+      "no_sample": false,
       "delta": "首期基线",
       "incomparable": false,
       "confidence": "低",
@@ -83,38 +88,32 @@
         "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
         "name_cn": "过早关闭风险反向分",
         "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
-        "value": 88.0
+        "value": 88.8
       },
       "worst_metric": {
         "code": "OBJ_CLOSURE_REUSE",
         "name_cn": "关闭复用价值",
         "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-        "value": 9.0
+        "value": 11.2
       },
-      "distribution": "<40:2 ｜ 40-60:2 ｜ 60-80:1 ｜ ≥80:0",
+      "distribution": "<40:1 ｜ 40-60:2 ｜ 60-80:1 ｜ ≥80:0",
       "metrics_obj": [
         {
           "code": "OBJ_DECISION_TRANSPARENCY",
           "key": "obj-decision-transparency",
           "name_cn": "决策透明度",
           "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-          "mean": 59.0,
+          "mean": 66.2,
           "median": 75.0,
-          "flag": "🟡",
-          "cover": 5,
-          "evidence": "OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5",
+          "flag": "🟢",
+          "cover": 4,
+          "evidence": "OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
               "score": 75.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 30.0
             },
             {
               "issue_number": "220",
@@ -135,29 +134,23 @@
               "score": 75.0
             }
           ],
-          "_mean": 59.0
+          "_mean": 66.25
         },
         {
           "code": "OBJ_CLOSURE_REUSE",
           "key": "obj-closure-reuse",
           "name_cn": "关闭复用价值",
           "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-          "mean": 9.0,
+          "mean": 11.2,
           "median": 0.0,
           "flag": "🔴",
-          "cover": 5,
-          "evidence": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5",
+          "cover": 4,
+          "evidence": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 0.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
               "score": 0.0
             },
             {
@@ -179,7 +172,7 @@
               "score": 0.0
             }
           ],
-          "_mean": 9.0
+          "_mean": 11.25
         }
       ],
       "metrics_sub": [
@@ -188,22 +181,16 @@
           "key": "sub-closure-premature-close-risk-reverse",
           "name_cn": "过早关闭风险反向分",
           "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
-          "mean": 88.0,
-          "median": 90.0,
-          "cover": 5,
-          "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR已合并且修复内容匹配问题，关闭合理，但用户未确认且关闭原因标记为进行中。",
+          "mean": 88.8,
+          "median": 87.5,
+          "cover": 4,
+          "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR合并后由bot关闭并加resolved标签，修复与关闭有明确因果关系，非过…",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 75.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 95.0
+              "score": 85.0
             },
             {
               "issue_number": "220",
@@ -224,119 +211,113 @@
               "score": 90.0
             }
           ],
-          "_mean": 88.0
+          "_mean": 88.75
         },
         {
           "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
           "key": "sub-followup-path-completeness",
           "name_cn": "后续路径完整性",
           "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-          "mean": 49.0,
-          "median": 55.0,
-          "cover": 5,
-          "main_reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。",
+          "mean": 47.5,
+          "median": 47.5,
+          "cover": 4,
+          "main_reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 25.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 55.0
+              "score": 40.0
             },
             {
               "issue_number": "220",
               "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
               "url": "https://gitcode.com/cann/cann-samples/issues/220",
-              "score": 50.0
+              "score": 45.0
             },
             {
               "issue_number": "219",
               "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
               "url": "https://gitcode.com/cann/cann-samples/issues/219",
-              "score": 60.0
+              "score": 55.0
             },
             {
               "issue_number": "218",
               "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
               "url": "https://gitcode.com/cann/cann-samples/issues/218",
-              "score": 55.0
+              "score": 50.0
             }
           ],
-          "_mean": 49.0
+          "_mean": 47.5
         }
       ],
       "low_issues": [
         {
           "no": "#220",
           "url": "https://gitcode.com/cann/cann-samples/issues/220",
-          "score": 38,
+          "score": 37,
           "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
-          "desc": ""
-        },
-        {
-          "no": "#221",
-          "url": "https://gitcode.com/cann/cann-samples/issues/221",
-          "score": 39,
-          "title": "cann-samples Development Roadmap (2026 Q3)",
           "desc": ""
         },
         {
           "no": "#222",
           "url": "https://gitcode.com/cann/cann-samples/issues/222",
-          "score": 42,
+          "score": 48,
           "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+          "desc": ""
+        },
+        {
+          "no": "#218",
+          "url": "https://gitcode.com/cann/cann-samples/issues/218",
+          "score": 50,
+          "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
           "desc": ""
         }
       ],
-      "root_cause": "关闭流程缺乏结构化要求，未强制记录解决方案、根因和后续路径",
+      "root_cause": "关闭流程缺少标准化模板，未要求维护者填写解决方案摘要和后续反馈路径",
       "is_short_board": true,
       "pain": {
         "prio": "P0",
         "id": "PP-01"
       },
-      "pain_title": "关闭阶段缺乏复用与后续路径",
+      "pain_title": "关闭阶段缺乏沉淀与反馈路径",
       "judgment": "P0",
-      "core_problem": "关闭阶段缺乏复用与后续路径",
+      "core_problem": "关闭阶段缺乏沉淀与反馈路径",
       "brief_metrics": [
         {
           "code": "OBJ_CLOSURE_REUSE",
           "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
           "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-          "score": 9.0,
-          "reason": "均值 9.0，低分 5/5",
+          "score": 11.2,
+          "reason": "均值 11.2，低分 4/4",
           "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
         },
         {
           "code": "OBJ_DECISION_TRANSPARENCY",
           "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
           "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-          "score": 59.0,
-          "reason": "均值 59.0，低分 2/5",
+          "score": 66.2,
+          "reason": "均值 66.2，低分 1/4",
           "expected": "补齐关闭原因、关闭评论和结构化总结"
         },
         {
           "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
           "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
           "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-          "score": 49.0,
-          "reason": "关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。",
+          "score": 47.5,
+          "reason": "关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。",
           "expected": "关闭时明确说明后续反馈路径和重新开启条件"
         },
         {
           "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
           "metric": "`SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分",
           "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
-          "score": 88.0,
-          "reason": "MR已合并且修复内容匹配问题，关闭合理，但用户未确认且关闭原因标记为进行中。",
+          "score": 88.8,
+          "reason": "MR合并后由bot关闭并加resolved标签，修复与关闭有明确因果关系，非过…",
           "expected": "避免缺少讨论、验证时过早关闭"
         }
       ],
-      "intro": "本阶段需要改进，主要问题是：关闭阶段缺乏复用与后续路径。"
+      "intro": "本阶段需要改进，主要问题是：关闭阶段缺乏沉淀与反馈路径。"
     },
     "short_board_secondary": {
       "id": "I2",
@@ -344,53 +325,49 @@
       "icon": "💬",
       "is_lens": false,
       "weight": 0.25,
-      "mixed": 51.1,
-      "obj": 44.1,
-      "subj": 61.5,
+      "mixed": 59.9,
+      "obj": 55.2,
+      "subj": 66.9,
       "stars": "★★★☆☆",
       "grade": "D",
       "flag_emoji": "🟡",
-      "pain_count": 2,
-      "pain_pct": 40.0,
+      "pain_count": 1,
+      "pain_pct": 25.0,
+      "n_sample": 4,
+      "no_sample": false,
       "delta": "首期基线",
       "incomparable": false,
       "confidence": "低",
       "best_metric": {
-        "code": "SUB_USER_GOAL_RESULT",
-        "name_cn": "用户目标处理结果",
-        "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
-        "value": 62.0
+        "code": "OBJ_RESULT_FORMATION_TIMELINESS",
+        "name_cn": "形成结果时效",
+        "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+        "value": 70.0
       },
       "worst_metric": {
         "code": "OBJ_SOLUTION_EVIDENCE",
         "name_cn": "解决证据强度",
         "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-        "value": 32.3
+        "value": 40.4
       },
-      "distribution": "<40:2 ｜ 40-60:0 ｜ 60-80:3 ｜ ≥80:0",
+      "distribution": "<40:1 ｜ 40-60:0 ｜ 60-80:3 ｜ ≥80:0",
       "metrics_obj": [
         {
           "code": "OBJ_SOLUTION_EVIDENCE",
           "key": "obj-solution-evidence",
           "name_cn": "解决证据强度",
           "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-          "mean": 32.3,
+          "mean": 40.4,
           "median": 38.5,
-          "flag": "🔴",
-          "cover": 5,
-          "evidence": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5",
+          "flag": "🟡",
+          "cover": 4,
+          "evidence": "OBJ_SOLUTION_EVIDENCE：均值 40.4，低分 4/4",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
               "score": 38.46153846153847
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 0.0
             },
             {
               "issue_number": "220",
@@ -411,30 +388,24 @@
               "score": 38.46153846153847
             }
           ],
-          "_mean": 32.30769230769231
+          "_mean": 40.38461538461539
         },
         {
           "code": "OBJ_RESULT_FORMATION_TIMELINESS",
           "key": "obj-result-formation-timeliness",
           "name_cn": "形成结果时效",
           "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-          "mean": 56.0,
-          "median": 80.0,
-          "flag": "🟡",
-          "cover": 5,
-          "evidence": "OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5",
+          "mean": 70.0,
+          "median": 90.0,
+          "flag": "🟢",
+          "cover": 4,
+          "evidence": "OBJ_RESULT_FORMATION_TIMELINESS：均值 70.0，低分 1/4",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
               "score": 80.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 0.0
             },
             {
               "issue_number": "220",
@@ -455,7 +426,7 @@
               "score": 100.0
             }
           ],
-          "_mean": 56.0
+          "_mean": 70.0
         }
       ],
       "metrics_sub": [
@@ -464,22 +435,16 @@
           "key": "sub-discussion-progression",
           "name_cn": "讨论推进性",
           "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-          "mean": 61.0,
-          "median": 55.0,
-          "cover": 5,
-          "main_reason": "SUB_DISCUSSION_PROGRESSION：仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。",
+          "mean": 66.2,
+          "median": 70.0,
+          "cover": 4,
+          "main_reason": "SUB_DISCUSSION_PROGRESSION：仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 55.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 45.0
+              "score": 60.0
             },
             {
               "issue_number": "220",
@@ -500,112 +465,99 @@
               "score": 90.0
             }
           ],
-          "_mean": 61.0
+          "_mean": 66.25
         },
         {
           "code": "SUB_USER_GOAL_RESULT",
           "key": "sub-user-goal-result",
           "name_cn": "用户目标处理结果",
           "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
-          "mean": 62.0,
-          "median": 75.0,
-          "cover": 5,
-          "main_reason": "SUB_USER_GOAL_RESULT：MR#336实际修复了头文件引用问题并已合并，用户目标得到满足。",
+          "mean": 67.5,
+          "median": 82.5,
+          "cover": 4,
+          "main_reason": "SUB_USER_GOAL_RESULT：MR#336移除内部头文件引用修复编译问题并已合并，用户目标得到有效满足。",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 80.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 35.0
+              "score": 85.0
             },
             {
               "issue_number": "220",
               "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
               "url": "https://gitcode.com/cann/cann-samples/issues/220",
-              "score": 25.0
+              "score": 20.0
             },
             {
               "issue_number": "219",
               "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
               "url": "https://gitcode.com/cann/cann-samples/issues/219",
-              "score": 75.0
+              "score": 80.0
             },
             {
               "issue_number": "218",
               "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
               "url": "https://gitcode.com/cann/cann-samples/issues/218",
-              "score": 95.0
+              "score": 85.0
             }
           ],
-          "_mean": 62.0
+          "_mean": 67.5
         }
       ],
       "low_issues": [
         {
-          "no": "#221",
-          "url": "https://gitcode.com/cann/cann-samples/issues/221",
-          "score": 16,
-          "title": "cann-samples Development Roadmap (2026 Q3)",
-          "desc": ""
-        },
-        {
           "no": "#220",
           "url": "https://gitcode.com/cann/cann-samples/issues/220",
-          "score": 21,
+          "score": 20,
           "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
           "desc": ""
         }
       ],
-      "root_cause": "缺乏讨论推进机制和定期跟进流程，开放Issue无自动提醒和进度追踪",
+      "root_cause": "维护者初步认领后缺乏跟进节奏管理，无讨论推进的SLA和提醒机制",
       "is_short_board": true,
       "pain": {
         "prio": "P1",
-        "id": "PP-02"
+        "id": "PP-04"
       },
-      "pain_title": "开放Issue讨论长期停滞无进展",
+      "pain_title": "讨论深度不足且存在停滞",
       "judgment": "P1",
-      "core_problem": "开放Issue讨论长期停滞无进展",
+      "core_problem": "讨论深度不足且存在停滞",
       "brief_metrics": [
         {
           "code": "OBJ_RESULT_FORMATION_TIMELINESS",
           "metric": "`OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效",
           "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-          "score": 56.0,
-          "reason": "均值 56.0，低分 2/5",
+          "score": 70.0,
+          "reason": "均值 70.0，低分 1/4",
           "expected": "加快形成明确结果的速度"
         },
         {
           "code": "OBJ_SOLUTION_EVIDENCE",
           "metric": "`OBJ_SOLUTION_EVIDENCE` 解决证据强度",
           "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-          "score": 32.3,
-          "reason": "均值 32.3，低分 5/5",
+          "score": 40.4,
+          "reason": "均值 40.4，低分 4/4",
           "expected": "补充修改内容、关联变更和影响范围"
         },
         {
           "code": "SUB_DISCUSSION_PROGRESSION",
           "metric": "`SUB_DISCUSSION_PROGRESSION` 讨论推进性",
           "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-          "score": 61.0,
-          "reason": "仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。",
+          "score": 66.2,
+          "reason": "仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。",
           "expected": "明确下一步动作、阶段结论和推进记录"
         },
         {
           "code": "SUB_USER_GOAL_RESULT",
           "metric": "`SUB_USER_GOAL_RESULT` 用户目标处理结果",
           "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
-          "score": 62.0,
-          "reason": "MR#336实际修复了头文件引用问题并已合并，用户目标得到满足。",
+          "score": 67.5,
+          "reason": "MR#336移除内部头文件引用修复编译问题并已合并，用户目标得到有效满足。",
           "expected": "确保用户主要目标得到有效满足或合理处置"
         }
       ],
-      "intro": "本阶段需要改进，主要问题是：开放Issue讨论长期停滞无进展。"
+      "intro": "本阶段需要改进，主要问题是：讨论深度不足且存在停滞。"
     },
     "suggested_pair": "catlass↔cutlass / hccl↔nccl",
     "benchmark": null,
@@ -627,15 +579,15 @@
       {
         "period": "2026-07-06_to_2026-07-12",
         "n": 5,
-        "idx": 48.9,
+        "idx": 51.5,
         "period_label": "2026-07-06_to_2026-07-12",
         "delta": "首期基线",
         "stage_scores": [
-          90.4,
-          65.2,
-          51.1,
-          47.8,
-          65.2
+          89.2,
+          65.4,
+          59.9,
+          50.5,
+          64.0
         ],
         "incomparable": false
       }
@@ -646,12 +598,12 @@
       {
         "prio": "P0",
         "id": "PP-01",
-        "title": "关闭阶段缺乏复用与后续路径",
+        "title": "关闭阶段缺乏沉淀与反馈路径",
         "stage_id": "I3",
         "stage_name": "总结与关闭",
-        "evidence": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5；OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5",
-        "impact": "知识无法沉淀复用，用户无法了解后续反馈路径，社区经验流失",
-        "action": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
+        "evidence": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4；OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4",
+        "impact": "社区用户无法从已关闭Issue获取解决方案参考，也无法了解后续反馈渠道",
+        "action": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
         "rec_id": "REC-01",
         "low_score_issues": [
           {
@@ -660,7 +612,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
             "score": 0,
             "metric_code": "obj-closure-reuse",
-            "reason": "仅由机器人自动关联关闭，无人工解决方案总结与文档沉淀，无法为其他用户提供复用参考。",
+            "reason": "关闭说明仅为机器人提示关联MR合并，无方案文档与主链接，未留存任何问题定位与解决信息供后续参考。",
             "evidence": [
               {
                 "type": "close",
@@ -700,29 +652,12 @@
             ]
           },
           {
-            "number": "221",
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 0,
-            "metric_code": "obj-closure-reuse",
-            "reason": "关闭时无文字说明、方案文档及链接，仅指派负责人，未沉淀任何可复用信息。",
-            "evidence": [
-              {
-                "type": "assign",
-                "actor": "zhangzijie",
-                "text": "assigned to @yangyang016",
-                "url": "",
-                "time": "2026-07-10T11:03:41"
-              }
-            ]
-          },
-          {
             "number": "220",
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
             "score": 0,
             "metric_code": "obj-closure-reuse",
-            "reason": "关闭说明为空，未提供方案文档或相关链接，仅指派了负责人跟进，无任何复用价值。",
+            "reason": "关闭时无任何文字说明，且缺乏方案文档与重复主链接，未留存任何可供后续复用的参考信息。",
             "evidence": [
               {
                 "type": "comment",
@@ -746,7 +681,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/218",
             "score": 0,
             "metric_code": "obj-closure-reuse",
-            "reason": "无方案文档沉淀且关闭说明仅15字，未关联重复issue，导致修复经验难以被社区复用。",
+            "reason": "未提供方案文档和重复issue主链接，关闭说明仅15字过于简略，导致后续无法有效复用。",
             "evidence": [
               {
                 "type": "close",
@@ -791,7 +726,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/219",
             "score": 45,
             "metric_code": "obj-closure-reuse",
-            "reason": "关闭说明仅解释删除无效文件原因，未沉淀方案文档且无主链接，导致后续复用参考价值低。",
+            "reason": "关闭说明仅解释删除无效文件原因，未提供方案文档化记录与重复issue主链接，复用参考价值低。",
             "evidence": [
               {
                 "type": "close",
@@ -829,28 +764,56 @@
       {
         "prio": "P1",
         "id": "PP-02",
-        "title": "开放Issue讨论长期停滞无进展",
-        "stage_id": "I2",
-        "stage_name": "讨论与解决",
-        "evidence": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5；OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5",
-        "impact": "功能建议和路线图无法推进，社区参与感降低，贡献者流失",
-        "action": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
+        "title": "首次响应时间极不稳定",
+        "stage_id": "I1",
+        "stage_name": "分配与首次响应",
+        "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
+        "impact": "部分用户等待5天才收到首次回复，严重影响社区信任和问题解决效率",
+        "action": "配置自动提醒或升级机制通知维护者",
         "rec_id": "REC-02",
         "low_score_issues": [
           {
-            "number": "221",
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
+            "number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
             "score": 0,
-            "metric_code": "obj-solution-evidence",
-            "reason": "仅进行了指派操作，未提供任何关联PR、commit引用或文档链接等实质性解决证据。",
+            "metric_code": "obj-first-substantive-response-time",
+            "reason": "全程仅有套话回复和打标签，未提供任何实质技术分析或解决方案，最终被机器人直接关闭。",
             "evidence": [
               {
-                "type": "assign",
-                "actor": "zhangzijie",
-                "text": "assigned to @yangyang016",
+                "type": "comment",
+                "actor": "songkai111",
+                "text": "你好，我们将尽快安排同事分析",
                 "url": "",
-                "time": "2026-07-10T11:03:41"
+                "time": "2026-07-15T08:00:16"
+              },
+              {
+                "type": "label",
+                "actor": "huangkejie1647",
+                "text": "add label bug-report",
+                "url": "",
+                "time": "2026-07-10T15:34:28"
+              },
+              {
+                "type": "label",
+                "actor": "cann-robot",
+                "text": "add label resolved",
+                "url": "",
+                "time": "2026-07-17T16:46:08"
+              },
+              {
+                "type": "close",
+                "actor": "cann-robot",
+                "text": "closed from codehub, Due to close relation issue when mr merged: issue222",
+                "url": "",
+                "time": "2026-07-17T14:52:41"
+              },
+              {
+                "type": "pr",
+                "actor": "",
+                "text": "关联PR #336（merged）",
+                "url": "https://gitcode.com/cann/cann-samples/merge_requests/336",
+                "time": "2026-07-16T14:42:53"
               }
             ]
           },
@@ -858,9 +821,130 @@
             "number": "220",
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 0,
+            "metric_code": "obj-first-substantive-response-time",
+            "reason": "首次响应仅指派负责人并承诺关注，缺乏技术解答或具体处理方案，未构成实质回应。",
+            "evidence": [
+              {
+                "type": "comment",
+                "actor": "songkai111",
+                "text": "感谢您的建议，我们将指定mc2领域的committer来关注该建议",
+                "url": "",
+                "time": "2026-07-09T06:42:21"
+              },
+              {
+                "type": "assign",
+                "actor": "songkai111",
+                "text": "assigned to @wang-minbo",
+                "url": "",
+                "time": "2026-07-09T14:42:30"
+              }
+            ]
+          }
+        ],
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P1",
+        "id": "PP-03",
+        "title": "标签与指派覆盖率不足",
+        "stage_id": "I1",
+        "stage_name": "分配与首次响应",
+        "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
+        "impact": "Issue缺乏标签分类和正式指派，影响优先级排序和检索效率",
+        "action": "配置标签自动打标规则和assignee自动分配策略",
+        "rec_id": "REC-03",
+        "low_score_issues": [
+          {
+            "number": "222",
+            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "url": "https://gitcode.com/cann/cann-samples/issues/222",
+            "score": 0,
+            "metric_code": "obj-first-substantive-response-time",
+            "reason": "全程仅有套话回复和打标签，未提供任何实质技术分析或解决方案，最终被机器人直接关闭。",
+            "evidence": [
+              {
+                "type": "comment",
+                "actor": "songkai111",
+                "text": "你好，我们将尽快安排同事分析",
+                "url": "",
+                "time": "2026-07-15T08:00:16"
+              },
+              {
+                "type": "label",
+                "actor": "huangkejie1647",
+                "text": "add label bug-report",
+                "url": "",
+                "time": "2026-07-10T15:34:28"
+              },
+              {
+                "type": "label",
+                "actor": "cann-robot",
+                "text": "add label resolved",
+                "url": "",
+                "time": "2026-07-17T16:46:08"
+              },
+              {
+                "type": "close",
+                "actor": "cann-robot",
+                "text": "closed from codehub, Due to close relation issue when mr merged: issue222",
+                "url": "",
+                "time": "2026-07-17T14:52:41"
+              },
+              {
+                "type": "pr",
+                "actor": "",
+                "text": "关联PR #336（merged）",
+                "url": "https://gitcode.com/cann/cann-samples/merge_requests/336",
+                "time": "2026-07-16T14:42:53"
+              }
+            ]
+          },
+          {
+            "number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
+            "score": 0,
+            "metric_code": "obj-first-substantive-response-time",
+            "reason": "首次响应仅指派负责人并承诺关注，缺乏技术解答或具体处理方案，未构成实质回应。",
+            "evidence": [
+              {
+                "type": "comment",
+                "actor": "songkai111",
+                "text": "感谢您的建议，我们将指定mc2领域的committer来关注该建议",
+                "url": "",
+                "time": "2026-07-09T06:42:21"
+              },
+              {
+                "type": "assign",
+                "actor": "songkai111",
+                "text": "assigned to @wang-minbo",
+                "url": "",
+                "time": "2026-07-09T14:42:30"
+              }
+            ]
+          }
+        ],
+        "state": "新增（待跟踪）"
+      },
+      {
+        "prio": "P1",
+        "id": "PP-04",
+        "title": "讨论深度不足且存在停滞",
+        "stage_id": "I2",
+        "stage_name": "讨论与解决",
+        "evidence": "OBJ_SOLUTION_EVIDENCE：均值 40.4，低分 4/4；OBJ_RESULT_FORMATION_TIMELINESS：均值 70.0，低分 1/4",
+        "impact": "功能建议类Issue长期无进展，社区贡献意愿受挫，技术讨论未充分展开",
+        "action": "发布进展更新或下一步计划",
+        "rec_id": "REC-04",
+        "low_score_issues": [
+          {
+            "number": "220",
+            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+            "url": "https://gitcode.com/cann/cann-samples/issues/220",
             "score": 31,
             "metric_code": "obj-solution-evidence",
-            "reason": "仅停留在分配负责人阶段，无关联PR、文档链接和release引用等实质性产出，未形成解决闭环。",
+            "reason": "仅停留在指派负责人阶段，无关联PR、文档或release等实质性解决证据。",
             "evidence": [
               {
                 "type": "comment",
@@ -884,7 +968,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
             "score": 38,
             "metric_code": "obj-solution-evidence",
-            "reason": "缺少commit引用与文档链接，且关闭原因依赖关联issue合并，自身解决证据链不完整。",
+            "reason": "虽关联了已合并PR，但无commit引用与文档链接，且关闭评论仅为机器人自动回复，缺乏人工解决证据说明。",
             "evidence": [
               {
                 "type": "pr",
@@ -929,7 +1013,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/218",
             "score": 38,
             "metric_code": "obj-solution-evidence",
-            "reason": "虽有关联PR和修复说明，但缺乏commit引用和文档链接等强证据支撑，导致证据强度不足。",
+            "reason": "虽有关联PR和文字修复说明，但缺乏直接的代码提交链接与文档链接作为强证据支撑，证据链不完整。",
             "evidence": [
               {
                 "type": "pr",
@@ -974,7 +1058,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/219",
             "score": 54,
             "metric_code": "obj-solution-evidence",
-            "reason": "缺乏文档链接与release引用，且关闭评论仅由机器人自动触发，导致修复证据链不够完整。",
+            "reason": "虽有关联PR与机器人关闭评论，但缺乏文档链接、release引用及明确的修复验证证据，导致证据强度不足。",
             "evidence": [
               {
                 "type": "pr",
@@ -1010,115 +1094,15 @@
         "state": "新增（待跟踪）"
       },
       {
-        "prio": "P1",
-        "id": "PP-03",
-        "title": "首次实质性响应严重缺失",
-        "stage_id": "I1",
-        "stage_name": "分配与首次响应",
-        "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5",
-        "impact": "用户等待5天仅得到模板化回复，问题无法及时进入处理流程，信任度下降",
-        "action": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
-        "rec_id": "REC-03",
-        "low_score_issues": [
-          {
-            "number": "222",
-            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
-            "url": "https://gitcode.com/cann/cann-samples/issues/222",
-            "score": 0,
-            "metric_code": "obj-first-substantive-response-time",
-            "reason": "首次响应超120小时且全程无实质技术分析，仅打标签后由机器人自动关闭。",
-            "evidence": [
-              {
-                "type": "comment",
-                "actor": "songkai111",
-                "text": "你好，我们将尽快安排同事分析",
-                "url": "",
-                "time": "2026-07-15T08:00:16"
-              },
-              {
-                "type": "label",
-                "actor": "huangkejie1647",
-                "text": "add label bug-report",
-                "url": "",
-                "time": "2026-07-10T15:34:28"
-              },
-              {
-                "type": "label",
-                "actor": "cann-robot",
-                "text": "add label resolved",
-                "url": "",
-                "time": "2026-07-17T16:46:08"
-              },
-              {
-                "type": "close",
-                "actor": "cann-robot",
-                "text": "closed from codehub, Due to close relation issue when mr merged: issue222",
-                "url": "",
-                "time": "2026-07-17T14:52:41"
-              },
-              {
-                "type": "pr",
-                "actor": "",
-                "text": "关联PR #336（merged）",
-                "url": "https://gitcode.com/cann/cann-samples/merge_requests/336",
-                "time": "2026-07-16T14:42:53"
-              }
-            ]
-          },
-          {
-            "number": "221",
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 0,
-            "metric_code": "obj-first-substantive-response-time",
-            "reason": "仅指派了负责人，未提供任何实质性解答或反馈。",
-            "evidence": [
-              {
-                "type": "assign",
-                "actor": "zhangzijie",
-                "text": "assigned to @yangyang016",
-                "url": "",
-                "time": "2026-07-10T11:03:41"
-              }
-            ]
-          },
-          {
-            "number": "220",
-            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
-            "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 0,
-            "metric_code": "obj-first-substantive-response-time",
-            "reason": "首次响应仅为客套感谢与指派人员，耗时近17小时，且始终未提供任何实质性技术解答。",
-            "evidence": [
-              {
-                "type": "comment",
-                "actor": "songkai111",
-                "text": "感谢您的建议，我们将指定mc2领域的committer来关注该建议",
-                "url": "",
-                "time": "2026-07-09T06:42:21"
-              },
-              {
-                "type": "assign",
-                "actor": "songkai111",
-                "text": "assigned to @wang-minbo",
-                "url": "",
-                "time": "2026-07-09T14:42:30"
-              }
-            ]
-          }
-        ],
-        "state": "新增（待跟踪）"
-      },
-      {
         "prio": "P2",
-        "id": "PP-04",
-        "title": "Bot覆盖缺位与误关闭信号并存",
+        "id": "PP-05",
+        "title": "开放Issue缺乏Bot自动化分流",
         "stage_id": "G",
         "stage_name": "Bot/Agent 治理",
-        "evidence": "OBJ_BOT_GOVERNANCE：均值 36.0，低分 3/5；OBJ_BOT_MISCLOSE_REVERSE：均值 92.0，低分 0/5",
-        "impact": "开放Issue无自动化跟进和标签辅助，关闭Issue可能存在流程风险",
-        "action": "部署自动标签Bot覆盖全部Issue，对开放Issue定期发送跟进提醒",
-        "rec_id": "REC-04",
+        "evidence": "OBJ_BOT_GOVERNANCE：均值 30.0，低分 3/4；OBJ_BOT_MISCLOSE_REVERSE：均值 90.0，低分 0/4",
+        "impact": "社区提交的Issue无法获得自动化初步处理，增加维护者手动分流负担",
+        "action": "配置欢迎Bot自动添加标签模板并@相关维护者",
+        "rec_id": "REC-05",
         "low_score_issues": [
           {
             "number": "222",
@@ -1126,7 +1110,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
             "score": 20,
             "metric_code": "obj-bot-governance",
-            "reason": "Bot错误地将未解决的编包失败问题标记为已解决并自动关闭，缺乏人工确认导致治理失效。",
+            "reason": "Bot仅因关联MR合并便机械关闭issue，未验证用户问题是否真正解决，缺乏有效互动。",
             "evidence": [
               {
                 "type": "comment",
@@ -1171,7 +1155,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/219",
             "score": 20,
             "metric_code": "obj-bot-governance",
-            "reason": "Bot仅执行打标与关闭动作，未留下任何说明性评论告知关闭原因及关联PR，缺乏有效沟通。",
+            "reason": "Bot仅机械执行打标与自动关闭，评论数为零，缺乏实质性互动与有效反馈。",
             "evidence": [
               {
                 "type": "comment",
@@ -1209,7 +1193,7 @@
             "url": "https://gitcode.com/cann/cann-samples/issues/218",
             "score": 20,
             "metric_code": "obj-bot-governance",
-            "reason": "Bot仅机械执行打标与关闭操作，未留下任何说明性评论，导致治理过程缺乏透明度。",
+            "reason": "Bot仅机械执行打标与关闭，评论数为零，未提供任何状态更新或修复说明，缺乏有效沟通。",
             "evidence": [
               {
                 "type": "comment",
@@ -1250,142 +1234,42 @@
           }
         ],
         "state": "新增（待跟踪）"
-      },
-      {
-        "prio": "P2",
-        "id": "PP-05",
-        "title": "标签与指派机制不完善",
-        "stage_id": "I1",
-        "stage_name": "分配与首次响应",
-        "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5",
-        "impact": "Issue无法有效分类和检索，责任归属不明确，增加管理负担",
-        "action": "建立标签分类规范并部署自动打标签Bot，认领时同步设置assignee字段",
-        "rec_id": "REC-05",
-        "low_score_issues": [
-          {
-            "number": "222",
-            "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
-            "url": "https://gitcode.com/cann/cann-samples/issues/222",
-            "score": 0,
-            "metric_code": "obj-first-substantive-response-time",
-            "reason": "首次响应超120小时且全程无实质技术分析，仅打标签后由机器人自动关闭。",
-            "evidence": [
-              {
-                "type": "comment",
-                "actor": "songkai111",
-                "text": "你好，我们将尽快安排同事分析",
-                "url": "",
-                "time": "2026-07-15T08:00:16"
-              },
-              {
-                "type": "label",
-                "actor": "huangkejie1647",
-                "text": "add label bug-report",
-                "url": "",
-                "time": "2026-07-10T15:34:28"
-              },
-              {
-                "type": "label",
-                "actor": "cann-robot",
-                "text": "add label resolved",
-                "url": "",
-                "time": "2026-07-17T16:46:08"
-              },
-              {
-                "type": "close",
-                "actor": "cann-robot",
-                "text": "closed from codehub, Due to close relation issue when mr merged: issue222",
-                "url": "",
-                "time": "2026-07-17T14:52:41"
-              },
-              {
-                "type": "pr",
-                "actor": "",
-                "text": "关联PR #336（merged）",
-                "url": "https://gitcode.com/cann/cann-samples/merge_requests/336",
-                "time": "2026-07-16T14:42:53"
-              }
-            ]
-          },
-          {
-            "number": "221",
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 0,
-            "metric_code": "obj-first-substantive-response-time",
-            "reason": "仅指派了负责人，未提供任何实质性解答或反馈。",
-            "evidence": [
-              {
-                "type": "assign",
-                "actor": "zhangzijie",
-                "text": "assigned to @yangyang016",
-                "url": "",
-                "time": "2026-07-10T11:03:41"
-              }
-            ]
-          },
-          {
-            "number": "220",
-            "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
-            "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 0,
-            "metric_code": "obj-first-substantive-response-time",
-            "reason": "首次响应仅为客套感谢与指派人员，耗时近17小时，且始终未提供任何实质性技术解答。",
-            "evidence": [
-              {
-                "type": "comment",
-                "actor": "songkai111",
-                "text": "感谢您的建议，我们将指定mc2领域的committer来关注该建议",
-                "url": "",
-                "time": "2026-07-09T06:42:21"
-              },
-              {
-                "type": "assign",
-                "actor": "songkai111",
-                "text": "assigned to @wang-minbo",
-                "url": "",
-                "time": "2026-07-09T14:42:30"
-              }
-            ]
-          }
-        ],
-        "state": "新增（待跟踪）"
       }
     ],
     "recs": [
       {
         "id": "REC-01",
-        "title": "关闭阶段缺乏复用与后续路径",
+        "title": "关闭阶段缺乏沉淀与反馈路径",
         "action_title": "规范关闭原因和关闭摘要",
         "prio": "P0",
         "stage_name": "总结与关闭",
         "pp_id": "PP-01",
         "stage_key": "closure",
-        "owner_team": "维护团队",
+        "owner_team": "社区维护团队",
         "owner_candidate": "songkai111",
         "trigger": "Issue关闭前",
-        "action": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
+        "action": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
         "goal": "`OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升",
-        "action_short": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
-        "metric_evidence": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5；OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5",
+        "action_short": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
+        "metric_evidence": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4；OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4",
         "score_basis": [
           {
             "kind": "客观指标",
             "name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-            "score": 9.0,
-            "reason": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5"
+            "score": 11.2,
+            "reason": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4"
           },
           {
             "kind": "客观指标",
             "name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-            "score": 59.0,
-            "reason": "OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5"
+            "score": 66.2,
+            "reason": "OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4"
           },
           {
             "kind": "主观因素",
             "name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-            "score": 49.0,
-            "reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。"
+            "score": 47.5,
+            "reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。"
           }
         ],
         "improvement_basis": [
@@ -1393,127 +1277,63 @@
             "code": "OBJ_CLOSURE_REUSE",
             "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
             "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-            "score": 9.0,
-            "reason": "均值 9.0，低分 5/5",
+            "score": 11.2,
+            "reason": "均值 11.2，低分 4/4",
             "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
           },
           {
             "code": "OBJ_DECISION_TRANSPARENCY",
             "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
             "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-            "score": 59.0,
-            "reason": "均值 59.0，低分 2/5",
+            "score": 66.2,
+            "reason": "均值 66.2，低分 1/4",
             "expected": "补齐关闭原因、关闭评论和结构化总结"
           },
           {
             "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
             "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
             "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-            "score": 49.0,
-            "reason": "关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。",
+            "score": 47.5,
+            "reason": "关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。",
             "expected": "关闭时明确说明后续反馈路径和重新开启条件"
           }
         ],
-        "baseline_score": 47.8,
-        "baseline_value": "总结与关闭阶段分 47.8"
+        "baseline_score": 50.5,
+        "baseline_value": "总结与关闭阶段分 50.5"
       },
       {
         "id": "REC-02",
-        "title": "开放Issue讨论长期停滞无进展",
-        "action_title": "补齐技术讨论并补充解决方案与验证结论",
-        "prio": "P1",
-        "stage_name": "讨论与解决",
-        "pp_id": "PP-02",
-        "stage_key": "discussion_resolution",
-        "owner_team": "社区运营",
-        "owner_candidate": "songkai111",
-        "trigger": "Issue开放超过7天无新评论",
-        "action": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
-        "goal": "`OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升",
-        "action_short": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
-        "metric_evidence": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5；OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5",
-        "score_basis": [
-          {
-            "kind": "客观指标",
-            "name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-            "score": 32.3,
-            "reason": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5"
-          },
-          {
-            "kind": "客观指标",
-            "name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-            "score": 56.0,
-            "reason": "OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5"
-          },
-          {
-            "kind": "主观因素",
-            "name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-            "score": 61.0,
-            "reason": "SUB_DISCUSSION_PROGRESSION：仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。"
-          }
-        ],
-        "improvement_basis": [
-          {
-            "code": "OBJ_RESULT_FORMATION_TIMELINESS",
-            "metric": "`OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效",
-            "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-            "score": 56.0,
-            "reason": "均值 56.0，低分 2/5",
-            "expected": "加快形成明确结果的速度"
-          },
-          {
-            "code": "OBJ_SOLUTION_EVIDENCE",
-            "metric": "`OBJ_SOLUTION_EVIDENCE` 解决证据强度",
-            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-            "score": 32.3,
-            "reason": "均值 32.3，低分 5/5",
-            "expected": "补充修改内容、关联变更和影响范围"
-          },
-          {
-            "code": "SUB_DISCUSSION_PROGRESSION",
-            "metric": "`SUB_DISCUSSION_PROGRESSION` 讨论推进性",
-            "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-            "score": 61.0,
-            "reason": "仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。",
-            "expected": "明确下一步动作、阶段结论和推进记录"
-          }
-        ],
-        "baseline_score": 51.1,
-        "baseline_value": "讨论与解决阶段分 51.1"
-      },
-      {
-        "id": "REC-03",
-        "title": "首次实质性响应严重缺失",
+        "title": "首次响应时间极不稳定",
         "action_title": "提升分流响应",
         "prio": "P1",
         "stage_name": "分配与首次响应",
-        "pp_id": "PP-03",
+        "pp_id": "PP-02",
         "stage_key": "triage",
-        "owner_team": "维护团队",
+        "owner_team": "社区维护团队",
         "owner_candidate": "songkai111",
-        "trigger": "Bug类Issue创建后24小时内",
-        "action": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
+        "trigger": "Issue创建后48小时无响应",
+        "action": "配置自动提醒或升级机制通知维护者",
         "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
-        "action_short": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
-        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5",
+        "action_short": "配置自动提醒或升级机制通知维护者",
+        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
         "score_basis": [
           {
             "kind": "客观指标",
             "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5"
+            "score": 50.0,
+            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4"
           },
           {
             "kind": "客观指标",
             "name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5"
+            "score": 70.0,
+            "reason": "OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4"
           },
           {
             "kind": "主观因素",
-            "name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
-            "score": 75.4,
-            "reason": "SUB_ROUTING_CORRECTNESS：bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。"
+            "name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 72.0,
+            "reason": "SUB_OWNER_CLARITY：songkai111实际承接并提交MR，但无正式assignee指派，责任归属…"
           }
         ],
         "improvement_basis": [
@@ -1521,63 +1341,191 @@
             "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
             "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
             "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "均值 40.0，低分 3/5",
+            "score": 50.0,
+            "reason": "均值 50.0，低分 2/4",
             "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
           },
           {
             "code": "OBJ_RESPONSE_SPEED",
             "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
             "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "均值 76.0，低分 1/5",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
             "expected": "缩短首次响应时间，提高 7 天响应率"
           },
           {
             "code": "SUB_OWNER_CLARITY",
             "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
             "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
-            "score": 76.8,
-            "reason": "无assignee分配，但songkai111实际承担处理并创建MR，责任隐含…",
+            "score": 72.0,
+            "reason": "songkai111实际承接并提交MR，但无正式assignee指派，责任归属…",
             "expected": "明确责任人、候选负责人和下一步动作"
           }
         ],
-        "baseline_score": 65.2,
-        "baseline_value": "分配与首次响应阶段分 65.2"
+        "baseline_score": 65.4,
+        "baseline_value": "分配与首次响应阶段分 65.4"
+      },
+      {
+        "id": "REC-03",
+        "title": "标签与指派覆盖率不足",
+        "action_title": "提升分流响应",
+        "prio": "P1",
+        "stage_name": "分配与首次响应",
+        "pp_id": "PP-03",
+        "stage_key": "triage",
+        "owner_team": "社区维护团队",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue创建后",
+        "action": "配置标签自动打标规则和assignee自动分配策略",
+        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
+        "action_short": "配置标签自动打标规则和assignee自动分配策略",
+        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 50.0,
+            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 70.0,
+            "reason": "OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 72.0,
+            "reason": "SUB_OWNER_CLARITY：songkai111实际承接并提交MR，但无正式assignee指派，责任归属…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+            "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
+            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 50.0,
+            "reason": "均值 50.0，低分 2/4",
+            "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
+          },
+          {
+            "code": "OBJ_RESPONSE_SPEED",
+            "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
+            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
+            "expected": "缩短首次响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 72.0,
+            "reason": "songkai111实际承接并提交MR，但无正式assignee指派，责任归属…",
+            "expected": "明确责任人、候选负责人和下一步动作"
+          }
+        ],
+        "baseline_score": 65.4,
+        "baseline_value": "分配与首次响应阶段分 65.4"
       },
       {
         "id": "REC-04",
-        "title": "Bot覆盖缺位与误关闭信号并存",
+        "title": "讨论深度不足且存在停滞",
+        "action_title": "补齐技术讨论并补充解决方案与验证结论",
+        "prio": "P1",
+        "stage_name": "讨论与解决",
+        "pp_id": "PP-04",
+        "stage_key": "discussion_resolution",
+        "owner_team": "Issue assignee",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue认领后7天无更新",
+        "action": "发布进展更新或下一步计划",
+        "goal": "`OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升",
+        "action_short": "发布进展更新或下一步计划",
+        "metric_evidence": "OBJ_SOLUTION_EVIDENCE：均值 40.4，低分 4/4；OBJ_RESULT_FORMATION_TIMELINESS：均值 70.0，低分 1/4",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
+            "score": 40.4,
+            "reason": "OBJ_SOLUTION_EVIDENCE：均值 40.4，低分 4/4"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+            "score": 70.0,
+            "reason": "OBJ_RESULT_FORMATION_TIMELINESS：均值 70.0，低分 1/4"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
+            "score": 66.2,
+            "reason": "SUB_DISCUSSION_PROGRESSION：仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_RESULT_FORMATION_TIMELINESS",
+            "metric": "`OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效",
+            "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
+            "expected": "加快形成明确结果的速度"
+          },
+          {
+            "code": "OBJ_SOLUTION_EVIDENCE",
+            "metric": "`OBJ_SOLUTION_EVIDENCE` 解决证据强度",
+            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
+            "score": 40.4,
+            "reason": "均值 40.4，低分 4/4",
+            "expected": "补充修改内容、关联变更和影响范围"
+          },
+          {
+            "code": "SUB_DISCUSSION_PROGRESSION",
+            "metric": "`SUB_DISCUSSION_PROGRESSION` 讨论推进性",
+            "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
+            "score": 66.2,
+            "reason": "仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。",
+            "expected": "明确下一步动作、阶段结论和推进记录"
+          }
+        ],
+        "baseline_score": 59.9,
+        "baseline_value": "讨论与解决阶段分 59.9"
+      },
+      {
+        "id": "REC-05",
+        "title": "开放Issue缺乏Bot自动化分流",
         "action_title": "提升 Bot 治理覆盖",
         "prio": "P2",
         "stage_name": "Bot/Agent 治理",
-        "pp_id": "PP-04",
+        "pp_id": "PP-05",
         "stage_key": "bot-agent",
-        "owner_team": "平台治理",
+        "owner_team": "社区运维",
         "owner_candidate": "songkai111",
-        "trigger": "所有Issue创建后",
-        "action": "部署自动标签Bot覆盖全部Issue，对开放Issue定期发送跟进提醒",
+        "trigger": "Issue创建后",
+        "action": "配置欢迎Bot自动添加标签模板并@相关维护者",
         "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升",
-        "action_short": "部署自动标签Bot覆盖全部Issue，对开放Issue定期发送跟进提醒",
-        "metric_evidence": "OBJ_BOT_GOVERNANCE：均值 36.0，低分 3/5；OBJ_BOT_MISCLOSE_REVERSE：均值 92.0，低分 0/5",
+        "action_short": "配置欢迎Bot自动添加标签模板并@相关维护者",
+        "metric_evidence": "OBJ_BOT_GOVERNANCE：均值 30.0，低分 3/4；OBJ_BOT_MISCLOSE_REVERSE：均值 90.0，低分 0/4",
         "score_basis": [
           {
             "kind": "客观指标",
             "name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-            "score": 36.0,
-            "reason": "OBJ_BOT_GOVERNANCE：均值 36.0，低分 3/5"
+            "score": 30.0,
+            "reason": "OBJ_BOT_GOVERNANCE：均值 30.0，低分 3/4"
           },
           {
             "kind": "客观指标",
             "name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-            "score": 92.0,
-            "reason": "OBJ_BOT_MISCLOSE_REVERSE：均值 92.0，低分 0/5"
+            "score": 90.0,
+            "reason": "OBJ_BOT_MISCLOSE_REVERSE：均值 90.0，低分 0/4"
           },
           {
             "kind": "主观因素",
             "name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
-            "score": 63.4,
-            "reason": "SUB_BOT_HELPFULNESS：Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向…"
+            "score": 67.5,
+            "reason": "SUB_BOT_HELPFULNESS：bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。"
           }
         ],
         "improvement_basis": [
@@ -1585,129 +1533,65 @@
             "code": "OBJ_BOT_GOVERNANCE",
             "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
             "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-            "score": 36.0,
-            "reason": "均值 36.0，低分 3/5",
+            "score": 30.0,
+            "reason": "均值 30.0，低分 3/4",
             "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
           },
           {
             "code": "OBJ_BOT_MISCLOSE_REVERSE",
             "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
             "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-            "score": 92.0,
-            "reason": "均值 92.0，低分 0/5",
+            "score": 90.0,
+            "reason": "均值 90.0，低分 0/4",
             "expected": "减少 Bot 误关、错关和状态矛盾"
           },
           {
             "code": "SUB_BOT_HANDOFF_QUALITY",
             "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
             "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
-            "score": 72.6,
-            "reason": "Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。",
+            "score": 72.5,
+            "reason": "人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。",
             "expected": "改善 Bot 到人工处理的交接质量"
           }
         ],
-        "baseline_score": 65.2,
-        "baseline_value": "Bot/Agent 治理阶段分 65.2"
-      },
-      {
-        "id": "REC-05",
-        "title": "标签与指派机制不完善",
-        "action_title": "提升分流响应",
-        "prio": "P2",
-        "stage_name": "分配与首次响应",
-        "pp_id": "PP-05",
-        "stage_key": "triage",
-        "owner_team": "维护团队",
-        "owner_candidate": "songkai111",
-        "trigger": "Issue创建后",
-        "action": "建立标签分类规范并部署自动打标签Bot，认领时同步设置assignee字段",
-        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
-        "action_short": "建立标签分类规范并部署自动打标签Bot，认领时同步设置assignee字段",
-        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5",
-        "score_basis": [
-          {
-            "kind": "客观指标",
-            "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5"
-          },
-          {
-            "kind": "客观指标",
-            "name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5"
-          },
-          {
-            "kind": "主观因素",
-            "name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
-            "score": 75.4,
-            "reason": "SUB_ROUTING_CORRECTNESS：bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。"
-          }
-        ],
-        "improvement_basis": [
-          {
-            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
-            "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
-            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "均值 40.0，低分 3/5",
-            "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
-          },
-          {
-            "code": "OBJ_RESPONSE_SPEED",
-            "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
-            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "均值 76.0，低分 1/5",
-            "expected": "缩短首次响应时间，提高 7 天响应率"
-          },
-          {
-            "code": "SUB_OWNER_CLARITY",
-            "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
-            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
-            "score": 76.8,
-            "reason": "无assignee分配，但songkai111实际承担处理并创建MR，责任隐含…",
-            "expected": "明确责任人、候选负责人和下一步动作"
-          }
-        ],
-        "baseline_score": 65.2,
-        "baseline_value": "分配与首次响应阶段分 65.2"
+        "baseline_score": 64.0,
+        "baseline_value": "Bot/Agent 治理阶段分 64.0"
       }
     ],
     "top_recs": [
       {
         "id": "REC-01",
-        "title": "关闭阶段缺乏复用与后续路径",
+        "title": "关闭阶段缺乏沉淀与反馈路径",
         "action_title": "规范关闭原因和关闭摘要",
         "prio": "P0",
         "stage_name": "总结与关闭",
         "pp_id": "PP-01",
         "stage_key": "closure",
-        "owner_team": "维护团队",
+        "owner_team": "社区维护团队",
         "owner_candidate": "songkai111",
         "trigger": "Issue关闭前",
-        "action": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
+        "action": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
         "goal": "`OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升",
-        "action_short": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
-        "metric_evidence": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5；OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5",
+        "action_short": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
+        "metric_evidence": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4；OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4",
         "score_basis": [
           {
             "kind": "客观指标",
             "name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-            "score": 9.0,
-            "reason": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5"
+            "score": 11.2,
+            "reason": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4"
           },
           {
             "kind": "客观指标",
             "name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-            "score": 59.0,
-            "reason": "OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5"
+            "score": 66.2,
+            "reason": "OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4"
           },
           {
             "kind": "主观因素",
             "name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-            "score": 49.0,
-            "reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。"
+            "score": 47.5,
+            "reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。"
           }
         ],
         "improvement_basis": [
@@ -1715,127 +1599,63 @@
             "code": "OBJ_CLOSURE_REUSE",
             "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
             "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-            "score": 9.0,
-            "reason": "均值 9.0，低分 5/5",
+            "score": 11.2,
+            "reason": "均值 11.2，低分 4/4",
             "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
           },
           {
             "code": "OBJ_DECISION_TRANSPARENCY",
             "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
             "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-            "score": 59.0,
-            "reason": "均值 59.0，低分 2/5",
+            "score": 66.2,
+            "reason": "均值 66.2，低分 1/4",
             "expected": "补齐关闭原因、关闭评论和结构化总结"
           },
           {
             "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
             "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
             "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-            "score": 49.0,
-            "reason": "关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。",
+            "score": 47.5,
+            "reason": "关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。",
             "expected": "关闭时明确说明后续反馈路径和重新开启条件"
           }
         ],
-        "baseline_score": 47.8,
-        "baseline_value": "总结与关闭阶段分 47.8"
+        "baseline_score": 50.5,
+        "baseline_value": "总结与关闭阶段分 50.5"
       },
       {
         "id": "REC-02",
-        "title": "开放Issue讨论长期停滞无进展",
-        "action_title": "补齐技术讨论并补充解决方案与验证结论",
-        "prio": "P1",
-        "stage_name": "讨论与解决",
-        "pp_id": "PP-02",
-        "stage_key": "discussion_resolution",
-        "owner_team": "社区运营",
-        "owner_candidate": "songkai111",
-        "trigger": "Issue开放超过7天无新评论",
-        "action": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
-        "goal": "`OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升",
-        "action_short": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
-        "metric_evidence": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5；OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5",
-        "score_basis": [
-          {
-            "kind": "客观指标",
-            "name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-            "score": 32.3,
-            "reason": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5"
-          },
-          {
-            "kind": "客观指标",
-            "name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-            "score": 56.0,
-            "reason": "OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5"
-          },
-          {
-            "kind": "主观因素",
-            "name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-            "score": 61.0,
-            "reason": "SUB_DISCUSSION_PROGRESSION：仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。"
-          }
-        ],
-        "improvement_basis": [
-          {
-            "code": "OBJ_RESULT_FORMATION_TIMELINESS",
-            "metric": "`OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效",
-            "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-            "score": 56.0,
-            "reason": "均值 56.0，低分 2/5",
-            "expected": "加快形成明确结果的速度"
-          },
-          {
-            "code": "OBJ_SOLUTION_EVIDENCE",
-            "metric": "`OBJ_SOLUTION_EVIDENCE` 解决证据强度",
-            "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-            "score": 32.3,
-            "reason": "均值 32.3，低分 5/5",
-            "expected": "补充修改内容、关联变更和影响范围"
-          },
-          {
-            "code": "SUB_DISCUSSION_PROGRESSION",
-            "metric": "`SUB_DISCUSSION_PROGRESSION` 讨论推进性",
-            "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-            "score": 61.0,
-            "reason": "仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。",
-            "expected": "明确下一步动作、阶段结论和推进记录"
-          }
-        ],
-        "baseline_score": 51.1,
-        "baseline_value": "讨论与解决阶段分 51.1"
-      },
-      {
-        "id": "REC-03",
-        "title": "首次实质性响应严重缺失",
+        "title": "首次响应时间极不稳定",
         "action_title": "提升分流响应",
         "prio": "P1",
         "stage_name": "分配与首次响应",
-        "pp_id": "PP-03",
+        "pp_id": "PP-02",
         "stage_key": "triage",
-        "owner_team": "维护团队",
+        "owner_team": "社区维护团队",
         "owner_candidate": "songkai111",
-        "trigger": "Bug类Issue创建后24小时内",
-        "action": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
+        "trigger": "Issue创建后48小时无响应",
+        "action": "配置自动提醒或升级机制通知维护者",
         "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
-        "action_short": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
-        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5",
+        "action_short": "配置自动提醒或升级机制通知维护者",
+        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
         "score_basis": [
           {
             "kind": "客观指标",
             "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5"
+            "score": 50.0,
+            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4"
           },
           {
             "kind": "客观指标",
             "name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5"
+            "score": 70.0,
+            "reason": "OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4"
           },
           {
             "kind": "主观因素",
-            "name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
-            "score": 75.4,
-            "reason": "SUB_ROUTING_CORRECTNESS：bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。"
+            "name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 72.0,
+            "reason": "SUB_OWNER_CLARITY：songkai111实际承接并提交MR，但无正式assignee指派，责任归属…"
           }
         ],
         "improvement_basis": [
@@ -1843,29 +1663,93 @@
             "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
             "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
             "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "均值 40.0，低分 3/5",
+            "score": 50.0,
+            "reason": "均值 50.0，低分 2/4",
             "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
           },
           {
             "code": "OBJ_RESPONSE_SPEED",
             "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
             "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "均值 76.0，低分 1/5",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
             "expected": "缩短首次响应时间，提高 7 天响应率"
           },
           {
             "code": "SUB_OWNER_CLARITY",
             "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
             "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
-            "score": 76.8,
-            "reason": "无assignee分配，但songkai111实际承担处理并创建MR，责任隐含…",
+            "score": 72.0,
+            "reason": "songkai111实际承接并提交MR，但无正式assignee指派，责任归属…",
             "expected": "明确责任人、候选负责人和下一步动作"
           }
         ],
-        "baseline_score": 65.2,
-        "baseline_value": "分配与首次响应阶段分 65.2"
+        "baseline_score": 65.4,
+        "baseline_value": "分配与首次响应阶段分 65.4"
+      },
+      {
+        "id": "REC-03",
+        "title": "标签与指派覆盖率不足",
+        "action_title": "提升分流响应",
+        "prio": "P1",
+        "stage_name": "分配与首次响应",
+        "pp_id": "PP-03",
+        "stage_key": "triage",
+        "owner_team": "社区维护团队",
+        "owner_candidate": "songkai111",
+        "trigger": "Issue创建后",
+        "action": "配置标签自动打标规则和assignee自动分配策略",
+        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
+        "action_short": "配置标签自动打标规则和assignee自动分配策略",
+        "metric_evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
+        "score_basis": [
+          {
+            "kind": "客观指标",
+            "name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 50.0,
+            "reason": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4"
+          },
+          {
+            "kind": "客观指标",
+            "name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 70.0,
+            "reason": "OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4"
+          },
+          {
+            "kind": "主观因素",
+            "name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 72.0,
+            "reason": "SUB_OWNER_CLARITY：songkai111实际承接并提交MR，但无正式assignee指派，责任归属…"
+          }
+        ],
+        "improvement_basis": [
+          {
+            "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
+            "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
+            "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
+            "score": 50.0,
+            "reason": "均值 50.0，低分 2/4",
+            "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
+          },
+          {
+            "code": "OBJ_RESPONSE_SPEED",
+            "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
+            "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
+            "expected": "缩短首次响应时间，提高 7 天响应率"
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "score": 72.0,
+            "reason": "songkai111实际承接并提交MR，但无正式assignee指派，责任归属…",
+            "expected": "明确责任人、候选负责人和下一步动作"
+          }
+        ],
+        "baseline_score": 65.4,
+        "baseline_value": "分配与首次响应阶段分 65.4"
       }
     ],
     "ref_metrics": [
@@ -1913,14 +1797,16 @@
         "icon": "📝",
         "is_lens": false,
         "weight": 0.15,
-        "mixed": 90.4,
+        "mixed": 89.2,
         "obj": 0.0,
-        "subj": 90.4,
-        "stars": "★★★★★",
-        "grade": "A",
+        "subj": 89.2,
+        "stars": "★★★★☆",
+        "grade": "B",
         "flag_emoji": "🟢",
         "pain_count": 0,
         "pain_pct": 0.0,
+        "n_sample": 5,
+        "no_sample": false,
         "delta": "首期基线",
         "incomparable": false,
         "confidence": "低",
@@ -1928,13 +1814,13 @@
           "code": "SUB_AGENT_NOISE_RISK",
           "name_cn": "AI噪音风险",
           "display_name": "SUB_AGENT_NOISE_RISK（AI噪音风险）",
-          "value": 93.0
+          "value": 93.6
         },
         "worst_metric": {
           "code": "SUB_INPUT_QUALITY",
           "name_cn": "输入质量",
           "display_name": "SUB_INPUT_QUALITY（输入质量）",
-          "value": 87.8
+          "value": 84.8
         },
         "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:0 ｜ ≥80:5",
         "metrics_obj": [],
@@ -1944,28 +1830,28 @@
             "key": "sub-input-quality",
             "name_cn": "输入质量",
             "display_name": "SUB_INPUT_QUALITY（输入质量）",
-            "mean": 87.8,
-            "median": 88.0,
+            "mean": 84.8,
+            "median": 85.0,
             "cover": 5,
-            "main_reason": "SUB_INPUT_QUALITY：包含完整复现步骤、环境信息、错误截图、预期结果和结构化章节，信息充分。",
+            "main_reason": "SUB_INPUT_QUALITY：包含问题描述、环境信息、复现步骤、预期结果及截图，结构化完整。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 88.0
+                "score": 85.0
               },
               {
                 "issue_number": "221",
                 "title": "cann-samples Development Roadmap (2026 Q3)",
                 "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 88.0
+                "score": 82.0
               },
               {
                 "issue_number": "220",
                 "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
                 "url": "https://gitcode.com/cann/cann-samples/issues/220",
-                "score": 78.0
+                "score": 72.0
               },
               {
                 "issue_number": "219",
@@ -1980,23 +1866,23 @@
                 "score": 90.0
               }
             ],
-            "_mean": 87.8
+            "_mean": 84.8
           },
           {
             "code": "SUB_AGENT_NOISE_RISK",
             "key": "sub-agent-noise-risk",
             "name_cn": "AI噪音风险",
             "display_name": "SUB_AGENT_NOISE_RISK（AI噪音风险）",
-            "mean": 93.0,
+            "mean": 93.6,
             "median": 95.0,
             "cover": 5,
-            "main_reason": "SUB_AGENT_NOISE_RISK：真实用户反馈，含具体环境与复现命令，无AI幻觉或噪音迹象。",
+            "main_reason": "SUB_AGENT_NOISE_RISK：内容为真实用户编包失败反馈，有具体命令和报错截图，无AI幻觉迹象。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 92.0
+                "score": 95.0
               },
               {
                 "issue_number": "221",
@@ -2023,35 +1909,35 @@
                 "score": 95.0
               }
             ],
-            "_mean": 93.0
+            "_mean": 93.6
           }
         ],
         "low_issues": [],
-        "root_cause": "无明显痛点，Issue创建质量高，结构化模板使用规范",
+        "root_cause": "Issue创建质量高，输入结构完整，无显著痛点",
         "is_short_board": false,
         "pain": null,
         "pain_title": "",
         "judgment": "相对可控",
-        "core_problem": "无明显痛点，Issue创建质量高，结构化模板使用规范",
+        "core_problem": "Issue创建质量高，输入结构完整，无显著痛点",
         "brief_metrics": [
           {
             "code": "SUB_AGENT_NOISE_RISK",
             "metric": "`SUB_AGENT_NOISE_RISK` AI噪音风险",
             "display_name": "SUB_AGENT_NOISE_RISK（AI噪音风险）",
-            "score": 93.0,
-            "reason": "真实用户反馈，含具体环境与复现命令，无AI幻觉或噪音迹象。",
+            "score": 93.6,
+            "reason": "内容为真实用户编包失败反馈，有具体命令和报错截图，无AI幻觉迹象。",
             "expected": "减少AI生成的低质量和幻觉内容"
           },
           {
             "code": "SUB_INPUT_QUALITY",
             "metric": "`SUB_INPUT_QUALITY` 输入质量",
             "display_name": "SUB_INPUT_QUALITY（输入质量）",
-            "score": 87.8,
-            "reason": "包含完整复现步骤、环境信息、错误截图、预期结果和结构化章节，信息充分。",
+            "score": 84.8,
+            "reason": "包含问题描述、环境信息、复现步骤、预期结果及截图，结构化完整。",
             "expected": "补齐复现步骤、环境信息、日志代码和预期对比"
           }
         ],
-        "intro": "整体相对可控，但仍需关注：无明显痛点，Issue创建质量高，结构化模板使用规范。"
+        "intro": "整体相对可控，但仍需关注：Issue创建质量高，输入结构完整，无显著痛点。"
       },
       {
         "id": "I1",
@@ -2059,41 +1945,43 @@
         "icon": "🏷️",
         "is_lens": false,
         "weight": 0.2,
-        "mixed": 65.2,
-        "obj": 58.0,
-        "subj": 76.1,
+        "mixed": 65.4,
+        "obj": 60.0,
+        "subj": 73.5,
         "stars": "★★★☆☆",
         "grade": "C",
         "flag_emoji": "🟢",
         "pain_count": 2,
-        "pain_pct": 40.0,
+        "pain_pct": 50.0,
+        "n_sample": 4,
+        "no_sample": false,
         "delta": "首期基线",
         "incomparable": false,
         "confidence": "低",
         "best_metric": {
-          "code": "SUB_OWNER_CLARITY",
-          "name_cn": "责任归属清晰度",
-          "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
-          "value": 76.8
+          "code": "SUB_ROUTING_CORRECTNESS",
+          "name_cn": "分流正确性",
+          "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
+          "value": 75.0
         },
         "worst_metric": {
           "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
           "name_cn": "首次实质回应时效",
           "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-          "value": 40.0
+          "value": 50.0
         },
-        "distribution": "<40:1 ｜ 40-60:1 ｜ 60-80:2 ｜ ≥80:1",
+        "distribution": "<40:0 ｜ 40-60:2 ｜ 60-80:1 ｜ ≥80:1",
         "metrics_obj": [
           {
             "code": "OBJ_RESPONSE_SPEED",
             "key": "obj-response-speed",
             "name_cn": "响应速度",
             "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "mean": 76.0,
-            "median": 80.0,
+            "mean": 70.0,
+            "median": 70.0,
             "flag": "🟢",
-            "cover": 5,
-            "evidence": "OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5",
+            "cover": 4,
+            "evidence": "OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4",
             "issues": [
               {
                 "issue_number": "222",
@@ -2102,12 +1990,6 @@
                 "score": 40.0
               },
               {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 100.0
-              },
-              {
                 "issue_number": "220",
                 "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
                 "url": "https://gitcode.com/cann/cann-samples/issues/220",
@@ -2126,29 +2008,23 @@
                 "score": 100.0
               }
             ],
-            "_mean": 76.0
+            "_mean": 70.0
           },
           {
             "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
             "key": "obj-first-substantive-response-time",
             "name_cn": "首次实质回应时效",
             "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "mean": 40.0,
-            "median": 0.0,
+            "mean": 50.0,
+            "median": 50.0,
             "flag": "🟡",
-            "cover": 5,
-            "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5",
+            "cover": 4,
+            "evidence": "OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 0.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
                 "score": 0.0
               },
               {
@@ -2170,7 +2046,7 @@
                 "score": 100.0
               }
             ],
-            "_mean": 40.0
+            "_mean": 50.0
           }
         ],
         "metrics_sub": [
@@ -2179,10 +2055,47 @@
             "key": "sub-triage-routing-correctness",
             "name_cn": "分流正确性",
             "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
-            "mean": 75.4,
-            "median": 75.0,
-            "cover": 5,
-            "main_reason": "SUB_ROUTING_CORRECTNESS：bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。",
+            "mean": 75.0,
+            "median": 77.5,
+            "cover": 4,
+            "main_reason": "SUB_ROUTING_CORRECTNESS：bug-report标签正确，songkai111接手并创建修复MR，分流路径…",
+            "issues": [
+              {
+                "issue_number": "222",
+                "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+                "url": "https://gitcode.com/cann/cann-samples/issues/222",
+                "score": 80.0
+              },
+              {
+                "issue_number": "220",
+                "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+                "url": "https://gitcode.com/cann/cann-samples/issues/220",
+                "score": 65.0
+              },
+              {
+                "issue_number": "219",
+                "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+                "url": "https://gitcode.com/cann/cann-samples/issues/219",
+                "score": 75.0
+              },
+              {
+                "issue_number": "218",
+                "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
+                "url": "https://gitcode.com/cann/cann-samples/issues/218",
+                "score": 80.0
+              }
+            ],
+            "_mean": 75.0
+          },
+          {
+            "code": "SUB_OWNER_CLARITY",
+            "key": "sub-triage-owner-clarity",
+            "name_cn": "责任归属清晰度",
+            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
+            "mean": 72.0,
+            "median": 72.5,
+            "cover": 4,
+            "main_reason": "SUB_OWNER_CLARITY：songkai111实际承接并提交MR，但无正式assignee指派，责任归属…",
             "issues": [
               {
                 "issue_number": "222",
@@ -2191,65 +2104,16 @@
                 "score": 65.0
               },
               {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 75.0
-              },
-              {
                 "issue_number": "220",
                 "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
                 "url": "https://gitcode.com/cann/cann-samples/issues/220",
-                "score": 72.0
+                "score": 78.0
               },
               {
                 "issue_number": "219",
                 "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
                 "url": "https://gitcode.com/cann/cann-samples/issues/219",
-                "score": 80.0
-              },
-              {
-                "issue_number": "218",
-                "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
-                "url": "https://gitcode.com/cann/cann-samples/issues/218",
-                "score": 85.0
-              }
-            ],
-            "_mean": 75.4
-          },
-          {
-            "code": "SUB_OWNER_CLARITY",
-            "key": "sub-triage-owner-clarity",
-            "name_cn": "责任归属清晰度",
-            "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
-            "mean": 76.8,
-            "median": 75.0,
-            "cover": 5,
-            "main_reason": "SUB_OWNER_CLARITY：无assignee分配，但songkai111实际承担处理并创建MR，责任隐含…",
-            "issues": [
-              {
-                "issue_number": "222",
-                "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
-                "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 60.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 92.0
-              },
-              {
-                "issue_number": "220",
-                "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
-                "url": "https://gitcode.com/cann/cann-samples/issues/220",
-                "score": 82.0
-              },
-              {
-                "issue_number": "219",
-                "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
-                "url": "https://gitcode.com/cann/cann-samples/issues/219",
-                "score": 75.0
+                "score": 70.0
               },
               {
                 "issue_number": "218",
@@ -2258,69 +2122,69 @@
                 "score": 75.0
               }
             ],
-            "_mean": 76.8
+            "_mean": 72.0
           }
         ],
         "low_issues": [
           {
             "no": "#222",
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
-            "score": 37,
+            "score": 41,
             "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
             "desc": ""
           },
           {
             "no": "#220",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 55,
+            "score": 53,
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "desc": ""
           }
         ],
-        "root_cause": "缺乏首次实质性响应SLA机制和自动分流，维护者响应不及时",
+        "root_cause": "缺乏响应时效SLA和自动升级机制，维护者响应依赖个人主动性",
         "is_short_board": false,
         "pain": {
           "prio": "P1",
-          "id": "PP-03"
+          "id": "PP-02"
         },
-        "pain_title": "首次实质性响应严重缺失",
+        "pain_title": "首次响应时间极不稳定",
         "judgment": "相对可控",
-        "core_problem": "首次实质性响应严重缺失",
+        "core_problem": "首次响应时间极不稳定",
         "brief_metrics": [
           {
             "code": "OBJ_FIRST_SUBSTANTIVE_RESPONSE",
             "metric": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效",
             "display_name": "OBJ_FIRST_SUBSTANTIVE_RESPONSE（首次实质回应时效）",
-            "score": 40.0,
-            "reason": "均值 40.0，低分 3/5",
+            "score": 50.0,
+            "reason": "均值 50.0，低分 2/4",
             "expected": "缩短首次实质回应时间，不只是'有人回复'而是'有实质内容'"
           },
           {
             "code": "OBJ_RESPONSE_SPEED",
             "metric": "`OBJ_RESPONSE_SPEED` 响应速度",
             "display_name": "OBJ_RESPONSE_SPEED（响应速度）",
-            "score": 76.0,
-            "reason": "均值 76.0，低分 1/5",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
             "expected": "缩短首次响应时间，提高 7 天响应率"
           },
           {
             "code": "SUB_OWNER_CLARITY",
             "metric": "`SUB_OWNER_CLARITY` 责任归属清晰度",
             "display_name": "SUB_OWNER_CLARITY（责任归属清晰度）",
-            "score": 76.8,
-            "reason": "无assignee分配，但songkai111实际承担处理并创建MR，责任隐含…",
+            "score": 72.0,
+            "reason": "songkai111实际承接并提交MR，但无正式assignee指派，责任归属…",
             "expected": "明确责任人、候选负责人和下一步动作"
           },
           {
             "code": "SUB_ROUTING_CORRECTNESS",
             "metric": "`SUB_ROUTING_CORRECTNESS` 分流正确性",
             "display_name": "SUB_ROUTING_CORRECTNESS（分流正确性）",
-            "score": 75.4,
-            "reason": "bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。",
+            "score": 75.0,
+            "reason": "bug-report标签正确，songkai111接手并创建修复MR，分流路径…",
             "expected": "让 Issue 进入正确处理路径"
           }
         ],
-        "intro": "整体相对可控，但仍需关注：首次实质性响应严重缺失。"
+        "intro": "整体相对可控，但仍需关注：首次响应时间极不稳定。"
       },
       {
         "id": "I2",
@@ -2328,53 +2192,49 @@
         "icon": "💬",
         "is_lens": false,
         "weight": 0.25,
-        "mixed": 51.1,
-        "obj": 44.1,
-        "subj": 61.5,
+        "mixed": 59.9,
+        "obj": 55.2,
+        "subj": 66.9,
         "stars": "★★★☆☆",
         "grade": "D",
         "flag_emoji": "🟡",
-        "pain_count": 2,
-        "pain_pct": 40.0,
+        "pain_count": 1,
+        "pain_pct": 25.0,
+        "n_sample": 4,
+        "no_sample": false,
         "delta": "首期基线",
         "incomparable": false,
         "confidence": "低",
         "best_metric": {
-          "code": "SUB_USER_GOAL_RESULT",
-          "name_cn": "用户目标处理结果",
-          "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
-          "value": 62.0
+          "code": "OBJ_RESULT_FORMATION_TIMELINESS",
+          "name_cn": "形成结果时效",
+          "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
+          "value": 70.0
         },
         "worst_metric": {
           "code": "OBJ_SOLUTION_EVIDENCE",
           "name_cn": "解决证据强度",
           "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-          "value": 32.3
+          "value": 40.4
         },
-        "distribution": "<40:2 ｜ 40-60:0 ｜ 60-80:3 ｜ ≥80:0",
+        "distribution": "<40:1 ｜ 40-60:0 ｜ 60-80:3 ｜ ≥80:0",
         "metrics_obj": [
           {
             "code": "OBJ_SOLUTION_EVIDENCE",
             "key": "obj-solution-evidence",
             "name_cn": "解决证据强度",
             "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-            "mean": 32.3,
+            "mean": 40.4,
             "median": 38.5,
-            "flag": "🔴",
-            "cover": 5,
-            "evidence": "OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5",
+            "flag": "🟡",
+            "cover": 4,
+            "evidence": "OBJ_SOLUTION_EVIDENCE：均值 40.4，低分 4/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
                 "score": 38.46153846153847
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 0.0
               },
               {
                 "issue_number": "220",
@@ -2395,30 +2255,24 @@
                 "score": 38.46153846153847
               }
             ],
-            "_mean": 32.30769230769231
+            "_mean": 40.38461538461539
           },
           {
             "code": "OBJ_RESULT_FORMATION_TIMELINESS",
             "key": "obj-result-formation-timeliness",
             "name_cn": "形成结果时效",
             "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-            "mean": 56.0,
-            "median": 80.0,
-            "flag": "🟡",
-            "cover": 5,
-            "evidence": "OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5",
+            "mean": 70.0,
+            "median": 90.0,
+            "flag": "🟢",
+            "cover": 4,
+            "evidence": "OBJ_RESULT_FORMATION_TIMELINESS：均值 70.0，低分 1/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
                 "score": 80.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 0.0
               },
               {
                 "issue_number": "220",
@@ -2439,7 +2293,7 @@
                 "score": 100.0
               }
             ],
-            "_mean": 56.0
+            "_mean": 70.0
           }
         ],
         "metrics_sub": [
@@ -2448,22 +2302,16 @@
             "key": "sub-discussion-progression",
             "name_cn": "讨论推进性",
             "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-            "mean": 61.0,
-            "median": 55.0,
-            "cover": 5,
-            "main_reason": "SUB_DISCUSSION_PROGRESSION：仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。",
+            "mean": 66.2,
+            "median": 70.0,
+            "cover": 4,
+            "main_reason": "SUB_DISCUSSION_PROGRESSION：仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 55.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 45.0
+                "score": 60.0
               },
               {
                 "issue_number": "220",
@@ -2484,112 +2332,99 @@
                 "score": 90.0
               }
             ],
-            "_mean": 61.0
+            "_mean": 66.25
           },
           {
             "code": "SUB_USER_GOAL_RESULT",
             "key": "sub-user-goal-result",
             "name_cn": "用户目标处理结果",
             "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
-            "mean": 62.0,
-            "median": 75.0,
-            "cover": 5,
-            "main_reason": "SUB_USER_GOAL_RESULT：MR#336实际修复了头文件引用问题并已合并，用户目标得到满足。",
+            "mean": 67.5,
+            "median": 82.5,
+            "cover": 4,
+            "main_reason": "SUB_USER_GOAL_RESULT：MR#336移除内部头文件引用修复编译问题并已合并，用户目标得到有效满足。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 80.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 35.0
+                "score": 85.0
               },
               {
                 "issue_number": "220",
                 "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
                 "url": "https://gitcode.com/cann/cann-samples/issues/220",
-                "score": 25.0
+                "score": 20.0
               },
               {
                 "issue_number": "219",
                 "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
                 "url": "https://gitcode.com/cann/cann-samples/issues/219",
-                "score": 75.0
+                "score": 80.0
               },
               {
                 "issue_number": "218",
                 "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
                 "url": "https://gitcode.com/cann/cann-samples/issues/218",
-                "score": 95.0
+                "score": 85.0
               }
             ],
-            "_mean": 62.0
+            "_mean": 67.5
           }
         ],
         "low_issues": [
           {
-            "no": "#221",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 16,
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "desc": ""
-          },
-          {
             "no": "#220",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 21,
+            "score": 20,
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "desc": ""
           }
         ],
-        "root_cause": "缺乏讨论推进机制和定期跟进流程，开放Issue无自动提醒和进度追踪",
+        "root_cause": "维护者初步认领后缺乏跟进节奏管理，无讨论推进的SLA和提醒机制",
         "is_short_board": true,
         "pain": {
           "prio": "P1",
-          "id": "PP-02"
+          "id": "PP-04"
         },
-        "pain_title": "开放Issue讨论长期停滞无进展",
+        "pain_title": "讨论深度不足且存在停滞",
         "judgment": "P1",
-        "core_problem": "开放Issue讨论长期停滞无进展",
+        "core_problem": "讨论深度不足且存在停滞",
         "brief_metrics": [
           {
             "code": "OBJ_RESULT_FORMATION_TIMELINESS",
             "metric": "`OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效",
             "display_name": "OBJ_RESULT_FORMATION_TIMELINESS（形成结果时效）",
-            "score": 56.0,
-            "reason": "均值 56.0，低分 2/5",
+            "score": 70.0,
+            "reason": "均值 70.0，低分 1/4",
             "expected": "加快形成明确结果的速度"
           },
           {
             "code": "OBJ_SOLUTION_EVIDENCE",
             "metric": "`OBJ_SOLUTION_EVIDENCE` 解决证据强度",
             "display_name": "OBJ_SOLUTION_EVIDENCE（解决证据强度）",
-            "score": 32.3,
-            "reason": "均值 32.3，低分 5/5",
+            "score": 40.4,
+            "reason": "均值 40.4，低分 4/4",
             "expected": "补充修改内容、关联变更和影响范围"
           },
           {
             "code": "SUB_DISCUSSION_PROGRESSION",
             "metric": "`SUB_DISCUSSION_PROGRESSION` 讨论推进性",
             "display_name": "SUB_DISCUSSION_PROGRESSION（讨论推进性）",
-            "score": 61.0,
-            "reason": "仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。",
+            "score": 66.2,
+            "reason": "仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。",
             "expected": "明确下一步动作、阶段结论和推进记录"
           },
           {
             "code": "SUB_USER_GOAL_RESULT",
             "metric": "`SUB_USER_GOAL_RESULT` 用户目标处理结果",
             "display_name": "SUB_USER_GOAL_RESULT（用户目标处理结果）",
-            "score": 62.0,
-            "reason": "MR#336实际修复了头文件引用问题并已合并，用户目标得到满足。",
+            "score": 67.5,
+            "reason": "MR#336移除内部头文件引用修复编译问题并已合并，用户目标得到有效满足。",
             "expected": "确保用户主要目标得到有效满足或合理处置"
           }
         ],
-        "intro": "本阶段需要改进，主要问题是：开放Issue讨论长期停滞无进展。"
+        "intro": "本阶段需要改进，主要问题是：讨论深度不足且存在停滞。"
       },
       {
         "id": "I3",
@@ -2597,14 +2432,16 @@
         "icon": "📦",
         "is_lens": false,
         "weight": 0.2,
-        "mixed": 47.8,
-        "obj": 34.0,
-        "subj": 68.5,
-        "stars": "★★☆☆☆",
+        "mixed": 50.5,
+        "obj": 38.8,
+        "subj": 68.1,
+        "stars": "★★★☆☆",
         "grade": "D",
         "flag_emoji": "🟡",
-        "pain_count": 4,
-        "pain_pct": 80.0,
+        "pain_count": 3,
+        "pain_pct": 75.0,
+        "n_sample": 4,
+        "no_sample": false,
         "delta": "首期基线",
         "incomparable": false,
         "confidence": "低",
@@ -2612,38 +2449,32 @@
           "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
           "name_cn": "过早关闭风险反向分",
           "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
-          "value": 88.0
+          "value": 88.8
         },
         "worst_metric": {
           "code": "OBJ_CLOSURE_REUSE",
           "name_cn": "关闭复用价值",
           "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-          "value": 9.0
+          "value": 11.2
         },
-        "distribution": "<40:2 ｜ 40-60:2 ｜ 60-80:1 ｜ ≥80:0",
+        "distribution": "<40:1 ｜ 40-60:2 ｜ 60-80:1 ｜ ≥80:0",
         "metrics_obj": [
           {
             "code": "OBJ_DECISION_TRANSPARENCY",
             "key": "obj-decision-transparency",
             "name_cn": "决策透明度",
             "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-            "mean": 59.0,
+            "mean": 66.2,
             "median": 75.0,
-            "flag": "🟡",
-            "cover": 5,
-            "evidence": "OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5",
+            "flag": "🟢",
+            "cover": 4,
+            "evidence": "OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
                 "score": 75.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 30.0
               },
               {
                 "issue_number": "220",
@@ -2664,29 +2495,23 @@
                 "score": 75.0
               }
             ],
-            "_mean": 59.0
+            "_mean": 66.25
           },
           {
             "code": "OBJ_CLOSURE_REUSE",
             "key": "obj-closure-reuse",
             "name_cn": "关闭复用价值",
             "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-            "mean": 9.0,
+            "mean": 11.2,
             "median": 0.0,
             "flag": "🔴",
-            "cover": 5,
-            "evidence": "OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5",
+            "cover": 4,
+            "evidence": "OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 0.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
                 "score": 0.0
               },
               {
@@ -2708,7 +2533,7 @@
                 "score": 0.0
               }
             ],
-            "_mean": 9.0
+            "_mean": 11.25
           }
         ],
         "metrics_sub": [
@@ -2717,22 +2542,16 @@
             "key": "sub-closure-premature-close-risk-reverse",
             "name_cn": "过早关闭风险反向分",
             "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
-            "mean": 88.0,
-            "median": 90.0,
-            "cover": 5,
-            "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR已合并且修复内容匹配问题，关闭合理，但用户未确认且关闭原因标记为进行中。",
+            "mean": 88.8,
+            "median": 87.5,
+            "cover": 4,
+            "main_reason": "SUB_PREMATURE_CLOSE_RISK_REVERSE：MR合并后由bot关闭并加resolved标签，修复与关闭有明确因果关系，非过…",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 75.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 95.0
+                "score": 85.0
               },
               {
                 "issue_number": "220",
@@ -2753,119 +2572,113 @@
                 "score": 90.0
               }
             ],
-            "_mean": 88.0
+            "_mean": 88.75
           },
           {
             "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
             "key": "sub-followup-path-completeness",
             "name_cn": "后续路径完整性",
             "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-            "mean": 49.0,
-            "median": 55.0,
-            "cover": 5,
-            "main_reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。",
+            "mean": 47.5,
+            "median": 47.5,
+            "cover": 4,
+            "main_reason": "SUB_FOLLOWUP_PATH_COMPLETENESS：关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 25.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 55.0
+                "score": 40.0
               },
               {
                 "issue_number": "220",
                 "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
                 "url": "https://gitcode.com/cann/cann-samples/issues/220",
-                "score": 50.0
+                "score": 45.0
               },
               {
                 "issue_number": "219",
                 "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
                 "url": "https://gitcode.com/cann/cann-samples/issues/219",
-                "score": 60.0
+                "score": 55.0
               },
               {
                 "issue_number": "218",
                 "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
                 "url": "https://gitcode.com/cann/cann-samples/issues/218",
-                "score": 55.0
+                "score": 50.0
               }
             ],
-            "_mean": 49.0
+            "_mean": 47.5
           }
         ],
         "low_issues": [
           {
             "no": "#220",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 38,
+            "score": 37,
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
-            "desc": ""
-          },
-          {
-            "no": "#221",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 39,
-            "title": "cann-samples Development Roadmap (2026 Q3)",
             "desc": ""
           },
           {
             "no": "#222",
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
-            "score": 42,
+            "score": 48,
             "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+            "desc": ""
+          },
+          {
+            "no": "#218",
+            "url": "https://gitcode.com/cann/cann-samples/issues/218",
+            "score": 50,
+            "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
             "desc": ""
           }
         ],
-        "root_cause": "关闭流程缺乏结构化要求，未强制记录解决方案、根因和后续路径",
+        "root_cause": "关闭流程缺少标准化模板，未要求维护者填写解决方案摘要和后续反馈路径",
         "is_short_board": true,
         "pain": {
           "prio": "P0",
           "id": "PP-01"
         },
-        "pain_title": "关闭阶段缺乏复用与后续路径",
+        "pain_title": "关闭阶段缺乏沉淀与反馈路径",
         "judgment": "P0",
-        "core_problem": "关闭阶段缺乏复用与后续路径",
+        "core_problem": "关闭阶段缺乏沉淀与反馈路径",
         "brief_metrics": [
           {
             "code": "OBJ_CLOSURE_REUSE",
             "metric": "`OBJ_CLOSURE_REUSE` 关闭复用价值",
             "display_name": "OBJ_CLOSURE_REUSE（关闭复用价值）",
-            "score": 9.0,
-            "reason": "均值 9.0，低分 5/5",
+            "score": 11.2,
+            "reason": "均值 11.2，低分 4/4",
             "expected": "关闭时沉淀解决方案文档、FAQ和规避方案"
           },
           {
             "code": "OBJ_DECISION_TRANSPARENCY",
             "metric": "`OBJ_DECISION_TRANSPARENCY` 决策透明度",
             "display_name": "OBJ_DECISION_TRANSPARENCY（决策透明度）",
-            "score": 59.0,
-            "reason": "均值 59.0，低分 2/5",
+            "score": 66.2,
+            "reason": "均值 66.2，低分 1/4",
             "expected": "补齐关闭原因、关闭评论和结构化总结"
           },
           {
             "code": "SUB_FOLLOWUP_PATH_COMPLETENESS",
             "metric": "`SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性",
             "display_name": "SUB_FOLLOWUP_PATH_COMPLETENESS（后续路径完整性）",
-            "score": 49.0,
-            "reason": "关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。",
+            "score": 47.5,
+            "reason": "关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。",
             "expected": "关闭时明确说明后续反馈路径和重新开启条件"
           },
           {
             "code": "SUB_PREMATURE_CLOSE_RISK_REVERSE",
             "metric": "`SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分",
             "display_name": "SUB_PREMATURE_CLOSE_RISK_REVERSE（过早关闭风险反向分）",
-            "score": 88.0,
-            "reason": "MR已合并且修复内容匹配问题，关闭合理，但用户未确认且关闭原因标记为进行中。",
+            "score": 88.8,
+            "reason": "MR合并后由bot关闭并加resolved标签，修复与关闭有明确因果关系，非过…",
             "expected": "避免缺少讨论、验证时过早关闭"
           }
         ],
-        "intro": "本阶段需要改进，主要问题是：关闭阶段缺乏复用与后续路径。"
+        "intro": "本阶段需要改进，主要问题是：关闭阶段缺乏沉淀与反馈路径。"
       },
       {
         "id": "G",
@@ -2873,14 +2686,16 @@
         "icon": "🤖",
         "is_lens": true,
         "weight": 0.0,
-        "mixed": 65.2,
-        "obj": 64.0,
-        "subj": 67.1,
+        "mixed": 64.0,
+        "obj": 60.0,
+        "subj": 70.2,
         "stars": "★★★☆☆",
         "grade": "C",
         "flag_emoji": "🟢",
-        "pain_count": 0,
-        "pain_pct": 0.0,
+        "pain_count": 1,
+        "pain_pct": 25.0,
+        "n_sample": 4,
+        "no_sample": false,
         "delta": "首期基线",
         "incomparable": false,
         "confidence": "低",
@@ -2888,38 +2703,32 @@
           "code": "OBJ_BOT_MISCLOSE_REVERSE",
           "name_cn": "Bot误关闭风险反向分",
           "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-          "value": 92.0
+          "value": 90.0
         },
         "worst_metric": {
           "code": "OBJ_BOT_GOVERNANCE",
           "name_cn": "Bot治理有效性",
           "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-          "value": 36.0
+          "value": 30.0
         },
-        "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:5 ｜ ≥80:0",
+        "distribution": "<40:0 ｜ 40-60:1 ｜ 60-80:3 ｜ ≥80:0",
         "metrics_obj": [
           {
             "code": "OBJ_BOT_GOVERNANCE",
             "key": "obj-bot-governance",
             "name_cn": "Bot治理有效性",
             "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-            "mean": 36.0,
+            "mean": 30.0,
             "median": 20.0,
             "flag": "🔴",
-            "cover": 5,
-            "evidence": "OBJ_BOT_GOVERNANCE：均值 36.0，低分 3/5",
+            "cover": 4,
+            "evidence": "OBJ_BOT_GOVERNANCE：均值 30.0，低分 3/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
                 "score": 20.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 60.0
               },
               {
                 "issue_number": "220",
@@ -2940,29 +2749,23 @@
                 "score": 20.0
               }
             ],
-            "_mean": 36.0
+            "_mean": 30.0
           },
           {
             "code": "OBJ_BOT_MISCLOSE_REVERSE",
             "key": "obj-bot-misclose-reverse",
             "name_cn": "Bot误关闭风险反向分",
             "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-            "mean": 92.0,
-            "median": 100.0,
+            "mean": 90.0,
+            "median": 90.0,
             "flag": "🟢",
-            "cover": 5,
-            "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 92.0，低分 0/5",
+            "cover": 4,
+            "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 90.0，低分 0/4",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 100.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
                 "score": 100.0
               },
               {
@@ -2984,7 +2787,7 @@
                 "score": 80.0
               }
             ],
-            "_mean": 92.0
+            "_mean": 90.0
           }
         ],
         "metrics_sub": [
@@ -2993,22 +2796,16 @@
             "key": "sub-bot-agent-helpfulness",
             "name_cn": "自动化帮助度",
             "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
-            "mean": 63.4,
-            "median": 70.0,
-            "cover": 5,
-            "main_reason": "SUB_BOT_HELPFULNESS：Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向…",
+            "mean": 67.5,
+            "median": 72.5,
+            "cover": 4,
+            "main_reason": "SUB_BOT_HELPFULNESS：bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 72.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 50.0
+                "score": 75.0
               },
               {
                 "issue_number": "220",
@@ -3029,29 +2826,23 @@
                 "score": 75.0
               }
             ],
-            "_mean": 63.4
+            "_mean": 67.5
           },
           {
             "code": "SUB_BOT_INTERVENTION_QUALITY",
             "key": "sub-bot-agent-intervention-quality",
             "name_cn": "介入动作质量",
             "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
-            "mean": 67.0,
-            "median": 75.0,
-            "cover": 5,
-            "main_reason": "SUB_BOT_INTERVENTION_QUALITY：Bot关闭和标签动作时机准确，在MR合并后执行，无错误阻断或误判。",
+            "mean": 71.2,
+            "median": 77.5,
+            "cover": 4,
+            "main_reason": "SUB_BOT_INTERVENTION_QUALITY：bot动作准确：MR合并触发关闭、添加resolved标签，时机合适无误判。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 75.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 50.0
+                "score": 80.0
               },
               {
                 "issue_number": "220",
@@ -3063,7 +2854,7 @@
                 "issue_number": "219",
                 "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
                 "url": "https://gitcode.com/cann/cann-samples/issues/219",
-                "score": 80.0
+                "score": 75.0
               },
               {
                 "issue_number": "218",
@@ -3072,98 +2863,100 @@
                 "score": 80.0
               }
             ],
-            "_mean": 67.0
+            "_mean": 71.25
           },
           {
             "code": "SUB_BOT_HANDOFF_QUALITY",
             "key": "sub-bot-agent-human-handoff-quality",
             "name_cn": "人机交接质量",
             "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
-            "mean": 72.6,
-            "median": 78.0,
-            "cover": 5,
-            "main_reason": "SUB_BOT_HANDOFF_QUALITY：Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。",
+            "mean": 72.5,
+            "median": 80.0,
+            "cover": 4,
+            "main_reason": "SUB_BOT_HANDOFF_QUALITY：人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。",
             "issues": [
               {
                 "issue_number": "222",
                 "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
                 "url": "https://gitcode.com/cann/cann-samples/issues/222",
-                "score": 78.0
-              },
-              {
-                "issue_number": "221",
-                "title": "cann-samples Development Roadmap (2026 Q3)",
-                "url": "https://gitcode.com/cann/cann-samples/issues/221",
-                "score": 50.0
+                "score": 80.0
               },
               {
                 "issue_number": "220",
                 "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
                 "url": "https://gitcode.com/cann/cann-samples/issues/220",
-                "score": 65.0
+                "score": 50.0
               },
               {
                 "issue_number": "219",
                 "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
                 "url": "https://gitcode.com/cann/cann-samples/issues/219",
-                "score": 85.0
+                "score": 80.0
               },
               {
                 "issue_number": "218",
                 "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
                 "url": "https://gitcode.com/cann/cann-samples/issues/218",
-                "score": 85.0
+                "score": 80.0
               }
             ],
-            "_mean": 72.6
+            "_mean": 72.5
           }
         ],
-        "low_issues": [],
-        "root_cause": "存在轻度痛点，Bot覆盖不全面致40%Issue缺位，误关闭信号需关注",
+        "low_issues": [
+          {
+            "no": "#219",
+            "url": "https://gitcode.com/cann/cann-samples/issues/219",
+            "score": 60,
+            "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…",
+            "desc": ""
+          }
+        ],
+        "root_cause": "开放Issue缺乏Bot自动化分流，bot仅在MR合并后执行关闭动作",
         "is_short_board": false,
         "pain": null,
         "pain_title": "",
         "judgment": "参考项",
-        "core_problem": "存在轻度痛点，Bot覆盖不全面致40%Issue缺位，误关闭信号需…",
+        "core_problem": "开放Issue缺乏Bot自动化分流，bot仅在MR合并后执行关闭动作",
         "brief_metrics": [
           {
             "code": "OBJ_BOT_GOVERNANCE",
             "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
             "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-            "score": 36.0,
-            "reason": "均值 36.0，低分 3/5",
+            "score": 30.0,
+            "reason": "均值 30.0，低分 3/4",
             "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
           },
           {
             "code": "OBJ_BOT_MISCLOSE_REVERSE",
             "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
             "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-            "score": 92.0,
-            "reason": "均值 92.0，低分 0/5",
+            "score": 90.0,
+            "reason": "均值 90.0，低分 0/4",
             "expected": "减少 Bot 误关、错关和状态矛盾"
           },
           {
             "code": "SUB_BOT_HANDOFF_QUALITY",
             "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
             "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
-            "score": 72.6,
-            "reason": "Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。",
+            "score": 72.5,
+            "reason": "人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。",
             "expected": "改善 Bot 到人工处理的交接质量"
           },
           {
             "code": "SUB_BOT_HELPFULNESS",
             "metric": "`SUB_BOT_HELPFULNESS` 自动化帮助度",
             "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
-            "score": 63.4,
-            "reason": "Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向…",
+            "score": 67.5,
+            "reason": "bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。",
             "expected": "让 Bot 介入对分流和推进有实际帮助"
           },
           {
             "code": "SUB_BOT_INTERVENTION_QUALITY",
             "metric": "`SUB_BOT_INTERVENTION_QUALITY` 介入动作质量",
             "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
-            "score": 67.0,
-            "reason": "Bot关闭和标签动作时机准确，在MR合并后执行，无错误阻断或误判。",
+            "score": 71.2,
+            "reason": "bot动作准确：MR合并触发关闭、添加resolved标签，时机合适无误判。",
             "expected": "提升 Bot 提示、校验和提醒质量"
           }
         ],
@@ -3176,14 +2969,16 @@
       "icon": "🤖",
       "is_lens": true,
       "weight": 0.0,
-      "mixed": 65.2,
-      "obj": 64.0,
-      "subj": 67.1,
+      "mixed": 64.0,
+      "obj": 60.0,
+      "subj": 70.2,
       "stars": "★★★☆☆",
       "grade": "C",
       "flag_emoji": "🟢",
-      "pain_count": 0,
-      "pain_pct": 0.0,
+      "pain_count": 1,
+      "pain_pct": 25.0,
+      "n_sample": 4,
+      "no_sample": false,
       "delta": "首期基线",
       "incomparable": false,
       "confidence": "低",
@@ -3191,38 +2986,32 @@
         "code": "OBJ_BOT_MISCLOSE_REVERSE",
         "name_cn": "Bot误关闭风险反向分",
         "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-        "value": 92.0
+        "value": 90.0
       },
       "worst_metric": {
         "code": "OBJ_BOT_GOVERNANCE",
         "name_cn": "Bot治理有效性",
         "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-        "value": 36.0
+        "value": 30.0
       },
-      "distribution": "<40:0 ｜ 40-60:0 ｜ 60-80:5 ｜ ≥80:0",
+      "distribution": "<40:0 ｜ 40-60:1 ｜ 60-80:3 ｜ ≥80:0",
       "metrics_obj": [
         {
           "code": "OBJ_BOT_GOVERNANCE",
           "key": "obj-bot-governance",
           "name_cn": "Bot治理有效性",
           "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-          "mean": 36.0,
+          "mean": 30.0,
           "median": 20.0,
           "flag": "🔴",
-          "cover": 5,
-          "evidence": "OBJ_BOT_GOVERNANCE：均值 36.0，低分 3/5",
+          "cover": 4,
+          "evidence": "OBJ_BOT_GOVERNANCE：均值 30.0，低分 3/4",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
               "score": 20.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 60.0
             },
             {
               "issue_number": "220",
@@ -3243,29 +3032,23 @@
               "score": 20.0
             }
           ],
-          "_mean": 36.0
+          "_mean": 30.0
         },
         {
           "code": "OBJ_BOT_MISCLOSE_REVERSE",
           "key": "obj-bot-misclose-reverse",
           "name_cn": "Bot误关闭风险反向分",
           "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-          "mean": 92.0,
-          "median": 100.0,
+          "mean": 90.0,
+          "median": 90.0,
           "flag": "🟢",
-          "cover": 5,
-          "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 92.0，低分 0/5",
+          "cover": 4,
+          "evidence": "OBJ_BOT_MISCLOSE_REVERSE：均值 90.0，低分 0/4",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 100.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
               "score": 100.0
             },
             {
@@ -3287,7 +3070,7 @@
               "score": 80.0
             }
           ],
-          "_mean": 92.0
+          "_mean": 90.0
         }
       ],
       "metrics_sub": [
@@ -3296,22 +3079,16 @@
           "key": "sub-bot-agent-helpfulness",
           "name_cn": "自动化帮助度",
           "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
-          "mean": 63.4,
-          "median": 70.0,
-          "cover": 5,
-          "main_reason": "SUB_BOT_HELPFULNESS：Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向…",
+          "mean": 67.5,
+          "median": 72.5,
+          "cover": 4,
+          "main_reason": "SUB_BOT_HELPFULNESS：bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 72.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 50.0
+              "score": 75.0
             },
             {
               "issue_number": "220",
@@ -3332,29 +3109,23 @@
               "score": 75.0
             }
           ],
-          "_mean": 63.4
+          "_mean": 67.5
         },
         {
           "code": "SUB_BOT_INTERVENTION_QUALITY",
           "key": "sub-bot-agent-intervention-quality",
           "name_cn": "介入动作质量",
           "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
-          "mean": 67.0,
-          "median": 75.0,
-          "cover": 5,
-          "main_reason": "SUB_BOT_INTERVENTION_QUALITY：Bot关闭和标签动作时机准确，在MR合并后执行，无错误阻断或误判。",
+          "mean": 71.2,
+          "median": 77.5,
+          "cover": 4,
+          "main_reason": "SUB_BOT_INTERVENTION_QUALITY：bot动作准确：MR合并触发关闭、添加resolved标签，时机合适无误判。",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 75.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 50.0
+              "score": 80.0
             },
             {
               "issue_number": "220",
@@ -3366,7 +3137,7 @@
               "issue_number": "219",
               "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
               "url": "https://gitcode.com/cann/cann-samples/issues/219",
-              "score": 80.0
+              "score": 75.0
             },
             {
               "issue_number": "218",
@@ -3375,98 +3146,100 @@
               "score": 80.0
             }
           ],
-          "_mean": 67.0
+          "_mean": 71.25
         },
         {
           "code": "SUB_BOT_HANDOFF_QUALITY",
           "key": "sub-bot-agent-human-handoff-quality",
           "name_cn": "人机交接质量",
           "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
-          "mean": 72.6,
-          "median": 78.0,
-          "cover": 5,
-          "main_reason": "SUB_BOT_HANDOFF_QUALITY：Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。",
+          "mean": 72.5,
+          "median": 80.0,
+          "cover": 4,
+          "main_reason": "SUB_BOT_HANDOFF_QUALITY：人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。",
           "issues": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "score": 78.0
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "score": 50.0
+              "score": 80.0
             },
             {
               "issue_number": "220",
               "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
               "url": "https://gitcode.com/cann/cann-samples/issues/220",
-              "score": 65.0
+              "score": 50.0
             },
             {
               "issue_number": "219",
               "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
               "url": "https://gitcode.com/cann/cann-samples/issues/219",
-              "score": 85.0
+              "score": 80.0
             },
             {
               "issue_number": "218",
               "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
               "url": "https://gitcode.com/cann/cann-samples/issues/218",
-              "score": 85.0
+              "score": 80.0
             }
           ],
-          "_mean": 72.6
+          "_mean": 72.5
         }
       ],
-      "low_issues": [],
-      "root_cause": "存在轻度痛点，Bot覆盖不全面致40%Issue缺位，误关闭信号需关注",
+      "low_issues": [
+        {
+          "no": "#219",
+          "url": "https://gitcode.com/cann/cann-samples/issues/219",
+          "score": 60,
+          "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…",
+          "desc": ""
+        }
+      ],
+      "root_cause": "开放Issue缺乏Bot自动化分流，bot仅在MR合并后执行关闭动作",
       "is_short_board": false,
       "pain": null,
       "pain_title": "",
       "judgment": "参考项",
-      "core_problem": "存在轻度痛点，Bot覆盖不全面致40%Issue缺位，误关闭信号需…",
+      "core_problem": "开放Issue缺乏Bot自动化分流，bot仅在MR合并后执行关闭动作",
       "brief_metrics": [
         {
           "code": "OBJ_BOT_GOVERNANCE",
           "metric": "`OBJ_BOT_GOVERNANCE` Bot治理有效性",
           "display_name": "OBJ_BOT_GOVERNANCE（Bot治理有效性）",
-          "score": 36.0,
-          "reason": "均值 36.0，低分 3/5",
+          "score": 30.0,
+          "reason": "均值 30.0，低分 3/4",
           "expected": "提升自动标签、分流、提醒和关闭校验覆盖"
         },
         {
           "code": "OBJ_BOT_MISCLOSE_REVERSE",
           "metric": "`OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分",
           "display_name": "OBJ_BOT_MISCLOSE_REVERSE（Bot误关闭风险反向分）",
-          "score": 92.0,
-          "reason": "均值 92.0，低分 0/5",
+          "score": 90.0,
+          "reason": "均值 90.0，低分 0/4",
           "expected": "减少 Bot 误关、错关和状态矛盾"
         },
         {
           "code": "SUB_BOT_HANDOFF_QUALITY",
           "metric": "`SUB_BOT_HANDOFF_QUALITY` 人机交接质量",
           "display_name": "SUB_BOT_HANDOFF_QUALITY（人机交接质量）",
-          "score": 72.6,
-          "reason": "Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。",
+          "score": 72.5,
+          "reason": "人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。",
           "expected": "改善 Bot 到人工处理的交接质量"
         },
         {
           "code": "SUB_BOT_HELPFULNESS",
           "metric": "`SUB_BOT_HELPFULNESS` 自动化帮助度",
           "display_name": "SUB_BOT_HELPFULNESS（自动化帮助度）",
-          "score": 63.4,
-          "reason": "Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向…",
+          "score": 67.5,
+          "reason": "bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。",
           "expected": "让 Bot 介入对分流和推进有实际帮助"
         },
         {
           "code": "SUB_BOT_INTERVENTION_QUALITY",
           "metric": "`SUB_BOT_INTERVENTION_QUALITY` 介入动作质量",
           "display_name": "SUB_BOT_INTERVENTION_QUALITY（介入动作质量）",
-          "score": 67.0,
-          "reason": "Bot关闭和标签动作时机准确，在MR合并后执行，无错误阻断或误判。",
+          "score": 71.2,
+          "reason": "bot动作准确：MR合并触发关闭、添加resolved标签，时机合适无误判。",
           "expected": "提升 Bot 提示、校验和提醒质量"
         }
       ],
@@ -3491,78 +3264,78 @@
   "state": {
     "period": "2026-07-06_to_2026-07-12",
     "n_total": 5,
-    "idx_total": 48.9,
+    "idx_total": 51.5,
     "stage_mixed": {
-      "creation": 90.4,
-      "triage": 65.2,
-      "discussion_resolution": 51.1,
-      "closure": 47.8,
-      "bot-agent": 65.2
+      "creation": 89.2,
+      "triage": 65.4,
+      "discussion_resolution": 59.9,
+      "closure": 50.5,
+      "bot-agent": 64.0
     },
     "recs": [
       {
         "id": "REC-01",
-        "title": "关闭阶段缺乏复用与后续路径",
+        "title": "关闭阶段缺乏沉淀与反馈路径",
         "prio": "P0",
         "stage_key": "closure",
         "stage_name": "总结与关闭",
         "pp_id": "PP-01",
-        "action": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
+        "action": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
         "goal": "`OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升",
-        "baseline_score": 47.8,
-        "baseline_value": "总结与关闭阶段分 47.8",
+        "baseline_score": 50.5,
+        "baseline_value": "总结与关闭阶段分 50.5",
         "state": "待跟踪"
       },
       {
         "id": "REC-02",
-        "title": "开放Issue讨论长期停滞无进展",
+        "title": "首次响应时间极不稳定",
         "prio": "P1",
-        "stage_key": "discussion_resolution",
-        "stage_name": "讨论与解决",
+        "stage_key": "triage",
+        "stage_name": "分配与首次响应",
         "pp_id": "PP-02",
-        "action": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
-        "goal": "`OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升",
-        "baseline_score": 51.1,
-        "baseline_value": "讨论与解决阶段分 51.1",
+        "action": "配置自动提醒或升级机制通知维护者",
+        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
+        "baseline_score": 65.4,
+        "baseline_value": "分配与首次响应阶段分 65.4",
         "state": "待跟踪"
       },
       {
         "id": "REC-03",
-        "title": "首次实质性响应严重缺失",
+        "title": "标签与指派覆盖率不足",
         "prio": "P1",
         "stage_key": "triage",
         "stage_name": "分配与首次响应",
         "pp_id": "PP-03",
-        "action": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
+        "action": "配置标签自动打标规则和assignee自动分配策略",
         "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
-        "baseline_score": 65.2,
-        "baseline_value": "分配与首次响应阶段分 65.2",
+        "baseline_score": 65.4,
+        "baseline_value": "分配与首次响应阶段分 65.4",
         "state": "待跟踪"
       },
       {
         "id": "REC-04",
-        "title": "Bot覆盖缺位与误关闭信号并存",
-        "prio": "P2",
-        "stage_key": "bot-agent",
-        "stage_name": "Bot/Agent 治理",
+        "title": "讨论深度不足且存在停滞",
+        "prio": "P1",
+        "stage_key": "discussion_resolution",
+        "stage_name": "讨论与解决",
         "pp_id": "PP-04",
-        "action": "部署自动标签Bot覆盖全部Issue，对开放Issue定期发送跟进提醒",
-        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升",
-        "baseline_score": 65.2,
-        "baseline_value": "Bot/Agent 治理阶段分 65.2",
+        "action": "发布进展更新或下一步计划",
+        "goal": "`OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升",
+        "baseline_score": 59.9,
+        "baseline_value": "讨论与解决阶段分 59.9",
         "state": "待跟踪"
       },
       {
         "id": "REC-05",
-        "title": "标签与指派机制不完善",
+        "title": "开放Issue缺乏Bot自动化分流",
         "prio": "P2",
-        "stage_key": "triage",
-        "stage_name": "分配与首次响应",
+        "stage_key": "bot-agent",
+        "stage_name": "Bot/Agent 治理",
         "pp_id": "PP-05",
-        "action": "建立标签分类规范并部署自动打标签Bot，认领时同步设置assignee字段",
-        "goal": "`OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升",
-        "baseline_score": 65.2,
-        "baseline_value": "分配与首次响应阶段分 65.2",
+        "action": "配置欢迎Bot自动添加标签模板并@相关维护者",
+        "goal": "`OBJ_BOT_GOVERNANCE` 和 `OBJ_BOT_MISCLOSE_REVERSE` 提升",
+        "baseline_score": 64.0,
+        "baseline_value": "Bot/Agent 治理阶段分 64.0",
         "state": "待跟踪"
       }
     ]
@@ -3599,9 +3372,9 @@
     "stage_data": {
       "creation": {
         "label": "Creation",
-        "avg_score": 90.4,
+        "avg_score": 89.2,
         "objective_avg_score": 0.0,
-        "subjective_avg_score": 90.4,
+        "subjective_avg_score": 89.2,
         "pain_point_count": 0,
         "total_count": 5,
         "pain_point_ratio": 0.0,
@@ -3609,20 +3382,20 @@
       },
       "triage": {
         "label": "Triage & Response",
-        "avg_score": 65.2,
-        "objective_avg_score": 58.0,
-        "subjective_avg_score": 76.1,
+        "avg_score": 65.4,
+        "objective_avg_score": 60.0,
+        "subjective_avg_score": 73.5,
         "pain_point_count": 2,
-        "total_count": 5,
-        "pain_point_ratio": 0.4,
+        "total_count": 4,
+        "pain_point_ratio": 0.5,
         "pain_point_issues": [
           {
             "issue_number": "222",
             "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
-            "score": 37.0,
+            "score": 41.0,
             "objective_score": 20.0,
-            "subjective_score": 62.5,
+            "subjective_score": 72.5,
             "state": "closed",
             "labels": [
               "resolved",
@@ -3633,9 +3406,9 @@
             "issue_number": "220",
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 54.8,
+            "score": 52.6,
             "objective_score": 40.0,
-            "subjective_score": 77.0,
+            "subjective_score": 71.5,
             "state": "open",
             "labels": []
           }
@@ -3643,30 +3416,20 @@
       },
       "discussion_resolution": {
         "label": "Discussion & Resolution",
-        "avg_score": 51.1,
-        "objective_avg_score": 44.1,
-        "subjective_avg_score": 61.5,
-        "pain_point_count": 2,
-        "total_count": 5,
-        "pain_point_ratio": 0.4,
+        "avg_score": 59.9,
+        "objective_avg_score": 55.2,
+        "subjective_avg_score": 66.9,
+        "pain_point_count": 1,
+        "total_count": 4,
+        "pain_point_ratio": 0.25,
         "pain_point_issues": [
-          {
-            "issue_number": "221",
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 16.0,
-            "objective_score": 0.0,
-            "subjective_score": 40.0,
-            "state": "open",
-            "labels": []
-          },
           {
             "issue_number": "220",
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 21.2,
+            "score": 20.2,
             "objective_score": 15.4,
-            "subjective_score": 30.0,
+            "subjective_score": 27.5,
             "state": "open",
             "labels": []
           }
@@ -3674,30 +3437,20 @@
       },
       "closure": {
         "label": "Closure",
-        "avg_score": 47.8,
-        "objective_avg_score": 34.0,
-        "subjective_avg_score": 68.5,
-        "pain_point_count": 4,
-        "total_count": 5,
-        "pain_point_ratio": 0.8,
+        "avg_score": 50.5,
+        "objective_avg_score": 38.8,
+        "subjective_avg_score": 68.1,
+        "pain_point_count": 3,
+        "total_count": 4,
+        "pain_point_ratio": 0.75,
         "pain_point_issues": [
           {
             "issue_number": "220",
             "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
             "url": "https://gitcode.com/cann/cann-samples/issues/220",
-            "score": 38.0,
+            "score": 37.0,
             "objective_score": 15.0,
-            "subjective_score": 72.5,
-            "state": "open",
-            "labels": []
-          },
-          {
-            "issue_number": "221",
-            "title": "cann-samples Development Roadmap (2026 Q3)",
-            "url": "https://gitcode.com/cann/cann-samples/issues/221",
-            "score": 39.0,
-            "objective_score": 15.0,
-            "subjective_score": 75.0,
+            "subjective_score": 70.0,
             "state": "open",
             "labels": []
           },
@@ -3705,9 +3458,9 @@
             "issue_number": "222",
             "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
             "url": "https://gitcode.com/cann/cann-samples/issues/222",
-            "score": 42.5,
+            "score": 47.5,
             "objective_score": 37.5,
-            "subjective_score": 50.0,
+            "subjective_score": 62.5,
             "state": "closed",
             "labels": [
               "resolved",
@@ -3718,9 +3471,9 @@
             "issue_number": "218",
             "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
             "url": "https://gitcode.com/cann/cann-samples/issues/218",
-            "score": 51.5,
+            "score": 50.5,
             "objective_score": 37.5,
-            "subjective_score": 72.5,
+            "subjective_score": 70.0,
             "state": "closed",
             "labels": [
               "resolved"
@@ -3730,69 +3483,81 @@
       },
       "bot-agent": {
         "label": "Bot/Agent Governance",
-        "avg_score": 65.2,
-        "objective_avg_score": 64.0,
-        "subjective_avg_score": 67.1,
-        "pain_point_count": 0,
-        "total_count": 5,
-        "pain_point_ratio": 0.0,
-        "pain_point_issues": []
+        "avg_score": 64.0,
+        "objective_avg_score": 60.0,
+        "subjective_avg_score": 70.2,
+        "pain_point_count": 1,
+        "total_count": 4,
+        "pain_point_ratio": 0.25,
+        "pain_point_issues": [
+          {
+            "issue_number": "219",
+            "title": "[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contains 检查字符串与程序实际输出不符",
+            "url": "https://gitcode.com/cann/cann-samples/issues/219",
+            "score": 59.8,
+            "objective_score": 50.0,
+            "subjective_score": 74.4,
+            "state": "closed",
+            "labels": [
+              "resolved"
+            ]
+          }
+        ]
       }
     },
     "llm_diagnoses": {
       "stage_diagnoses": {
         "creation": {
-          "diagnosis": "无明显痛点，Issue创建质量高，结构化模板使用规范",
+          "diagnosis": "Issue创建质量高，输入结构完整，无显著痛点",
           "pain_level": "none",
           "evidence": [
-            "平均得分90.4，痛点占比0%",
-            "5个Issue均包含完整描述、环境信息和复现步骤"
+            "avg_score 89.2，pain_point_ratio 0.0",
+            "5个样本Issue均包含问题描述、环境信息、复现步骤等结构化内容"
           ],
           "unlisted_issue": "none",
           "confidence": "high"
         },
         "triage": {
-          "diagnosis": "存在中度痛点，首次响应速度差异大且实质性响应缺失，标签覆盖不足",
+          "diagnosis": "首次响应时间极不稳定且标签/指派覆盖率不足，分流质量存在明显痛点",
           "pain_level": "moderate",
           "evidence": [
-            "平均得分65.2，痛点占比40%",
-            "Issue 222首次响应120.43小时且obj-first-substantive-response-time为0",
-            "label_rate仅0.6，Issue 220和221无标签"
+            "Issue #222首次响应耗时120.43小时（约5天），远超中位数16.99小时",
+            "label_rate仅60%，assignee_rate仅40%",
+            "pain_point_ratio达50%（2/4）"
           ],
-          "unlisted_issue": "维护者通过PR认领但无正式assignee字段，责任归属隐含不规范",
-          "confidence": "medium"
+          "unlisted_issue": "维护者通过评论和PR实际认领但未使用正式assignee机制，责任归属不够显式",
+          "confidence": "high"
         },
         "discussion_resolution": {
-          "diagnosis": "存在中度痛点，开放Issue讨论长期停滞，缺乏技术交互与进展推进",
+          "diagnosis": "讨论深度严重不足，部分Issue长期停滞无推进",
           "pain_level": "moderate",
           "evidence": [
-            "平均得分51.1，痛点占比40%",
-            "Issue 221评论数0，Issue 220仅1条评论且12天无进展",
-            "Issue 221讨论得分仅16.0，Issue 220仅21.2"
+            "avg_comments仅1.0，讨论交互极低",
+            "Issue #220仅1条评论且12天无后续讨论，discussion_score仅20.2",
+            "Issue #221（Roadmap）0条评论"
           ],
-          "unlisted_issue": "Roadmap类Issue缺乏社区参与和讨论引导机制，仅靠描述编辑推进",
+          "unlisted_issue": "Roadmap类Issue作为社区反馈入口却无任何评论互动",
           "confidence": "high"
         },
         "closure": {
-          "diagnosis": "存在严重痛点，关闭阶段普遍缺乏复用价值、解决证据和后续反馈路径",
+          "diagnosis": "关闭阶段缺乏沉淀与反馈路径，75% Issue存在关闭痛点",
           "pain_level": "severe",
           "evidence": [
-            "平均得分47.8，痛点占比高达80%",
-            "obj-closure-reuse在多个Issue中为0",
-            "Issue 222关闭原因标记为'进行中'但实际已关闭"
+            "closure avg_score仅50.5，pain_point_ratio达75%（3/4）",
+            "所有已关闭Issue的obj-closure-reuse均为0.0",
+            "sub-followup-path-completeness得分普遍在40-55之间"
           ],
-          "unlisted_issue": "关闭原因标记不规范，关闭时未说明重新开启条件或后续反馈路径",
+          "unlisted_issue": "关闭时未提供后续反馈路径或重新开启条件，用户无法判断问题是否彻底解决",
           "confidence": "high"
         },
         "bot-agent": {
-          "diagnosis": "存在轻度痛点，Bot覆盖不全面致40%Issue缺位，误关闭信号需关注",
+          "diagnosis": "开放Issue缺乏Bot自动化分流，bot仅在MR合并后执行关闭动作",
           "pain_level": "mild",
           "evidence": [
-            "bot_absence_rate为0.4，Issue 220和221无Bot介入",
-            "bot_misclose_rate为0.4，Issue 218和219存在疑似误关闭信号",
-            "但主观评估显示Bot关闭时机准确，实际影响有限"
+            "bot_absence_rate 0.4，Issue #220和#221无任何bot介入",
+            "bot_involvement_rate 0.0，bot未在创建/分流阶段提供自动化支持"
           ],
-          "unlisted_issue": "误关闭检测信号与主观评估存在偏差，可能为检测误报，需进一步验证",
+          "unlisted_issue": "bot_misclose_rate 0.4但样本主观评估显示bot关闭动作正确，可能为误报信号",
           "confidence": "medium"
         }
       },
@@ -3801,205 +3566,186 @@
           "id": "PP-01",
           "priority": "P0",
           "dimension": "关闭沉淀",
-          "title": "关闭阶段缺乏复用与后续路径",
-          "phenomenon": "80%的Issue在关闭阶段为痛点，obj-closure-reuse普遍为0，关闭时未记录结构化解决方案和后续反馈路径",
-          "impact": "知识无法沉淀复用，用户无法了解后续反馈路径，社区经验流失",
+          "title": "关闭阶段缺乏沉淀与反馈路径",
+          "phenomenon": "75%的Issue在关闭阶段存在痛点，obj-closure-reuse全部为0，关闭后无后续反馈路径说明",
+          "impact": "社区用户无法从已关闭Issue获取解决方案参考，也无法了解后续反馈渠道",
           "metric_evidence": [
-            "closure阶段avg_score=47.8，pain_point_ratio=0.8",
-            "obj-closure-reuse在Issue 218、222中均为0.0",
-            "Issue 222关闭原因标记为'进行中'与实际状态矛盾"
+            "closure avg_score 50.5，pain_point_ratio 75%",
+            "obj-closure-reuse均为0.0",
+            "sub-followup-path-completeness得分40-55"
           ],
           "sample_evidence": [
             {
               "issue_number": "222",
               "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
               "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "reason": "MR合并后bot自动关闭，但关闭原因标记为'进行中'，未说明后续反馈路径，closure得分42.5"
+              "reason": "closure_score 47.5，followup-path-completeness仅40分，关闭后未说明后续反馈路径"
             },
             {
               "issue_number": "218",
               "title": "[Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性",
               "url": "https://gitcode.com/cann/cann-samples/issues/218",
-              "reason": "问题已完全修复但obj-closure-reuse为0，关闭时未沉淀根因分析和复用信息，closure得分51.5"
+              "reason": "closure_score 50.5，closure-reuse为0，虽有修复但无沉淀"
             }
           ],
-          "root_cause": "关闭流程缺乏结构化要求，未强制记录解决方案、根因和后续路径",
+          "root_cause": "关闭流程缺少标准化模板，未要求维护者填写解决方案摘要和后续反馈路径",
           "actions": [
             {
-              "owner": "维护团队",
+              "owner": "社区维护团队",
               "trigger": "Issue关闭前",
-              "action": "强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径）",
-              "target_metric": "obj-closure-reuse"
+              "action": "在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径",
+              "target_metric": "obj-closure-reuse和sub-followup-path-completeness"
             }
           ]
         },
         {
           "id": "PP-02",
           "priority": "P1",
-          "dimension": "讨论推进",
-          "title": "开放Issue讨论长期停滞无进展",
-          "phenomenon": "Issue 220和221分别仅1条和0条评论，12天无技术讨论进展，讨论阶段得分极低",
-          "impact": "功能建议和路线图无法推进，社区参与感降低，贡献者流失",
+          "dimension": "响应效率",
+          "title": "首次响应时间极不稳定",
+          "phenomenon": "avg首次响应33.5小时但#222耗时120.43小时（约5天），响应速度差异巨大",
+          "impact": "部分用户等待5天才收到首次回复，严重影响社区信任和问题解决效率",
           "metric_evidence": [
-            "discussion_resolution阶段avg_score=51.1，pain_point_ratio=0.4",
-            "avg_comments仅1.0，Issue 221评论数为0",
-            "Issue 220讨论得分21.2，Issue 221仅16.0"
+            "avg_first_response_hours 33.5，median 16.99，差异显著",
+            "Issue #222 first_response_hours 120.43"
           ],
           "sample_evidence": [
             {
-              "issue_number": "220",
-              "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
-              "url": "https://gitcode.com/cann/cann-samples/issues/220",
-              "reason": "仅一条确认分配评论，12天无后续技术讨论或下一步动作，讨论得分21.2"
-            },
-            {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "reason": "零评论零讨论，仅通过描述编辑推进内容，缺乏交互式社区参与，讨论得分16.0"
+              "issue_number": "222",
+              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+              "url": "https://gitcode.com/cann/cann-samples/issues/222",
+              "reason": "首次响应耗时120.43小时，triage_score仅41.0"
             }
           ],
-          "root_cause": "缺乏讨论推进机制和定期跟进流程，开放Issue无自动提醒和进度追踪",
+          "root_cause": "缺乏响应时效SLA和自动升级机制，维护者响应依赖个人主动性",
           "actions": [
             {
-              "owner": "社区运营",
-              "trigger": "Issue开放超过7天无新评论",
-              "action": "自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求",
-              "target_metric": "discussion_resolution avg_score"
+              "owner": "社区维护团队",
+              "trigger": "Issue创建后48小时无响应",
+              "action": "配置自动提醒或升级机制通知维护者",
+              "target_metric": "avg_first_response_hours"
             }
           ]
         },
         {
           "id": "PP-03",
           "priority": "P1",
-          "dimension": "响应效率",
-          "title": "首次实质性响应严重缺失",
-          "phenomenon": "Issue 222首次响应耗时120小时且仅泛泛回复，obj-first-substantive-response-time为0，无技术分析",
-          "impact": "用户等待5天仅得到模板化回复，问题无法及时进入处理流程，信任度下降",
+          "dimension": "分流质量",
+          "title": "标签与指派覆盖率不足",
+          "phenomenon": "label_rate仅60%，assignee_rate仅40%，维护者通过评论认领但未使用正式指派机制",
+          "impact": "Issue缺乏标签分类和正式指派，影响优先级排序和检索效率",
           "metric_evidence": [
-            "Issue 222 first_response_hours=120.43，远超中位数16.99",
-            "obj-first-substantive-response-time在Issue 222为0.0",
-            "triage阶段avg_score=65.2，pain_point_ratio=0.4"
-          ],
-          "sample_evidence": [
-            {
-              "issue_number": "222",
-              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
-              "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "reason": "首次响应120.43小时且仅一条泛泛回复无技术分析，triage得分37.0"
-            }
-          ],
-          "root_cause": "缺乏首次实质性响应SLA机制和自动分流，维护者响应不及时",
-          "actions": [
-            {
-              "owner": "维护团队",
-              "trigger": "Bug类Issue创建后24小时内",
-              "action": "设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒",
-              "target_metric": "obj-first-substantive-response-time"
-            }
-          ]
-        },
-        {
-          "id": "PP-04",
-          "priority": "P2",
-          "dimension": "Bot治理",
-          "title": "Bot覆盖缺位与误关闭信号并存",
-          "phenomenon": "40%的Issue存在Bot缺位（无标签无响应），40%存在疑似误关闭信号，自动化治理覆盖不全面",
-          "impact": "开放Issue无自动化跟进和标签辅助，关闭Issue可能存在流程风险",
-          "metric_evidence": [
-            "bot_absence_rate=0.4，bot_misclose_rate=0.4",
-            "Issue 220和221的bot_agent_diagnosis为'bot缺位'",
-            "Issue 218和219的suspicious_bot_misclose=true，但obj-bot-misclose-risk仅20.0"
+            "label_rate 0.6，assignee_rate 0.4",
+            "Issue #220和#221均无标签"
           ],
           "sample_evidence": [
             {
               "issue_number": "220",
               "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
               "url": "https://gitcode.com/cann/cann-samples/issues/220",
-              "reason": "Bot完全缺位，无标签、无自动指派、无跟进提醒"
+              "reason": "无标签分类，triage_score 52.6"
             },
             {
-              "issue_number": "221",
-              "title": "cann-samples Development Roadmap (2026 Q3)",
-              "url": "https://gitcode.com/cann/cann-samples/issues/221",
-              "reason": "Bot完全缺位，Roadmap类Issue无自动化标签或分类辅助"
+              "issue_number": "222",
+              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
+              "url": "https://gitcode.com/cann/cann-samples/issues/222",
+              "reason": "songkai111实际承接并提交MR但无正式assignee指派，sub-triage-owner-clarity仅65分"
             }
           ],
-          "root_cause": "Bot部署范围有限，未覆盖标签自动化和开放Issue跟进；误关闭信号需进一步验证",
+          "root_cause": "缺乏自动化标签机制和指派规范，维护者习惯通过评论而非系统功能认领",
           "actions": [
             {
-              "owner": "平台治理",
-              "trigger": "所有Issue创建后",
-              "action": "部署自动标签Bot覆盖全部Issue，对开放Issue定期发送跟进提醒",
-              "target_metric": "bot_absence_rate"
+              "owner": "社区维护团队",
+              "trigger": "Issue创建后",
+              "action": "配置标签自动打标规则和assignee自动分配策略",
+              "target_metric": "label_rate和assignee_rate"
+            }
+          ]
+        },
+        {
+          "id": "PP-04",
+          "priority": "P1",
+          "dimension": "讨论推进",
+          "title": "讨论深度不足且存在停滞",
+          "phenomenon": "avg_comments仅1.0，#220仅1条评论且12天无后续讨论，#221零评论",
+          "impact": "功能建议类Issue长期无进展，社区贡献意愿受挫，技术讨论未充分展开",
+          "metric_evidence": [
+            "avg_comments 1.0",
+            "Issue #220 discussion_score 20.2，仅1条评论",
+            "Issue #221 comment_count 0"
+          ],
+          "sample_evidence": [
+            {
+              "issue_number": "220",
+              "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
+              "url": "https://gitcode.com/cann/cann-samples/issues/220",
+              "reason": "12天仅1条维护者初步回应，discussion_score 20.2，无后续推进"
+            }
+          ],
+          "root_cause": "维护者初步认领后缺乏跟进节奏管理，无讨论推进的SLA和提醒机制",
+          "actions": [
+            {
+              "owner": "Issue assignee",
+              "trigger": "Issue认领后7天无更新",
+              "action": "发布进展更新或下一步计划",
+              "target_metric": "avg_comments和discussion_resolution score"
             }
           ]
         },
         {
           "id": "PP-05",
           "priority": "P2",
-          "dimension": "分流质量",
-          "title": "标签与指派机制不完善",
-          "phenomenon": "标签率仅60%，指派人率仅40%，部分Issue无标签辅助分类且无正式assignee",
-          "impact": "Issue无法有效分类和检索，责任归属不明确，增加管理负担",
+          "dimension": "Bot治理",
+          "title": "开放Issue缺乏Bot自动化分流",
+          "phenomenon": "bot_absence_rate达40%，#220和#221无任何bot介入，缺乏自动化标签和分流",
+          "impact": "社区提交的Issue无法获得自动化初步处理，增加维护者手动分流负担",
           "metric_evidence": [
-            "label_rate=0.6，assignee_rate=0.4",
-            "Issue 220和221均无标签",
-            "Issue 218和222无正式assignee字段但维护者实际认领"
+            "bot_absence_rate 0.4",
+            "bot_involvement_rate 0.0"
           ],
           "sample_evidence": [
             {
               "issue_number": "220",
               "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
               "url": "https://gitcode.com/cann/cann-samples/issues/220",
-              "reason": "已分配给@wang-minbo但无标签辅助分类，triage客观得分40.0"
-            },
-            {
-              "issue_number": "222",
-              "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
-              "url": "https://gitcode.com/cann/cann-samples/issues/222",
-              "reason": "songkai111实际承担处理但无assignee字段，责任隐含不明确"
+              "reason": "bot缺位，无自动标签或分流，12天无进展"
             }
           ],
-          "root_cause": "缺乏自动标签和指派规范，维护者通过PR认领但未在Issue层面正式分配",
+          "root_cause": "Bot仅在MR合并后执行关闭动作，未在Issue创建和分流阶段提供自动化支持",
           "actions": [
             {
-              "owner": "维护团队",
+              "owner": "社区运维",
               "trigger": "Issue创建后",
-              "action": "建立标签分类规范并部署自动打标签Bot，认领时同步设置assignee字段",
-              "target_metric": "label_rate"
+              "action": "配置欢迎Bot自动添加标签模板并@相关维护者",
+              "target_metric": "bot_absence_rate"
             }
           ]
         }
       ],
       "community_summary": {
         "top_pain_points": [
-          "关闭阶段缺乏复用与后续路径",
-          "开放Issue讨论长期停滞无进展",
-          "首次实质性响应严重缺失",
-          "Bot覆盖缺位与误关闭信号并存",
-          "标签与指派机制不完善"
+          "关闭阶段缺乏沉淀与反馈路径",
+          "首次响应时间极不稳定",
+          "标签与指派覆盖率不足",
+          "讨论深度不足且存在停滞",
+          "开放Issue缺乏Bot自动化分流"
         ],
         "structural_issues": [
-          "维护者通过PR创建认领处理但Issue层面无正式assignee字段，责任归属隐含不规范",
-          "Roadmap和功能建议类Issue缺乏社区参与和讨论引导机制，仅靠描述编辑推进",
-          "关闭流程缺乏结构化总结要求，知识无法有效沉淀复用"
+          "维护者习惯通过评论和PR实际认领Issue但未使用正式assignee机制，责任归属不够显式",
+          "关闭流程缺少标准化模板，未要求维护者填写解决方案摘要和后续反馈路径"
         ],
         "automation_issues": [
-          "Bot覆盖不全面，40%的Issue无Bot介入，开放Issue无自动化跟进和标签辅助",
-          "误关闭检测信号（40%）与主观评估存在偏差，主观评估显示Bot关闭时机准确但客观指标仍标记风险",
-          "无自动标签和指派机制，标签率和指派人率均偏低"
+          "Bot仅在MR合并后执行关闭和标签动作，未在Issue创建和分流阶段提供自动化支持",
+          "bot_absence_rate 40%表明开放Issue缺乏自动化初步处理"
         ],
         "data_uncertainty": [
-          "linked_pr_rate数据因GitCode API限制不可用，无法准确评估PR关联情况",
-          "author_association数据不可用，无法区分维护者与外部贡献者响应",
-          "样本量仅5个Issue，统计结论代表性有限，部分指标可能因小样本偏差",
-          "误关闭信号为主客观混合判断，obj-bot-misclose-risk仅20.0但suspicious_bot_misclose=true，需更多样本验证"
+          "bot_misclose_rate 0.4但样本主观评估显示bot关闭动作正确，可能为误报信号",
+          "linked_pr_rate和author_association在GitCode平台不可用，相关指标为数据缺口"
         ],
         "priority_recommendations": [
-          "建立结构化关闭总结模板，强制在关闭时记录根因、解决方案、影响范围和后续反馈路径",
-          "部署自动标签和指派Bot覆盖全部Issue，同时设置开放Issue定期跟进提醒机制",
-          "设置Bug类Issue首次实质性响应SLA（24小时），要求响应包含技术分析而非泛泛回复"
+          "建立关闭模板，要求维护者在关闭评论中填写解决方案摘要、关联MR链接和后续反馈路径",
+          "配置Issue创建后的自动化标签和assignee分配机制，降低bot_absence_rate",
+          "设置首次响应SLA（如48小时）和超时自动升级提醒，减少响应时间方差"
         ]
       }
     },
@@ -4282,7 +4028,7 @@
           "has_maintainer_comment": false,
           "has_code_in_comments": false,
           "has_resolution_kw": false,
-          "days_since_last_activity": 5,
+          "days_since_last_activity": 6,
           "has_labels": true,
           "label_count": 2,
           "has_assignee": false,
@@ -4396,29 +4142,29 @@
           "triage": {
             "label": "Triage & Response",
             "objective_score": 20.0,
-            "subjective_score": 62.5,
-            "score": 37.0,
+            "subjective_score": 72.5,
+            "score": 41.0,
             "is_pain_point": true
           },
           "discussion_resolution": {
             "label": "Discussion & Resolution",
             "objective_score": 59.2,
-            "subjective_score": 67.5,
-            "score": 62.5,
+            "subjective_score": 72.5,
+            "score": 64.5,
             "is_pain_point": false
           },
           "closure": {
             "label": "Closure",
             "objective_score": 37.5,
-            "subjective_score": 50.0,
-            "score": 42.5,
+            "subjective_score": 62.5,
+            "score": 47.5,
             "is_pain_point": true
           },
           "bot-agent": {
             "label": "Bot/Agent Governance",
             "objective_score": 60.0,
-            "subjective_score": 74.6,
-            "score": 65.8,
+            "subjective_score": 78.1,
+            "score": 67.2,
             "is_pain_point": false
           }
         },
@@ -4430,50 +4176,60 @@
           "agent_filtering_gap_risk": false,
           "bot_agent_diagnosis": "无明显bot/agent治理风险"
         },
+        "is_internal": false,
+        "is_external": true,
+        "is_mature": true,
+        "applicable_stages": [
+          "bot-agent",
+          "closure",
+          "creation",
+          "discussion_resolution",
+          "triage"
+        ],
         "subjective_metric_scores": {
           "sub-input-quality": {
-            "score": 88.0,
-            "reason": "包含完整复现步骤、环境信息、错误截图、预期结果和结构化章节，信息充分。"
+            "score": 85.0,
+            "reason": "包含问题描述、环境信息、复现步骤、预期结果及截图，结构化完整。"
           },
           "sub-agent-noise-risk": {
-            "score": 92.0,
-            "reason": "真实用户反馈，含具体环境与复现命令，无AI幻觉或噪音迹象。"
+            "score": 95.0,
+            "reason": "内容为真实用户编包失败反馈，有具体命令和报错截图，无AI幻觉迹象。"
           },
           "sub-triage-routing-correctness": {
-            "score": 65.0,
-            "reason": "bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。"
+            "score": 80.0,
+            "reason": "bug-report标签正确，songkai111接手并创建修复MR，分流路径正确。"
           },
           "sub-triage-owner-clarity": {
-            "score": 60.0,
-            "reason": "无assignee分配，但songkai111实际承担处理并创建MR，责任隐含但不明确。"
+            "score": 65.0,
+            "reason": "songkai111实际承接并提交MR，但无正式assignee指派，责任归属不够显式。"
           },
           "sub-discussion-progression": {
-            "score": 55.0,
-            "reason": "仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。"
+            "score": 60.0,
+            "reason": "仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。"
           },
           "sub-user-goal-result": {
-            "score": 80.0,
-            "reason": "MR#336实际修复了头文件引用问题并已合并，用户目标得到满足。"
+            "score": 85.0,
+            "reason": "MR#336移除内部头文件引用修复编译问题并已合并，用户目标得到有效满足。"
           },
           "sub-closure-premature-close-risk-reverse": {
-            "score": 75.0,
-            "reason": "MR已合并且修复内容匹配问题，关闭合理，但用户未确认且关闭原因标记为进行中。"
+            "score": 85.0,
+            "reason": "MR合并后由bot关闭并加resolved标签，修复与关闭有明确因果关系，非过早关闭。"
           },
           "sub-followup-path-completeness": {
-            "score": 25.0,
-            "reason": "关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。"
+            "score": 40.0,
+            "reason": "关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。"
           },
           "sub-bot-agent-helpfulness": {
-            "score": 72.0,
-            "reason": "Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向治理。"
+            "score": 75.0,
+            "reason": "bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。"
           },
           "sub-bot-agent-intervention-quality": {
-            "score": 75.0,
-            "reason": "Bot关闭和标签动作时机准确，在MR合并后执行，无错误阻断或误判。"
+            "score": 80.0,
+            "reason": "bot动作准确：MR合并触发关闭、添加resolved标签，时机合适无误判。"
           },
           "sub-bot-agent-human-handoff-quality": {
-            "score": 78.0,
-            "reason": "Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。"
+            "score": 80.0,
+            "reason": "人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。"
           }
         }
       },
@@ -4936,7 +4692,7 @@
           "has_maintainer_comment": false,
           "has_code_in_comments": false,
           "has_resolution_kw": false,
-          "days_since_last_activity": 11,
+          "days_since_last_activity": 12,
           "has_labels": false,
           "label_count": 0,
           "has_assignee": true,
@@ -5007,70 +4763,14 @@
             "subjective_score": 0.0,
             "score": 0.0,
             "is_pain_point": true
-          },
-          "triage": {
-            "label": "Triage & Response",
-            "objective_score": 50.0,
-            "subjective_score": 0.0,
-            "score": 30.0,
-            "is_pain_point": true
-          },
-          "discussion_resolution": {
-            "label": "Discussion & Resolution",
-            "objective_score": 0.0,
-            "subjective_score": 0.0,
-            "score": 0.0,
-            "is_pain_point": true
-          },
-          "closure": {
-            "label": "Closure",
-            "objective_score": 15.0,
-            "subjective_score": 0.0,
-            "score": 9.0,
-            "is_pain_point": true
-          },
-          "bot-agent": {
-            "label": "Bot/Agent Governance",
-            "objective_score": 80.0,
-            "subjective_score": 0.0,
-            "score": 48.0,
-            "is_pain_point": true
           }
         },
         "stage_scores": {
           "creation": {
             "label": "Creation",
             "objective_score": 0.0,
-            "subjective_score": 91.5,
-            "score": 91.5,
-            "is_pain_point": false
-          },
-          "triage": {
-            "label": "Triage & Response",
-            "objective_score": 50.0,
-            "subjective_score": 83.5,
-            "score": 63.4,
-            "is_pain_point": false
-          },
-          "discussion_resolution": {
-            "label": "Discussion & Resolution",
-            "objective_score": 0.0,
-            "subjective_score": 40.0,
-            "score": 16.0,
-            "is_pain_point": true
-          },
-          "closure": {
-            "label": "Closure",
-            "objective_score": 15.0,
-            "subjective_score": 75.0,
-            "score": 39.0,
-            "is_pain_point": true
-          },
-          "bot-agent": {
-            "label": "Bot/Agent Governance",
-            "objective_score": 80.0,
-            "subjective_score": 50.0,
-            "score": 68.0,
+            "subjective_score": 88.5,
+            "score": 88.5,
             "is_pain_point": false
           }
         },
@@ -5082,50 +4782,56 @@
           "agent_filtering_gap_risk": false,
           "bot_agent_diagnosis": "bot缺位（无标签或无响应）"
         },
+        "is_internal": true,
+        "is_external": false,
+        "is_mature": true,
+        "applicable_stages": [
+          "creation"
+        ],
         "subjective_metric_scores": {
           "sub-input-quality": {
-            "score": 88.0,
-            "reason": "Roadmap正文结构清晰，含目标、负责人和分类章节，内容完整度高"
+            "score": 82.0,
+            "reason": "Roadmap结构清晰，含Focus/Features/Performance章节及各特性Owner，内容完整"
           },
           "sub-agent-noise-risk": {
             "score": 95.0,
-            "reason": "内部贡献者发布的规划文档，内容真实有效，无AI噪音迹象"
+            "reason": "内部贡献roadmap，技术细节具体真实，无AI幻觉或噪音迹象"
           },
           "sub-triage-routing-correctness": {
-            "score": 75.0,
-            "reason": "Issue被置顶并分配负责人，但无标签分类，分流手段有限"
+            "score": 72.0,
+            "reason": "已pin并assign，路由合理；但未添加标签分类，分流信号不完整"
           },
           "sub-triage-owner-clarity": {
-            "score": 92.0,
-            "reason": "每个特性均标注负责人，Issue整体分配给yangyang016，归属清晰"
+            "score": 88.0,
+            "reason": "yangyang016被assign，各特性均标注Owner，责任归属非常清晰"
           },
           "sub-discussion-progression": {
             "score": 45.0,
-            "reason": "无评论讨论，仅通过描述编辑推进内容，缺乏交互式进展"
+            "reason": "无评论讨论，仅有多人编辑描述；roadmap在迭代但缺乏社区反馈推进"
           },
           "sub-user-goal-result": {
-            "score": 35.0,
-            "reason": "Roadmap仍处进行中状态，目标尚未达成，过早评价结果"
+            "score": 50.0,
+            "reason": "Issue仍open且进行中，roadmap持续更新但尚未达成闭环结果"
           },
           "sub-closure-premature-close-risk-reverse": {
-            "score": 95.0,
-            "reason": "Issue仍处于开放状态且标注进行中，无过早关闭风险"
+            "score": 90.0,
+            "reason": "Issue仍处于open状态且活跃维护，不存在过早关闭风险"
           },
           "sub-followup-path-completeness": {
-            "score": 55.0,
-            "reason": "正文提及评论区与SIG例会反馈渠道，但未明确后续评估条件"
+            "score": 60.0,
+            "reason": "正文提及评论区与SIG例会反馈渠道，但未关闭故后续路径尚未触发"
           },
           "sub-bot-agent-helpfulness": {
             "score": 50.0,
-            "reason": "无Bot介入记录，信息不足，给予中性保守分"
+            "reason": "无bot介入记录，既无帮助也无干扰，信息不足给中性分"
           },
           "sub-bot-agent-intervention-quality": {
             "score": 50.0,
-            "reason": "无Bot介入动作，无法评估介入质量，给予中性分"
+            "reason": "无bot介入动作，无法评估介入质量，信息不足给中性分"
           },
           "sub-bot-agent-human-handoff-quality": {
-            "score": 50.0,
-            "reason": "无Bot与人工交接场景，信息不足，给予中性分"
+            "score": 72.0,
+            "reason": "无bot介入，人工处理有序：多人协作编辑、pin、assign均正常"
           }
         }
       },
@@ -5318,36 +5024,36 @@
           "creation": {
             "label": "Creation",
             "objective_score": 0.0,
-            "subjective_score": 83.0,
-            "score": 83.0,
+            "subjective_score": 80.0,
+            "score": 80.0,
             "is_pain_point": false
           },
           "triage": {
             "label": "Triage & Response",
             "objective_score": 40.0,
-            "subjective_score": 77.0,
-            "score": 54.8,
+            "subjective_score": 71.5,
+            "score": 52.6,
             "is_pain_point": true
           },
           "discussion_resolution": {
             "label": "Discussion & Resolution",
             "objective_score": 15.4,
-            "subjective_score": 30.0,
-            "score": 21.2,
+            "subjective_score": 27.5,
+            "score": 20.2,
             "is_pain_point": true
           },
           "closure": {
             "label": "Closure",
             "objective_score": 15.0,
-            "subjective_score": 72.5,
-            "score": 38.0,
+            "subjective_score": 70.0,
+            "score": 37.0,
             "is_pain_point": true
           },
           "bot-agent": {
             "label": "Bot/Agent Governance",
             "objective_score": 80.0,
-            "subjective_score": 53.8,
-            "score": 69.5,
+            "subjective_score": 50.0,
+            "score": 68.0,
             "is_pain_point": false
           }
         },
@@ -5359,50 +5065,60 @@
           "agent_filtering_gap_risk": false,
           "bot_agent_diagnosis": "bot缺位（无标签或无响应）"
         },
+        "is_internal": false,
+        "is_external": true,
+        "is_mature": true,
+        "applicable_stages": [
+          "bot-agent",
+          "closure",
+          "creation",
+          "discussion_resolution",
+          "triage"
+        ],
         "subjective_metric_scores": {
           "sub-input-quality": {
-            "score": 78.0,
-            "reason": "功能建议内容详尽，含两种技术方案和具体覆盖要求，但无结构化章节和环境信息。"
+            "score": 72.0,
+            "reason": "建议类issue无复现/环境信息，但正文详实含技术路线、场景列表与预期对比"
           },
           "sub-agent-noise-risk": {
             "score": 88.0,
-            "reason": "内容含具体CANN/HCCL技术细节，引用关联issue，无明显AI幻觉或噪音特征。"
+            "reason": "内容基于实际LLM推理经验，技术细节具体可信，无AI幻觉迹象"
           },
           "sub-triage-routing-correctness": {
-            "score": 72.0,
-            "reason": "已分配给MC2领域committer，路由方向正确，但未添加标签辅助分类。"
+            "score": 65.0,
+            "reason": "无标签分类，但有assignee分配及指定committer关注的分流动作"
           },
           "sub-triage-owner-clarity": {
-            "score": 82.0,
-            "reason": "明确assignee为@wang-minbo，评论确认指定committer跟进，责任归属清晰。"
+            "score": 78.0,
+            "reason": "明确assignee为wang-minbo，评论也说明将指定committer跟进"
           },
           "sub-discussion-progression": {
             "score": 35.0,
-            "reason": "仅一条确认分配评论，无后续技术讨论或下一步动作，12天无进展。"
+            "reason": "仅一条维护者初步回应，12天无后续讨论，未形成具体下一步"
           },
           "sub-user-goal-result": {
-            "score": 25.0,
-            "reason": "已分配但未实现，无关联PR，12天无后续进展，用户目标尚未得到满足。"
+            "score": 20.0,
+            "reason": "用户建议尚未落实，仅有初步认领，12天无实质进展或结果"
           },
           "sub-closure-premature-close-risk-reverse": {
             "score": 95.0,
-            "reason": "Issue仍处于open状态且close_reason为进行中，不存在过早关闭风险。"
+            "reason": "Issue仍处于open状态且标记进行中，不存在过早关闭风险"
           },
           "sub-followup-path-completeness": {
-            "score": 50.0,
-            "reason": "Issue未关闭，尚无关闭后反馈路径说明，信息不足给保守中性分。"
+            "score": 45.0,
+            "reason": "未关闭，有assignee可跟进，但未明确说明后续反馈路径或评估条件"
           },
           "sub-bot-agent-helpfulness": {
             "score": 50.0,
-            "reason": "无bot介入记录，无法评估帮助性，给中性保守分。"
+            "reason": "无bot介入记录，无法判断帮助性，给中性分"
           },
           "sub-bot-agent-intervention-quality": {
             "score": 50.0,
-            "reason": "无bot动作可评估，信息不足，给中性保守分。"
+            "reason": "无bot动作可评估，信息不足给中性分"
           },
           "sub-bot-agent-human-handoff-quality": {
-            "score": 65.0,
-            "reason": "无bot介入，但存在明确人工处理证据（assignee分配），不应低分。"
+            "score": 50.0,
+            "reason": "无bot介入，人工已有assignee承接但不存在bot到人工的交接"
           }
         }
       },
@@ -5753,30 +5469,30 @@
           "triage": {
             "label": "Triage & Response",
             "objective_score": 80.0,
-            "subjective_score": 77.5,
-            "score": 79.0,
+            "subjective_score": 72.5,
+            "score": 77.0,
             "is_pain_point": false
           },
           "discussion_resolution": {
             "label": "Discussion & Resolution",
             "objective_score": 76.9,
-            "subjective_score": 77.5,
-            "score": 77.2,
+            "subjective_score": 80.0,
+            "score": 78.2,
             "is_pain_point": false
           },
           "closure": {
             "label": "Closure",
             "objective_score": 65.0,
-            "subjective_score": 72.5,
-            "score": 68.0,
+            "subjective_score": 70.0,
+            "score": 67.0,
             "is_pain_point": false
           },
           "bot-agent": {
             "label": "Bot/Agent Governance",
             "objective_score": 50.0,
-            "subjective_score": 77.5,
-            "score": 61.0,
-            "is_pain_point": false
+            "subjective_score": 74.4,
+            "score": 59.8,
+            "is_pain_point": true
           }
         },
         "bot_agent": {
@@ -5787,50 +5503,60 @@
           "agent_filtering_gap_risk": false,
           "bot_agent_diagnosis": "bot疑似误关闭（关闭后重开或维护者继续讨论）"
         },
+        "is_internal": false,
+        "is_external": true,
+        "is_mature": true,
+        "applicable_stages": [
+          "bot-agent",
+          "closure",
+          "creation",
+          "discussion_resolution",
+          "triage"
+        ],
         "subjective_metric_scores": {
           "sub-input-quality": {
             "score": 95.0,
-            "reason": "结构完整，含复现步骤、环境、实际输出对比及修复建议，信息充分。"
+            "reason": "复现步骤、环境、日志、预期对比、修复建议及结构化章节一应俱全，质量极高。"
           },
           "sub-agent-noise-risk": {
             "score": 95.0,
-            "reason": "内容基于真实环境测试，代码引用和输出可验证，无AI幻觉迹象。"
+            "reason": "内容针对具体文件行号和源码逻辑，无幻觉迹象，真实有效。"
           },
           "sub-triage-routing-correctness": {
-            "score": 80.0,
-            "reason": "维护者直接认领并创建PR处理，路径正确，但缺少正式标签分流。"
+            "score": 75.0,
+            "reason": "无显式标签或重定向，但songkai111直接认领并创建修复PR，路径正确。"
           },
           "sub-triage-owner-clarity": {
-            "score": 75.0,
-            "reason": "songkai111通过创建PR明确认领，但issue本身无assignee字段。"
+            "score": 70.0,
+            "reason": "issue无正式assignee，但songkai111通过评论和PR实际认领，责任较清晰。"
           },
           "sub-discussion-progression": {
             "score": 80.0,
-            "reason": "维护者一条评论即给出根因和处理方案并关联PR，推进高效但无多轮讨论。"
+            "reason": "维护者一条评论即说明根因并给出修复PR，直接推动到解决，效率高。"
           },
           "sub-user-goal-result": {
-            "score": 75.0,
-            "reason": "用户建议修复yaml，维护者选择删除整个无效文件，问题消除但方案不同。"
+            "score": 80.0,
+            "reason": "用户报告的无效测试文件被删除而非按建议修复，核心痛点已解决但方案有差异。"
           },
           "sub-closure-premature-close-risk-reverse": {
             "score": 85.0,
-            "reason": "PR合并后由bot关闭，维护者已给出解释，无明显过早关闭风险。"
+            "reason": "PR合并后由bot关闭，维护者已解释原因，无明显过早关闭迹象。"
           },
           "sub-followup-path-completeness": {
-            "score": 60.0,
-            "reason": "未说明后续是否新建CI清单，用户关于CI是否自动执行的疑问未直接回答。"
+            "score": 55.0,
+            "reason": "关闭评论说明了删除原因，但未提及后续CI测试替代方案或反馈路径。"
           },
           "sub-bot-agent-helpfulness": {
             "score": 70.0,
-            "reason": "bot在MR合并后自动关闭并加标签，流程治理有效，但无额外帮助性引导。"
+            "reason": "bot在MR合并后自动关闭issue并添加resolved标签，动作正确且有帮助。"
           },
           "sub-bot-agent-intervention-quality": {
-            "score": 80.0,
-            "reason": "bot关闭时机准确（MR合并后），加标签动作合规，无错误阻断或误判。"
+            "score": 75.0,
+            "reason": "bot关闭时机在MR合并后，标签添加准确，介入动作合规且未误导。"
           },
           "sub-bot-agent-human-handoff-quality": {
-            "score": 85.0,
-            "reason": "人工已完成PR创建与合并，bot执行收尾关闭，交接顺畅无停滞。"
+            "score": 80.0,
+            "reason": "人工已完成评论和PR关联，bot随后执行关闭和标签，交接顺畅无阻塞。"
           }
         }
       },
@@ -6073,7 +5799,7 @@
           "has_maintainer_comment": false,
           "has_code_in_comments": false,
           "has_resolution_kw": false,
-          "days_since_last_activity": 14,
+          "days_since_last_activity": 15,
           "has_labels": true,
           "label_count": 1,
           "has_assignee": false,
@@ -6187,29 +5913,29 @@
           "triage": {
             "label": "Triage & Response",
             "objective_score": 100.0,
-            "subjective_score": 80.0,
-            "score": 92.0,
+            "subjective_score": 77.5,
+            "score": 91.0,
             "is_pain_point": false
           },
           "discussion_resolution": {
             "label": "Discussion & Resolution",
             "objective_score": 69.2,
-            "subjective_score": 92.5,
-            "score": 78.5,
+            "subjective_score": 87.5,
+            "score": 76.5,
             "is_pain_point": false
           },
           "closure": {
             "label": "Closure",
             "objective_score": 37.5,
-            "subjective_score": 72.5,
-            "score": 51.5,
+            "subjective_score": 70.0,
+            "score": 50.5,
             "is_pain_point": true
           },
           "bot-agent": {
             "label": "Bot/Agent Governance",
             "objective_score": 50.0,
-            "subjective_score": 79.4,
-            "score": 61.8,
+            "subjective_score": 78.1,
+            "score": 61.2,
             "is_pain_point": false
           }
         },
@@ -6221,50 +5947,60 @@
           "agent_filtering_gap_risk": false,
           "bot_agent_diagnosis": "bot疑似误关闭（关闭后重开或维护者继续讨论）"
         },
+        "is_internal": false,
+        "is_external": true,
+        "is_mature": true,
+        "applicable_stages": [
+          "bot-agent",
+          "closure",
+          "creation",
+          "discussion_resolution",
+          "triage"
+        ],
         "subjective_metric_scores": {
           "sub-input-quality": {
             "score": 90.0,
-            "reason": "包含问题描述、环境信息、复现步骤、预期结果及截图计算，结构化完整。"
+            "reason": "包含问题描述、环境信息、重现步骤、预期结果及数值计算，结构完整。"
           },
           "sub-agent-noise-risk": {
             "score": 95.0,
-            "reason": "内容真实有效，含具体地址计算和截图，无AI幻觉或噪音迹象。"
+            "reason": "内容为真实技术问题，含具体地址计算与截图，无AI幻觉迹象。"
           },
           "sub-triage-routing-correctness": {
-            "score": 85.0,
-            "reason": "issue被正确路由到songkai111处理，创建修复MR并合并，流程正确。"
+            "score": 80.0,
+            "reason": "songkai111快速认领并直接修复，处理路径正确，但无显式标签分流。"
           },
           "sub-triage-owner-clarity": {
             "score": 75.0,
-            "reason": "songkai111主动认领并处理，但无正式assignee字段，责任归属略欠规范。"
+            "reason": "songkai111通过评论和MR明确承担责任，但无正式assignee指派。"
           },
           "sub-discussion-progression": {
             "score": 90.0,
-            "reason": "从确认收到到详细修复方案到MR创建合并，讨论持续推动问题解决。"
+            "reason": "从确认收到到详细修复方案再到MR合并，讨论持续推动问题解决。"
           },
           "sub-user-goal-result": {
-            "score": 95.0,
-            "reason": "用户反馈的UB越界问题被完全修复，MR已合并，方案与预期一致。"
+            "score": 85.0,
+            "reason": "UB越界问题已通过32字节对齐向下取整修复并合并MR，目标有效满足。"
           },
           "sub-closure-premature-close-risk-reverse": {
             "score": 90.0,
-            "reason": "MR合并后由bot关闭，修复方案详细且已验证，无过早关闭风险。"
+            "reason": "MR已合并后bot关闭issue，有完整修复证据，无过早关闭风险。"
           },
           "sub-followup-path-completeness": {
-            "score": 55.0,
-            "reason": "问题已完全解决，但关闭时未说明后续反馈路径，信息不足给保守分。"
+            "score": 50.0,
+            "reason": "关闭后未说明后续反馈路径或重新开启条件，但已修复场景需求较低。"
           },
           "sub-bot-agent-helpfulness": {
             "score": 75.0,
-            "reason": "bot在MR合并后正确执行关闭和添加resolved标签，有效推进闭环流程。"
+            "reason": "bot在MR合并后正确关闭issue并添加resolved标签，完成流程闭环。"
           },
           "sub-bot-agent-intervention-quality": {
             "score": 80.0,
-            "reason": "bot动作准确合规，MR合并后关闭并打标签，时机合适无错误阻断。"
+            "reason": "bot动作准确及时，MR合并后关闭并打标签，无误判或错误阻断。"
           },
           "sub-bot-agent-human-handoff-quality": {
-            "score": 85.0,
-            "reason": "人工已完成修复合并MR，bot随后执行关闭标签，交接顺畅无停滞。"
+            "score": 80.0,
+            "reason": "人工已完成修复并合并MR，bot执行收尾关闭，交接顺畅无停滞。"
           }
         }
       }
@@ -6287,33 +6023,13 @@
     ],
     "review_cases": [
       {
-        "issue_number": "222",
-        "title": "[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败",
-        "url": "https://gitcode.com/cann/cann-samples/issues/222",
-        "risk_type": "Triage & Response得分极低(37)",
-        "stage": "Triage & Response",
-        "evidence": "无明显bot/agent治理风险",
-        "reason": "风险分 3，Triage & Response得分极低(37)",
-        "action": "建议人工审查流程处理记录"
-      },
-      {
-        "issue_number": "221",
-        "title": "cann-samples Development Roadmap (2026 Q3)",
-        "url": "https://gitcode.com/cann/cann-samples/issues/221",
-        "risk_type": "Discussion & Resolution得分极低(16)",
-        "stage": "Discussion & Resolution",
-        "evidence": "bot缺位（无标签或无响应）",
-        "reason": "风险分 3，Discussion & Resolution得分极低(16)",
-        "action": "建议人工审查流程处理记录"
-      },
-      {
         "issue_number": "220",
         "title": "建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）",
         "url": "https://gitcode.com/cann/cann-samples/issues/220",
-        "risk_type": "Discussion & Resolution得分极低(21)",
+        "risk_type": "Discussion & Resolution得分极低(20)",
         "stage": "Discussion & Resolution",
         "evidence": "bot缺位（无标签或无响应）",
-        "reason": "风险分 3，Discussion & Resolution得分极低(21)",
+        "reason": "风险分 3，Discussion & Resolution得分极低(20)",
         "action": "建议人工审查流程处理记录"
       },
       {

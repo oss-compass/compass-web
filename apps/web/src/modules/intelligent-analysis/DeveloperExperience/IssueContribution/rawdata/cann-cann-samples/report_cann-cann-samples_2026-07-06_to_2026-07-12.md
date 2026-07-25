@@ -7,24 +7,25 @@
 ## 1. 执行摘要
 
 + 本周 `cann/cann-samples` 共收到 **5** 个 Issue
++ 其中外部 Issue **4** 个、内部 **1** 个；I1–I3 及 G 基于「外部且成熟」的 **4** 个 Issue 统计（I0 创建阶段统计全部）。
 + **Open 2 / Closed 3**，关闭率 **60.0%**。
-+ 总体体验分为 **48.9/100（D）**，本期作为首期基线。
++ 总体体验分为 **51.5/100（D）**，本期作为首期基线。
 
 当前主要短板集中在三个环节：
 
 | 优先级 | 环节 | 分数 | 核心问题 |
 | ------ | ---- | ----: | -------- |
-| P0 | I3 · 总结与关闭 | 47.8 | 关闭阶段缺乏复用与后续路径 |
-| P1 | I2 · 讨论与解决 | 51.1 | 开放Issue讨论长期停滞无进展 |
-| P1 | I1 · 分配与首次响应 | 65.2 | 首次实质性响应严重缺失 |
+| P0 | I3 · 总结与关闭 | 50.5 | 关闭阶段缺乏沉淀与反馈路径 |
+| P1 | I2 · 讨论与解决 | 59.9 | 讨论深度不足且存在停滞 |
+| P1 | I1 · 分配与首次响应 | 65.4 | 首次响应时间极不稳定 |
 
 本周建议 3 个 REC：
 
 | REC-ID | 优先级 | 行动 |
 | ------ | ------ | ---- |
-| REC-01 | P0 | 强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径） |
-| REC-02 | P1 | 自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求 |
-| REC-03 | P1 | 设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒 |
+| REC-01 | P0 | 在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径 |
+| REC-02 | P1 | 配置自动提醒或升级机制通知维护者 |
+| REC-03 | P1 | 配置标签自动打标规则和assignee自动分配策略 |
 
 ## 2. 本周关键数据
 
@@ -34,7 +35,7 @@
 | Open / Closed | 2 / 3 |
 | 关闭率 | 60.0% |
 | 类型构成 | 缺陷 3 / 需求 1 / 其他 1 |
-| 总体体验分 | 48.9/100（D） |
+| 总体体验分 | 51.5/100（D） |
 | 首次响应时间 | 中位 17.0h；均值 1.4天 |
 | 关闭周期 | 中位 1.2天；均值 2.7天 |
 | 7天响应率 | 100.0% |
@@ -48,110 +49,94 @@
 
 | 阶段 | 分数 | 痛点 Issue | 判断 | 主要拖累指标 |
 | ---- | ----: | ---------- | ---- | ------------ |
-| I0 · 创建 | 90.4 | 0/5（0.0%） | 相对可控 | `SUB_INPUT_QUALITY` 87.8 |
-| I1 · 分配与首次响应 | 65.2 | 2/5（40.0%） | 相对可控 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 40.0 |
-| I2 · 讨论与解决 | 51.1 | 2/5（40.0%） | P1 | `OBJ_SOLUTION_EVIDENCE` 32.3 |
-| I3 · 总结与关闭 | 47.8 | 4/5（80.0%） | P0 | `OBJ_CLOSURE_REUSE` 9.0 |
-| G · Bot/Agent 治理（参考） | 65.2 | 0/5（0.0%） | 参考项 | `OBJ_BOT_GOVERNANCE` 36.0 |
+| I0 · 创建 | 89.2 | 0/5（0.0%） | 相对可控 | `SUB_INPUT_QUALITY` 84.8 |
+| I1 · 分配与首次响应 | 65.4 | 2/4（50.0%） | 相对可控 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 50.0 |
+| I2 · 讨论与解决 | 59.9 | 1/4（25.0%） | P1 | `OBJ_SOLUTION_EVIDENCE` 40.4 |
+| I3 · 总结与关闭 | 50.5 | 3/4（75.0%） | P0 | `OBJ_CLOSURE_REUSE` 11.2 |
+| G · Bot/Agent 治理（参考） | 64.0 | 1/4（25.0%） | 参考项 | `OBJ_BOT_GOVERNANCE` 30.0 |
 
 ## 4. 主要问题
 
 | PP-ID | 优先级 | 阶段 | 问题 | 关键指标 | 影响 |
 | ----- | ------ | ---- | ---- | -------- | ---- |
-| PP-01 | P0 | I3 · 总结与关闭 | 关闭阶段缺乏复用与后续路径 | OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5；OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5 | 知识无法沉淀复用，用户无法了解后续反馈路径，社区经验流失 |
-| PP-02 | P1 | I2 · 讨论与解决 | 开放Issue讨论长期停滞无进展 | OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5；OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5 | 功能建议和路线图无法推进，社区参与感降低，贡献者流失 |
-| PP-03 | P1 | I1 · 分配与首次响应 | 首次实质性响应严重缺失 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5 | 用户等待5天仅得到模板化回复，问题无法及时进入处理流程，信任度下降 |
-| PP-04 | P2 | G · Bot/Agent 治理 | Bot覆盖缺位与误关闭信号并存 | OBJ_BOT_GOVERNANCE：均值 36.0，低分 3/5；OBJ_BOT_MISCLOSE_REVERSE：均值 92.0，低分 0/5 | 开放Issue无自动化跟进和标签辅助，关闭Issue可能存在流程风险 |
-| PP-05 | P2 | I1 · 分配与首次响应 | 标签与指派机制不完善 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5 | Issue无法有效分类和检索，责任归属不明确，增加管理负担 |
+| PP-01 | P0 | I3 · 总结与关闭 | 关闭阶段缺乏沉淀与反馈路径 | OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4；OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4 | 社区用户无法从已关闭Issue获取解决方案参考，也无法了解后续反馈渠道 |
+| PP-02 | P1 | I1 · 分配与首次响应 | 首次响应时间极不稳定 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4 | 部分用户等待5天才收到首次回复，严重影响社区信任和问题解决效率 |
+| PP-03 | P1 | I1 · 分配与首次响应 | 标签与指派覆盖率不足 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4 | Issue缺乏标签分类和正式指派，影响优先级排序和检索效率 |
+| PP-04 | P1 | I2 · 讨论与解决 | 讨论深度不足且存在停滞 | OBJ_SOLUTION_EVIDENCE：均值 40.4，低分 4/4；OBJ_RESULT_FORMATION_TIMELINESS：均值 70.0，低分 1/4 | 功能建议类Issue长期无进展，社区贡献意愿受挫，技术讨论未充分展开 |
+| PP-05 | P2 | G · Bot/Agent 治理 | 开放Issue缺乏Bot自动化分流 | OBJ_BOT_GOVERNANCE：均值 30.0，低分 3/4；OBJ_BOT_MISCLOSE_REVERSE：均值 90.0，低分 0/4 | 社区提交的Issue无法获得自动化初步处理，增加维护者手动分流负担 |
 
 ### 4.1 低分 Issue 明细
 
-#### PP-01 关闭阶段缺乏复用与后续路径（I3 · 总结与关闭）
+#### PP-01 关闭阶段缺乏沉淀与反馈路径（I3 · 总结与关闭）
 
 - **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 0分
-  - 痛点原因：仅由机器人自动关联关闭，无人工解决方案总结与文档沉淀，无法为其他用户提供复用参考。
+  - 痛点原因：关闭说明仅为机器人提示关联MR合并，无方案文档与主链接，未留存任何问题定位与解决信息供后续参考。
   - 原文依据：
     - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `songkai111`：你好，我们将尽快安排同事分析    - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)
-- **[#221](https://gitcode.com/cann/cann-samples/issues/221) cann-samples Development Roadmap (2026 Q3)** — 0分
-  - 痛点原因：关闭时无文字说明、方案文档及链接，仅指派负责人，未沉淀任何可复用信息。
-  - 原文依据：
-    - `zhangzijie`：assigned to @yangyang016
 - **[#220](https://gitcode.com/cann/cann-samples/issues/220) 建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）** — 0分
-  - 痛点原因：关闭说明为空，未提供方案文档或相关链接，仅指派了负责人跟进，无任何复用价值。
+  - 痛点原因：关闭时无任何文字说明，且缺乏方案文档与重复主链接，未留存任何可供后续复用的参考信息。
   - 原文依据：
     - `songkai111`：感谢您的建议，我们将指定mc2领域的committer来关注该建议    - `songkai111`：assigned to @wang-minbo
 - **[#218](https://gitcode.com/cann/cann-samples/issues/218) [Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性** — 0分
-  - 痛点原因：无方案文档沉淀且关闭说明仅15字，未关联重复issue，导致修复经验难以被社区复用。
+  - 痛点原因：未提供方案文档和重复issue主链接，关闭说明仅15字过于简略，导致后续无法有效复用。
   - 原文依据：
     - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue218    - `cann-robot`：add label resolved    - `songkai111`：已收到您的反馈，我们正在处理中    - `songkai111`：已在 `Samples/0_Introduction/vector_add/main.asc` 的 `calc_tiling_params` 函数中修复此问题。在计算 tileSize 后增加 32 字节对齐向下取整，确保 UB 分配总量…    - [关联PR #330（merged）](https://gitcode.com/cann/cann-samples/merge_requests/330)
 - **[#219](https://gitcode.com/cann/cann-samples/issues/219) [Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…** — 45分
-  - 痛点原因：关闭说明仅解释删除无效文件原因，未沉淀方案文档且无主链接，导致后续复用参考价值低。
+  - 痛点原因：关闭说明仅解释删除无效文件原因，未提供方案文档化记录与重复issue主链接，复用参考价值低。
   - 原文依据：
     - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue219    - `cann-robot`：add label resolved    - `songkai111`：该文件 tests/ci_functional_test.yaml 是早期添加的最小功能测试清单原型，其中的样例句柄和路径引用已与实际工程结构不匹配，导致 CI 功能测试无法正确执行。该文件当前处于无效状态，因此将其删除以保持仓库整洁。 …    - [关联PR #332（merged）](https://gitcode.com/cann/cann-samples/merge_requests/332)
-#### PP-02 开放Issue讨论长期停滞无进展（I2 · 讨论与解决）
+#### PP-02 首次响应时间极不稳定（I1 · 分配与首次响应）
 
-- **[#221](https://gitcode.com/cann/cann-samples/issues/221) cann-samples Development Roadmap (2026 Q3)** — 0分
-  - 痛点原因：仅进行了指派操作，未提供任何关联PR、commit引用或文档链接等实质性解决证据。
+- **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 0分
+  - 痛点原因：全程仅有套话回复和打标签，未提供任何实质技术分析或解决方案，最终被机器人直接关闭。
   - 原文依据：
-    - `zhangzijie`：assigned to @yangyang016
+    - `songkai111`：你好，我们将尽快安排同事分析    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)
+- **[#220](https://gitcode.com/cann/cann-samples/issues/220) 建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）** — 0分
+  - 痛点原因：首次响应仅指派负责人并承诺关注，缺乏技术解答或具体处理方案，未构成实质回应。
+  - 原文依据：
+    - `songkai111`：感谢您的建议，我们将指定mc2领域的committer来关注该建议    - `songkai111`：assigned to @wang-minbo
+#### PP-03 标签与指派覆盖率不足（I1 · 分配与首次响应）
+
+- **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 0分
+  - 痛点原因：全程仅有套话回复和打标签，未提供任何实质技术分析或解决方案，最终被机器人直接关闭。
+  - 原文依据：
+    - `songkai111`：你好，我们将尽快安排同事分析    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)
+- **[#220](https://gitcode.com/cann/cann-samples/issues/220) 建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）** — 0分
+  - 痛点原因：首次响应仅指派负责人并承诺关注，缺乏技术解答或具体处理方案，未构成实质回应。
+  - 原文依据：
+    - `songkai111`：感谢您的建议，我们将指定mc2领域的committer来关注该建议    - `songkai111`：assigned to @wang-minbo
+#### PP-04 讨论深度不足且存在停滞（I2 · 讨论与解决）
+
 - **[#220](https://gitcode.com/cann/cann-samples/issues/220) 建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）** — 31分
-  - 痛点原因：仅停留在分配负责人阶段，无关联PR、文档链接和release引用等实质性产出，未形成解决闭环。
+  - 痛点原因：仅停留在指派负责人阶段，无关联PR、文档或release等实质性解决证据。
   - 原文依据：
     - `songkai111`：感谢您的建议，我们将指定mc2领域的committer来关注该建议    - `songkai111`：assigned to @wang-minbo
 - **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 38分
-  - 痛点原因：缺少commit引用与文档链接，且关闭原因依赖关联issue合并，自身解决证据链不完整。
+  - 痛点原因：虽关联了已合并PR，但无commit引用与文档链接，且关闭评论仅为机器人自动回复，缺乏人工解决证据说明。
   - 原文依据：
     - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)    - `songkai111`：你好，我们将尽快安排同事分析    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved
 - **[#218](https://gitcode.com/cann/cann-samples/issues/218) [Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性** — 38分
-  - 痛点原因：虽有关联PR和修复说明，但缺乏commit引用和文档链接等强证据支撑，导致证据强度不足。
+  - 痛点原因：虽有关联PR和文字修复说明，但缺乏直接的代码提交链接与文档链接作为强证据支撑，证据链不完整。
   - 原文依据：
     - [关联PR #330（merged）](https://gitcode.com/cann/cann-samples/merge_requests/330)    - `songkai111`：已收到您的反馈，我们正在处理中    - `songkai111`：已在 `Samples/0_Introduction/vector_add/main.asc` 的 `calc_tiling_params` 函数中修复此问题。在计算 tileSize 后增加 32 字节对齐向下取整，确保 UB 分配总量…    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue218    - `cann-robot`：add label resolved
 - **[#219](https://gitcode.com/cann/cann-samples/issues/219) [Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…** — 54分
-  - 痛点原因：缺乏文档链接与release引用，且关闭评论仅由机器人自动触发，导致修复证据链不够完整。
+  - 痛点原因：虽有关联PR与机器人关闭评论，但缺乏文档链接、release引用及明确的修复验证证据，导致证据强度不足。
   - 原文依据：
     - [关联PR #332（merged）](https://gitcode.com/cann/cann-samples/merge_requests/332)    - `songkai111`：该文件 tests/ci_functional_test.yaml 是早期添加的最小功能测试清单原型，其中的样例句柄和路径引用已与实际工程结构不匹配，导致 CI 功能测试无法正确执行。该文件当前处于无效状态，因此将其删除以保持仓库整洁。 …    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue219    - `cann-robot`：add label resolved
-#### PP-03 首次实质性响应严重缺失（I1 · 分配与首次响应）
-
-- **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 0分
-  - 痛点原因：首次响应超120小时且全程无实质技术分析，仅打标签后由机器人自动关闭。
-  - 原文依据：
-    - `songkai111`：你好，我们将尽快安排同事分析    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)
-- **[#221](https://gitcode.com/cann/cann-samples/issues/221) cann-samples Development Roadmap (2026 Q3)** — 0分
-  - 痛点原因：仅指派了负责人，未提供任何实质性解答或反馈。
-  - 原文依据：
-    - `zhangzijie`：assigned to @yangyang016
-- **[#220](https://gitcode.com/cann/cann-samples/issues/220) 建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）** — 0分
-  - 痛点原因：首次响应仅为客套感谢与指派人员，耗时近17小时，且始终未提供任何实质性技术解答。
-  - 原文依据：
-    - `songkai111`：感谢您的建议，我们将指定mc2领域的committer来关注该建议    - `songkai111`：assigned to @wang-minbo
-#### PP-04 Bot覆盖缺位与误关闭信号并存（G · Bot/Agent 治理）
+#### PP-05 开放Issue缺乏Bot自动化分流（G · Bot/Agent 治理）
 
 - **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 20分
-  - 痛点原因：Bot错误地将未解决的编包失败问题标记为已解决并自动关闭，缺乏人工确认导致治理失效。
+  - 痛点原因：Bot仅因关联MR合并便机械关闭issue，未验证用户问题是否真正解决，缺乏有效互动。
   - 原文依据：
     - `songkai111`：你好，我们将尽快安排同事分析    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)
 - **[#219](https://gitcode.com/cann/cann-samples/issues/219) [Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…** — 20分
-  - 痛点原因：Bot仅执行打标与关闭动作，未留下任何说明性评论告知关闭原因及关联PR，缺乏有效沟通。
+  - 痛点原因：Bot仅机械执行打标与自动关闭，评论数为零，缺乏实质性互动与有效反馈。
   - 原文依据：
     - `songkai111`：该文件 tests/ci_functional_test.yaml 是早期添加的最小功能测试清单原型，其中的样例句柄和路径引用已与实际工程结构不匹配，导致 CI 功能测试无法正确执行。该文件当前处于无效状态，因此将其删除以保持仓库整洁。 …    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue219    - [关联PR #332（merged）](https://gitcode.com/cann/cann-samples/merge_requests/332)
 - **[#218](https://gitcode.com/cann/cann-samples/issues/218) [Bug-Report|缺陷反馈]: vector_add算子存在UB越界可能性** — 20分
-  - 痛点原因：Bot仅机械执行打标与关闭操作，未留下任何说明性评论，导致治理过程缺乏透明度。
+  - 痛点原因：Bot仅机械执行打标与关闭，评论数为零，未提供任何状态更新或修复说明，缺乏有效沟通。
   - 原文依据：
     - `songkai111`：已收到您的反馈，我们正在处理中    - `songkai111`：已在 `Samples/0_Introduction/vector_add/main.asc` 的 `calc_tiling_params` 函数中修复此问题。在计算 tileSize 后增加 32 字节对齐向下取整，确保 UB 分配总量…    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue218    - [关联PR #330（merged）](https://gitcode.com/cann/cann-samples/merge_requests/330)
-#### PP-05 标签与指派机制不完善（I1 · 分配与首次响应）
-
-- **[#222](https://gitcode.com/cann/cann-samples/issues/222) [Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败** — 0分
-  - 痛点原因：首次响应超120小时且全程无实质技术分析，仅打标签后由机器人自动关闭。
-  - 原文依据：
-    - `songkai111`：你好，我们将尽快安排同事分析    - `huangkejie1647`：add label bug-report    - `cann-robot`：add label resolved    - `cann-robot`：closed from codehub, Due to close relation issue when mr merged: issue222    - [关联PR #336（merged）](https://gitcode.com/cann/cann-samples/merge_requests/336)
-- **[#221](https://gitcode.com/cann/cann-samples/issues/221) cann-samples Development Roadmap (2026 Q3)** — 0分
-  - 痛点原因：仅指派了负责人，未提供任何实质性解答或反馈。
-  - 原文依据：
-    - `zhangzijie`：assigned to @yangyang016
-- **[#220](https://gitcode.com/cann/cann-samples/issues/220) 建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）** — 0分
-  - 痛点原因：首次响应仅为客套感谢与指派人员，耗时近17小时，且始终未提供任何实质性技术解答。
-  - 原文依据：
-    - `songkai111`：感谢您的建议，我们将指定mc2领域的committer来关注该建议    - `songkai111`：assigned to @wang-minbo
 
 ## 5. 本周行动清单
 
@@ -162,40 +147,40 @@
 | 优先级 | P0 |
 | 对应问题 | PP-01 |
 | 影响环节 | 总结与关闭 |
-| 承接方 | 维护团队；候选负责人 `songkai111` |
+| 承接方 | 社区维护团队；候选负责人 `songkai111` |
 | 触发条件 | Issue关闭前 |
-| 具体动作 | 强制填写结构化关闭总结模板（含根因、修复方案、影响范围、后续反馈路径） |
+| 具体动作 | 在关闭评论中添加解决方案摘要、关联MR链接和后续反馈路径 |
 | 目标 | `OBJ_CLOSURE_REUSE` 和 `OBJ_DECISION_TRANSPARENCY` 提升 |
-| 相关证据 | OBJ_CLOSURE_REUSE：均值 9.0，低分 5/5；OBJ_DECISION_TRANSPARENCY：均值 59.0，低分 2/5 |
+| 相关证据 | OBJ_CLOSURE_REUSE：均值 11.2，低分 4/4；OBJ_DECISION_TRANSPARENCY：均值 66.2，低分 1/4 |
 
 **对应给分点**
 
 | 指标 | 当前问题 | 预期改善 |
 | ---- | -------- | -------- |
-| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 均值 9.0，低分 5/5 | 关闭时沉淀解决方案文档、FAQ和规避方案 |
-| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 均值 59.0，低分 2/5 | 补齐关闭原因、关闭评论和结构化总结 |
-| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。 | 关闭时明确说明后续反馈路径和重新开启条件 |
+| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 均值 11.2，低分 4/4 | 关闭时沉淀解决方案文档、FAQ和规避方案 |
+| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 均值 66.2，低分 1/4 | 补齐关闭原因、关闭评论和结构化总结 |
+| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。 | 关闭时明确说明后续反馈路径和重新开启条件 |
 
-### REC-02 · 补齐技术讨论并补充解决方案与验证结论
+### REC-02 · 提升分流响应
 
 | 字段 | 内容 |
 | ---- | ---- |
 | 优先级 | P1 |
 | 对应问题 | PP-02 |
-| 影响环节 | 讨论与解决 |
-| 承接方 | 社区运营；候选负责人 `songkai111` |
-| 触发条件 | Issue开放超过7天无新评论 |
-| 具体动作 | 自动提醒assignee跟进并引导社区讨论，设置定期进度更新要求 |
-| 目标 | `OBJ_SOLUTION_EVIDENCE` 和 `OBJ_RESULT_FORMATION_TIMELINESS` 提升 |
-| 相关证据 | OBJ_SOLUTION_EVIDENCE：均值 32.3，低分 5/5；OBJ_RESULT_FORMATION_TIMELINESS：均值 56.0，低分 2/5 |
+| 影响环节 | 分配与首次响应 |
+| 承接方 | 社区维护团队；候选负责人 `songkai111` |
+| 触发条件 | Issue创建后48小时无响应 |
+| 具体动作 | 配置自动提醒或升级机制通知维护者 |
+| 目标 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升 |
+| 相关证据 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4 |
 
 **对应给分点**
 
 | 指标 | 当前问题 | 预期改善 |
 | ---- | -------- | -------- |
-| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 均值 56.0，低分 2/5 | 加快形成明确结果的速度 |
-| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 均值 32.3，低分 5/5 | 补充修改内容、关联变更和影响范围 |
-| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | 仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。 | 明确下一步动作、阶段结论和推进记录 |
+| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 均值 50.0，低分 2/4 | 缩短首次实质回应时间，不只是'有人回复'而是'有实质内容' |
+| `OBJ_RESPONSE_SPEED` 响应速度 | 均值 70.0，低分 1/4 | 缩短首次响应时间，提高 7 天响应率 |
+| `SUB_OWNER_CLARITY` 责任归属清晰度 | songkai111实际承接并提交MR，但无正式assignee指派，责任归属… | 明确责任人、候选负责人和下一步动作 |
 
 ### REC-03 · 提升分流响应
 
@@ -204,94 +189,91 @@
 | 优先级 | P1 |
 | 对应问题 | PP-03 |
 | 影响环节 | 分配与首次响应 |
-| 承接方 | 维护团队；候选负责人 `songkai111` |
-| 触发条件 | Bug类Issue创建后24小时内 |
-| 具体动作 | 设置首次实质性响应SLA，要求包含技术分析或路由判断，部署自动提醒 |
+| 承接方 | 社区维护团队；候选负责人 `songkai111` |
+| 触发条件 | Issue创建后 |
+| 具体动作 | 配置标签自动打标规则和assignee自动分配策略 |
 | 目标 | `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 和 `OBJ_RESPONSE_SPEED` 提升 |
-| 相关证据 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 40.0，低分 3/5；OBJ_RESPONSE_SPEED：均值 76.0，低分 1/5 |
+| 相关证据 | OBJ_FIRST_SUBSTANTIVE_RESPONSE：均值 50.0，低分 2/4；OBJ_RESPONSE_SPEED：均值 70.0，低分 1/4 |
 
 **对应给分点**
 
 | 指标 | 当前问题 | 预期改善 |
 | ---- | -------- | -------- |
-| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 均值 40.0，低分 3/5 | 缩短首次实质回应时间，不只是'有人回复'而是'有实质内容' |
-| `OBJ_RESPONSE_SPEED` 响应速度 | 均值 76.0，低分 1/5 | 缩短首次响应时间，提高 7 天响应率 |
-| `SUB_OWNER_CLARITY` 责任归属清晰度 | 无assignee分配，但songkai111实际承担处理并创建MR，责任隐含… | 明确责任人、候选负责人和下一步动作 |
+| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 均值 50.0，低分 2/4 | 缩短首次实质回应时间，不只是'有人回复'而是'有实质内容' |
+| `OBJ_RESPONSE_SPEED` 响应速度 | 均值 70.0，低分 1/4 | 缩短首次响应时间，提高 7 天响应率 |
+| `SUB_OWNER_CLARITY` 责任归属清晰度 | songkai111实际承接并提交MR，但无正式assignee指派，责任归属… | 明确责任人、候选负责人和下一步动作 |
 
 
 ## 6. 各阶段简析
 
 ### I0 · 创建
-
-本阶段分数为 **90.4/100**，整体相对可控，但仍需关注：无明显痛点，Issue创建质量高，结构化模板使用规范。
+本阶段分数为 **89.2/100**，整体相对可控，但仍需关注：Issue创建质量高，输入结构完整，无显著痛点。
 
 | 指标 | 得分 | 给分原因 |
 | ---- | ----: | -------- |
-| `SUB_AGENT_NOISE_RISK` AI噪音风险 | 93.0 | 真实用户反馈，含具体环境与复现命令，无AI幻觉或噪音迹象。 |
-| `SUB_INPUT_QUALITY` 输入质量 | 87.8 | 包含完整复现步骤、环境信息、错误截图、预期结果和结构化章节，信息充分。 |
+| `SUB_AGENT_NOISE_RISK` AI噪音风险 | 93.6 | 内容为真实用户编包失败反馈，有具体命令和报错截图，无AI幻觉迹象。 |
+| `SUB_INPUT_QUALITY` 输入质量 | 84.8 | 包含问题描述、环境信息、复现步骤、预期结果及截图，结构化完整。 |
 
 
 ### I1 · 分配与首次响应
-
-本阶段分数为 **65.2/100**，整体相对可控，但仍需关注：首次实质性响应严重缺失。
+本阶段分数为 **65.4/100**，整体相对可控，但仍需关注：首次响应时间极不稳定。
 
 | 指标 | 得分 | 给分原因 |
 | ---- | ----: | -------- |
-| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 40.0 | 均值 40.0，低分 3/5 |
-| `OBJ_RESPONSE_SPEED` 响应速度 | 76.0 | 均值 76.0，低分 1/5 |
-| `SUB_OWNER_CLARITY` 责任归属清晰度 | 76.8 | 无assignee分配，但songkai111实际承担处理并创建MR，责任隐含… |
-| `SUB_ROUTING_CORRECTNESS` 分流正确性 | 75.4 | bug-report标签正确，后续有MR修复，但首次响应慢且仅泛泛回复。 |
+| `OBJ_FIRST_SUBSTANTIVE_RESPONSE` 首次实质回应时效 | 50.0 | 均值 50.0，低分 2/4 |
+| `OBJ_RESPONSE_SPEED` 响应速度 | 70.0 | 均值 70.0，低分 1/4 |
+| `SUB_OWNER_CLARITY` 责任归属清晰度 | 72.0 | songkai111实际承接并提交MR，但无正式assignee指派，责任归属… |
+| `SUB_ROUTING_CORRECTNESS` 分流正确性 | 75.0 | bug-report标签正确，songkai111接手并创建修复MR，分流路径… |
 
 代表低分 Issue：[#222](https://gitcode.com/cann/cann-samples/issues/222)
 问题：[Bug-Report|缺陷反馈]: 用7月8日最新的社区toolkit包编包失败。
 
 ### I2 · 讨论与解决
-
-本阶段分数为 **51.1/100**，本阶段需要改进，主要问题是：开放Issue讨论长期停滞无进展。
+本阶段分数为 **59.9/100**，本阶段需要改进，主要问题是：讨论深度不足且存在停滞。
 
 | 指标 | 得分 | 给分原因 |
 | ---- | ----: | -------- |
-| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 56.0 | 均值 56.0，低分 2/5 |
-| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 32.3 | 均值 32.3，低分 5/5 |
-| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | 61.0 | 仅一条泛泛回复，无技术分析讨论，但后续MR创建推动了解决。 |
-| `SUB_USER_GOAL_RESULT` 用户目标处理结果 | 62.0 | MR#336实际修复了头文件引用问题并已合并，用户目标得到满足。 |
+| `OBJ_RESULT_FORMATION_TIMELINESS` 形成结果时效 | 70.0 | 均值 70.0，低分 1/4 |
+| `OBJ_SOLUTION_EVIDENCE` 解决证据强度 | 40.4 | 均值 40.4，低分 4/4 |
+| `SUB_DISCUSSION_PROGRESSION` 讨论推进性 | 66.2 | 仅一条回复称将安排分析，随后直接创建MR，讨论环节薄弱但推进有效。 |
+| `SUB_USER_GOAL_RESULT` 用户目标处理结果 | 67.5 | MR#336移除内部头文件引用修复编译问题并已合并，用户目标得到有效满足。 |
 
-代表低分 Issue：[#221](https://gitcode.com/cann/cann-samples/issues/221)
-问题：cann-samples Development Roadmap (2026 Q3)。
+代表低分 Issue：[#220](https://gitcode.com/cann/cann-samples/issues/220)
+问题：建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）。
 
 ### I3 · 总结与关闭
-
-本阶段分数为 **47.8/100**，本阶段需要改进，主要问题是：关闭阶段缺乏复用与后续路径。
+本阶段分数为 **50.5/100**，本阶段需要改进，主要问题是：关闭阶段缺乏沉淀与反馈路径。
 
 | 指标 | 得分 | 给分原因 |
 | ---- | ----: | -------- |
-| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 9.0 | 均值 9.0，低分 5/5 |
-| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 59.0 | 均值 59.0，低分 2/5 |
-| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 49.0 | 关闭时未说明重新开启条件或后续反馈路径，仅bot自动关闭。 |
-| `SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分 | 88.0 | MR已合并且修复内容匹配问题，关闭合理，但用户未确认且关闭原因标记为进行中。 |
+| `OBJ_CLOSURE_REUSE` 关闭复用价值 | 11.2 | 均值 11.2，低分 4/4 |
+| `OBJ_DECISION_TRANSPARENCY` 决策透明度 | 66.2 | 均值 66.2，低分 1/4 |
+| `SUB_FOLLOWUP_PATH_COMPLETENESS` 后续路径完整性 | 47.5 | 关闭时未说明后续反馈路径或重新开启条件，信息不足故给保守分。 |
+| `SUB_PREMATURE_CLOSE_RISK_REVERSE` 过早关闭风险反向分 | 88.8 | MR合并后由bot关闭并加resolved标签，修复与关闭有明确因果关系，非过… |
 
 代表低分 Issue：[#220](https://gitcode.com/cann/cann-samples/issues/220)
 问题：建议补充 Matmul + AllReduce 融合的 MC2 示例（#216 的补充方案）。
 
 ### G · Bot/Agent 治理
-
-本阶段分数为 **65.2/100**，仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。
+本阶段分数为 **64.0/100**，仅作参考，不计入总分。当前主要看 Bot 覆盖、流程留痕和人机交接是否稳定。
 
 | 指标 | 得分 | 给分原因 |
 | ---- | ----: | -------- |
-| `OBJ_BOT_GOVERNANCE` Bot治理有效性 | 36.0 | 均值 36.0，低分 3/5 |
-| `OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分 | 92.0 | 均值 92.0，低分 0/5 |
-| `SUB_BOT_HANDOFF_QUALITY` 人机交接质量 | 72.6 | Bot在人工MR合并后执行收尾，交接顺畅，未造成流程停滞。 |
-| `SUB_BOT_HELPFULNESS` 自动化帮助度 | 63.4 | Bot在MR合并后自动关闭并加resolved标签，流程收尾有效，属中性偏正向… |
-| `SUB_BOT_INTERVENTION_QUALITY` 介入动作质量 | 67.0 | Bot关闭和标签动作时机准确，在MR合并后执行，无错误阻断或误判。 |
+| `OBJ_BOT_GOVERNANCE` Bot治理有效性 | 30.0 | 均值 30.0，低分 3/4 |
+| `OBJ_BOT_MISCLOSE_REVERSE` Bot误关闭风险反向分 | 90.0 | 均值 90.0，低分 0/4 |
+| `SUB_BOT_HANDOFF_QUALITY` 人机交接质量 | 72.5 | 人工已创建修复MR，bot仅完成收尾关闭，交接顺畅无阻塞。 |
+| `SUB_BOT_HELPFULNESS` 自动化帮助度 | 67.5 | bot在MR合并后自动关闭并加resolved标签，流程守卫有效，帮助闭环。 |
+| `SUB_BOT_INTERVENTION_QUALITY` 介入动作质量 | 71.2 | bot动作准确：MR合并触发关闭、添加resolved标签，时机合适无误判。 |
 
+代表低分 Issue：[#219](https://gitcode.com/cann/cann-samples/issues/219)
+问题：[Bug-Report|缺陷反馈]: 测试清单 ci_functional_test.yaml 中 matmul_basic 的 stdout_contain…。
 
 
 ## 7. 趋势
 
 | 周期 | Issue 数 | 总体体验分 | 变化 | I0 | I1 | I2 | I3 | G |
 | ---- | --------: | ----------: | ---- | ----: | ----: | ----: | ----: | ----: |
-| 2026-07-06_to_2026-07-12 | 5 | 48.9 | 首期基线 | 90.4 | 65.2 | 51.1 | 47.8 | 65.2 |
+| 2026-07-06_to_2026-07-12 | 5 | 51.5 | 首期基线 | 89.2 | 65.4 | 59.9 | 50.5 | 64.0 |
 
 本期作为首期基线，后续周报会基于同一口径展示趋势变化。
 
@@ -308,9 +290,10 @@ Top1 响应占比 **100.0%**。以上人员仅作为行动承接候选，不代�
 ## 9. 数据说明
 
 - 数据范围：2026-07-06_to_2026-07-12 创建的 Issue，按创建时间归入本期。
+- 统计范围：I0 创建阶段统计全部 Issue；I1–I3 及 Bot/Agent 治理仅统计「外部且成熟」的 Issue（创建人∉责任人，且已关闭或创建满 7 天）。未成熟或内部 Issue 只计入创建阶段。
 - 数据性质：回溯统计，不是真实用户体验测试。
 - 文本判断：来自模型代读 Issue 线程。
-- 分数口径：总体体验分采用当前报告口径计算；Bot/Agent 治理仅作参考，不计入总分。
+- 分数口径：总体体验分采用当前报告口径计算；无样本阶段不计分并按剩余阶段权重归一化；Bot/Agent 治理仅作参考，不计入总分。
 - 数据完整性：84.5/100，整体置信度 低。
 - 平台限制：GitCode API 不返回 author_association 与关联 PR，维护者识别与关联 PR 率不可信，已从对比剔除；无 closed_by / closed 事件，自关闭无法判定。
-- 数据文件：`/home/shengbao/Cogito/issue_experience_agent/outputs/cann-cann-samples/report_cann-cann-samples_2026-07-06_to_2026-07-12.json`。
+- 数据文件：`/home/shengbao/Cogito/issue_experience_agent/outputs/report/cann-cann-samples/report_cann-cann-samples_2026-07-06_to_2026-07-12.json`。
