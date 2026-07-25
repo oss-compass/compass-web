@@ -34,7 +34,7 @@ const CiControls: React.FC<CiControlsProps> = ({
         { value: 'runtime', label: 'runtime' },
         { value: 'opsnn', label: 'ops-nn' },
         { value: 'opscv', label: 'ops-cv' },
-        { value: 'graphaf', label: 'graph-af' },
+        { value: 'graphaf', label: 'graph-autofusion' },
       ]}
       minWidth={130}
     />

@@ -15,7 +15,7 @@ const repoSlug = (repo: CiRepoKey) =>
     : repo === 'opscv'
     ? 'ops-cv'
     : repo === 'graphaf'
-    ? 'graph-af'
+    ? 'graph-autofusion'
     : 'runtime';
 
 export const runURL = (repo: CiRepoKey, id: string) =>
@@ -35,7 +35,7 @@ export const normalizeRepoKey = (
   if (raw === 'opscv' || raw === 'ops-cv') {
     return 'opscv';
   }
-  if (raw === 'graphaf' || raw === 'graph-af') {
+  if (raw === 'graphaf' || raw === 'graph-autofusion') {
     return 'graphaf';
   }
   return 'runtime';
@@ -48,7 +48,7 @@ export const repoKeyToQuery = (repo: CiRepoKey) =>
     : repo === 'opscv'
     ? 'ops-cv'
     : repo === 'graphaf'
-    ? 'graph-af'
+    ? 'graph-autofusion'
     : 'runtime';
 
 /** 维度中文名 */
@@ -236,7 +236,7 @@ export const daySeries = (d: CiRepoData): CiDaySeries => {
     waste: days.map((dt) => pick(d.boards[dt], 'cost', '无效机时')),
     dur: days.map((dt) => pick(d.boards[dt], 'efficiency', '流水线时长 中位')),
     block: days.map((dt) => pick(d.boards[dt], 'interaction', 'CI 阻塞 PR')),
-    hours: days.map((dt) => pick(d.boards[dt], 'cost', '机时(全部池)')),
+    hours: days.map((dt) => pick(d.boards[dt], 'cost', '机时 (全部池)')),
   };
 };
 

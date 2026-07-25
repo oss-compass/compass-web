@@ -199,7 +199,7 @@ function transformJourneyRepo(repoKey, repo, warns) {
     return {
         signatures: [...segSignatures],
         repo: {
-            projectName: repoKey === 'opsnn' ? 'ops-nn' : repoKey === 'opscv' ? 'ops-cv' : repoKey === 'graphaf' ? 'graph-af' : repoKey,
+            projectName: repoKey === 'opsnn' ? 'ops-nn' : repoKey === 'opscv' ? 'ops-cv' : repoKey === 'graphaf' ? 'graph-autofusion' : repoKey,
             workflow: repo.workflow,
             days: repo.days,
             boards,

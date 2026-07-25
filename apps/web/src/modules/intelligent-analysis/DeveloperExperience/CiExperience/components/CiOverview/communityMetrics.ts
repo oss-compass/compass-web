@@ -55,7 +55,7 @@ const repoSlug = (repo: CiRepoKey) =>
     : repo === 'opscv'
     ? 'ops-cv'
     : repo === 'graphaf'
-    ? 'graph-af'
+    ? 'graph-autofusion'
     : 'runtime';
 
 const isActive = (p: { status: string }) => /^仍活跃/.test(p.status);

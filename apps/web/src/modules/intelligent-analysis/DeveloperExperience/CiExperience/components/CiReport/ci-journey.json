@@ -33682,7 +33682,7 @@
   }
  },
  "graphaf": {
-  "projectName": "graph-af",
+  "projectName": "graph-autofusion",
   "workflow": "PR-pipeline_graph-autofusion",
   "days": [
    "2026-07-24"
