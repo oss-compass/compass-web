@@ -10,7 +10,13 @@ import type {
 } from './types';
 
 const repoSlug = (repo: CiRepoKey) =>
-  repo === 'opsnn' ? 'ops-nn' : repo === 'opscv' ? 'ops-cv' : 'runtime';
+  repo === 'opsnn'
+    ? 'ops-nn'
+    : repo === 'opscv'
+    ? 'ops-cv'
+    : repo === 'graphaf'
+    ? 'graph-af'
+    : 'runtime';
 
 export const runURL = (repo: CiRepoKey, id: string) =>
   `https://gitcode.com/cann/${repoSlug(repo)}/actions/runs/${id}`;
@@ -29,12 +35,21 @@ export const normalizeRepoKey = (
   if (raw === 'opscv' || raw === 'ops-cv') {
     return 'opscv';
   }
+  if (raw === 'graphaf' || raw === 'graph-af') {
+    return 'graphaf';
+  }
   return 'runtime';
 };
 
 /** repo key -> query 参数值（对外用 ops-nn / ops-cv） */
 export const repoKeyToQuery = (repo: CiRepoKey) =>
-  repo === 'opsnn' ? 'ops-nn' : repo === 'opscv' ? 'ops-cv' : 'runtime';
+  repo === 'opsnn'
+    ? 'ops-nn'
+    : repo === 'opscv'
+    ? 'ops-cv'
+    : repo === 'graphaf'
+    ? 'graph-af'
+    : 'runtime';
 
 /** 维度中文名 */
 export const DIM_NAME: Record<CiDimKey, string> = {

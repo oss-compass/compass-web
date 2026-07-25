@@ -53,6 +53,12 @@ const SEG_META: Record<
     code: 'BUILD',
     intro: '镜像拉取 / 构建环境准备阶段的耗时与稳定性。',
   },
+  静态检查: {
+    icon: <CodeOutlined />,
+    color: '#0891b2',
+    code: 'LINT',
+    intro: '代码静态检查（lint / format / header）阶段的耗时与稳定性。',
+  },
   编译: {
     icon: <CodeOutlined />,
     color: '#ea580c',
@@ -175,6 +181,8 @@ const StageCard: React.FC<{
         className={`flex h-[260px] w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-3 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
           CARD_TONE[tone]
         } ${
+          stage.parallel ? 'border-dashed border-indigo-300' : ''
+        } ${
           active
             ? 'ring-2 ring-violet-400'
             : attention
@@ -244,8 +252,9 @@ const StageCard: React.FC<{
 const JourneyDirectory: React.FC<{
   stages: CiJourneyStage[];
   activeKey: string;
+  unsegCount: number;
   onSelect: (key: string) => void;
-}> = ({ stages, activeKey, onSelect }) => (
+}> = ({ stages, activeKey, unsegCount, onSelect }) => (
   <Card
     bordered={false}
     className="w-full rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.05)]"
@@ -309,6 +318,52 @@ const JourneyDirectory: React.FC<{
           </button>
         );
       })}
+      {/* 跨段/未映射 —— 只在有未归段问题时展示 */}
+      {unsegCount > 0 ? (
+        <>
+          <div className="border-t border-dashed border-slate-200" />
+          <button
+            type="button"
+            aria-pressed={activeKey === '__unseg'}
+            onClick={() => onSelect('__unseg')}
+            className={`w-full rounded-2xl border text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 ${
+              activeKey === '__unseg'
+                ? 'border-slate-900 bg-slate-900 text-white shadow-[0_14px_32px_rgba(15,23,42,0.18)]'
+                : 'border-slate-200/80 bg-white/90 text-slate-700 shadow-[0_12px_32px_rgba(15,23,42,0.05)] hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_28px_rgba(15,23,42,0.1)]'
+            }`}
+          >
+            <span className="flex items-center gap-3 px-4 py-3">
+              <span
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-semibold ${
+                  activeKey === '__unseg'
+                    ? 'bg-white/[0.12] text-white'
+                    : 'bg-slate-100 text-slate-500'
+                }`}
+              >
+                ✚
+              </span>
+              <span className="min-w-0 flex-1">
+                <span
+                  className={`block truncate text-sm font-semibold ${
+                    activeKey === '__unseg' ? 'text-white' : 'text-slate-800'
+                  }`}
+                >
+                  跨段/未映射
+                </span>
+              </span>
+              <span
+                className={`flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-bold ${
+                  activeKey === '__unseg'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-rose-100 text-rose-600'
+                }`}
+              >
+                {unsegCount}
+              </span>
+            </span>
+          </button>
+        </>
+      ) : null}
     </nav>
   </Card>
 );
@@ -770,6 +825,49 @@ const StageDetailPanel: React.FC<{
   );
 };
 
+/** 跨段/未映射问题详情面板（无四维表、无趋势，仅展示问题列表） */
+const UnsegDetailPanel: React.FC<{
+  problems: CiJourneyProblem[];
+  repo: CiRepoKey;
+}> = ({ problems, repo }) => (
+  <div className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+    <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
+      <div className="flex items-start gap-4">
+        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-xl text-slate-500">
+          ✚
+        </span>
+        <div className="min-w-0">
+          <div className="text-lg font-semibold text-slate-900">
+            跨段/未映射
+          </div>
+          <p className="mt-0.5 text-sm leading-6 text-slate-500">
+            阶段名被平台打码（「内容违规已隐藏」）或问题天然跨段（如取消长占），无法归入单一旅程段——在此露出，任何优先级不消失；段内四维表不适用。
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-sm font-semibold text-rose-600">
+          <span>问题</span>
+          <span className="text-base leading-none">{problems.length}</span>
+        </span>
+      </div>
+    </div>
+    <div className=">md:p-5 space-y-6 p-4">
+      {problems.length ? (
+        <div className="flex flex-col gap-4">
+          {problems.map((p, i) => (
+            <StageProblem key={i} problem={p} repo={repo} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-[12.5px] text-slate-500">
+          当日无跨段/未映射问题。
+        </div>
+      )}
+    </div>
+  </div>
+);
+
 /**
  * 开发者旅程全景图：主轴=旅程段（八段横排，借鉴社区入门体验旅程全景图样式），
  * 每卡=段综合分 + 星级 + 状态词 + 段三宫格。详情区为主从式布局（对齐 Issue 体验路径总览）：
@@ -799,8 +897,12 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
+  const unsegProblems = board?.unsegProblems ?? [];
+
   const activeStage =
-    stages.find((s) => s.seg === activeKey) ?? stages[0] ?? null;
+    activeKey === '__unseg'
+      ? null
+      : stages.find((s) => s.seg === activeKey) ?? stages[0] ?? null;
 
   return (
     <section>
@@ -828,23 +930,32 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
 
         {/* 旅程段按可用宽度自动分列，空间不足时换行，避免横向滚动。 */}
         <div className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(208px,1fr))] items-start gap-x-10 gap-y-6 px-2 pb-2 pt-1">
-          {stages.map((stage, index) => (
-            <div key={stage.seg} className="relative min-w-0">
-              <StageCard
-                stage={stage}
-                active={activeKey === stage.seg}
-                onClick={() => setActiveKey(stage.seg)}
-              />
-              {index < stages.length - 1 ? (
-                <div
-                  className="pointer-events-none absolute -right-7 top-0 flex h-[260px] w-4 items-center justify-center text-slate-300"
-                  aria-hidden="true"
-                >
-                  <ArrowRightOutlined className="text-base" />
-                </div>
-              ) : null}
-            </div>
-          ))}
+          {stages.map((stage, index) => {
+            return (
+              <div key={stage.seg} className="relative min-w-0">
+                <StageCard
+                  stage={stage}
+                  active={activeKey === stage.seg}
+                  onClick={() => setActiveKey(stage.seg)}
+                />
+                {index < stages.length - 1 ? (
+                  <div
+                    className="pointer-events-none absolute -right-7 top-0 flex h-[260px] w-4 items-center justify-center text-slate-300"
+                    aria-hidden="true"
+                  >
+                    {/* 下一段与当前都 parallel 时，显示 ∥ */}
+                    {stages[index + 1]?.parallel && stage.parallel ? (
+                      <Tooltip title="并行：静态检查与编译同在 compile 阶段时间窗内并行执行，非先后">
+                        <span className="text-lg font-bold text-indigo-400">∥</span>
+                      </Tooltip>
+                    ) : (
+                      <ArrowRightOutlined className="text-base" />
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
 
         {/* 旅程段详情 · 主从式布局（左菜单 + 右内容，对齐 Issue 体验路径总览） */}
@@ -855,13 +966,16 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
                 <JourneyDirectory
                   stages={stages}
                   activeKey={activeKey}
+                  unsegCount={unsegProblems.length}
                   onSelect={setActiveKey}
                 />
               </div>
             </div>
 
             <div className="min-w-0 flex-1">
-              {activeStage ? (
+              {activeKey === '__unseg' ? (
+                <UnsegDetailPanel problems={unsegProblems} repo={repo} />
+              ) : activeStage ? (
                 <StageDetailPanel
                   stage={activeStage}
                   repo={repo}

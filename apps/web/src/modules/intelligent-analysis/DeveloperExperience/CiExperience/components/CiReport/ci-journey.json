@@ -13,7 +13,8 @@
    "2026-07-20",
    "2026-07-21",
    "2026-07-22",
-   "2026-07-23"
+   "2026-07-23",
+   "2026-07-24"
   ],
   "boards": {
    "2026-07-13": {
@@ -79,6 +80,7 @@
      {
       "seg": "触发确认",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -140,6 +142,7 @@
      {
       "seg": "构建准备",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -205,6 +208,7 @@
      {
       "seg": "静态检查",
       "segscore": 100,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -270,6 +274,7 @@
      {
       "seg": "编译",
       "segscore": 100,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -335,6 +340,7 @@
      {
       "seg": "单元测试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -402,6 +408,7 @@
      {
       "seg": "系统测试",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -516,6 +523,7 @@
      {
       "seg": "结果反馈",
       "segscore": 80,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 88,
@@ -577,6 +585,7 @@
      {
       "seg": "修复重试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -700,6 +709,7 @@
      {
       "seg": "触发确认",
       "segscore": 74,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -916,6 +926,7 @@
      {
       "seg": "构建准备",
       "segscore": 86,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -982,6 +993,7 @@
      {
       "seg": "静态检查",
       "segscore": 90,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -1048,6 +1060,7 @@
      {
       "seg": "编译",
       "segscore": 54,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 75,
@@ -1170,6 +1183,7 @@
      {
       "seg": "单元测试",
       "segscore": 46,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -1483,6 +1497,7 @@
      {
       "seg": "系统测试",
       "segscore": 70,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -1598,6 +1613,7 @@
      {
       "seg": "结果反馈",
       "segscore": 78,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 49,
@@ -1660,6 +1676,7 @@
      {
       "seg": "修复重试",
       "segscore": 40,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 30,
@@ -1718,6 +1735,389 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P1",
+      "dim": "成本",
+      "kb": "无效机时激增",
+      "cls": "",
+      "mech": "无效机时激增",
+      "owner": "CANN 基础设施团队",
+      "title": "当日无效机时 417.1 机时,超前 7 日中位 0.7 机时的 2 倍",
+      "stages": {},
+      "impact": {
+       "runs": 20,
+       "prs": 16,
+       "streak_days": 1,
+       "window_total": 20,
+       "wasted_min": 25028,
+       "cross": [
+        "构成见成本矩阵(阶段×机时归属)"
+       ]
+      },
+      "runs": [
+       {
+        "n": 488,
+        "id": "53fb2b8d3f6c4d2d8835ea4ef0bd0099",
+        "pr": "3555",
+        "t": "22:20",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 4425 min"
+       },
+       {
+        "n": 430,
+        "id": "53ca4a74dbc8493ea203c373a0b54cbc",
+        "pr": "3631",
+        "t": "11:10",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 4423 min"
+       },
+       {
+        "n": 424,
+        "id": "df4813a6a39c4d7e878a2f9987d95930",
+        "pr": "3537",
+        "t": "10:16",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 4407 min"
+       },
+       {
+        "n": 431,
+        "id": "6daf40be2225463da3900bf10b56373c",
+        "pr": "3619",
+        "t": "11:37",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 1418 min"
+       },
+       {
+        "n": 434,
+        "id": "8eb8ba46a1ef4edcba7e2b52eeb5b803",
+        "pr": "3493",
+        "t": "13:55",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 1280 min"
+       },
+       {
+        "n": 442,
+        "id": "7c710ed50e444d548ccdc9910a002360",
+        "pr": "2490",
+        "t": "15:36",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 1179 min"
+       },
+       {
+        "n": 444,
+        "id": "ba09a605e68b45658c00c11a6c677a1d",
+        "pr": "3635",
+        "t": "15:48",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 1167 min"
+       },
+       {
+        "n": 450,
+        "id": "5d6751c6147d4de282f69b285ba47f6d",
+        "pr": "3619",
+        "t": "16:31",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 1125 min"
+       },
+       {
+        "n": 467,
+        "id": "785d580e940742bb80f17a8f18bc0450",
+        "pr": "3518",
+        "t": "20:15",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 899 min"
+       },
+       {
+        "n": 462,
+        "id": "199b0ab0835b4aebb530f3c94aa7d0f1",
+        "pr": "3537",
+        "t": "19:32",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 778 min"
+       },
+       {
+        "n": 463,
+        "id": "3ddf5abf9c994b00b0b4a0516b24ac5d",
+        "pr": "3632",
+        "t": "19:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 764 min"
+       },
+       {
+        "n": 482,
+        "id": "a2e029cb425240acb23c8a5a1c04d3b3",
+        "pr": "3651",
+        "t": "21:34",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 763 min"
+       },
+       {
+        "n": 486,
+        "id": "0721d28d56d84851aaeb87de225f8d7a",
+        "pr": "3628",
+        "t": "22:06",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 762 min"
+       },
+       {
+        "n": 433,
+        "id": "ef244c59da614548be59cd2ac06ee429",
+        "pr": "3630",
+        "t": "13:52",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 413 min"
+       },
+       {
+        "n": 423,
+        "id": "b9ba950318f746ba89480d37c1e2987d",
+        "pr": "3619",
+        "t": "10:15",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 307 min"
+       },
+       {
+        "n": 443,
+        "id": "182fa3f332774197a9c9b4e26e1265a8",
+        "pr": "3636",
+        "t": "15:40",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 305 min"
+       },
+       {
+        "n": 422,
+        "id": "00be71e477b94f06870838cbaf9f68bc",
+        "pr": "2828",
+        "t": "10:11",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 298 min"
+       },
+       {
+        "n": 458,
+        "id": "0091186d1b6941e08a4c39b58c088296",
+        "pr": "3637",
+        "t": "17:45",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 181 min"
+       },
+       {
+        "n": 417,
+        "id": "01ee9e02f8bf46b7b922e7f1cf800e7b",
+        "pr": "3603",
+        "t": "09:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 88 min"
+       },
+       {
+        "n": 427,
+        "id": "3e2e62928a13460ca0bfdf6cd8e46c44",
+        "pr": "3518",
+        "t": "10:38",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 45 min"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "guide",
+       "cause": "当日废弃机时显著超前 7 日基线,且无单一稳定性事件可解释——需下钻成本矩阵(阶段×机时归属)定位废弃集中在哪个阶段、哪类责任方。",
+       "evidence": [],
+       "guess": "",
+       "action": "按成本矩阵下钻→定位主责阶段→关联当日失败/取消 run 明细",
+       "dest": "日观测板下钻"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "15 个 run 取消前长时间占用资源(≥1h,最长 24.3 h)",
+      "stages": {},
+      "impact": {
+       "runs": 15,
+       "prs": 12,
+       "streak_days": 1,
+       "window_total": 15,
+       "wasted_min": 23995,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 442,
+        "id": "7c710ed50e444d548ccdc9910a002360",
+        "pr": "2490",
+        "t": "15:36",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 19.0 h"
+       },
+       {
+        "n": 422,
+        "id": "00be71e477b94f06870838cbaf9f68bc",
+        "pr": "2828",
+        "t": "10:11",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 4.1 h"
+       },
+       {
+        "n": 488,
+        "id": "53fb2b8d3f6c4d2d8835ea4ef0bd0099",
+        "pr": "3555",
+        "t": "22:20",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.3 h"
+       },
+       {
+        "n": 430,
+        "id": "53ca4a74dbc8493ea203c373a0b54cbc",
+        "pr": "3631",
+        "t": "11:10",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 23.4 h"
+       },
+       {
+        "n": 463,
+        "id": "3ddf5abf9c994b00b0b4a0516b24ac5d",
+        "pr": "3632",
+        "t": "19:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.1 h"
+       },
+       {
+        "n": 467,
+        "id": "785d580e940742bb80f17a8f18bc0450",
+        "pr": "3518",
+        "t": "20:15",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 14.3 h"
+       },
+       {
+        "n": 482,
+        "id": "a2e029cb425240acb23c8a5a1c04d3b3",
+        "pr": "3651",
+        "t": "21:34",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.0 h"
+       },
+       {
+        "n": 444,
+        "id": "ba09a605e68b45658c00c11a6c677a1d",
+        "pr": "3635",
+        "t": "15:48",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 18.8 h"
+       },
+       {
+        "n": 434,
+        "id": "8eb8ba46a1ef4edcba7e2b52eeb5b803",
+        "pr": "3493",
+        "t": "13:55",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 20.7 h"
+       },
+       {
+        "n": 431,
+        "id": "6daf40be2225463da3900bf10b56373c",
+        "pr": "3619",
+        "t": "11:37",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 23.0 h"
+       },
+       {
+        "n": 423,
+        "id": "b9ba950318f746ba89480d37c1e2987d",
+        "pr": "3619",
+        "t": "10:15",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 4.1 h"
+       },
+       {
+        "n": 450,
+        "id": "5d6751c6147d4de282f69b285ba47f6d",
+        "pr": "3619",
+        "t": "16:31",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 18.1 h"
+       },
+       {
+        "n": 486,
+        "id": "0721d28d56d84851aaeb87de225f8d7a",
+        "pr": "3628",
+        "t": "22:06",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.0 h"
+       },
+       {
+        "n": 424,
+        "id": "df4813a6a39c4d7e878a2f9987d95930",
+        "pr": "3537",
+        "t": "10:16",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 24.3 h"
+       },
+       {
+        "n": 462,
+        "id": "199b0ab0835b4aebb530f3c94aa7d0f1",
+        "pr": "3537",
+        "t": "19:32",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -1784,6 +2184,7 @@
      {
       "seg": "触发确认",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -1913,6 +2314,7 @@
      {
       "seg": "构建准备",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -1980,6 +2382,7 @@
      {
       "seg": "静态检查",
       "segscore": 92,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -2047,6 +2450,7 @@
      {
       "seg": "编译",
       "segscore": 57,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 75,
@@ -2170,6 +2574,7 @@
      {
       "seg": "单元测试",
       "segscore": 80,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -2393,6 +2798,7 @@
      {
       "seg": "系统测试",
       "segscore": 54,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -2590,6 +2996,7 @@
      {
       "seg": "结果反馈",
       "segscore": 36,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 62,
@@ -2803,6 +3210,7 @@
      {
       "seg": "修复重试",
       "segscore": 64,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 28,
@@ -2862,6 +3270,78 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "4 个 run 取消前长时间占用资源(≥1h,最长 12.3 h)",
+      "stages": {},
+      "impact": {
+       "runs": 4,
+       "prs": 4,
+       "streak_days": 1,
+       "window_total": 4,
+       "wasted_min": 2164,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 493,
+        "id": "3f2e89c1bdf54d2a948d1033da29f010",
+        "pr": "3440",
+        "t": "09:12",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 3.0 h"
+       },
+       {
+        "n": 490,
+        "id": "a04fa7e0321d4dbfbcd2843c919eb584",
+        "pr": "3584",
+        "t": "08:58",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 3.3 h"
+       },
+       {
+        "n": 496,
+        "id": "51d7f869283c4ad1a18236f00770c4f3",
+        "pr": "3636",
+        "t": "09:37",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 5.2 h"
+       },
+       {
+        "n": 532,
+        "id": "a2660624d42440abbcd256cc3ef0b004",
+        "pr": "3650",
+        "t": "17:11",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.3 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -2928,6 +3408,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -2992,6 +3473,7 @@
      {
       "seg": "构建准备",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -3060,6 +3542,7 @@
      {
       "seg": "静态检查",
       "segscore": 88,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -3128,6 +3611,7 @@
      {
       "seg": "编译",
       "segscore": 93,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -3196,6 +3680,7 @@
      {
       "seg": "单元测试",
       "segscore": 80,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -3555,6 +4040,7 @@
      {
       "seg": "系统测试",
       "segscore": 58,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -3690,6 +4176,7 @@
      {
       "seg": "结果反馈",
       "segscore": 75,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 90,
@@ -3754,6 +4241,7 @@
      {
       "seg": "修复重试",
       "segscore": 46,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 24,
@@ -3880,6 +4368,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -3945,6 +4434,7 @@
      {
       "seg": "构建准备",
       "segscore": 86,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -4014,6 +4504,7 @@
      {
       "seg": "静态检查",
       "segscore": 67,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -4135,6 +4626,7 @@
      {
       "seg": "编译",
       "segscore": 89,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -4204,6 +4696,7 @@
      {
       "seg": "单元测试",
       "segscore": 47,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -4420,6 +4913,7 @@
      {
       "seg": "系统测试",
       "segscore": 31,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -4824,6 +5318,7 @@
      {
       "seg": "结果反馈",
       "segscore": 69,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 58,
@@ -4889,6 +5384,7 @@
      {
       "seg": "修复重试",
       "segscore": 56,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 29,
@@ -4950,6 +5446,182 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P1",
+      "dim": "成本",
+      "kb": "无效机时激增",
+      "cls": "",
+      "mech": "无效机时激增",
+      "owner": "CANN 基础设施团队",
+      "title": "当日无效机时 92.4 机时,超前 7 日中位 24.9 机时的 2 倍",
+      "stages": {},
+      "impact": {
+       "runs": 11,
+       "prs": 11,
+       "streak_days": 1,
+       "window_total": 11,
+       "wasted_min": 5544,
+       "cross": [
+        "构成见成本矩阵(阶段×机时归属)"
+       ]
+      },
+      "runs": [
+       {
+        "n": 657,
+        "id": "9b39d13bb5f242429aa6943475b62969",
+        "pr": "3701",
+        "t": "14:59",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 5077 min"
+       },
+       {
+        "n": 678,
+        "id": "4d3c0863687e4a168cdc70d120c9be6c",
+        "pr": "3555",
+        "t": "17:15",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 111 min"
+       },
+       {
+        "n": 685,
+        "id": "4faf9762e03a4453800babafdaf642cf",
+        "pr": "3687",
+        "t": "18:02",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 74 min"
+       },
+       {
+        "n": 654,
+        "id": "57d0544955234a3cb0d2f362f8df410b",
+        "pr": "3703",
+        "t": "14:41",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 57 min"
+       },
+       {
+        "n": 671,
+        "id": "1d1bf15f5f034c9783edfb8a6d93d35a",
+        "pr": "3659",
+        "t": "16:16",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 51 min"
+       },
+       {
+        "n": 665,
+        "id": "58880623eadd4a46b241dcaf309037f3",
+        "pr": "3708",
+        "t": "15:39",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 48 min"
+       },
+       {
+        "n": 633,
+        "id": "d5a16e3e998d4df58d8caf00b9392749",
+        "pr": "3690",
+        "t": "10:12",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 47 min"
+       },
+       {
+        "n": 625,
+        "id": "4a2ef39ac175473f8e661521aad26e9f",
+        "pr": "3618",
+        "t": "09:10",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 47 min"
+       },
+       {
+        "n": 659,
+        "id": "82055d9579e54139a7cc0daa7ea82202",
+        "pr": "3705",
+        "t": "15:07",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 14 min"
+       },
+       {
+        "n": 655,
+        "id": "c478867f0d764021b726b0879c03b853",
+        "pr": "3704",
+        "t": "14:58",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 10 min"
+       },
+       {
+        "n": 688,
+        "id": "ce641b39e5b94c7cbd604bd20bdca918",
+        "pr": "3714",
+        "t": "18:19",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 9 min"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "guide",
+       "cause": "当日废弃机时显著超前 7 日基线,且无单一稳定性事件可解释——需下钻成本矩阵(阶段×机时归属)定位废弃集中在哪个阶段、哪类责任方。",
+       "evidence": [],
+       "guess": "",
+       "action": "按成本矩阵下钻→定位主责阶段→关联当日失败/取消 run 明细",
+       "dest": "日观测板下钻"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 72.0 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 5077,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 657,
+        "id": "9b39d13bb5f242429aa6943475b62969",
+        "pr": "3701",
+        "t": "14:59",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 72.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -5016,6 +5688,7 @@
      {
       "seg": "触发确认",
       "segscore": 94,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -5082,6 +5755,7 @@
      {
       "seg": "构建准备",
       "segscore": 97,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -5152,6 +5826,7 @@
      {
       "seg": "静态检查",
       "segscore": 87,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -5222,6 +5897,7 @@
      {
       "seg": "编译",
       "segscore": 84,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 75,
@@ -5348,6 +6024,7 @@
      {
       "seg": "单元测试",
       "segscore": 94,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -5420,6 +6097,7 @@
      {
       "seg": "系统测试",
       "segscore": 76,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -5539,6 +6217,7 @@
      {
       "seg": "结果反馈",
       "segscore": 90,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 74,
@@ -5605,6 +6284,7 @@
      {
       "seg": "修复重试",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 30,
@@ -5733,6 +6413,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -5800,6 +6481,7 @@
      {
       "seg": "构建准备",
       "segscore": 99,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -5871,6 +6553,7 @@
      {
       "seg": "静态检查",
       "segscore": 85,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -5942,6 +6625,7 @@
      {
       "seg": "编译",
       "segscore": 94,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -6013,6 +6697,7 @@
      {
       "seg": "单元测试",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -6086,6 +6771,7 @@
      {
       "seg": "系统测试",
       "segscore": 94,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -6157,6 +6843,7 @@
      {
       "seg": "结果反馈",
       "segscore": 72,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 71,
@@ -6224,6 +6911,7 @@
      {
       "seg": "修复重试",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 30,
@@ -6353,6 +7041,7 @@
      {
       "seg": "触发确认",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -6467,6 +7156,7 @@
      {
       "seg": "构建准备",
       "segscore": 59,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -6538,6 +7228,7 @@
      {
       "seg": "静态检查",
       "segscore": 68,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -6661,6 +7352,7 @@
      {
       "seg": "编译",
       "segscore": 47,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -7027,6 +7719,7 @@
      {
       "seg": "单元测试",
       "segscore": 56,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 91,
@@ -7100,6 +7793,7 @@
      {
       "seg": "系统测试",
       "segscore": 34,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -7497,6 +8191,7 @@
      {
       "seg": "结果反馈",
       "segscore": 88,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 69,
@@ -7564,6 +8259,7 @@
      {
       "seg": "修复重试",
       "segscore": 47,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 29,
@@ -7693,6 +8389,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -7760,6 +8457,7 @@
      {
       "seg": "构建准备",
       "segscore": 41,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -7918,6 +8616,7 @@
      {
       "seg": "静态检查",
       "segscore": 71,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -8059,6 +8758,7 @@
      {
       "seg": "编译",
       "segscore": 50,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 75,
@@ -8186,6 +8886,7 @@
      {
       "seg": "单元测试",
       "segscore": 48,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -8454,6 +9155,7 @@
      {
       "seg": "系统测试",
       "segscore": 20,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -9157,6 +9859,7 @@
      {
       "seg": "结果反馈",
       "segscore": 80,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 63,
@@ -9224,6 +9927,7 @@
      {
       "seg": "修复重试",
       "segscore": 45,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 42,
@@ -9353,6 +10057,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -9420,6 +10125,7 @@
      {
       "seg": "构建准备",
       "segscore": 83,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -9491,6 +10197,7 @@
      {
       "seg": "静态检查",
       "segscore": 70,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -9614,6 +10321,7 @@
      {
       "seg": "编译",
       "segscore": 91,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 99,
@@ -9685,6 +10393,7 @@
      {
       "seg": "单元测试",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -9858,6 +10567,7 @@
      {
       "seg": "系统测试",
       "segscore": 46,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -10087,6 +10797,7 @@
      {
       "seg": "结果反馈",
       "segscore": 56,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 49,
@@ -10154,6 +10865,7 @@
      {
       "seg": "修复重试",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 48,
@@ -10218,11 +10930,83 @@
       "bare": [],
       "problems": []
      }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "4 个 run 取消前长时间占用资源(≥1h,最长 13.5 h)",
+      "stages": {},
+      "impact": {
+       "runs": 4,
+       "prs": 3,
+       "streak_days": 1,
+       "window_total": 4,
+       "wasted_min": 40,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 977,
+        "id": "91e7db90c4b740dd9dcf54c4e6c22561",
+        "pr": "1299",
+        "t": "20:53",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.8 h"
+       },
+       {
+        "n": 976,
+        "id": "0dd4b800dfab477cb541b316ddd89569",
+        "pr": "1299",
+        "t": "20:33",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 13.1 h"
+       },
+       {
+        "n": 972,
+        "id": "f398b73252ae4a14bfe2d48a68e666f7",
+        "pr": "3776",
+        "t": "20:08",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 13.5 h"
+       },
+       {
+        "n": 975,
+        "id": "982b753772b64e0caec5fcb202d05584",
+        "pr": "3734",
+        "t": "20:33",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 13.1 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
+     }
     ]
    },
    "2026-07-23": {
     "day": "2026-07-23",
-    "date": "2026-07-23(最新完整日,实测)",
+    "date": "2026-07-23(实测)",
     "note": "评论流实测:compile 触发 32 次(无确认回帖 1;确认回帖外链占比 100.0%);失败反馈 4/35(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)51.7 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
     "scores": {
      "caliber": "score-v0.5.0-20260724",
@@ -10283,6 +11067,7 @@
      {
       "seg": "触发确认",
       "segscore": 72,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -10496,6 +11281,7 @@
      {
       "seg": "构建准备",
       "segscore": 55,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -10567,6 +11353,7 @@
      {
       "seg": "静态检查",
       "segscore": 68,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -10717,6 +11504,7 @@
      {
       "seg": "编译",
       "segscore": 69,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 98,
@@ -10788,6 +11576,7 @@
      {
       "seg": "单元测试",
       "segscore": 72,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -10970,6 +11759,7 @@
      {
       "seg": "系统测试",
       "segscore": 20,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -11331,6 +12121,7 @@
      {
       "seg": "结果反馈",
       "segscore": 32,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 37,
@@ -11398,6 +12189,7 @@
      {
       "seg": "修复重试",
       "segscore": 65,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 52,
@@ -11462,6 +12254,1489 @@
       "bare": [],
       "problems": []
      }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "5 个 run 取消前长时间占用资源(≥1h,最长 1.3 h)",
+      "stages": {},
+      "impact": {
+       "runs": 5,
+       "prs": 5,
+       "streak_days": 1,
+       "window_total": 5,
+       "wasted_min": 2,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 982,
+        "id": "7d19ec0f66c94045bc4f99c5ff96e3bd",
+        "pr": "3783",
+        "t": "08:52",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.3 h"
+       },
+       {
+        "n": 983,
+        "id": "065175460eeb4c3eaf4ada04da05576a",
+        "pr": "3776",
+        "t": "09:01",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.3 h"
+       },
+       {
+        "n": 984,
+        "id": "36176b206f1b43d8be0ac46666f7812f",
+        "pr": "3778",
+        "t": "09:02",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.3 h"
+       },
+       {
+        "n": 985,
+        "id": "91535c2378484ac48c7e0a7947fcb261",
+        "pr": "3782",
+        "t": "09:11",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.3 h"
+       },
+       {
+        "n": 986,
+        "id": "878b71cfa52c4f8488913fa1d75cd270",
+        "pr": "3659",
+        "t": "09:16",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.3 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
+     }
+    ]
+   },
+   "2026-07-24": {
+    "day": "2026-07-24",
+    "date": "2026-07-24(最新完整日,实测)",
+    "note": "评论流实测:compile 触发 47 次(无确认回帖 0;确认回帖外链占比 100.0%);失败反馈 16/44(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)25.4 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "scores": {
+     "caliber": "score-v0.5.0-20260724",
+     "dims": {
+      "stability": {
+       "score": 74,
+       "metrics": {
+        "Action 平台失败率": 80,
+        "Flaky 率": 93,
+        "流水线挂死数": 45,
+        "静态检查有效率": null
+       },
+       "weights": {
+        "Action 平台失败率": 0.35,
+        "Flaky 率": 0.25,
+        "流水线挂死数": 0.25,
+        "静态检查有效率": 0.15
+       }
+      },
+      "efficiency": {
+       "score": 94,
+       "metrics": {
+        "整体 workflow 达标率(<30min)": 96,
+        "系统测试达标率(<15min)": 100,
+        "编译+UT 达标率(<15min)": 78,
+        "静态检查达标率(<5min)": 100
+       },
+       "weights": {
+        "整体 workflow 达标率(<30min)": 0.45,
+        "系统测试达标率(<15min)": 0.2,
+        "编译+UT 达标率(<15min)": 0.2,
+        "静态检查达标率(<5min)": 0.15
+       }
+      },
+      "interaction": {
+       "score": 53,
+       "metrics": {
+        "首次失败耗时": 0,
+        "PR 转绿 90 分位": 100,
+        "失败反馈率": 36,
+        "失败修复时长": 77
+       }
+      },
+      "cost": {
+       "score": 70,
+       "metrics": {
+        "无效机时占比": 80,
+        "重复执行机时占比": 59
+       }
+      }
+     },
+     "total": 73,
+     "grade": "C",
+     "low_confidence": true,
+     "note": "日分仅观察,周分为准(provisional 冷启动混合锚)"
+    },
+    "stages": [
+     {
+      "seg": "触发确认",
+      "segscore": 73,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 40,
+        "word": "需处理",
+        "disp": "9 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 79,
+        "word": "正常",
+        "disp": "2.3 min",
+        "name": "确认时延中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0.0%",
+        "name": "无确认回帖率",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "cost": {
+        "score": 70,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "评论",
+        "v": 47
+       },
+       {
+        "label": "无确认",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 23
+       }
+      ],
+      "trend": {
+       "name": "确认时延中位",
+       "series": [
+        132,
+        136,
+        134,
+        137,
+        139,
+        139,
+        139
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": [
+       {
+        "pri": "P0",
+        "dim": "稳定性",
+        "kb": "资源申请",
+        "cls": "Action 平台失败",
+        "mech": "资源申请",
+        "owner": "CANN 基础设施团队",
+        "title": "9 个 run 在 image 阶段因「任务申请资源错误」失败,涉及 5 个 PR;自 07-23 起持续第 2 天,窗口累计 38 起",
+        "stages": {
+         "image": 9
+        },
+        "impact": {
+         "runs": 9,
+         "prs": 5,
+         "streak_days": 2,
+         "window_total": 38,
+         "wasted_min": 4,
+         "cross": [
+          "5 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 0.1 机时按「平台失败废弃」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 1079,
+          "id": "1d26cca6a9a24406afbd7ac453946083",
+          "pr": "3725",
+          "t": "10:19",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1081,
+          "id": "29ace5597b1247c58d57078fa9cd2483",
+          "pr": "3807",
+          "t": "10:34",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1082,
+          "id": "aeb1e04d43e74d94bc882704ab4e9ead",
+          "pr": "3800",
+          "t": "10:34",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1083,
+          "id": "b7d597dd8e574fbeb86a716f15fa1e8a",
+          "pr": "3800",
+          "t": "10:35",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1089,
+          "id": "bba1a74d29be4813a392206e59bd4c5d",
+          "pr": "3737",
+          "t": "11:19",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1090,
+          "id": "24d7c91a813e479cbcc24b8d45943969",
+          "pr": "3725",
+          "t": "11:19",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1096,
+          "id": "51d0390a5a2b4b6ebec240848313501e",
+          "pr": "3800",
+          "t": "11:47",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1097,
+          "id": "678d119579234fbc9eded04bcc694fcd",
+          "pr": "3817",
+          "t": "11:51",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 1098,
+          "id": "8ce0aed356b34384be21fa36db74c696",
+          "pr": "3725",
+          "t": "11:53",
+          "stage": "image",
+          "job": "image",
+          "msg": "任务申请资源错误"
+         }
+        ],
+        "seg": "触发确认",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "资源池派发失败(多数 job 未被调度即报错);历史上出现过单池故障连挂——2026-07-14 20:11–21:02(UTC+8)runtime 14 个 run 跨 PR 3628–3649 同因失败,时间聚类为单一事件。",
+         "evidence": [
+          "runtime 该类失败 job 全部 start_time 为空(未进入执行);ops-nn 35 个中 8 个已执行 31–290 s 后报错(2026-07-18 全窗实测)"
+         ],
+         "guess": "池容量/配额瞬时不足或调度组件异常(池容量数据未暴露,无法从数据侧证实)",
+         "action": "调度层对派发失败做重试/换池;池故障告警;向平台确认容量与配额口径",
+         "dest": "cann/infrastructure Issue"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "构建准备",
+      "segscore": 92,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 76,
+        "word": "正常",
+        "disp": "17 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 53,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "4 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 65
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 33
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        14,
+        13,
+        16,
+        15,
+        18,
+        19,
+        17
+       ]
+      },
+      "stages": [
+       "runtime_action/image"
+      ],
+      "bare": [
+       "image"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "静态检查",
+      "segscore": 100,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "15 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 53,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 70,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 51
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 32
+       }
+      ],
+      "trend": {
+       "name": "",
+       "series": [
+        22,
+        24,
+        22,
+        21,
+        21,
+        22,
+        15
+       ]
+      },
+      "stages": [
+       "runtime_action/compile · 静态检查族 job"
+      ],
+      "bare": [
+       "compile · 静态检查族 job"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "编译",
+      "segscore": 58,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 75,
+        "word": "关注",
+        "disp": "1 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 0,
+        "word": "关注",
+        "disp": "3.4 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 53,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "3 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 51
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 32
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        72,
+        67,
+        68,
+        74,
+        69,
+        70,
+        205
+       ]
+      },
+      "stages": [
+       "runtime_action/compile · 编译族 job"
+      ],
+      "bare": [
+       "compile · 编译族 job"
+      ],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "稳定性",
+        "kb": "Flaky-待分型",
+        "cls": "待定",
+        "mech": "Flaky-待分型",
+        "owner": "待定(人工判读升级中)",
+        "title": "3 个 run 在 compile 阶段因「步骤arm_compile_acc执行失败，错误信息：点击任务查看详情」失败,涉及 3 个 PR;自 07-20 起持续第 5 天,窗口累计 17 起",
+        "stages": {
+         "null": 2,
+         "compile": 1
+        },
+        "impact": {
+         "runs": 3,
+         "prs": 3,
+         "streak_days": 5,
+         "window_total": 17,
+         "wasted_min": 6,
+         "cross": [
+          "3 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 0.1 机时按「待定」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 1125,
+          "id": "f31e2b98ea4248188741e99382b1d9ec",
+          "pr": "3814",
+          "t": "16:22",
+          "stage": "",
+          "job": "",
+          "msg": ""
+         },
+         {
+          "n": 1142,
+          "id": "334c36c8a62745e0a7c530c1c501700e",
+          "pr": "3827",
+          "t": "18:08",
+          "stage": "",
+          "job": "",
+          "msg": ""
+         },
+         {
+          "n": 1151,
+          "id": "dd22f110ea0149d5a68059674c182814",
+          "pr": "3831",
+          "t": "20:30",
+          "stage": "compile",
+          "job": "compile",
+          "msg": "步骤arm_compile_acc执行失败，错误信息：点击任务查看详情"
+         }
+        ],
+        "seg": "编译",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "同代码重跑转绿(Flaky 成立),但日志签名未命中环境类/用例类任一方,暂无法归责。",
+         "evidence": [
+          "重跑转绿事实成立;ENV_PAT/TEST_PAT 均未命中"
+         ],
+         "guess": "",
+         "action": "扩充签名库;人工抽检(目标 N≥30)校准分型准确率",
+         "dest": "验证仓待办(Flaky 分型校准)"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "单元测试",
+      "segscore": 75,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "4.6 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 53,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 26,
+        "word": "关注",
+        "disp": "12.1 机时",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 67
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 34
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        421,
+        425,
+        437,
+        426,
+        430,
+        434,
+        278
+       ]
+      },
+      "stages": [
+       "runtime_action/ut",
+       "runtime_action/ut_report"
+      ],
+      "bare": [
+       "ut",
+       "ut_report"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "系统测试",
+      "segscore": 82,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 64,
+        "word": "关注",
+        "disp": "15 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "4.0 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 53,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 42
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 30
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        233,
+        230,
+        437,
+        764,
+        390,
+        815,
+        243
+       ]
+      },
+      "stages": [
+       "runtime_action/PreSmoke"
+      ],
+      "bare": [
+       "PreSmoke"
+      ],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "稳定性",
+        "kb": "真机冒烟",
+        "cls": "待定",
+        "mech": "真机冒烟",
+        "owner": "待定(人工判读升级中)",
+        "title": "15 个 run 在 PreSmoke 阶段因「步骤smoke executor执行失败，错误信息：点击任务查看详情」失败,涉及 13 个 PR",
+        "stages": {
+         "PreSmoke": 15
+        },
+        "impact": {
+         "runs": 15,
+         "prs": 13,
+         "streak_days": 1,
+         "window_total": 19,
+         "wasted_min": 852,
+         "cross": [
+          "13 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 14.2 机时按「待定」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 1070,
+          "id": "5589fe02a74648fc8a9eaa66971e44b9",
+          "pr": "3630",
+          "t": "09:08",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1074,
+          "id": "814e6c70ba0c4b40a79e69477704d359",
+          "pr": "3750",
+          "t": "09:41",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1075,
+          "id": "5fab22f9073c46cdaf8b1af0918a8961",
+          "pr": "3761",
+          "t": "09:49",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1077,
+          "id": "60266bb5f2ad45c6a22830da48750676",
+          "pr": "3690",
+          "t": "09:57",
+          "stage": "PreSmoke",
+          "job": "内容违规已隐藏",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1080,
+          "id": "a36fabc09a1c4d818444c10e3e8c14db",
+          "pr": "3673",
+          "t": "10:24",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1084,
+          "id": "11a5377fa3f4404da7acb49be2f06884",
+          "pr": "3673",
+          "t": "10:41",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1085,
+          "id": "bf385af5575a4a8c9ff00b059bd4c620",
+          "pr": "3630",
+          "t": "10:47",
+          "stage": "PreSmoke",
+          "job": "内容违规已隐藏",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1091,
+          "id": "7161b9a830444d59a36ea2cd09705cd2",
+          "pr": "3815",
+          "t": "11:25",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1094,
+          "id": "89ae075811d44128809abfb9ca872572",
+          "pr": "3816",
+          "t": "11:36",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1105,
+          "id": "0d5ed45875cc48c2a8268c47e30bb339",
+          "pr": "3819",
+          "t": "13:06",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1106,
+          "id": "7876dab85aeb471ea33851e60a03c839",
+          "pr": "3800",
+          "t": "14:00",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1107,
+          "id": "57f9772d784c4e329959a16e1e5eff43",
+          "pr": "3725",
+          "t": "14:07",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1108,
+          "id": "0ba8c1099ef347198790189687083900",
+          "pr": "3820",
+          "t": "14:10",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1114,
+          "id": "1a6e7c915cc24768b728f33b05239ca8",
+          "pr": "3737",
+          "t": "14:43",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 1115,
+          "id": "b22da2b1d01b4624a276a2a9c90665fc",
+          "pr": "3653",
+          "t": "14:54",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         }
+        ],
+        "seg": "系统测试",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "PreSmoke 真机执行失败且非执行机注册类——真机环境问题与用例问题混杂,日志分型未上线前归待定。",
+         "evidence": [
+          "失败位置 PreSmoke,信息非执行机注册文案"
+         ],
+         "guess": "",
+         "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
+         "dest": "验证仓待办(冒烟分型)"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "结果反馈",
+      "segscore": 18,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 74,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "efficiency": {
+        "score": 0,
+        "word": "关注",
+        "disp": "15.6 min",
+        "name": "首次失败耗时中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 36,
+        "word": "关注",
+        "disp": "63.6%",
+        "name": "失败无反馈率(评论/标签)",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "cost": {
+        "score": 70,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "失败run",
+        "v": 44
+       },
+       {
+        "label": "已反馈",
+        "v": 16
+       },
+       {
+        "label": "PR",
+        "v": 24
+       }
+      ],
+      "trend": {
+       "name": "首次失败耗时中位",
+       "series": [
+        132,
+        278,
+        69,
+        156,
+        178,
+        244,
+        936
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "交互体验",
+        "kb": "首次反馈变慢",
+        "cls": "",
+        "mech": "首次反馈变慢",
+        "owner": "CANN 基础设施团队",
+        "title": "失败 run 首次反馈耗时当日中位 15.6 min,较前 7 日中位 3.0 min 上浮 426%(样本 24)",
+        "stages": {},
+        "impact": {
+         "runs": 21,
+         "prs": 16,
+         "streak_days": 1,
+         "window_total": 21,
+         "wasted_min": 0,
+         "cross": [
+          "贡献者更晚知道「这次不行」;按责任方拆分见交互体验细分"
+         ]
+        },
+        "runs": [
+         {
+          "n": 1094,
+          "id": "89ae075811d44128809abfb9ca872572",
+          "pr": "3816",
+          "t": "11:36",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 32.6 min"
+         },
+         {
+          "n": 1074,
+          "id": "814e6c70ba0c4b40a79e69477704d359",
+          "pr": "3750",
+          "t": "09:41",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 30.1 min"
+         },
+         {
+          "n": 1070,
+          "id": "5589fe02a74648fc8a9eaa66971e44b9",
+          "pr": "3630",
+          "t": "09:08",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 29.1 min"
+         },
+         {
+          "n": 1115,
+          "id": "b22da2b1d01b4624a276a2a9c90665fc",
+          "pr": "3653",
+          "t": "14:54",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 28.9 min"
+         },
+         {
+          "n": 1085,
+          "id": "bf385af5575a4a8c9ff00b059bd4c620",
+          "pr": "3630",
+          "t": "10:47",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 23.4 min"
+         },
+         {
+          "n": 1106,
+          "id": "7876dab85aeb471ea33851e60a03c839",
+          "pr": "3800",
+          "t": "14:00",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 20.8 min"
+         },
+         {
+          "n": 1107,
+          "id": "57f9772d784c4e329959a16e1e5eff43",
+          "pr": "3725",
+          "t": "14:07",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 20.6 min"
+         },
+         {
+          "n": 1075,
+          "id": "5fab22f9073c46cdaf8b1af0918a8961",
+          "pr": "3761",
+          "t": "09:49",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 20.0 min"
+         },
+         {
+          "n": 1105,
+          "id": "0d5ed45875cc48c2a8268c47e30bb339",
+          "pr": "3819",
+          "t": "13:06",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 19.0 min"
+         },
+         {
+          "n": 1084,
+          "id": "11a5377fa3f4404da7acb49be2f06884",
+          "pr": "3673",
+          "t": "10:41",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 17.9 min"
+         },
+         {
+          "n": 1108,
+          "id": "0ba8c1099ef347198790189687083900",
+          "pr": "3820",
+          "t": "14:10",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 16.4 min"
+         },
+         {
+          "n": 1072,
+          "id": "ed51002a21f64e2085c1c2b9e000a193",
+          "pr": "3761",
+          "t": "09:22",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 16.1 min"
+         },
+         {
+          "n": 1137,
+          "id": "2367ae5577b641ca89565ae335a9afea",
+          "pr": "3826",
+          "t": "17:41",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 15.1 min"
+         },
+         {
+          "n": 1077,
+          "id": "60266bb5f2ad45c6a22830da48750676",
+          "pr": "3690",
+          "t": "09:57",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 14.9 min"
+         },
+         {
+          "n": 1114,
+          "id": "1a6e7c915cc24768b728f33b05239ca8",
+          "pr": "3737",
+          "t": "14:43",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 13.8 min"
+         },
+         {
+          "n": 1101,
+          "id": "f7b8976dd895499585678f6b8b0cb746",
+          "pr": "3814",
+          "t": "12:21",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 12.2 min"
+         },
+         {
+          "n": 1088,
+          "id": "7750ef2c615d4087a0072250655596d6",
+          "pr": "3724",
+          "t": "11:12",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 11.8 min"
+         },
+         {
+          "n": 1091,
+          "id": "7161b9a830444d59a36ea2cd09705cd2",
+          "pr": "3815",
+          "t": "11:25",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 10.5 min"
+         },
+         {
+          "n": 1103,
+          "id": "277935c9bca8466c918628ed6d849e48",
+          "pr": "3820",
+          "t": "12:38",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 10.0 min"
+         },
+         {
+          "n": 1080,
+          "id": "a36fabc09a1c4d818444c10e3e8c14db",
+          "pr": "3673",
+          "t": "10:24",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 9.4 min"
+         },
+         {
+          "n": 1104,
+          "id": "d543f2677f294cfbb7f65b370e0c9aa6",
+          "pr": "3814",
+          "t": "12:48",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 6.8 min"
+         }
+        ],
+        "seg": "结果反馈",
+        "dimkey": "interaction",
+        "root": {
+         "status": "guide",
+         "cause": "失败 run 的首次反馈耗时(触发→第一个失败 job 结束)当日中位显著超基线——贡献者更晚才知道『这次不行』。常见成因:失败位置后移(早失败变晚失败)或前置阶段变慢。",
+         "evidence": [],
+         "guess": "",
+         "action": "按责任方拆分首次反馈耗时;对照效率矩阵看前置阶段是否变慢",
+         "dest": "日观测板下钻"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "修复重试",
+      "segscore": 67,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 45,
+        "word": "正常",
+        "disp": "55.2%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 77,
+        "word": "正常",
+        "disp": "2.8 h",
+        "name": "失败修复时长中位",
+        "owner": "混合(含贡献者人时)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 45,
+        "word": "正常",
+        "disp": "55.2%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "25.4 机时",
+        "name": "重复执行机时",
+        "owner": "流程(重触发策略)",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "重复run",
+        "v": 45
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 21
+       }
+      ],
+      "trend": {
+       "name": "重试再失败率(滚动7日,平滑)",
+       "series": [
+        69.5,
+        70,
+        71.4,
+        58.3,
+        51.7,
+        47.7,
+        55.2
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P1",
+      "dim": "效率",
+      "kb": "阶段耗时上浮",
+      "cls": "",
+      "mech": "阶段耗时上浮",
+      "owner": "CANN 基础设施团队",
+      "title": "compile 阶段当日中位耗时 3.6 min,较前 7 日中位 1.3 min 上浮 170%(成功 run 样本 27)",
+      "stages": {
+       "compile": 27
+      },
+      "impact": {
+       "runs": 0,
+       "prs": 0,
+       "streak_days": 1,
+       "window_total": 0,
+       "wasted_min": 0,
+       "cross": [
+        "超基线成功 run 0 个;流水线整体时长与 PR 反馈同受影响(交互体验)"
+       ]
+      },
+      "runs": [],
+      "seg": "__unseg",
+      "dimkey": "efficiency",
+      "root": {
+       "status": "guide",
+       "cause": "该阶段当日中位耗时显著超前 7 日基线——样本波动/资源降速/用例或编译量膨胀均有可能,需下钻最耗时 job 榜与超基线 run 明细判别。",
+       "evidence": [],
+       "guess": "",
+       "action": "看最耗时 job 榜是否同阶段;抽查超基线 run 的日志;连续 2 日上浮则升级",
+       "dest": "日观测板下钻 · 连续上浮转 infrastructure Issue"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "稳定性",
+      "kb": "无失败叶子 job",
+      "cls": "待定",
+      "mech": "无失败叶子 job",
+      "owner": "待定(人工判读升级中)",
+      "title": "9 个 run 在  阶段因「无失败叶子 job」失败,涉及 8 个 PR;自 07-23 起持续第 2 天,窗口累计 11 起",
+      "stages": {
+       "null": 9
+      },
+      "impact": {
+       "runs": 9,
+       "prs": 8,
+       "streak_days": 2,
+       "window_total": 11,
+       "wasted_min": 329,
+       "cross": [
+        "8 个 PR 当日被此问题拦住(交互体验)",
+        "关联 run 全程机时 5.5 机时按「待定」计入成本矩阵"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1071,
+        "id": "f8c64a0bdab14b0cb94bb84351d2c425",
+        "pr": "3735",
+        "t": "09:15",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1086,
+        "id": "f9e52a94493a477ea1af1860df8ace47",
+        "pr": "3750",
+        "t": "10:55",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1093,
+        "id": "0a9a83a0386b4b6f83d9ef6d384cb4f8",
+        "pr": "3815",
+        "t": "11:27",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1095,
+        "id": "1ca860d9693b49549083fe49bd8dabd5",
+        "pr": "3800",
+        "t": "11:45",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1099,
+        "id": "4083bac954e74f78bbddcdae1b346f25",
+        "pr": "3818",
+        "t": "11:56",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1100,
+        "id": "b073c4ad523545dbac5b68fe76ff015f",
+        "pr": "3800",
+        "t": "12:18",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1102,
+        "id": "620264e38ec24c6ab15a8959e0979fc6",
+        "pr": "3819",
+        "t": "12:28",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1110,
+        "id": "efeb3c6940ef4490964395cff9678a9f",
+        "pr": "3633",
+        "t": "14:26",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1111,
+        "id": "d6335811e12f4e58a3a698c2f4281c92",
+        "pr": "3823",
+        "t": "14:27",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "stability",
+      "root": {
+       "status": "pending",
+       "cause": "",
+       "evidence": [],
+       "guess": "",
+       "action": "人工判读日志尾部后补机理知识库条目",
+       "dest": "验证仓待办"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 12.0 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 728,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1113,
+        "id": "671b569ac57c4d4aaeefcf721132dd2c",
+        "pr": "3824",
+        "t": "14:42",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
+     }
     ]
    }
   }
@@ -11481,7 +13756,8 @@
    "2026-07-20",
    "2026-07-21",
    "2026-07-22",
-   "2026-07-23"
+   "2026-07-23",
+   "2026-07-24"
   ],
   "boards": {
    "2026-07-12": {
@@ -11547,6 +13823,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -11609,6 +13886,7 @@
      {
       "seg": "构建准备",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -11674,6 +13952,7 @@
      {
       "seg": "静态检查",
       "segscore": 100,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -11739,6 +14018,7 @@
      {
       "seg": "编译",
       "segscore": 100,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -11804,6 +14084,7 @@
      {
       "seg": "单元测试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -11869,6 +14150,7 @@
      {
       "seg": "系统测试",
       "segscore": null,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": null,
@@ -11932,6 +14214,7 @@
      {
       "seg": "结果反馈",
       "segscore": 50,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 85,
@@ -11994,6 +14277,7 @@
      {
       "seg": "修复重试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -12117,6 +14401,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -12180,6 +14465,7 @@
      {
       "seg": "构建准备",
       "segscore": 86,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -12246,6 +14532,7 @@
      {
       "seg": "静态检查",
       "segscore": 89,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -12312,6 +14599,7 @@
      {
       "seg": "编译",
       "segscore": 68,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -12434,6 +14722,7 @@
      {
       "seg": "单元测试",
       "segscore": 89,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -12500,6 +14789,7 @@
      {
       "seg": "系统测试",
       "segscore": 40,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -12668,6 +14958,7 @@
      {
       "seg": "结果反馈",
       "segscore": 92,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 54,
@@ -12731,6 +15022,7 @@
      {
       "seg": "修复重试",
       "segscore": 52,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 54,
@@ -12789,6 +15081,173 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P1",
+      "dim": "成本",
+      "kb": "无效机时激增",
+      "cls": "",
+      "mech": "无效机时激增",
+      "owner": "CANN 基础设施团队",
+      "title": "当日无效机时 45.1 机时,超前 7 日中位 0.0 机时的 2 倍",
+      "stages": {},
+      "impact": {
+       "runs": 10,
+       "prs": 8,
+       "streak_days": 1,
+       "window_total": 10,
+       "wasted_min": 2704,
+       "cross": [
+        "构成见成本矩阵(阶段×机时归属)"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1255,
+        "id": "6e1075b2afbe4abe92cb9b7aa4ffadb6",
+        "pr": "6429",
+        "t": "20:37",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 1984 min"
+       },
+       {
+        "n": 1239,
+        "id": "87a35b0f669a4689b703744d17277cab",
+        "pr": "7154",
+        "t": "18:29",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 205 min"
+       },
+       {
+        "n": 1202,
+        "id": "4f4332ff6d5148cfb72b06c00e26d3cd",
+        "pr": "7293",
+        "t": "16:11",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 200 min"
+       },
+       {
+        "n": 1260,
+        "id": "587cd7cb43004ee98f470daab7f3c74b",
+        "pr": "7419",
+        "t": "20:53",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 105 min"
+       },
+       {
+        "n": 1263,
+        "id": "a3eff856c97d466d896f224fd56f2716",
+        "pr": "7461",
+        "t": "21:17",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 54 min"
+       },
+       {
+        "n": 1262,
+        "id": "c3769fba42e14230bfe6f45e50f84ee8",
+        "pr": "7440",
+        "t": "21:17",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 54 min"
+       },
+       {
+        "n": 1203,
+        "id": "4717ecc415824d779ff003c2c9093a53",
+        "pr": "7409",
+        "t": "16:12",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 46 min"
+       },
+       {
+        "n": 1231,
+        "id": "d3685974d437487e80456fd914b2c3ab",
+        "pr": "7440",
+        "t": "17:35",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 44 min"
+       },
+       {
+        "n": 1197,
+        "id": "44513994a8424fb0b678d8415886d393",
+        "pr": "7154",
+        "t": "15:53",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 6 min"
+       },
+       {
+        "n": 1182,
+        "id": "404a82c100d44af398de5159a3235c65",
+        "pr": "7435",
+        "t": "15:04",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 5 min"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "guide",
+       "cause": "当日废弃机时显著超前 7 日基线,且无单一稳定性事件可解释——需下钻成本矩阵(阶段×机时归属)定位废弃集中在哪个阶段、哪类责任方。",
+       "evidence": [],
+       "guess": "",
+       "action": "按成本矩阵下钻→定位主责阶段→关联当日失败/取消 run 明细",
+       "dest": "日观测板下钻"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 13.6 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 1984,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1255,
+        "id": "6e1075b2afbe4abe92cb9b7aa4ffadb6",
+        "pr": "6429",
+        "t": "20:37",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 13.6 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -12855,6 +15314,7 @@
      {
       "seg": "触发确认",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -12974,6 +15434,7 @@
      {
       "seg": "构建准备",
       "segscore": 87,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -13041,6 +15502,7 @@
      {
       "seg": "静态检查",
       "segscore": 69,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -13160,6 +15622,7 @@
      {
       "seg": "编译",
       "segscore": 88,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -13227,6 +15690,7 @@
      {
       "seg": "单元测试",
       "segscore": 69,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -13412,6 +15876,7 @@
      {
       "seg": "系统测试",
       "segscore": 70,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -13608,6 +16073,7 @@
      {
       "seg": "结果反馈",
       "segscore": 34,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 51,
@@ -13804,6 +16270,7 @@
      {
       "seg": "修复重试",
       "segscore": 54,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 67,
@@ -13863,6 +16330,51 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 145.7 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 142,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1387,
+        "id": "09b18f26345f41c09467ade90febecc5",
+        "pr": "7493",
+        "t": "19:09",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 145.7 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -13929,6 +16441,7 @@
      {
       "seg": "触发确认",
       "segscore": 80,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -14041,6 +16554,7 @@
      {
       "seg": "构建准备",
       "segscore": 58,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -14109,6 +16623,7 @@
      {
       "seg": "静态检查",
       "segscore": 89,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -14177,6 +16692,7 @@
      {
       "seg": "编译",
       "segscore": 56,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -14400,6 +16916,7 @@
      {
       "seg": "单元测试",
       "segscore": 58,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -14468,6 +16985,7 @@
      {
       "seg": "系统测试",
       "segscore": 56,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -14683,6 +17201,7 @@
      {
       "seg": "结果反馈",
       "segscore": 84,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 62,
@@ -14748,6 +17267,7 @@
      {
       "seg": "修复重试",
       "segscore": 52,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 61,
@@ -14808,6 +17328,51 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 12.0 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 835,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1463,
+        "id": "54a8bedd18e94ba1b94848ccc6ce16f2",
+        "pr": "7303",
+        "t": "15:23",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -14874,6 +17439,7 @@
      {
       "seg": "触发确认",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -14996,6 +17562,7 @@
      {
       "seg": "构建准备",
       "segscore": 61,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -15065,6 +17632,7 @@
      {
       "seg": "静态检查",
       "segscore": 58,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -15267,6 +17835,7 @@
      {
       "seg": "编译",
       "segscore": 59,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -15336,6 +17905,7 @@
      {
       "seg": "单元测试",
       "segscore": 51,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -15532,6 +18102,7 @@
      {
       "seg": "系统测试",
       "segscore": 48,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -15766,6 +18337,7 @@
      {
       "seg": "结果反馈",
       "segscore": 68,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 55,
@@ -15832,6 +18404,7 @@
      {
       "seg": "修复重试",
       "segscore": 53,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 56,
@@ -15893,6 +18466,379 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P1",
+      "dim": "成本",
+      "kb": "无效机时激增",
+      "cls": "",
+      "mech": "无效机时激增",
+      "owner": "CANN 基础设施团队",
+      "title": "当日无效机时 113.4 机时,超前 7 日中位 28.3 机时的 2 倍",
+      "stages": {},
+      "impact": {
+       "runs": 27,
+       "prs": 20,
+       "streak_days": 1,
+       "window_total": 27,
+       "wasted_min": 6804,
+       "cross": [
+        "构成见成本矩阵(阶段×机时归属)"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1552,
+        "id": "b6b9bbae4bd046f39f8ec9d87c5d6a85",
+        "pr": "7439",
+        "t": "10:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 5123 min"
+       },
+       {
+        "n": 1651,
+        "id": "129fcf24eb4d48bd88fc967c9be25366",
+        "pr": "7496",
+        "t": "19:46",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 150 min"
+       },
+       {
+        "n": 1576,
+        "id": "e24b8709d2004bf3b5d532829117eb46",
+        "pr": "7481",
+        "t": "11:49",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 144 min"
+       },
+       {
+        "n": 1593,
+        "id": "b0ab09a7a92241e2aace06c875f13da3",
+        "pr": "7568",
+        "t": "15:23",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 89 min"
+       },
+       {
+        "n": 1575,
+        "id": "3acab78bf645480a8aa6f9168530bfd1",
+        "pr": "7315",
+        "t": "11:46",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 85 min"
+       },
+       {
+        "n": 1632,
+        "id": "062bd5c1ede94429a9cc95ca9b70cf07",
+        "pr": "7549",
+        "t": "17:37",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 76 min"
+       },
+       {
+        "n": 1602,
+        "id": "5bf0b65166964ca4bb6089040b6899e3",
+        "pr": "7527",
+        "t": "15:43",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 72 min"
+       },
+       {
+        "n": 1603,
+        "id": "dcc9085215394519a3f3f6c9e0323b00",
+        "pr": "7120",
+        "t": "15:52",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 63 min"
+       },
+       {
+        "n": 1622,
+        "id": "0ce0351be225429b914c86d48cc7e68c",
+        "pr": "7527",
+        "t": "17:05",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 62 min"
+       },
+       {
+        "n": 1646,
+        "id": "d1c017cc7ebc4eb0bdae4690ec8226d6",
+        "pr": "7549",
+        "t": "19:27",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 60 min"
+       },
+       {
+        "n": 1628,
+        "id": "9bb7050771924c389c50d9eaadeea3fd",
+        "pr": "7578",
+        "t": "17:25",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 59 min"
+       },
+       {
+        "n": 1615,
+        "id": "30544e57ae0e4e70918f782455431b49",
+        "pr": "7574",
+        "t": "16:36",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 58 min"
+       },
+       {
+        "n": 1670,
+        "id": "23eb20b9c04444c19f4293b067465b91",
+        "pr": "7549",
+        "t": "20:52",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 58 min"
+       },
+       {
+        "n": 1565,
+        "id": "ce75158430c74a4a994b3d3d28be75ed",
+        "pr": "7515",
+        "t": "11:18",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 58 min"
+       },
+       {
+        "n": 1553,
+        "id": "88f2c66829f84d0d8ec41a3fe48dfe80",
+        "pr": "7551",
+        "t": "10:42",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 58 min"
+       },
+       {
+        "n": 1595,
+        "id": "20175f057f8b4b10b6aaf94cf7751f70",
+        "pr": "7286",
+        "t": "15:25",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 57 min"
+       },
+       {
+        "n": 1605,
+        "id": "e1f9799ea0314dcf99f8da511d5b4857",
+        "pr": "6457",
+        "t": "15:54",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 56 min"
+       },
+       {
+        "n": 1616,
+        "id": "2ad319221ac944c19b136c4b37fe6914",
+        "pr": "6457",
+        "t": "16:41",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1563,
+        "id": "b041e7c3aae64726b75c57b10f326e26",
+        "pr": "7286",
+        "t": "11:07",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1660,
+        "id": "61681e82505141b4af1d2fd28ac36ccf",
+        "pr": "7589",
+        "t": "20:14",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1618,
+        "id": "be7c315514fb4449ae80f781e5c812db",
+        "pr": "6457",
+        "t": "16:42",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 54 min"
+       },
+       {
+        "n": 1665,
+        "id": "b4d0d219857f407799d0033c0b5daec5",
+        "pr": "7560",
+        "t": "20:28",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 54 min"
+       },
+       {
+        "n": 1550,
+        "id": "7a5e7569c0cb44a69e7bf880e080716d",
+        "pr": "7540",
+        "t": "10:28",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 53 min"
+       },
+       {
+        "n": 1650,
+        "id": "1c74f2395acf453aae40882a717377d7",
+        "pr": "7584",
+        "t": "19:45",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 53 min"
+       },
+       {
+        "n": 1569,
+        "id": "e84b95dd93e84dda8af91c32bc0e1bd3",
+        "pr": "7512",
+        "t": "11:30",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 52 min"
+       },
+       {
+        "n": 1631,
+        "id": "61c48de598dc43cea8bd179c19e8edfe",
+        "pr": "7548",
+        "t": "17:28",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 37 min"
+       },
+       {
+        "n": 1545,
+        "id": "b376af5547d54c56ba9870d30afd586e",
+        "pr": "7548",
+        "t": "10:23",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 8 min"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "guide",
+       "cause": "当日废弃机时显著超前 7 日基线,且无单一稳定性事件可解释——需下钻成本矩阵(阶段×机时归属)定位废弃集中在哪个阶段、哪类责任方。",
+       "evidence": [],
+       "guess": "",
+       "action": "按成本矩阵下钻→定位主责阶段→关联当日失败/取消 run 明细",
+       "dest": "日观测板下钻"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "稳定性",
+      "kb": "无失败叶子 job",
+      "cls": "待定",
+      "mech": "无失败叶子 job",
+      "owner": "待定(人工判读升级中)",
+      "title": "2 个 run 在  阶段因「无失败叶子 job」失败,涉及 2 个 PR",
+      "stages": {
+       "null": 2
+      },
+      "impact": {
+       "runs": 2,
+       "prs": 2,
+       "streak_days": 1,
+       "window_total": 2,
+       "wasted_min": 1,
+       "cross": [
+        "2 个 PR 当日被此问题拦住(交互体验)",
+        "关联 run 全程机时 0.0 机时按「待定」计入成本矩阵"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1568,
+        "id": "42f64c1ae8024dd1b09ee119647a6eb0",
+        "pr": "7556",
+        "t": "11:28",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1684,
+        "id": "569a61fe5aa840388ee277cc54394c96",
+        "pr": "7568",
+        "t": "22:54",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "stability",
+      "root": {
+       "status": "pending",
+       "cause": "",
+       "evidence": [],
+       "guess": "",
+       "action": "人工判读日志尾部后补机理知识库条目",
+       "dest": "验证仓待办"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 72.0 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 5123,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1552,
+        "id": "b6b9bbae4bd046f39f8ec9d87c5d6a85",
+        "pr": "7439",
+        "t": "10:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 72.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -15959,6 +18905,7 @@
      {
       "seg": "触发确认",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -16128,6 +19075,7 @@
      {
       "seg": "构建准备",
       "segscore": 59,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -16198,6 +19146,7 @@
      {
       "seg": "静态检查",
       "segscore": 58,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -16365,6 +19314,7 @@
      {
       "seg": "编译",
       "segscore": 59,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -16435,6 +19385,7 @@
      {
       "seg": "单元测试",
       "segscore": 59,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -16505,6 +19456,7 @@
      {
       "seg": "系统测试",
       "segscore": 40,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -17152,6 +20104,7 @@
      {
       "seg": "结果反馈",
       "segscore": 63,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 34,
@@ -17219,6 +20172,7 @@
      {
       "seg": "修复重试",
       "segscore": 52,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 55,
@@ -17281,6 +20235,416 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P1",
+      "dim": "成本",
+      "kb": "无效机时激增",
+      "cls": "",
+      "mech": "无效机时激增",
+      "owner": "CANN 基础设施团队",
+      "title": "当日无效机时 217.0 机时,超前 7 日中位 29.6 机时的 2 倍",
+      "stages": {},
+      "impact": {
+       "runs": 36,
+       "prs": 25,
+       "streak_days": 1,
+       "window_total": 36,
+       "wasted_min": 13019,
+       "cross": [
+        "构成见成本矩阵(阶段×机时归属)"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1775,
+        "id": "100d0d5ba5a74378acf2353ddeac2f66",
+        "pr": "7439",
+        "t": "14:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 5134 min"
+       },
+       {
+        "n": 1711,
+        "id": "94a40de16901405b878f2c56c76fee3e",
+        "pr": "7611",
+        "t": "10:26",
+        "stage": "",
+        "job": "",
+        "msg": "取消占用 4372 min"
+       },
+       {
+        "n": 1769,
+        "id": "a0b5ee6fecd9455da58823876e92d097",
+        "pr": "7602",
+        "t": "14:21",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 329 min"
+       },
+       {
+        "n": 1770,
+        "id": "a25e99bd501944459169ff1928eea9cf",
+        "pr": "7496",
+        "t": "14:21",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 327 min"
+       },
+       {
+        "n": 1781,
+        "id": "26600661349e4d198f6a6762a0ab5629",
+        "pr": "7496",
+        "t": "14:55",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 255 min"
+       },
+       {
+        "n": 1702,
+        "id": "1203cc4f441844ffa6862d026b04ac50",
+        "pr": "7303",
+        "t": "10:00",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 224 min"
+       },
+       {
+        "n": 1753,
+        "id": "39af735ed97249be96783b11a062b87f",
+        "pr": "7609",
+        "t": "12:34",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 221 min"
+       },
+       {
+        "n": 1756,
+        "id": "af3aac2d3dda47d68f19e276e8b633a9",
+        "pr": "7609",
+        "t": "12:48",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 195 min"
+       },
+       {
+        "n": 1773,
+        "id": "94cfa444c85c425abe810fc0825f30eb",
+        "pr": "7561",
+        "t": "14:27",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 166 min"
+       },
+       {
+        "n": 1816,
+        "id": "cd422ba06c364205b2313bbb2b01f318",
+        "pr": "7561",
+        "t": "17:26",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 165 min"
+       },
+       {
+        "n": 1693,
+        "id": "547f1f78e0134d3b805174392ed5c902",
+        "pr": "7568",
+        "t": "09:16",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 106 min"
+       },
+       {
+        "n": 1718,
+        "id": "bc92a0885ee349f19cfe165cec2c06b4",
+        "pr": "7616",
+        "t": "10:51",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 84 min"
+       },
+       {
+        "n": 1771,
+        "id": "6f815f371e1f400bbdfdd6ecf60ad1ed",
+        "pr": "7599",
+        "t": "14:21",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 80 min"
+       },
+       {
+        "n": 1786,
+        "id": "295b2991a0ad4457b38d85089c19c166",
+        "pr": "7634",
+        "t": "15:02",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 75 min"
+       },
+       {
+        "n": 1714,
+        "id": "59ccf2c5060941e79cd64780ce3dd7ba",
+        "pr": "7613",
+        "t": "10:33",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 74 min"
+       },
+       {
+        "n": 1724,
+        "id": "b7a6f7acfdba45f19833693c3ba38091",
+        "pr": "7515",
+        "t": "11:00",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 70 min"
+       },
+       {
+        "n": 1768,
+        "id": "9411b8595ffd4fd9ac54c1f9f9ce9f8e",
+        "pr": "7515",
+        "t": "14:21",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 64 min"
+       },
+       {
+        "n": 1752,
+        "id": "83adc17169e64121a0cf5ae48ce7d163",
+        "pr": "7629",
+        "t": "12:21",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 63 min"
+       },
+       {
+        "n": 1726,
+        "id": "c57a620a53ef48dc955ad1aa2a7b56f5",
+        "pr": "7538",
+        "t": "11:01",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 62 min"
+       },
+       {
+        "n": 1803,
+        "id": "8b321693aa4d46d48692aa8a34a3f087",
+        "pr": "7533",
+        "t": "16:20",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 60 min"
+       },
+       {
+        "n": 1733,
+        "id": "acaba0f9f0224820a1403c335d5f3cdf",
+        "pr": "7538",
+        "t": "11:19",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 60 min"
+       },
+       {
+        "n": 1690,
+        "id": "072a2884a973414295a8619632d51a82",
+        "pr": "7549",
+        "t": "09:00",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 60 min"
+       },
+       {
+        "n": 1784,
+        "id": "3ad7ae8f2f9a4d949f51da4314ae7230",
+        "pr": "7589",
+        "t": "15:00",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 59 min"
+       },
+       {
+        "n": 1804,
+        "id": "a5d0650fcb0247d9bd6600bcc0e7a967",
+        "pr": "7634",
+        "t": "16:23",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 59 min"
+       },
+       {
+        "n": 1739,
+        "id": "8b18fab8ec00473f95a9acb5f127e8d4",
+        "pr": "7286",
+        "t": "11:41",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 57 min"
+       },
+       {
+        "n": 1741,
+        "id": "90eff80456bb4918b05391267fcc2f94",
+        "pr": "7611",
+        "t": "11:44",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 56 min"
+       },
+       {
+        "n": 1750,
+        "id": "ca1c92a7f88e407db3216b37cc352ae4",
+        "pr": "7628",
+        "t": "12:10",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1738,
+        "id": "f1ca05c47dab482d9b2ca94497a2fed8",
+        "pr": "7615",
+        "t": "11:38",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1712,
+        "id": "2d466ecf5d654f4d9a50f7de3f9a9b23",
+        "pr": "7554",
+        "t": "10:27",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1751,
+        "id": "e1c2d054ec904747b0bbcf7b3f59e423",
+        "pr": "7611",
+        "t": "12:20",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1797,
+        "id": "6a5098e4c3ea45979d927da06f6f7a06",
+        "pr": "7624",
+        "t": "15:34",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 55 min"
+       },
+       {
+        "n": 1717,
+        "id": "50170df23a6b439eb670d76dc395b586",
+        "pr": "7615",
+        "t": "10:48",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 54 min"
+       },
+       {
+        "n": 1754,
+        "id": "060158a133ee41c2bd4e0990cd74b333",
+        "pr": "7611",
+        "t": "12:39",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 54 min"
+       },
+       {
+        "n": 1759,
+        "id": "b049d302ce5e4064a16df30f9cf1b097",
+        "pr": "7589",
+        "t": "12:50",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 53 min"
+       },
+       {
+        "n": 1698,
+        "id": "18bf208971c5480badbc8d51a8010e03",
+        "pr": "7590",
+        "t": "09:42",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 53 min"
+       },
+       {
+        "n": 1699,
+        "id": "806a5f6c50fc495da516b1d691f0faa0",
+        "pr": "7595",
+        "t": "09:53",
+        "stage": "",
+        "job": "",
+        "msg": "平台失败占用 51 min"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "guide",
+       "cause": "当日废弃机时显著超前 7 日基线,且无单一稳定性事件可解释——需下钻成本矩阵(阶段×机时归属)定位废弃集中在哪个阶段、哪类责任方。",
+       "evidence": [],
+       "guess": "",
+       "action": "按成本矩阵下钻→定位主责阶段→关联当日失败/取消 run 明细",
+       "dest": "日观测板下钻"
+      }
+     },
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "2 个 run 取消前长时间占用资源(≥1h,最长 72.0 h)",
+      "stages": {},
+      "impact": {
+       "runs": 2,
+       "prs": 2,
+       "streak_days": 1,
+       "window_total": 2,
+       "wasted_min": 9506,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1711,
+        "id": "94a40de16901405b878f2c56c76fee3e",
+        "pr": "7611",
+        "t": "10:26",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 72.0 h"
+       },
+       {
+        "n": 1775,
+        "id": "100d0d5ba5a74378acf2353ddeac2f66",
+        "pr": "7439",
+        "t": "14:35",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 72.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
      }
     ]
    },
@@ -17347,6 +20711,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -17414,6 +20779,7 @@
      {
       "seg": "构建准备",
       "segscore": 91,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -17485,6 +20851,7 @@
      {
       "seg": "静态检查",
       "segscore": 68,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -17608,6 +20975,7 @@
      {
       "seg": "编译",
       "segscore": 92,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 98,
@@ -17679,6 +21047,7 @@
      {
       "seg": "单元测试",
       "segscore": 79,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -17877,6 +21246,7 @@
      {
       "seg": "系统测试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -17947,6 +21317,7 @@
      {
       "seg": "结果反馈",
       "segscore": 38,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 76,
@@ -18137,6 +21508,7 @@
      {
       "seg": "修复重试",
       "segscore": 73,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 57,
@@ -18266,6 +21638,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -18333,6 +21706,7 @@
      {
       "seg": "构建准备",
       "segscore": 92,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -18404,6 +21778,7 @@
      {
       "seg": "静态检查",
       "segscore": 88,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -18475,6 +21850,7 @@
      {
       "seg": "编译",
       "segscore": 85,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 75,
@@ -18602,6 +21978,7 @@
      {
       "seg": "单元测试",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -18673,6 +22050,7 @@
      {
       "seg": "系统测试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -18744,6 +22122,7 @@
      {
       "seg": "结果反馈",
       "segscore": 66,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 71,
@@ -18811,6 +22190,7 @@
      {
       "seg": "修复重试",
       "segscore": 75,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 58,
@@ -18940,6 +22320,7 @@
      {
       "seg": "触发确认",
       "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -19007,6 +22388,7 @@
      {
       "seg": "构建准备",
       "segscore": 64,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -19078,6 +22460,7 @@
      {
       "seg": "静态检查",
       "segscore": 60,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -19282,6 +22665,7 @@
      {
       "seg": "编译",
       "segscore": 69,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -19666,6 +23050,7 @@
      {
       "seg": "单元测试",
       "segscore": 72,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 92,
@@ -19737,6 +23122,7 @@
      {
       "seg": "系统测试",
       "segscore": 52,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -19956,6 +23342,7 @@
      {
       "seg": "结果反馈",
       "segscore": 76,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 69,
@@ -20023,6 +23410,7 @@
      {
       "seg": "修复重试",
       "segscore": 59,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 50,
@@ -20086,6 +23474,70 @@
       "stages": [],
       "bare": [],
       "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "稳定性",
+      "kb": "无失败叶子 job",
+      "cls": "待定",
+      "mech": "无失败叶子 job",
+      "owner": "待定(人工判读升级中)",
+      "title": "3 个 run 在  阶段因「无失败叶子 job」失败,涉及 3 个 PR",
+      "stages": {
+       "null": 3
+      },
+      "impact": {
+       "runs": 3,
+       "prs": 3,
+       "streak_days": 1,
+       "window_total": 5,
+       "wasted_min": 66,
+       "cross": [
+        "3 个 PR 当日被此问题拦住(交互体验)",
+        "关联 run 全程机时 1.1 机时按「待定」计入成本矩阵"
+       ]
+      },
+      "runs": [
+       {
+        "n": 1905,
+        "id": "6389a7c715cc4e859e907330d7f1ef04",
+        "pr": "7590",
+        "t": "09:05",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1921,
+        "id": "48e4824777b64487889521db8b012c71",
+        "pr": "7662",
+        "t": "10:24",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 1930,
+        "id": "8f0e807e31d14570bc9f32b14913b7b8",
+        "pr": "7634",
+        "t": "11:13",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "stability",
+      "root": {
+       "status": "pending",
+       "cause": "",
+       "evidence": [],
+       "guess": "",
+       "action": "人工判读日志尾部后补机理知识库条目",
+       "dest": "验证仓待办"
+      }
      }
     ]
    },
@@ -20152,6 +23604,7 @@
      {
       "seg": "触发确认",
       "segscore": 80,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -20266,6 +23719,7 @@
      {
       "seg": "构建准备",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -20337,6 +23791,7 @@
      {
       "seg": "静态检查",
       "segscore": 60,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -20532,6 +23987,7 @@
      {
       "seg": "编译",
       "segscore": 55,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -20603,6 +24059,7 @@
      {
       "seg": "单元测试",
       "segscore": 46,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -20981,6 +24438,7 @@
      {
       "seg": "系统测试",
       "segscore": 24,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -21893,6 +25351,7 @@
      {
       "seg": "结果反馈",
       "segscore": 34,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 65,
@@ -22299,6 +25758,7 @@
      {
       "seg": "修复重试",
       "segscore": 44,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 42,
@@ -22428,6 +25888,7 @@
      {
       "seg": "触发确认",
       "segscore": 91,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -22495,6 +25956,7 @@
      {
       "seg": "构建准备",
       "segscore": 57,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -22566,6 +26028,7 @@
      {
       "seg": "静态检查",
       "segscore": 60,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -22995,6 +26458,7 @@
      {
       "seg": "编译",
       "segscore": 52,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -23066,6 +26530,7 @@
      {
       "seg": "单元测试",
       "segscore": 46,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 60,
@@ -23300,6 +26765,7 @@
      {
       "seg": "系统测试",
       "segscore": 28,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -23977,6 +27443,7 @@
      {
       "seg": "结果反馈",
       "segscore": 48,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 37,
@@ -24044,6 +27511,7 @@
      {
       "seg": "修复重试",
       "segscore": 43,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 38,
@@ -24108,12 +27576,93 @@
       "bare": [],
       "problems": []
      }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "5 个 run 取消前长时间占用资源(≥1h,最长 13.2 h)",
+      "stages": {},
+      "impact": {
+       "runs": 5,
+       "prs": 3,
+       "streak_days": 1,
+       "window_total": 5,
+       "wasted_min": 3,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 2391,
+        "id": "a73615313212400eb47304688dd6ba97",
+        "pr": "7272",
+        "t": "20:53",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.8 h"
+       },
+       {
+        "n": 2390,
+        "id": "c32cba5240bd4fc0be682a857839c001",
+        "pr": "7756",
+        "t": "20:49",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.9 h"
+       },
+       {
+        "n": 2392,
+        "id": "e7093e0507c74bbaaf469f8003a9ff8f",
+        "pr": "7272",
+        "t": "20:54",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.8 h"
+       },
+       {
+        "n": 2388,
+        "id": "3a66594e550f4ce897c3a32266958e53",
+        "pr": "7272",
+        "t": "20:26",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 13.2 h"
+       },
+       {
+        "n": 2389,
+        "id": "771552748028492ea4fc13548be82611",
+        "pr": "7839",
+        "t": "20:34",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 13.1 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
+     }
     ]
    },
    "2026-07-23": {
     "day": "2026-07-23",
-    "date": "2026-07-23(最新完整日,实测)",
-    "note": "评论流实测:compile 触发 100 次(无确认回帖 7;确认回帖外链占比 100.0%);失败反馈 37/132(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)280.0 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "date": "2026-07-23(实测)",
+    "note": "评论流实测:compile 触发 101 次(无确认回帖 7;确认回帖外链占比 100.0%);失败反馈 37/132(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)280.0 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
     "scores": {
      "caliber": "score-v0.5.0-20260724",
      "dims": {
@@ -24173,6 +27722,7 @@
      {
       "seg": "触发确认",
       "segscore": 71,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -24193,7 +27743,7 @@
        "interaction": {
         "score": 93,
         "word": "正常",
-        "disp": "7.0%",
+        "disp": "6.9%",
         "name": "无确认回帖率",
         "owner": "基础设施团队",
         "probn": 0
@@ -24210,7 +27760,7 @@
       "stats": [
        {
         "label": "评论",
-        "v": 100
+        "v": 101
        },
        {
         "label": "无确认",
@@ -24218,7 +27768,7 @@
        },
        {
         "label": "PR",
-        "v": 42
+        "v": 43
        }
       ],
       "trend": {
@@ -24585,6 +28135,7 @@
      {
       "seg": "构建准备",
       "segscore": 57,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 99,
@@ -24656,6 +28207,7 @@
      {
       "seg": "静态检查",
       "segscore": 60,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -25130,6 +28682,7 @@
      {
       "seg": "编译",
       "segscore": 32,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -25492,6 +29045,7 @@
      {
       "seg": "单元测试",
       "segscore": 63,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 91,
@@ -25563,6 +29117,7 @@
      {
       "seg": "系统测试",
       "segscore": 20,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 40,
@@ -26357,6 +29912,7 @@
      {
       "seg": "结果反馈",
       "segscore": 54,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 37,
@@ -26424,6 +29980,7 @@
      {
       "seg": "修复重试",
       "segscore": 23,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 30,
@@ -26488,22 +30045,1205 @@
       "bare": [],
       "problems": []
      }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "4 个 run 取消前长时间占用资源(≥1h,最长 12.0 h)",
+      "stages": {},
+      "impact": {
+       "runs": 4,
+       "prs": 4,
+       "streak_days": 1,
+       "window_total": 4,
+       "wasted_min": 816,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 2407,
+        "id": "d2c8c86be65a4614a6a1891c4c853e20",
+        "pr": "7745",
+        "t": "08:54",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.3 h"
+       },
+       {
+        "n": 2406,
+        "id": "169a11ee256c45b5bfa997ab5b5af584",
+        "pr": "7756",
+        "t": "01:16",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 8.8 h"
+       },
+       {
+        "n": 2405,
+        "id": "5e06e1125e554618a957c15cb42ef6e9",
+        "pr": "5694",
+        "t": "00:38",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 9.8 h"
+       },
+       {
+        "n": 2512,
+        "id": "dbc8113b054044d68b125a70e0fd11fd",
+        "pr": "7859",
+        "t": "15:28",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 12.0 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
+     }
+    ]
+   },
+   "2026-07-24": {
+    "day": "2026-07-24",
+    "date": "2026-07-24(最新完整日,实测)",
+    "note": "评论流实测:compile 触发 62 次(无确认回帖 0;确认回帖外链占比 100.0%);失败反馈 9/39(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)84.2 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "scores": {
+     "caliber": "score-v0.5.0-20260724",
+     "dims": {
+      "stability": {
+       "score": 73,
+       "metrics": {
+        "Action 平台失败率": 72,
+        "Flaky 率": 90,
+        "流水线挂死数": 100,
+        "静态检查有效率": 0
+       },
+       "weights": {
+        "Action 平台失败率": 0.35,
+        "Flaky 率": 0.25,
+        "流水线挂死数": 0.25,
+        "静态检查有效率": 0.15
+       }
+      },
+      "efficiency": {
+       "score": 93,
+       "metrics": {
+        "整体 workflow 达标率(<30min)": 91,
+        "系统测试达标率(<15min)": 96,
+        "编译+UT 达标率(<15min)": 88,
+        "静态检查达标率(<5min)": 100
+       },
+       "weights": {
+        "整体 workflow 达标率(<30min)": 0.45,
+        "系统测试达标率(<15min)": 0.2,
+        "编译+UT 达标率(<15min)": 0.2,
+        "静态检查达标率(<5min)": 0.15
+       }
+      },
+      "interaction": {
+       "score": 30,
+       "metrics": {
+        "首次失败耗时": 83,
+        "PR 转绿 90 分位": 0,
+        "失败反馈率": 23,
+        "失败修复时长": 13
+       }
+      },
+      "cost": {
+       "score": 68,
+       "metrics": {
+        "无效机时占比": 92,
+        "重复执行机时占比": 45
+       }
+      }
+     },
+     "total": 66,
+     "grade": "C",
+     "low_confidence": true,
+     "note": "日分仅观察,周分为准(provisional 冷启动混合锚)"
+    },
+    "stages": [
+     {
+      "seg": "触发确认",
+      "segscore": 93,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 80,
+        "word": "正常",
+        "disp": "2.3 min",
+        "name": "确认时延中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0.0%",
+        "name": "无确认回帖率",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "cost": {
+        "score": 68,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "评论",
+        "v": 62
+       },
+       {
+        "label": "无确认",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 37
+       }
+      ],
+      "trend": {
+       "name": "确认时延中位",
+       "series": [
+        140,
+        140,
+        141,
+        139,
+        142,
+        142,
+        140
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     },
+     {
+      "seg": "构建准备",
+      "segscore": 89,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 74,
+        "word": "正常",
+        "disp": "23 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 30,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 92,
+        "word": "正常",
+        "disp": "7 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 122
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 61
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        23,
+        22,
+        21,
+        21,
+        24,
+        24,
+        23
+       ]
+      },
+      "stages": [
+       "ops_nn_action/image"
+      ],
+      "bare": [
+       "image"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "静态检查",
+      "segscore": 70,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 40,
+        "word": "需处理",
+        "disp": "12 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "30 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 30,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 68,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 122
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 66
+       }
+      ],
+      "trend": {
+       "name": "",
+       "series": [
+        42,
+        43,
+        42,
+        43,
+        43,
+        43,
+        30
+       ]
+      },
+      "stages": [
+       "ops_nn_action/compile · 静态检查族 job"
+      ],
+      "bare": [
+       "compile · 静态检查族 job"
+      ],
+      "problems": [
+       {
+        "pri": "P0",
+        "dim": "稳定性",
+        "kb": "静态检查器超时",
+        "cls": "Action 平台失败",
+        "mech": "静态检查器超时",
+        "owner": "CANN 基础设施团队",
+        "title": "11 个 run 在 compile 阶段因「步骤staticcheck执行失败，错误信息：点击任务查看详情」失败,涉及 7 个 PR;自 07-20 起持续第 5 天,窗口累计 123 起",
+        "stages": {
+         "compile": 11
+        },
+        "impact": {
+         "runs": 11,
+         "prs": 7,
+         "streak_days": 5,
+         "window_total": 123,
+         "wasted_min": 740,
+         "cross": [
+          "7 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 12.3 机时按「平台失败废弃」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 2618,
+          "id": "282c3268a0284ec489c27fed09279826",
+          "pr": "7120",
+          "t": "08:43",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2620,
+          "id": "37eede758b73443fbbbd9c469ad82777",
+          "pr": "7839",
+          "t": "08:56",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2622,
+          "id": "b9896b602aa9431dbc43379953e68d65",
+          "pr": "7874",
+          "t": "09:19",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2623,
+          "id": "d75f39637d8a43928c2c437789d34aed",
+          "pr": "7120",
+          "t": "09:29",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2640,
+          "id": "51cb371858174e769f776619b6285c9f",
+          "pr": "7599",
+          "t": "10:28",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2643,
+          "id": "a3be2aea445a4622a0345b590760ef2d",
+          "pr": "7120",
+          "t": "10:36",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2660,
+          "id": "812e4cd432234214b792a40bda88a3f5",
+          "pr": "7756",
+          "t": "11:16",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2662,
+          "id": "1badc3942bbe438891fd4cba3c9ac141",
+          "pr": "7756",
+          "t": "11:21",
+          "stage": "compile",
+          "job": "内容违规已隐藏",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2668,
+          "id": "06414e0542854416936a851dc2956d84",
+          "pr": "7899",
+          "t": "11:37",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2669,
+          "id": "db0ebbe2c94249f1ae85bf4af825275b",
+          "pr": "7899",
+          "t": "11:47",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2679,
+          "id": "086b2597dfb440d5b45b534699f47b66",
+          "pr": "6457",
+          "t": "12:43",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         }
+        ],
+        "seg": "静态检查",
+        "dimkey": "stability",
+        "root": {
+         "status": "known",
+         "cause": "docs-ci 静态检查器(codespell/tag_closed/resource_existence/link_validity 四项)从上游拿到的变更行号列表为空,于是退化为对 PR 全部 md 文件做全文扫描(实测 133–654 个文件),超出硬超时上限后被信号杀死(exit code: null,非正常非零退出)。整个过程零违规输出——贡献者只看到「步骤 staticcheck 执行失败,错误信息:点击任务查看详情」,点进去是 9 行无内容日志,没有任何可操作信息,唯一解是反复重试。",
+         "evidence": [
+          "两仓 128 条静态检查失败(ops-nn 118 / runtime 10)日志末行 100% 相同:「::error::插件执行失败: run-static-check.sh 异常退出,exit code: null」,无一条含文件/行/规则级违规输出",
+          "耗时呈硬超时墙:ops-nn 失败样本集中在 120–121s(成功样本中位仅 2s、p95 16s,5357 次成功执行);runtime 失败集中在 166–180s(通过样本中位 62s)——两者分布完全不重叠",
+          "同代码反证:ops-nn 87 条有「同 PR 相邻 run 该项通过」的直接对照(如 PR4940 同 commit run#1604/#2602 全绿 3–4s、run#2573 四项全部 121s 被杀)",
+          "根因指纹:日志中 change_file_dic 列出上百个 md 文件但每个文件的变更行号列表全为空(run#2574 133/133 全空、run#2510 537/537 全空),随后拼不出检查命令即崩溃",
+          "独立性交叉验证:四项检查互相独立,却在 39 个 run 中四项同时撞同一条超时墙——符合共因故障而非代码缺陷分布",
+          "作业中断佐证:失败作业的 upload 步始终停在 QUEUED(从未启动),通过作业 upload=COMPLETED"
+         ],
+         "guess": "上游取 diff 变更行的接口空返回(可能与 PR 体量/接口超时/权限有关);硬超时上限对全文扫描过短",
+         "action": "①修复变更行号获取(拿不到时应显式报错而非静默退化为全文扫描);②失败时输出可操作信息(当前 9 行空日志);③超时上限与扫描范围匹配。**不可归因于贡献者代码**——窗口内该检查从未报出过一条真实违规",
+         "dest": "cann/infrastructure Issue · 双周例会"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "编译",
+      "segscore": 84,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 75,
+        "word": "关注",
+        "disp": "4 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 77,
+        "word": "正常",
+        "disp": "6.3 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 30,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "12.2 机时",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 122
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 66
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        369,
+        362,
+        363,
+        512,
+        499,
+        511,
+        379
+       ]
+      },
+      "stages": [
+       "ops_nn_action/compile · 编译族 job"
+      ],
+      "bare": [
+       "compile · 编译族 job"
+      ],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "稳定性",
+        "kb": "Flaky-待分型",
+        "cls": "待定",
+        "mech": "Flaky-待分型",
+        "owner": "待定(人工判读升级中)",
+        "title": "4 个 run 在 compile/PreSmoke 阶段因「步骤x86_compile_acc执行失败，错误信息：点击任务查看详情」失败,涉及 4 个 PR;自 07-23 起持续第 2 天,窗口累计 13 起",
+        "stages": {
+         "compile": 2,
+         "null": 1,
+         "PreSmoke": 1
+        },
+        "impact": {
+         "runs": 4,
+         "prs": 4,
+         "streak_days": 2,
+         "window_total": 13,
+         "wasted_min": 510,
+         "cross": [
+          "4 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 8.5 机时按「待定」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 2613,
+          "id": "2f39d2b0f7fb45eca08d61785b9f5a1f",
+          "pr": "6332",
+          "t": "00:11",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "任务排队超时"
+         },
+         {
+          "n": 2703,
+          "id": "30f45495a2bd4bbfbce0be3f2c29d409",
+          "pr": "7639",
+          "t": "15:08",
+          "stage": "compile",
+          "job": "compile",
+          "msg": "步骤x86_compile_acc执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2744,
+          "id": "6ec0e9acadd94768916ac9599cd7a203",
+          "pr": "7873",
+          "t": "18:28",
+          "stage": "",
+          "job": "",
+          "msg": ""
+         },
+         {
+          "n": 2747,
+          "id": "407c6ef908ac4d728853c33c6f4c965e",
+          "pr": "7690",
+          "t": "18:49",
+          "stage": "compile",
+          "job": "compile",
+          "msg": "步骤arm_compile_acc执行失败，错误信息：点击任务查看详情"
+         }
+        ],
+        "seg_cross": [
+         "编译",
+         "系统测试"
+        ],
+        "seg": "编译",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "同代码重跑转绿(Flaky 成立),但日志签名未命中环境类/用例类任一方,暂无法归责。",
+         "evidence": [
+          "重跑转绿事实成立;ENV_PAT/TEST_PAT 均未命中"
+         ],
+         "guess": "",
+         "action": "扩充签名库;人工抽检(目标 N≥30)校准分型准确率",
+         "dest": "验证仓待办(Flaky 分型校准)"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "单元测试",
+      "segscore": 87,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 60,
+        "word": "需处理",
+        "disp": "3 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "76 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 30,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 101
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 55
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        104,
+        102,
+        104,
+        104,
+        107,
+        112,
+        76
+       ]
+      },
+      "stages": [
+       "ops_nn_action/ut"
+      ],
+      "bare": [
+       "ut"
+      ],
+      "problems": [
+       {
+        "pri": "P1",
+        "dim": "稳定性",
+        "kb": "疑似系统性同挂",
+        "cls": "代码失败",
+        "mech": "疑似系统性同挂",
+        "owner": "CANN 基础设施团队(排查共因)",
+        "title": "疑似系统性同挂:6 个 run 在 compile/ut 阶段大面积同挂或同一步骤跨 PR 失败,涉及 6 个 PR(暂缓归责贡献者)",
+        "stages": {
+         "compile": 3,
+         "ut": 3
+        },
+        "impact": {
+         "runs": 6,
+         "prs": 6,
+         "streak_days": 1,
+         "window_total": 6,
+         "wasted_min": 0,
+         "cross": [
+          "若确认共因,6 个 run 的代码失败判定将回填改判"
+         ]
+        },
+        "runs": [
+         {
+          "n": 2649,
+          "id": "2de98b86908b451b86d5f3b08bdb7f9e",
+          "pr": "7120",
+          "t": "10:45",
+          "stage": "compile",
+          "job": "staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2673,
+          "id": "2468f43314bd441daed8f9e16607fa04",
+          "pr": "7607",
+          "t": "11:56",
+          "stage": "ut",
+          "job": "ut",
+          "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2717,
+          "id": "f0299a9c3ad242c1ae7f1d5da2fad261",
+          "pr": "7874",
+          "t": "16:19",
+          "stage": "compile",
+          "job": "内容违规已隐藏",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2718,
+          "id": "94ebfa1e103d40888e43672c414521a6",
+          "pr": "7873",
+          "t": "16:21",
+          "stage": "ut",
+          "job": "内容违规已隐藏",
+          "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2724,
+          "id": "bced4b35301e415bb91f6f4ec8342b00",
+          "pr": "7743",
+          "t": "16:45",
+          "stage": "ut",
+          "job": "ut",
+          "msg": "步骤ut执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 2766,
+          "id": "d5e109ca4d31475b9a95177b6b214f4b",
+          "pr": "7915",
+          "t": "22:10",
+          "stage": "compile",
+          "job": "compile",
+          "msg": "步骤Checkout执行失败，错误信息：文件不存在。"
+         }
+        ],
+        "seg_cross": [
+         "静态检查",
+         "编译",
+         "单元测试"
+        ],
+        "seg": "单元测试",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "判定规则①(广度守卫)命中:同 run ≥3 个独立 UT 域/编译变体同挂,或同失败步骤当日跨 ≥5 个 PR——按规则暂缓归责贡献者,待排查后回填改判。",
+         "evidence": [
+          "广度守卫触发条件与命中明细见关联 run 列表"
+         ],
+         "guess": "存在共因(依赖版本变更/环境漂移/平台变更)而非各 PR 各自代码错(需基础设施排查确认)",
+         "action": "基础设施排查共因;确认后回填改判(系统性→平台失败,或解除暂缓→代码失败)",
+         "dest": "cann/infrastructure Issue · 双周例会"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "系统测试",
+      "segscore": 88,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 75,
+        "word": "关注",
+        "disp": "3 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "2.4 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 30,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 97
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 56
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        126,
+        123,
+        248,
+        463,
+        420,
+        2563,
+        141
+       ]
+      },
+      "stages": [
+       "ops_nn_action/PreSmoke"
+      ],
+      "bare": [
+       "PreSmoke"
+      ],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "稳定性",
+        "kb": "真机冒烟",
+        "cls": "待定",
+        "mech": "真机冒烟",
+        "owner": "待定(人工判读升级中)",
+        "title": "2 个 run 在 PreSmoke 阶段因「任务排队超时」失败,涉及 1 个 PR;自 07-21 起持续第 4 天,窗口累计 27 起",
+        "stages": {
+         "PreSmoke": 2
+        },
+        "impact": {
+         "runs": 2,
+         "prs": 1,
+         "streak_days": 4,
+         "window_total": 27,
+         "wasted_min": 820,
+         "cross": [
+          "1 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 13.7 机时按「待定」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 2615,
+          "id": "37fb0c233f19480e829927792bda8079",
+          "pr": "6332",
+          "t": "00:39",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "任务排队超时"
+         },
+         {
+          "n": 2616,
+          "id": "ceb8d77fd1524844b32f7d41b2feb685",
+          "pr": "6332",
+          "t": "01:01",
+          "stage": "PreSmoke",
+          "job": "A2_pre_smoke",
+          "msg": "任务排队超时"
+         }
+        ],
+        "seg": "系统测试",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "PreSmoke 真机执行失败且非执行机注册类——真机环境问题与用例问题混杂,日志分型未上线前归待定。",
+         "evidence": [
+          "失败位置 PreSmoke,信息非执行机注册文案"
+         ],
+         "guess": "",
+         "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
+         "dest": "验证仓待办(冒烟分型)"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "结果反馈",
+      "segscore": 53,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 73,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "efficiency": {
+        "score": 83,
+        "word": "正常",
+        "disp": "3.1 min",
+        "name": "首次失败耗时中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 23,
+        "word": "关注",
+        "disp": "76.9%",
+        "name": "失败无反馈率(评论/标签)",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "cost": {
+        "score": 68,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "失败run",
+        "v": 39
+       },
+       {
+        "label": "已反馈",
+        "v": 9
+       },
+       {
+        "label": "PR",
+        "v": 18
+       }
+      ],
+      "trend": {
+       "name": "首次失败耗时中位",
+       "series": [
+        572,
+        334,
+        114,
+        669,
+        190,
+        190,
+        185
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     },
+     {
+      "seg": "修复重试",
+      "segscore": 38,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 30,
+        "word": "关注",
+        "disp": "69.7%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 13,
+        "word": "关注",
+        "disp": "6.4 h",
+        "name": "失败修复时长中位",
+        "owner": "混合(含贡献者人时)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 30,
+        "word": "关注",
+        "disp": "69.7%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "cost": {
+        "score": 79,
+        "word": "正常",
+        "disp": "84.2 机时",
+        "name": "重复执行机时",
+        "owner": "流程(重触发策略)",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "重复run",
+        "v": 85
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 36
+       }
+      ],
+      "trend": {
+       "name": "重试再失败率(滚动7日,平滑)",
+       "series": [
+        43.4,
+        41.7,
+        50.5,
+        57.8,
+        61.5,
+        70.3,
+        69.7
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "稳定性",
+      "kb": "无失败叶子 job",
+      "cls": "待定",
+      "mech": "无失败叶子 job",
+      "owner": "待定(人工判读升级中)",
+      "title": "8 个 run 在  阶段因「无失败叶子 job」失败,涉及 6 个 PR",
+      "stages": {
+       "null": 8
+      },
+      "impact": {
+       "runs": 8,
+       "prs": 6,
+       "streak_days": 1,
+       "window_total": 14,
+       "wasted_min": 67,
+       "cross": [
+        "6 个 PR 当日被此问题拦住(交互体验)",
+        "关联 run 全程机时 1.1 机时按「待定」计入成本矩阵"
+       ]
+      },
+      "runs": [
+       {
+        "n": 2680,
+        "id": "e849c76fbce34226a862882ab20ea00c",
+        "pr": "6457",
+        "t": "12:52",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2698,
+        "id": "da9b327abdfa481e8e4277a5407e2f87",
+        "pr": "7873",
+        "t": "14:46",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2710,
+        "id": "9f74f5baccb0459c8900db68caa8ba0e",
+        "pr": "7873",
+        "t": "16:00",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2721,
+        "id": "cf4078a1d13449ba9a730507eff381c9",
+        "pr": "7879",
+        "t": "16:32",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2731,
+        "id": "b834ea0eec084bd1a080329bf8450da9",
+        "pr": "7743",
+        "t": "17:09",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2741,
+        "id": "0544795bbeaf45d0adb99f1c46a3571e",
+        "pr": "7922",
+        "t": "18:17",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2752,
+        "id": "6768d374d4dd40b1bb026ecafc812945",
+        "pr": "7850",
+        "t": "19:39",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       },
+       {
+        "n": 2753,
+        "id": "d134fa1c1bc74ac1ae42c01fe8b19b62",
+        "pr": "7850",
+        "t": "19:43",
+        "stage": "",
+        "job": "",
+        "msg": ""
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "stability",
+      "root": {
+       "status": "pending",
+       "cause": "",
+       "evidence": [],
+       "guess": "",
+       "action": "人工判读日志尾部后补机理知识库条目",
+       "dest": "验证仓待办"
+      }
+     }
     ]
    }
   }
  },
  "opscv": {
-  "projectName": "opscv",
+  "projectName": "ops-cv",
   "workflow": "PR-pipeline_ops-cv",
   "days": [
    "2026-07-22",
-   "2026-07-23"
+   "2026-07-23",
+   "2026-07-24"
   ],
   "boards": {
    "2026-07-22": {
     "day": "2026-07-22",
     "date": "2026-07-22(实测)",
-    "note": "评论流实测:compile 触发 0 次(无确认回帖 0;确认回帖外链占比 —%);失败反馈 0/15(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)14.9 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "note": "评论流实测:compile 触发 15 次(无确认回帖 0;确认回帖外链占比 100.0%);失败反馈 9/15(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)8.9 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
     "scores": {
      "caliber": "score-v0.5.0-20260724",
      "dims": {
@@ -26538,24 +31278,24 @@
        }
       },
       "interaction": {
-       "score": 0,
+       "score": 60,
        "metrics": {
         "首次失败耗时": null,
         "PR 转绿 90 分位": null,
-        "失败反馈率": 0,
+        "失败反馈率": 60,
         "失败修复时长": null
        }
       },
       "cost": {
-       "score": 64,
+       "score": 77,
        "metrics": {
         "无效机时占比": 92,
-        "重复执行机时占比": 37
+        "重复执行机时占比": 62
        }
       }
      },
-     "total": 54,
-     "grade": "D",
+     "total": 72,
+     "grade": "C",
      "low_confidence": true,
      "note": "日分仅观察,周分为准(provisional 冷启动混合锚)"
     },
@@ -26563,6 +31303,7 @@
      {
       "seg": "触发确认",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -26575,21 +31316,21 @@
        "efficiency": {
         "score": null,
         "word": "正常",
-        "disp": "—",
+        "disp": "2.2 min",
         "name": "确认时延中位",
         "owner": "基础设施团队",
         "probn": 0
        },
        "interaction": {
-        "score": null,
+        "score": 100,
         "word": "正常",
-        "disp": "—",
+        "disp": "0.0%",
         "name": "无确认回帖率",
         "owner": "基础设施团队",
         "probn": 0
        },
        "cost": {
-        "score": 64,
+        "score": 77,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -26600,7 +31341,7 @@
       "stats": [
        {
         "label": "评论",
-        "v": 0
+        "v": 15
        },
        {
         "label": "无确认",
@@ -26608,12 +31349,14 @@
        },
        {
         "label": "PR",
-        "v": 0
+        "v": 8
        }
       ],
       "trend": {
        "name": "确认时延中位",
-       "series": []
+       "series": [
+        134
+       ]
       },
       "stages": [],
       "bare": [],
@@ -26622,6 +31365,7 @@
      {
       "seg": "构建准备",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -26640,7 +31384,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
+        "score": 60,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -26687,6 +31431,7 @@
      {
       "seg": "静态检查",
       "segscore": 60,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 60,
@@ -26705,7 +31450,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
+        "score": 60,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -26713,7 +31458,7 @@
         "fallback": true
        },
        "cost": {
-        "score": 64,
+        "score": 77,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -26804,6 +31549,7 @@
      {
       "seg": "编译",
       "segscore": 100,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -26822,7 +31568,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
+        "score": 60,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -26869,6 +31615,7 @@
      {
       "seg": "单元测试",
       "segscore": 100,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -26887,7 +31634,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
+        "score": 60,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -26936,6 +31683,7 @@
      {
       "seg": "系统测试",
       "segscore": null,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": null,
@@ -26954,7 +31702,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
+        "score": 60,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27125,7 +31873,8 @@
      },
      {
       "seg": "结果反馈",
-      "segscore": 0,
+      "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 67,
@@ -27144,15 +31893,15 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
-        "word": "关注",
-        "disp": "100.0%",
+        "score": 60,
+        "word": "正常",
+        "disp": "40.0%",
         "name": "失败无反馈率(评论/标签)",
         "owner": "基础设施团队",
         "probn": 0
        },
        "cost": {
-        "score": 64,
+        "score": 77,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27167,7 +31916,7 @@
        },
        {
         "label": "已反馈",
-        "v": 0
+        "v": 9
        },
        {
         "label": "PR",
@@ -27187,6 +31936,7 @@
      {
       "seg": "修复重试",
       "segscore": 25,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 25,
@@ -27215,7 +31965,7 @@
        "cost": {
         "score": null,
         "word": "正常",
-        "disp": "14.9 机时",
+        "disp": "8.9 机时",
         "name": "重复执行机时",
         "owner": "流程(重触发策略)",
         "probn": 0
@@ -27249,8 +31999,8 @@
    },
    "2026-07-23": {
     "day": "2026-07-23",
-    "date": "2026-07-23(最新完整日,实测)",
-    "note": "评论流实测:compile 触发 0 次(无确认回帖 0;确认回帖外链占比 —%);失败反馈 0/17(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)7.0 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "date": "2026-07-23(实测)",
+    "note": "评论流实测:compile 触发 27 次(无确认回帖 1;确认回帖外链占比 100.0%);失败反馈 15/17(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)8.6 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
     "scores": {
      "caliber": "score-v0.5.0-20260724",
      "dims": {
@@ -27285,23 +32035,23 @@
        }
       },
       "interaction": {
-       "score": 44,
+       "score": 66,
        "metrics": {
         "首次失败耗时": 100,
         "PR 转绿 90 分位": 0,
-        "失败反馈率": 0,
+        "失败反馈率": 88,
         "失败修复时长": 75
        }
       },
       "cost": {
-       "score": 62,
+       "score": 56,
        "metrics": {
         "无效机时占比": 79,
-        "重复执行机时占比": 45
+        "重复执行机时占比": 32
        }
       }
      },
-     "total": 61,
+     "total": 65,
      "grade": "C",
      "low_confidence": false,
      "note": "日分仅观察,周分为准(provisional 冷启动混合锚)"
@@ -27309,7 +32059,8 @@
     "stages": [
      {
       "seg": "触发确认",
-      "segscore": 100,
+      "segscore": 93,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -27320,23 +32071,23 @@
         "probn": 0
        },
        "efficiency": {
-        "score": null,
+        "score": 84,
         "word": "正常",
-        "disp": "—",
+        "disp": "2.1 min",
         "name": "确认时延中位",
         "owner": "基础设施团队",
         "probn": 0
        },
        "interaction": {
-        "score": null,
+        "score": 96,
         "word": "正常",
-        "disp": "—",
+        "disp": "3.7%",
         "name": "无确认回帖率",
         "owner": "基础设施团队",
         "probn": 0
        },
        "cost": {
-        "score": 62,
+        "score": 56,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27347,20 +32098,23 @@
       "stats": [
        {
         "label": "评论",
-        "v": 0
+        "v": 27
        },
        {
         "label": "无确认",
-        "v": 0
+        "v": 1
        },
        {
         "label": "PR",
-        "v": 0
+        "v": 9
        }
       ],
       "trend": {
        "name": "确认时延中位",
-       "series": []
+       "series": [
+        134,
+        128
+       ]
       },
       "stages": [],
       "bare": [],
@@ -27369,6 +32123,7 @@
      {
       "seg": "构建准备",
       "segscore": 60,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -27387,7 +32142,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 44,
+        "score": 66,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27435,6 +32190,7 @@
      {
       "seg": "静态检查",
       "segscore": 70,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 40,
@@ -27453,7 +32209,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 44,
+        "score": 66,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27461,7 +32217,7 @@
         "fallback": true
        },
        "cost": {
-        "score": 62,
+        "score": 56,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27589,6 +32345,7 @@
      {
       "seg": "编译",
       "segscore": 83,
+      "parallel": true,
       "cells": {
        "stability": {
         "score": 100,
@@ -27607,7 +32364,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 44,
+        "score": 66,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27655,6 +32412,7 @@
      {
       "seg": "单元测试",
       "segscore": 67,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 100,
@@ -27673,7 +32431,7 @@
         "probn": 1
        },
        "interaction": {
-        "score": 44,
+        "score": 66,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27830,6 +32588,7 @@
      {
       "seg": "系统测试",
       "segscore": null,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": null,
@@ -27848,7 +32607,7 @@
         "probn": 0
        },
        "interaction": {
-        "score": 44,
+        "score": 66,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27937,7 +32696,8 @@
      },
      {
       "seg": "结果反馈",
-      "segscore": 50,
+      "segscore": 94,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 46,
@@ -27956,15 +32716,15 @@
         "probn": 0
        },
        "interaction": {
-        "score": 0,
-        "word": "关注",
-        "disp": "100.0%",
+        "score": 88,
+        "word": "正常",
+        "disp": "11.8%",
         "name": "失败无反馈率(评论/标签)",
         "owner": "基础设施团队",
         "probn": 0
        },
        "cost": {
-        "score": 62,
+        "score": 56,
         "word": "仓级",
         "disp": "—",
         "name": "仓级维度分(该段无日度信号)",
@@ -27979,7 +32739,7 @@
        },
        {
         "label": "已反馈",
-        "v": 0
+        "v": 15
        },
        {
         "label": "PR",
@@ -27999,7 +32759,8 @@
      },
      {
       "seg": "修复重试",
-      "segscore": 51,
+      "segscore": 47,
+      "parallel": false,
       "cells": {
        "stability": {
         "score": 15,
@@ -28026,9 +32787,9 @@
         "probn": 0
        },
        "cost": {
-        "score": 100,
+        "score": 83,
         "word": "正常",
-        "disp": "7.0 机时",
+        "disp": "8.6 机时",
         "name": "重复执行机时",
         "owner": "流程(重触发策略)",
         "probn": 0
@@ -28037,7 +32798,297 @@
       "stats": [
        {
         "label": "重复run",
-        "v": 16
+        "v": 19
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 7
+       }
+      ],
+      "trend": {
+       "name": "重试再失败率(滚动7日,平滑)",
+       "series": [
+        75,
+        85
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     }
+    ],
+    "unsegProblems": [
+     {
+      "pri": "P2",
+      "dim": "成本",
+      "kb": "取消长占",
+      "cls": "",
+      "mech": "取消长占",
+      "owner": "CANN 基础设施团队",
+      "title": "1 个 run 取消前长时间占用资源(≥1h,最长 1.8 h)",
+      "stages": {},
+      "impact": {
+       "runs": 1,
+       "prs": 1,
+       "streak_days": 1,
+       "window_total": 1,
+       "wasted_min": 0,
+       "cross": [
+        "占用机时全额计入成本矩阵「取消占用」列"
+       ]
+      },
+      "runs": [
+       {
+        "n": 18,
+        "id": "dd068612bf0749898c1d4ba489bf251a",
+        "pr": "1152",
+        "t": "08:17",
+        "stage": "",
+        "job": "",
+        "msg": "取消前占用 1.8 h"
+       }
+      ],
+      "seg": "__unseg",
+      "dimkey": "cost",
+      "root": {
+       "status": "known",
+       "cause": "run 长时间占用资源后被取消(≥1h)。平台无取消原因字段,抢占/人工取消/超时不可分;存在挂死风险——2026-07-18 全窗实测:runtime 取消前占用最长 24.3h(≥12h 者 14 起)、ops-nn 最长 13.6h。",
+       "evidence": [
+        "取消前占用时长由起止时间实测(runtime 最长 24.3h/ops-nn 13.6h);平台取消原因字段缺失(已列平台需求清单)"
+       ],
+       "guess": "",
+       "action": "挂死看门狗:job 级无进展检测(阈值分仓定,须高于既有成功最长——实测 ops-nn 4.1h、runtime 1.3h,防误杀);向平台提取消原因字段需求",
+       "dest": "cann/infrastructure Issue · 平台需求清单"
+      }
+     }
+    ]
+   },
+   "2026-07-24": {
+    "day": "2026-07-24",
+    "date": "2026-07-24(最新完整日,实测)",
+    "note": "评论流实测:compile 触发 12 次(无确认回帖 0;确认回帖外链占比 100.0%);失败反馈 4/8(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)2.5 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "scores": {
+     "caliber": "score-v0.5.0-20260724",
+     "dims": {
+      "stability": {
+       "score": 72,
+       "metrics": {
+        "Action 平台失败率": 62,
+        "Flaky 率": 100,
+        "流水线挂死数": 100,
+        "静态检查有效率": 0
+       },
+       "weights": {
+        "Action 平台失败率": 0.35,
+        "Flaky 率": 0.25,
+        "流水线挂死数": 0.25,
+        "静态检查有效率": 0.15
+       }
+      },
+      "efficiency": {
+       "score": 76,
+       "metrics": {
+        "整体 workflow 达标率(<30min)": 67,
+        "系统测试达标率(<15min)": null,
+        "编译+UT 达标率(<15min)": 80,
+        "静态检查达标率(<5min)": 100
+       },
+       "weights": {
+        "整体 workflow 达标率(<30min)": 0.45,
+        "系统测试达标率(<15min)": 0.2,
+        "编译+UT 达标率(<15min)": 0.2,
+        "静态检查达标率(<5min)": 0.15
+       }
+      },
+      "interaction": {
+       "score": 18,
+       "metrics": {
+        "首次失败耗时": 0,
+        "PR 转绿 90 分位": 24,
+        "失败反馈率": 50,
+        "失败修复时长": 0
+       }
+      },
+      "cost": {
+       "score": 78,
+       "metrics": {
+        "无效机时占比": 94,
+        "重复执行机时占比": 63
+       }
+      }
+     },
+     "total": 61,
+     "grade": "C",
+     "low_confidence": true,
+     "note": "日分仅观察,周分为准(provisional 冷启动混合锚)"
+    },
+    "stages": [
+     {
+      "seg": "触发确认",
+      "segscore": 81,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 60,
+        "word": "需处理",
+        "disp": "2 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 84,
+        "word": "正常",
+        "disp": "2.1 min",
+        "name": "确认时延中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0.0%",
+        "name": "无确认回帖率",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "cost": {
+        "score": 78,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "评论",
+        "v": 12
+       },
+       {
+        "label": "无确认",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 5
+       }
+      ],
+      "trend": {
+       "name": "确认时延中位",
+       "series": [
+        134,
+        128,
+        126
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": [
+       {
+        "pri": "P1",
+        "dim": "稳定性",
+        "kb": "资源申请",
+        "cls": "Action 平台失败",
+        "mech": "资源申请",
+        "owner": "CANN 基础设施团队",
+        "title": "2 个 run 在 image 阶段因「任务申请资源错误」失败,涉及 2 个 PR",
+        "stages": {
+         "image": 2
+        },
+        "impact": {
+         "runs": 2,
+         "prs": 2,
+         "streak_days": 1,
+         "window_total": 2,
+         "wasted_min": 1,
+         "cross": [
+          "2 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 0.0 机时按「平台失败废弃」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 51,
+          "id": "786ba821d7f64c9c947e232ea57fe6ac",
+          "pr": "1161",
+          "t": "11:16",
+          "stage": "image",
+          "job": "Test_image",
+          "msg": "任务申请资源错误"
+         },
+         {
+          "n": 53,
+          "id": "32b9836c5ed94feb9465588505a63e83",
+          "pr": "1165",
+          "t": "11:46",
+          "stage": "image",
+          "job": "Test_image",
+          "msg": "任务申请资源错误"
+         }
+        ],
+        "seg": "触发确认",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "资源池派发失败(多数 job 未被调度即报错);历史上出现过单池故障连挂——2026-07-14 20:11–21:02(UTC+8)runtime 14 个 run 跨 PR 3628–3649 同因失败,时间聚类为单一事件。",
+         "evidence": [
+          "runtime 该类失败 job 全部 start_time 为空(未进入执行);ops-nn 35 个中 8 个已执行 31–290 s 后报错(2026-07-18 全窗实测)"
+         ],
+         "guess": "池容量/配额瞬时不足或调度组件异常(池容量数据未暴露,无法从数据侧证实)",
+         "action": "调度层对派发失败做重试/换池;池故障告警;向平台确认容量与配额口径",
+         "dest": "cann/infrastructure Issue"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "构建准备",
+      "segscore": 67,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 0,
+        "word": "关注",
+        "disp": "25 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 18,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "1 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 11
        },
        {
         "label": "问题",
@@ -28049,10 +33100,1164 @@
        }
       ],
       "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        9,
+        9,
+        25
+       ]
+      },
+      "stages": [
+       "PR-pipeline_ops-cv/image"
+      ],
+      "bare": [
+       "image"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "静态检查",
+      "segscore": 80,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 60,
+        "word": "需处理",
+        "disp": "1 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "25 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 18,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 78,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 10
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 4
+       }
+      ],
+      "trend": {
+       "name": "",
+       "series": [
+        51,
+        21,
+        25
+       ]
+      },
+      "stages": [
+       "PR-pipeline_ops-cv/compile · 静态检查族 job"
+      ],
+      "bare": [
+       "compile · 静态检查族 job"
+      ],
+      "problems": [
+       {
+        "pri": "P1",
+        "dim": "稳定性",
+        "kb": "静态检查器超时",
+        "cls": "Action 平台失败",
+        "mech": "静态检查器超时",
+        "owner": "CANN 基础设施团队",
+        "title": "1 个 run 在 compile 阶段因「步骤staticcheck执行失败，错误信息：点击任务查看详情」失败,涉及 1 个 PR;自 07-22 起持续第 3 天,窗口累计 7 起",
+        "stages": {
+         "compile": 1
+        },
+        "impact": {
+         "runs": 1,
+         "prs": 1,
+         "streak_days": 3,
+         "window_total": 7,
+         "wasted_min": 24,
+         "cross": [
+          "1 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 0.4 机时按「平台失败废弃」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 46,
+          "id": "a5ebd59716334a9781894c76d985ef55",
+          "pr": "1158",
+          "t": "08:56",
+          "stage": "compile",
+          "job": "CodeCheck_staticcheck",
+          "msg": "步骤staticcheck执行失败，错误信息：点击任务查看详情"
+         }
+        ],
+        "seg": "静态检查",
+        "dimkey": "stability",
+        "root": {
+         "status": "known",
+         "cause": "docs-ci 静态检查器(codespell/tag_closed/resource_existence/link_validity 四项)从上游拿到的变更行号列表为空,于是退化为对 PR 全部 md 文件做全文扫描(实测 133–654 个文件),超出硬超时上限后被信号杀死(exit code: null,非正常非零退出)。整个过程零违规输出——贡献者只看到「步骤 staticcheck 执行失败,错误信息:点击任务查看详情」,点进去是 9 行无内容日志,没有任何可操作信息,唯一解是反复重试。",
+         "evidence": [
+          "两仓 128 条静态检查失败(ops-nn 118 / runtime 10)日志末行 100% 相同:「::error::插件执行失败: run-static-check.sh 异常退出,exit code: null」,无一条含文件/行/规则级违规输出",
+          "耗时呈硬超时墙:ops-nn 失败样本集中在 120–121s(成功样本中位仅 2s、p95 16s,5357 次成功执行);runtime 失败集中在 166–180s(通过样本中位 62s)——两者分布完全不重叠",
+          "同代码反证:ops-nn 87 条有「同 PR 相邻 run 该项通过」的直接对照(如 PR4940 同 commit run#1604/#2602 全绿 3–4s、run#2573 四项全部 121s 被杀)",
+          "根因指纹:日志中 change_file_dic 列出上百个 md 文件但每个文件的变更行号列表全为空(run#2574 133/133 全空、run#2510 537/537 全空),随后拼不出检查命令即崩溃",
+          "独立性交叉验证:四项检查互相独立,却在 39 个 run 中四项同时撞同一条超时墙——符合共因故障而非代码缺陷分布",
+          "作业中断佐证:失败作业的 upload 步始终停在 QUEUED(从未启动),通过作业 upload=COMPLETED"
+         ],
+         "guess": "上游取 diff 变更行的接口空返回(可能与 PR 体量/接口超时/权限有关);硬超时上限对全文扫描过短",
+         "action": "①修复变更行号获取(拿不到时应显式报错而非静默退化为全文扫描);②失败时输出可操作信息(当前 9 行空日志);③超时上限与扫描范围匹配。**不可归因于贡献者代码**——窗口内该检查从未报出过一条真实违规",
+         "dest": "cann/infrastructure Issue · 双周例会"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "编译",
+      "segscore": 97,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 90,
+        "word": "正常",
+        "disp": "2.1 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 18,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "24 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 10
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 4
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        146,
+        135,
+        127
+       ]
+      },
+      "stages": [
+       "PR-pipeline_ops-cv/compile · 编译族 job"
+      ],
+      "bare": [
+       "compile · 编译族 job"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "单元测试",
+      "segscore": 100,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 100,
+        "word": "正常",
+        "disp": "2.0 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 18,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 7
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 3
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        119,
+        690,
+        122
+       ]
+      },
+      "stages": [
+       "PR-pipeline_ops-cv/ut",
+       "PR-pipeline_ops-cv/ut_report"
+      ],
+      "bare": [
+       "ut",
+       "ut_report"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "系统测试",
+      "segscore": null,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": null,
+        "word": "关注",
+        "disp": "2 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "—",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 18,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 0
+       },
+       {
+        "label": "问题",
+        "v": 1
+       },
+       {
+        "label": "PR",
+        "v": 0
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": []
+      },
+      "stages": [],
+      "bare": [],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "稳定性",
+        "kb": "真机冒烟",
+        "cls": "待定",
+        "mech": "真机冒烟",
+        "owner": "待定(人工判读升级中)",
+        "title": "2 个 run 在 ut 阶段因「步骤smoke executor执行失败，错误信息：点击任务查看详情」失败,涉及 2 个 PR",
+        "stages": {
+         "ut": 2
+        },
+        "impact": {
+         "runs": 2,
+         "prs": 2,
+         "streak_days": 1,
+         "window_total": 5,
+         "wasted_min": 206,
+         "cross": [
+          "2 个 PR 当日被此问题拦住(交互体验)",
+          "关联 run 全程机时 3.4 机时按「待定」计入成本矩阵"
+         ]
+        },
+        "runs": [
+         {
+          "n": 47,
+          "id": "4d83dfcd9c774a7ab807c76382fb26a7",
+          "pr": "1156",
+          "t": "08:56",
+          "stage": "ut",
+          "job": "PreSmoke_A2",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         },
+         {
+          "n": 52,
+          "id": "9ccbc85c946747fd8086907cf7e438e2",
+          "pr": "1150",
+          "t": "11:38",
+          "stage": "ut",
+          "job": "PreSmoke_A2",
+          "msg": "步骤smoke executor执行失败，错误信息：点击任务查看详情"
+         }
+        ],
+        "seg": "系统测试",
+        "dimkey": "stability",
+        "root": {
+         "status": "partial",
+         "cause": "PreSmoke 真机执行失败且非执行机注册类——真机环境问题与用例问题混杂,日志分型未上线前归待定。",
+         "evidence": [
+          "失败位置 PreSmoke,信息非执行机注册文案"
+         ],
+         "guess": "",
+         "action": "冒烟日志分型(计划项);分型后拆归代码/平台",
+         "dest": "验证仓待办(冒烟分型)"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "结果反馈",
+      "segscore": 25,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 72,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "efficiency": {
+        "score": 0,
+        "word": "关注",
+        "disp": "6.0 min",
+        "name": "首次失败耗时中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 50,
+        "word": "关注",
+        "disp": "50.0%",
+        "name": "失败无反馈率(评论/标签)",
+        "owner": "基础设施团队",
+        "probn": 1
+       },
+       "cost": {
+        "score": 78,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "失败run",
+        "v": 8
+       },
+       {
+        "label": "已反馈",
+        "v": 4
+       },
+       {
+        "label": "PR",
+        "v": 5
+       }
+      ],
+      "trend": {
+       "name": "首次失败耗时中位",
+       "series": [
+        196,
+        92,
+        360
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": [
+       {
+        "pri": "P2",
+        "dim": "交互体验",
+        "kb": "首次反馈变慢",
+        "cls": "",
+        "mech": "首次反馈变慢",
+        "owner": "CANN 基础设施团队",
+        "title": "失败 run 首次反馈耗时当日中位 6.0 min,较前 7 日中位 2.4 min 上浮 150%(样本 6)",
+        "stages": {},
+        "impact": {
+         "runs": 3,
+         "prs": 3,
+         "streak_days": 1,
+         "window_total": 3,
+         "wasted_min": 0,
+         "cross": [
+          "贡献者更晚知道「这次不行」;按责任方拆分见交互体验细分"
+         ]
+        },
+        "runs": [
+         {
+          "n": 47,
+          "id": "4d83dfcd9c774a7ab807c76382fb26a7",
+          "pr": "1156",
+          "t": "08:56",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 85.5 min"
+         },
+         {
+          "n": 52,
+          "id": "9ccbc85c946747fd8086907cf7e438e2",
+          "pr": "1150",
+          "t": "11:38",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 83.2 min"
+         },
+         {
+          "n": 50,
+          "id": "39ccd185d7c64666b377a88c3201d864",
+          "pr": "1161",
+          "t": "09:58",
+          "stage": "",
+          "job": "",
+          "msg": "首次反馈 8.6 min"
+         }
+        ],
+        "seg": "结果反馈",
+        "dimkey": "interaction",
+        "root": {
+         "status": "guide",
+         "cause": "失败 run 的首次反馈耗时(触发→第一个失败 job 结束)当日中位显著超基线——贡献者更晚才知道『这次不行』。常见成因:失败位置后移(早失败变晚失败)或前置阶段变慢。",
+         "evidence": [],
+         "guess": "",
+         "action": "按责任方拆分首次反馈耗时;对照效率矩阵看前置阶段是否变慢",
+         "dest": "日观测板下钻"
+        }
+       }
+      ]
+     },
+     {
+      "seg": "修复重试",
+      "segscore": 34,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 17,
+        "word": "关注",
+        "disp": "83.3%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": 0,
+        "word": "关注",
+        "disp": "1.8 h",
+        "name": "失败修复时长中位",
+        "owner": "混合(含贡献者人时)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 17,
+        "word": "关注",
+        "disp": "83.3%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "cost": {
+        "score": 100,
+        "word": "正常",
+        "disp": "2.5 机时",
+        "name": "重复执行机时",
+        "owner": "流程(重触发策略)",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "重复run",
+        "v": 7
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 3
+       }
+      ],
+      "trend": {
        "name": "重试再失败率(滚动7日,平滑)",
        "series": [
         75,
-        85
+        85,
+        83.3
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     }
+    ]
+   }
+  }
+ },
+ "graphaf": {
+  "projectName": "graph-af",
+  "workflow": "PR-pipeline_graph-autofusion",
+  "days": [
+   "2026-07-24"
+  ],
+  "boards": {
+   "2026-07-24": {
+    "day": "2026-07-24",
+    "date": "2026-07-24(最新完整日,实测)",
+    "note": "评论流实测:compile 触发 21 次(无确认回帖 0;确认回帖外链占比 100.0%);失败反馈 2/2(失败后 24h 内机器人评论或 ci-pipeline-failed 标签);重复执行机时(同代码重跑)1.3 机时。分数 provisional v2:比例/计数类=绝对锚(100−率,计数按当日分母率化);时长类=对自身 ≤28 日基线分位偏移(慢性水平看数值,分数只表当日相对位置);问题封顶 P0≤40/P1≤60/P2≤75;无事件但分≤40 → 状态记「关注」(水位信号);段综合分=段内各维分等权均值(「仓级」回退格不参与);四维度状态卡分为另一套口径=全仓 run 级白名单指标均值,不由段分加总。",
+    "scores": {
+     "caliber": "score-v0.5.0-20260724",
+     "dims": {
+      "stability": {
+       "score": 100,
+       "metrics": {
+        "Action 平台失败率": 100,
+        "Flaky 率": 100,
+        "流水线挂死数": null,
+        "静态检查有效率": null
+       },
+       "weights": {
+        "Action 平台失败率": 0.35,
+        "Flaky 率": 0.25,
+        "流水线挂死数": 0.25,
+        "静态检查有效率": 0.15
+       }
+      },
+      "efficiency": {
+       "score": 84,
+       "metrics": {
+        "整体 workflow 达标率(<30min)": 76,
+        "系统测试达标率(<15min)": 100,
+        "编译+UT 达标率(<15min)": 73,
+        "静态检查达标率(<5min)": 100
+       },
+       "weights": {
+        "整体 workflow 达标率(<30min)": 0.45,
+        "系统测试达标率(<15min)": 0.2,
+        "编译+UT 达标率(<15min)": 0.2,
+        "静态检查达标率(<5min)": 0.15
+       }
+      },
+      "interaction": {
+       "score": 100,
+       "metrics": {
+        "首次失败耗时": null,
+        "PR 转绿 90 分位": null,
+        "失败反馈率": 100,
+        "失败修复时长": null
+       }
+      },
+      "cost": {
+       "score": 96,
+       "metrics": {
+        "无效机时占比": 100,
+        "重复执行机时占比": 91
+       }
+      }
+     },
+     "total": 95,
+     "grade": "A",
+     "low_confidence": false,
+     "note": "日分仅观察,周分为准(provisional 冷启动混合锚)"
+    },
+    "stages": [
+     {
+      "seg": "触发确认",
+      "segscore": 100,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "2.1 min",
+        "name": "确认时延中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0.0%",
+        "name": "无确认回帖率",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "cost": {
+        "score": 96,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "评论",
+        "v": 21
+       },
+       {
+        "label": "无确认",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 13
+       }
+      ],
+      "trend": {
+       "name": "确认时延中位",
+       "series": [
+        127
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     },
+     {
+      "seg": "构建准备",
+      "segscore": 100,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "10 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 14
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 10
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        10
+       ]
+      },
+      "stages": [
+       "PR-pipeline_graph-autofusion/image"
+      ],
+      "bare": [
+       "image"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "静态检查",
+      "segscore": 100,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "24 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": 96,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 15
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 11
+       }
+      ],
+      "trend": {
+       "name": "",
+       "series": [
+        24
+       ]
+      },
+      "stages": [
+       "PR-pipeline_graph-autofusion/compile · 静态检查族 job"
+      ],
+      "bare": [
+       "compile · 静态检查族 job"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "编译",
+      "segscore": 100,
+      "parallel": true,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "53 s",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 15
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 11
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        53
+       ]
+      },
+      "stages": [
+       "PR-pipeline_graph-autofusion/compile · 编译族 job"
+      ],
+      "bare": [
+       "compile · 编译族 job"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "单元测试",
+      "segscore": 100,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "13.5 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 13
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 9
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        810
+       ]
+      },
+      "stages": [
+       "PR-pipeline_graph-autofusion/ut"
+      ],
+      "bare": [
+       "ut"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "系统测试",
+      "segscore": 100,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0 起",
+        "name": "平台/待定失败数",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "6.7 min",
+        "name": "阶段耗时中位",
+        "owner": "混合(代码规模+平台算力)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "0 min",
+        "name": "浪费机时",
+        "owner": "基础设施团队",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "run",
+        "v": 12
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 10
+       }
+      ],
+      "trend": {
+       "name": "阶段中位耗时",
+       "series": [
+        404
+       ]
+      },
+      "stages": [
+       "PR-pipeline_graph-autofusion/PreSmoke"
+      ],
+      "bare": [
+       "PreSmoke"
+      ],
+      "problems": []
+     },
+     {
+      "seg": "结果反馈",
+      "segscore": 100,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 100,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "10.3 min",
+        "name": "首次失败耗时中位",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 100,
+        "word": "正常",
+        "disp": "0.0%",
+        "name": "失败无反馈率(评论/标签)",
+        "owner": "基础设施团队",
+        "probn": 0
+       },
+       "cost": {
+        "score": 96,
+        "word": "仓级",
+        "disp": "—",
+        "name": "仓级维度分(该段无日度信号)",
+        "probn": 0,
+        "fallback": true
+       }
+      },
+      "stats": [
+       {
+        "label": "失败run",
+        "v": 2
+       },
+       {
+        "label": "已反馈",
+        "v": 2
+       },
+       {
+        "label": "PR",
+        "v": 1
+       }
+      ],
+      "trend": {
+       "name": "首次失败耗时中位",
+       "series": [
+        618
+       ]
+      },
+      "stages": [],
+      "bare": [],
+      "problems": []
+     },
+     {
+      "seg": "修复重试",
+      "segscore": 0,
+      "parallel": false,
+      "cells": {
+       "stability": {
+        "score": 0,
+        "word": "关注",
+        "disp": "100.0%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "efficiency": {
+        "score": null,
+        "word": "正常",
+        "disp": "—",
+        "name": "失败修复时长中位",
+        "owner": "混合(含贡献者人时)",
+        "probn": 0
+       },
+       "interaction": {
+        "score": 0,
+        "word": "关注",
+        "disp": "100.0%",
+        "name": "重试再失败率(滚动7日)",
+        "owner": "混合(平台 Flaky+代码)",
+        "probn": 0
+       },
+       "cost": {
+        "score": null,
+        "word": "正常",
+        "disp": "80 min",
+        "name": "重复执行机时",
+        "owner": "流程(重触发策略)",
+        "probn": 0
+       }
+      },
+      "stats": [
+       {
+        "label": "重复run",
+        "v": 4
+       },
+       {
+        "label": "问题",
+        "v": 0
+       },
+       {
+        "label": "PR",
+        "v": 2
+       }
+      ],
+      "trend": {
+       "name": "重试再失败率(滚动7日,平滑)",
+       "series": [
+        100
        ]
       },
       "stages": [],

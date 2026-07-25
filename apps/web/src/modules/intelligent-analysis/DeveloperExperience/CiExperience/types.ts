@@ -1,6 +1,6 @@
 // CI 体验诊断 · 数据类型（对齐 v2 设计稿 DATA schema，纯数据、不含 ReactNode）
 
-export type CiRepoKey = 'runtime' | 'opsnn' | 'opscv';
+export type CiRepoKey = 'runtime' | 'opsnn' | 'opscv' | 'graphaf';
 
 export type CiDimKey = 'stability' | 'efficiency' | 'interaction' | 'cost';
 
@@ -314,6 +314,8 @@ export type CiJourneyStage = {
   seg: string;
   /** 段综合分（段内各有效维度等权均值；「仓级」回退格不参与） */
   segscore: number;
+  /** 是否与相邻段并行执行（如静态检查与编译同在 compile 时间窗内并行） */
+  parallel?: boolean;
   /** 四维日度信号 */
   cells: CiJourneyCells;
   /** 段三宫格统计 */
@@ -353,6 +355,8 @@ export type CiJourneyDay = {
   /** 当日报告概览五项得分（综合 + 四维），冷启动日 total 可能为 null */
   scores: CiJourneyScores | null;
   stages: CiJourneyStage[];
+  /** 跨段/未映射问题（seg 为 null 或空的问题，无法归入单一旅程段） */
+  unsegProblems?: CiJourneyProblem[];
 };
 
 /** 仓库级旅程全景图数据（按观测日分板） */

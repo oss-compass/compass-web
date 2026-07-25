@@ -29,6 +29,7 @@ const OUT_DATA = {
     runtime: path.join(BASE, 'ci-runtime-data.json'),
     opsnn: path.join(BASE, 'ci-opsnn-data.json'),
     opscv: path.join(BASE, 'ci-opscv-data.json'),
+    graphaf: path.join(BASE, 'ci-graphaf-data.json'),
 };
 const OUT_JOURNEY = path.join(BASE, 'components/CiReport/ci-journey.json');
 
@@ -149,6 +150,7 @@ function transformStage(st, boardProblems, ctx, warns) {
     return {
         seg: st.seg,
         segscore: st.segscore,
+        parallel: st.parallel || false,
         cells: st.cells,
         stats: (st.stats || []).map(([label, v]) => ({ label, v })),
         trend: st.trend,
@@ -181,6 +183,11 @@ function transformJourneyRepo(repoKey, repo, warns) {
             scores: b.scores || null,
             stages: b.journey.map((st) => transformStage(st, b.problems, ctx, warns)),
         };
+        // 收集跨段/未映射问题（seg 为 null 或空）
+        const unseg = (b.problems || []).filter((p) => !p.seg);
+        if (unseg.length) {
+            boards[day].unsegProblems = unseg.map((p) => ({ ...p, seg: '__unseg' }));
+        }
     }
     if (segSignatures.size > 1) {
         warns.push(
@@ -192,7 +199,7 @@ function transformJourneyRepo(repoKey, repo, warns) {
     return {
         signatures: [...segSignatures],
         repo: {
-            projectName: repoKey === 'opsnn' ? 'ops-nn' : repoKey,
+            projectName: repoKey === 'opsnn' ? 'ops-nn' : repoKey === 'opscv' ? 'ops-cv' : repoKey === 'graphaf' ? 'graph-af' : repoKey,
             workflow: repo.workflow,
             days: repo.days,
             boards,

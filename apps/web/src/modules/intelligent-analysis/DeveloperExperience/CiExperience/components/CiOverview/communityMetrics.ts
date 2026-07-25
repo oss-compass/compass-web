@@ -48,9 +48,15 @@ const PRI_DESC: Record<CiPri, string> = {
 };
 
 /** 仓库顺序（runtime 优先，与详细看板一致） */
-const REPO_ORDER: CiRepoKey[] = ['runtime', 'opsnn', 'opscv'];
+const REPO_ORDER: CiRepoKey[] = ['runtime', 'opsnn', 'opscv', 'graphaf'];
 const repoSlug = (repo: CiRepoKey) =>
-  repo === 'opsnn' ? 'ops-nn' : repo === 'opscv' ? 'ops-cv' : 'runtime';
+  repo === 'opsnn'
+    ? 'ops-nn'
+    : repo === 'opscv'
+    ? 'ops-cv'
+    : repo === 'graphaf'
+    ? 'graph-af'
+    : 'runtime';
 
 const isActive = (p: { status: string }) => /^仍活跃/.test(p.status);
 const isFaded = (p: { status: string }) => /已消退/.test(p.status);
