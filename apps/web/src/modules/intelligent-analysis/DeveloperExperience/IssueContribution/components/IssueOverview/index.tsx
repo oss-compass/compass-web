@@ -5,13 +5,14 @@ import { Empty, Spin, Table, Tag, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
-import { fetchIssueOverview } from '../../data';
+import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
 import type {
   IssueOverviewData,
   IssueOverviewRepo,
   IssueOverviewTopPain,
+  IssueTopPainsApiResponse,
 } from '../../types';
-import { computeIssueOverview } from './issueMetrics';
+import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import type { IssueStageAgg } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import type { IssueTrendModalData } from './IssueTrendModal';
@@ -66,11 +67,25 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const [appendixOpen, setAppendixOpen] = React.useState(false);
   const [trendModal, setTrendModal] =
     React.useState<IssueTrendModalData | null>(null);
+  // 重点待办痛点：服务端分页，按页/按筛选条件拉取，不一次性下发全量
+  const [pains, setPains] = React.useState<IssueTopPainsApiResponse | null>(
+    null
+  );
+  const [painsLoading, setPainsLoading] = React.useState(true);
+  const [painPage, setPainPage] = React.useState(1);
+  const [painPageSize, setPainPageSize] = React.useState(10);
+  const [painFilters, setPainFilters] = React.useState<{
+    repo?: string;
+    prio?: string;
+  }>({});
 
   React.useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setLoadError(false);
+    // 切换组织时重置痛点表格的分页与筛选状态
+    setPainPage(1);
+    setPainFilters({});
     void fetchIssueOverview(org, controller.signal)
       .then((res) => setData(res.overview))
       .catch((error: unknown) => {
@@ -84,6 +99,31 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       });
     return () => controller.abort();
   }, [org]);
+
+  React.useEffect(() => {
+    const controller = new AbortController();
+    setPainsLoading(true);
+    void fetchIssueTopPains(
+      {
+        org,
+        repo: painFilters.repo,
+        prio: painFilters.prio,
+        page: painPage,
+        pageSize: painPageSize,
+      },
+      controller.signal
+    )
+      .then((res) => setPains(res))
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        setPains(null);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setPainsLoading(false);
+      });
+    return () => controller.abort();
+  }, [org, painPage, painPageSize, painFilters]);
 
   if (loading) {
     return (
@@ -118,26 +158,25 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       community
     )}${period ? `&period=${encodeURIComponent(period)}` : ''}`;
 
-  const painRepos = data.topPains
-    .map((p) => p.repoShort)
-    .filter((s, i, arr) => arr.indexOf(s) === i);
-  const painPris = ['P0', 'P1', 'P2'].filter((p) =>
-    data.topPains.some((t) => priKey(t.prio) === p)
-  );
+  const painRepos = pains?.repoOptions ?? [];
+  const painPris = pains?.prioOptions ?? [];
 
   const topColumns: TableProps<IssueOverviewTopPain>['columns'] = [
     {
       title: '序号',
       width: 64,
       align: 'center',
-      render: (_v, _r, i) => <span className="row-num">{i + 1}</span>,
+      render: (_v, _r, i) => (
+        <span className="row-num">{(painPage - 1) * painPageSize + i + 1}</span>
+      ),
     },
     {
       title: '仓库',
       dataIndex: 'repoShort',
       width: 132,
       filters: painRepos.map((s) => ({ text: s, value: s })),
-      onFilter: (value, r) => r.repoShort === value,
+      filterMultiple: false,
+      filteredValue: painFilters.repo ? [painFilters.repo] : null,
       render: (v: string) => (
         <span className="font-semibold text-slate-700">{v}</span>
       ),
@@ -152,7 +191,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       dataIndex: 'prio',
       width: 88,
       filters: painPris.map((p) => ({ text: p, value: p })),
-      onFilter: (value, r) => priKey(r.prio) === value,
+      filterMultiple: false,
+      filteredValue: painFilters.prio ? [painFilters.prio] : null,
       render: (v: string) => {
         const s = priStyle(v);
         return (
@@ -486,9 +526,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             <div className="mt-1 flex items-center justify-center gap-1.5 text-[11px] leading-4 text-slate-400">
               {k.grade ? (
                 <>
-                  <Tooltip
-                    title="评分标准：A 85–100 分；B 75–84.9 分；C 65–74.9 分；D 50–64.9 分；F 低于 50 分"
-                  >
+                  <Tooltip title="评分标准：A 85–100 分；B 75–84.9 分；C 65–74.9 分；D 50–64.9 分；F 低于 50 分">
                     <span
                       className="cursor-help border-b border-dashed border-slate-300"
                       tabIndex={0}
@@ -552,11 +590,11 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         />
 
         <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
-          各仓库对比
+          各仓库对比（各仓最新一周）
         </div>
         <Table<IssueOverviewRepo>
           className="overview-ant-table"
-          dataSource={data.repos}
+          dataSource={latestReposByPeriod(data.repos)}
           columns={repoColumns}
           rowKey={(record) => `${record.community}-${record.period}`}
           pagination={false}
@@ -572,10 +610,27 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       <div className="section-card">
         <Table<IssueOverviewTopPain>
           className="overview-ant-table"
-          dataSource={data.topPains}
+          dataSource={pains?.items ?? []}
           columns={topColumns}
           rowKey="key"
-          pagination={false}
+          loading={painsLoading}
+          pagination={{
+            current: painPage,
+            pageSize: painPageSize,
+            total: pains?.total ?? 0,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+          onChange={(pagination, filters) => {
+            const repo = (filters.repoShort?.[0] as string) || undefined;
+            const prio = (filters.prio?.[0] as string) || undefined;
+            const filtersChanged =
+              repo !== painFilters.repo || prio !== painFilters.prio;
+            if (filtersChanged) setPainFilters({ repo, prio });
+            // 筛选变化时回到第一页，否则跟随翻页器
+            setPainPage(filtersChanged ? 1 : pagination.current ?? 1);
+            setPainPageSize(pagination.pageSize ?? 10);
+          }}
           scroll={{ x: 1588 }}
           locale={{ emptyText: '当前无匹配的待办痛点' }}
         />
@@ -612,7 +667,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                   综合体验指数按 issue
                   全生命周期切分为以下阶段，每阶段结合客观信号与
                   主观评审打分后加权汇总；总览页综合得分只取各仓最新一周报告，
-                  按「Issue 数」加权平均；痛点数与 Issue 总数 / 关闭率仍按全部报告周期统计。
+                  按「Issue 数」加权平均；痛点数与 Issue 总数 /
+                  关闭率仍按全部报告周期统计。
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {data.stageOrder.map((s) => (
@@ -626,10 +682,11 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                 </div>
                 <p>
                   等级口径：A ≥ 85 · B ≥ 75 · C ≥ 65 · D ≥ 50 · F &lt;
-                  50。痛点总数为各仓全部报告周期的 top_pains 合计；重点待办取其中
-                  P0/P1 痛点。痛点是从一组 Issue 的阶段指标中归纳出的改进项，
-                  不等同于具体 Issue，也不使用 Issue 的打开/关闭状态。顶部 Issue
-                  关闭率仍按 Issue 生命周期口径计算：已关闭 Issue ÷ Issue 总数。
+                  50。痛点总数为各仓全部报告周期的 top_pains
+                  合计；重点待办取其中 P0/P1 痛点。痛点是从一组 Issue
+                  的阶段指标中归纳出的改进项， 不等同于具体 Issue，也不使用
+                  Issue 的打开/关闭状态。顶部 Issue 关闭率仍按 Issue
+                  生命周期口径计算：已关闭 Issue ÷ Issue 总数。
                   数据来源为各仓周报（rawdata/&lt;repo&gt;/report_*.json），
                   原始 issue
                   正文与评论仅存于服务端，不进入浏览器。点击「查看最新报告」
@@ -649,10 +706,5 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     </>
   );
 };
-
-/** 优先级归一到 P0 / P1 / P2 三档（用于筛选比较） */
-function priKey(prio: string): string {
-  return /P0/i.test(prio) ? 'P0' : /P1/i.test(prio) ? 'P1' : 'P2';
-}
 
 export default IssueOverview;

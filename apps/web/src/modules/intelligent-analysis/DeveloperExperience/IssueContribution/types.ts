@@ -285,7 +285,6 @@ export type IssueOverviewData = {
   repos: IssueOverviewRepo[];
   /** 阶段展示顺序（各仓阶段并集，保持报告内出现顺序） */
   stageOrder: Array<{ id: string; name: string; icon: string }>;
-  topPains: IssueOverviewTopPain[];
   /** 全部仓库、全部报告周期的 top_pains 合计 */
   topPainTotal: number;
   /** 全部仓库、全部报告周期的 top_pains 按优先级汇总 */
@@ -295,4 +294,26 @@ export type IssueOverviewData = {
 
 export type IssueOverviewApiResponse = {
   overview: IssueOverviewData;
+};
+
+/** 重点待办痛点分页查询参数（服务端分页 + 过滤） */
+export type IssueTopPainsQuery = {
+  org?: string;
+  /** 仓库短名（repoShort） */
+  repo?: string;
+  /** 优先级 P0/P1/P2 */
+  prio?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+export type IssueTopPainsApiResponse = {
+  items: IssueOverviewTopPain[];
+  total: number;
+  page: number;
+  pageSize: number;
+  /** 过滤前的仓库短名候选（供表头筛选器） */
+  repoOptions: string[];
+  /** 过滤前存在的优先级档位（供表头筛选器） */
+  prioOptions: string[];
 };

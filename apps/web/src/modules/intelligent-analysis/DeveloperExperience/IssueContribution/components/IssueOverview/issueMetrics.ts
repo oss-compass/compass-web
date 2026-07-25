@@ -62,8 +62,9 @@ const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 /**
  * 取各仓“最新一周”的报告记录：同一仓库（community）可能含多个周期记录，
  * 按 period 字典序取最大者（period 形如 'YYYY-MM-DD_to_YYYY-MM-DD'，字典序即时间序）。
+ * 同时供「各仓库对比」表格只展示各仓最新一周使用。
  */
-const latestReposByPeriod = (
+export const latestReposByPeriod = (
   repos: IssueOverviewRepo[]
 ): IssueOverviewRepo[] => {
   const byCommunity = new Map<string, IssueOverviewRepo>();

@@ -2,12 +2,25 @@ import type {
   IssueOverviewApiResponse,
   IssueReportApiResponse,
   IssueReportFilters,
+  IssueTopPainsApiResponse,
+  IssueTopPainsQuery,
 } from './types';
 
-const REPORT_API_PATH =
-  '/api/intelligent-analysis/experience/issue-contribution/reports';
-const OVERVIEW_API_PATH =
-  '/api/intelligent-analysis/experience/issue-contribution/overview';
+/**
+ * 报告数据已入库 cogito-backend（ES），此处直连后端 API。
+ *
+ * 环境变量优先级（与社区入门 UserJourney apiClient 一致）：
+ * - 本地开发：设置 NEXT_PUBLIC_COMPASS_API_URL=http://localhost:8099
+ * - 生产部署：留空，使用相对路径，由域名服务器 Nginx 转发到后端
+ */
+const getApiBase = (): string =>
+  process.env.NEXT_PUBLIC_COMPASS_API_URL?.replace(/\/$/, '') || '';
+
+const API_PREFIX = '/user-journey-api/user-journey/issue-experience';
+
+const REPORT_API_PATH = `${API_PREFIX}/reports`;
+const OVERVIEW_API_PATH = `${API_PREFIX}/overview`;
+const TOP_PAINS_API_PATH = `${API_PREFIX}/overview/top-pains`;
 
 export const fetchIssueReportData = async (
   filters: IssueReportFilters,
@@ -19,10 +32,8 @@ export const fetchIssueReportData = async (
   });
 
   const query = search.toString();
-  const response = await fetch(
-    query ? `${REPORT_API_PATH}?${query}` : REPORT_API_PATH,
-    { signal }
-  );
+  const base = `${getApiBase()}${REPORT_API_PATH}`;
+  const response = await fetch(query ? `${base}?${query}` : base, { signal });
 
   if (!response.ok) {
     throw new Error(`Issue report request failed: ${response.status}`);
@@ -36,7 +47,7 @@ export const fetchIssueOverview = async (
   signal?: AbortSignal
 ): Promise<IssueOverviewApiResponse> => {
   const query = org ? `?org=${encodeURIComponent(org)}` : '';
-  const response = await fetch(`${OVERVIEW_API_PATH}${query}`, {
+  const response = await fetch(`${getApiBase()}${OVERVIEW_API_PATH}${query}`, {
     signal,
     cache: 'no-store',
   });
@@ -46,4 +57,28 @@ export const fetchIssueOverview = async (
   }
 
   return response.json() as Promise<IssueOverviewApiResponse>;
+};
+
+/** 重点待办痛点：服务端分页 + 仓库/优先级过滤，按页拉取。 */
+export const fetchIssueTopPains = async (
+  params: IssueTopPainsQuery,
+  signal?: AbortSignal
+): Promise<IssueTopPainsApiResponse> => {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') search.set(key, String(value));
+  });
+
+  const query = search.toString();
+  const base = `${getApiBase()}${TOP_PAINS_API_PATH}`;
+  const response = await fetch(query ? `${base}?${query}` : base, {
+    signal,
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Issue top pains request failed: ${response.status}`);
+  }
+
+  return response.json() as Promise<IssueTopPainsApiResponse>;
 };
