@@ -4,6 +4,13 @@ import { useUserInfo } from '@modules/auth/useUserInfo';
 import TrackingManager from './TrackingManager';
 import { ModuleActionConfig } from './types';
 
+// 这些路径下不需要埋点追踪
+const TRACKING_EXCLUDED_PATHS = ['/intelligent-analysis/community-experience'];
+
+function isTrackingExcluded(path: string): boolean {
+  return TRACKING_EXCLUDED_PATHS.some((prefix) => path.startsWith(prefix));
+}
+
 /**
  * 路由变化埋点Hook
  */
@@ -15,6 +22,7 @@ export function useRouteTracking() {
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
+      if (isTrackingExcluded(url)) return;
       trackingManager.onRouteChange(url);
     };
 
@@ -26,8 +34,10 @@ export function useRouteTracking() {
         trackingManager.setUserId(currentUser.id);
       }
 
-      // 初始化当前路由
-      trackingManager.onRouteChange(router.asPath);
+      // 初始化当前路由（排除路径不追踪）
+      if (!isTrackingExcluded(router.asPath)) {
+        trackingManager.onRouteChange(router.asPath);
+      }
       initializedRef.current = true;
     }
 
