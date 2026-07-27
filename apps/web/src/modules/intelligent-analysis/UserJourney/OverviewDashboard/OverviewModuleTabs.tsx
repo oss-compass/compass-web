@@ -36,8 +36,8 @@ const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
           onClick={() => onChange(item.key)}
           className={
             isActive
-              ? 'inline-flex items-center rounded-3xl bg-white px-5 py-1 text-sm font-medium text-[#1677ff] shadow-[0_1px_4px_rgba(0,0,0,0.08)]'
-              : 'inline-flex items-center rounded-3xl px-5 py-1 text-sm font-medium text-[#4e5969] transition-colors hover:bg-[#d0d5dc] hover:text-[#1d2129]'
+              ? 'inline-flex items-center rounded-3xl bg-white px-5 py-1 text-sm font-semibold text-black shadow-[0_1px_4px_rgba(0,0,0,0.08)]'
+              : 'inline-flex items-center rounded-3xl px-5 py-1 text-sm font-semibold text-black transition-colors hover:bg-[#d0d5dc]'
           }
         >
           {item.label}
