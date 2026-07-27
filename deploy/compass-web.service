@@ -1,0 +1,18 @@
+[Unit]
+Description=Compass Web Frontend (Next.js local)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/xyz/compass-web/apps/web
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=PORT=8891
+ExecStart=/root/.nvm/versions/node/v20.20.2/bin/node /root/xyz/compass-web/node_modules/next/dist/bin/next start -H 127.0.0.1 -p 8891
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/compass-web.log
+StandardError=append:/var/log/compass-web.log
+
+[Install]
+WantedBy=multi-user.target

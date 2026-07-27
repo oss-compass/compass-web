@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Empty, Spin, Table, Tag, Tooltip, Typography } from 'antd';
+import { Empty, Skeleton, Table, Tag, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
@@ -126,10 +126,33 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   }, [org, painPage, painPageSize, painFilters]);
 
   if (loading) {
+    // 骨架屏：与真实页面分区一致（KPI 四卡 + 概览卡片 + 痛点表格），
+    // 展示形式对齐社区入门总览的 Skeleton 加载态
     return (
-      <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-        <Spin tip="总览数据加载中..." />
-      </section>
+      <>
+        <Title level={4} className="oj-section-title">
+          总览信息
+        </Title>
+        <div
+          className="overview-bottom-row"
+          style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="bottom-metric">
+              <Skeleton active title={false} paragraph={{ rows: 3 }} />
+            </div>
+          ))}
+        </div>
+        <div className="section-card">
+          <Skeleton active title paragraph={{ rows: 8 }} />
+        </div>
+        <Title level={4} className="oj-section-title">
+          重点待办痛点
+        </Title>
+        <div className="section-card">
+          <Skeleton active title={false} paragraph={{ rows: 6 }} />
+        </div>
+      </>
     );
   }
 
