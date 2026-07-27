@@ -56,6 +56,7 @@ const CommunityOnboarding: React.FC<CommunityOnboardingProps> = ({ org }) => {
       overviewHref={`${buildExperienceOverviewHref({
         org,
       })}?module=community-onboarding`}
+      overviewLabel="社区入门"
       org={org}
     />
   );

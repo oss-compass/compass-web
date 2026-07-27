@@ -369,6 +369,8 @@ type UserJourneyProps = {
   transparentPageHeader?: boolean;
   /** 覆盖默认的返回看板地址（如新版体验总览看板） */
   overviewHref?: string;
+  /** 返回看板按钮右侧展示的报告类型名 */
+  overviewLabel?: string;
   org?: string;
 };
 
@@ -377,6 +379,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   hidePageHeaderOverviewLink = false,
   transparentPageHeader = false,
   overviewHref: overviewHrefOverride,
+  overviewLabel,
   org,
 }) => {
   const router = useRouter();
@@ -708,6 +711,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
             ? undefined
             : overviewHrefOverride ?? overviewHref
         }
+        overviewLabel={hidePageHeaderOverviewLink ? undefined : overviewLabel}
       />
 
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">

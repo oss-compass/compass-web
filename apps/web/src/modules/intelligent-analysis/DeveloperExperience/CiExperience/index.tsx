@@ -52,14 +52,9 @@ const CiExperience: React.FC<CiExperienceProps> = ({ org }) => {
   return (
     <div className="min-h-full bg-[linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)]">
       <div className="flex min-h-full flex-col gap-5 p-5">
-        {/* 控制栏：返回看板 / 标题 / 仓库与观测日选择 */}
+        {/* 控制栏：返回看板 / 仓库与观测日选择 */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <ExperienceBackLink org={org} module="ci" />
-            <h1 className="m-0 text-lg font-semibold text-slate-900">
-              CI 体验诊断
-            </h1>
-          </div>
+          <ExperienceBackLink org={org} module="ci" />
           <CiControls
             repo={repo}
             onRepoChange={handleRepoChange}

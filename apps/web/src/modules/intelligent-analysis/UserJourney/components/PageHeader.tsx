@@ -44,6 +44,8 @@ type PageHeaderProps = {
   transparent?: boolean;
   org?: string;
   overviewHref?: string;
+  /** 返回看板按钮右侧展示的报告类型名（竖线分隔） */
+  overviewLabel?: string;
 };
 
 // ---------- helpers ----------
@@ -397,6 +399,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   transparent = false,
   org,
   overviewHref,
+  overviewLabel,
 }) => {
   const [showAddSelector, setShowAddSelector] = useState(false);
   const compareMode = projects.length > 1;
@@ -451,6 +454,15 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             <ArrowLeftOutlined className="text-xs transition-transform group-hover:-translate-x-0.5" />
             <span>返回看板</span>
           </Link>
+        ) : null}
+
+        {overviewHref && overviewLabel ? (
+          <>
+            <span className="flex-shrink-0 text-[#c9cdd4]">|</span>
+            <span className="flex-shrink-0 text-lg font-semibold text-slate-900">
+              {overviewLabel}
+            </span>
+          </>
         ) : null}
 
         {!hideDeveloperControls ? (
