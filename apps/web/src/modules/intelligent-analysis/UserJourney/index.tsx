@@ -367,6 +367,8 @@ type UserJourneyProps = {
   hidePageHeaderDeveloperControls?: boolean;
   hidePageHeaderOverviewLink?: boolean;
   transparentPageHeader?: boolean;
+  /** 覆盖默认的返回看板地址（如新版体验总览看板） */
+  overviewHref?: string;
   org?: string;
 };
 
@@ -374,6 +376,7 @@ const UserJourney: React.FC<UserJourneyProps> = ({
   hidePageHeaderDeveloperControls = false,
   hidePageHeaderOverviewLink = false,
   transparentPageHeader = false,
+  overviewHref: overviewHrefOverride,
   org,
 }) => {
   const router = useRouter();
@@ -700,7 +703,11 @@ const UserJourney: React.FC<UserJourneyProps> = ({
         hideDeveloperControls={hidePageHeaderDeveloperControls}
         transparent={transparentPageHeader}
         org={org}
-        overviewHref={hidePageHeaderOverviewLink ? undefined : overviewHref}
+        overviewHref={
+          hidePageHeaderOverviewLink
+            ? undefined
+            : overviewHrefOverride ?? overviewHref
+        }
       />
 
       <div className="flex min-h-[calc(100vh-136px)] flex-col gap-5 p-5">

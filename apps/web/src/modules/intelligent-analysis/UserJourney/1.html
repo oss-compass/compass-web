@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>体验分析 · 总览</title>
+    <!-- 使用 Font Awesome 图标库 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #f5f7fa;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        color: #1d2129;
+      }
+      .dashboard {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 24px 24px;
+      }
+
+      /* ===== 一级导航（顶部页签，居中） ===== */
+      .top-nav {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e6eb;
+        padding: 0 24px;
+        height: 48px;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        gap: 32px;
+        position: sticky;
+        top: 0;
+        z-index: 102;
+        margin: 0 -24px 0;
+        padding-left: 24px;
+        padding-right: 24px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .top-nav a {
+        font-size: 14px;
+        color: #4e5969;
+        text-decoration: none;
+        padding: 0 0 2px;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.2s, color 0.2s;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      .top-nav a:hover {
+        color: #1677ff;
+        border-bottom-color: #1677ff;
+      }
+      .top-nav a.active {
+        color: #1d2129;
+        font-weight: 600;
+        border-bottom-color: #1d2129;
+      }
+
+      /* ===== 二级导航（左对齐，高度调低） ===== */
+      .navbar {
+        background: #f0f2f5;
+        border-bottom: 1px solid #e5e6eb;
+        padding: 0 24px;
+        height: 40px; /* 从 52px 降至 40px */
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        position: sticky;
+        top: 48px;
+        z-index: 101;
+        margin: 0 -24px 16px;
+      }
+
+      .nav-state {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+      }
+      .nav-state.hidden {
+        display: none;
+      }
+
+      .navbar-tabs {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: #e4e7eb;
+        border-radius: 30px; /* 适应更矮的高度，减小圆角 */
+        padding: 3px 6px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+      .navbar-tabs a {
+        display: inline-block;
+        padding: 2px 16px; /* 上下内边距减少 */
+        font-size: 13px; /* 稍小字号保持比例 */
+        font-weight: 500;
+        color: #4e5969;
+        background: transparent;
+        border-radius: 24px;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+        border: none;
+        cursor: pointer;
+      }
+      .navbar-tabs a:hover {
+        background: #d0d5dc;
+        color: #1d2129;
+      }
+      .navbar-tabs a.active {
+        background: #ffffff;
+        color: #1677ff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      }
+
+      .nav-detail {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 13px;
+      }
+      .nav-detail .back-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #1677ff;
+        font-weight: 500;
+        text-decoration: none;
+        padding: 2px 8px;
+        border-radius: 6px;
+        transition: background 0.2s;
+        cursor: pointer;
+      }
+      .nav-detail .back-link:hover {
+        background: #e8f0fe;
+      }
+      .nav-detail .divider {
+        color: #c9cdd4;
+      }
+      .nav-detail .current-tab {
+        background: #ffffff;
+        color: #1677ff;
+        padding: 2px 16px;
+        border-radius: 24px;
+        font-weight: 500;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        font-size: 13px;
+      }
+
+      /* 移动端适配 */
+      @media (max-width: 768px) {
+        .top-nav {
+          flex-wrap: wrap;
+          height: auto;
+          padding: 8px 16px;
+          gap: 12px;
+          top: 0;
+        }
+        .top-nav a {
+          padding: 4px 0;
+          height: auto;
+          border-bottom: 2px solid transparent;
+        }
+        .navbar {
+          flex-wrap: wrap;
+          height: auto;
+          padding: 8px 16px;
+          top: auto;
+          position: relative;
+          margin-top: 0;
+          justify-content: flex-start;
+        }
+        .navbar-tabs {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          border-radius: 24px;
+          padding: 3px 4px;
+        }
+        .navbar-tabs a {
+          padding: 2px 12px;
+          font-size: 12px;
+        }
+        .nav-detail {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          gap: 10px;
+          font-size: 12px;
+        }
+        .nav-detail .current-tab {
+          padding: 2px 12px;
+          font-size: 12px;
+        }
+      }
+      @media (max-width: 480px) {
+        .top-nav a {
+          font-size: 13px;
+        }
+        .navbar-tabs a {
+          padding: 1px 10px;
+          font-size: 11px;
+        }
+        .nav-detail {
+          font-size: 11px;
+        }
+        .nav-detail .current-tab {
+          padding: 1px 10px;
+          font-size: 11px;
+        }
+      }
+
+      /* ===== 其余页面样式（保持不变） ===== */
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        margin-top: 8px;
+      }
+      .page-header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1d2129;
+      }
+      .page-header .time {
+        color: #86909c;
+        font-size: 14px;
+      }
+
+      .card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        padding: 20px 24px;
+        transition: box-shadow 0.2s;
+      }
+      .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #1d2129;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .card-title .sub {
+        font-weight: 400;
+        font-size: 14px;
+        color: #86909c;
+        margin-left: auto;
+      }
+
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .grid-2-1 {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .grid-1-2 {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .kpi-card {
+        text-align: left;
+      }
+      .kpi-card .label {
+        font-size: 14px;
+        color: #86909c;
+        margin-bottom: 6px;
+      }
+      .kpi-card .value {
+        font-size: 32px;
+        font-weight: 600;
+        color: #1d2129;
+        line-height: 1.2;
+      }
+      .kpi-card .value .unit {
+        font-size: 16px;
+        font-weight: 400;
+        color: #86909c;
+        margin-left: 4px;
+      }
+      .kpi-card .trend {
+        font-size: 13px;
+        color: #00b42a;
+        margin-top: 6px;
+      }
+      .kpi-card .trend.down {
+        color: #f53f3f;
+      }
+
+      .benchmark-stats {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+      .benchmark-stats .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .stat-item .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .stat-item .dot.lead {
+        background: #00b42a;
+      }
+      .stat-item .dot.tie {
+        background: #ffb400;
+      }
+      .stat-item .dot.lag {
+        background: #f53f3f;
+      }
+      .stat-item .num {
+        font-weight: 600;
+        font-size: 18px;
+      }
+
+      .issue-summary {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+      .issue-summary .total {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1d2129;
+      }
+      .issue-summary .total small {
+        font-size: 16px;
+        font-weight: 400;
+        color: #86909c;
+      }
+      .issue-summary .status {
+        display: flex;
+        gap: 20px;
+      }
+      .issue-summary .status .item {
+        text-align: center;
+      }
+      .issue-summary .status .item .num {
+        font-size: 20px;
+        font-weight: 600;
+      }
+      .issue-summary .status .item .lbl {
+        font-size: 13px;
+        color: #86909c;
+      }
+      .issue-summary .rate {
+        font-size: 20px;
+        font-weight: 600;
+        color: #00b42a;
+        margin-left: auto;
+      }
+
+      .priority-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 12px;
+      }
+      .priority-item {
+        background: #f7f8fa;
+        border-radius: 8px;
+        padding: 14px 16px;
+        border-left: 4px solid #ccc;
+      }
+      .priority-item.p0 {
+        border-left-color: #f53f3f;
+      }
+      .priority-item.p1 {
+        border-left-color: #ff7d00;
+      }
+      .priority-item.p2 {
+        border-left-color: #ffb400;
+      }
+      .priority-item.p3 {
+        border-left-color: #3491fa;
+      }
+      .priority-item .tag {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .priority-item .desc {
+        font-size: 13px;
+        color: #4e5969;
+        margin: 4px 0 8px;
+      }
+      .priority-item .count {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .mini-table {
+        width: 100%;
+        font-size: 14px;
+        border-collapse: collapse;
+      }
+      .mini-table th {
+        text-align: left;
+        font-weight: 500;
+        color: #86909c;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e5e6eb;
+      }
+      .mini-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid #f2f3f5;
+      }
+      .mini-table tr:last-child td {
+        border-bottom: none;
+      }
+      .mini-table tbody tr {
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .mini-table tbody tr:hover {
+        background: #f0f5ff;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .badge.lead {
+        background: #e8f8ee;
+        color: #00b42a;
+      }
+      .badge.tie {
+        background: #fff7e6;
+        color: #ff7d00;
+      }
+      .badge.lag {
+        background: #fde8e8;
+        color: #f53f3f;
+      }
+      .badge.p0 {
+        background: #fde8e8;
+        color: #f53f3f;
+      }
+      .badge.p1 {
+        background: #fff0e6;
+        color: #ff7d00;
+      }
+      .badge.p2 {
+        background: #fff7e6;
+        color: #ffb400;
+      }
+      .badge.p3 {
+        background: #e8f0fe;
+        color: #3491fa;
+      }
+
+      .chart-placeholder {
+        height: 120px;
+        background: linear-gradient(90deg, #e5e6eb 0%, #f2f3f5 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        padding: 8px 12px;
+      }
+      .chart-placeholder .bar {
+        width: 12%;
+        background: #3491fa;
+        border-radius: 4px 4px 0 0;
+        min-height: 8px;
+        transition: height 0.3s;
+      }
+      .chart-placeholder .bar.green {
+        background: #00b42a;
+      }
+      .chart-placeholder .bar.orange {
+        background: #ff7d00;
+      }
+      .chart-placeholder .bar.red {
+        background: #f53f3f;
+      }
+      .chart-placeholder .bar.yellow {
+        background: #ffb400;
+      }
+
+      .filter-bar {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .filter-bar select,
+      .filter-bar input {
+        padding: 6px 12px;
+        border: 1px solid #e5e6eb;
+        border-radius: 6px;
+        background: #fff;
+        font-size: 14px;
+        outline: none;
+      }
+      .filter-bar select:focus,
+      .filter-bar input:focus {
+        border-color: #3491fa;
+      }
+
+      @media (max-width: 1024px) {
+        .grid-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .grid-3 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .grid-2-1 {
+          grid-template-columns: 1fr;
+        }
+        .grid-1-2 {
+          grid-template-columns: 1fr;
+        }
+        .priority-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 600px) {
+        .grid-4 {
+          grid-template-columns: 1fr;
+        }
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .priority-grid {
+          grid-template-columns: 1fr;
+        }
+        .issue-summary {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .issue-summary .rate {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- ===== 一级导航（居中） ===== -->
+      <nav class="top-nav">
+        <a href="#">总览</a>
+        <a href="#">产品易用性</a>
+        <a href="#" class="active">社区易用性</a>
+        <a href="#">VOD声音</a>
+      </nav>
+
+      <!-- ===== 二级导航（左对齐，高度调低） ===== -->
+      <nav class="navbar" id="secondaryNav">
+        <!-- 状态1：三个标签在大椭圆中 -->
+        <div class="nav-state" id="tabsState">
+          <div class="navbar-tabs">
+            <a href="#" class="active" data-tab="community-onboarding"
+              >社区入门</a
+            >
+            <a href="#" data-tab="community-contribution">社区贡献</a>
+            <a href="#" data-tab="community-engineering">社区工程</a>
+          </div>
+        </div>
+        <!-- 状态2：详情页导航（默认隐藏） -->
+        <div class="nav-state hidden" id="detailState">
+          <div class="nav-detail">
+            <a class="back-link" id="backToOverview">
+              <i class="fas fa-arrow-left"></i> 返回总览页
+            </a>
+            <span class="divider">|</span>
+            <span class="current-tab">社区入门</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ===== 页面头部 ===== -->
+      <div class="page-header">
+        <h1>📊 体验分析 · 总览</h1>
+        <span class="time"
+          ><i class="far fa-calendar-alt"></i> 更新于 2026-07-27 10:30</span
+        >
+      </div>
+
+      <!-- ===== 仪表板内容 ===== -->
+      <!-- 第一行：4个KPI -->
+      <div class="grid-4">
+        <div class="card kpi-card">
+          <div class="label">综合体验评分</div>
+          <div class="value">89.4 <span class="unit">/ 100</span></div>
+          <div class="trend"><i class="fas fa-arrow-up"></i> +2.1% 较上周</div>
+        </div>
+        <div class="card kpi-card">
+          <div class="label">端到端成功率</div>
+          <div class="value">91.5 <span class="unit">%</span></div>
+          <div class="trend"><i class="fas fa-arrow-up"></i> +1.8% 较上周</div>
+        </div>
+        <div class="card kpi-card">
+          <div class="label">开发者旅程耗时</div>
+          <div class="value">166.3 <span class="unit">分钟</span></div>
+          <div class="trend down">
+            <i class="fas fa-arrow-down"></i> -5.2% 较上周
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <div class="label">扫描仓数</div>
+          <div class="value">34 <span class="unit">个</span></div>
+          <div class="trend"><i class="fas fa-minus"></i> 持平</div>
+        </div>
+      </div>
+
+      <!-- 第二行：对标 + 问题统计 -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            各仓库综合体验评分对标
+            <span class="sub">领先 &gt;5 · 持平 -5~5 · 落后 &lt;-5</span>
+          </div>
+          <div class="benchmark-stats">
+            <div class="stat-item">
+              <span class="dot lead"></span> 领先 <span class="num">12</span>
+            </div>
+            <div class="stat-item">
+              <span class="dot tie"></span> 持平 <span class="num">16</span>
+            </div>
+            <div class="stat-item">
+              <span class="dot lag"></span> 落后 <span class="num">6</span>
+            </div>
+          </div>
+          <div style="margin-top: 12px; font-size: 13px; color: #86909c">
+            所有仓库各阶段评分对标结果：领先 8 · 持平 14 · 落后 12
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            问题总览
+            <span class="sub">闭环率 78.8%</span>
+          </div>
+          <div class="issue-summary">
+            <div class="total">302 <small>总问题数</small></div>
+            <div class="status">
+              <div class="item">
+                <span class="num" style="color: #f53f3f">5</span>
+                <div class="lbl">待处理</div>
+              </div>
+              <div class="item">
+                <span class="num" style="color: #ff7d00">59</span>
+                <div class="lbl">进行中</div>
+              </div>
+              <div class="item">
+                <span class="num" style="color: #00b42a">238</span>
+                <div class="lbl">已闭环</div>
+              </div>
+            </div>
+            <div class="rate">78.8%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第三行：各优先级闭环进展 -->
+      <div class="card" style="margin-bottom: 20px">
+        <div class="card-title">各优先级闭环进展</div>
+        <div class="priority-grid">
+          <div class="priority-item p0">
+            <div class="tag">P0 完全阻塞</div>
+            <div class="desc">
+              完全无法完成当前阶段任务，开发者无法自行解决。
+            </div>
+            <div class="count">3</div>
+          </div>
+          <div class="priority-item p1">
+            <div class="tag">P1 关键卡点</div>
+            <div class="desc">
+              在 S1_SETUP 和 S3_DEVELOPMENT
+              中出现报错或中断，开发者自行尝试并已解决。
+            </div>
+            <div class="count">18</div>
+          </div>
+          <div class="priority-item p2">
+            <div class="tag">P2 显著影响</div>
+            <div class="desc">
+              在 S0_DISCOVERY 和 S2_QUICKSTART
+              中出现报错或中断，开发者自行尝试并已解决。
+            </div>
+            <div class="count">42</div>
+          </div>
+          <div class="priority-item p3">
+            <div class="tag">P3 轻微影响</div>
+            <div class="desc">
+              在 S4_TESTING 中出现报错或中断，开发者自行尝试并已解决。
+            </div>
+            <div class="count">76</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第四行：周度趋势 + 进展 -->
+      <div class="grid-2-1">
+        <div class="card">
+          <div class="card-title">
+            周度新增问题及闭环趋势
+            <span class="sub">近8周</span>
+          </div>
+          <div class="chart-placeholder">
+            <div class="bar red" style="height: 56px"></div>
+            <div class="bar orange" style="height: 72px"></div>
+            <div class="bar yellow" style="height: 44px"></div>
+            <div class="bar green" style="height: 88px"></div>
+            <div class="bar red" style="height: 60px"></div>
+            <div class="bar orange" style="height: 48px"></div>
+            <div class="bar green" style="height: 94px"></div>
+            <div class="bar yellow" style="height: 38px"></div>
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 16px;
+              margin-top: 10px;
+              font-size: 13px;
+              color: #86909c;
+              flex-wrap: wrap;
+            "
+          >
+            <span
+              ><span
+                style="
+                  display: inline-block;
+                  width: 12px;
+                  height: 12px;
+                  background: #f53f3f;
+                  border-radius: 2px;
+                "
+              ></span>
+              P0</span
+            >
+            <span
+              ><span
+                style="
+                  display: inline-block;
+                  width: 12px;
+                  height: 12px;
+                  background: #ff7d00;
+                  border-radius: 2px;
+                "
+              ></span>
+              P1</span
+            >
+            <span
+              ><span
+                style="
+                  display: inline-block;
+                  width: 12px;
+                  height: 12px;
+                  background: #ffb400;
+                  border-radius: 2px;
+                "
+              ></span>
+              P2</span
+            >
+            <span
+              ><span
+                style="
+                  display: inline-block;
+                  width: 12px;
+                  height: 12px;
+                  background: #00b42a;
+                  border-radius: 2px;
+                "
+              ></span>
+              P3</span
+            >
+            <span style="margin-left: auto"
+              >周度闭环率 <strong>82.3%</strong></span
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            进展
+            <span class="sub"><i class="fas fa-sliders-h"></i> 筛选</span>
+          </div>
+          <div class="filter-bar">
+            <select>
+              <option>全部仓库</option>
+              <option>仓库A</option>
+              <option>仓库B</option>
+            </select>
+            <select>
+              <option>全部团队</option>
+              <option>团队X</option>
+              <option>团队Y</option>
+            </select>
+            <select>
+              <option>严重程度</option>
+              <option>P0</option>
+              <option>P1</option>
+              <option>P2</option>
+              <option>P3</option>
+            </select>
+          </div>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>仓库</th>
+                <th>团队</th>
+                <th>问题</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>compass-core</td>
+                <td>平台组</td>
+                <td><span class="badge p0">P0</span> 构建失败</td>
+                <td>待处理</td>
+              </tr>
+              <tr>
+                <td>compass-web</td>
+                <td>前端组</td>
+                <td><span class="badge p1">P1</span> 依赖冲突</td>
+                <td>进行中</td>
+              </tr>
+              <tr>
+                <td>compass-api</td>
+                <td>后端组</td>
+                <td><span class="badge p2">P2</span> 文档缺失</td>
+                <td>已闭环</td>
+              </tr>
+              <tr>
+                <td>compass-cli</td>
+                <td>工具组</td>
+                <td><span class="badge p3">P3</span> 日志冗余</td>
+                <td>已闭环</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 第五行：各仓库体验对标详情 + 共性问题统计 -->
+      <div class="grid-1-2">
+        <div class="card">
+          <div class="card-title">
+            各仓库体验对标详情
+            <span class="sub">点击任意仓库行进入详情</span>
+          </div>
+          <table class="mini-table" id="repoTable">
+            <thead>
+              <tr>
+                <th>仓库</th>
+                <th>评分</th>
+                <th>对标</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-repo="compass-core">
+                <td>compass-core</td>
+                <td>94.2</td>
+                <td><span class="badge lead">领先</span> +8.4</td>
+              </tr>
+              <tr data-repo="compass-web">
+                <td>compass-web</td>
+                <td>88.7</td>
+                <td><span class="badge tie">持平</span> -1.2</td>
+              </tr>
+              <tr data-repo="compass-api">
+                <td>compass-api</td>
+                <td>81.5</td>
+                <td><span class="badge lag">落后</span> -6.3</td>
+              </tr>
+              <tr data-repo="compass-cli">
+                <td>compass-cli</td>
+                <td>90.1</td>
+                <td><span class="badge lead">领先</span> +5.7</td>
+              </tr>
+              <tr data-repo="compass-mobile">
+                <td>compass-mobile</td>
+                <td>85.3</td>
+                <td><span class="badge tie">持平</span> -2.8</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            共性问题统计
+            <span class="sub">Top 5</span>
+          </div>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>问题类型</th>
+                <th>出现次数</th>
+                <th>占比</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>构建/编译失败</td>
+                <td>48</td>
+                <td>15.9%</td>
+              </tr>
+              <tr>
+                <td>依赖冲突</td>
+                <td>37</td>
+                <td>12.3%</td>
+              </tr>
+              <tr>
+                <td>文档不清晰</td>
+                <td>29</td>
+                <td>9.6%</td>
+              </tr>
+              <tr>
+                <td>环境配置问题</td>
+                <td>24</td>
+                <td>7.9%</td>
+              </tr>
+              <tr>
+                <td>测试用例失败</td>
+                <td>18</td>
+                <td>6.0%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 底部 QA -->
+      <div class="card" style="margin-top: 20px">
+        <div class="card-title">
+          <i class="fas fa-question-circle" style="color: #3491fa"></i> Q&A
+        </div>
+        <div style="font-size: 14px; color: #4e5969">
+          <p>
+            <strong>Q：综合体验评分如何计算？</strong><br />
+            A：综合体验评分基于端到端成功率、开发者旅程耗时、各阶段评分对标结果等多维度数据加权计算得出，满分100分。
+          </p>
+          <p style="margin-top: 8px">
+            <strong>Q：闭环率是如何统计的？</strong><br />
+            A：闭环率 = 已闭环问题数 / (总问题数 - 待处理问题数) × 100%。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const tabsState = document.getElementById('tabsState');
+        const detailState = document.getElementById('detailState');
+        const backLink = document.getElementById('backToOverview');
+        const repoRows = document.querySelectorAll('#repoTable tbody tr');
+
+        function showDetail() {
+          tabsState.classList.add('hidden');
+          detailState.classList.remove('hidden');
+        }
+
+        function showTabs() {
+          detailState.classList.add('hidden');
+          tabsState.classList.remove('hidden');
+        }
+
+        repoRows.forEach((row) => {
+          row.addEventListener('click', function (e) {
+            showDetail();
+          });
+        });
+
+        backLink.addEventListener('click', function (e) {
+          e.preventDefault();
+          showTabs();
+        });
+
+        // 标签切换高亮（仅UI）
+        const tabLinks = document.querySelectorAll('.navbar-tabs a');
+        tabLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            tabLinks.forEach((l) => l.classList.remove('active'));
+            this.classList.add('active');
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

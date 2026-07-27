@@ -16,7 +16,7 @@ const MODULES: { key: OverviewModule; label: string }[] = [
 
 /**
  * 总览看板顶部模块切换导航（状态驱动的页内切换）。
- * 样式对齐报告页 navbar（ExperienceModuleTabs）的药丸式分段。
+ * 药丸式分段样式：灰底内凹药丸组 + 激活项白底蓝字。
  */
 const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
   active,
@@ -24,7 +24,7 @@ const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
 }) => (
   <nav
     aria-label="总览模块"
-    className="flex min-w-max items-center gap-1 rounded-2xl border border-slate-200/80 bg-slate-100/80 p-1"
+    className="flex min-w-max items-center gap-1 rounded-[30px] bg-[#e4e7eb] px-1.5 py-[3px] shadow-[inset_0_1px_3px_rgba(0,0,0,0.06)]"
   >
     {MODULES.map((item) => {
       const isActive = item.key === active;
@@ -36,8 +36,8 @@ const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
           onClick={() => onChange(item.key)}
           className={
             isActive
-              ? 'inline-flex h-8 items-center gap-2 rounded-xl bg-white px-3 text-sm font-medium text-blue-700 shadow-[0_3px_12px_rgba(15,23,42,0.10)] ring-1 ring-slate-200/70'
-              : 'inline-flex h-8 items-center gap-2 rounded-xl px-3 text-sm font-medium text-slate-600 transition-all hover:bg-white/70 hover:text-slate-950'
+              ? 'inline-flex items-center rounded-3xl bg-white px-5 py-1 text-sm font-medium text-[#1677ff] shadow-[0_1px_4px_rgba(0,0,0,0.08)]'
+              : 'inline-flex items-center rounded-3xl px-5 py-1 text-sm font-medium text-[#4e5969] transition-colors hover:bg-[#d0d5dc] hover:text-[#1d2129]'
           }
         >
           {item.label}

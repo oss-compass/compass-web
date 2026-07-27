@@ -1,6 +1,5 @@
 import React from 'react';
 import type { ExperienceType } from './experienceModules';
-import ExperienceShell from './components/ExperienceShell';
 import CommunityOnboarding from './CommunityOnboarding';
 import IssueContribution from './IssueContribution';
 import CiExperience from './CiExperience';
@@ -29,10 +28,13 @@ const ExperienceReportRoute: React.FC<ExperienceReportRouteProps> = ({
 }) => {
   const ReportComponent = EXPERIENCE_REPORT_COMPONENTS[experienceType];
 
+  // 报告页不再展示顶部 navbar 与模块切换 Tabs，返回看板按钮由各报告页标题区提供
   return (
-    <ExperienceShell activeType={experienceType} org={org}>
-      <ReportComponent org={org} />
-    </ExperienceShell>
+    <div className="flex h-[100dvh] h-screen min-h-0 flex-col bg-[#eef2fa] text-slate-950">
+      <main className="min-h-0 flex-1 overflow-y-auto">
+        <ReportComponent org={org} />
+      </main>
+    </div>
   );
 };
 

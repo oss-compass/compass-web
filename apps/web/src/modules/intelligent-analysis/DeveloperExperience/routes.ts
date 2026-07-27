@@ -14,6 +14,7 @@ type ModuleSwitchQueryOptions = {
 };
 
 const EXPERIENCE_ROOT = '/intelligent-analysis';
+// 报告页已取消模块间切换入口，周报型模块集合仅供 getExperienceModuleSwitchQuery 复用
 const WEEKLY_EXPERIENCE_TYPES = new Set<ExperienceType>([
   'issue-contribution',
   'ci-experience',

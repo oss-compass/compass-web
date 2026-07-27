@@ -2,6 +2,8 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { Empty } from 'antd';
 import { useRouter } from 'next/router';
+import ExperienceBackLink from '../components/ExperienceBackLink';
+import { buildExperienceOverviewHref } from '../routes';
 
 const UserJourney = dynamic(
   () => import('@modules/intelligent-analysis/UserJourney'),
@@ -27,17 +29,22 @@ const CommunityOnboarding: React.FC<CommunityOnboardingProps> = ({ org }) => {
 
   if (soc === 'A5') {
     return (
-      <div className="flex min-h-full items-center justify-center bg-[#f4f6fb] px-6">
-        <Empty
-          className="mb-[72px]"
-          styles={{
-            image: { height: 150 },
-            description: { marginTop: 8, textAlign: 'center' },
-          }}
-          description={
-            <span className="text-sm leading-6 text-slate-700">暂无数据</span>
-          }
-        />
+      <div className="flex min-h-full flex-col bg-[#f4f6fb] px-6 pt-5">
+        <div className="flex items-center">
+          <ExperienceBackLink org={org} module="community-onboarding" />
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <Empty
+            className="mb-[72px]"
+            styles={{
+              image: { height: 150 },
+              description: { marginTop: 8, textAlign: 'center' },
+            }}
+            description={
+              <span className="text-sm leading-6 text-slate-700">暂无数据</span>
+            }
+          />
+        </div>
       </div>
     );
   }
@@ -45,8 +52,10 @@ const CommunityOnboarding: React.FC<CommunityOnboardingProps> = ({ org }) => {
   return (
     <UserJourney
       hidePageHeaderDeveloperControls
-      hidePageHeaderOverviewLink
       transparentPageHeader
+      overviewHref={`${buildExperienceOverviewHref({
+        org,
+      })}?module=community-onboarding`}
       org={org}
     />
   );

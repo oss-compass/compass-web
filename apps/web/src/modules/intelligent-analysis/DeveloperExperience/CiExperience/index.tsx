@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { CI_DATA } from './data';
 import { normalizeRepoKey, repoKeyToQuery } from './helpers';
 import type { CiRepoKey } from './types';
+import ExperienceBackLink from '../components/ExperienceBackLink';
 import CiControls from './components/CiControls';
 import CiReport from './components/CiReport';
 
@@ -10,7 +11,7 @@ type CiExperienceProps = {
   org?: string;
 };
 
-const CiExperience: React.FC<CiExperienceProps> = () => {
+const CiExperience: React.FC<CiExperienceProps> = ({ org }) => {
   const router = useRouter();
   const [repo, setRepo] = useState<CiRepoKey>(() =>
     normalizeRepoKey(router.query.repo)
@@ -51,9 +52,10 @@ const CiExperience: React.FC<CiExperienceProps> = () => {
   return (
     <div className="min-h-full bg-[linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)]">
       <div className="flex min-h-full flex-col gap-5 p-5">
-        {/* 控制栏：组织 / 仓库 / Workflow */}
+        {/* 控制栏：返回看板 / 标题 / 仓库与观测日选择 */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
+          <div className="flex items-center gap-3">
+            <ExperienceBackLink org={org} module="ci" />
             <h1 className="m-0 text-lg font-semibold text-slate-900">
               CI 体验诊断
             </h1>

@@ -107,6 +107,9 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
   const m = computeCommunityOverview(data);
   const [trendModal, setTrendModal] = React.useState<CiTrendItem | null>(null);
   const [appendixOpen, setAppendixOpen] = React.useState(false);
+  // 重点待办问题：本地分页（数据为前端静态 JSON，交互对齐社区贡献的重点待办痛点）
+  const [topPage, setTopPage] = React.useState(1);
+  const [topPageSize, setTopPageSize] = React.useState(10);
 
   if (!m.hasData) {
     return (
@@ -141,7 +144,9 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
       title: '序号',
       key: 'index',
       width: 64,
-      render: (_v, _r, i) => <span className="row-num">{i + 1}</span>,
+      render: (_v, _r, i) => (
+        <span className="row-num">{(topPage - 1) * topPageSize + i + 1}</span>
+      ),
     },
     {
       title: '仓库',
@@ -503,7 +508,17 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
           dataSource={m.topIssues}
           columns={topColumns}
           rowKey="key"
-          pagination={false}
+          pagination={{
+            current: topPage,
+            pageSize: topPageSize,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
+          onChange={(pagination, _filters, _sorter, extra) => {
+            // 筛选变化时回到第一页，否则跟随翻页器
+            setTopPage(extra.action === 'filter' ? 1 : pagination.current ?? 1);
+            setTopPageSize(pagination.pageSize ?? 10);
+          }}
           scroll={{ x: 1780 }}
           locale={{ emptyText: '当前无匹配的待办问题' }}
         />

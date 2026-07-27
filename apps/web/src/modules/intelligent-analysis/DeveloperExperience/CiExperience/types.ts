@@ -312,8 +312,8 @@ export type CiJourneyProblem = CiProblem & { seg: string };
 export type CiJourneyStage = {
   /** 段名（触发确认 / 构建准备 / …），同时用作段唯一标识 */
   seg: string;
-  /** 段综合分（段内各有效维度等权均值；「仓级」回退格不参与） */
-  segscore: number;
+  /** 段综合分（段内各有效维度等权均值；「仓级」回退格不参与；当日无有效维度时为 null=本次未评估） */
+  segscore: number | null;
   /** 是否与相邻段并行执行（如静态检查与编译同在 compile 时间窗内并行） */
   parallel?: boolean;
   /** 四维日度信号 */

@@ -62,6 +62,19 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [activeModule, setActiveModule] = useState<OverviewModule>(
     'community-onboarding'
   );
+  // 报告页「返回看板」携带 module 参数时，切换到对应模块 tab
+  const queryModule = useMemo(() => {
+    const raw = router.query.module;
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    return value === 'community-onboarding' ||
+      value === 'issue' ||
+      value === 'ci'
+      ? (value as OverviewModule)
+      : undefined;
+  }, [router.query.module]);
+  useEffect(() => {
+    if (queryModule) setActiveModule(queryModule);
+  }, [queryModule]);
   const [issueModal, setIssueModal] = useState<IssueModalState>({
     open: false,
     title: '',
@@ -713,7 +726,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
 
   return (
     <div className="oj-page">
-      <header className=">md:px-6 sticky top-0 z-30 flex h-16 flex-none items-center gap-3 border-b border-slate-200/90 bg-white/95 px-4 shadow-[0_1px_0_rgba(15,23,42,0.02)] backdrop-blur">
+      <header className=">md:px-6 sticky top-0 z-30 flex h-12 flex-none items-center gap-3 border-b border-[#e5e6eb] bg-[#f0f2f5] px-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
         <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <OverviewModuleTabs
             active={activeModule}
@@ -721,7 +734,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           />
         </div>
         {org ? (
-          <div className=">md:flex ml-4 hidden flex-none items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+          <div className=">md:flex ml-4 hidden flex-none items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
             {org}
           </div>

@@ -161,10 +161,11 @@ const StageCard: React.FC<{
   onClick: () => void;
 }> = ({ stage, active, onClick }) => {
   const meta = segMeta(stage.seg);
+  const hasScore = stage.segscore != null;
   const tone = scoreTone(stage.segscore);
   const attention = stageAttention(stage);
   const statusWord = attention ? '需处理' : '正常';
-  const stars = Math.round(stage.segscore / 20);
+  const stars = Math.round((stage.segscore ?? 0) / 20);
   return (
     <div className="flex w-full min-w-0 flex-col items-center">
       <div
@@ -177,12 +178,10 @@ const StageCard: React.FC<{
             onClick();
           }
         }}
-        title={`${stage.seg} · ${statusWord}`}
+        title={`${stage.seg} · ${hasScore ? statusWord : '本次未评估'}`}
         className={`flex h-[260px] w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-3 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
           CARD_TONE[tone]
-        } ${
-          stage.parallel ? 'border-dashed border-indigo-300' : ''
-        } ${
+        } ${stage.parallel ? 'border-dashed border-indigo-300' : ''} ${
           active
             ? 'ring-2 ring-violet-400'
             : attention
@@ -207,41 +206,93 @@ const StageCard: React.FC<{
           </div>
         </div>
 
-        <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
-          {getStarText(stars)}
-        </div>
-        <div className="mt-1.5 text-center">
-          <span
-            className={`text-[28px] font-semibold leading-none ${SCORE_TONE_TEXT[tone]}`}
-          >
-            {stage.segscore}
-          </span>
-          <span className="ml-1 text-xs font-medium text-slate-500">分</span>
-        </div>
+        {hasScore ? (
+          <>
+            <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
+              {getStarText(stars)}
+            </div>
+            <div className="mt-1.5 text-center">
+              <span
+                className={`text-[28px] font-semibold leading-none ${SCORE_TONE_TEXT[tone]}`}
+              >
+                {stage.segscore}
+              </span>
+              <span className="ml-1 text-xs font-medium text-slate-500">
+                分
+              </span>
+            </div>
+            <div
+              className={`mt-1 text-center text-[12px] font-medium ${
+                attention ? 'text-rose-600' : 'text-slate-400'
+              }`}
+            >
+              {statusWord}
+            </div>
+          </>
+        ) : (
+          /* 未评估态：对齐社区入门体验旅程全景图 StepNode 的 Not Evaluated 样式 */
+          <div className="mt-3 flex flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              <span className="h-px w-5 bg-slate-300" />
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                Not Evaluated
+              </span>
+              <span className="h-px w-5 bg-slate-300" />
+            </div>
+          </div>
+        )}
+
         <div
-          className={`mt-1 text-center text-[12px] font-medium ${
-            attention ? 'text-rose-600' : 'text-slate-400'
+          className={`mt-3 flex flex-1 flex-col justify-end rounded-2xl border px-2 py-1.5 ${
+            hasScore
+              ? 'border-slate-200/70 bg-white/80'
+              : 'border-dashed border-slate-200 bg-slate-50/60'
           }`}
         >
-          {statusWord}
-        </div>
-
-        <div className="mt-3 flex flex-1 flex-col justify-end rounded-2xl border border-slate-200/70 bg-white/80 px-2 py-1.5">
-          <div className="grid grid-cols-3">
-            {stage.stats.map((st, i) => (
-              <div
-                key={`${st.label}-${i}`}
-                className="flex flex-col items-center py-1"
+          {hasScore ? (
+            <div className="grid grid-cols-3">
+              {stage.stats.map((st, i) => (
+                <div
+                  key={`${st.label}-${i}`}
+                  className="flex flex-col items-center py-1"
+                >
+                  <span className="text-[20px] font-bold leading-none text-slate-900">
+                    {st.v}
+                  </span>
+                  <span className="mt-1 text-[13px] text-slate-400">
+                    {st.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
+              <svg
+                className="h-7 w-7 text-slate-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <span className="text-[20px] font-bold leading-none text-slate-900">
-                  {st.v}
-                </span>
-                <span className="mt-1 text-[13px] text-slate-400">
-                  {st.label}
-                </span>
-              </div>
-            ))}
-          </div>
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 2"
+                />
+                <path
+                  d="M9 12h6M12 9v6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="text-center text-base leading-4 text-slate-400">
+                本次未评估
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -300,7 +351,10 @@ const JourneyDirectory: React.FC<{
                     active ? 'text-slate-300' : 'text-slate-500'
                   }`}
                 >
-                  {segMeta(stage.seg).code} · {stage.segscore} 分
+                  {segMeta(stage.seg).code} ·{' '}
+                  {stage.segscore != null
+                    ? `${stage.segscore} 分`
+                    : '本次未评估'}
                 </span>
               </span>
               {probn > 0 ? (
@@ -622,7 +676,9 @@ const StageDetailPanel: React.FC<{
             className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${SCORE_BADGE[tone]}`}
           >
             <span>旅程得分</span>
-            <span className="text-base leading-none">{stage.segscore}</span>
+            <span className="text-base leading-none">
+              {stage.segscore ?? '本次未评估'}
+            </span>
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm">
             <span className="font-medium text-slate-600">问题</span>
@@ -747,9 +803,9 @@ const StageDetailPanel: React.FC<{
                                 <span className="text-[11.5px] text-slate-400">
                                   {cell.name}
                                 </span>{' '}
-                              <b className="font-semibold text-slate-800">
-                                {cell.disp}
-                              </b>
+                                <b className="font-semibold text-slate-800">
+                                  {cell.disp}
+                                </b>
                               </>
                             )}
                           </td>
@@ -798,9 +854,7 @@ const StageDetailPanel: React.FC<{
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div className="flex items-center gap-1.5">
                 <FlagOutlined className="text-rose-500" />
-                <h4 className="text-base font-semibold text-slate-900">
-                  问题
-                </h4>
+                <h4 className="text-base font-semibold text-slate-900">问题</h4>
               </div>
               <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
                 {problems.length} 个问题
@@ -946,7 +1000,9 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
                     {/* 下一段与当前都 parallel 时，显示 ∥ */}
                     {stages[index + 1]?.parallel && stage.parallel ? (
                       <Tooltip title="并行：静态检查与编译同在 compile 阶段时间窗内并行执行，非先后">
-                        <span className="text-lg font-bold text-indigo-400">∥</span>
+                        <span className="text-lg font-bold text-indigo-400">
+                          ∥
+                        </span>
                       </Tooltip>
                     ) : (
                       <ArrowRightOutlined className="text-base" />

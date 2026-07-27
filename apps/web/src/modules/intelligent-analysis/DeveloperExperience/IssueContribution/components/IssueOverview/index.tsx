@@ -305,23 +305,15 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       width: 168,
     },
     {
-      title: '综合指数',
+      title: '综合体验评分',
       dataIndex: 'idxTotal',
       width: 128,
       sorter: (a, b) => a.idxTotal - b.idxTotal,
       render: (_v, r) => {
         const g = gradeStyle(r.grade);
         return (
-          <span className="inline-flex items-center gap-1.5">
-            <span className="font-semibold" style={{ color: g.color }}>
-              {r.idxTotal.toFixed(1)}
-            </span>
-            <Tag
-              className="overview-ant-tag"
-              style={{ color: g.color, background: g.bg, borderColor: g.bg }}
-            >
-              {r.grade}
-            </Tag>
+          <span className="font-semibold" style={{ color: g.color }}>
+            {r.idxTotal.toFixed(1)}
           </span>
         );
       },
@@ -423,7 +415,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       ),
     },
     {
-      title: '综合分',
+      title: '综合体验评分',
       dataIndex: 'score',
       width: 132,
       align: 'right',
@@ -434,23 +426,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           <span className="font-semibold" style={{ color: g.color }}>
             {r.score}
           </span>
-        );
-      },
-    },
-    {
-      title: '等级',
-      dataIndex: 'grade',
-      width: 96,
-      align: 'center',
-      render: (_v, r) => {
-        const g = gradeStyle(r.grade);
-        return (
-          <Tag
-            className="overview-ant-tag"
-            style={{ color: g.color, background: g.bg, borderColor: g.bg }}
-          >
-            {r.grade}
-          </Tag>
         );
       },
     },

@@ -3,6 +3,7 @@ import { Empty, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import { fetchIssueReportData } from './data';
 import type { IssueReportCatalogRecord, IssueReportRecord } from './types';
+import ExperienceBackLink from '../components/ExperienceBackLink';
 import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
 import IssueExecutiveSummary from './components/IssueExecutiveSummary';
@@ -177,7 +178,8 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   return (
     <div className="min-h-full bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
       <div className="flex min-h-full w-full min-w-0 flex-col gap-5 p-5">
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <ExperienceBackLink org={org} module="issue" />
           <IssueReportControls
             community={community}
             period={period}
