@@ -326,6 +326,12 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     .overview-common-issues-section {
       display: none !important;
     }
+      
+    /* 截图环境 Noto CJK 竖直度量偏上，补偿滑块文字垫高保持视觉居中 */
+    .oj-page header nav button {
+      padding-top: 5px !important;
+      padding-bottom: 3px !important;
+    }
     `
       : ''}
     .oj-page {
@@ -916,6 +922,17 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       min-height: 64px;
       max-height: 64px;
       overflow: hidden;
+    }
+
+    /* 社区贡献痛点概览：仅 3 个优先级（无 P3），拉伸行高填满面板剩余空间 */
+    .overview-insight-grid .ov-priority-list-issue {
+      grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .overview-insight-grid .ov-priority-list-issue .ov-priority-row {
+      height: 100% !important;
+      min-height: 0 !important;
+      max-height: none !important;
     }
 
     .ov-priority-main {
