@@ -14,7 +14,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const silent = !process.env.SENTRY_LOG_ENABLE;
 
 const nextConfig = {
-  assetPrefix: '/intelligent-analysis-assets',
+  // assetPrefix: '/intelligent-analysis-assets',
   reactStrictMode: false,
   transpilePackages: [
     'ahooks',
@@ -63,9 +63,8 @@ const nextConfig = {
     if (process.env.NODE_ENV === 'development') {
       rules.push({
         source: '/user-journey-api/:path*',
-        destination: `${
-          process.env.COMPASS_BACKEND_INTERNAL_URL || 'http://127.0.0.1:8099'
-        }/user-journey-api/:path*`,
+        destination: `${process.env.COMPASS_BACKEND_INTERNAL_URL || 'http://127.0.0.1:8099'
+          }/user-journey-api/:path*`,
       });
     }
     return rules;
