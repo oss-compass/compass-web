@@ -402,7 +402,7 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
   const [sortConfig, setSortConfig] = React.useState<{
     key: 'stageResult' | 'score';
     order: 'asc' | 'desc';
-  }>({ key: 'stageResult', order: 'desc' });
+  }>({ key: 'score', order: 'desc' });
   const stageColumns = React.useMemo(
     () =>
       data?.detailRows.find((row) => row.stageScores.length)?.stageScores ?? [],
