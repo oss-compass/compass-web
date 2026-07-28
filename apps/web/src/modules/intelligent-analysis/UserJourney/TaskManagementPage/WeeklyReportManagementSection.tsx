@@ -170,7 +170,7 @@ const WeeklyReportManagementSection: React.FC = () => {
           <div className="min-w-0 flex-1">
             <div className="font-semibold text-slate-800">每周二预览周报</div>
             <div className="mt-1 text-sm text-slate-500">
-              预览周报每周二 14:00
+              预览周报每周二 15:00
               自动发送，仅使用下方配置的收件人；正式周报仍使用现有脚本的正式
               To/CC 收件人。
             </div>
