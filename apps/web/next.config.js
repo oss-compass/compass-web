@@ -14,7 +14,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const silent = !process.env.SENTRY_LOG_ENABLE;
 
 const nextConfig = {
-  // assetPrefix: '/intelligent-analysis-assets',
+  assetPrefix: '/intelligent-analysis-assets',
   reactStrictMode: false,
   transpilePackages: [
     'ahooks',
