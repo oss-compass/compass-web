@@ -1,17 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
 import { Empty, Skeleton, Table, Tag, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
 import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
-import type {
-  IssueOverviewData,
-  IssueOverviewRepo,
-  IssueOverviewTopPain,
-  IssueTopPainsApiResponse,
-} from '../../types';
+import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
 import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import type { IssueStageAgg } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
@@ -54,6 +50,10 @@ const shortPeriod = (period: string): string => {
   return since.length > 5 ? since.slice(5) : since;
 };
 
+// 缓存新鲜期：切换模块 tab 时组件会卸载重挂，命中 react-query 缓存即不重新请求，
+// 与「社区入门」总览的缓存体验保持一致（后端本身另有 60s 聚合缓存）
+const ISSUE_QUERY_STALE_TIME = 5 * 60 * 1000;
+
 /**
  * Issue 贡献总览（跨仓聚合）。
  * 结构与「社区 CI/CD 总览」一致：① 顶部 KPI ② 痛点概览·阶段体验·各仓库对比
@@ -61,17 +61,10 @@ const shortPeriod = (period: string): string => {
  */
 const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const router = useRouter();
-  const [data, setData] = React.useState<IssueOverviewData | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [loadError, setLoadError] = React.useState(false);
   const [appendixOpen, setAppendixOpen] = React.useState(false);
   const [trendModal, setTrendModal] =
     React.useState<IssueTrendModalData | null>(null);
   // 重点待办痛点：服务端分页，按页/按筛选条件拉取，不一次性下发全量
-  const [pains, setPains] = React.useState<IssueTopPainsApiResponse | null>(
-    null
-  );
-  const [painsLoading, setPainsLoading] = React.useState(true);
   const [painPage, setPainPage] = React.useState(1);
   const [painPageSize, setPainPageSize] = React.useState(10);
   const [painFilters, setPainFilters] = React.useState<{
@@ -79,51 +72,47 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     prio?: string;
   }>({});
 
+  // 切换组织时重置痛点表格的分页与筛选状态
   React.useEffect(() => {
-    const controller = new AbortController();
-    setLoading(true);
-    setLoadError(false);
-    // 切换组织时重置痛点表格的分页与筛选状态
     setPainPage(1);
     setPainFilters({});
-    void fetchIssueOverview(org, controller.signal)
-      .then((res) => setData(res.overview))
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        setData(null);
-        setLoadError(true);
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
-      });
-    return () => controller.abort();
   }, [org]);
 
-  React.useEffect(() => {
-    const controller = new AbortController();
-    setPainsLoading(true);
-    void fetchIssueTopPains(
-      {
-        org,
-        repo: painFilters.repo,
-        prio: painFilters.prio,
-        page: painPage,
-        pageSize: painPageSize,
-      },
-      controller.signal
-    )
-      .then((res) => setPains(res))
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        setPains(null);
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setPainsLoading(false);
-      });
-    return () => controller.abort();
-  }, [org, painPage, painPageSize, painFilters]);
+  const {
+    data: overviewResp,
+    isLoading: loading,
+    isError: loadError,
+  } = useQuery({
+    queryKey: ['issue-overview', org],
+    queryFn: ({ signal }) => fetchIssueOverview(org, signal),
+    staleTime: ISSUE_QUERY_STALE_TIME,
+  });
+  const data = overviewResp?.overview ?? null;
+
+  const { data: pains, isFetching: painsLoading } = useQuery({
+    queryKey: [
+      'issue-top-pains',
+      org,
+      painPage,
+      painPageSize,
+      painFilters.repo,
+      painFilters.prio,
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueTopPains(
+        {
+          org,
+          repo: painFilters.repo,
+          prio: painFilters.prio,
+          page: painPage,
+          pageSize: painPageSize,
+        },
+        signal
+      ),
+    staleTime: ISSUE_QUERY_STALE_TIME,
+    // 翻页/筛选时保留上一页数据，避免表格闪空
+    keepPreviousData: true,
+  });
 
   if (loading) {
     // 骨架屏：与真实页面分区一致（KPI 四卡 + 概览卡片 + 痛点表格），
