@@ -92,12 +92,20 @@ const JourneyPanoramaSection: React.FC<JourneyPanoramaSectionProps> = ({
       let painCount = 0;
       let obsCount = 0;
 
+      // 判定为非项目本身问题的痛点（status 6 或 severity P4_TRIVIAL）不计入痛点数
+      const isNonProjectPain = (p: any) => {
+        const status = Number.parseInt(String(p.status ?? ''), 10);
+        const severity = String(p.severity || '').trim();
+        return status === 6 || severity === 'P4_TRIVIAL';
+      };
+
       // 如果有 overviewPains，痛点数量从这里计算
       if (overviewPains && overviewPains.length > 0) {
         const stepCode = step.code;
         painCount = overviewPains.filter((p: any) => {
           const pid = p.task_id || p.step_id;
-          return pid === stepCode || matchIds.has(pid);
+          if (pid !== stepCode && !matchIds.has(pid)) return false;
+          return !isNonProjectPain(p);
         }).length;
       }
 

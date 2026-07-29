@@ -2409,7 +2409,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                       taskParentConfirmationMapByFileKey
                     }
                     isLatestReport={isLatestReport}
-                    toolIds={pain_points_tool_nums?.[index]}
+                    // 非预览模式下 index 为后端 1 基 pain_index，取 tool_nums 需减一对齐 0 基数组
+                    toolIds={
+                      pain_points_tool_nums?.[previewMode ? index : index - 1]
+                    }
                     onStepClick={onStepClick}
                     highlightTaskId={linkTaskId}
                     compact
@@ -2508,7 +2511,10 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
                       taskParentConfirmationMapByFileKey
                     }
                     isLatestReport={isLatestReport}
-                    toolIds={pain_points_tool_nums?.[index]}
+                    // 非预览模式下 index 为后端 1 基 pain_index，取 tool_nums 需减一对齐 0 基数组
+                    toolIds={
+                      pain_points_tool_nums?.[previewMode ? index : index - 1]
+                    }
                     onStepClick={onStepClick}
                     highlightTaskId={linkTaskId}
                     shouldAutoOpen={shouldAutoOpenForPainId(id)}
