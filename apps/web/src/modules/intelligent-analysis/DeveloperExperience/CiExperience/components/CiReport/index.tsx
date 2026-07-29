@@ -1,5 +1,11 @@
-import React from 'react';
-import type { CiRepoData, CiRepoKey } from '../../types';
+import React, { useState } from 'react';
+import type {
+  CiJourneyFocus,
+  CiProblem,
+  CiRepoData,
+  CiRepoKey,
+} from '../../types';
+import { problemKey } from '../../helpers';
 import { Collapsible, EmptyState } from '../shared';
 import Appendix from '../Appendix';
 import CiReportOverview from './CiReportOverview';
@@ -19,6 +25,16 @@ type CiReportProps = {
  * 日观测板 / 周复盘切换已隐藏，默认只展示日观测板 → 深度分析 → 附录。
  */
 const CiReport: React.FC<CiReportProps> = ({ data, repo, day }) => {
+  // 报告概览展开面板问题行点击 → 全景图切段并定位同一问题
+  const [journeyFocus, setJourneyFocus] = useState<CiJourneyFocus | null>(null);
+  const handleProblemJump = (p: CiProblem) => {
+    setJourneyFocus({
+      seg: p.seg || '__unseg',
+      probKey: problemKey(p),
+      nonce: Date.now(),
+    });
+  };
+
   if (!data.days.length) {
     return (
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
@@ -31,11 +47,21 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo, day }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-        <CiReportOverview repo={repo} day={day} />
+        <CiReportOverview
+          data={data}
+          repo={repo}
+          day={day}
+          onProblemJump={handleProblemJump}
+        />
 
         {/* 体验得分（重构为开发者旅程全景图，含段详情：四维度 / 段中位耗时 / 段内问题） */}
         <div className="mt-2 border-slate-100 pt-5">
-          <CiJourneyPanorama repo={repo} workflow={data.workflow} day={day} />
+          <CiJourneyPanorama
+            repo={repo}
+            workflow={data.workflow}
+            day={day}
+            focus={journeyFocus}
+          />
         </div>
       </div>
 

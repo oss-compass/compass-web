@@ -124,6 +124,10 @@ export const rootStatusBadgeClass: Record<CiRootStatus, string> = {
   pending: 'border border-rose-200 bg-rose-50 text-rose-700',
 };
 
+/** 问题匹配 key：同一问题在逐日看板与旅程数据两套源里 kb+title 完全一致 */
+export const problemKey = (p: { kb: string; title: string }) =>
+  `${p.kb}::${p.title}`;
+
 // ============ 共享计算 helpers（移植 dashboard.js 数学层，供总览与报告共用） ============
 
 /** 从 CiVal/字符串/数字解析数字（取首个数字，去千分位逗号） */

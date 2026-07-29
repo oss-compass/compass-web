@@ -15,6 +15,7 @@ import {
 import { Card, Tooltip } from 'antd';
 import type {
   CiJourneyCells,
+  CiJourneyFocus,
   CiJourneyProblem,
   CiJourneyStage,
   CiRepoKey,
@@ -22,6 +23,7 @@ import type {
 import {
   ROOT_STATUS_LABEL,
   priBadgeClass,
+  problemKey,
   prURL,
   rootStatusBadgeClass,
   runURL,
@@ -32,6 +34,8 @@ type CiJourneyPanoramaProps = {
   repo: CiRepoKey;
   workflow: string;
   day: string;
+  /** 外部跳转请求（报告概览问题行点击）：切段 + 滚动定位 + 高亮同一问题 */
+  focus?: CiJourneyFocus | null;
 };
 
 type Tone = 'good' | 'warn' | 'bad' | 'neutral';
@@ -459,7 +463,9 @@ const StageSpark: React.FC<{ series: number[] }> = ({ series }) => {
 const StageProblem: React.FC<{
   problem: CiJourneyProblem;
   repo: CiRepoKey;
-}> = ({ problem, repo }) => {
+  /** 外部跳转定位时临时高亮 */
+  highlighted?: boolean;
+}> = ({ problem, repo, highlighted }) => {
   const { root, impact } = problem;
   const [open, setOpen] = useState(true);
   const metaLines: string[] = [];
@@ -479,7 +485,12 @@ const StageProblem: React.FC<{
     }
   }
   return (
-    <div className="overflow-hidden rounded-2xl border border-rose-200/70 bg-white shadow-[0_10px_24px_rgba(244,63,94,0.06)]">
+    <div
+      data-prob-key={problemKey(problem)}
+      className={`scroll-mt-24 overflow-hidden rounded-2xl border border-rose-200/70 bg-white shadow-[0_10px_24px_rgba(244,63,94,0.06)] transition-shadow ${
+        highlighted ? 'ring-2 ring-violet-400' : ''
+      }`}
+    >
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -643,7 +654,8 @@ const StageDetailPanel: React.FC<{
   stage: CiJourneyStage;
   repo: CiRepoKey;
   workflow: string;
-}> = ({ stage, repo, workflow }) => {
+  highlightKey?: string | null;
+}> = ({ stage, repo, workflow, highlightKey }) => {
   const meta = segMeta(stage.seg);
   const tone = scoreTone(stage.segscore);
   const problems = stage.problems ?? [];
@@ -862,7 +874,12 @@ const StageDetailPanel: React.FC<{
             </div>
             <div className="mt-4 flex flex-col gap-4">
               {problems.map((p, i) => (
-                <StageProblem key={i} problem={p} repo={repo} />
+                <StageProblem
+                  key={i}
+                  problem={p}
+                  repo={repo}
+                  highlighted={highlightKey === problemKey(p)}
+                />
               ))}
             </div>
           </div>
@@ -883,7 +900,8 @@ const StageDetailPanel: React.FC<{
 const UnsegDetailPanel: React.FC<{
   problems: CiJourneyProblem[];
   repo: CiRepoKey;
-}> = ({ problems, repo }) => (
+  highlightKey?: string | null;
+}> = ({ problems, repo, highlightKey }) => (
   <div className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
     <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
       <div className="flex items-start gap-4">
@@ -910,7 +928,12 @@ const UnsegDetailPanel: React.FC<{
       {problems.length ? (
         <div className="flex flex-col gap-4">
           {problems.map((p, i) => (
-            <StageProblem key={i} problem={p} repo={repo} />
+            <StageProblem
+              key={i}
+              problem={p}
+              repo={repo}
+              highlighted={highlightKey === problemKey(p)}
+            />
           ))}
         </div>
       ) : (
@@ -932,6 +955,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
   repo,
   workflow,
   day,
+  focus,
 }) => {
   const journey = CI_JOURNEY[repo];
   const board =
@@ -945,11 +969,35 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
     stages[0]?.seg ??
     '';
   const [activeKey, setActiveKey] = useState<string>(defaultKey);
+  // 外部跳转定位时临时高亮的问题 key
+  const [highlightKey, setHighlightKey] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveKey(defaultKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
+
+  // 响应报告概览问题行的跳转请求：切段 → 等详情渲染后滚动到同一问题 → 短暂高亮
+  useEffect(() => {
+    if (!focus) {
+      return;
+    }
+    setActiveKey(focus.seg);
+    setHighlightKey(focus.probKey);
+    const scrollTimer = window.setTimeout(() => {
+      document
+        .querySelector(`[data-prob-key="${CSS.escape(focus.probKey)}"]`)
+        // block:'start' 让问题标题落在页面顶部（配合 scroll-mt 留出间距）；
+        // center 对高卡会把标题顶出视口
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+    const clearTimer = window.setTimeout(() => setHighlightKey(null), 2600);
+    return () => {
+      window.clearTimeout(scrollTimer);
+      window.clearTimeout(clearTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus?.nonce]);
 
   const unsegProblems = board?.unsegProblems ?? [];
 
@@ -1030,12 +1078,17 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
 
             <div className="min-w-0 flex-1">
               {activeKey === '__unseg' ? (
-                <UnsegDetailPanel problems={unsegProblems} repo={repo} />
+                <UnsegDetailPanel
+                  problems={unsegProblems}
+                  repo={repo}
+                  highlightKey={highlightKey}
+                />
               ) : activeStage ? (
                 <StageDetailPanel
                   stage={activeStage}
                   repo={repo}
                   workflow={workflow}
+                  highlightKey={highlightKey}
                 />
               ) : (
                 <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-4 py-5 text-center text-sm text-slate-400">

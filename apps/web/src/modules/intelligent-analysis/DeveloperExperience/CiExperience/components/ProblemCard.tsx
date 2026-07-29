@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import type { CiProblem, CiRepoKey } from '../types';
-import { prURL, ROOT_STATUS_LABEL, rootStatusBadgeClass, runURL } from '../helpers';
+import {
+  prURL,
+  ROOT_STATUS_LABEL,
+  rootStatusBadgeClass,
+  runURL,
+} from '../helpers';
 import { Badge, DimTag, PriBadge } from './shared';
 
 type ProblemCardProps = {
@@ -23,7 +28,9 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
     `影响面：${im.runs || 0} run · ${im.prs || 0} PR`,
   ];
   if (im.streak_days > 1) {
-    metaParts.push(`持续第 ${im.streak_days} 天（窗口累计 ${im.window_total} 起）`);
+    metaParts.push(
+      `持续第 ${im.streak_days} 天（窗口累计 ${im.window_total} 起）`
+    );
   }
   if (im.wasted_min) {
     metaParts.push(`关联机时 ${(im.wasted_min / 60).toFixed(1)} 机时`);
@@ -41,14 +48,26 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
         <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[13px] font-semibold text-slate-800">
           <PriBadge p={problem.pri} />
           <DimTag>{problem.dim}</DimTag>
+          {/* 旅程段徽章：这条问题卡在流水线哪一步（对齐设计稿 segtag；seg 为空 = 跨段/未映射） */}
+          <span className="inline-block rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-600">
+            {problem.seg || '跨段/未映射'}
+          </span>
           <span className="text-slate-800">{problem.title}</span>
         </span>
-        <span className="shrink-0 pt-0.5 text-slate-400">{open ? '▾' : '▸'}</span>
+        <span className="shrink-0 pt-0.5 text-slate-400">
+          {open ? '▾' : '▸'}
+        </span>
       </button>
 
       {open ? (
         <div className="border-t border-slate-100 px-4 py-3">
           <div className="text-xs text-slate-500">{metaParts.join(' · ')}</div>
+          {problem.seg_cross && problem.seg_cross.length ? (
+            <div className="mt-1 text-xs text-slate-500">
+              跨旅程段：{problem.seg_cross.join(' → ')}（run 级多数归属「
+              {problem.seg || '未映射'}」；各 run 具体位置见下表）
+            </div>
+          ) : null}
           {im.cross && im.cross.length ? (
             <div className="mt-1 text-xs text-slate-500">
               跨维度影响：{im.cross.join('；')}
@@ -78,7 +97,9 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
             ) : null}
             {rt.guess ? (
               <div className="mt-1.5">
-                <span className="font-semibold text-slate-700">推测（未核）</span>
+                <span className="font-semibold text-slate-700">
+                  推测（未核）
+                </span>
                 ：{rt.guess}
               </div>
             ) : null}

@@ -81,6 +81,10 @@ export type CiProblem = {
   mech: string;
   owner: string;
   title: string;
+  /** 归属旅程段（null/缺失 = 跨段或未映射） */
+  seg?: string | null;
+  /** 跨旅程段路径（问题横跨多段时给出，run 级多数归属 seg） */
+  seg_cross?: string[];
   stages: Record<string, number>;
   impact: CiProblemImpact;
   runs: CiRun[];
@@ -88,8 +92,16 @@ export type CiProblem = {
   root: CiProblemRoot;
 };
 
-/** 指标表行：[指标，当日值，前 7 日中位，口径，备注] */
-export type CiMetricRow = [string, CiVal, CiVal, string, string];
+/** 指标表行（对象行）：cur=当日值；base=前 7 日中位；seg=旅程段；score 非空表示入分指标；dict=附录字典键 */
+export type CiMetricRow = {
+  label: string;
+  cur: CiVal;
+  base: CiVal;
+  seg?: string | null;
+  note?: string;
+  score?: string | null;
+  dict?: string;
+};
 
 /** 稳定性细分 */
 export type CiDiagStability = {
@@ -307,6 +319,16 @@ export type CiJourneyStat = { label: string; v: number };
 
 /** 旅程段内问题卡（= 通用问题卡 + 归属段名） */
 export type CiJourneyProblem = CiProblem & { seg: string };
+
+/** 全景图外部跳转请求（报告概览问题行点击 → 定位旅程段内同一问题） */
+export type CiJourneyFocus = {
+  /** 旅程段名；'__unseg' = 跨段/未映射 */
+  seg: string;
+  /** problemKey(kb+title)，跨数据源匹配同一问题 */
+  probKey: string;
+  /** 每次点击变化，保证重复点击同一问题也能重新触发定位 */
+  nonce: number;
+};
 
 /** 单个旅程段（每卡=段综合分 + 星级 + 状态词 + 段三宫格；点卡进入段详情） */
 export type CiJourneyStage = {
