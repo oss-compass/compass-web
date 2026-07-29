@@ -75,6 +75,18 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   useEffect(() => {
     if (queryModule) setActiveModule(queryModule);
   }, [queryModule]);
+  // 切换模块 tab 时同步更新路由上的 module 参数，避免刷新/返回时回到旧模块
+  const handleModuleChange = React.useCallback(
+    (module: OverviewModule) => {
+      setActiveModule(module);
+      router.replace(
+        { pathname: router.pathname, query: { ...router.query, module } },
+        undefined,
+        { shallow: true }
+      );
+    },
+    [router]
+  );
   const [issueModal, setIssueModal] = useState<IssueModalState>({
     open: false,
     title: '',
@@ -730,7 +742,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <OverviewModuleTabs
             active={activeModule}
-            onChange={setActiveModule}
+            onChange={handleModuleChange}
           />
         </div>
         {org ? (
