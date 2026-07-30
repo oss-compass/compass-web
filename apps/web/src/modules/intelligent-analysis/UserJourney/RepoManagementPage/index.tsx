@@ -35,7 +35,6 @@ import {
   CheckOutlined,
   FilterFilled,
   PlusOutlined,
-  ReloadOutlined,
 } from '@ant-design/icons';
 import {
   cancelOverviewRepoRerun,
@@ -1858,16 +1857,6 @@ const RepoManagementPage: React.FC = () => {
                   style={{ width: screens.lg ? 320 : '100%' }}
                 />
                 <Space wrap className="ml-auto justify-end">
-                  <Button
-                    icon={<ReloadOutlined />}
-                    className={`${controlClassName} px-3 font-semibold text-slate-700`}
-                    onClick={() => {
-                      void loadOperatorUser();
-                      void refetchRepoList();
-                    }}
-                  >
-                    刷新
-                  </Button>
                   <Button
                     className={`${controlClassName} px-3 font-semibold text-slate-700`}
                     onClick={() => {

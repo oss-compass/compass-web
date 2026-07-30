@@ -205,6 +205,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 stages={report.data.report_context.stages}
                 pains={report.data.report_context.top_pains}
                 recommendations={report.data.report_context.top_recs}
+                issueScoreRows={report.data.report_context.issue_score_rows}
                 sampleSize={report.data.report_context.n_total}
                 activeStageId={activeStageId}
                 onStageChange={setActiveStageId}

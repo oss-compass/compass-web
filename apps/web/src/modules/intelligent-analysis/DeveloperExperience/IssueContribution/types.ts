@@ -100,6 +100,34 @@ export type IssueReportPain = {
   low_score_issues?: IssueReportPainIssue[];
 };
 
+export type IssueScoreRowMetric = {
+  code: string;
+  name_cn: string;
+  score: string;
+  reason: string;
+};
+
+export type IssueScoreRowStageDetail = {
+  stage_id: string;
+  stage_name: string;
+  is_lens: boolean;
+  stage_score: string;
+  metrics: IssueScoreRowMetric[];
+};
+
+/** issue_score_rows 单行：一个 Issue 的总分与各阶段得分明细 */
+export type IssueScoreRow = {
+  number: string;
+  url: string;
+  title: string;
+  state: string;
+  overall: number;
+  grade: string;
+  cells: string[];
+  pain_stages: string;
+  stage_details: IssueScoreRowStageDetail[];
+};
+
 export type IssueReportRecommendation = {
   id: string;
   title: string;
@@ -179,6 +207,7 @@ export type IssueExperienceReportData = {
     }>;
     stages: IssueReportStage[];
     stage_ids: string[];
+    issue_score_rows?: IssueScoreRow[];
     participants: {
       summary: string;
       responder_count: number;

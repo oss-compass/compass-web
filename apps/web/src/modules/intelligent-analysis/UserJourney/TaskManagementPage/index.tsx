@@ -28,7 +28,6 @@ import {
   ArrowLeftOutlined,
   CheckOutlined,
   FilterFilled,
-  ReloadOutlined,
 } from '@ant-design/icons';
 import {
   cancelOverviewRepoRerun,
@@ -1472,17 +1471,6 @@ const TaskManagementPage: React.FC = () => {
                     style={{ width: screens.lg ? 340 : '100%' }}
                   />
                   <Space wrap className="ml-auto justify-end">
-                    <Button
-                      icon={<ReloadOutlined />}
-                      className={`${controlClassName} px-3 font-semibold text-slate-700`}
-                      onClick={() => {
-                        void loadOperatorUser();
-                        void loadRerunNodes();
-                        void refetchTaskList();
-                      }}
-                    >
-                      刷新
-                    </Button>
                     <Button
                       className={`${controlClassName} px-3 font-semibold text-slate-700`}
                       onClick={() => setAccessModalOpen(true)}

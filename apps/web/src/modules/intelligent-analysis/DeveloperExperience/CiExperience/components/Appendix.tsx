@@ -1,5 +1,31 @@
 import React, { type ReactNode } from 'react';
+import appendixData from '../ci-appendix.json';
 import { ScrollX, Table, Td, Th } from './Table';
+
+// ── ci-appendix.json 形状（extract_ci.js 自源 HTML 的 DICT/TAXONOMY 抽取）──
+type DictGroup = {
+  no: string;
+  title: string;
+  cols: string[];
+  rows: string[][]; // 11 列：层/中文名/英文名/落库位置/旅程段/指标定义/单位/计算方法/阈值/评分公式/责任方
+  notes: string[];
+  head: [string, string][]; // 组头要点 [标签, 内容]
+};
+type AppendixData = {
+  dict: {
+    version: string;
+    updated: string;
+    groups: DictGroup[];
+    changelog: [string, string, string][]; // [版本, 日期, 变更]
+  };
+  taxonomy: {
+    order: string[];
+    rows: { cls: string; mechs: string[]; counts: Record<string, number> }[];
+    window: string;
+  };
+};
+
+const { dict, taxonomy } = appendixData as unknown as AppendixData;
 
 const Code: React.FC<{ children: ReactNode }> = ({ children }) => (
   <code className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[0.85em] text-slate-700">
@@ -11,7 +37,19 @@ const B: React.FC<{ children: ReactNode }> = ({ children }) => (
   <b className="font-semibold text-slate-900">{children}</b>
 );
 
-const Detail: React.FC<{ summary: string; children: ReactNode }> = ({
+/** 数据单元格的轻量内联渲染：`**加粗**` 与 `` `code` ``（对齐源页面 mdcell 规则）。 */
+const md = (s: string | null | undefined): ReactNode =>
+  String(s ?? '')
+    .split(/(\*\*[^*]+\*\*|`[^`]+`)/g)
+    .map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**'))
+        return <B key={i}>{part.slice(2, -2)}</B>;
+      if (part.startsWith('`') && part.endsWith('`'))
+        return <Code key={i}>{part.slice(1, -1)}</Code>;
+      return part;
+    });
+
+const Detail: React.FC<{ summary: ReactNode; children: ReactNode }> = ({
   summary,
   children,
 }) => (
@@ -23,222 +61,194 @@ const Detail: React.FC<{ summary: string; children: ReactNode }> = ({
   </details>
 );
 
-// ── 附录 A · 指标字典（四维度 × 两层） ──
-type DictRow = { layer: string; metric: ReactNode; spec: ReactNode };
-type DictGroup = { dim: string; rows: DictRow[] };
+const Mini: React.FC<{ children: ReactNode }> = ({ children }) => (
+  <span className="text-[11px] font-normal text-slate-400">{children}</span>
+);
 
-const DICT: DictGroup[] = [
-  {
-    dim: '稳定性',
-    rows: [
-      {
-        layer: '结果',
-        metric: 'Action 平台失败率',
-        spec: (
-          <>
-            <B>一级判为「Action 平台失败」的 run ÷ 全部失败 run</B>
-            ；其二级机理含
-            资源申请/执行机注册/平台内部错误/镜像编排/外部依赖（OBS）/配置/Flaky-环境
-          </>
-        ),
-      },
-      {
-        layer: '结果',
-        metric: 'Flaky 率',
-        spec: '代码未改、重跑转绿的失败 ÷ 全部失败；日志签名分型：Flaky-用例（归代码方）/Flaky-环境（归平台方）/Flaky-待分型（待定）；抽检校准后公布准确率',
-      },
-      {
-        layer: '结果',
-        metric: '流水线挂死数',
-        spec: '取消前占用 ≥1h 的 run 数（长时间无进展仍占资源、最终被取消）',
-      },
-      {
-        layer: '诊断',
-        metric: 'Action 平台失败 job 数 / 故障事件数',
-        spec: '平台原因失败 job 计数；按时间聚类为独立事件',
-      },
-      {
-        layer: '诊断',
-        metric: '总失败率（背景）',
-        spec: '失败 run ÷ 完结 run',
-      },
-    ],
-  },
-  {
-    dim: '效率',
-    rows: [
-      {
-        layer: '结果',
-        metric: '流水线时长（成功，中位数/90 分位）',
-        spec: '单次成功 run 实际耗时（结束−开始）',
-      },
-      {
-        layer: '诊断',
-        metric: '排队时长（近似）/ 阶段耗时账单 / 最耗时 job / 效率矩阵',
-        spec: '排队=触发→首个 job 开始执行（平台无队列字段，近似口径；实测全窗 ≤25 s）；效率矩阵=阶段×耗时统计对前 7 日基线',
-      },
-    ],
-  },
-  {
-    dim: '交互体验',
-    rows: [
-      {
-        layer: '结果',
-        metric: '首次失败耗时',
-        spec: '触发 → 第一个失败 job 结束（多快知道"这次不行"）；按责任方分列',
-      },
-      {
-        layer: '结果',
-        metric: 'PR 转绿时长（中位数/90 分位）',
-        spec: 'PR 首次触发 CI → 首个全绿（滚动 7 日）',
-      },
-      {
-        layer: '结果',
-        metric: '失败修复时长',
-        spec: '失败 → 同一 PR 下一个成功（每 PR 记首段，滚动 7 日）',
-      },
-      {
-        layer: '诊断',
-        metric: '重试失败率 / CI 阻塞 PR 数 / 失败可归因率 / 失败信息可读性',
-        spec: '重试失败率=紧跟失败的重跑仍失败占比（未决不计）',
-      },
-    ],
-  },
-  {
-    dim: '成本',
-    rows: [
-      {
-        layer: '结果',
-        metric: 'CI 资源占用时长（机时，按池）',
-        spec: 'Σ job 实际耗时，按资源池细化，NPU 单列',
-      },
-      {
-        layer: '结果',
-        metric: '无效机时',
-        spec: '取消、挂死、Action 平台故障 run 消耗的机时（代码失败消耗不计入：CI 履职拦截成本）',
-      },
-      {
-        layer: '诊断',
-        metric:
-          '成本矩阵（阶段×机时归属）/ 资源池利用率（待容量）/ 缓存命中率 / 冗余作业候选',
-        spec: '整 run 归属口径：失败 run 全程机时按其失败责任方计；利用率=占用÷容量',
-      },
-    ],
-  },
-];
+// 字典表列宽：0 层 / 1 中文名 宽列；5 指标定义 / 7 计算方法 长文列；其余窄列
+const dictColClass = (i: number) =>
+  i === 5 || i === 7
+    ? 'min-w-[340px] max-w-[460px]'
+    : i === 0 || i === 1
+    ? 'min-w-[140px] max-w-[460px]'
+    : 'min-w-[90px] max-w-[460px]';
 
-// ── 附录 B · 失败分类器 v1 ──
-const CLS_ROWS: [ReactNode, ReactNode, ReactNode][] = [
-  [
-    '代码失败',
-    '编译/包校验 · 单元测试 · 规范检查 · 代码检查 · Flaky-用例',
-    '贡献者（经失败分型回帖告知）',
-  ],
-  [
-    'Action 平台失败',
-    '资源申请 · 执行机注册 · 平台内部错误 · 镜像/编排 · 外部依赖（OBS） · 配置 · Flaky-环境',
-    'CANN 基础设施团队',
-  ],
-  [
-    '待定',
-    '真机冒烟 · get_pr 解析 · Flaky-待分型 · 上游产物缺失 · 未归类',
-    '—（待定率被监控，目标 <10%）',
-  ],
-];
+const dictRowCount = dict.groups.reduce((n, g) => n + g.rows.length, 0);
 
-/** 口径与数据来源附录内容（三块折叠 Detail；由调用方提供卡片外壳与标题）。 */
+// ── 附录 B · 改进受理人（源页面渲染函数中的固定映射）──
+const TAX_OWNER: Record<string, ReactNode> = {
+  代码失败:
+    '贡献者（经告知渠道；报告不追究代码对错，只看有没有真把问题报给他）',
+  'Action 平台失败': 'CANN 基础设施团队',
+  待定: (
+    <>
+      —（<B>待定即暂缓归责</B>
+      ：系统性失败拦截命中的失败移入此类，人工判读后回填改判；待定率被监控）
+    </>
+  ),
+};
+
+/** 口径与数据来源附录内容（三块折叠 Detail；由调用方提供卡片外壳与标题）。
+ *  A/B 两块由 ci-appendix.json 数据驱动，随 extract_ci.js 一键同步。 */
 const Appendix: React.FC = () => (
   <div className="flex flex-col gap-3">
-    <Detail summary="附录 A · 指标字典（四维度 × 两层）">
-      <div className="mt-3">
-        <ScrollX>
-          <Table>
-            <thead>
-              <tr>
-                <Th>维度</Th>
-                <Th>层</Th>
-                <Th>指标</Th>
-                <Th>口径</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {DICT.flatMap((g) =>
-                g.rows.map((r, ri) => (
-                  <tr key={`${g.dim}-${ri}`}>
-                    {ri === 0 ? (
-                      <Td
-                        className="font-semibold text-slate-800"
-                        {...({ rowSpan: g.rows.length } as { rowSpan: number })}
-                      >
-                        {g.dim}
+    <Detail
+      summary={
+        <>
+          附录 A · 指标字典{' '}
+          <Mini>
+            （唯一事实源 {dict.version}，{dict.updated}；共 {dictRowCount} 项）
+          </Mini>
+        </>
+      }
+    >
+      <p className="mt-2 text-[11.5px] leading-relaxed text-slate-400">
+        全量自动注入自唯一事实源{' '}
+        <Code>Cogito/ci_experience_agent/docs/ci_metrics_dictionary.md</Code>
+        （一个源两个渲染，决策
+        54）——本附录不再手工维护，口径变更只改字典、重新注入即同步；此前的手写摘要表因双源漂移已废弃。
+      </p>
+      {dict.groups.map((g) => (
+        <div key={g.no} className="mt-3">
+          <p className="mb-1 text-[12.5px] font-semibold text-slate-800">
+            {g.no} {md(g.title)}
+          </p>
+          {g.head.length ? (
+            <ul className="mb-2 ml-4 list-disc text-[11.5px] leading-relaxed text-slate-500">
+              {g.head.map(([label, text], i) => (
+                <li key={i}>
+                  <B>{label}</B>：{md(text)}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <ScrollX>
+            <Table>
+              <thead>
+                <tr>
+                  {g.cols.map((c, i) => (
+                    <Th key={i}>{c}</Th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {g.rows.map((r, ri) => (
+                  <tr key={ri}>
+                    {r.map((cell, ci) => (
+                      <Td key={ci} className={dictColClass(ci)}>
+                        {md(cell)}
                       </Td>
-                    ) : null}
-                    <Td>{r.layer}</Td>
-                    <Td>{r.metric}</Td>
-                    <Td>{r.spec}</Td>
+                    ))}
                   </tr>
-                ))
-              )}
-            </tbody>
-          </Table>
-        </ScrollX>
-      </div>
-    </Detail>
-
-    <Detail summary="附录 B · 失败分类器 v1（两级：责任方 × 机理）">
-      <div className="mt-3 flex flex-col gap-2">
+                ))}
+              </tbody>
+            </Table>
+          </ScrollX>
+          {g.notes.length ? (
+            <ul className="ml-4 mt-2 list-disc text-[11.5px] leading-relaxed text-slate-400">
+              {g.notes.map((n, i) => (
+                <li key={i}>{md(n)}</li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ))}
+      <div className="mt-3">
+        <p className="mb-1 text-[12.5px] font-semibold text-slate-800">
+          版本记录
+        </p>
         <ScrollX>
           <Table>
             <thead>
               <tr>
-                <Th>一级（责任方，稳定）</Th>
-                <Th>二级（机理，开放集合）</Th>
-                <Th>owner</Th>
+                <Th>版本</Th>
+                <Th>日期</Th>
+                <Th>变更</Th>
               </tr>
             </thead>
             <tbody>
-              {CLS_ROWS.map((r, i) => (
+              {dict.changelog.map((r, i) => (
                 <tr key={i}>
-                  <Td className="font-semibold text-slate-800">{r[0]}</Td>
-                  <Td>{r[1]}</Td>
-                  <Td>{r[2]}</Td>
+                  <Td className="whitespace-nowrap font-semibold text-slate-800">
+                    {r[0]}
+                  </Td>
+                  <Td className="whitespace-nowrap">{r[1]}</Td>
+                  <Td>{md(r[2])}</Td>
                 </tr>
               ))}
             </tbody>
           </Table>
         </ScrollX>
-        <p className="text-[11.5px] leading-relaxed text-slate-400">
-          判定规则（先于归类）：① 大面积同挂（同 run ≥3 个独立 UT
-          域/编译变体失败，或同失败步骤当日跨 ≥5 个 PR）→
-          标「疑似系统性」，暂缓归责贡献者，转基础设施排查；② 上游产物缺失 →
-          归上游原因。Flaky 分型：同 PR 同 commit
-          重跑转绿的失败，读失败步骤日志签名——环境类（OOM/网络/进程被杀）→
-          Flaky-环境；用例类（断言/用例失败）→ Flaky-用例；判不了 →
-          Flaky-待分型。流水线：规则匹配 → 日志正则 → LLM 兜底 → 待定；
-          <B>100% 处理，显式待定率</B>。每个失败 run 输出：责任方 × 机理 ×
-          位置（stage → job → step）。
-        </p>
       </div>
     </Detail>
 
-    <Detail summary="附录 C · 数据来源与验证仓">
+    <Detail
+      summary={
+        <>
+          附录 B · 失败分类学（两级：责任方 × 机理）{' '}
+          <Mini>（自 classify.py 抽取，实测样本 {taxonomy.window}）</Mini>
+        </>
+      }
+    >
+      <p className="mt-2 text-[11.5px] leading-relaxed text-slate-400">
+        全量<B>自 </B>
+        <Code>parser/classify.py</Code>
+        <B> 源码抽取</B>
+        ，不再手工维护（决策 67）——手写版已实证漂移：「待定」列曾写 7
+        条而分类器实际 9
+        条，缺的「构建报错不可见」当天恰好有一张问题卡，读者查附录查不到。右列是各机理在全窗已标注失败
+        run 中的实测条数（0 = 规则在册但本窗未命中）。
+        <B>判定规则</B>
+        （系统性失败拦截两道口径、Flaky
+        分型、「规则顺序是安全要件」）不在此复述，见架构设计文档 §6.2。
+      </p>
+      <div className="mt-2">
+        <ScrollX>
+          <Table>
+            <thead>
+              <tr>
+                <Th>一级（责任方，三类不扩）</Th>
+                <Th>二级（机理，开放集合）· 全窗实测条数</Th>
+                <Th>改进受理人</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {taxonomy.rows.map((r) => (
+                <tr key={r.cls}>
+                  <Td className="whitespace-nowrap font-semibold text-slate-800">
+                    {r.cls} <Mini>{r.mechs.length} 条</Mini>
+                  </Td>
+                  <Td className="min-w-[340px]">
+                    {r.mechs.map((m, i) => (
+                      <React.Fragment key={m}>
+                        {i > 0 ? ' · ' : null}
+                        <span className="whitespace-nowrap">
+                          {m} <Mini>{r.counts[m]}</Mini>
+                        </span>
+                      </React.Fragment>
+                    ))}
+                  </Td>
+                  <Td className="min-w-[200px] text-[12px] text-slate-500">
+                    {TAX_OWNER[r.cls] ?? '—'}
+                  </Td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </ScrollX>
+      </div>
+    </Detail>
+
+    <Detail summary="附录 C · 数据来源（指针）">
       <p className="mt-3 text-[12.5px] leading-relaxed text-slate-600">
-        数据底座 = 验证仓 <Code>gitcode-ci-lab</Code>
-        （设计中）：collector（runs/jobs/日志 ZIP 日增量采集，令牌走环境变量）→
-        parser（失败分类器+四维度日聚合）→ data/daily（报告唯一读取源）。GitCode
-        API：v8 runs/jobs/steps（免鉴权）、
-        <Code>download_log</Code>（个人令牌，ZIP 按步骤分文件）、v5 pulls（PR
-        关联，聚合键 pull_request_id）。计时一律实际耗时（结束−开始）；
-        execute_cost_time 弃用；CANCELED/INIT 不计失败。样例：
-        <a
-          href="https://gitcode.com/cann/runtime/actions/runs/a3fa001a798e43afb86ae56c30125c1f"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sky-600 hover:underline"
-        >
-          runtime run #477
-        </a>
-        。
+        数据底座 = <Code>Cogito/ci_experience_agent/observation</Code>
+        ：采集（GitCode v8 runs/jobs/steps + 日志 ZIP + v5 PR
+        评论/commits/标签事件）→ 失败分类 → 日聚合 → 评分 → 本页。
+        <B>逐项口径与已知局限不在此复述</B>，唯一事实源见：架构设计文档{' '}
+        <Code>ci_experience_agent/docs/architecture.md</Code>（§4 管道、§5
+        数据契约、§6.2 分类学、§6.4 评分与风险）与指标字典{' '}
+        <Code>docs/ci_metrics_dictionary.md</Code>
+        （逐指标计算方法、阈值、评分公式，即上方附录 A）。
       </p>
     </Detail>
   </div>

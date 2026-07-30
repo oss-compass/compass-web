@@ -14,11 +14,7 @@ import {
   message,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import {
-  DeleteOutlined,
-  PlusOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   deleteCompetitorRepo,
   fetchCompetitorRepos,
@@ -277,9 +273,6 @@ const CompetitorRepoSection: React.FC<Props> = ({ isAdmin, authChecking }) => {
           style={{ width: 320 }}
         />
         <Space wrap className="ml-auto">
-          <Button icon={<ReloadOutlined />} onClick={() => void refetch()}>
-            刷新
-          </Button>
           <Tooltip title={isAdmin ? '' : '需要管理员权限'}>
             <Popconfirm
               title="确认重跑全部有对标关系的竞品仓库吗？"

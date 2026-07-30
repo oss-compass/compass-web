@@ -14,6 +14,7 @@
 // 产出（覆盖写入）：
 //   1. ci-runtime-data.json / ci-opsnn-data.json —— 逐日看板（DailyDrilldown 数据源）
 //   2. components/CiReport/ci-journey.json        —— 逐日旅程 / 权威 scores
+//   3. ci-appendix.json —— 附录（指标字典 DICT + 失败分类学 TAXONOMY）
 // ─────────────────────────────────────────────────────────────────────────
 const fs = require('fs');
 const path = require('path');
@@ -32,6 +33,7 @@ const OUT_DATA = {
     graphaf: path.join(BASE, 'ci-graphaf-data.json'),
 };
 const OUT_JOURNEY = path.join(BASE, 'components/CiReport/ci-journey.json');
+const OUT_APPENDIX = path.join(BASE, 'ci-appendix.json');
 
 // board fields kept in CiRepoData.boards（丢弃 journey/journey_note/scores,
 // 这些进入 ci-journey.json）
@@ -79,11 +81,11 @@ function resolveHtmlPath() {
     return candidates[0].html;
 }
 
-// ── 从 HTML 抽取内嵌的 `const DATA = {...}`（带引号 / 转义感知的括号配对）──
-function extractData(src) {
-    const marker = 'const DATA = {';
+// ── 从 HTML 抽取内嵌的 `const <name> = {...}`（带引号 / 转义感知的括号配对）──
+function extractConst(src, name) {
+    const marker = 'const ' + name + ' = {';
     const start = src.indexOf(marker);
-    if (start < 0) throw new Error('未找到 `const DATA = {` 标记');
+    if (start < 0) throw new Error('未找到 `' + marker + '` 标记');
     let i = start + marker.length - 1;
     let depth = 0;
     let inStr = false;
@@ -211,7 +213,8 @@ function transformJourneyRepo(repoKey, repo, warns) {
 function main() {
     const HTML = resolveHtmlPath();
     console.log('源文件:', path.relative(process.cwd(), HTML));
-    const DATA = extractData(fs.readFileSync(HTML, 'utf8'));
+    const src = fs.readFileSync(HTML, 'utf8');
+    const DATA = extractConst(src, 'DATA');
     const warns = [];
 
     // 1) 逐日看板
@@ -241,6 +244,20 @@ function main() {
     console.log(
         `[journey] wrote ${path.relative(process.cwd(), OUT_JOURNEY)} (${fs.statSync(OUT_JOURNEY).size
         } bytes)`
+    );
+
+    // 3) 附录：指标字典（唯一事实源注入）+ 失败分类学（classify.py 抽取）
+    const DICT = extractConst(src, 'DICT');
+    const TAXONOMY = extractConst(src, 'TAXONOMY');
+    fs.writeFileSync(
+        OUT_APPENDIX,
+        JSON.stringify({ dict: DICT, taxonomy: TAXONOMY }, null, 1),
+        'utf8'
+    );
+    const dictRows = DICT.groups.reduce((n, g) => n + g.rows.length, 0);
+    console.log(
+        `[appendix] dict ${DICT.version} (${DICT.updated}) groups=${DICT.groups.length} rows=${dictRows}; ` +
+        `taxonomy cls=${TAXONOMY.rows.length} window=${TAXONOMY.window} -> ${path.relative(process.cwd(), OUT_APPENDIX)} (${fs.statSync(OUT_APPENDIX).size} bytes)`
     );
 
     console.log('\nUNION seg names:', [...allSegs]);

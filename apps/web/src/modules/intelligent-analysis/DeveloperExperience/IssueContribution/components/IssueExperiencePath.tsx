@@ -7,10 +7,11 @@ import {
   FlagOutlined,
   InfoCircleOutlined,
   LinkOutlined,
+  ProfileOutlined,
   RocketOutlined,
   WarningOutlined,
 } from '@ant-design/icons';
-import { Popover } from 'antd';
+import { Pagination, Popover } from 'antd';
 import {
   cleanReportText,
   getPriorityTone,
@@ -24,6 +25,8 @@ import type {
   IssueReportPain,
   IssueReportRecommendation,
   IssueReportStage,
+  IssueScoreRow,
+  IssueScoreRowStageDetail,
 } from '../types';
 import HintIcon from './HintIcon';
 import IssueStageDirectory from './IssueStageDirectory';
@@ -33,6 +36,7 @@ type IssueExperiencePathProps = {
   stages: IssueReportStage[];
   pains: IssueReportPain[];
   recommendations: IssueReportRecommendation[];
+  issueScoreRows?: IssueScoreRow[];
   sampleSize: number;
   activeStageId: string;
   onStageChange: (stageId: string) => void;
@@ -108,6 +112,230 @@ const MetricDefinitionContent: React.FC<{
     </div>
   </div>
 );
+
+const STAGE_SCORE_PAGE_SIZE = 10;
+
+/** 判断某 Issue 在当前阶段是否被标记为痛点（pain_stages 形如「I2、I3、G」） */
+const isPainInStage = (painStages: string, stageId: string) =>
+  painStages
+    .split(/[、,，\s]+/)
+    .filter(Boolean)
+    .includes(stageId);
+
+type StageScoreEntry = {
+  row: IssueScoreRow;
+  detail: IssueScoreRowStageDetail;
+  score: number;
+};
+
+/**
+ * 全部 Issue 得分区块：展示当前阶段所有参与评分的 Issue，按本阶段得分
+ * 从低到高排序；默认收起，展开后表格按 10 条一页分页，指标得分 tag 化
+ * 展示并支持悬停查看原因，避免 Issue 数量多时面板过长。
+ */
+const StageIssueScoreSection: React.FC<{
+  stageId: string;
+  entries: StageScoreEntry[];
+}> = ({ stageId, entries }) => {
+  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const lowCount = entries.filter((entry) => entry.score < 60).length;
+  const visibleEntries = entries.slice(
+    (page - 1) * STAGE_SCORE_PAGE_SIZE,
+    page * STAGE_SCORE_PAGE_SIZE
+  );
+
+  return (
+    <div className="border-t border-slate-200 pt-6">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
+        <span className="flex flex-wrap items-center gap-2">
+          <ProfileOutlined className="text-sky-500" />
+          <h4 className="text-base font-semibold text-slate-900">
+            全部 Issue 得分
+          </h4>
+          <HintIcon title="本阶段所有参与评分的 Issue 及其指标得分明细，按本阶段得分从低到高排列，每页 10 条；悬停指标标签可查看评分原因。" />
+          <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
+            {entries.length} 个 Issue
+          </span>
+          {lowCount ? (
+            <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-semibold text-rose-600">
+              低于 60 分 {lowCount} 个
+            </span>
+          ) : null}
+        </span>
+        <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400">
+          {open ? '收起' : '展开'}
+          <DownOutlined
+            className={`text-[10px] transition-transform ${
+              open ? 'rotate-180' : ''
+            }`}
+          />
+        </span>
+      </button>
+
+      {open ? (
+        <>
+          <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200">
+            <table className="w-full min-w-[760px] border-collapse text-[12px]">
+              <thead className="bg-slate-50/80">
+                <tr>
+                  <th className="w-[250px] border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                    Issue
+                  </th>
+                  <th className="w-[88px] border-b border-slate-200 px-3 py-2 text-center text-[11px] font-semibold text-slate-500">
+                    本阶段得分
+                  </th>
+                  <th className="w-[96px] border-b border-slate-200 px-3 py-2 text-center text-[11px] font-semibold text-slate-500">
+                    综合得分
+                  </th>
+                  <th className="border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                    指标得分（悬停查看原因）
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleEntries.map(({ row, detail, score }) => {
+                  const stageTone = getScoreTone(score);
+                  const overallTone = getScoreTone(row.overall);
+                  const pained = isPainInStage(row.pain_stages, stageId);
+                  return (
+                    <tr key={row.number} className="align-top">
+                      <td className="border-b border-slate-100 px-3 py-2.5">
+                        <span className="flex flex-wrap items-center gap-1.5">
+                          <a
+                            href={row.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
+                          >
+                            <LinkOutlined className="text-[11px]" />#
+                            {row.number}
+                          </a>
+                          <span
+                            className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                              row.state === 'closed'
+                                ? 'bg-slate-100 text-slate-500'
+                                : 'bg-emerald-50 text-emerald-600'
+                            }`}
+                          >
+                            {row.state}
+                          </span>
+                          {pained ? (
+                            <span className="rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-semibold text-rose-600">
+                              痛点
+                            </span>
+                          ) : null}
+                        </span>
+                        <div className="mt-1 leading-5 text-slate-600">
+                          {row.title}
+                        </div>
+                      </td>
+                      <td className="border-b border-slate-100 px-3 py-2.5 text-center">
+                        <span
+                          className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold tabular-nums ${stageTone.badge}`}
+                        >
+                          {detail.stage_score}
+                        </span>
+                      </td>
+                      <td className="border-b border-slate-100 px-3 py-2.5 text-center">
+                        <span
+                          className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold tabular-nums ${overallTone.badge}`}
+                        >
+                          {row.overall}
+                        </span>
+                        <div className="mt-1 text-[10px] text-slate-400">
+                          评级 {row.grade}
+                        </div>
+                      </td>
+                      <td className="border-b border-slate-100 px-3 py-2.5">
+                        <div className="flex flex-wrap gap-1.5">
+                          {detail.metrics.map((metric) => {
+                            const metricScore = Number.parseFloat(metric.score);
+                            const metricTone = Number.isFinite(metricScore)
+                              ? getScoreTone(metricScore)
+                              : null;
+                            const hasReason =
+                              Boolean(metric.reason) && metric.reason !== '—';
+                            const tag = (
+                              <span
+                                className={`inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] ${
+                                  hasReason
+                                    ? 'cursor-help transition-colors hover:border-slate-300 hover:bg-slate-50'
+                                    : ''
+                                }`}
+                              >
+                                <span className="font-medium text-slate-500">
+                                  {metric.name_cn}
+                                </span>
+                                <span
+                                  className={`rounded-full border px-1.5 py-0.5 text-[10px] font-bold tabular-nums leading-none ${
+                                    metricTone
+                                      ? metricTone.badge
+                                      : 'border-slate-200 bg-slate-50 text-slate-400'
+                                  }`}
+                                >
+                                  {metric.score}
+                                </span>
+                              </span>
+                            );
+                            if (!hasReason) {
+                              return (
+                                <React.Fragment key={metric.code}>
+                                  {tag}
+                                </React.Fragment>
+                              );
+                            }
+                            return (
+                              <Popover
+                                key={metric.code}
+                                trigger="hover"
+                                placement="top"
+                                mouseEnterDelay={0.15}
+                                content={
+                                  <div className="w-[320px] max-w-[80vw]">
+                                    <div className="text-[12px] font-semibold text-slate-900">
+                                      {metric.name_cn} · {metric.score} 分
+                                    </div>
+                                    <p className="mt-1 text-[12px] leading-5 text-slate-600">
+                                      {metric.reason}
+                                    </p>
+                                  </div>
+                                }
+                              >
+                                {tag}
+                              </Popover>
+                            );
+                          })}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {entries.length > STAGE_SCORE_PAGE_SIZE ? (
+            <div className="mt-3 flex justify-end">
+              <Pagination
+                size="small"
+                current={page}
+                pageSize={STAGE_SCORE_PAGE_SIZE}
+                total={entries.length}
+                showSizeChanger={false}
+                onChange={setPage}
+              />
+            </div>
+          ) : null}
+        </>
+      ) : null}
+    </div>
+  );
+};
 
 /**
  * 单个痛点卡：可展开查看关键证据、体验影响，以及涉及的具体 Issue 明细表
@@ -285,6 +513,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   stages,
   pains,
   recommendations,
+  issueScoreRows,
   sampleSize,
   activeStageId,
   onStageChange,
@@ -369,6 +598,17 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   };
   const stagePains = getStagePains(activeStage);
   const stageRecommendations = getStageRecommendations(activeStage, stagePains);
+  // 当前阶段有评分记录的全部 Issue，按本阶段得分从低到高排序（问题 Issue 优先）
+  const stageScoreEntries = (issueScoreRows ?? [])
+    .flatMap((row) => {
+      const detail = row.stage_details.find(
+        (item) => item.stage_id === activeStage.id
+      );
+      if (!detail) return [];
+      const score = Number.parseFloat(detail.stage_score);
+      return Number.isFinite(score) ? [{ row, detail, score }] : [];
+    })
+    .sort((a, b) => a.score - b.score);
 
   return (
     <section
@@ -519,327 +759,337 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
         </div>
 
         <div className=">md:p-4 mt-6 rounded-[24px] border border-slate-200 bg-slate-50/70 p-3">
-          <div className="flex flex-col gap-4 >lg:flex-row">
-          <div className=">lg:w-[240px] >lg:flex-none">
-            <div className=">lg:sticky >lg:top-5">
-              <IssueStageDirectory
-                stages={stages}
-                activeStageId={activeStageId}
-                onStageChange={onStageChange}
-              />
-            </div>
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div
-              id={`issue-stage-panel-${activeStage.id}`}
-              role="tabpanel"
-              aria-labelledby={`issue-stage-card-${activeStage.id}`}
-              className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
-            >
-              <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
-                <div className="flex items-start gap-4">
-                  <span
-                    className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border text-xl ${scoreTone.badge}`}
-                  >
-                    {activeStage.icon}
-                  </span>
-                  <div className="min-w-0">
-                    <div className="text-lg font-semibold text-slate-900">
-                      {activeStage.id} {activeStage.name}
-                    </div>
-                    <p className="mt-0.5 text-sm leading-6 text-slate-500">
-                      {activeStage.intro}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${scoreTone.badge}`}
-                  >
-                    <span>阶段得分</span>
-                    <span className="text-base leading-none">
-                      {activeStage.mixed}
-                    </span>
-                  </span>
-                  {[
-                    {
-                      label: '痛点 Issue',
-                      value: `${activeStage.pain_count}/${sampleSize}`,
-                      badgeClass: 'bg-rose-50 text-rose-600',
-                    },
-                    {
-                      label: '客观 / 主观',
-                      value: `${activeStage.obj.toFixed(
-                        1
-                      )} / ${activeStage.subj.toFixed(1)}`,
-                      badgeClass: 'bg-slate-100 text-slate-700',
-                    },
-                    {
-                      label: '最佳表现',
-                      value: activeStage.best_metric.value,
-                      badgeClass: 'bg-emerald-50 text-emerald-700',
-                    },
-                    {
-                      label: '主要拖累',
-                      value: activeStage.worst_metric.value,
-                      badgeClass: 'bg-rose-50 text-rose-600',
-                    },
-                  ].map((item) => (
-                    <span
-                      key={item.label}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm"
-                    >
-                      <span className="font-medium text-slate-600">
-                        {item.label}
-                      </span>
-                      <span
-                        className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none tabular-nums ${item.badgeClass}`}
-                      >
-                        {item.value}
-                      </span>
-                    </span>
-                  ))}
-                </div>
+          <div className=">lg:flex-row flex flex-col gap-4">
+            <div className=">lg:w-[240px] >lg:flex-none">
+              <div className=">lg:sticky >lg:top-5">
+                <IssueStageDirectory
+                  stages={stages}
+                  activeStageId={activeStageId}
+                  onStageChange={onStageChange}
+                />
               </div>
+            </div>
 
-              <div className=">md:p-5 space-y-6 p-4">
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setMetricsOpen((open) => !open)}
-                    aria-expanded={metricsOpen}
-                    className="flex w-full items-center justify-between gap-3 text-left"
-                  >
-                    <span className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-base font-semibold text-slate-900">
-                        关键指标
-                      </h4>
+            <div className="min-w-0 flex-1">
+              <div
+                id={`issue-stage-panel-${activeStage.id}`}
+                role="tabpanel"
+                aria-labelledby={`issue-stage-card-${activeStage.id}`}
+                className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
+              >
+                <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
+                  <div className="flex items-start gap-4">
+                    <span
+                      className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border text-xl ${scoreTone.badge}`}
+                    >
+                      {activeStage.icon}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="text-lg font-semibold text-slate-900">
+                        {activeStage.id} {activeStage.name}
+                      </div>
+                      <p className="mt-0.5 text-sm leading-6 text-slate-500">
+                        {activeStage.intro}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${scoreTone.badge}`}
+                    >
+                      <span>阶段得分</span>
+                      <span className="text-base leading-none">
+                        {activeStage.mixed}
+                      </span>
+                    </span>
+                    {[
+                      {
+                        label: '痛点 Issue',
+                        value: `${activeStage.pain_count}/${sampleSize}`,
+                        badgeClass: 'bg-rose-50 text-rose-600',
+                      },
+                      {
+                        label: '客观 / 主观',
+                        value: `${activeStage.obj.toFixed(
+                          1
+                        )} / ${activeStage.subj.toFixed(1)}`,
+                        badgeClass: 'bg-slate-100 text-slate-700',
+                      },
+                      {
+                        label: '最佳表现',
+                        value: activeStage.best_metric.value,
+                        badgeClass: 'bg-emerald-50 text-emerald-700',
+                      },
+                      {
+                        label: '主要拖累',
+                        value: activeStage.worst_metric.value,
+                        badgeClass: 'bg-rose-50 text-rose-600',
+                      },
+                    ].map((item) => (
                       <span
-                        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600"
-                        title="对应卡片“指标”：本阶段评估的指标总数"
+                        key={item.label}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm"
                       >
-                        指标{' '}
-                        {activeStage.metrics_obj.length +
-                          activeStage.metrics_sub.length}
-                        <span className="font-normal text-slate-400">
-                          （客观 {activeStage.metrics_obj.length} · 主观{' '}
-                          {activeStage.metrics_sub.length}）
+                        <span className="font-medium text-slate-600">
+                          {item.label}
+                        </span>
+                        <span
+                          className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold tabular-nums leading-none ${item.badgeClass}`}
+                        >
+                          {item.value}
                         </span>
                       </span>
-                    </span>
-                    <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400">
-                      {metricsOpen ? '收起' : '展开'}
-                      <DownOutlined
-                        className={`text-[10px] transition-transform ${
-                          metricsOpen ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </span>
-                  </button>
-                  {metricsOpen ? (
-                    <div className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3">
-                      {stageMetrics.map((metric) => {
-                        const metricTone = getScoreTone(metric.score);
-                        const metricDef = getMetricDefinition(metric.code);
-                        const card = (
-                          <div
-                            className={`flex h-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)] ${
-                              metricDef
-                                ? 'cursor-help transition-shadow hover:border-slate-300 hover:shadow-[0_12px_26px_rgba(15,23,42,0.08)]'
-                                : ''
-                            }`}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex min-w-0 items-center gap-1.5">
-                                <span className="truncate text-[13px] font-semibold leading-5 text-slate-700">
-                                  {metric.name}
-                                </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className=">md:p-5 space-y-6 p-4">
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setMetricsOpen((open) => !open)}
+                      aria-expanded={metricsOpen}
+                      className="flex w-full items-center justify-between gap-3 text-left"
+                    >
+                      <span className="flex flex-wrap items-center gap-2">
+                        <h4 className="text-base font-semibold text-slate-900">
+                          关键指标
+                        </h4>
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600"
+                          title="对应卡片“指标”：本阶段评估的指标总数"
+                        >
+                          指标{' '}
+                          {activeStage.metrics_obj.length +
+                            activeStage.metrics_sub.length}
+                          <span className="font-normal text-slate-400">
+                            （客观 {activeStage.metrics_obj.length} · 主观{' '}
+                            {activeStage.metrics_sub.length}）
+                          </span>
+                        </span>
+                      </span>
+                      <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400">
+                        {metricsOpen ? '收起' : '展开'}
+                        <DownOutlined
+                          className={`text-[10px] transition-transform ${
+                            metricsOpen ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </span>
+                    </button>
+                    {metricsOpen ? (
+                      <div className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3">
+                        {stageMetrics.map((metric) => {
+                          const metricTone = getScoreTone(metric.score);
+                          const metricDef = getMetricDefinition(metric.code);
+                          const card = (
+                            <div
+                              className={`flex h-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)] ${
+                                metricDef
+                                  ? 'cursor-help transition-shadow hover:border-slate-300 hover:shadow-[0_12px_26px_rgba(15,23,42,0.08)]'
+                                  : ''
+                              }`}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex min-w-0 items-center gap-1.5">
+                                  <span className="truncate text-[13px] font-semibold leading-5 text-slate-700">
+                                    {metric.name}
+                                  </span>
+                                  <span
+                                    className={`inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                                      metric.kind === 'obj'
+                                        ? 'bg-sky-50 text-sky-600'
+                                        : 'bg-violet-50 text-violet-600'
+                                    }`}
+                                  >
+                                    {metric.kind === 'obj' ? '客观' : '主观'}
+                                  </span>
+                                  {metricDef ? (
+                                    <InfoCircleOutlined className="shrink-0 text-[11px] text-slate-300" />
+                                  ) : null}
+                                </div>
                                 <span
-                                  className={`inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                                    metric.kind === 'obj'
-                                      ? 'bg-sky-50 text-sky-600'
-                                      : 'bg-violet-50 text-violet-600'
-                                  }`}
+                                  className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[12px] font-bold leading-none ${metricTone.badge}`}
                                 >
-                                  {metric.kind === 'obj' ? '客观' : '主观'}
+                                  {metric.score}分
                                 </span>
-                                {metricDef ? (
-                                  <InfoCircleOutlined className="shrink-0 text-[11px] text-slate-300" />
-                                ) : null}
                               </div>
-                              <span
-                                className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[12px] font-bold leading-none ${metricTone.badge}`}
-                              >
-                                {metric.score}分
-                              </span>
-                            </div>
-                            {metricDef?.meaning || metric.reason ? (
-                              <p className="mt-2 line-clamp-3 text-[12px] leading-5 text-slate-500">
-                                {metricDef?.meaning || metric.reason}
-                              </p>
-                            ) : null}
-                            <div className="mt-auto flex items-center gap-3 border-t border-slate-100 pt-2 text-[10px] text-slate-400">
-                              <span>中位 {metric.median}</span>
-                              <span>覆盖 {metric.cover}</span>
-                            </div>
-                          </div>
-                        );
-                        if (!metricDef) {
-                          return (
-                            <div key={metric.key} className="flex">
-                              {card}
+                              {metricDef?.meaning || metric.reason ? (
+                                <p className="mt-2 line-clamp-3 text-[12px] leading-5 text-slate-500">
+                                  {metricDef?.meaning || metric.reason}
+                                </p>
+                              ) : null}
+                              <div className="mt-auto flex items-center gap-3 border-t border-slate-100 pt-2 text-[10px] text-slate-400">
+                                <span>中位 {metric.median}</span>
+                                <span>覆盖 {metric.cover}</span>
+                              </div>
                             </div>
                           );
-                        }
-                        return (
-                          <Popover
-                            key={metric.key}
-                            trigger="hover"
-                            placement="top"
-                            mouseEnterDelay={0.15}
-                            content={
-                              <MetricDefinitionContent
-                                name={metric.name}
-                                definition={metricDef}
-                              />
-                            }
-                          >
-                            <div className="flex">{card}</div>
-                          </Popover>
-                        );
-                      })}
+                          if (!metricDef) {
+                            return (
+                              <div key={metric.key} className="flex">
+                                {card}
+                              </div>
+                            );
+                          }
+                          return (
+                            <Popover
+                              key={metric.key}
+                              trigger="hover"
+                              placement="top"
+                              mouseEnterDelay={0.15}
+                              content={
+                                <MetricDefinitionContent
+                                  name={metric.name}
+                                  definition={metricDef}
+                                />
+                              }
+                            >
+                              <div className="flex">{card}</div>
+                            </Popover>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {stagePains.length ? (
+                    <div className="border-t border-slate-200 pt-6">
+                      <div className="flex flex-wrap items-end justify-between gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <FlagOutlined className="text-rose-500" />
+                          <h4 className="text-base font-semibold text-slate-900">
+                            痛点
+                          </h4>
+                          <HintIcon title="本阶段的主要问题及其涉及的具体 Issue 明细，点击卡片可展开查看关联 Issue 的低分原因与原文依据。" />
+                        </div>
+                        <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
+                          {stagePains.length} 个问题
+                        </span>
+                      </div>
+
+                      <div className="mt-4 overflow-hidden rounded-xl border border-amber-200/70 bg-white shadow-[0_6px_16px_rgba(245,158,11,0.06)]">
+                        <div className="flex items-start gap-2.5 bg-[linear-gradient(180deg,#fffdf7_0%,#fff7ed_100%)] px-3.5 py-2.5">
+                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-600">
+                            <WarningOutlined className="text-[12px]" />
+                          </span>
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-700">
+                              核心问题
+                            </div>
+                            <p className="mt-0.5 text-[13px] leading-6 text-slate-800">
+                              {activeStage.core_problem}
+                            </p>
+                          </div>
+                        </div>
+                        {activeStage.root_cause ? (
+                          <div className="flex items-start gap-2.5 border-t border-amber-100 px-3.5 py-2.5">
+                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-500">
+                              <BulbOutlined className="text-[12px]" />
+                            </span>
+                            <div className="min-w-0">
+                              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                                根因判断
+                              </div>
+                              <p className="mt-0.5 text-[12px] leading-5 text-slate-600">
+                                {activeStage.root_cause}
+                              </p>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-4 flex flex-col gap-4">
+                        {stagePains.map((pain) => (
+                          <StagePainCard key={pain.id} pain={pain} />
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {stageScoreEntries.length ? (
+                    <StageIssueScoreSection
+                      key={`issue-scores-${activeStage.id}`}
+                      stageId={activeStage.id}
+                      entries={stageScoreEntries}
+                    />
+                  ) : null}
+
+                  {stageRecommendations.length ? (
+                    <div className="border-t border-slate-200 pt-6">
+                      <div className="flex flex-wrap items-end justify-between gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <RocketOutlined className="text-emerald-600" />
+                          <h4 className="text-base font-semibold text-slate-900">
+                            本周行动清单
+                          </h4>
+                          <HintIcon title="针对本阶段痛点的可执行改进建议，便于从诊断直接进入改进。" />
+                        </div>
+                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                          {stageRecommendations.length} 项行动
+                        </span>
+                      </div>
+
+                      <div className=">xl:grid-cols-2 mt-4 grid grid-cols-1 gap-4">
+                        {stageRecommendations.map((recommendation) => {
+                          const tone = getPriorityTone(recommendation.prio);
+                          return (
+                            <article
+                              key={recommendation.id}
+                              className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-white p-4"
+                            >
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span
+                                  className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
+                                >
+                                  {recommendation.prio}
+                                </span>
+                                <span className="font-mono text-[11px] font-semibold text-emerald-600">
+                                  {recommendation.id}
+                                </span>
+                                <span className="text-[10px] text-slate-400">
+                                  对应 {recommendation.pp_id}
+                                </span>
+                              </div>
+                              <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
+                                {recommendation.action_title}
+                              </h5>
+                              <p className="mt-1 text-xs leading-5 text-slate-600">
+                                {cleanReportText(recommendation.action)}
+                              </p>
+                              <div className="mt-3 rounded-xl bg-emerald-50/60 px-3 py-2 text-[11px] leading-5 text-slate-600">
+                                <div>
+                                  <span className="font-semibold text-slate-400">
+                                    承接 ·{' '}
+                                  </span>
+                                  {recommendation.owner_team}
+                                  {recommendation.owner_candidate
+                                    ? ` / 候选 ${recommendation.owner_candidate}`
+                                    : ''}
+                                </div>
+                                <div>
+                                  <span className="font-semibold text-slate-400">
+                                    触发 ·{' '}
+                                  </span>
+                                  {recommendation.trigger}
+                                </div>
+                              </div>
+                              <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-5 text-slate-600">
+                                <AimOutlined className="mt-1 shrink-0 text-emerald-600" />
+                                <span>
+                                  {normalizeGoal(recommendation.goal)}
+                                </span>
+                              </p>
+                            </article>
+                          );
+                        })}
+                      </div>
                     </div>
                   ) : null}
                 </div>
-
-                {stagePains.length ? (
-                  <div className="border-t border-slate-200 pt-6">
-                    <div className="flex flex-wrap items-end justify-between gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <FlagOutlined className="text-rose-500" />
-                        <h4 className="text-base font-semibold text-slate-900">
-                          痛点
-                        </h4>
-                        <HintIcon title="本阶段的主要问题及其涉及的具体 Issue 明细，点击卡片可展开查看关联 Issue 的低分原因与原文依据。" />
-                      </div>
-                      <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
-                        {stagePains.length} 个问题
-                      </span>
-                    </div>
-
-                    <div className="mt-4 overflow-hidden rounded-xl border border-amber-200/70 bg-white shadow-[0_6px_16px_rgba(245,158,11,0.06)]">
-                      <div className="flex items-start gap-2.5 bg-[linear-gradient(180deg,#fffdf7_0%,#fff7ed_100%)] px-3.5 py-2.5">
-                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-600">
-                          <WarningOutlined className="text-[12px]" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-700">
-                            核心问题
-                          </div>
-                          <p className="mt-0.5 text-[13px] leading-6 text-slate-800">
-                            {activeStage.core_problem}
-                          </p>
-                        </div>
-                      </div>
-                      {activeStage.root_cause ? (
-                        <div className="flex items-start gap-2.5 border-t border-amber-100 px-3.5 py-2.5">
-                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-500">
-                            <BulbOutlined className="text-[12px]" />
-                          </span>
-                          <div className="min-w-0">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                              根因判断
-                            </div>
-                            <p className="mt-0.5 text-[12px] leading-5 text-slate-600">
-                              {activeStage.root_cause}
-                            </p>
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
-
-                    <div className="mt-4 flex flex-col gap-4">
-                      {stagePains.map((pain) => (
-                        <StagePainCard key={pain.id} pain={pain} />
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                {stageRecommendations.length ? (
-                  <div className="border-t border-slate-200 pt-6">
-                    <div className="flex flex-wrap items-end justify-between gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <RocketOutlined className="text-emerald-600" />
-                        <h4 className="text-base font-semibold text-slate-900">
-                          本周行动清单
-                        </h4>
-                        <HintIcon title="针对本阶段痛点的可执行改进建议，便于从诊断直接进入改进。" />
-                      </div>
-                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                        {stageRecommendations.length} 项行动
-                      </span>
-                    </div>
-
-                    <div className=">xl:grid-cols-2 mt-4 grid grid-cols-1 gap-4">
-                      {stageRecommendations.map((recommendation) => {
-                        const tone = getPriorityTone(recommendation.prio);
-                        return (
-                          <article
-                            key={recommendation.id}
-                            className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-white p-4"
-                          >
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span
-                                className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
-                              >
-                                {recommendation.prio}
-                              </span>
-                              <span className="font-mono text-[11px] font-semibold text-emerald-600">
-                                {recommendation.id}
-                              </span>
-                              <span className="text-[10px] text-slate-400">
-                                对应 {recommendation.pp_id}
-                              </span>
-                            </div>
-                            <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
-                              {recommendation.action_title}
-                            </h5>
-                            <p className="mt-1 text-xs leading-5 text-slate-600">
-                              {cleanReportText(recommendation.action)}
-                            </p>
-                            <div className="mt-3 rounded-xl bg-emerald-50/60 px-3 py-2 text-[11px] leading-5 text-slate-600">
-                              <div>
-                                <span className="font-semibold text-slate-400">
-                                  承接 ·{' '}
-                                </span>
-                                {recommendation.owner_team}
-                                {recommendation.owner_candidate
-                                  ? ` / 候选 ${recommendation.owner_candidate}`
-                                  : ''}
-                              </div>
-                              <div>
-                                <span className="font-semibold text-slate-400">
-                                  触发 ·{' '}
-                                </span>
-                                {recommendation.trigger}
-                              </div>
-                            </div>
-                            <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-5 text-slate-600">
-                              <AimOutlined className="mt-1 shrink-0 text-emerald-600" />
-                              <span>{normalizeGoal(recommendation.goal)}</span>
-                            </p>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : null}
               </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </section>
