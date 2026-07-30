@@ -11,13 +11,12 @@ import Appendix from '../Appendix';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
 import {
   computeCommunityOverview,
-  type CiLevel,
   type CiPriCard,
-  type CiRepoSummary,
   type CiTopIssue,
   type CiTrendItem,
 } from './communityMetrics';
 import CiTrendModal from './CiTrendModal';
+import RepoCompareTrends from './RepoCompareTrends';
 
 const { Title } = Typography;
 
@@ -35,13 +34,6 @@ const TONE_FLAT = '#64748b';
 const SEG_ACTIVE = '#e0962b';
 const SEG_BACKFILL = '#4f98ff';
 const SEG_FADED = '#33c998';
-
-const LEVEL_META: Record<CiLevel, { text: string; color: string; bg: string }> =
-  {
-    crit: { text: '需重点关注', color: '#c2413b', bg: '#fff0ee' },
-    warn: { text: '需关注', color: '#b7791f', bg: '#fef6e7' },
-    good: { text: '总体平稳', color: '#16835e', bg: '#e8f7f1' },
-  };
 
 const PRI_TAG: Record<CiPri, { bg: string; color: string; border: string }> = {
   P0: { bg: '#fdecec', color: '#c2413b', border: '#f5c7c3' },
@@ -442,60 +434,11 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
           })}
         </div>
 
-        {/* 各仓库对比 */}
+        {/* 各仓库对比 · 四项评分趋势折线（仓库 Select 多选，最多 4 个） */}
         <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
           各仓库对比
         </div>
-        <div className="capability-overview-grid">
-          {m.repos.map((r: CiRepoSummary) => {
-            const lv = LEVEL_META[r.level];
-            const stats = [
-              { label: '综合', value: r.scoreOverall ?? '—' },
-              { label: '稳定性', value: r.scoreStability ?? '—' },
-              { label: '效率', value: r.scoreEfficiency ?? '—' },
-              { label: '交互体验', value: r.scoreInteraction ?? '—' },
-              { label: '成本', value: r.scoreCost ?? '—' },
-              { label: '活跃 P0/P1', value: r.activeP01 },
-            ];
-            return (
-              <div key={r.repo} className="capability-card">
-                <div className="capability-card-title">
-                  <span className="inline-flex items-baseline gap-2">
-                    <span>{r.slug}</span>
-                    <Link
-                      href={reportHref(r.slug)}
-                      className="text-[12px] font-semibold text-[#1677ff] underline underline-offset-[3px] transition-colors hover:text-[#0958d9]"
-                    >
-                      查看最新报告 →
-                    </Link>
-                  </span>
-                  <span
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold"
-                    style={{ background: lv.bg, color: lv.color }}
-                  >
-                    <span
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: lv.color }}
-                    />
-                    {lv.text}
-                  </span>
-                </div>
-                <div className="capability-stat-grid">
-                  {stats.map((s) => (
-                    <div key={s.label} className="capability-stat-card">
-                      <span className="capability-stat-value">{s.value}</span>
-                      <span className="capability-stat-label">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 text-[11.5px] leading-relaxed text-slate-400">
-                  {r.workflow} · 全窗 {r.totFail}/{r.totRun} run · 已消退{' '}
-                  {r.faded}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <RepoCompareTrends compare={m.repoCompare} reportHref={reportHref} />
       </div>
 
       {/* ③ 重点待办问题 */}

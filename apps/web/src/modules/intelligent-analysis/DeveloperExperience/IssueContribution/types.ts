@@ -280,6 +280,26 @@ export type IssueOverviewAggSeries = {
   closeRate: number[]; // 各周关闭率
 };
 
+/** 痛点状态汇总（自由文本状态归一为 待处理 / 进行中 / 已闭环） */
+export type IssuePainStatusCounts = {
+  pending: number;
+  inProgress: number;
+  resolved: number;
+};
+
+/** 单一优先级的闭环进展（total = 该优先级痛点合计） */
+export type IssuePainPriorityProgress = IssuePainStatusCounts & {
+  total: number;
+};
+
+/** 逐周新增痛点数（按优先级拆分，各序列与 periods 对齐） */
+export type IssuePainWeeklySeries = {
+  periods: string[];
+  p0: number[];
+  p1: number[];
+  p2: number[];
+};
+
 export type IssueOverviewData = {
   generatedAt: string;
   repos: IssueOverviewRepo[];
@@ -289,6 +309,16 @@ export type IssueOverviewData = {
   topPainTotal: number;
   /** 全部仓库、全部报告周期的 top_pains 按优先级汇总 */
   topPainPriorityCounts: { p0: number; p1: number; p2: number };
+  /** 痛点状态汇总（可选：旧后端未下发时前端按全部待处理兜底） */
+  topPainStatusCounts?: IssuePainStatusCounts;
+  /** 各优先级闭环进展（可选，口径同 topPainStatusCounts） */
+  topPainPriorityProgress?: {
+    p0: IssuePainPriorityProgress;
+    p1: IssuePainPriorityProgress;
+    p2: IssuePainPriorityProgress;
+  };
+  /** 逐周新增痛点趋势（可选：旧后端未下发时隐藏趋势面板） */
+  painWeekly?: IssuePainWeeklySeries;
   agg: IssueOverviewAggSeries;
 };
 

@@ -303,6 +303,34 @@ export type CiTrendItem = {
   delta: CiDelta;
 };
 
+/** 各仓库对比 · 评分趋势指标键（六指标去掉成本与活跃 P0/P1 后保留的四项） */
+export type CiRepoCompareMetricKey =
+  | 'overall'
+  | 'stability'
+  | 'efficiency'
+  | 'interaction';
+
+/** 各仓库对比 · 单条仓库折线（values 与 CiRepoCompare.days 对齐，缺测日为 null） */
+export type CiRepoCompareSeries = {
+  repo: CiRepoKey;
+  slug: string;
+  values: (number | null)[];
+};
+
+/** 各仓库对比 · 单指标多仓折线图数据 */
+export type CiRepoCompareMetric = {
+  key: CiRepoCompareMetricKey;
+  label: string;
+  series: CiRepoCompareSeries[];
+};
+
+/** 各仓库对比 · 四项评分趋势（跨仓共用日期轴） */
+export type CiRepoCompare = {
+  days: string[];
+  repos: Array<{ repo: CiRepoKey; slug: string }>;
+  metrics: CiRepoCompareMetric[];
+};
+
 /** 重点待办问题行 */
 export type CiTopIssue = {
   key: string;
@@ -344,6 +372,8 @@ export type CiCommunityOverview = {
   };
   trends: CiTrendItem[];
   topIssues: CiTopIssue[];
+  /** 各仓库对比 · 四项评分趋势折线数据 */
+  repoCompare: CiRepoCompare;
   /** 开发者旅程全景图段顺序（供「涉及阶段」列筛选与排序） */
   journeyStageOrder: string[];
 };
@@ -602,6 +632,46 @@ export const computeCommunityOverview = (
     },
   ];
 
+  // 各仓库对比 · 四项评分趋势：每仓逐日日分（与顶部 KPI 同源，取自 CI_JOURNEY board.scores）
+  const compareDefs: Array<{
+    key: CiRepoCompareMetricKey;
+    label: string;
+    sel: (s: CiJourneyScores) => number | null;
+  }> = [
+    { key: 'overall', label: '综合体验评分', sel: (s) => s.total },
+    {
+      key: 'stability',
+      label: '稳定性',
+      sel: (s) => s.dims.stability?.score ?? null,
+    },
+    {
+      key: 'efficiency',
+      label: '效率',
+      sel: (s) => s.dims.efficiency?.score ?? null,
+    },
+    {
+      key: 'interaction',
+      label: '交互体验',
+      sel: (s) => s.dims.interaction?.score ?? null,
+    },
+  ];
+  const repoCompare: CiRepoCompare = {
+    days: agg.days,
+    repos: repos.map((x) => ({ repo: x.repo, slug: x.slug })),
+    metrics: compareDefs.map((def) => ({
+      key: def.key,
+      label: def.label,
+      series: repos.map((x) => ({
+        repo: x.repo,
+        slug: x.slug,
+        values: agg.days.map((dt) => {
+          const b = CI_JOURNEY[x.repo]?.boards[dt];
+          return b?.scores ? def.sel(b.scores) : null;
+        }),
+      })),
+    })),
+  };
+
   const order: Record<CiPri, number> = { P0: 0, P1: 1, P2: 2 };
   // 状态排序权重：仍活跃优先靠前，其次待回填，最后已消退
   const statusRank = (p: { status: string }) =>
@@ -654,6 +724,7 @@ export const computeCommunityOverview = (
     },
     trends,
     topIssues,
+    repoCompare,
     journeyStageOrder,
   };
 };

@@ -6,10 +6,19 @@ import { Empty, Skeleton, Table, Tag, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
+import {
+  ProgressBarOnly,
+  ProgressMetaOnly,
+} from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
 import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
 import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
-import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
+import {
+  computeIssueOverview,
+  latestReposByPeriod,
+  shortPeriod,
+} from './issueMetrics';
 import type { IssueStageAgg } from './issueMetrics';
+import IssuePainTrendChart from './IssuePainTrendChart';
 import IssueTrendModal from './IssueTrendModal';
 import type { IssueTrendModalData } from './IssueTrendModal';
 
@@ -44,11 +53,58 @@ const priStyle = (prio: string) => {
 const repoPainCount = (repo: IssueOverviewRepo) =>
   repo.stages.reduce((a, s) => a + s.painCount, 0);
 
-/** 'YYYY-MM-DD_to_YYYY-MM-DD' → 起始日 'MM-DD'（趋势 X 轴短标签） */
-const shortPeriod = (period: string): string => {
-  const since = period.split('_to_')[0] ?? period;
-  return since.length > 5 ? since.slice(5) : since;
-};
+// 仓级 P0/P1/P2 计数：由各阶段 painPriorityCounts 累加得到
+const repoPainPriorityCounts = (repo: IssueOverviewRepo) =>
+  repo.stages.reduce(
+    (acc, s) => {
+      acc.p0 += s.painPriorityCounts.p0;
+      acc.p1 += s.painPriorityCounts.p1;
+      acc.p2 += s.painPriorityCounts.p2;
+      return acc;
+    },
+    { p0: 0, p1: 0, p2: 0 }
+  );
+
+// 痛点级别分布单元格：阶段体验概览与各仓库对比两张表格共用
+const PAIN_PRIORITY_DISTRIBUTION = [
+  { key: 'p0' as const, label: 'P0', color: '#f4840c' },
+  { key: 'p1' as const, label: 'P1', color: '#4791ff' },
+  { key: 'p2' as const, label: 'P2', color: '#2eb78a' },
+];
+
+const PainPriorityDistributionCell: React.FC<{
+  counts: { p0: number; p1: number; p2: number };
+  total: number;
+}> = ({ counts, total }) => (
+  <div className="overview-progress-cell">
+    <div className="overview-progress-bar">
+      {PAIN_PRIORITY_DISTRIBUTION.map((priority) => {
+        const value = counts[priority.key];
+        return value > 0 ? (
+          <span
+            key={priority.key}
+            className="overview-progress-segment"
+            style={{
+              width: `${(value / total) * 100}%`,
+              background: priority.color,
+            }}
+          />
+        ) : null;
+      })}
+    </div>
+    <div className="overview-progress-meta">
+      {PAIN_PRIORITY_DISTRIBUTION.map((priority) => (
+        <span
+          key={priority.key}
+          className="overview-progress-text"
+          style={{ color: priority.color }}
+        >
+          {priority.label}: {counts[priority.key]}
+        </span>
+      ))}
+    </div>
+  </div>
+);
 
 // 缓存新鲜期：切换模块 tab 时组件会卸载重挂，命中 react-query 缓存即不重新请求，
 // 与「社区入门」总览的缓存体验保持一致（后端本身另有 60s 聚合缓存）
@@ -56,8 +112,9 @@ const ISSUE_QUERY_STALE_TIME = 5 * 60 * 1000;
 
 /**
  * Issue 贡献总览（跨仓聚合）。
- * 结构与「社区 CI/CD 总览」一致：① 顶部 KPI ② 痛点概览·阶段体验·各仓库对比
- * ③ 重点待办痛点表格 ④ 附录 QA；样式全量复用社区总览看板全局类。
+ * 结构对齐「社区入门总览」：① 顶部 KPI ② 痛点概览（五指标 + 优先级闭环进展 /
+ * 周度新增趋势双面板）· 阶段体验概览 ③ 各仓库对比 ④ 重点待办痛点表格
+ * ⑤ 附录 QA；样式全量复用社区总览看板全局类。
  */
 const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const router = useRouter();
@@ -115,7 +172,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   });
 
   if (loading) {
-    // 骨架屏：与真实页面分区一致（KPI 四卡 + 概览卡片 + 痛点表格），
+    // 骨架屏：与真实页面分区一致（KPI 五卡 + 概览卡片 + 痛点表格），
     // 展示形式对齐社区入门总览的 Skeleton 加载态
     return (
       <>
@@ -124,9 +181,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         </Title>
         <div
           className="overview-bottom-row"
-          style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
+          style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
         >
-          {[0, 1, 2, 3].map((i) => (
+          {[0, 1, 2, 3, 4].map((i) => (
             <div key={i} className="bottom-metric">
               <Skeleton active title={false} paragraph={{ rows: 3 }} />
             </div>
@@ -363,11 +420,15 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       render: (v: number) => <span className="text-slate-500">{v}</span>,
     },
     {
-      title: '重点痛点',
-      width: 100,
-      align: 'right',
+      title: '痛点级别分布',
+      width: 300,
       sorter: (a, b) => repoPainCount(a) - repoPainCount(b),
-      render: (_v, r) => repoPainCount(r),
+      render: (_v, r) => (
+        <PainPriorityDistributionCell
+          counts={repoPainPriorityCounts(r)}
+          total={repoPainCount(r)}
+        />
+      ),
     },
     {
       title: '报告',
@@ -428,55 +489,24 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     {
       title: '痛点级别分布',
       width: 300,
-      render: (_v, r) => {
-        const priorities = [
-          { key: 'p0' as const, label: 'P0', color: '#f4840c' },
-          { key: 'p1' as const, label: 'P1', color: '#4791ff' },
-          { key: 'p2' as const, label: 'P2', color: '#2eb78a' },
-        ];
-        return (
-          <div className="overview-progress-cell">
-            <div className="overview-progress-bar">
-              {priorities.map((priority) => {
-                const value = r.painPriorityCounts[priority.key];
-                return value > 0 ? (
-                  <span
-                    key={priority.key}
-                    className="overview-progress-segment"
-                    style={{
-                      width: `${(value / r.painCount) * 100}%`,
-                      background: priority.color,
-                    }}
-                  />
-                ) : null;
-              })}
-            </div>
-            <div className="overview-progress-meta">
-              {priorities.map((priority) => (
-                <span
-                  key={priority.key}
-                  className="overview-progress-text"
-                  style={{ color: priority.color }}
-                >
-                  {priority.label} {r.painPriorityCounts[priority.key]}
-                </span>
-              ))}
-            </div>
-          </div>
-        );
-      },
+      render: (_v, r) => (
+        <PainPriorityDistributionCell
+          counts={r.painPriorityCounts}
+          total={r.painCount}
+        />
+      ),
     },
   ];
 
   return (
     <>
-      {/* ① Issue 贡献总览 · 四 KPI（含跨仓逐周趋势缩略图） */}
+      {/* ① Issue 贡献总览 · 五 KPI（含跨仓逐周趋势缩略图） */}
       <Title level={4} className="oj-section-title">
         总览信息
       </Title>
       <div
         className="overview-bottom-row"
-        style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
+        style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
       >
         {m.kpis.map((k) => (
           <div key={k.label} className="bottom-metric">
@@ -530,7 +560,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         ))}
       </div>
 
-      {/* ② 痛点概览 · 阶段体验 · 各仓库对比（合并为同一卡片） */}
+      {/* ② 痛点概览（五指标 + 双面板）· 阶段体验概览 */}
       <div className="section-card">
         <div className="mb-3 text-[16px] font-extrabold leading-6 text-slate-900">
           痛点概览
@@ -540,27 +570,100 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
         >
           <div className="ov-item">
-            <div className="ov-label">痛点总数</div>
+            <div className="ov-label">总问题数</div>
             <div className="ov-value">{m.painSummary.total}</div>
           </div>
           <div className="ov-item">
-            <div className="ov-label">P0 痛点</div>
-            <div className="ov-value ov-value-pending">{m.painSummary.p0}</div>
-          </div>
-          <div className="ov-item">
-            <div className="ov-label">P1 痛点</div>
-            <div className="ov-value ov-value-pending">{m.painSummary.p1}</div>
-          </div>
-          <div className="ov-item">
-            <div className="ov-label">P2 痛点</div>
-            <div className="ov-value">{m.painSummary.p2}</div>
-          </div>
-          <div className="ov-item">
-            <div className="ov-label">覆盖仓库</div>
-            <div className="ov-value ov-value-blue">
-              {m.painSummary.repoCount}
+            <div className="ov-label">待处理</div>
+            <div className="ov-value ov-value-pending">
+              {m.painSummary.pending}
             </div>
           </div>
+          <div className="ov-item">
+            <div className="ov-label">进行中</div>
+            <div className="ov-value ov-value-blue">
+              {m.painSummary.inProgress}
+            </div>
+          </div>
+          <div className="ov-item">
+            <div className="ov-label">已闭环</div>
+            <div className="ov-value ov-value-green">
+              {m.painSummary.resolved}
+            </div>
+          </div>
+          <div className="ov-item">
+            <div className="ov-label">闭环率</div>
+            <div className="ov-value">{m.painSummary.closeRateLabel}</div>
+          </div>
+        </div>
+
+        {/* 各优先级闭环进展 + 周度新增问题趋势（参考社区入门总览双面板） */}
+        <div
+          className="overview-insight-grid"
+          style={{ marginTop: 16, height: 288 }}
+        >
+          <div className="ov-panel ov-priority-panel">
+            <div className="ov-panel-head">
+              <div className="ov-panel-title">各优先级闭环进展</div>
+            </div>
+            <div className="ov-priority-list ov-priority-list-issue">
+              {m.priorityProgress.map((item) => (
+                <div className="ov-priority-row" key={item.key}>
+                  <div className="ov-priority-main">
+                    <div className="ov-priority-header">
+                      <span
+                        className="ov-priority-tag"
+                        style={{
+                          color: item.tagColor,
+                          background: item.tagBg,
+                          borderColor: item.tagBorder,
+                        }}
+                      >
+                        {item.tagLabel}
+                      </span>
+                      <Tooltip title={item.description}>
+                        <span className="ov-priority-desc">
+                          {item.description}
+                        </span>
+                      </Tooltip>
+                    </div>
+                  </div>
+                  <div className="ov-priority-side">
+                    <div className="ov-priority-bar-box">
+                      <ProgressBarOnly
+                        pending={item.pending}
+                        inProgress={item.inProgress}
+                        resolved={item.resolved}
+                      />
+                    </div>
+                    <div className="ov-priority-meta-box">
+                      <ProgressMetaOnly
+                        pending={item.pending}
+                        inProgress={item.inProgress}
+                        resolved={item.resolved}
+                      />
+                      <div className="ov-priority-stats">
+                        <span className="ov-priority-total">
+                          总 {item.total}
+                        </span>
+                        <span className="ov-priority-rate">
+                          闭环率 {item.closeRateLabel}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {m.painWeekly.length > 0 ? (
+            <div className="ov-panel ov-trend-panel">
+              <div className="ov-panel-head">
+                <div className="ov-panel-title">周度新增问题趋势</div>
+              </div>
+              <IssuePainTrendChart points={m.painWeekly} />
+            </div>
+          ) : null}
         </div>
 
         <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
@@ -575,22 +678,25 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           scroll={{ x: 940 }}
           locale={{ emptyText: '暂无阶段数据' }}
         />
+      </div>
 
-        <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
-          各仓库对比（各仓最新一周）
-        </div>
+      {/* ③ 各仓库对比（独立分区，与重点待办痛点同级） */}
+      <Title level={4} className="oj-section-title">
+        各仓库对比（各仓最新一周）
+      </Title>
+      <div className="section-card">
         <Table<IssueOverviewRepo>
           className="overview-ant-table"
           dataSource={latestReposByPeriod(data.repos)}
           columns={repoColumns}
           rowKey={(record) => `${record.community}-${record.period}`}
           pagination={false}
-          scroll={{ x: 1228 }}
+          scroll={{ x: 1428 }}
           locale={{ emptyText: '暂无仓库数据' }}
         />
       </div>
 
-      {/* ③ 重点待办痛点 */}
+      {/* ④ 重点待办痛点 */}
       <Title level={4} className="oj-section-title">
         重点待办痛点
       </Title>
@@ -623,7 +729,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         />
       </div>
 
-      {/* ④ 附录 · 口径与来源（展示形式参考社区 QA 部分） */}
+      {/* ⑤ 附录 · 口径与来源（展示形式参考社区 QA 部分） */}
       <Title level={4} className="oj-section-title">
         附录
       </Title>
@@ -669,8 +775,11 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                 </div>
                 <p>
                   等级口径：A ≥ 85 · B ≥ 75 · C ≥ 65 · D ≥ 50 · F &lt;
-                  50。痛点总数为各仓全部报告周期的 top_pains
-                  合计；重点待办取其中 P0/P1 痛点。痛点是从一组 Issue
+                  50。痛点概览的总问题数为各仓全部报告周期的 top_pains
+                  合计；待处理 / 进行中 / 已闭环由痛点跟踪状态归一得出， 闭环率
+                  = 已闭环 ÷ 总问题数，状态尚未开始维护时以 -
+                  展示；周度新增问题趋势按各周报告新增痛点数统计。
+                  重点待办取其中 P0/P1 痛点。痛点是从一组 Issue
                   的阶段指标中归纳出的改进项， 不等同于具体 Issue，也不使用
                   Issue 的打开/关闭状态。顶部 Issue 关闭率仍按 Issue
                   生命周期口径计算：已关闭 Issue ÷ Issue 总数。
