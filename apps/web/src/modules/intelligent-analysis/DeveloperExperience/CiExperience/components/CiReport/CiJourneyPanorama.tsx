@@ -154,6 +154,13 @@ const getStarText = (stars: number) => {
 const stageAttention = (stage: CiJourneyStage) =>
   DIM_META.some(({ key }) => stage.cells[key]?.word === '需处理');
 
+/** 段状态词：按优先级 需处理 > 关注 > 正常 扫描四维格（对齐源页 renderStrip 逻辑） */
+const STATUS_WORDS = ['需处理', '关注', '正常'] as const;
+const stageStatusWord = (stage: CiJourneyStage) =>
+  STATUS_WORDS.find((w) =>
+    DIM_META.some(({ key }) => stage.cells[key]?.word === w)
+  ) ?? '正常';
+
 /** 段内问题总数（用于左菜单红点） */
 const stageProblemCount = (stage: CiJourneyStage) =>
   stage.problems?.length ?? 0;
@@ -168,7 +175,7 @@ const StageCard: React.FC<{
   const hasScore = stage.segscore != null;
   const tone = scoreTone(stage.segscore);
   const attention = stageAttention(stage);
-  const statusWord = attention ? '需处理' : '正常';
+  const statusWord = stageStatusWord(stage);
   const stars = Math.round((stage.segscore ?? 0) / 20);
   return (
     <div className="flex w-full min-w-0 flex-col items-center">
@@ -227,7 +234,11 @@ const StageCard: React.FC<{
             </div>
             <div
               className={`mt-1 text-center text-[12px] font-medium ${
-                attention ? 'text-rose-600' : 'text-slate-400'
+                statusWord === '需处理'
+                  ? 'text-rose-600'
+                  : statusWord === '关注'
+                  ? 'text-amber-600'
+                  : 'text-slate-400'
               }`}
             >
               {statusWord}

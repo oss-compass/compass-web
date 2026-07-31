@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { DownOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import type { CiDimKey, CiProblem, CiRepoData, CiRepoKey } from '../../types';
+import type {
+  CiDimKey,
+  CiPri,
+  CiProblem,
+  CiRepoData,
+  CiRepoKey,
+} from '../../types';
 import { DIM_NAME } from '../../helpers';
 import { HintIcon } from '../shared';
 import ProblemPanel from '../ProblemPanel';
@@ -44,6 +50,18 @@ const DIMENSIONS: Array<{
 
 // 卡片展开面板 key：四维卡展开问题清单；综合卡展开「本页怎么读」
 type PanelKey = 'overall' | CiDimKey;
+
+// 状态词配色（小圆点 + 文字，对齐旅程全景图三态：需处理 rose / 关注 amber / 正常 slate）
+const WORD_DOT_CLASS: Record<string, string> = {
+  需处理: 'text-rose-600 [&>i]:bg-rose-500',
+  关注: 'text-amber-600 [&>i]:bg-amber-500',
+};
+const wordDotClass = (word: string) =>
+  WORD_DOT_CLASS[word] ?? 'text-slate-400 [&>i]:bg-slate-300';
+
+// 问题数胶囊配色：按最高优先级 P0/P1 红、P2 琥珀（无边框软底，降噪）
+const priTagClass = (pri: CiPri | null) =>
+  pri === 'P2' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600';
 
 const Strong: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <b className="font-semibold text-slate-900">{children}</b>
@@ -112,15 +130,25 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
     setActivePanel(null);
   }, [repo]);
 
-  const dimensionScores = DIMENSIONS.map((dimension) => ({
-    ...dimension,
-    value: scores?.dims[dimension.key]?.score ?? null,
-  }));
+  const dimensionScores = DIMENSIONS.map((dimension) => {
+    // 状态词 / 问题数 / 最高优先级取自逐日看板 dims（与四模型卡同源），分数仍以旅程 scores 为准
+    const info = dayBoard?.dims?.find((d) => d.key === dimension.key) ?? null;
+    return {
+      ...dimension,
+      value: scores?.dims[dimension.key]?.score ?? null,
+      word: info?.word ?? null,
+      probn: info?.probn ?? 0,
+      toppri: info?.toppri ?? null,
+    };
+  });
   const metrics: Array<{
     key: 'overall' | CiDimKey;
     title: string;
     description: string;
     value: number | null;
+    word?: string | null;
+    probn?: number;
+    toppri?: CiPri | null;
   }> = [
     {
       key: 'overall',
@@ -173,7 +201,7 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
                       } · 当日问题清单与结果指标`
                   : undefined
               }
-              className={`flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)] transition-all duration-200 ${
+              className={`flex min-w-0 items-stretch justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)] transition-all duration-200 ${
                 active ? 'ring-2 ring-violet-400' : ''
               } ${
                 clickable
@@ -197,13 +225,40 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
                   ) : null}
                 </div>
               </div>
-              {clickable ? (
-                <DownOutlined
-                  className={`shrink-0 self-center text-[16px] text-blue-600 transition-transform ${
-                    active ? 'rotate-180' : ''
-                  }`}
-                />
-              ) : null}
+              {/* 右侧竖列：状态词与问题数同一行靠右，展开箭头沉底；综合卡仅箭头 */}
+              <div className="flex shrink-0 flex-col items-end justify-between gap-1">
+                {metric.key !== 'overall' && (metric.word || metric.probn) ? (
+                  <div className="flex items-center gap-1.5">
+                    {metric.probn ? (
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium leading-none ${priTagClass(
+                          metric.toppri ?? null
+                        )}`}
+                      >
+                        {metric.toppri ? `${metric.toppri} · ` : ''}
+                        {metric.probn} 问题
+                      </span>
+                    ) : null}
+                    {metric.word ? (
+                      <span
+                        className={`inline-flex items-center gap-1 text-[11px] font-medium ${wordDotClass(
+                          metric.word
+                        )}`}
+                      >
+                        <i className="h-1.5 w-1.5 rounded-full" />
+                        {metric.word}
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
+                {clickable ? (
+                  <DownOutlined
+                    className={`mt-auto text-[16px] text-blue-600 transition-transform ${
+                      active ? 'rotate-180' : ''
+                    }`}
+                  />
+                ) : null}
+              </div>
             </div>
           );
         })}
