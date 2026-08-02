@@ -581,7 +581,7 @@ export const useModelList = (): ModelList[] => {
       color: '#cea936',
     },
     {
-      name: t('metrics_models:developer_convertion.title'),
+      name: t('metrics_models:developer_conversion.title'),
       top: -288,
       left: 268,
       width: 100,

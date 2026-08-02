@@ -38,7 +38,7 @@ const Robustness = () => {
         {t('metrics_models:activity.title')}
       </MenuItem>
       <MenuItem id="2" disabled>
-        {t('metrics_models:developer_convertion.title')}
+        {t('metrics_models:developer_conversion.title')}
       </MenuItem>
       <MenuItem id="3" disabled>
         {t('metrics_models:developer_retention.title')}

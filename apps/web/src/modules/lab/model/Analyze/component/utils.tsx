@@ -27,13 +27,13 @@ export const getDomainData = (data, contributionTypeMap) => {
     const domainType = result.find((z) => z.type === type);
     if (domainType) {
       domainType.contribution += contribution;
-      domainType.childern.push({ text, contribution });
+      domainType.children.push({ text, contribution });
     } else {
       result.push({
         type,
         color,
         contribution,
-        childern: [{ text, contribution }],
+        children: [{ text, contribution }],
       });
     }
   });

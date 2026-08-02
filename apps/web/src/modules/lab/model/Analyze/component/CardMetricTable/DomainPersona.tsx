@@ -10,7 +10,7 @@ const PopperContent = ({ dataList, name, active, setActive, origin }) => {
   const { t } = useTranslation();
   const activeItem = dataList
     .find((item) => item.type === active)
-    ?.childern.sort((a, b) => b.contribution - a.contribution);
+    ?.children.sort((a, b) => b.contribution - a.contribution);
   // const allType = ['Code', 'Code Admin', 'Issue', 'Issue Admin', 'Observe'];
   return (
     <div className="right-0 rounded bg-[#fcfcfc] text-xs drop-shadow-md">

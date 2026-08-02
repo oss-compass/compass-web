@@ -27,7 +27,7 @@ const ChartCards = ({ ChartInfo }) => {
     processedData = {
       ...data,
       legend: {
-        shwo: true,
+        show: true,
       },
       series: data.series
         .filter((item) => {

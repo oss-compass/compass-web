@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-const Deatil = () => {
+const Detail = () => {
   const { t } = useTranslation();
   return (
     <NoSsr>
@@ -36,4 +36,4 @@ const Deatil = () => {
   );
 };
 
-export default Deatil;
+export default Detail;
