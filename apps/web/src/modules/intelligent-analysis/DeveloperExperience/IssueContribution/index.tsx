@@ -91,8 +91,10 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   ]);
 
   useEffect(() => {
-    if (!report) return;
-    setActiveStageId(report.data.report_context.stages[0]?.id ?? '');
+    const nextVisibleStages = report?.data.report_context.stages.filter(
+      (stage) => !stage.is_lens
+    );
+    setActiveStageId(nextVisibleStages?.[0]?.id ?? '');
   }, [report]);
 
   const platform = report?.platform ?? requestedPlatform ?? '';
@@ -132,6 +134,12 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
         (record) => record.version
       ),
     [catalog, community, period]
+  );
+  const visibleStages = useMemo(
+    () =>
+      report?.data.report_context.stages.filter((stage) => !stage.is_lens) ??
+      [],
+    [report]
   );
 
   const selectReport = (nextReport: IssueReportCatalogRecord) => {
@@ -202,7 +210,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
             <IssueReportOverview report={report}>
               <IssueExperiencePath
                 projectName={report.data.community_name}
-                stages={report.data.report_context.stages}
+                stages={visibleStages}
                 pains={report.data.report_context.top_pains}
                 recommendations={report.data.report_context.top_recs}
                 issueScoreRows={report.data.report_context.issue_score_rows}
