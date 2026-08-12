@@ -60,41 +60,6 @@ export const stripMetricCode = (value: string) =>
 export const normalizeGoal = (value: string) =>
   cleanReportText(value).replace('提升至 100 以上', '提升至 100 分');
 
-const STAGE_DISPLAY_NAME_MAP: Record<string, string> = {
-  I0: '创建',
-  I1: '首响与分配',
-  I2: '推进讨论',
-  I3: '产出与闭环',
-};
-
-export const getStageDisplayName = (stageId?: string, stageName?: string) => {
-  if (stageId && STAGE_DISPLAY_NAME_MAP[stageId]) {
-    return STAGE_DISPLAY_NAME_MAP[stageId];
-  }
-  return stageName?.trim() || stageId || '';
-};
-
-export const formatStageLabel = (
-  stageId?: string,
-  stageName?: string,
-  separator = ' '
-) => {
-  const displayName = getStageDisplayName(stageId, stageName);
-  if (stageId && displayName) {
-    return `${stageId}${separator}${displayName}`;
-  }
-  return displayName || stageId || '';
-};
-
-export const normalizeStageLabel = (value: string) => {
-  const trimmed = cleanReportText(value).trim();
-  const matched = trimmed.match(/^(I\d)\s*[·.．、\-]?\s*(.+)$/);
-  if (matched) {
-    return formatStageLabel(matched[1], matched[2]);
-  }
-  return getStageDisplayName(undefined, trimmed);
-};
-
 export const formatGeneratedAt = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;

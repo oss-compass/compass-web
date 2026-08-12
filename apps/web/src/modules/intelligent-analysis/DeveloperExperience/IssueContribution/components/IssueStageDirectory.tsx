@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from 'antd';
-import { getStageDisplayName } from '../presentation';
 import type { IssueReportStage } from '../types';
 
 type IssueStageDirectoryProps = {
@@ -36,7 +35,7 @@ const IssueStageDirectory: React.FC<IssueStageDirectoryProps> = ({
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
               }`}
             >
-              {index + 1}. {getStageDisplayName(stage.id, stage.name)}
+              {index + 1}. {stage.name}
             </button>
           );
         })}
@@ -82,7 +81,7 @@ const IssueStageDirectory: React.FC<IssueStageDirectoryProps> = ({
                       active ? 'text-white' : 'text-slate-800'
                     }`}
                   >
-                    {getStageDisplayName(stage.id, stage.name)}
+                    {stage.name}
                   </span>
                   <span
                     className={`mt-0.5 block truncate text-xs ${

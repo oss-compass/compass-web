@@ -5,7 +5,7 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import ReportSectionCard from '../../components/ReportSectionCard';
-import { formatStageLabel, getScoreTone } from '../presentation';
+import { getScoreTone } from '../presentation';
 import type { IssueExperienceReportData } from '../types';
 
 type IssueReportSignalsProps = {
@@ -100,7 +100,7 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
                 return (
                   <div key={stage.id} className="flex items-center gap-3">
                     <span className="w-24 shrink-0 truncate text-[12px] font-medium text-slate-600">
-                      {formatStageLabel(stage.id, stage.name)}
+                      {stage.id} · {stage.name}
                     </span>
                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
                       <span

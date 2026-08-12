@@ -2,10 +2,8 @@ import React from 'react';
 import { AimOutlined, WarningOutlined } from '@ant-design/icons';
 import {
   cleanReportText,
-  formatStageLabel,
   getPriorityTone,
   getScoreTone,
-  normalizeStageLabel,
 } from '../presentation';
 import type { IssueExperienceReportData } from '../types';
 import HintIcon from './HintIcon';
@@ -24,7 +22,7 @@ const IssueExecutiveSummary: React.FC<IssueExecutiveSummaryProps> = ({
   const stageLabelByName = new Map(
     (context.stages ?? []).map((stage) => [
       stage.name,
-      formatStageLabel(stage.id, stage.name),
+      `${stage.id} · ${stage.name}`,
     ])
   );
 
@@ -87,7 +85,7 @@ const IssueExecutiveSummary: React.FC<IssueExecutiveSummaryProps> = ({
                           {row.prio}
                         </span>
                         <span className="truncate text-sm font-semibold text-slate-800">
-                          {normalizeStageLabel(row.stage)}
+                          {row.stage}
                         </span>
                       </div>
                       <p className="mt-1.5 text-[13px] leading-6 text-slate-500">
@@ -116,8 +114,7 @@ const IssueExecutiveSummary: React.FC<IssueExecutiveSummaryProps> = ({
               {topRecs.map((rec) => {
                 const prioTone = getPriorityTone(rec.prio);
                 const stageLabel = rec.stage_name
-                  ? stageLabelByName.get(rec.stage_name) ??
-                    formatStageLabel(undefined, rec.stage_name)
+                  ? stageLabelByName.get(rec.stage_name) ?? rec.stage_name
                   : '';
                 return (
                   <li
