@@ -3,6 +3,7 @@ import ReportSectionCard from '../../components/ReportSectionCard';
 import {
   cleanReportText,
   getPriorityTone,
+  getStageDisplayName,
   normalizeGoal,
 } from '../presentation';
 import type { IssueReportRecommendation } from '../types';
@@ -67,7 +68,7 @@ const IssueActions: React.FC<IssueActionsProps> = ({ recommendations }) => (
                 </td>
                 <td className="px-4 py-4">
                   <div className="text-[13px] font-semibold text-slate-800">
-                    {recommendation.stage_name}
+                    {getStageDisplayName(undefined, recommendation.stage_name)}
                   </div>
                   <div className="mt-1 text-[10px] text-slate-400">
                     对应 {recommendation.pp_id}

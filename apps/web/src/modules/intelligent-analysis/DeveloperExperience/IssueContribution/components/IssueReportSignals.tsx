@@ -5,7 +5,7 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import ReportSectionCard from '../../components/ReportSectionCard';
-import { getScoreTone } from '../presentation';
+import { formatStageLabel, getScoreTone } from '../presentation';
 import type { IssueExperienceReportData } from '../types';
 
 type IssueReportSignalsProps = {
@@ -100,7 +100,7 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
                 return (
                   <div key={stage.id} className="flex items-center gap-3">
                     <span className="w-24 shrink-0 truncate text-[12px] font-medium text-slate-600">
-                      {stage.id} · {stage.name}
+                      {formatStageLabel(stage.id, stage.name)}
                     </span>
                     <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
                       <span
@@ -180,7 +180,8 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
           </div>
 
           <p className="mt-4 border-l-2 border-amber-300 pl-3 text-[11px] leading-5 text-slate-500">
-            Top 1 响应集中度 {context.participants.top1_concentration.toFixed(1)}%
+            Top 1 响应集中度{' '}
+            {context.participants.top1_concentration.toFixed(1)}%
             {context.participants.top1_concentration >= 60
               ? '，响应力量较集中，建议逐步建立多维护者轮值。'
               : '，本期响应力量分布相对均衡。'}

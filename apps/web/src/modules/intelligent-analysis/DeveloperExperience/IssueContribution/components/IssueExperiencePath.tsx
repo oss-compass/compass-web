@@ -16,6 +16,7 @@ import {
   cleanReportText,
   getPriorityTone,
   getScoreTone,
+  getStageDisplayName,
   normalizeGoal,
   stripMetricCode,
 } from '../presentation';
@@ -518,8 +519,11 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   activeStageId,
   onStageChange,
 }) => {
-  const selectedStage = stages.find((stage) => stage.id === activeStageId);
-  const activeStage = selectedStage ?? stages[0];
+  const visibleStages = stages.filter((stage) => !stage.is_lens);
+  const selectedStage = visibleStages.find(
+    (stage) => stage.id === activeStageId
+  );
+  const activeStage = selectedStage ?? visibleStages[0];
   const stageScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -624,7 +628,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           >
             体验路径总览
           </h2>
-          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点及其涉及的 Issue 明细、行动清单）；G 为 Bot / Agent 治理参考镜头，不计入总分。" />
+          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点及其涉及的 Issue 明细、行动清单）。" />
         </div>
       </div>
 
@@ -646,21 +650,20 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
             aria-label="Issue 贡献体验阶段"
             className="flex w-max min-w-full items-stretch justify-center gap-1 px-2"
           >
-            {stages.map((stage, index) => {
-              const active = stage.id === activeStageId;
+            {visibleStages.map((stage, index) => {
+              const active = stage.id === activeStage.id;
               const cardPains = getStagePains(stage);
               const recommendationCount = getStageRecommendations(
                 stage,
                 cardPains
               ).length;
               const tone = getScoreTone(stage.mixed);
-              const cardTone = stage.is_lens
-                ? 'border-dashed border-slate-300 bg-slate-50/80'
-                : stage.mixed >= 80
-                ? 'border-emerald-200 bg-emerald-50/20'
-                : stage.mixed >= 60
-                ? 'border-amber-200 bg-amber-50/20'
-                : 'border-rose-200 bg-rose-50/20';
+              const cardTone =
+                stage.mixed >= 80
+                  ? 'border-emerald-200 bg-emerald-50/20'
+                  : stage.mixed >= 60
+                  ? 'border-amber-200 bg-amber-50/20'
+                  : 'border-rose-200 bg-rose-50/20';
               return (
                 <React.Fragment key={stage.id}>
                   <button
@@ -684,10 +687,10 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                       </span>
                       <span className="min-w-0">
                         <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-                          {stage.is_lens ? '参考镜头' : stage.id}
+                          {stage.id}
                         </span>
                         <span className="block truncate text-[17px] font-semibold text-slate-900">
-                          {stage.name}
+                          {getStageDisplayName(stage.id, stage.name)}
                         </span>
                       </span>
                     </div>
@@ -747,7 +750,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     </div>
                   </button>
 
-                  {index < stages.length - 1 ? (
+                  {index < visibleStages.length - 1 ? (
                     <span className="flex h-[260px] flex-none items-center px-1 text-slate-300">
                       <ArrowRightOutlined className="text-base" />
                     </span>
@@ -763,8 +766,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
             <div className=">lg:w-[240px] >lg:flex-none">
               <div className=">lg:sticky >lg:top-5">
                 <IssueStageDirectory
-                  stages={stages}
-                  activeStageId={activeStageId}
+                  stages={visibleStages}
+                  activeStageId={activeStage.id}
                   onStageChange={onStageChange}
                 />
               </div>
@@ -786,7 +789,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     </span>
                     <div className="min-w-0">
                       <div className="text-lg font-semibold text-slate-900">
-                        {activeStage.id} {activeStage.name}
+                        {activeStage.id}{' '}
+                        {getStageDisplayName(activeStage.id, activeStage.name)}
                       </div>
                       <p className="mt-0.5 text-sm leading-6 text-slate-500">
                         {activeStage.intro}
