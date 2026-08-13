@@ -137,7 +137,7 @@ const StageIssueScoreSection: React.FC<{
   stageId: string;
   entries: StageScoreEntry[];
 }> = ({ stageId, entries }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
   const lowCount = entries.filter((entry) => entry.score < 60).length;
   const visibleEntries = entries.slice(

@@ -35,6 +35,19 @@ const CiControls: React.FC<CiControlsProps> = ({
         { value: 'opsnn', label: 'ops-nn' },
         { value: 'opscv', label: 'ops-cv' },
         { value: 'graphaf', label: 'graph-autofusion' },
+        { value: 'opstransformer', label: 'ops-transformer' },
+        { value: 'hcomm', label: 'hcomm' },
+        { value: 'pypto', label: 'pypto' },
+        { value: 'ascdevkit', label: 'asc-devkit' },
+        { value: 'hccl', label: 'hccl' },
+        { value: 'hixl', label: 'hixl' },
+        { value: 'ptoisa', label: 'ptoisa' },
+        { value: 'oamtools', label: 'oam-tools' },
+        { value: 'amct', label: 'amct' },
+        { value: 'opbase', label: 'opbase' },
+        { value: 'pyasc', label: 'pyasc' },
+        { value: 'metadef', label: 'metadef' },
+        { value: 'asctools', label: 'asc-tools' },
       ]}
       minWidth={130}
     />

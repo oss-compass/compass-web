@@ -16,7 +16,7 @@ const repoSlug = (repo: CiRepoKey) =>
     ? 'ops-cv'
     : repo === 'graphaf'
     ? 'graph-autofusion'
-    : 'runtime';
+    : repo;
 
 export const runURL = (repo: CiRepoKey, id: string) =>
   `https://gitcode.com/cann/${repoSlug(repo)}/actions/runs/${id}`;
@@ -38,10 +38,32 @@ export const normalizeRepoKey = (
   if (raw === 'graphaf' || raw === 'graph-autofusion') {
     return 'graphaf';
   }
+  const allRepos: CiRepoKey[] = [
+    'runtime',
+    'opsnn',
+    'opscv',
+    'graphaf',
+    'opstransformer',
+    'hcomm',
+    'pypto',
+    'ascdevkit',
+    'hccl',
+    'hixl',
+    'ptoisa',
+    'oamtools',
+    'amct',
+    'opbase',
+    'pyasc',
+    'metadef',
+    'asctools',
+  ];
+  if (raw && allRepos.includes(raw as CiRepoKey)) {
+    return raw as CiRepoKey;
+  }
   return 'runtime';
 };
 
-/** repo key -> query 参数值（对外用 ops-nn / ops-cv） */
+/** repo key -> query 参数值（对外用 ops-nn / ops-cv / graph-autofusion，其余用原名） */
 export const repoKeyToQuery = (repo: CiRepoKey) =>
   repo === 'opsnn'
     ? 'ops-nn'
@@ -49,7 +71,7 @@ export const repoKeyToQuery = (repo: CiRepoKey) =>
     ? 'ops-cv'
     : repo === 'graphaf'
     ? 'graph-autofusion'
-    : 'runtime';
+    : repo;
 
 /** 维度中文名 */
 export const DIM_NAME: Record<CiDimKey, string> = {

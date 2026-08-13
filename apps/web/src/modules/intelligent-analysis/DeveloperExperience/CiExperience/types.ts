@@ -1,6 +1,23 @@
 // CI 体验诊断 · 数据类型（对齐 v2 设计稿 DATA schema，纯数据、不含 ReactNode）
 
-export type CiRepoKey = 'runtime' | 'opsnn' | 'opscv' | 'graphaf';
+export type CiRepoKey =
+  | 'runtime'
+  | 'opsnn'
+  | 'opscv'
+  | 'graphaf'
+  | 'opstransformer'
+  | 'hcomm'
+  | 'pypto'
+  | 'ascdevkit'
+  | 'hccl'
+  | 'hixl'
+  | 'ptoisa'
+  | 'oamtools'
+  | 'amct'
+  | 'opbase'
+  | 'pyasc'
+  | 'metadef'
+  | 'asctools';
 
 export type CiDimKey = 'stability' | 'efficiency' | 'interaction' | 'cost';
 
