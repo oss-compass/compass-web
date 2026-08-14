@@ -446,55 +446,136 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
         <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
           各仓库对比
         </div>
-        <div className="capability-overview-grid">
-          {m.repos.map((r: CiRepoSummary) => {
-            const lv = LEVEL_META[r.level];
-            const stats = [
-              { label: '综合', value: r.scoreOverall ?? '—' },
-              { label: '稳定性', value: r.scoreStability ?? '—' },
-              { label: '效率', value: r.scoreEfficiency ?? '—' },
-              { label: '交互体验', value: r.scoreInteraction ?? '—' },
-              { label: '成本', value: r.scoreCost ?? '—' },
-              { label: '活跃 P0/P1', value: r.activeP01 },
-            ];
-            return (
-              <div key={r.repo} className="capability-card">
-                <div className="capability-card-title">
-                  <span className="inline-flex items-baseline gap-2">
-                    <span>{r.slug}</span>
-                    <Link
-                      href={reportHref(r.slug)}
-                      className="text-[12px] font-semibold text-[#1677ff] underline underline-offset-[3px] transition-colors hover:text-[#0958d9]"
-                    >
-                      查看最新报告 →
-                    </Link>
-                  </span>
-                  <span
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold"
-                    style={{ background: lv.bg, color: lv.color }}
-                  >
+        <div className="section-card">
+          <Table<CiRepoSummary>
+            className="overview-ant-table"
+            dataSource={m.repos}
+            rowKey="repo"
+            pagination={false}
+            scroll={{ x: 900 }}
+            columns={[
+              {
+                title: '仓库',
+                dataIndex: 'slug',
+                key: 'slug',
+                width: 120,
+                fixed: 'left',
+                render: (slug: string) => (
+                  <span className="font-medium text-slate-700">{slug}</span>
+                ),
+              },
+              {
+                title: '状态',
+                key: 'level',
+                width: 110,
+                render: (_v, r) => {
+                  const lv = LEVEL_META[r.level];
+                  return (
                     <span
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: lv.color }}
-                    />
-                    {lv.text}
+                      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
+                      style={{ background: lv.bg, color: lv.color }}
+                    >
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ background: lv.color }}
+                      />
+                      {lv.text}
+                    </span>
+                  );
+                },
+              },
+              {
+                title: '综合',
+                key: 'scoreOverall',
+                width: 80,
+                align: 'center',
+                render: (_v, r) => (
+                  <span className="text-[15px] font-bold text-slate-800">
+                    {r.scoreOverall ?? '—'}
                   </span>
-                </div>
-                <div className="capability-stat-grid">
-                  {stats.map((s) => (
-                    <div key={s.label} className="capability-stat-card">
-                      <span className="capability-stat-value">{s.value}</span>
-                      <span className="capability-stat-label">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 text-[11.5px] leading-relaxed text-slate-400">
-                  {r.workflow} · 全窗 {r.totFail}/{r.totRun} run · 已消退{' '}
-                  {r.faded}
-                </div>
-              </div>
-            );
-          })}
+                ),
+              },
+              {
+                title: '稳定性',
+                key: 'scoreStability',
+                width: 80,
+                align: 'center',
+                render: (_v, r) => (
+                  <span className="tabular-nums text-slate-700">
+                    {r.scoreStability ?? '—'}
+                  </span>
+                ),
+              },
+              {
+                title: '效率',
+                key: 'scoreEfficiency',
+                width: 80,
+                align: 'center',
+                render: (_v, r) => (
+                  <span className="tabular-nums text-slate-700">
+                    {r.scoreEfficiency ?? '—'}
+                  </span>
+                ),
+              },
+              {
+                title: '交互体验',
+                key: 'scoreInteraction',
+                width: 90,
+                align: 'center',
+                render: (_v, r) => (
+                  <span className="tabular-nums text-slate-700">
+                    {r.scoreInteraction ?? '—'}
+                  </span>
+                ),
+              },
+              {
+                title: '成本',
+                key: 'scoreCost',
+                width: 80,
+                align: 'center',
+                render: (_v, r) => (
+                  <span className="tabular-nums text-slate-700">
+                    {r.scoreCost ?? '—'}
+                  </span>
+                ),
+              },
+              {
+                title: '活跃 P0/P1',
+                key: 'activeP01',
+                width: 100,
+                align: 'center',
+                render: (_v, r) => (
+                  <span className="font-medium tabular-nums text-slate-700">
+                    {r.activeP01}
+                  </span>
+                ),
+              },
+              {
+                title: '运行概况',
+                key: 'overview',
+                width: 180,
+                render: (_v, r) => (
+                  <span className="text-[11.5px] text-slate-400">
+                    {r.workflow} · {r.totFail}/{r.totRun} run · 已消退 {r.faded}
+                  </span>
+                ),
+              },
+              {
+                title: '最新报告',
+                key: 'report',
+                width: 100,
+                align: 'center',
+                render: (_v, r: CiRepoSummary) => (
+                  <Link
+                    href={reportHref(r.slug)}
+                    className="text-[12px] font-semibold text-[#1677ff] underline underline-offset-[3px] transition-colors hover:text-[#0958d9]"
+                  >
+                    {r.latestDay.slice(5)} 报告
+                  </Link>
+                ),
+              },
+            ]}
+          />
         </div>
       </div>
 

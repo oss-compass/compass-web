@@ -48,7 +48,25 @@ const PRI_DESC: Record<CiPri, string> = {
 };
 
 /** 仓库顺序（runtime 优先，与详细看板一致） */
-const REPO_ORDER: CiRepoKey[] = ['runtime', 'opsnn', 'opscv', 'graphaf'];
+const REPO_ORDER: CiRepoKey[] = [
+  'runtime',
+  'opsnn',
+  'opscv',
+  'graphaf',
+  'opstransformer',
+  'hcomm',
+  'pypto',
+  'ascdevkit',
+  'hccl',
+  'hixl',
+  'ptoisa',
+  'oamtools',
+  'amct',
+  'opbase',
+  'pyasc',
+  'metadef',
+  'asctools',
+];
 const repoSlug = (repo: CiRepoKey) =>
   repo === 'opsnn'
     ? 'ops-nn'
@@ -56,7 +74,15 @@ const repoSlug = (repo: CiRepoKey) =>
     ? 'ops-cv'
     : repo === 'graphaf'
     ? 'graph-autofusion'
-    : 'runtime';
+    : repo === 'opstransformer'
+    ? 'ops-transformer'
+    : repo === 'ascdevkit'
+    ? 'asc-devkit'
+    : repo === 'oamtools'
+    ? 'oam-tools'
+    : repo === 'asctools'
+    ? 'asc-tools'
+    : repo;
 
 const isActive = (p: { status: string }) => /^仍活跃/.test(p.status);
 const isFaded = (p: { status: string }) => /已消退/.test(p.status);
@@ -72,6 +98,7 @@ export type CiRepoSummary = {
   slug: string;
   workflow: string;
   days: string[];
+  latestDay: string;
   s: CiDaySeries;
   run: (number | null)[];
   fail: (number | null)[];
@@ -145,6 +172,7 @@ const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
     slug: repoSlug(repo),
     workflow: d.workflow,
     days: d.days,
+    latestDay: d.days[d.days.length - 1] || '',
     s,
     run,
     fail,
