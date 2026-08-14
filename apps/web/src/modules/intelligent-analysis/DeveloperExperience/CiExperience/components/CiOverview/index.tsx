@@ -110,6 +110,9 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
   // 重点待办问题：本地分页（数据为前端静态 JSON，交互对齐社区贡献的重点待办痛点）
   const [topPage, setTopPage] = React.useState(1);
   const [topPageSize, setTopPageSize] = React.useState(10);
+  // 各仓库对比：本地分页
+  const [repoPage, setRepoPage] = React.useState(1);
+  const [repoPageSize, setRepoPageSize] = React.useState(10);
 
   if (!m.hasData) {
     return (
@@ -451,7 +454,16 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
             className="overview-ant-table"
             dataSource={m.repos}
             rowKey="repo"
-            pagination={false}
+            pagination={{
+              current: repoPage,
+              pageSize: repoPageSize,
+              showSizeChanger: true,
+              showTotal: (total) => `共 ${total} 个仓库`,
+            }}
+            onChange={(pagination) => {
+              setRepoPage(pagination.current ?? 1);
+              setRepoPageSize(pagination.pageSize ?? 10);
+            }}
             scroll={{ x: 900 }}
             columns={[
               {
