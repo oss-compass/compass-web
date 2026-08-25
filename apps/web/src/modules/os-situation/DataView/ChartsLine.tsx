@@ -5,7 +5,10 @@ import SituationCard from '../components/SituationCard';
 import EchartCommon from '../components/EchartCommon';
 import { useCategoriesData } from '../hooks/useCategoriesData';
 import { Alert } from 'antd';
-import { getTranslatedCountryName } from '../utils/countryMapping';
+import {
+  getTranslatedCountryName,
+  isHiddenCountryName,
+} from '../utils/countryMapping';
 
 const fetchPublicData = async (url) => {
   const response = await fetch(url); // 确保路径正确
@@ -30,12 +33,7 @@ const ChartCards = ({ ChartInfo }) => {
         shwo: true,
       },
       series: data.series
-        .filter((item) => {
-          return (
-            item?.name !== '中国(台湾地区除外)-Gitee' &&
-            item?.name !== '中国(台湾地区除外)-Github'
-          );
-        })
+        .filter((item) => !isHiddenCountryName(item?.name))
         .map((item) => ({
           ...item,
           name: getTranslatedCountryName(item.name, t),

@@ -31,7 +31,7 @@ const formatterValue = (value: number, toFixed = 1, other = ''): number => {
 
 // 从 index.html 迁移的常量数据
 const country = ['美国', '中国(台湾地区除外)', '欧盟', '印度'];
-const years = ['2022', '2023', '2024'];
+const years = ['2022', '2023', '2024', '2025'];
 const QList = [
   '22 Q1',
   '22 Q2',
@@ -45,6 +45,10 @@ const QList = [
   '24 Q2',
   '24 Q3',
   '24 Q4',
+  '25 Q1',
+  '25 Q2',
+  '25 Q3',
+  '25 Q4',
 ];
 const colorList = [
   '84, 112, 198',
@@ -70,6 +74,12 @@ const yearsData = {
     '中国(台湾地区除外)': [528661, 676961, 1205622],
     欧盟: [5003263, 3752034, 8755297],
     印度: [647975, 844512, 1492487],
+  },
+  2025: {
+    美国: [4429248, 4746176, 9175424],
+    '中国(台湾地区除外)': [500644, 950854, 1451498],
+    欧盟: [4997665, 4071667, 9069332],
+    印度: [699659, 1001066, 1700725],
   },
 };
 
@@ -146,6 +156,30 @@ const QData = {
     欧盟: [309137, 673912, 983049],
     印度: [185357, 189845, 375202],
   },
+  '25 Q1': {
+    美国: [1158517, 1149612, 2308129],
+    '中国(台湾地区除外)': [85616, 197231, 282847],
+    欧盟: [1247577, 1109063, 2356640],
+    印度: [171644, 166463, 338107],
+  },
+  '25 Q2': {
+    美国: [1022491, 1249420, 2271911],
+    '中国(台湾地区除外)': [123864, 213820, 337684],
+    欧盟: [1186293, 1162582, 2348875],
+    印度: [155104, 256840, 411944],
+  },
+  '25 Q3': {
+    美国: [810642, 871906, 1682548],
+    '中国(台湾地区除外)': [118898, 134396, 253294],
+    欧盟: [942802, 755808, 1698610],
+    印度: [147746, 208499, 356245],
+  },
+  '25 Q4': {
+    美国: [1330953, 987896, 2318849],
+    '中国(台湾地区除外)': [108767, 176766, 285533],
+    欧盟: [1178167, 825565, 2003732],
+    印度: [150807, 240457, 391264],
+  },
 };
 
 // 从 index.html 迁移的数据获取和处理函数
@@ -168,23 +202,43 @@ const getData = (raw: any[], countryName: string): [number, number, number] => {
 
 // 新增的数据获取和处理函数 (从 ininOutRadio 迁移)
 const getOutRadioData = async (): Promise<any> => {
-  const [yearData, qData] = await Promise.all([
+  const [yearData, qData, euYearData, euQData] = await Promise.all([
     fetch(
-      '/test/collaborator_model/line_AS_country_activity_push_contribution.json'
+      '/test/contributor_model/line_AS_country_not_merge_eu_activity_push_contribution.json'
     ).then((response) => response.json()),
     fetch(
-      '/test/collaborator_model/line_QS-JAN_country_activity_push_contribution.json'
+      '/test/contributor_model/line_QS-JAN_country_not_merge_eu_activity_push_contribution.json'
+    ).then((response) => response.json()),
+    fetch(
+      '/test/contributor_model/line_AS_eu_country_activity_push_contribution.json'
+    ).then((response) => response.json()),
+    fetch(
+      '/test/contributor_model/line_QS-JAN_eu_country_activity_push_contribution.json'
     ).then((response) => response.json()),
   ]);
 
+  const getSeriesData = (data: any, countryName: string): number[] => {
+    if (countryName === '欧盟') {
+      return data.series.reduce(
+        (totals: number[], series: any) =>
+          series.data.map(
+            (value: number, index: number) => (totals[index] || 0) + value
+          ),
+        []
+      );
+    }
+    const name = countryName === '中国(台湾地区除外)' ? '中国' : countryName;
+    return data.series.find((series: any) => series.name === name)?.data || [];
+  };
+
   const allCountryTotalYear = country.map((c) => {
-    let ser = yearData.series.find((s: any) => s.name === c);
-    return ser ? ser.data : [];
+    const data = c === '欧盟' ? euYearData : yearData;
+    return getSeriesData(data, c);
   });
 
   const allCountryTotalQ = country.map((c) => {
-    let ser = qData.series.find((s: any) => s.name === c);
-    return ser ? ser.data : [];
+    const data = c === '欧盟' ? euQData : qData;
+    return getSeriesData(data, c);
   });
 
   return { allCountryTotalYear, allCountryTotalQ };
@@ -408,7 +462,7 @@ const ChartsBar = () => {
 
       setChartOptions(options);
     }
-  }, [yearsData, QData, outRadioData]);
+  }, [outRadioData, t]);
 
   return (
     <>

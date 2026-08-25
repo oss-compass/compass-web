@@ -57,6 +57,7 @@ export const countryNameMapping: Record<string, string> = {
   越南: 'vietnam',
   巴基斯坦: 'pakistan',
   孟加拉国: 'bangladesh',
+  台湾: 'taiwan',
   台湾地区: 'taiwan',
   伊朗: 'iran',
   菲律宾: 'philippines',
@@ -140,6 +141,22 @@ export const countryNameMapping: Record<string, string> = {
   // 特殊处理的名称
   '中国(台湾地区除外)-Gitee': 'china',
   '中国(台湾地区除外)-Github': 'china',
+};
+
+const hiddenCountryNames = new Set([
+  '中国-github',
+  '中国-gitee',
+  '中国(台湾地区除外)-github',
+  '中国(台湾地区除外)-gitee',
+  'china-atomgit',
+]);
+
+/** 是否为不应在态势页面单独展示的中国平台分项 */
+export const isHiddenCountryName = (name: unknown): boolean => {
+  return (
+    typeof name === 'string' &&
+    hiddenCountryNames.has(name.trim().toLocaleLowerCase())
+  );
 };
 
 /**
