@@ -13,7 +13,12 @@ const getApiBase = (): string => {
   return process.env.NEXT_PUBLIC_COMPASS_API_URL?.replace(/\/$/, '') || '';
 };
 
-const API_PREFIX = '/user-journey-api/user-journey';
+// 本地开发指向测试后端：NEXT_PUBLIC_USER_JOURNEY_API_PREFIX=/user-journey-api-test/user-journey
+// （配合 NEXT_PUBLIC_COMPASS_API_URL=http://101.245.76.149:7009，由 Nginx 路由到测试后端 18099）
+// 默认/生产：/user-journey-api/user-journey（路由到生产后端 8099）
+const API_PREFIX =
+  process.env.NEXT_PUBLIC_USER_JOURNEY_API_PREFIX ||
+  '/user-journey-api/user-journey';
 const COMPASS_OPERATOR_TOKEN_KEY = 'compass:user-journey:operator-token';
 
 export const compassApiUrl = (path: string): string => {

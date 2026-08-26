@@ -112,10 +112,9 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
           </div>
           <div className="grid flex-1 grid-cols-2 gap-4">
             <OverviewMetricCard
-              label="总体体验分"
+              label="综合体验评分"
               value={context.idx_total}
               suffix="/ 100"
-              badge={`评级：${context.grade}`}
               description={context.delta_total}
               accent
             />

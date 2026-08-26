@@ -92,27 +92,47 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
               </div>
               {context.stages.map((stage, index) => {
                 const alignedIndex = context.stage_ids.indexOf(stage.id);
+                // v4：无样本阶段分数可能为空，按「未评估」展示灰色条，避免 NaN 参与运算
                 const score =
                   currentTrend.stage_scores[
                     alignedIndex >= 0 ? alignedIndex : index
-                  ] ?? stage.mixed;
-                const tone = getScoreTone(score);
+                  ] ??
+                  stage.mixed ??
+                  null;
+                const tone = score != null ? getScoreTone(score) : null;
                 return (
                   <div key={stage.id} className="flex items-center gap-3">
                     <span className="w-24 shrink-0 truncate text-[12px] font-medium text-slate-600">
                       {stage.id} · {stage.name}
                     </span>
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-                      <span
-                        className={`block h-full rounded-full ${tone.bar}`}
-                        style={{ width: `${Math.max(3, score)}%` }}
-                      />
-                    </div>
-                    <span
-                      className={`w-10 shrink-0 text-right text-xs font-bold tabular-nums ${tone.text}`}
-                    >
-                      {score}
-                    </span>
+                    {score != null ? (
+                      <>
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                          <span
+                            className={`block h-full rounded-full ${
+                              tone ? tone.bar : 'bg-slate-300'
+                            }`}
+                            style={{ width: `${Math.max(3, score)}%` }}
+                          />
+                        </div>
+                        <span
+                          className={`w-10 shrink-0 text-right text-xs font-bold tabular-nums ${
+                            tone ? tone.text : 'text-slate-400'
+                          }`}
+                        >
+                          {score}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                          <span className="block h-full w-1/5 rounded-full bg-slate-200" />
+                        </div>
+                        <span className="w-10 shrink-0 text-right text-xs font-semibold text-slate-400">
+                          —
+                        </span>
+                      </>
+                    )}
                   </div>
                 );
               })}

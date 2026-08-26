@@ -8,6 +8,7 @@ import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
 import IssueExecutiveSummary from './components/IssueExecutiveSummary';
 import IssueExperiencePath from './components/IssueExperiencePath';
+import IssueScoreOverview from './components/IssueScoreOverview';
 
 type IssueContributionProps = {
   org?: string;
@@ -217,6 +218,10 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 sampleSize={report.data.report_context.n_total}
                 activeStageId={activeStageId}
                 onStageChange={setActiveStageId}
+              />
+              <IssueScoreOverview
+                stages={visibleStages}
+                issueScoreRows={report.data.report_context.issue_score_rows}
               />
               <IssueExecutiveSummary context={report.data.report_context} />
             </IssueReportOverview>

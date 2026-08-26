@@ -23,9 +23,10 @@ export type IssueReportStage = {
   icon: string;
   is_lens: boolean;
   weight: number;
-  mixed: number;
-  obj: number;
-  subj: number;
+  /** v4：本阶段无样本/未评估时可能为 null，消费方需兼容 */
+  mixed: number | null;
+  obj: number | null;
+  subj: number | null;
   stars: string;
   grade: string;
   pain_count: number;
@@ -37,13 +38,13 @@ export type IssueReportStage = {
     name_cn: string;
     display_name: string;
     value: number;
-  };
+  } | null;
   worst_metric: {
     code: string;
     name_cn: string;
     display_name: string;
     value: number;
-  };
+  } | null;
   distribution: string;
   metrics_obj: IssueReportMetric[];
   metrics_sub: IssueReportMetric[];
@@ -115,17 +116,33 @@ export type IssueScoreRowStageDetail = {
   metrics: IssueScoreRowMetric[];
 };
 
-/** issue_score_rows 单行：一个 Issue 的总分与各阶段得分明细 */
+/** issue_score_rows 单行：一个 Issue 的总分与各阶段得分明细。
+ *  v4 新增 issue_type / scope / created_at / closed_at / is_internal /
+ *  narrative 字段，旧版报告（v1–v3）无这些字段，前端需按可选处理。 */
 export type IssueScoreRow = {
   number: string;
   url: string;
   title: string;
   state: string;
-  overall: number;
+  overall: number | string;
   grade: string;
   cells: string[];
   pain_stages: string;
   stage_details: IssueScoreRowStageDetail[];
+  /** v4：Issue 分类（缺陷/文档/需求/咨询/任务等） */
+  issue_type?: string;
+  /** v4：范围（内部/外部/无效） */
+  scope?: string;
+  /** v4：是否内部提交，与 scope 配套 */
+  is_internal?: boolean;
+  /** v4：创建时间（MM-DD HH:mm） */
+  created_at?: string;
+  /** v4：关闭时间（MM-DD HH:mm，未关闭为「—」） */
+  closed_at?: string;
+  /** v4：关键事件时间线叙事 */
+  narrative?: {
+    timeline?: string[];
+  };
 };
 
 export type IssueReportRecommendation = {
@@ -267,6 +284,7 @@ export type IssueOverviewRepo = {
   community: string; // 例：cann/cann-samples（报告页 repo 查询值）
   repoShort: string; // 例：cann-samples（展示用短名）
   org: string;
+  teamName: string; // 仓库管理中配置的责任团队
   period: string;
   periodLabel: string;
   idxTotal: number;
@@ -276,6 +294,11 @@ export type IssueOverviewRepo = {
   nOpen: number;
   nClosed: number;
   closeRate: number;
+  painTotal: number;
+  painPending: number;
+  painInProgress: number;
+  painResolved: number;
+  painCloseRate: number;
   confidence: string;
   responderCount: number;
   responseCount: number;
@@ -330,6 +353,10 @@ export type IssueTopPainsQuery = {
   org?: string;
   /** 仓库短名（repoShort） */
   repo?: string;
+  period?: string;
+  team?: string;
+  latest?: boolean;
+  repoPeriods?: string;
   /** 优先级 P0/P1/P2 */
   prio?: string;
   page?: number;

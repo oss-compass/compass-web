@@ -144,7 +144,7 @@ export const computeIssueOverview = (
     {
       label: '综合体验评分',
       value: idxWeighted.toFixed(1),
-      sub: `跨 ${repoCount} 仓最新一周加权`,
+      sub: '最新一周加权',
       grade: idxGrade,
       trend: data.agg.idx,
       trendMax: 100,

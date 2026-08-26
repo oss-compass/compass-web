@@ -88,7 +88,8 @@ const IssueStageDirectory: React.FC<IssueStageDirectoryProps> = ({
                       active ? 'text-slate-300' : 'text-slate-500'
                     }`}
                   >
-                    {stage.is_lens ? '参考镜头' : stage.id} · {stage.mixed} 分
+                    {stage.is_lens ? '参考镜头' : stage.id} ·{' '}
+                    {stage.mixed != null ? `${stage.mixed} 分` : '本次未评估'}
                   </span>
                 </span>
               </span>

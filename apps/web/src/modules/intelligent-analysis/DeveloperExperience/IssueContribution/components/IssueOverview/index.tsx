@@ -11,6 +11,7 @@ import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
 import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import type { IssueStageAgg } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
+import IssueRepoProgressSection from './IssueRepoProgressSection';
 import type { IssueTrendModalData } from './IssueTrendModal';
 
 const { Title } = Typography;
@@ -40,9 +41,6 @@ const priStyle = (prio: string) => {
   const key = /P0/i.test(prio) ? 'P0' : /P1/i.test(prio) ? 'P1' : 'P2';
   return PRI_META[key];
 };
-
-const repoPainCount = (repo: IssueOverviewRepo) =>
-  repo.stages.reduce((a, s) => a + s.painCount, 0);
 
 /** 'YYYY-MM-DD_to_YYYY-MM-DD' → 起始日 'MM-DD'（趋势 X 轴短标签） */
 const shortPeriod = (period: string): string => {
@@ -268,124 +266,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     },
   ];
 
-  const repoColumns: TableProps<IssueOverviewRepo>['columns'] = [
-    {
-      title: '序号',
-      width: 64,
-      align: 'center',
-      render: (_v, _r, i) => <span className="row-num">{i + 1}</span>,
-    },
-    {
-      title: '仓库',
-      dataIndex: 'repoShort',
-      width: 176,
-      render: (v: string, r) => (
-        <Tooltip
-          placement="topLeft"
-          title={`${r.periodLabel} · 响应 ${r.responseCount} 次 / ${r.responderCount} 人 · 置信度 ${r.confidence}`}
-        >
-          <span className="font-semibold text-slate-700">{v}</span>
-        </Tooltip>
-      ),
-    },
-    {
-      title: '周期',
-      dataIndex: 'periodLabel',
-      width: 168,
-    },
-    {
-      title: '综合体验评分',
-      dataIndex: 'idxTotal',
-      width: 128,
-      sorter: (a, b) => a.idxTotal - b.idxTotal,
-      render: (_v, r) => {
-        const g = gradeStyle(r.grade);
-        return (
-          <span className="font-semibold" style={{ color: g.color }}>
-            {r.idxTotal.toFixed(1)}
-          </span>
-        );
-      },
-    },
-    {
-      title: '得分趋势',
-      dataIndex: 'idxTrend',
-      width: 96,
-      align: 'center',
-      render: (_v, r) =>
-        r.idxTrend && r.idxTrend.length > 1 ? (
-          <button
-            type="button"
-            className="bm-trend-sparkline"
-            title="点击查看大图"
-            onClick={() =>
-              setTrendModal({
-                title: `${r.repoShort} · 得分趋势`,
-                subtitle: '该仓各周综合体验指数（时间升序）',
-                values: r.idxTrend,
-                labels: r.idxTrendPeriods.map(shortPeriod),
-              })
-            }
-          >
-            <CloseRateSparkline
-              values={r.idxTrend}
-              width={48}
-              height={26}
-              minValue={0}
-              maxValue={100}
-            />
-          </button>
-        ) : (
-          <span className="text-slate-300">—</span>
-        ),
-    },
-    {
-      title: 'Issue 数',
-      dataIndex: 'nTotal',
-      width: 96,
-      align: 'right',
-      sorter: (a, b) => a.nTotal - b.nTotal,
-    },
-    {
-      title: '关闭率',
-      dataIndex: 'closeRate',
-      width: 100,
-      align: 'right',
-      sorter: (a, b) => a.closeRate - b.closeRate,
-      render: (_v, r) => `${r.closeRate.toFixed(0)}%`,
-    },
-    {
-      title: '未关闭',
-      dataIndex: 'nOpen',
-      width: 96,
-      align: 'right',
-      sorter: (a, b) => a.nOpen - b.nOpen,
-      render: (v: number) => <span className="text-slate-500">{v}</span>,
-    },
-    {
-      title: '重点痛点',
-      width: 100,
-      align: 'right',
-      sorter: (a, b) => repoPainCount(a) - repoPainCount(b),
-      render: (_v, r) => repoPainCount(r),
-    },
-    {
-      title: '报告',
-      dataIndex: 'community',
-      width: 92,
-      fixed: 'right',
-      align: 'center',
-      render: (community: string, r) => (
-        <Link
-          href={reportHref(community, r.period)}
-          className="overview-table-link"
-        >
-          查看报告
-        </Link>
-      ),
-    },
-  ];
-
   const stageColumns: TableProps<IssueStageAgg>['columns'] = [
     {
       title: '序号',
@@ -511,26 +391,13 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
               ) : null}
             </div>
             <div className="mt-1 flex items-center justify-center gap-1.5 text-[11px] leading-4 text-slate-400">
-              {k.grade ? (
-                <>
-                  <Tooltip title="评分标准：A 85–100 分；B 75–84.9 分；C 65–74.9 分；D 50–64.9 分；F 低于 50 分">
-                    <span
-                      className="cursor-help border-b border-dashed border-slate-300"
-                      tabIndex={0}
-                    >
-                      等级 {k.grade}
-                    </span>
-                  </Tooltip>
-                  <span aria-hidden="true">·</span>
-                </>
-              ) : null}
               <span className="truncate">{k.sub}</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* ② 痛点概览 · 阶段体验 · 各仓库对比（合并为同一卡片） */}
+      {/* ② 痛点概览 · 阶段体验 */}
       <div className="section-card">
         <div className="mb-3 text-[16px] font-extrabold leading-6 text-slate-900">
           痛点概览
@@ -575,22 +442,24 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           scroll={{ x: 940 }}
           locale={{ emptyText: '暂无阶段数据' }}
         />
-
-        <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
-          各仓库对比（各仓最新一周）
-        </div>
-        <Table<IssueOverviewRepo>
-          className="overview-ant-table"
-          dataSource={latestReposByPeriod(data.repos)}
-          columns={repoColumns}
-          rowKey={(record) => `${record.community}-${record.period}`}
-          pagination={false}
-          scroll={{ x: 1228 }}
-          locale={{ emptyText: '暂无仓库数据' }}
-        />
       </div>
 
-      {/* ③ 重点待办痛点 */}
+      {/* ③ 进展：独立区块，与重点待办痛点同级 */}
+      <IssueRepoProgressSection
+        org={org}
+        repos={latestReposByPeriod(data.repos)}
+        reportHref={reportHref}
+        onOpenScoreTrend={(repo) =>
+          setTrendModal({
+            title: `${repo.repoShort} · 得分趋势`,
+            subtitle: '该仓各周综合体验指数（时间升序）',
+            values: repo.idxTrend,
+            labels: repo.idxTrendPeriods.map(shortPeriod),
+          })
+        }
+      />
+
+      {/* ④ 重点待办痛点 */}
       <Title level={4} className="oj-section-title">
         重点待办痛点
       </Title>

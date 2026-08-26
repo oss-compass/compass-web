@@ -2,14 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   AimOutlined,
   ArrowRightOutlined,
-  BulbOutlined,
   DownOutlined,
   FlagOutlined,
   InfoCircleOutlined,
   LinkOutlined,
   ProfileOutlined,
   RocketOutlined,
-  WarningOutlined,
 } from '@ant-design/icons';
 import { Pagination, Popover } from 'antd';
 import {
@@ -19,7 +17,7 @@ import {
   normalizeGoal,
   stripMetricCode,
 } from '../presentation';
-import { getMetricDefinition } from '../metricDefinitions';
+import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
 import type { MetricDefinition } from '../metricDefinitions';
 import type {
   IssueReportPain,
@@ -66,7 +64,7 @@ const MetricDefinitionContent: React.FC<{
   name: string;
   definition: MetricDefinition;
 }> = ({ name, definition }) => (
-  <div className="w-[480px] max-w-[86vw]">
+  <div className="max-h-[70vh] w-[480px] max-w-[86vw] overflow-y-auto overscroll-contain">
     <div className="text-[13px] font-semibold text-slate-900">{name}</div>
     <div className="mt-2">
       <div className="text-[11px] font-semibold text-slate-400">指标含义</div>
@@ -127,6 +125,58 @@ type StageScoreEntry = {
   detail: IssueScoreRowStageDetail;
   score: number;
 };
+
+/** 未评估阶段的中性灰色调（无分数时不借用任何红/黄/绿语义） */
+const NOT_EVALUATED_TONE = {
+  badge: 'border-slate-200 bg-slate-50 text-slate-400',
+  bar: 'bg-slate-300',
+  text: 'text-slate-400',
+};
+
+/**
+ * 阶段是否有有效评估结果：v4 部分阶段可能无样本，
+ * 混合分为空且无任何指标数据，此时卡片/面板需按「本次未评估」展示。
+ */
+const isStageEvaluated = (stage: IssueReportStage) =>
+  Number.isFinite(Number.parseFloat(String(stage.mixed ?? ''))) &&
+  (stage.metrics_obj.length > 0 || stage.metrics_sub.length > 0);
+
+/** 未评估提示块：对齐 CI 旅程全景图「本次未评估」样式（虚线圈 + 灰字） */
+const NotEvaluatedHint: React.FC<{ className?: string }> = ({
+  className = '',
+}) => (
+  <div
+    className={`flex flex-col items-center justify-center gap-2 py-8 ${className}`}
+  >
+    <svg
+      className="h-7 w-7 text-slate-300"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeDasharray="3 2"
+      />
+      <path
+        d="M9 12h6M12 9v6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+    <span className="text-center text-base leading-4 text-slate-400">
+      本次未评估
+    </span>
+    <span className="text-center text-xs leading-4 text-slate-400">
+      本周期内无样本进入该阶段，无得分与指标数据
+    </span>
+  </div>
+);
 
 /**
  * 全部 Issue 得分区块：展示当前阶段所有参与评分的 Issue，按本阶段得分
@@ -201,7 +251,11 @@ const StageIssueScoreSection: React.FC<{
               <tbody>
                 {visibleEntries.map(({ row, detail, score }) => {
                   const stageTone = getScoreTone(score);
-                  const overallTone = getScoreTone(row.overall);
+                  // v4 无效样本 overall 为字符串（如「无效」），统一安全转数
+                  const overallScore = Number.parseFloat(String(row.overall));
+                  const overallTone = Number.isFinite(overallScore)
+                    ? getScoreTone(overallScore)
+                    : null;
                   const pained = isPainInStage(row.pain_stages, stageId);
                   return (
                     <tr key={row.number} className="align-top">
@@ -244,13 +298,14 @@ const StageIssueScoreSection: React.FC<{
                       </td>
                       <td className="border-b border-slate-100 px-3 py-2.5 text-center">
                         <span
-                          className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold tabular-nums ${overallTone.badge}`}
+                          className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold tabular-nums ${
+                            overallTone
+                              ? overallTone.badge
+                              : 'border-dashed border-slate-200 bg-slate-50 text-slate-400'
+                          }`}
                         >
                           {row.overall}
                         </span>
-                        <div className="mt-1 text-[10px] text-slate-400">
-                          评级 {row.grade}
-                        </div>
                       </td>
                       <td className="border-b border-slate-100 px-3 py-2.5">
                         <div className="flex flex-wrap gap-1.5">
@@ -297,7 +352,7 @@ const StageIssueScoreSection: React.FC<{
                                 placement="top"
                                 mouseEnterDelay={0.15}
                                 content={
-                                  <div className="w-[320px] max-w-[80vw]">
+                                  <div className="max-h-[60vh] w-[320px] max-w-[80vw] overflow-y-auto overscroll-contain">
                                     <div className="text-[12px] font-semibold text-slate-900">
                                       {metric.name_cn} · {metric.score} 分
                                     </div>
@@ -541,7 +596,11 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
 
   if (!activeStage) return null;
 
-  const scoreTone = getScoreTone(activeStage.mixed);
+  // v4：无样本阶段（mixed 为空且无指标）按「本次未评估」展示，避免取值报错
+  const stageEvaluated = isStageEvaluated(activeStage);
+  const scoreTone = stageEvaluated
+    ? getScoreTone(Number(activeStage.mixed))
+    : NOT_EVALUATED_TONE;
 
   const handleCardClick = (stageId: string) => {
     onStageChange(stageId);
@@ -569,6 +628,9 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
       reason: stripMetricCode(metric.main_reason ?? ''),
     })),
   ];
+  const efficiencyMetricCount = stageMetrics.filter(
+    (metric) => getMetricCategory(metric.code) === 'efficiency'
+  ).length;
 
   const matchesStage = (
     stage: IssueReportStage,
@@ -624,7 +686,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           >
             体验路径总览
           </h2>
-          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点及其涉及的 Issue 明细、行动清单）；G 为 Bot / Agent 治理参考镜头，不计入总分。" />
+          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、全部 Issue 得分、行动清单）；虚线边框的 G 为 Bot / Agent 治理参考镜头，不计入总分。" />
         </div>
       </div>
 
@@ -653,12 +715,17 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                 stage,
                 cardPains
               ).length;
-              const tone = getScoreTone(stage.mixed);
+              const evaluated = isStageEvaluated(stage);
+              const tone = evaluated
+                ? getScoreTone(Number(stage.mixed))
+                : NOT_EVALUATED_TONE;
               const cardTone = stage.is_lens
                 ? 'border-dashed border-slate-300 bg-slate-50/80'
-                : stage.mixed >= 80
+                : !evaluated
+                ? 'border-dashed border-slate-300 bg-slate-50/60'
+                : stage.mixed !== null && stage.mixed >= 80
                 ? 'border-emerald-200 bg-emerald-50/20'
-                : stage.mixed >= 60
+                : stage.mixed !== null && stage.mixed >= 60
                 ? 'border-amber-200 bg-amber-50/20'
                 : 'border-rose-200 bg-rose-50/20';
               return (
@@ -692,58 +759,113 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                       </span>
                     </div>
 
-                    <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
-                      {stage.stars}
-                    </div>
+                    {evaluated ? (
+                      <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
+                        {stage.stars}
+                      </div>
+                    ) : (
+                      /* 未评估态：对齐 CI 旅程全景图的 Not Evaluated 分隔线 */
+                      <div className="mt-3 flex items-center justify-center gap-1.5">
+                        <span className="h-px w-5 bg-slate-300" />
+                        <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                          Not Evaluated
+                        </span>
+                        <span className="h-px w-5 bg-slate-300" />
+                      </div>
+                    )}
                     <div className="mt-2 text-center">
-                      <span className="text-[28px] font-semibold leading-none text-slate-900">
-                        {stage.mixed}
+                      <span
+                        className={`text-[28px] font-semibold leading-none ${
+                          evaluated ? 'text-slate-900' : 'text-slate-300'
+                        }`}
+                      >
+                        {evaluated ? stage.mixed : '—'}
                       </span>
-                      <span className="ml-1 text-xs font-medium text-slate-500">
-                        分
-                      </span>
+                      {evaluated ? (
+                        <span className="ml-1 text-xs font-medium text-slate-500">
+                          分
+                        </span>
+                      ) : null}
                     </div>
 
-                    <div className="mt-3 flex flex-1 flex-col rounded-2xl border border-slate-200/70 bg-white/80 px-2 py-1.5">
-                      <div className="truncate text-center text-sm font-semibold text-slate-600">
-                        {stage.judgment}
-                      </div>
-                      <div className="mt-2 grid grid-cols-3">
-                        <span
-                          className="flex flex-col items-center py-1"
-                          title="本阶段评估的指标数量（客观 + 主观），对应下方“关键指标”"
-                        >
-                          <strong className="text-[20px] font-bold leading-none text-slate-900">
-                            {stage.metrics_obj.length +
-                              stage.metrics_sub.length}
-                          </strong>
-                          <span className="mt-1 text-[14px] text-slate-400">
-                            指标
+                    <div
+                      className={`mt-3 flex flex-1 flex-col rounded-2xl border px-2 py-1.5 ${
+                        evaluated
+                          ? 'border-slate-200/70 bg-white/80'
+                          : 'border-dashed border-slate-200 bg-slate-50/60'
+                      }`}
+                    >
+                      {evaluated ? (
+                        <>
+                          <div className="truncate text-center text-sm font-semibold text-slate-600">
+                            {stage.judgment}
+                          </div>
+                          <div className="mt-2 grid grid-cols-3">
+                            <span
+                              className="flex flex-col items-center py-1"
+                              title="本阶段评估的指标数量（效率 + 质量），对应下方“关键指标”"
+                            >
+                              <strong className="text-[20px] font-bold leading-none text-slate-900">
+                                {stage.metrics_obj.length +
+                                  stage.metrics_sub.length}
+                              </strong>
+                              <span className="mt-1 text-[14px] text-slate-400">
+                                指标
+                              </span>
+                            </span>
+                            <span
+                              className="flex flex-col items-center py-1"
+                              title="本阶段主要问题的痛点数量"
+                            >
+                              <strong className="text-[20px] font-bold leading-none text-rose-500">
+                                {cardPains.length}
+                              </strong>
+                              <span className="mt-1 text-[14px] text-slate-400">
+                                痛点
+                              </span>
+                            </span>
+                            <span
+                              className="flex flex-col items-center py-1"
+                              title="本阶段关联的改进建议数量，对应下方“本周行动清单”"
+                            >
+                              <strong className="text-[20px] font-bold leading-none text-emerald-600">
+                                {recommendationCount}
+                              </strong>
+                              <span className="mt-1 text-[14px] text-slate-400">
+                                建议
+                              </span>
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        /* 未评估态：对齐 CI 全景图虚线圈样式 */
+                        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
+                          <svg
+                            className="h-7 w-7 text-slate-300"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="9"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeDasharray="3 2"
+                            />
+                            <path
+                              d="M9 12h6M12 9v6"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                          <span className="text-center text-base leading-4 text-slate-400">
+                            本次未评估
                           </span>
-                        </span>
-                        <span
-                          className="flex flex-col items-center py-1"
-                          title="本阶段主要问题的痛点数量，对应下方“痛点”"
-                        >
-                          <strong className="text-[20px] font-bold leading-none text-rose-500">
-                            {cardPains.length}
-                          </strong>
-                          <span className="mt-1 text-[14px] text-slate-400">
-                            痛点
-                          </span>
-                        </span>
-                        <span
-                          className="flex flex-col items-center py-1"
-                          title="本阶段关联的改进建议数量，对应下方“本周行动清单”"
-                        >
-                          <strong className="text-[20px] font-bold leading-none text-emerald-600">
-                            {recommendationCount}
-                          </strong>
-                          <span className="mt-1 text-[14px] text-slate-400">
-                            建议
-                          </span>
-                        </span>
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </button>
 
@@ -799,7 +921,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     >
                       <span>阶段得分</span>
                       <span className="text-base leading-none">
-                        {activeStage.mixed}
+                        {stageEvaluated ? activeStage.mixed : '本次未评估'}
                       </span>
                     </span>
                     {[
@@ -809,22 +931,44 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         badgeClass: 'bg-rose-50 text-rose-600',
                       },
                       {
-                        label: '客观 / 主观',
-                        value: `${activeStage.obj.toFixed(
-                          1
-                        )} / ${activeStage.subj.toFixed(1)}`,
-                        badgeClass: 'bg-slate-100 text-slate-700',
+                        label: '效率',
+                        value: `${
+                          activeStage.metrics_obj.length &&
+                          activeStage.obj != null
+                            ? activeStage.obj.toFixed(1)
+                            : '—'
+                        }`,
+                        badgeClass: 'bg-sky-50 text-sky-700',
                       },
                       {
-                        label: '最佳表现',
-                        value: activeStage.best_metric.value,
+                        label: '质量',
+                        value: `${
+                          activeStage.metrics_sub.length &&
+                          activeStage.subj != null
+                            ? activeStage.subj.toFixed(1)
+                            : '—'
+                        }`,
                         badgeClass: 'bg-emerald-50 text-emerald-700',
                       },
-                      {
-                        label: '主要拖累',
-                        value: activeStage.worst_metric.value,
-                        badgeClass: 'bg-rose-50 text-rose-600',
-                      },
+                      // v4：无样本阶段 best/worst_metric 可能为空，按需渲染避免取值报错
+                      ...(activeStage.best_metric
+                        ? [
+                            {
+                              label: '最佳表现',
+                              value: activeStage.best_metric.value,
+                              badgeClass: 'bg-emerald-50 text-emerald-700',
+                            },
+                          ]
+                        : []),
+                      ...(activeStage.worst_metric
+                        ? [
+                            {
+                              label: '主要拖累',
+                              value: activeStage.worst_metric.value,
+                              badgeClass: 'bg-rose-50 text-rose-600',
+                            },
+                          ]
+                        : []),
                     ].map((item) => (
                       <span
                         key={item.label}
@@ -863,8 +1007,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                           {activeStage.metrics_obj.length +
                             activeStage.metrics_sub.length}
                           <span className="font-normal text-slate-400">
-                            （客观 {activeStage.metrics_obj.length} · 主观{' '}
-                            {activeStage.metrics_sub.length}）
+                            （效率 {efficiencyMetricCount} · 质量{' '}
+                            {stageMetrics.length - efficiencyMetricCount}）
                           </span>
                         </span>
                       </span>
@@ -877,14 +1021,18 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         />
                       </span>
                     </button>
-                    {metricsOpen ? (
+                    {!stageEvaluated ? (
+                      <NotEvaluatedHint className="mt-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/60" />
+                    ) : metricsOpen ? (
                       <div className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3">
                         {stageMetrics.map((metric) => {
                           const metricTone = getScoreTone(metric.score);
                           const metricDef = getMetricDefinition(metric.code);
+                          const metricCategory = getMetricCategory(metric.code);
                           const card = (
                             <div
-                              className={`flex h-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)] ${
+                              key={metric.key}
+                              className={`flex h-full w-full flex-col rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)] ${
                                 metricDef
                                   ? 'cursor-help transition-shadow hover:border-slate-300 hover:shadow-[0_12px_26px_rgba(15,23,42,0.08)]'
                                   : ''
@@ -897,12 +1045,14 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                   </span>
                                   <span
                                     className={`inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                                      metric.kind === 'obj'
+                                      metricCategory === 'efficiency'
                                         ? 'bg-sky-50 text-sky-600'
-                                        : 'bg-violet-50 text-violet-600'
+                                        : 'bg-emerald-50 text-emerald-600'
                                     }`}
                                   >
-                                    {metric.kind === 'obj' ? '客观' : '主观'}
+                                    {metricCategory === 'efficiency'
+                                      ? '效率'
+                                      : '质量'}
                                   </span>
                                   {metricDef ? (
                                     <InfoCircleOutlined className="shrink-0 text-[11px] text-slate-300" />
@@ -926,11 +1076,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                             </div>
                           );
                           if (!metricDef) {
-                            return (
-                              <div key={metric.key} className="flex">
-                                {card}
-                              </div>
-                            );
+                            return card;
                           }
                           return (
                             <Popover
@@ -945,7 +1091,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                 />
                               }
                             >
-                              <div className="flex">{card}</div>
+                              {card}
                             </Popover>
                           );
                         })}
@@ -966,37 +1112,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
                           {stagePains.length} 个问题
                         </span>
-                      </div>
-
-                      <div className="mt-4 overflow-hidden rounded-xl border border-amber-200/70 bg-white shadow-[0_6px_16px_rgba(245,158,11,0.06)]">
-                        <div className="flex items-start gap-2.5 bg-[linear-gradient(180deg,#fffdf7_0%,#fff7ed_100%)] px-3.5 py-2.5">
-                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-100 text-amber-600">
-                            <WarningOutlined className="text-[12px]" />
-                          </span>
-                          <div className="min-w-0">
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-amber-700">
-                              核心问题
-                            </div>
-                            <p className="mt-0.5 text-[13px] leading-6 text-slate-800">
-                              {activeStage.core_problem}
-                            </p>
-                          </div>
-                        </div>
-                        {activeStage.root_cause ? (
-                          <div className="flex items-start gap-2.5 border-t border-amber-100 px-3.5 py-2.5">
-                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-500">
-                              <BulbOutlined className="text-[12px]" />
-                            </span>
-                            <div className="min-w-0">
-                              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                                根因判断
-                              </div>
-                              <p className="mt-0.5 text-[12px] leading-5 text-slate-600">
-                                {activeStage.root_cause}
-                              </p>
-                            </div>
-                          </div>
-                        ) : null}
                       </div>
 
                       <div className="mt-4 flex flex-col gap-4">

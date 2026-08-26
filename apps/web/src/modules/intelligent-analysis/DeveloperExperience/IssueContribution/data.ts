@@ -16,7 +16,12 @@ import type {
 const getApiBase = (): string =>
   process.env.NEXT_PUBLIC_COMPASS_API_URL?.replace(/\/$/, '') || '';
 
-const API_PREFIX = '/user-journey-api/user-journey/issue-experience';
+// 本地开发指向测试后端：NEXT_PUBLIC_USER_JOURNEY_API_PREFIX=/user-journey-api-test/user-journey
+const USER_JOURNEY_PREFIX =
+  process.env.NEXT_PUBLIC_USER_JOURNEY_API_PREFIX ||
+  '/user-journey-api/user-journey';
+
+const API_PREFIX = `${USER_JOURNEY_PREFIX}/issue-experience`;
 
 const REPORT_API_PATH = `${API_PREFIX}/reports`;
 const OVERVIEW_API_PATH = `${API_PREFIX}/overview`;
