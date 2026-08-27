@@ -24,6 +24,8 @@ const { Title } = Typography;
 type CiOverviewProps = {
   /** 跨仓数据源（runtime + ops-nn + ops-cv），社区 CI/CD 总览为多仓聚合视图 */
   data: Record<CiRepoKey, CiRepoData>;
+  /** 与“总览信息”标题同行、靠右展示的操作区域。 */
+  headerAction?: React.ReactNode;
 };
 
 /** 语义配色（对齐设计稿：红=风险 / 绿=改善 / 灰=持平） */
@@ -102,7 +104,7 @@ const statusCat = (s: string): 'active' | 'backfill' | 'faded' | 'other' =>
  * overview-bottom-row / bm-* / capability-* / overview-progress-* /
  * overview-ant-table），仅数据取自 CI 看板。
  */
-const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
+const CiOverview: React.FC<CiOverviewProps> = ({ data, headerAction }) => {
   const router = useRouter();
   const m = computeCommunityOverview(data);
   const [trendModal, setTrendModal] = React.useState<CiTrendItem | null>(null);
@@ -117,9 +119,12 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
   if (!m.hasData) {
     return (
       <>
-        <Title level={4} className="oj-section-title">
-          总览信息
-        </Title>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Title level={4} className="oj-section-title">
+            总览信息
+          </Title>
+          {headerAction}
+        </div>
         <div className="section-card">
           <EmptyState>CI 数据落库中，暂无总览内容。</EmptyState>
         </div>
@@ -314,9 +319,12 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data }) => {
   return (
     <>
       {/* ① 报告概览五项得分 · 最新日期（综合 + 四维，两仓最新观测日池化值，含趋势缩略图） */}
-      <Title level={4} className="oj-section-title">
-        总览信息
-      </Title>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Title level={4} className="oj-section-title">
+          总览信息
+        </Title>
+        {headerAction}
+      </div>
       <div
         className="overview-bottom-row"
         style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}

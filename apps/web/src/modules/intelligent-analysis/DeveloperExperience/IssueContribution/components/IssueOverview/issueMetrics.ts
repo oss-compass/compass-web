@@ -27,7 +27,7 @@ export type IssueStageAgg = {
   score: number;
   grade: string;
   painCount: number;
-  painPriorityCounts: { p0: number; p1: number; p2: number };
+  painPriorityCounts: { p0: number; p1: number; p2: number; p3: number };
 };
 
 export type IssuePainSummary = {
@@ -36,6 +36,7 @@ export type IssuePainSummary = {
   p0: number;
   p1: number;
   p2: number;
+  p3: number;
   repoCount: number;
 };
 
@@ -119,7 +120,7 @@ export const computeIssueOverview = (
       nSum += w;
     });
     let painSum = 0;
-    const painPriorityCounts = { p0: 0, p1: 0, p2: 0 };
+    const painPriorityCounts = { p0: 0, p1: 0, p2: 0, p3: 0 };
     repos.forEach((r) => {
       const st = r.stages.find((x) => x.id === s.id);
       if (!st) return;
@@ -127,6 +128,7 @@ export const computeIssueOverview = (
       painPriorityCounts.p0 += st.painPriorityCounts.p0;
       painPriorityCounts.p1 += st.painPriorityCounts.p1;
       painPriorityCounts.p2 += st.painPriorityCounts.p2;
+      painPriorityCounts.p3 += st.painPriorityCounts.p3;
     });
     const score = nSum ? +(wSum / nSum).toFixed(1) : 0;
     return {
@@ -180,6 +182,7 @@ export const computeIssueOverview = (
       p0: data.topPainPriorityCounts.p0,
       p1: data.topPainPriorityCounts.p1,
       p2: data.topPainPriorityCounts.p2,
+      p3: data.topPainPriorityCounts.p3,
       repoCount,
     },
     stages,

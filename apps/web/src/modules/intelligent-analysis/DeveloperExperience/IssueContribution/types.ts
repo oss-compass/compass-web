@@ -194,6 +194,10 @@ export type IssueExperienceReportData = {
     period_label: string;
     report_id: string;
     n_total: number;
+    /** v4：纳入评分样本中的内部 Issue 数 */
+    scope_internal?: number;
+    /** v4：纳入评分样本中的外部 Issue 数 */
+    scope_external?: number;
     n_open: number;
     n_closed: number;
     close_rate: number;
@@ -276,7 +280,7 @@ export type IssueOverviewStage = {
   score: number;
   grade: string;
   painCount: number;
-  painPriorityCounts: { p0: number; p1: number; p2: number };
+  painPriorityCounts: { p0: number; p1: number; p2: number; p3: number };
 };
 
 /** 单仓单周期概览 */
@@ -340,7 +344,7 @@ export type IssueOverviewData = {
   /** 全部仓库、全部报告周期的 top_pains 合计 */
   topPainTotal: number;
   /** 全部仓库、全部报告周期的 top_pains 按优先级汇总 */
-  topPainPriorityCounts: { p0: number; p1: number; p2: number };
+  topPainPriorityCounts: { p0: number; p1: number; p2: number; p3: number };
   agg: IssueOverviewAggSeries;
 };
 
@@ -357,7 +361,7 @@ export type IssueTopPainsQuery = {
   team?: string;
   latest?: boolean;
   repoPeriods?: string;
-  /** 优先级 P0/P1/P2 */
+  /** 优先级 P0/P1/P2/P3 */
   prio?: string;
   page?: number;
   pageSize?: number;

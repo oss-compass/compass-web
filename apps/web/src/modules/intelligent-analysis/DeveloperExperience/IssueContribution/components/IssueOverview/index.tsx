@@ -32,13 +32,20 @@ const PRI_META: Record<string, { color: string; bg: string }> = {
   P0: { color: '#d03b3b', bg: '#fdecec' },
   P1: { color: '#b7791f', bg: '#fef4e6' },
   P2: { color: '#3b6fd6', bg: '#eaf2ff' },
+  P3: { color: '#64748b', bg: '#f1f5f9' },
 };
 
 const gradeStyle = (grade: string) =>
   GRADE_META[grade.toUpperCase()] ?? GRADE_META.C;
 
 const priStyle = (prio: string) => {
-  const key = /P0/i.test(prio) ? 'P0' : /P1/i.test(prio) ? 'P1' : 'P2';
+  const key = /P0/i.test(prio)
+    ? 'P0'
+    : /P1/i.test(prio)
+    ? 'P1'
+    : /P2/i.test(prio)
+    ? 'P2'
+    : 'P3';
   return PRI_META[key];
 };
 
@@ -313,6 +320,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           { key: 'p0' as const, label: 'P0', color: '#f4840c' },
           { key: 'p1' as const, label: 'P1', color: '#4791ff' },
           { key: 'p2' as const, label: 'P2', color: '#2eb78a' },
+          { key: 'p3' as const, label: 'P3', color: '#94a3b8' },
         ];
         return (
           <div className="overview-progress-cell">
@@ -404,7 +412,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         </div>
         <div
           className="ov-row"
-          style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
+          style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}
         >
           <div className="ov-item">
             <div className="ov-label">痛点总数</div>
@@ -421,6 +429,10 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           <div className="ov-item">
             <div className="ov-label">P2 痛点</div>
             <div className="ov-value">{m.painSummary.p2}</div>
+          </div>
+          <div className="ov-item">
+            <div className="ov-label">P3 痛点</div>
+            <div className="ov-value">{m.painSummary.p3}</div>
           </div>
           <div className="ov-item">
             <div className="ov-label">覆盖仓库</div>

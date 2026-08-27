@@ -49,7 +49,7 @@ import {
 } from './utils';
 import { buildTeamScoreTrend, buildTeamSuccessRateTrend } from './scoreTrend';
 import OverviewModuleTabs, { type OverviewModule } from './OverviewModuleTabs';
-import CiOverview from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverview';
+import CiOverviewPanel from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverviewPanel';
 import IssueOverview from '@modules/intelligent-analysis/DeveloperExperience/IssueContribution/components/IssueOverview';
 import { CI_DATA } from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/data';
 
@@ -830,7 +830,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           </>
         ) : null}
 
-        {activeModule === 'ci' ? <CiOverview data={CI_DATA} /> : null}
+        {activeModule === 'ci' ? <CiOverviewPanel data={CI_DATA} /> : null}
 
         {activeModule === 'issue' ? <IssueOverview org={org} /> : null}
 

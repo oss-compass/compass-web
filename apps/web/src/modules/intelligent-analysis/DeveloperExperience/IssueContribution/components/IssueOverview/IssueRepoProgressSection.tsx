@@ -43,6 +43,12 @@ const TEAM_TABLE_WIDTH = TEAM_COLUMN_WIDTHS.reduce(
 const painCount = (repo: IssueOverviewRepo) =>
   repo.stages.reduce((total, stage) => total + stage.painCount, 0);
 
+const reportSortName = (repo: IssueOverviewRepo) =>
+  `${repo.repoShort}_${repo.period}`;
+
+const teamReportSortName = (team: TeamRow) =>
+  team.repos.map(reportSortName).sort((a, b) => a.localeCompare(b))[0] ?? '';
+
 const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
   const groups = new Map<string, IssueOverviewRepo[]>();
   repos.forEach((repo) => {
@@ -262,10 +268,12 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         render: (_value, record) => painCount(record),
       },
       {
-        title: '详细报告',
+        title: '最新报告',
         key: 'report',
         width: 100,
         fixed: 'right',
+        sorter: (a, b) =>
+          reportSortName(a).localeCompare(reportSortName(b), 'zh-CN'),
         render: (_value, record) => (
           <Link
             href={reportHref(record.community, record.period)}
@@ -296,6 +304,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         key: 'name',
         width: TEAM_COLUMN_WIDTHS[1],
         align: 'left',
+        sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
         render: (value, record) => (
           <span className="overview-expand-label">
             <RightOutlined
@@ -312,6 +321,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         dataIndex: 'repoCount',
         key: 'repoCount',
         width: TEAM_COLUMN_WIDTHS[2],
+        sorter: (a, b) => a.repoCount - b.repoCount,
         render: (value: number) => `${value} 个`,
       },
       {
@@ -319,6 +329,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         dataIndex: 'score',
         key: 'score',
         width: TEAM_COLUMN_WIDTHS[3],
+        sorter: (a, b) => a.score - b.score,
         render: (value: number) => (
           <span className="text-sm font-semibold text-slate-700">
             {value.toFixed(1)}
@@ -340,6 +351,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         title: '总问题数',
         key: 'painTotal',
         width: TEAM_COLUMN_WIDTHS[5],
+        sorter: (a, b) => a.painTotal - b.painTotal,
         render: (_value, record) => (
           <button
             type="button"
@@ -358,12 +370,15 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         dataIndex: 'closeRate',
         key: 'closeRate',
         width: TEAM_COLUMN_WIDTHS[6],
+        sorter: (a, b) => a.closeRate - b.closeRate,
         render: (value: number) => closeRateCell(value),
       },
       {
         title: '最新报告',
         key: 'report',
         width: TEAM_COLUMN_WIDTHS[7],
+        sorter: (a, b) =>
+          teamReportSortName(a).localeCompare(teamReportSortName(b), 'zh-CN'),
         render: () => <span className="text-slate-300">-</span>,
       },
     ],

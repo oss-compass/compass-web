@@ -3,6 +3,7 @@ import { Card, Descriptions, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import type { IssueReportRecord } from '../types';
 import { formatGeneratedAt } from '../presentation';
+import IssueScoreRulePopoverTrigger from './IssueScoreRulePopoverTrigger';
 
 type IssueReportOverviewProps = {
   report: IssueReportRecord;
@@ -16,6 +17,7 @@ type OverviewMetricCardProps = {
   description: string;
   badge?: string;
   accent?: boolean;
+  hint?: ReactNode;
 };
 
 const OverviewMetricCard: React.FC<OverviewMetricCardProps> = ({
@@ -25,14 +27,17 @@ const OverviewMetricCard: React.FC<OverviewMetricCardProps> = ({
   description,
   badge,
   accent = false,
+  hint,
 }) => (
   <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)]">
     <div className="flex items-center justify-between gap-2">
       <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-slate-500">
         <span className="truncate">{label}</span>
-        <Tooltip title={description}>
-          <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
-        </Tooltip>
+        {hint ?? (
+          <Tooltip title={description}>
+            <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
+          </Tooltip>
+        )}
       </div>
       {badge ? (
         <span
@@ -84,10 +89,16 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
       ? `中位数 ${firstResponseMetric.median} · 均值 ${firstResponseMetric.mean}`
       : firstResponseMetric.caliber_note
     : '当前报告暂无首次响应时间数据';
+  const hasScopeBreakdown =
+    typeof context.scope_internal === 'number' &&
+    typeof context.scope_external === 'number';
+  const sampleCountText = hasScopeBreakdown
+    ? `${context.n_total} 个 Issue（内部 ${context.scope_internal} / 外部 ${context.scope_external}）`
+    : `${context.n_total} 个 Issue`;
   const metadataItems = [
     { key: 'community', label: '社区', value: data.community_name },
     { key: 'platform', label: '平台', value: data.platform, mono: true },
-    { key: 'sample', label: '样本数量', value: `${context.n_total} 个 Issue` },
+    { key: 'sample', label: '样本数量', value: sampleCountText },
     { key: 'version', label: '报告版本', value: version, mono: true },
     {
       key: 'rubric',
@@ -117,6 +128,11 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
               suffix="/ 100"
               description={context.delta_total}
               accent
+              hint={
+                <IssueScoreRulePopoverTrigger
+                  rubricVersion={context.rubric_version}
+                />
+              }
             />
             <OverviewMetricCard
               label="Issue 总数"
@@ -161,17 +177,25 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
               items={metadataItems.map((item) => ({
                 key: item.key,
                 label: item.label,
-                children: (
-                  <Tooltip title={item.value}>
-                    <span
-                      className={`block truncate text-[15px] leading-10 ${
-                        item.mono ? 'font-mono' : 'font-medium'
-                      }`}
+                children:
+                  item.key === 'rubric' ? (
+                    <IssueScoreRulePopoverTrigger
+                      rubricVersion={context.rubric_version}
+                      className="block max-w-full truncate font-mono text-[15px] leading-10 text-[#1677ff] transition-colors hover:text-[#4096ff] hover:underline"
                     >
                       {item.value}
-                    </span>
-                  </Tooltip>
-                ),
+                    </IssueScoreRulePopoverTrigger>
+                  ) : (
+                    <Tooltip title={item.value}>
+                      <span
+                        className={`block truncate text-[15px] leading-10 ${
+                          item.mono ? 'font-mono' : 'font-medium'
+                        }`}
+                      >
+                        {item.value}
+                      </span>
+                    </Tooltip>
+                  ),
               }))}
             />
           </div>
