@@ -12,6 +12,7 @@ import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import type { IssueStageAgg } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
+import IssueMetricsAppendix from './IssueMetricsAppendix';
 import type { IssueTrendModalData } from './IssueTrendModal';
 
 const { Title } = Typography;
@@ -71,7 +72,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     React.useState<IssueTrendModalData | null>(null);
   // 重点待办痛点：服务端分页，按页/按筛选条件拉取，不一次性下发全量
   const [painPage, setPainPage] = React.useState(1);
-  const [painPageSize, setPainPageSize] = React.useState(10);
+  const painPageSize = 10;
   const [painFilters, setPainFilters] = React.useState<{
     repo?: string;
     prio?: string;
@@ -486,7 +487,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             current: painPage,
             pageSize: painPageSize,
             total: pains?.total ?? 0,
-            showSizeChanger: true,
+            showSizeChanger: false,
             showTotal: (total) => `共 ${total} 条`,
           }}
           onChange={(pagination, filters) => {
@@ -497,7 +498,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             if (filtersChanged) setPainFilters({ repo, prio });
             // 筛选变化时回到第一页，否则跟随翻页器
             setPainPage(filtersChanged ? 1 : pagination.current ?? 1);
-            setPainPageSize(pagination.pageSize ?? 10);
           }}
           scroll={{ x: 1588 }}
           locale={{ emptyText: '当前无匹配的待办痛点' }}
@@ -522,7 +522,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             className={`oj-qa-expand-icon${appendixOpen ? ' is-expanded' : ''}`}
           />
           <span className="oj-qa-q-label">Q</span>
-          <span className="oj-qa-question">Issue 体验指数如何计算与取数？</span>
+          <span className="oj-qa-question">Issue 体验指标体系</span>
         </div>
         {appendixOpen && (
           <div className="oj-qa-answer">
@@ -530,37 +530,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
               <span className="oj-qa-a-label">A</span>
             </div>
             <div className="oj-qa-answer-body">
-              <div className="flex flex-col gap-3 text-[13px] leading-relaxed text-slate-600">
-                <p>
-                  综合体验指数按 issue
-                  全生命周期切分为以下阶段，每阶段结合客观信号与
-                  主观评审打分后加权汇总；总览页综合得分只取各仓最新一周报告，
-                  按「Issue 数」加权平均；痛点数与 Issue 总数 /
-                  关闭率仍按全部报告周期统计。
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {data.stageOrder.map((s) => (
-                    <span
-                      key={s.id}
-                      className="rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1 text-[12.5px] font-medium text-slate-700"
-                    >
-                      {s.icon} {s.name}
-                    </span>
-                  ))}
-                </div>
-                <p>
-                  等级口径：A ≥ 85 · B ≥ 75 · C ≥ 65 · D ≥ 50 · F &lt;
-                  50。痛点总数为各仓全部报告周期的 top_pains
-                  合计；重点待办取其中 P0/P1 痛点。痛点是从一组 Issue
-                  的阶段指标中归纳出的改进项， 不等同于具体 Issue，也不使用
-                  Issue 的打开/关闭状态。顶部 Issue 关闭率仍按 Issue
-                  生命周期口径计算：已关闭 Issue ÷ Issue 总数。
-                  数据来源为各仓周报（rawdata/&lt;repo&gt;/report_*.json），
-                  原始 issue
-                  正文与评论仅存于服务端，不进入浏览器。点击「查看最新报告」
-                  可进入对应仓库的 Issue 贡献报告详情。
-                </p>
-              </div>
+              <IssueMetricsAppendix />
             </div>
           </div>
         )}

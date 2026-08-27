@@ -1,20 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  AimOutlined,
   ArrowRightOutlined,
   DownOutlined,
   FlagOutlined,
-  InfoCircleOutlined,
   LinkOutlined,
   ProfileOutlined,
-  RocketOutlined,
 } from '@ant-design/icons';
 import { Pagination, Popover } from 'antd';
 import {
-  cleanReportText,
   getPriorityTone,
   getScoreTone,
-  normalizeGoal,
   stripMetricCode,
 } from '../presentation';
 import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
@@ -416,12 +411,6 @@ const StagePainCard: React.FC<{ pain: IssueReportPain }> = ({ pain }) => {
             >
               {pain.prio}
             </span>
-            <span className="font-mono text-[11px] font-semibold text-slate-400">
-              {pain.id}
-            </span>
-            {pain.state ? (
-              <span className="text-[10px] text-slate-400">{pain.state}</span>
-            ) : null}
             {issues.length ? (
               <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-600">
                 {issues.length} 个 Issue
@@ -659,7 +648,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
     );
   };
   const stagePains = getStagePains(activeStage);
-  const stageRecommendations = getStageRecommendations(activeStage, stagePains);
   // 当前阶段有评分记录的全部 Issue，按本阶段得分从低到高排序（问题 Issue 优先）
   const stageScoreEntries = (issueScoreRows ?? [])
     .flatMap((row) => {
@@ -686,7 +674,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
           >
             体验路径总览
           </h2>
-          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、全部 Issue 得分、行动清单）；虚线边框的 G 为 Bot / Agent 治理参考镜头，不计入总分。" />
+          <HintIcon title="点击阶段卡片展开该阶段的诊断详情（关键指标、痛点、全部 Issue 得分）；虚线边框的 G 为 Bot / Agent 治理参考镜头，不计入总分。" />
         </div>
       </div>
 
@@ -826,7 +814,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                             </span>
                             <span
                               className="flex flex-col items-center py-1"
-                              title="本阶段关联的改进建议数量，对应下方“本周行动清单”"
+                              title="本阶段关联的改进建议数量"
                             >
                               <strong className="text-[20px] font-bold leading-none text-emerald-600">
                                 {recommendationCount}
@@ -950,25 +938,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         }`,
                         badgeClass: 'bg-emerald-50 text-emerald-700',
                       },
-                      // v4：无样本阶段 best/worst_metric 可能为空，按需渲染避免取值报错
-                      ...(activeStage.best_metric
-                        ? [
-                            {
-                              label: '最佳表现',
-                              value: activeStage.best_metric.value,
-                              badgeClass: 'bg-emerald-50 text-emerald-700',
-                            },
-                          ]
-                        : []),
-                      ...(activeStage.worst_metric
-                        ? [
-                            {
-                              label: '主要拖累',
-                              value: activeStage.worst_metric.value,
-                              badgeClass: 'bg-rose-50 text-rose-600',
-                            },
-                          ]
-                        : []),
                     ].map((item) => (
                       <span
                         key={item.label}
@@ -1054,9 +1023,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                       ? '效率'
                                       : '质量'}
                                   </span>
-                                  {metricDef ? (
-                                    <InfoCircleOutlined className="shrink-0 text-[11px] text-slate-300" />
-                                  ) : null}
                                 </div>
                                 <span
                                   className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[12px] font-bold leading-none ${metricTone.badge}`}
@@ -1065,14 +1031,22 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                 </span>
                               </div>
                               {metricDef?.meaning || metric.reason ? (
-                                <p className="mt-2 line-clamp-3 text-[12px] leading-5 text-slate-500">
-                                  {metricDef?.meaning || metric.reason}
-                                </p>
+                                <div className="relative mt-2">
+                                  <p
+                                    className={`line-clamp-3 text-[12px] leading-5 text-slate-500 ${
+                                      metricDef ? 'pr-5' : ''
+                                    }`}
+                                  >
+                                    {metricDef?.meaning || metric.reason}
+                                  </p>
+                                  {metricDef ? (
+                                    <DownOutlined
+                                      className="absolute bottom-0 right-0 bg-white pl-1 text-[10px] text-[#1677ff]"
+                                      title="鼠标悬停查看评分细则"
+                                    />
+                                  ) : null}
+                                </div>
                               ) : null}
-                              <div className="mt-auto flex items-center gap-3 border-t border-slate-100 pt-2 text-[10px] text-slate-400">
-                                <span>中位 {metric.median}</span>
-                                <span>覆盖 {metric.cover}</span>
-                              </div>
                             </div>
                           );
                           if (!metricDef) {
@@ -1128,78 +1102,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                       stageId={activeStage.id}
                       entries={stageScoreEntries}
                     />
-                  ) : null}
-
-                  {stageRecommendations.length ? (
-                    <div className="border-t border-slate-200 pt-6">
-                      <div className="flex flex-wrap items-end justify-between gap-3">
-                        <div className="flex items-center gap-1.5">
-                          <RocketOutlined className="text-emerald-600" />
-                          <h4 className="text-base font-semibold text-slate-900">
-                            本周行动清单
-                          </h4>
-                          <HintIcon title="针对本阶段痛点的可执行改进建议，便于从诊断直接进入改进。" />
-                        </div>
-                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                          {stageRecommendations.length} 项行动
-                        </span>
-                      </div>
-
-                      <div className=">xl:grid-cols-2 mt-4 grid grid-cols-1 gap-4">
-                        {stageRecommendations.map((recommendation) => {
-                          const tone = getPriorityTone(recommendation.prio);
-                          return (
-                            <article
-                              key={recommendation.id}
-                              className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-white p-4"
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span
-                                  className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
-                                >
-                                  {recommendation.prio}
-                                </span>
-                                <span className="font-mono text-[11px] font-semibold text-emerald-600">
-                                  {recommendation.id}
-                                </span>
-                                <span className="text-[10px] text-slate-400">
-                                  对应 {recommendation.pp_id}
-                                </span>
-                              </div>
-                              <h5 className="mt-2 text-sm font-semibold leading-6 text-slate-900">
-                                {recommendation.action_title}
-                              </h5>
-                              <p className="mt-1 text-xs leading-5 text-slate-600">
-                                {cleanReportText(recommendation.action)}
-                              </p>
-                              <div className="mt-3 rounded-xl bg-emerald-50/60 px-3 py-2 text-[11px] leading-5 text-slate-600">
-                                <div>
-                                  <span className="font-semibold text-slate-400">
-                                    承接 ·{' '}
-                                  </span>
-                                  {recommendation.owner_team}
-                                  {recommendation.owner_candidate
-                                    ? ` / 候选 ${recommendation.owner_candidate}`
-                                    : ''}
-                                </div>
-                                <div>
-                                  <span className="font-semibold text-slate-400">
-                                    触发 ·{' '}
-                                  </span>
-                                  {recommendation.trigger}
-                                </div>
-                              </div>
-                              <p className="mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-5 text-slate-600">
-                                <AimOutlined className="mt-1 shrink-0 text-emerald-600" />
-                                <span>
-                                  {normalizeGoal(recommendation.goal)}
-                                </span>
-                              </p>
-                            </article>
-                          );
-                        })}
-                      </div>
-                    </div>
                   ) : null}
                 </div>
               </div>

@@ -26,6 +26,22 @@ const API_PREFIX = `${USER_JOURNEY_PREFIX}/issue-experience`;
 const REPORT_API_PATH = `${API_PREFIX}/reports`;
 const OVERVIEW_API_PATH = `${API_PREFIX}/overview`;
 const TOP_PAINS_API_PATH = `${API_PREFIX}/overview/top-pains`;
+const REPO_TEAMS_API_PATH = `${API_PREFIX}/overview/repo-teams`;
+
+export type RepoTeamItem = { repoShort: string; teamName: string };
+
+export const fetchRepoTeams = async (
+  signal?: AbortSignal
+): Promise<{ items: RepoTeamItem[] }> => {
+  const response = await fetch(`${getApiBase()}${REPO_TEAMS_API_PATH}`, {
+    signal,
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    throw new Error(`Repo teams request failed: ${response.status}`);
+  }
+  return response.json() as Promise<{ items: RepoTeamItem[] }>;
+};
 
 export const fetchIssueReportData = async (
   filters: IssueReportFilters,

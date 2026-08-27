@@ -22,7 +22,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       zoom: 1.35;
     }
 
-    .detail-panel-body {
+    .detail-panel-content {
       padding: 18px 22px !important;
       gap: 14px !important;
     }
@@ -346,6 +346,10 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .detail-panel-body {
+      width: 100%;
+    }
+
+    .detail-panel-content {
       width: 100%;
       padding: 20px 24px;
       display: flex;
@@ -3019,7 +3023,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     @media (max-width: 1024px) {
-      .detail-panel-body {
+      .detail-panel-content {
         padding: 16px;
       }
 

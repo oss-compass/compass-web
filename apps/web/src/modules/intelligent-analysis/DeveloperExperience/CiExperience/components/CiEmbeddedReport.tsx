@@ -24,7 +24,7 @@ const CiEmbeddedReport: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[800px] items-center justify-center rounded-xl bg-white">
+      <div className="flex min-h-[800px] items-center justify-center">
         <Spin tip="正在加载工具链评估报告..." size="large" />
       </div>
     );
@@ -65,12 +65,13 @@ const CiEmbeddedReport: React.FC = () => {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="">
       <iframe
         key={data.embed_url}
         title="CANN 工具链体验评估报告"
         src={data.embed_url}
-        className="block h-[900px] w-full border-0"
+        className="block w-full border-0"
+        style={{ height: 'calc(100vh - 122px)' }}
         allowFullScreen
       />
     </div>

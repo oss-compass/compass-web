@@ -388,7 +388,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   return (
     <>
       <Title level={4} className="oj-section-title">
-        各仓库对比（各仓最新一周）
+        各仓库对比
       </Title>
       <div className="section-card">
         <div className="tab-bar progress-toolbar-row">

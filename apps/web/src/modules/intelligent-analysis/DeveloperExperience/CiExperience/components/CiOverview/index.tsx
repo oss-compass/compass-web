@@ -11,13 +11,12 @@ import Appendix from '../Appendix';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
 import {
   computeCommunityOverview,
-  type CiLevel,
   type CiPriCard,
-  type CiRepoSummary,
   type CiTopIssue,
   type CiTrendItem,
 } from './communityMetrics';
 import CiTrendModal from './CiTrendModal';
+import CiRepoProgressSection from './CiRepoProgressSection';
 
 const { Title } = Typography;
 
@@ -37,13 +36,6 @@ const TONE_FLAT = '#64748b';
 const SEG_ACTIVE = '#e0962b';
 const SEG_BACKFILL = '#4f98ff';
 const SEG_FADED = '#33c998';
-
-const LEVEL_META: Record<CiLevel, { text: string; color: string; bg: string }> =
-  {
-    crit: { text: '需重点关注', color: '#c2413b', bg: '#fff0ee' },
-    warn: { text: '需关注', color: '#b7791f', bg: '#fef6e7' },
-    good: { text: '总体平稳', color: '#16835e', bg: '#e8f7f1' },
-  };
 
 const PRI_TAG: Record<CiPri, { bg: string; color: string; border: string }> = {
   P0: { bg: '#fdecec', color: '#c2413b', border: '#f5c7c3' },
@@ -112,9 +104,6 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data, headerAction }) => {
   // 重点待办问题：本地分页（数据为前端静态 JSON，交互对齐社区贡献的重点待办痛点）
   const [topPage, setTopPage] = React.useState(1);
   const [topPageSize, setTopPageSize] = React.useState(10);
-  // 各仓库对比：本地分页
-  const [repoPage, setRepoPage] = React.useState(1);
-  const [repoPageSize, setRepoPageSize] = React.useState(10);
 
   if (!m.hasData) {
     return (
@@ -452,152 +441,13 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data, headerAction }) => {
             );
           })}
         </div>
-
-        {/* 各仓库对比 */}
-        <div className="mb-3 mt-6 text-[16px] font-extrabold leading-6 text-slate-900">
-          各仓库对比
-        </div>
-        <div className="section-card">
-          <Table<CiRepoSummary>
-            className="overview-ant-table"
-            dataSource={m.repos}
-            rowKey="repo"
-            pagination={{
-              current: repoPage,
-              pageSize: repoPageSize,
-              showSizeChanger: true,
-              showTotal: (total) => `共 ${total} 个仓库`,
-            }}
-            onChange={(pagination) => {
-              setRepoPage(pagination.current ?? 1);
-              setRepoPageSize(pagination.pageSize ?? 10);
-            }}
-            scroll={{ x: 900 }}
-            columns={[
-              {
-                title: '仓库',
-                dataIndex: 'slug',
-                key: 'slug',
-                width: 120,
-                fixed: 'left',
-                render: (slug: string) => (
-                  <span className="font-medium text-slate-700">{slug}</span>
-                ),
-              },
-              {
-                title: '状态',
-                key: 'level',
-                width: 110,
-                render: (_v, r) => {
-                  const lv = LEVEL_META[r.level];
-                  return (
-                    <span
-                      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold"
-                      style={{ background: lv.bg, color: lv.color }}
-                    >
-                      <span
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ background: lv.color }}
-                      />
-                      {lv.text}
-                    </span>
-                  );
-                },
-              },
-              {
-                title: '综合',
-                key: 'scoreOverall',
-                width: 80,
-                align: 'center',
-                render: (_v, r) => (
-                  <span className="text-[15px] font-bold text-slate-800">
-                    {r.scoreOverall ?? '—'}
-                  </span>
-                ),
-              },
-              {
-                title: '稳定性',
-                key: 'scoreStability',
-                width: 80,
-                align: 'center',
-                render: (_v, r) => (
-                  <span className="tabular-nums text-slate-700">
-                    {r.scoreStability ?? '—'}
-                  </span>
-                ),
-              },
-              {
-                title: '效率',
-                key: 'scoreEfficiency',
-                width: 80,
-                align: 'center',
-                render: (_v, r) => (
-                  <span className="tabular-nums text-slate-700">
-                    {r.scoreEfficiency ?? '—'}
-                  </span>
-                ),
-              },
-              {
-                title: '交互体验',
-                key: 'scoreInteraction',
-                width: 90,
-                align: 'center',
-                render: (_v, r) => (
-                  <span className="tabular-nums text-slate-700">
-                    {r.scoreInteraction ?? '—'}
-                  </span>
-                ),
-              },
-              {
-                title: '成本',
-                key: 'scoreCost',
-                width: 80,
-                align: 'center',
-                render: (_v, r) => (
-                  <span className="tabular-nums text-slate-700">
-                    {r.scoreCost ?? '—'}
-                  </span>
-                ),
-              },
-              {
-                title: '活跃 P0/P1',
-                key: 'activeP01',
-                width: 100,
-                align: 'center',
-                render: (_v, r) => (
-                  <span className="font-medium tabular-nums text-slate-700">
-                    {r.activeP01}
-                  </span>
-                ),
-              },
-              {
-                title: '运行概况',
-                key: 'overview',
-                width: 180,
-                render: (_v, r) => (
-                  <span className="text-[11.5px] text-slate-400">
-                    {r.workflow} · {r.totFail}/{r.totRun} run · 已消退 {r.faded}
-                  </span>
-                ),
-              },
-              {
-                title: '最新报告',
-                key: 'report',
-                width: 100,
-                align: 'center',
-                render: (_v, r: CiRepoSummary) => (
-                  <Link
-                    href={reportHref(r.slug)}
-                    className="text-[12px] font-semibold text-[#1677ff] underline underline-offset-[3px] transition-colors hover:text-[#0958d9]"
-                  >
-                    {r.latestDay.slice(5)} 报告
-                  </Link>
-                ),
-              },
-            ]}
-          />
-        </div>
       </div>
+
+      <CiRepoProgressSection
+        repos={m.repos}
+        issues={m.topIssues}
+        reportHref={reportHref}
+      />
 
       {/* ③ 重点待办问题 */}
       <Title level={4} className="oj-section-title">

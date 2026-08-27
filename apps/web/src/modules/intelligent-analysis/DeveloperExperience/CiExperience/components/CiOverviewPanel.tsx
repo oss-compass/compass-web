@@ -15,6 +15,12 @@ type CiOverviewPanelProps = {
 const CiOverviewPanel: React.FC<CiOverviewPanelProps> = ({ data }) => {
   const router = useRouter();
   const canAccessCannEmbed = useCannEmbedReachability();
+  const forceEmbedEntry = useMemo(() => {
+    const raw = router.query.ciEmbedDebug;
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    return value === '1' || value === 'true';
+  }, [router.query.ciEmbedDebug]);
+  const showEmbedEntry = forceEmbedEntry || canAccessCannEmbed;
   const activeView = useMemo<CiView>(() => {
     const raw = router.query.ciView;
     const value = Array.isArray(raw) ? raw[0] : raw;
@@ -38,29 +44,33 @@ const CiOverviewPanel: React.FC<CiOverviewPanelProps> = ({ data }) => {
     [router]
   );
 
-  if (!canAccessCannEmbed || activeView === 'overview') {
+  if (!showEmbedEntry || activeView === 'overview') {
     return (
-      <CiOverview
-        data={data}
-        headerAction={
-          canAccessCannEmbed ? (
-            <CiViewTabs active={activeView} onChange={handleViewChange} />
-          ) : null
-        }
-      />
+      <div className="detail-panel-content">
+        <CiOverview
+          data={data}
+          headerAction={
+            showEmbedEntry ? (
+              <CiViewTabs active={activeView} onChange={handleViewChange} />
+            ) : null
+          }
+        />
+      </div>
     );
   }
 
   return (
-    <>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Typography.Title level={4} className="oj-section-title">
-          工具链评估报告
-        </Typography.Title>
-        <CiViewTabs active={activeView} onChange={handleViewChange} />
+    <div className="ci-embed-panel">
+      <div className="detail-panel-content ci-embed-panel-header">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Typography.Title level={4} className="oj-section-title">
+            工具链评估报告
+          </Typography.Title>
+          <CiViewTabs active={activeView} onChange={handleViewChange} />
+        </div>
       </div>
       <CiEmbeddedReport />
-    </>
+    </div>
   );
 };
 

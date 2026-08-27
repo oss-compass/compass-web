@@ -57,24 +57,49 @@ type OverviewDashboardProps = {
   org?: string;
 };
 
+const parseOverviewModule = (raw: unknown): OverviewModule | undefined => {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value === 'community-onboarding' || value === 'issue' || value === 'ci'
+    ? value
+    : undefined;
+};
+
+const moduleFromAsPath = (asPath: string): OverviewModule | undefined => {
+  const query = asPath.split('?')[1]?.split('#')[0] ?? '';
+  return parseOverviewModule(new URLSearchParams(query).get('module'));
+};
+
+const moduleFromBrowserLocation = (): OverviewModule | undefined =>
+  typeof window === 'undefined'
+    ? undefined
+    : parseOverviewModule(
+        new URLSearchParams(window.location.search).get('module')
+      );
+
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const router = useRouter();
-  const [activeModule, setActiveModule] = useState<OverviewModule>(
-    'community-onboarding'
+  const [activeModule, setActiveModule] = useState<OverviewModule | null>(
+    () =>
+      parseOverviewModule(router.query.module) ??
+      moduleFromAsPath(router.asPath) ??
+      moduleFromBrowserLocation() ??
+      (router.isReady ? 'community-onboarding' : null)
   );
   // 报告页「返回看板」携带 module 参数时，切换到对应模块 tab
   const queryModule = useMemo(() => {
-    const raw = router.query.module;
-    const value = Array.isArray(raw) ? raw[0] : raw;
-    return value === 'community-onboarding' ||
-      value === 'issue' ||
-      value === 'ci'
-      ? (value as OverviewModule)
-      : undefined;
-  }, [router.query.module]);
+    return (
+      parseOverviewModule(router.query.module) ??
+      moduleFromAsPath(router.asPath)
+    );
+  }, [router.asPath, router.query.module]);
   useEffect(() => {
-    if (queryModule) setActiveModule(queryModule);
-  }, [queryModule]);
+    if (queryModule) {
+      setActiveModule(queryModule);
+    } else if (router.isReady) {
+      setActiveModule('community-onboarding');
+    }
+  }, [queryModule, router.isReady]);
+  const onboardingEnabled = activeModule === 'community-onboarding';
   // 切换模块 tab 时同步更新路由上的 module 参数，避免刷新/返回时回到旧模块
   const handleModuleChange = React.useCallback(
     (module: OverviewModule) => {
@@ -158,6 +183,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         page: 1,
         size: 200,
       }),
+    enabled: onboardingEnabled,
   });
 
   const { data: cardsOverallResp } = useQuery({
@@ -191,6 +217,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         page: 1,
         size: 200,
       }),
+    enabled: onboardingEnabled,
   });
 
   const commonOnly = useMemo(() => {
@@ -219,6 +246,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             ? undefined
             : false,
       }),
+    enabled: onboardingEnabled,
   });
 
   const { data: closeRateTrendsResp, isLoading: isCloseRateTrendsLoading } =
@@ -248,6 +276,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           endDate: trendWindow.kind === 'range' ? trendWindow.end : undefined,
           countChildPains: true,
         }),
+      enabled: onboardingEnabled,
     });
 
   const { data: commonIssuesResp } = useQuery({
@@ -256,6 +285,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       fetchOverviewCommonIssues({
         org,
       }),
+    enabled: onboardingEnabled,
   });
 
   const {
@@ -288,6 +318,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         throw error;
       }
     },
+    enabled: onboardingEnabled,
   });
 
   const {
@@ -312,6 +343,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         throw error;
       }
     },
+    enabled: onboardingEnabled,
   });
 
   const repoRows = useMemo<RepoProgressRow[]>(() => {
@@ -741,7 +773,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       <header className=">md:px-6 sticky top-0 z-30 flex h-12 flex-none items-center gap-3 border-b border-[#e5e6eb] bg-[#f0f2f5] px-4 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
         <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <OverviewModuleTabs
-            active={activeModule}
+            active={activeModule ?? 'community-onboarding'}
             onChange={handleModuleChange}
           />
         </div>
@@ -754,7 +786,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       </header>
       <div className="detail-panel-body">
         {activeModule === 'community-onboarding' ? (
-          <>
+          <div className="detail-panel-content">
             <OverviewSummarySection
               overviewSummary={overviewSummary}
               overviewTrend={overviewTrend}
@@ -827,12 +859,16 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             />
 
             {!captureMode && <ExperienceScoreRuleQASection />}
-          </>
+          </div>
         ) : null}
 
         {activeModule === 'ci' ? <CiOverviewPanel data={CI_DATA} /> : null}
 
-        {activeModule === 'issue' ? <IssueOverview org={org} /> : null}
+        {activeModule === 'issue' ? (
+          <div className="detail-panel-content">
+            <IssueOverview org={org} />
+          </div>
+        ) : null}
 
         <IssueDetailModal
           state={issueModal}
