@@ -1,8 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { FilterFilled } from '@ant-design/icons';
-import { Dropdown, Modal, Radio, Tag, Tooltip } from 'antd';
+import { Dropdown, Modal, Radio, Tooltip } from 'antd';
 import type { IssueOverviewTopPain } from '../../types';
+import IssuePriorityTag from './IssuePriorityTag';
 
 const ALL = '__ALL__';
 
@@ -128,7 +129,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
               <Radio value={ALL}>全部</Radio>
               {values.map((item) => (
                 <Radio key={item} value={item}>
-                  {item}
+                  {key === 'prio' ? <IssuePriorityTag priority={item} /> : item}
                 </Radio>
               ))}
             </Radio.Group>
@@ -223,7 +224,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                     <Tooltip title={item.title}>{item.title || '--'}</Tooltip>
                   </td>
                   <td className="px-1 py-3">
-                    <Tag>{item.prio || '--'}</Tag>
+                    <IssuePriorityTag priority={item.prio} />
                   </td>
                   <td className="px-1.5 py-3">{item.state || '--'}</td>
                   <td className="px-2 py-3 text-left leading-5">

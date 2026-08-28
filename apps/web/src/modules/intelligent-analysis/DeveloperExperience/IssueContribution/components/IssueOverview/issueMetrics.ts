@@ -152,7 +152,7 @@ export const computeIssueOverview = (
       trendMax: 100,
     },
     {
-      label: '重点待办(P0/P1)',
+      label: '重点待办（P0完全阻塞/P1关键卡点）',
       value: String(topPainCount),
       sub: '高优先级痛点',
     },

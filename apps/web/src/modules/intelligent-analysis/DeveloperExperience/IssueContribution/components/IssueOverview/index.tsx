@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
-import { Empty, Skeleton, Table, Tag, Tooltip, Typography } from 'antd';
+import { Empty, Skeleton, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
@@ -13,6 +13,10 @@ import type { IssueStageAgg } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
 import IssueMetricsAppendix from './IssueMetricsAppendix';
+import IssuePriorityTag, {
+  getIssuePriorityLabel,
+  ISSUE_PRIORITY_LEVELS,
+} from './IssuePriorityTag';
 import type { IssueTrendModalData } from './IssueTrendModal';
 
 const { Title } = Typography;
@@ -29,26 +33,8 @@ const GRADE_META: Record<string, { color: string; bg: string }> = {
   F: { color: '#d03b3b', bg: '#fdecec' },
 };
 
-const PRI_META: Record<string, { color: string; bg: string }> = {
-  P0: { color: '#d03b3b', bg: '#fdecec' },
-  P1: { color: '#b7791f', bg: '#fef4e6' },
-  P2: { color: '#3b6fd6', bg: '#eaf2ff' },
-  P3: { color: '#64748b', bg: '#f1f5f9' },
-};
-
 const gradeStyle = (grade: string) =>
   GRADE_META[grade.toUpperCase()] ?? GRADE_META.C;
-
-const priStyle = (prio: string) => {
-  const key = /P0/i.test(prio)
-    ? 'P0'
-    : /P1/i.test(prio)
-    ? 'P1'
-    : /P2/i.test(prio)
-    ? 'P2'
-    : 'P3';
-  return PRI_META[key];
-};
 
 /** 'YYYY-MM-DD_to_YYYY-MM-DD' → 起始日 'MM-DD'（趋势 X 轴短标签） */
 const shortPeriod = (period: string): string => {
@@ -208,20 +194,13 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       title: '优先级',
       dataIndex: 'prio',
       width: 88,
-      filters: painPris.map((p) => ({ text: p, value: p })),
+      filters: painPris.map((p) => ({
+        text: <IssuePriorityTag priority={p} />,
+        value: p,
+      })),
       filterMultiple: false,
       filteredValue: painFilters.prio ? [painFilters.prio] : null,
-      render: (v: string) => {
-        const s = priStyle(v);
-        return (
-          <Tag
-            className="overview-ant-tag"
-            style={{ color: s.color, background: s.bg, borderColor: s.bg }}
-          >
-            {v}
-          </Tag>
-        );
-      },
+      render: (v: string) => <IssuePriorityTag priority={v} />,
     },
     { title: '阶段', dataIndex: 'stageName', width: 128 },
     {
@@ -317,12 +296,11 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       title: '痛点级别分布',
       width: 300,
       render: (_v, r) => {
-        const priorities = [
-          { key: 'p0' as const, label: 'P0', color: '#f4840c' },
-          { key: 'p1' as const, label: 'P1', color: '#4791ff' },
-          { key: 'p2' as const, label: 'P2', color: '#2eb78a' },
-          { key: 'p3' as const, label: 'P3', color: '#94a3b8' },
-        ];
+        const priorities = ISSUE_PRIORITY_LEVELS.map((item) => ({
+          key: item.priority.toLowerCase() as 'p0' | 'p1' | 'p2' | 'p3',
+          label: item.priority,
+          color: item.tagColor,
+        }));
         return (
           <div className="overview-progress-cell">
             <div className="overview-progress-bar">
@@ -420,19 +398,19 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             <div className="ov-value">{m.painSummary.total}</div>
           </div>
           <div className="ov-item">
-            <div className="ov-label">P0 痛点</div>
+            <div className="ov-label">{getIssuePriorityLabel('P0')}</div>
             <div className="ov-value ov-value-pending">{m.painSummary.p0}</div>
           </div>
           <div className="ov-item">
-            <div className="ov-label">P1 痛点</div>
+            <div className="ov-label">{getIssuePriorityLabel('P1')}</div>
             <div className="ov-value ov-value-pending">{m.painSummary.p1}</div>
           </div>
           <div className="ov-item">
-            <div className="ov-label">P2 痛点</div>
+            <div className="ov-label">{getIssuePriorityLabel('P2')}</div>
             <div className="ov-value">{m.painSummary.p2}</div>
           </div>
           <div className="ov-item">
-            <div className="ov-label">P3 痛点</div>
+            <div className="ov-label">{getIssuePriorityLabel('P3')}</div>
             <div className="ov-value">{m.painSummary.p3}</div>
           </div>
           <div className="ov-item">
