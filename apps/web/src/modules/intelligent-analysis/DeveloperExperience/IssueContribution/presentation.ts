@@ -46,6 +46,16 @@ export const getPriorityTone = (priority: string) => {
   };
 };
 
+export const getPriorityLabel = (priority: string) => {
+  const labels: Record<string, string> = {
+    P0: 'P0 完全阻塞',
+    P1: 'P1 关键卡点',
+    P2: 'P2 显著影响',
+    P3: 'P3 轻微影响',
+  };
+  return labels[priority.toUpperCase()] || priority;
+};
+
 export const cleanReportText = (value: string) => value.replace(/`/g, '');
 
 /**

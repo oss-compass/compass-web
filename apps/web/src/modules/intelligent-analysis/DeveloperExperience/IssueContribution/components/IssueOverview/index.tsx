@@ -12,17 +12,25 @@ import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import type { IssueStageAgg } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
+import IssuePainDetailModal from './IssuePainDetailModal';
 import IssueMetricsAppendix from './IssueMetricsAppendix';
 import IssuePriorityTag, {
   getIssuePriorityLabel,
   ISSUE_PRIORITY_LEVELS,
 } from './IssuePriorityTag';
 import type { IssueTrendModalData } from './IssueTrendModal';
+import { getTrackingStatusMeta } from '../PainTrackingModal/constants';
 
 const { Title } = Typography;
 
 type IssueOverviewProps = {
   org?: string;
+};
+
+type PainOverviewDetailTarget = {
+  title: string;
+  prio?: string;
+  stageId?: string;
 };
 
 const GRADE_META: Record<string, { color: string; bg: string }> = {
@@ -62,12 +70,16 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const [painFilters, setPainFilters] = React.useState<{
     repo?: string;
     prio?: string;
+    state?: number;
   }>({});
+  const [painOverviewDetail, setPainOverviewDetail] =
+    React.useState<PainOverviewDetailTarget | null>(null);
 
   // 切换组织时重置痛点表格的分页与筛选状态
   React.useEffect(() => {
     setPainPage(1);
     setPainFilters({});
+    setPainOverviewDetail(null);
   }, [org]);
 
   const {
@@ -89,6 +101,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       painPageSize,
       painFilters.repo,
       painFilters.prio,
+      painFilters.state,
     ],
     queryFn: ({ signal }) =>
       fetchIssueTopPains(
@@ -96,6 +109,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           org,
           repo: painFilters.repo,
           prio: painFilters.prio,
+          state: painFilters.state,
           page: painPage,
           pageSize: painPageSize,
         },
@@ -103,6 +117,29 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       ),
     staleTime: ISSUE_QUERY_STALE_TIME,
     // 翻页/筛选时保留上一页数据，避免表格闪空
+    keepPreviousData: true,
+  });
+
+  const {
+    data: painOverviewDetailData,
+    isFetching: painOverviewDetailLoading,
+  } = useQuery({
+    queryKey: [
+      'issue-overview-pain-summary-details',
+      org,
+      painOverviewDetail?.prio,
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueTopPains(
+        {
+          org,
+          prio: painOverviewDetail?.prio,
+          page: 1,
+          pageSize: 5000,
+        },
+        signal
+      ),
+    enabled: painOverviewDetail !== null,
     keepPreviousData: true,
   });
 
@@ -157,13 +194,40 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
 
   const orgSeg =
     typeof router.query.org === 'string' ? `/${router.query.org}` : '';
-  const reportHref = (community: string, period?: string) =>
+  const reportHref = (
+    community: string,
+    period?: string,
+    stageId?: string,
+    painId?: string
+  ) =>
     `/intelligent-analysis${orgSeg}/experience/issue-contribution?repo=${encodeURIComponent(
       community
-    )}${period ? `&period=${encodeURIComponent(period)}` : ''}`;
+    )}${period ? `&period=${encodeURIComponent(period)}` : ''}${
+      stageId ? `&stage=${encodeURIComponent(stageId)}` : ''
+    }${painId ? `&pain=${encodeURIComponent(painId)}` : ''}`;
 
   const painRepos = pains?.repoOptions ?? [];
   const painPris = pains?.prioOptions ?? [];
+  const renderPainSummaryValue = (
+    value: number,
+    target: PainOverviewDetailTarget,
+    className = ''
+  ) => (
+    <div
+      className={`ov-value ov-value-link ${className}`.trim()}
+      role="button"
+      tabIndex={0}
+      onClick={() => setPainOverviewDetail(target)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setPainOverviewDetail(target);
+        }
+      }}
+    >
+      {value}
+    </div>
+  );
 
   const topColumns: TableProps<IssueOverviewTopPain>['columns'] = [
     {
@@ -237,6 +301,37 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       ),
     },
     {
+      title: '跟踪状态',
+      dataIndex: 'trackingStatus',
+      width: 154,
+      filters: [
+        { text: '待确认', value: 1 },
+        { text: '已确认待修复', value: 2 },
+        { text: '已修复待复测', value: 3 },
+        { text: '已复测通过 / 已闭环', value: 5 },
+        { text: '复测不通过', value: 7 },
+      ],
+      filterMultiple: false,
+      filteredValue: painFilters.state ? [painFilters.state] : null,
+      render: (_value, record) => {
+        if (!record.trackingStatus || !record.trackingType) {
+          return <span className="text-slate-300">—</span>;
+        }
+        const meta = getTrackingStatusMeta(
+          record.trackingStatus,
+          record.trackingType,
+          record.trackingStatusLabel
+        );
+        return (
+          <span
+            className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.className}`}
+          >
+            {meta.label}
+          </span>
+        );
+      },
+    },
+    {
       title: '报告',
       dataIndex: 'community',
       width: 92,
@@ -244,7 +339,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       align: 'center',
       render: (community: string, r) => (
         <Link
-          href={reportHref(community, r.period)}
+          href={reportHref(community, r.period, r.stageId, r.painId)}
           className="overview-table-link"
         >
           查看报告
@@ -291,6 +386,20 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       width: 110,
       align: 'right',
       sorter: (a, b) => a.painCount - b.painCount,
+      render: (value: number, record) => (
+        <button
+          type="button"
+          className="overview-table-link overview-table-link-strong"
+          onClick={() =>
+            setPainOverviewDetail({
+              title: `${record.name} · 痛点`,
+              stageId: record.id,
+            })
+          }
+        >
+          {value}
+        </button>
+      ),
     },
     {
       title: '痛点级别分布',
@@ -320,13 +429,23 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             </div>
             <div className="overview-progress-meta">
               {priorities.map((priority) => (
-                <span
+                <button
+                  type="button"
                   key={priority.key}
                   className="overview-progress-text"
                   style={{ color: priority.color }}
+                  onClick={() =>
+                    setPainOverviewDetail({
+                      title: `${r.name} · ${getIssuePriorityLabel(
+                        priority.label
+                      )}`,
+                      stageId: r.id,
+                      prio: priority.label,
+                    })
+                  }
                 >
                   {priority.label} {r.painPriorityCounts[priority.key]}
-                </span>
+                </button>
               ))}
             </div>
           </div>
@@ -395,23 +514,45 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         >
           <div className="ov-item">
             <div className="ov-label">痛点总数</div>
-            <div className="ov-value">{m.painSummary.total}</div>
+            {renderPainSummaryValue(m.painSummary.total, {
+              title: '痛点总数',
+            })}
           </div>
           <div className="ov-item">
             <div className="ov-label">{getIssuePriorityLabel('P0')}</div>
-            <div className="ov-value ov-value-pending">{m.painSummary.p0}</div>
+            {renderPainSummaryValue(
+              m.painSummary.p0,
+              {
+                title: getIssuePriorityLabel('P0'),
+                prio: 'P0',
+              },
+              'ov-value-pending'
+            )}
           </div>
           <div className="ov-item">
             <div className="ov-label">{getIssuePriorityLabel('P1')}</div>
-            <div className="ov-value ov-value-pending">{m.painSummary.p1}</div>
+            {renderPainSummaryValue(
+              m.painSummary.p1,
+              {
+                title: getIssuePriorityLabel('P1'),
+                prio: 'P1',
+              },
+              'ov-value-pending'
+            )}
           </div>
           <div className="ov-item">
             <div className="ov-label">{getIssuePriorityLabel('P2')}</div>
-            <div className="ov-value">{m.painSummary.p2}</div>
+            {renderPainSummaryValue(m.painSummary.p2, {
+              title: getIssuePriorityLabel('P2'),
+              prio: 'P2',
+            })}
           </div>
           <div className="ov-item">
             <div className="ov-label">{getIssuePriorityLabel('P3')}</div>
-            <div className="ov-value">{m.painSummary.p3}</div>
+            {renderPainSummaryValue(m.painSummary.p3, {
+              title: getIssuePriorityLabel('P3'),
+              prio: 'P3',
+            })}
           </div>
           <div className="ov-item">
             <div className="ov-label">覆盖仓库</div>
@@ -471,13 +612,18 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           onChange={(pagination, filters) => {
             const repo = (filters.repoShort?.[0] as string) || undefined;
             const prio = (filters.prio?.[0] as string) || undefined;
+            const state = filters.trackingStatus?.[0]
+              ? Number(filters.trackingStatus[0])
+              : undefined;
             const filtersChanged =
-              repo !== painFilters.repo || prio !== painFilters.prio;
-            if (filtersChanged) setPainFilters({ repo, prio });
+              repo !== painFilters.repo ||
+              prio !== painFilters.prio ||
+              state !== painFilters.state;
+            if (filtersChanged) setPainFilters({ repo, prio, state });
             // 筛选变化时回到第一页，否则跟随翻页器
             setPainPage(filtersChanged ? 1 : pagination.current ?? 1);
           }}
-          scroll={{ x: 1588 }}
+          scroll={{ x: 1742 }}
           locale={{ emptyText: '当前无匹配的待办痛点' }}
         />
       </div>
@@ -518,6 +664,24 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         open={!!trendModal}
         trend={trendModal}
         onClose={() => setTrendModal(null)}
+      />
+      <IssuePainDetailModal
+        open={painOverviewDetail !== null}
+        onClose={() => setPainOverviewDetail(null)}
+        loading={painOverviewDetailLoading}
+        items={(painOverviewDetailData?.items ?? []).filter(
+          (item) =>
+            !painOverviewDetail?.stageId ||
+            item.stageId === painOverviewDetail.stageId
+        )}
+        repoTeams={Object.fromEntries(
+          latestReposByPeriod(data.repos).map((repo) => [
+            repo.repoShort,
+            repo.teamName,
+          ])
+        )}
+        reportHref={reportHref}
+        title={painOverviewDetail?.title ?? '痛点详情'}
       />
     </>
   );

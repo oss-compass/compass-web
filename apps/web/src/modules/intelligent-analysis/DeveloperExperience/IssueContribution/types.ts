@@ -265,6 +265,113 @@ export type IssueReportApiResponse = {
   report: IssueReportRecord | null;
 };
 
+export enum IssuePainTrackingStatus {
+  PENDING = 1,
+  TRACKING = 2,
+  FIXED_PENDING_RETEST = 3,
+  PASSED = 5,
+  INVALID = 6,
+  RETEST_FAILED = 7,
+}
+
+export type IssuePainTrackingType = 'fix' | 'observe';
+
+export type IssuePainTrackingIssue = {
+  number: string;
+  title: string;
+  url: string;
+  score: number | null;
+  metric_code?: string;
+  fixed: boolean;
+  fixed_by?: string | null;
+  fixed_at?: string | null;
+  first_seen_period: string;
+  last_seen_period: string;
+  synthetic?: boolean;
+};
+
+export type IssuePainTrackingHistory = {
+  at: string;
+  by: string;
+  action: string;
+  from: number;
+  to: number;
+  reason: string;
+  round?: number;
+};
+
+export type IssuePainTracking = {
+  trackingKey: string;
+  community: string;
+  stageId: string;
+  stageName?: string;
+  trackingType: IssuePainTrackingType;
+  status: IssuePainTrackingStatus;
+  statusLabel: string;
+  anchorType: 'metric' | 'title';
+  metricCode?: string | null;
+  metricCodes?: string[];
+  firstTitle: string;
+  latestTitle: string;
+  prioLatest?: string;
+  round: number;
+  confirmedBy?: string | null;
+  confirmedAt?: string | null;
+  invalidReason?: string | null;
+  activeIssues: IssuePainTrackingIssue[];
+  archivedIssues: IssuePainTrackingIssue[];
+  painLevelOnly: boolean;
+  archivedFixedCount: number;
+  fixedCount: number;
+  activeTotal: number;
+  issueCountTrend: Array<{ period: string; count: number }>;
+  sightings: Array<{
+    period: string;
+    pain_id: string;
+    title: string;
+    issue_count: number;
+    metric_code?: string | null;
+  }>;
+  retest?: {
+    decision: 'passed' | 'failed';
+    auto: boolean;
+    based_period?: string;
+    based_periods?: string[];
+    matched_pain_id?: string;
+    recurred_issues?: string[];
+    at?: string;
+  } | null;
+  missCount: number;
+  passMissPeriods: number;
+  lastSeenPeriod: string;
+  history: IssuePainTrackingHistory[];
+};
+
+export type IssuePainTrackingResponse = {
+  items: IssuePainTracking[];
+  reportBindings: Array<{
+    painId: string;
+    stageId: string;
+    trackingKey: string;
+  }>;
+};
+
+export type IssuePainTrackingActionType =
+  | 'confirm'
+  | 'mark_invalid'
+  | 'rollback_to_pending'
+  | 'mark_issue_fixed'
+  | 'undo_issue_fixed';
+
+export type IssuePainTrackingActionPayload = {
+  community: string;
+  trackingKey: string;
+  type: IssuePainTrackingActionType;
+  operator: string;
+  issueNumber?: string;
+  reason?: string;
+};
+
 // ─────────────────────────────────────────────────────────────
 // Issue 贡献总览（跨仓聚合）—— 服务端裁剪为紧凑视图模型后经 API 下发，
 // 原始报告体量巨大且仅存于服务端，不进入浏览器包。
@@ -315,6 +422,8 @@ export type IssueOverviewRepo = {
 /** 重点待办痛点（跨仓汇总，P0/P1 优先） */
 export type IssueOverviewTopPain = {
   key: string;
+  painId?: string;
+  stageId?: string;
   community: string;
   repoShort: string;
   period: string;
@@ -326,6 +435,11 @@ export type IssueOverviewTopPain = {
   impact: string;
   action: string;
   state: string;
+  lowScoreIssues?: IssueReportPainIssue[];
+  trackingKey?: string;
+  trackingStatus?: number;
+  trackingStatusLabel?: string;
+  trackingType?: IssuePainTrackingType;
 };
 
 /** 跨仓逐周聚合序列（用于顶部 KPI 缩略图） */
@@ -363,6 +477,8 @@ export type IssueTopPainsQuery = {
   repoPeriods?: string;
   /** 优先级 P0/P1/P2/P3 */
   prio?: string;
+  /** 痛点跟踪状态 */
+  state?: number;
   page?: number;
   pageSize?: number;
 };

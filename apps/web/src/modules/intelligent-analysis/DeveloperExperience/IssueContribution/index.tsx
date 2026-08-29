@@ -1,8 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Empty, Spin } from 'antd';
+import { Empty, Spin, message } from 'antd';
 import { useRouter } from 'next/router';
-import { fetchIssueReportData } from './data';
-import type { IssueReportCatalogRecord, IssueReportRecord } from './types';
+import {
+  fetchIssuePainTrackings,
+  fetchIssueReportData,
+  postIssuePainTrackingAction,
+} from './data';
+import type {
+  IssuePainTracking,
+  IssuePainTrackingActionPayload,
+  IssuePainTrackingResponse,
+  IssueReportCatalogRecord,
+  IssueReportRecord,
+} from './types';
 import ExperienceBackLink from '../components/ExperienceBackLink';
 import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
@@ -42,11 +52,15 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   const requestedCommunity = getSingleQueryValue(router.query.repo);
   const requestedPeriod = getSingleQueryValue(router.query.period);
   const requestedVersion = getSingleQueryValue(router.query.version);
+  const requestedStage = getSingleQueryValue(router.query.stage);
+  const requestedPain = getSingleQueryValue(router.query.pain);
   const [catalog, setCatalog] = useState<IssueReportCatalogRecord[]>([]);
   const [report, setReport] = useState<IssueReportRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [activeStageId, setActiveStageId] = useState('');
+  const [painTrackings, setPainTrackings] =
+    useState<IssuePainTrackingResponse | null>(null);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -95,8 +109,78 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
     const nextVisibleStages = report?.data.report_context.stages.filter(
       (stage) => !stage.is_lens
     );
-    setActiveStageId(nextVisibleStages?.[0]?.id ?? '');
-  }, [report]);
+    const requestedVisibleStage = nextVisibleStages?.find(
+      (stage) => stage.id === requestedStage
+    );
+    setActiveStageId(
+      requestedVisibleStage?.id ?? nextVisibleStages?.[0]?.id ?? ''
+    );
+  }, [report, requestedStage]);
+
+  useEffect(() => {
+    if (!report?.community || !report.period) {
+      setPainTrackings(null);
+      return;
+    }
+    const controller = new AbortController();
+    setPainTrackings(null);
+    void fetchIssuePainTrackings(
+      report.community,
+      report.period,
+      controller.signal
+    )
+      .then(setPainTrackings)
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        setPainTrackings(null);
+      });
+    return () => controller.abort();
+  }, [report?.community, report?.period]);
+
+  const trackingByPain = useMemo(() => {
+    const itemMap = new Map(
+      (painTrackings?.items ?? []).map((item) => [item.trackingKey, item])
+    );
+    return new Map(
+      (painTrackings?.reportBindings ?? []).flatMap((binding) => {
+        const tracking = itemMap.get(binding.trackingKey);
+        return tracking
+          ? [[`${binding.stageId}#${binding.painId}`, tracking] as const]
+          : [];
+      })
+    );
+  }, [painTrackings]);
+
+  const handleTrackingAction = async (
+    payload: Omit<IssuePainTrackingActionPayload, 'community'>
+  ): Promise<IssuePainTracking> => {
+    if (!report?.community) throw new Error('当前报告缺少仓库信息');
+    try {
+      const response = await postIssuePainTrackingAction({
+        ...payload,
+        community: report.community,
+      });
+      setPainTrackings((current) =>
+        current
+          ? {
+              ...current,
+              items: current.items.map((item) =>
+                item.trackingKey === response.data.trackingKey
+                  ? response.data
+                  : item
+              ),
+            }
+          : current
+      );
+      return response.data;
+    } catch (error) {
+      message.error(
+        error instanceof Error ? error.message : '痛点跟踪操作失败'
+      );
+      throw error;
+    }
+  };
 
   const platform = report?.platform ?? requestedPlatform ?? '';
   const community = report?.community ?? requestedCommunity ?? '';
@@ -144,11 +228,12 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   );
 
   const selectReport = (nextReport: IssueReportCatalogRecord) => {
+    const { stage: _stage, pain: _pain, ...baseQuery } = router.query;
     void router.push(
       {
         pathname: router.pathname,
         query: {
-          ...router.query,
+          ...baseQuery,
           platform: nextReport.platform,
           repo: nextReport.community,
           period: nextReport.period,
@@ -217,7 +302,10 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 issueScoreRows={report.data.report_context.issue_score_rows}
                 sampleSize={report.data.report_context.n_total}
                 activeStageId={activeStageId}
+                focusPainId={requestedPain}
                 onStageChange={setActiveStageId}
+                trackingByPain={trackingByPain}
+                onTrackingAction={handleTrackingAction}
               />
               <IssueScoreOverview
                 stages={visibleStages}

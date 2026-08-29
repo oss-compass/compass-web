@@ -6,22 +6,32 @@ import {
   LinkOutlined,
   ProfileOutlined,
 } from '@ant-design/icons';
-import { Pagination, Popover } from 'antd';
+import { Pagination, Popover, Tooltip } from 'antd';
 import {
   getPriorityTone,
+  getPriorityLabel,
   getScoreTone,
   stripMetricCode,
 } from '../presentation';
 import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
 import type { MetricDefinition } from '../metricDefinitions';
 import type {
+  IssuePainTracking,
+  IssuePainTrackingActionPayload,
   IssueReportPain,
   IssueReportRecommendation,
   IssueReportStage,
   IssueScoreRow,
   IssueScoreRowStageDetail,
 } from '../types';
+import { IssuePainTrackingStatus } from '../types';
+import PainTrackingModal, {
+  IssueFixButton,
+  TrackingActionButton,
+  TrackingProgress,
+} from './PainTrackingModal';
 import HintIcon from './HintIcon';
+import PainIssueTable from './PainIssueTable';
 import IssueStageDirectory from './IssueStageDirectory';
 
 type IssueExperiencePathProps = {
@@ -32,24 +42,19 @@ type IssueExperiencePathProps = {
   issueScoreRows?: IssueScoreRow[];
   sampleSize: number;
   activeStageId: string;
+  focusPainId?: string;
   onStageChange: (stageId: string) => void;
+  trackingByPain?: Map<string, IssuePainTracking>;
+  onTrackingAction?: (
+    payload: Omit<IssuePainTrackingActionPayload, 'community'>
+  ) => Promise<IssuePainTracking>;
 };
 
-const EVIDENCE_TYPE_META: Record<string, { label: string; cls: string }> = {
-  open: { label: '创建', cls: 'bg-sky-50 text-sky-600' },
-  comment: { label: '评论', cls: 'bg-slate-100 text-slate-600' },
-  assign: { label: '指派', cls: 'bg-violet-50 text-violet-600' },
-  label: { label: '打标', cls: 'bg-amber-50 text-amber-600' },
-  close: { label: '关闭', cls: 'bg-rose-50 text-rose-600' },
-  reopen: { label: '重开', cls: 'bg-emerald-50 text-emerald-600' },
-  pr: { label: '关联 PR', cls: 'bg-indigo-50 text-indigo-600' },
-};
-
-const getEvidenceMeta = (type: string) =>
-  EVIDENCE_TYPE_META[type] ?? {
-    label: type || '动作',
-    cls: 'bg-slate-100 text-slate-500',
-  };
+const normalizePainMetricCode = (value: string) =>
+  value
+    .trim()
+    .replace(/[-\s]+/g, '_')
+    .toUpperCase();
 
 /**
  * 关键指标卡片 hover 浮窗内容：展示「指标含义」文字 + 「算分算法」评分表。
@@ -391,49 +396,117 @@ const StageIssueScoreSection: React.FC<{
  * 单个痛点卡：可展开查看关键证据、体验影响，以及涉及的具体 Issue 明细表
  *（对齐 CI 报告「问题定位」中每个问题以表格展示关联记录的形式）。
  */
-const StagePainCard: React.FC<{ pain: IssueReportPain }> = ({ pain }) => {
+const StagePainCard: React.FC<{
+  pain: IssueReportPain;
+  focused?: boolean;
+  tracking?: IssuePainTracking;
+  metricNamesByCode: Map<string, string>;
+  onTrackingAction?: (
+    payload: Omit<IssuePainTrackingActionPayload, 'community'>
+  ) => Promise<IssuePainTracking>;
+}> = ({ pain, focused, tracking, metricNamesByCode, onTrackingAction }) => {
   const tone = getPriorityTone(pain.prio);
   const issues = pain.low_score_issues ?? [];
   const [open, setOpen] = useState(true);
+  const [trackingModalOpen, setTrackingModalOpen] = useState(false);
+  const evidenceMetricCode = pain.evidence.match(/^([A-Z0-9_-]+)\s*[:：]/)?.[1];
+  const painMetricCodes = Array.from(
+    new Set(
+      [
+        ...(tracking?.metricCodes ?? []),
+        tracking?.metricCode,
+        ...issues.map((issue) => issue.metric_code),
+        evidenceMetricCode,
+      ]
+        .filter((code): code is string => Boolean(code?.trim()))
+        .map(normalizePainMetricCode)
+    )
+  );
+  const painMetricLabels = Array.from(
+    new Set(
+      painMetricCodes.flatMap((code) => {
+        const chineseName = metricNamesByCode.get(code);
+        return chineseName ? [chineseName] : [];
+      })
+    )
+  );
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-rose-200/70 bg-white shadow-[0_10px_24px_rgba(244,63,94,0.06)]">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-rose-50/40"
-      >
-        <span className="min-w-0 flex-1">
+    <div
+      id={`issue-pain-${encodeURIComponent(pain.stage_id)}-${encodeURIComponent(
+        pain.id
+      )}`}
+      className={`scroll-mt-24 overflow-hidden rounded-2xl border border-rose-200/70 bg-white shadow-[0_10px_24px_rgba(244,63,94,0.06)] transition-shadow ${
+        focused ? 'ring-2 ring-blue-300' : ''
+      }`}
+    >
+      <div className="flex w-full items-start justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-rose-50/40">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="min-w-0 flex-1 text-left"
+        >
           <span className="flex flex-wrap items-center gap-2">
             <span
               className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
             >
-              {pain.prio}
+              {getPriorityLabel(pain.prio)}
             </span>
-            {issues.length ? (
-              <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-600">
-                {issues.length} 个 Issue
+            {painMetricLabels.map((label) => (
+              <span
+                key={label}
+                className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600"
+              >
+                {label}
               </span>
-            ) : null}
+            ))}
           </span>
           <span className="mt-2 block text-sm font-semibold leading-6 text-slate-900">
             {pain.title}
           </span>
-        </span>
-        <span className="shrink-0 pt-1 text-slate-400">
-          <DownOutlined
-            className={`text-[11px] transition-transform ${
-              open ? 'rotate-180' : ''
-            }`}
-          />
-        </span>
-      </button>
+          {tracking?.trackingType === 'fix' &&
+          tracking.status === IssuePainTrackingStatus.TRACKING &&
+          tracking.activeTotal > 0 ? (
+            <span className="mt-3 block max-w-[320px]">
+              <TrackingProgress tracking={tracking} />
+            </span>
+          ) : null}
+        </button>
+        <div className="flex shrink-0 items-center gap-2 pt-0.5">
+          {tracking && onTrackingAction ? (
+            <TrackingActionButton
+              tracking={tracking}
+              onClick={() => setTrackingModalOpen(true)}
+            />
+          ) : (
+            <span
+              title="跟踪记录尚未生成，请稍后刷新"
+              className="inline-flex rounded-full border border-dashed border-slate-300 bg-slate-50 px-2.5 py-1 text-[10px] text-slate-400"
+            >
+              跟踪数据准备中
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? '收起痛点详情' : '展开痛点详情'}
+            aria-expanded={open}
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-slate-600"
+          >
+            <DownOutlined
+              className={`text-[11px] transition-transform ${
+                open ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+        </div>
+      </div>
 
       {open ? (
         <div className="border-t border-rose-100 px-4 py-4">
           <div className="grid gap-2 text-xs leading-5">
-            <p className="rounded-xl bg-slate-50 px-3 py-2 text-slate-600">
+            <p className="px-1 text-slate-600">
               <span className="font-semibold text-slate-400">关键证据 · </span>
               {pain.evidence}
             </p>
@@ -449,104 +522,37 @@ const StagePainCard: React.FC<{ pain: IssueReportPain }> = ({ pain }) => {
                 <FlagOutlined className="text-rose-400" />
                 涉及 Issue 明细 · {issues.length} 个
               </div>
-              <div className="overflow-x-auto rounded-xl border border-slate-200">
-                <table className="w-full min-w-[720px] border-collapse text-[12px]">
-                  <thead className="bg-slate-50/80">
-                    <tr>
-                      <th className="w-[220px] border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                        Issue
-                      </th>
-                      <th className="w-[56px] border-b border-slate-200 px-3 py-2 text-center text-[11px] font-semibold text-slate-500">
-                        得分
-                      </th>
-                      <th className="w-[220px] border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                        低分原因
-                      </th>
-                      <th className="border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                        原文依据
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {issues.map((issue) => {
-                      const issueTone = getScoreTone(issue.score);
-                      return (
-                        <tr key={issue.number} className="align-top">
-                          <td className="border-b border-slate-100 px-3 py-2.5">
-                            <a
-                              href={issue.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
-                            >
-                              <LinkOutlined className="text-[11px]" />#
-                              {issue.number}
-                            </a>
-                            <div className="mt-1 leading-5 text-slate-600">
-                              {issue.title}
-                            </div>
-                          </td>
-                          <td className="border-b border-slate-100 px-3 py-2.5 text-center">
-                            <span
-                              className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold ${issueTone.badge}`}
-                            >
-                              {issue.score}
-                            </span>
-                          </td>
-                          <td className="border-b border-slate-100 px-3 py-2.5 leading-5 text-slate-600">
-                            {issue.reason}
-                          </td>
-                          <td className="border-b border-slate-100 px-3 py-2.5">
-                            {issue.evidence.length ? (
-                              <ul className="space-y-1">
-                                {issue.evidence.map((ev, i) => {
-                                  const meta = getEvidenceMeta(ev.type);
-                                  return (
-                                    <li
-                                      key={`${ev.type}-${i}`}
-                                      className="flex items-start gap-1.5"
-                                    >
-                                      <span
-                                        className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${meta.cls}`}
-                                      >
-                                        {meta.label}
-                                      </span>
-                                      <span className="min-w-0 leading-5 text-slate-600">
-                                        {ev.actor ? (
-                                          <span className="font-medium text-slate-500">
-                                            {ev.actor}：
-                                          </span>
-                                        ) : null}
-                                        {ev.url ? (
-                                          <a
-                                            href={ev.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline"
-                                          >
-                                            {ev.text}
-                                          </a>
-                                        ) : (
-                                          ev.text
-                                        )}
-                                      </span>
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            ) : (
-                              <span className="text-slate-400">—</span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <PainIssueTable
+                issues={issues}
+                tracking={tracking}
+                onTrackingAction={onTrackingAction}
+              />
+            </div>
+          ) : null}
+          {tracking?.painLevelOnly && onTrackingAction ? (
+            <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+              <span className="text-xs text-slate-500">
+                当前痛点没有关联 Issue，可直接标记痛点整体已修复。
+              </span>
+              <IssueFixButton
+                tracking={tracking}
+                issue={tracking.activeIssues[0]}
+                onAction={onTrackingAction}
+                compact
+              />
             </div>
           ) : null}
         </div>
+      ) : null}
+      {tracking && onTrackingAction ? (
+        <PainTrackingModal
+          open={trackingModalOpen}
+          pain={pain}
+          tracking={tracking}
+          metricLabels={painMetricLabels}
+          onClose={() => setTrackingModalOpen(false)}
+          onAction={onTrackingAction}
+        />
       ) : null}
     </div>
   );
@@ -560,7 +566,10 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   issueScoreRows,
   sampleSize,
   activeStageId,
+  focusPainId,
   onStageChange,
+  trackingByPain,
+  onTrackingAction,
 }) => {
   const selectedStage = stages.find((stage) => stage.id === activeStageId);
   const activeStage = selectedStage ?? stages[0];
@@ -581,6 +590,20 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
     container.scrollBy({ left: delta });
   }, [activeStageId]);
 
+  useEffect(() => {
+    if (!focusPainId || !activeStage?.id) return;
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .getElementById(
+          `issue-pain-${encodeURIComponent(
+            activeStage.id
+          )}-${encodeURIComponent(focusPainId)}`
+        )
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeStage?.id, focusPainId]);
+
   const [metricsOpen, setMetricsOpen] = useState(true);
 
   if (!activeStage) return null;
@@ -590,6 +613,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   const scoreTone = stageEvaluated
     ? getScoreTone(Number(activeStage.mixed))
     : NOT_EVALUATED_TONE;
+  const metricNamesByCode = new Map(
+    [...activeStage.metrics_obj, ...activeStage.metrics_sub].map((metric) => [
+      normalizePainMetricCode(metric.code),
+      metric.name_cn,
+    ])
+  );
 
   const handleCardClick = (stageId: string) => {
     onStageChange(stageId);
@@ -1075,22 +1104,26 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
 
                   {stagePains.length ? (
                     <div className="border-t border-slate-200 pt-6">
-                      <div className="flex flex-wrap items-end justify-between gap-3">
-                        <div className="flex items-center gap-1.5">
-                          <FlagOutlined className="text-rose-500" />
-                          <h4 className="text-base font-semibold text-slate-900">
-                            痛点
-                          </h4>
-                          <HintIcon title="本阶段的主要问题及其涉及的具体 Issue 明细，点击卡片可展开查看关联 Issue 的低分原因与原文依据。" />
-                        </div>
-                        <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
-                          {stagePains.length} 个问题
-                        </span>
+                      <div className="flex items-center gap-1.5">
+                        <FlagOutlined className="text-rose-500" />
+                        <h4 className="text-base font-semibold text-slate-900">
+                          痛点
+                        </h4>
+                        <HintIcon title="本阶段的主要问题及其涉及的具体 Issue 明细，点击卡片可展开查看关联 Issue 的低分原因与原文依据。" />
                       </div>
 
                       <div className="mt-4 flex flex-col gap-4">
                         {stagePains.map((pain) => (
-                          <StagePainCard key={pain.id} pain={pain} />
+                          <StagePainCard
+                            key={pain.id}
+                            pain={pain}
+                            focused={pain.id === focusPainId}
+                            metricNamesByCode={metricNamesByCode}
+                            tracking={trackingByPain?.get(
+                              `${pain.stage_id}#${pain.id}`
+                            )}
+                            onTrackingAction={onTrackingAction}
+                          />
                         ))}
                       </div>
                     </div>

@@ -2,16 +2,19 @@ import React from 'react';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import ReportSectionCard from '../../components/ReportSectionCard';
 import { getPriorityTone } from '../presentation';
-import type { IssueReportPain } from '../types';
+import type { IssuePainTracking, IssueReportPain } from '../types';
+import { TrackingStatusBadge } from './PainTrackingModal';
 
 type IssueProblemsProps = {
   pains: IssueReportPain[];
   recommendationIds: string[];
+  trackingByPain?: Map<string, IssuePainTracking>;
 };
 
 const IssueProblems: React.FC<IssueProblemsProps> = ({
   pains,
   recommendationIds,
+  trackingByPain,
 }) => (
   <ReportSectionCard
     id="main-problems"
@@ -32,6 +35,7 @@ const IssueProblems: React.FC<IssueProblemsProps> = ({
           <col style={{ width: '23%' }} />
           <col />
           <col />
+          <col style={{ width: '150px' }} />
           <col style={{ width: '190px' }} />
         </colgroup>
         <thead>
@@ -40,6 +44,7 @@ const IssueProblems: React.FC<IssueProblemsProps> = ({
             <th className="px-4 py-3">问题</th>
             <th className="px-4 py-3">关键证据</th>
             <th className="px-4 py-3">体验影响</th>
+            <th className="px-4 py-3">跟踪状态</th>
             <th className="px-4 py-3">建议动作</th>
           </tr>
         </thead>
@@ -47,6 +52,7 @@ const IssueProblems: React.FC<IssueProblemsProps> = ({
           {pains.map((pain) => {
             const tone = getPriorityTone(pain.prio);
             const linked = recommendationIds.includes(pain.rec_id);
+            const tracking = trackingByPain?.get(`${pain.stage_id}#${pain.id}`);
             return (
               <tr
                 key={pain.id}
@@ -61,9 +67,11 @@ const IssueProblems: React.FC<IssueProblemsProps> = ({
                   <div className="mt-1.5 font-mono text-[11px] font-semibold text-slate-400">
                     {pain.id}
                   </div>
-                  <div className="mt-1 whitespace-nowrap text-[10px] text-slate-400">
-                    {pain.state}
-                  </div>
+                  {!tracking ? (
+                    <div className="mt-1 whitespace-nowrap text-[10px] text-slate-400">
+                      {pain.state}
+                    </div>
+                  ) : null}
                 </td>
                 <td className="px-4 py-4">
                   <p className="text-[13px] font-semibold leading-6 text-slate-900">
@@ -75,6 +83,13 @@ const IssueProblems: React.FC<IssueProblemsProps> = ({
                 </td>
                 <td className="px-4 py-4 text-xs leading-5 text-slate-600">
                   {pain.impact}
+                </td>
+                <td className="px-4 py-4">
+                  {tracking ? (
+                    <TrackingStatusBadge tracking={tracking} />
+                  ) : (
+                    <span className="text-xs text-slate-300">—</span>
+                  )}
                 </td>
                 <td className="px-4 py-4">
                   <p className="text-xs font-medium leading-5 text-slate-700">

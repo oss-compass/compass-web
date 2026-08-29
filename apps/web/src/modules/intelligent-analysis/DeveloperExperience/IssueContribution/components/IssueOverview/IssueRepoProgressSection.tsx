@@ -30,7 +30,12 @@ type TeamRow = {
 type Props = {
   org?: string;
   repos: IssueOverviewRepo[];
-  reportHref: (community: string, period?: string) => string;
+  reportHref: (
+    community: string,
+    period?: string,
+    stageId?: string,
+    painId?: string
+  ) => string;
   onOpenScoreTrend: (repo: IssueOverviewRepo) => void;
 };
 

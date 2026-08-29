@@ -1,5 +1,8 @@
 import type {
   IssueOverviewApiResponse,
+  IssuePainTracking,
+  IssuePainTrackingActionPayload,
+  IssuePainTrackingResponse,
   IssueReportApiResponse,
   IssueReportFilters,
   IssueTopPainsApiResponse,
@@ -26,6 +29,7 @@ const API_PREFIX = `${USER_JOURNEY_PREFIX}/issue-experience`;
 const REPORT_API_PATH = `${API_PREFIX}/reports`;
 const OVERVIEW_API_PATH = `${API_PREFIX}/overview`;
 const TOP_PAINS_API_PATH = `${API_PREFIX}/overview/top-pains`;
+const PAIN_TRACKINGS_API_PATH = `${API_PREFIX}/pain-trackings`;
 const REPO_TEAMS_API_PATH = `${API_PREFIX}/overview/repo-teams`;
 
 export type RepoTeamItem = { repoShort: string; teamName: string };
@@ -102,4 +106,47 @@ export const fetchIssueTopPains = async (
   }
 
   return response.json() as Promise<IssueTopPainsApiResponse>;
+};
+
+export const fetchIssuePainTrackings = async (
+  community: string,
+  period: string,
+  signal?: AbortSignal
+): Promise<IssuePainTrackingResponse> => {
+  const search = new URLSearchParams({ community, period });
+  const response = await fetch(
+    `${getApiBase()}${PAIN_TRACKINGS_API_PATH}?${search.toString()}`,
+    { signal, cache: 'no-store' }
+  );
+  if (!response.ok) {
+    throw new Error(`Issue pain trackings request failed: ${response.status}`);
+  }
+  return response.json() as Promise<IssuePainTrackingResponse>;
+};
+
+export const postIssuePainTrackingAction = async (
+  payload: IssuePainTrackingActionPayload
+): Promise<{ message: string; data: IssuePainTracking }> => {
+  const response = await fetch(
+    `${getApiBase()}${PAIN_TRACKINGS_API_PATH}/actions`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as {
+      detail?: { message?: string } | string;
+    } | null;
+    const errorMessage =
+      typeof body?.detail === 'string'
+        ? body.detail
+        : body?.detail?.message || `操作失败（${response.status}）`;
+    throw new Error(errorMessage);
+  }
+  return response.json() as Promise<{
+    message: string;
+    data: IssuePainTracking;
+  }>;
 };
