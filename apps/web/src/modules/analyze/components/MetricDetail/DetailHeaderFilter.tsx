@@ -26,7 +26,7 @@ const DetailHeaderFilter: React.FC<{
   if (type == 'issue') {
     return (
       <>
-        {level === 'community1' ? (
+        {level === 'community' ? (
           <CommunityFilter
             label={label}
             onRepoChange={(v) => onRepoChange(v)}
@@ -41,7 +41,7 @@ const DetailHeaderFilter: React.FC<{
   } else if (type == 'pr') {
     return (
       <>
-        {level === 'community1' ? (
+        {level === 'community' ? (
           <CommunityFilter
             label={label}
             onRepoChange={(v) => onRepoChange(v)}
