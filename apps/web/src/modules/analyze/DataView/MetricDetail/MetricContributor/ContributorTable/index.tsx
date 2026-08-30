@@ -35,6 +35,7 @@ import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { AiOutlineSearch, AiFillFilter } from 'react-icons/ai';
 import getErrorMessage from '@common/utils/getErrorMessage';
+import { safeJsonParse } from '@common/utils';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import toast from 'react-hot-toast';
@@ -69,11 +70,15 @@ const MetricTable: React.FC<{
   const router = useRouter();
   const { handleQueryParams } = useHandleQueryParams();
 
-  const queryFilterOpts = router.query?.filterOpts as string;
-  const defaultFilterOpts = queryFilterOpts ? JSON.parse(queryFilterOpts) : [];
-  const defaultSortOpts = router.query?.sortOpts
-    ? JSON.parse(router.query?.sortOpts as string)
-    : null;
+  const queryFilterOpts = router.query?.filterOpts;
+  const defaultFilterOpts = safeJsonParse<FilterOptionInput[]>(
+    queryFilterOpts,
+    []
+  );
+  const defaultSortOpts = safeJsonParse<SortOptionInput | null>(
+    router.query?.sortOpts,
+    null
+  );
   const [filterOpts, setFilterOpts] = useState(defaultFilterOpts || []);
   const filterContributionType = useMemo(() => {
     return filterOpts.find((i) => i.type === 'contribution_type');
