@@ -80,7 +80,9 @@ const MetricTable: React.FC<{
   ) => {
     let sortOpts = null;
     let filterOpts = [];
-    sortOpts = sorter.field && {
+    // 以 sorter.order 为准：第三次点击表头取消排序时 order 为 undefined，
+    // 需要清空排序条件，而不是继续按 desc 发送
+    sortOpts = sorter.order && {
       type: toUnderline(sorter.field as string),
       direction: sorter.order === 'ascend' ? 'asc' : 'desc',
     };
