@@ -10,6 +10,7 @@ import {
   removeExtname,
   removeTrailingSlash,
   getNameSpacePng,
+  getSameOriginHref,
 } from './url';
 
 describe('utils url ', () => {
@@ -221,6 +222,43 @@ describe('utils url ', () => {
 
     testCases.map((item) => {
       expect(getNameSpacePng(item.input)).toEqual(item.result);
+    });
+  });
+
+  describe('getSameOriginHref', () => {
+    const origin = 'https://oss-compass.org';
+
+    it('allows same-site relative and absolute URLs', () => {
+      expect(getSameOriginHref('/lab/model/detail?model=1', origin)).toEqual(
+        'https://oss-compass.org/lab/model/detail?model=1'
+      );
+      expect(
+        getSameOriginHref('https://oss-compass.org/lab/model/detail', origin)
+      ).toEqual('https://oss-compass.org/lab/model/detail');
+    });
+
+    it('blocks external sites and pseudo-protocol URLs', () => {
+      expect(getSameOriginHref('https://evil.com/phish', origin)).toEqual('');
+      expect(getSameOriginHref('//evil.com/phish', origin)).toEqual('');
+      expect(getSameOriginHref('javascript:alert(1)', origin)).toEqual('');
+      expect(getSameOriginHref('data:text/html,<script>', origin)).toEqual('');
+      // 仿冒域名与异端口都不是同源
+      expect(
+        getSameOriginHref('https://oss-compass.org.evil.com/x', origin)
+      ).toEqual('');
+      expect(
+        getSameOriginHref('https://oss-compass.org:8080/x', origin)
+      ).toEqual('');
+    });
+
+    it('blocks cross-scheme navigation (http -> https site)', () => {
+      expect(getSameOriginHref('http://oss-compass.org/lab/x', origin)).toEqual(
+        ''
+      );
+    });
+
+    it('returns empty for empty input', () => {
+      expect(getSameOriginHref('', origin)).toEqual('');
     });
   });
 });

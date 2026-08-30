@@ -9,6 +9,21 @@ export const parseUrl = (url: string): URL | null => {
   }
 };
 
+// 校验外部传入的重定向地址是否指向本站（相对路径或同源绝对 URL），
+// 外站 / 伪协议（javascript: 等）一律返回空串，防止开放重定向
+export const getSameOriginHref = (raw: string, origin?: string): string => {
+  if (!raw) return '';
+  const base =
+    origin ?? (typeof window !== 'undefined' ? window.location.origin : '');
+  if (!base) return '';
+  try {
+    const url = new URL(raw, base);
+    return url.origin === base ? url.href : '';
+  } catch {
+    return '';
+  }
+};
+
 //https://github.com/cli/cli =>  cli/cli
 export const getPathname = (url: string): string => {
   const u = parseUrl(url);
