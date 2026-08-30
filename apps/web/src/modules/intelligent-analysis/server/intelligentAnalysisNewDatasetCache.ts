@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import { classifyOrganization } from '@modules/intelligent-analysis/GovernancePlatform/Overview/Project/utils/orgClassifier';
+import { isSafePathSegment } from '@modules/intelligent-analysis/server/pathSafety';
 
 type RawRow = Record<string, any>;
 
@@ -290,6 +291,10 @@ export async function getDatasetCacheValue(
   dataset: string,
   mode: 'backup' | 'detail'
 ): Promise<DatasetCacheValue> {
+  if (!isSafePathSegment(dataset)) {
+    throw new Error(`Invalid dataset: ${dataset}`);
+  }
+
   const cacheKey = `${dataset}__${mode}`;
   const cached = datasetCache.get(cacheKey);
   if (cached) return cached;

@@ -3,6 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs/promises';
 import path from 'path';
 
+import {
+  isSafePathSegment,
+  resolveFileInsideDir,
+} from '@modules/intelligent-analysis/server/pathSafety';
+
 const backupCache = new Map<string, unknown[]>();
 
 async function fileExists(filePath: string): Promise<boolean> {
@@ -115,14 +120,24 @@ export default async function handler(
     return;
   }
 
+  if (!isSafePathSegment(dataset) || !isSafePathSegment(userId)) {
+    res.status(400).json({ message: 'Invalid dataset or userId' });
+    return;
+  }
+
   const datasetDir = await resolveDatasetDir(dataset);
   const fileBase = normalizeUserFileBase(userId);
-  const mainFilePath = path.resolve(datasetDir, `${fileBase}_main.json`);
-  const fallbackFilePath = path.resolve(datasetDir, `${fileBase}.json`);
+  const mainFilePath = resolveFileInsideDir(
+    datasetDir,
+    `${fileBase}_main.json`
+  );
+  const fallbackFilePath = resolveFileInsideDir(datasetDir, `${fileBase}.json`);
 
-  const filePath = (await fileExists(mainFilePath))
-    ? mainFilePath
-    : (await fileExists(fallbackFilePath)) ? fallbackFilePath : null;
+  const filePath =
+    (mainFilePath && (await fileExists(mainFilePath)) ? mainFilePath : null) ??
+    (fallbackFilePath && (await fileExists(fallbackFilePath))
+      ? fallbackFilePath
+      : null);
 
   if (!filePath) {
     try {
