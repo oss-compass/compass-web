@@ -12,69 +12,7 @@ import {
   shortTrackingPeriod,
   validateOperator,
 } from './utils';
-
-const getCurrentFlowStep = (
-  status: IssuePainTrackingStatus,
-  isObserve: boolean
-) => {
-  if (status === IssuePainTrackingStatus.PENDING) return 0;
-  if (status === IssuePainTrackingStatus.TRACKING) return 1;
-  if (status === IssuePainTrackingStatus.FIXED_PENDING_RETEST) return 2;
-  if (status === IssuePainTrackingStatus.PASSED) return isObserve ? 2 : 3;
-  if (status === IssuePainTrackingStatus.RETEST_FAILED) return 3;
-  return 1;
-};
-
-const findStatusTime = (
-  tracking: IssuePainTracking,
-  status: IssuePainTrackingStatus
-) =>
-  [...tracking.history].reverse().find((item) => item.to === status)?.at ??
-  null;
-
-const createFlowItem = (title: string, time?: string | null) => ({
-  title,
-  description: time ? (
-    <span className="text-xs text-slate-500">{formatTrackingTime(time)}</span>
-  ) : null,
-});
-
-const createPendingFlowItem = (tracking: IssuePainTracking) => {
-  return createFlowItem('待确认', tracking.confirmedAt);
-};
-
-const getFlowItems = (tracking: IssuePainTracking, isObserve: boolean) => {
-  if (tracking.status === IssuePainTrackingStatus.INVALID) {
-    const invalidAt = findStatusTime(tracking, IssuePainTrackingStatus.INVALID);
-    return [
-      createPendingFlowItem(tracking),
-      createFlowItem('非有效问题', invalidAt),
-    ];
-  }
-  if (isObserve) {
-    return [
-      createPendingFlowItem(tracking),
-      createFlowItem('已确认待修复', tracking.confirmedAt),
-      createFlowItem('已闭环', tracking.retest?.at),
-    ];
-  }
-  const retestFailed =
-    tracking.status === IssuePainTrackingStatus.RETEST_FAILED;
-  return [
-    createPendingFlowItem(tracking),
-    createFlowItem('已确认待修复', tracking.confirmedAt),
-    createFlowItem(
-      '已修复待复测',
-      findStatusTime(tracking, IssuePainTrackingStatus.FIXED_PENDING_RETEST)
-    ),
-    createFlowItem(
-      retestFailed ? '复测不通过' : '已复测通过',
-      retestFailed
-        ? findStatusTime(tracking, IssuePainTrackingStatus.RETEST_FAILED)
-        : tracking.retest?.at
-    ),
-  ];
-};
+import { getCurrentFlowStep, getFlowItems } from './steps';
 
 const getFixProgressPercent = (tracking: IssuePainTracking) =>
   tracking.activeTotal
