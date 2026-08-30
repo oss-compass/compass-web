@@ -189,6 +189,13 @@ const StageIssueScoreSection: React.FC<{
 }> = ({ stageId, entries }) => {
   const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
+  // 报告版本切换等场景会整体替换 entries，但父级 key 只含 stageId，
+  // 组件不会重挂载；数据变化时必须回到第 1 页，
+  // 否则旧页码可能越界渲染出空表格（且数据变少时分页器一并消失）
+  const entriesKey = entries.map((entry) => entry.row.number).join(',');
+  useEffect(() => {
+    setPage(1);
+  }, [entriesKey]);
   const lowCount = entries.filter((entry) => entry.score < 60).length;
   const visibleEntries = entries.slice(
     (page - 1) * STAGE_SCORE_PAGE_SIZE,
