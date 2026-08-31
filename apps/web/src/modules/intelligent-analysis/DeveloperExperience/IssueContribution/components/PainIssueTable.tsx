@@ -1,6 +1,14 @@
 import React from 'react';
 import { CheckOutlined, CloseOutlined, LinkOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Input, Pagination, Popconfirm, Tooltip } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Input,
+  Modal,
+  Pagination,
+  Popconfirm,
+  Tooltip,
+} from 'antd';
 import { getScoreTone } from '../presentation';
 import type {
   IssuePainTracking,
@@ -59,6 +67,239 @@ const getPainIssueTableLayout = (responsive: boolean) =>
     ? PAIN_ISSUE_TABLE_LAYOUTS.responsive
     : PAIN_ISSUE_TABLE_LAYOUTS.default;
 
+const PAIN_MODAL_BUTTON_STYLE: React.CSSProperties = {
+  height: 36,
+  paddingInline: 20,
+  borderRadius: 10,
+  boxShadow: 'none',
+};
+
+type FinalIssueConfirmType = 'decision' | 'fix';
+
+const useFinalIssueTransitionConfirm = (type: FinalIssueConfirmType) => {
+  const [open, setOpen] = React.useState(false);
+  const [remainingIssueCount, setRemainingIssueCount] = React.useState(1);
+  const resolverRef = React.useRef<((confirmed: boolean) => void) | null>(null);
+
+  const settle = React.useCallback((confirmed: boolean) => {
+    const resolve = resolverRef.current;
+    resolverRef.current = null;
+    setOpen(false);
+    resolve?.(confirmed);
+  }, []);
+
+  React.useEffect(
+    () => () => {
+      resolverRef.current?.(false);
+      resolverRef.current = null;
+    },
+    []
+  );
+
+  const confirm = React.useCallback(
+    (count = 1): Promise<boolean> =>
+      new Promise((resolve) => {
+        resolverRef.current?.(false);
+        resolverRef.current = resolve;
+        setRemainingIssueCount(count);
+        setOpen(true);
+      }),
+    []
+  );
+
+  const modal = (
+    <Modal
+      open={open}
+      className="issue-pain-confirm-modal"
+      title={type === 'decision' ? '确认完成痛点判定？' : '确认全部修复完成？'}
+      width={520}
+      centered
+      destroyOnHidden
+      okText={type === 'decision' ? '确认并完成判定' : '确认并进入待复测'}
+      cancelText="继续检查"
+      okButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
+      cancelButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
+      onOk={() => settle(true)}
+      onCancel={() => settle(false)}
+    >
+      <div className="py-2 text-sm leading-6 text-slate-600">
+        {type === 'decision' ? (
+          <>
+            本次将完成
+            {remainingIssueCount > 1
+              ? `最后 ${remainingIssueCount} 个 Issue`
+              : '最后一个 Issue'}
+            的判定。提交后，本痛点将结束待确认阶段：存在有效 Issue
+            时进入“已确认待修复”，全部判定为否时进入“非有效问题”。请确认已核对全部
+            Issue。
+          </>
+        ) : (
+          <>
+            本次将完成
+            {remainingIssueCount > 1
+              ? `最后 ${remainingIssueCount} 个 Issue`
+              : '最后一个 Issue'}
+            的修复。提交后，所有有效 Issue
+            均已修复，痛点将自动进入“已修复待复测”，等待下一期报告自动复测。请确认修复情况无误。
+          </>
+        )}
+      </div>
+      <style jsx global>{`
+        .issue-pain-confirm-modal .ant-modal-content {
+          overflow: hidden;
+          border-radius: 16px !important;
+        }
+        .issue-pain-confirm-modal .ant-modal-footer .ant-btn {
+          border-radius: 10px !important;
+          box-shadow: none !important;
+        }
+      `}</style>
+    </Modal>
+  );
+
+  return { confirm, modal };
+};
+
+export const useFinalIssueDecisionConfirm = () =>
+  useFinalIssueTransitionConfirm('decision');
+
+const useFinalIssueFixConfirm = () => useFinalIssueTransitionConfirm('fix');
+
+const getUndecidedIssueNumbers = (tracking?: IssuePainTracking): string[] =>
+  (tracking?.activeIssues ?? [])
+    .filter((issue) => issue.valid !== true && issue.valid !== false)
+    .map((issue) => issue.number);
+
+const selectionCompletesDecision = (
+  undecidedNumbers: string[],
+  selectedNumbers: Set<string>
+): boolean =>
+  undecidedNumbers.length > 0 &&
+  undecidedNumbers.every((number) => selectedNumbers.has(number));
+
+const getBatchDecisionConfirmation = (
+  valid: boolean,
+  selectedCount: number,
+  completesDecision: boolean
+) => ({
+  title: completesDecision ? '确认完成痛点判定？' : '批量判定确认',
+  description: completesDecision
+    ? '本次提交将完成全部 Issue 判定，痛点会立即根据判定结果进入下一状态。请确认已核对全部 Issue。'
+    : `将把已选的 ${selectedCount} 个 Issue 判定为“${
+        valid ? '是（有效问题）' : '否（非有效问题）'
+      }”，确认提交吗？`,
+});
+
+export const InvalidDecisionReasonModal: React.FC<{
+  open: boolean;
+  subject: string;
+  initialReason?: string;
+  completesDecision: boolean;
+  submitting: boolean;
+  onCancel: () => void;
+  onConfirm: (reason: string) => Promise<boolean>;
+}> = ({
+  open,
+  subject,
+  initialReason = '',
+  completesDecision,
+  submitting,
+  onCancel,
+  onConfirm,
+}) => {
+  const [reason, setReason] = React.useState(initialReason);
+  const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    if (open) {
+      setReason(initialReason);
+      setError('');
+    }
+  }, [initialReason, open]);
+
+  const submit = async () => {
+    const normalizedReason = reason.trim();
+    if (!normalizedReason) {
+      setError('请输入判断原因');
+      return;
+    }
+    await onConfirm(normalizedReason);
+  };
+
+  return (
+    <Modal
+      open={open}
+      className="issue-pain-decision-modal"
+      title="判定为非有效问题"
+      width={480}
+      centered
+      destroyOnClose
+      okText={completesDecision ? '确认并完成判定' : '确认判定'}
+      cancelText="取消"
+      confirmLoading={submitting}
+      styles={{
+        content: { borderRadius: 16, overflow: 'hidden' },
+      }}
+      okButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
+      cancelButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
+      onOk={() => void submit()}
+      onCancel={onCancel}
+    >
+      <div className="space-y-3 pt-2">
+        <div className="text-sm text-slate-600">{subject}</div>
+        {completesDecision ? (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+            本次提交将完成全部 Issue 判定，痛点会立即根据判定结果进入下一状态。
+          </div>
+        ) : null}
+        <div>
+          <div className="mb-2 text-sm font-medium text-slate-700">
+            判断原因 <span className="text-rose-500">*</span>
+          </div>
+          <div className="pb-5">
+            <Input.TextArea
+              value={reason}
+              rows={4}
+              maxLength={200}
+              showCount
+              autoFocus
+              className="issue-pain-decision-modal-reason !border-slate-200"
+              placeholder="请输入判断原因"
+              onChange={(event) => {
+                setReason(event.target.value);
+                if (error) setError('');
+              }}
+            />
+          </div>
+          {error ? (
+            <div className="mt-1 text-xs text-rose-500">{error}</div>
+          ) : null}
+        </div>
+      </div>
+      <style jsx global>{`
+        .issue-pain-decision-modal .ant-modal-content {
+          overflow: hidden;
+          border-radius: 16px !important;
+        }
+        .issue-pain-decision-modal
+          .issue-pain-decision-modal-reason.ant-input-affix-wrapper,
+        .issue-pain-decision-modal .issue-pain-decision-modal-reason.ant-input {
+          border-radius: 10px !important;
+        }
+        .issue-pain-decision-modal
+          .issue-pain-decision-modal-reason.ant-input-affix-wrapper
+          > textarea.ant-input {
+          border-radius: 10px !important;
+        }
+        .issue-pain-decision-modal .ant-modal-footer .ant-btn {
+          border-radius: 10px !important;
+          box-shadow: none !important;
+        }
+      `}</style>
+    </Modal>
+  );
+};
+
 export type PainIssueDecisionDraft = {
   valid?: boolean;
   reason?: string;
@@ -79,8 +320,9 @@ type PainIssueTableProps = {
 };
 
 /**
- * 待确认阶段的行内即时判定控件：点"是/否"直接提交，无需二次确认；
- * 判定为"否"后展示判断原因输入框（选填），可随时补充，回车或失焦自动保存。
+ * 待确认阶段的行内即时判定控件：普通判定直接提交，最后一个未判定 Issue
+ * 提交前进行二次确认；
+ * 判定为"否"后展示判断原因输入框，可随时补充，回车或失焦自动保存。
  * 每次提交前统一校验表格右上角的共享提交人输入框。
  */
 const IssueDecisionControl: React.FC<{
@@ -90,21 +332,39 @@ const IssueDecisionControl: React.FC<{
     decidedBy?: string | null;
     decidedAt?: string | null;
   };
+  issueNumber: string;
   operator: string;
+  requiresCompletionConfirm?: boolean;
   onOperatorInvalid: (message: string) => void;
   onSubmit: (valid: boolean, reason?: string) => Promise<unknown>;
-}> = ({ decided, operator, onOperatorInvalid, onSubmit }) => {
+}> = ({
+  decided,
+  issueNumber,
+  operator,
+  requiresCompletionConfirm = false,
+  onOperatorInvalid,
+  onSubmit,
+}) => {
   const [reasonDraft, setReasonDraft] = React.useState(decided.reason ?? '');
   const [submitting, setSubmitting] = React.useState(false);
+  const [invalidReasonOpen, setInvalidReasonOpen] = React.useState(false);
+  const finalDecisionConfirm = useFinalIssueDecisionConfirm();
 
   React.useEffect(() => {
     setReasonDraft(decided.reason ?? '');
   }, [decided.reason]);
 
-  const decide = async (valid: boolean, reason?: string) => {
+  const validateCurrentOperator = () => {
     const validation = validateOperator(operator);
     if (validation) {
       onOperatorInvalid(validation);
+      return false;
+    }
+    return true;
+  };
+
+  const submitDecision = async (valid: boolean, reason?: string) => {
+    if (requiresCompletionConfirm && !(await finalDecisionConfirm.confirm())) {
       return false;
     }
     setSubmitting(true);
@@ -118,11 +378,22 @@ const IssueDecisionControl: React.FC<{
     }
   };
 
+  const decideValid = async () => {
+    if (!validateCurrentOperator()) return false;
+    return submitDecision(true);
+  };
+
+  const requestInvalidDecision = () => {
+    if (!validateCurrentOperator()) return;
+    setInvalidReasonOpen(true);
+  };
+
   // 判定为"否"后补充/修改判断原因：值发生变化时才提交。
   const saveReason = async () => {
     const next = reasonDraft.trim();
     if (next === (decided.reason ?? '').trim()) return;
-    await decide(false, next);
+    if (!validateCurrentOperator()) return;
+    await submitDecision(false, next);
   };
 
   const segmentClass = (active: boolean, tone: 'emerald' | 'rose') =>
@@ -161,7 +432,7 @@ const IssueDecisionControl: React.FC<{
         type="button"
         disabled={submitting}
         className={segmentClass(decided.valid === true, 'emerald')}
-        onClick={() => void decide(true)}
+        onClick={() => void decideValid()}
       >
         <CheckOutlined className="text-[10px]" />是
       </button>
@@ -169,7 +440,7 @@ const IssueDecisionControl: React.FC<{
         type="button"
         disabled={submitting}
         className={segmentClass(decided.valid === false, 'rose')}
-        onClick={() => void decide(false)}
+        onClick={requestInvalidDecision}
       >
         <CloseOutlined className="text-[10px]" />否
       </button>
@@ -177,33 +448,52 @@ const IssueDecisionControl: React.FC<{
   );
 
   return (
-    <div className="flex w-full flex-col items-start gap-1">
-      {decidedTooltip ? (
-        <Tooltip
-          title={decidedTooltip}
-          placement="topLeft"
-          color="#ffffff"
-          overlayInnerStyle={{ padding: 10 }}
-        >
-          {segments}
-        </Tooltip>
-      ) : (
-        segments
-      )}
-      {decided.valid === false ? (
-        <Input
-          size="small"
-          className="issue-pain-decision-reason !h-6 !w-full !border-slate-200 !bg-white !px-2 !text-[11px] focus:!border-sky-300 focus:!shadow-none"
-          value={reasonDraft}
-          maxLength={200}
-          placeholder="判断原因（选填）"
-          disabled={submitting}
-          onChange={(event) => setReasonDraft(event.target.value)}
-          onPressEnter={() => void saveReason()}
-          onBlur={() => void saveReason()}
-        />
-      ) : null}
-    </div>
+    <>
+      <div className="flex w-full flex-col items-start gap-1">
+        {decidedTooltip ? (
+          <Tooltip
+            title={decidedTooltip}
+            placement="topLeft"
+            color="#ffffff"
+            overlayInnerStyle={{ padding: 10 }}
+          >
+            {segments}
+          </Tooltip>
+        ) : (
+          segments
+        )}
+        {decided.valid === false ? (
+          <Input
+            size="small"
+            className="issue-pain-decision-reason !h-6 !w-full !border-slate-200 !bg-white !px-2 !text-[11px] focus:!border-sky-300 focus:!shadow-none"
+            value={reasonDraft}
+            maxLength={200}
+            placeholder="判断原因"
+            disabled={submitting}
+            onChange={(event) => setReasonDraft(event.target.value)}
+            onPressEnter={() => void saveReason()}
+            onBlur={() => void saveReason()}
+          />
+        ) : null}
+      </div>
+      <InvalidDecisionReasonModal
+        open={invalidReasonOpen}
+        subject={`Issue #${issueNumber}`}
+        initialReason={reasonDraft}
+        completesDecision={requiresCompletionConfirm}
+        submitting={submitting}
+        onCancel={() => setInvalidReasonOpen(false)}
+        onConfirm={async (reason) => {
+          const success = await submitDecision(false, reason);
+          if (success) {
+            setReasonDraft(reason);
+            setInvalidReasonOpen(false);
+          }
+          return success;
+        }}
+      />
+      {finalDecisionConfirm.modal}
+    </>
   );
 };
 
@@ -252,7 +542,7 @@ const PostDecisionReasonInput: React.FC<{
         className="issue-pain-decision-reason !h-6 !w-full !border-slate-200 !bg-white !px-2 !text-[11px] focus:!border-sky-300 focus:!shadow-none"
         value={draft}
         maxLength={200}
-        placeholder="判断原因（选填）"
+        placeholder="判断原因"
         disabled={submitting}
         onChange={(event) => {
           setDraft(event.target.value);
@@ -440,6 +730,7 @@ type DecisionCellProps = {
   tracking?: IssuePainTracking;
   onTrackingAction?: TrackingActionHandler;
   operator: string;
+  requiresCompletionConfirm: boolean;
   onOperatorInvalid: (message: string) => void;
 };
 
@@ -454,6 +745,7 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
   tracking,
   onTrackingAction,
   operator,
+  requiresCompletionConfirm,
   onOperatorInvalid,
 }) => {
   if (!show) return null;
@@ -462,6 +754,7 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
       <td className="border-b border-slate-100 px-3 py-2.5">
         {activeIssue ? (
           <IssueDecisionControl
+            issueNumber={issue.number}
             decided={{
               valid: activeIssue.valid ?? null,
               reason: activeIssue.decision_reason,
@@ -469,6 +762,7 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
               decidedAt: activeIssue.decided_at,
             }}
             operator={operator}
+            requiresCompletionConfirm={requiresCompletionConfirm}
             onOperatorInvalid={onOperatorInvalid}
             onSubmit={(valid, reason) =>
               onTrackingAction({
@@ -522,7 +816,7 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
             className="issue-pain-decision-reason !h-7 !w-full !border-slate-200 !bg-slate-50/60 !px-2.5 focus:!border-sky-300 focus:!shadow-none"
             maxLength={200}
             value={decision.reason ?? ''}
-            placeholder="判断原因（选填）"
+            placeholder="判断原因"
             onChange={(event) =>
               updateDecisions([issue.number], {
                 valid: false,
@@ -628,6 +922,8 @@ const IssueActionCell: React.FC<{
   tracking?: IssuePainTracking;
   onTrackingAction?: TrackingActionHandler;
   operator: string;
+  requiresCompletionConfirm: boolean;
+  onConfirmCompletion: () => Promise<boolean>;
   onOperatorInvalid: (message: string) => void;
 }> = ({
   show,
@@ -635,6 +931,8 @@ const IssueActionCell: React.FC<{
   tracking,
   onTrackingAction,
   operator,
+  requiresCompletionConfirm,
+  onConfirmCompletion,
   onOperatorInvalid,
 }) => {
   if (!show) return null;
@@ -650,6 +948,9 @@ const IssueActionCell: React.FC<{
           compact
           operator={operator}
           onOperatorInvalid={onOperatorInvalid}
+          beforeMarkFixed={
+            requiresCompletionConfirm ? onConfirmCompletion : undefined
+          }
         />
       ) : (
         <span className="text-[11px] text-slate-300">—</span>
@@ -685,6 +986,9 @@ type PainIssueTableRowProps = {
   showAction: boolean;
   showSelection: boolean;
   pendingDecisionMode: boolean;
+  requiresCompletionConfirm: boolean;
+  requiresFixCompletionConfirm: boolean;
+  onConfirmFinalFix: () => Promise<boolean>;
   decisions?: Record<string, PainIssueDecisionDraft>;
   onDecisionsChange?: PainIssueTableProps['onDecisionsChange'];
   updateDecisions: DecisionCellProps['updateDecisions'];
@@ -712,6 +1016,7 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
         tracking={props.tracking}
         onTrackingAction={props.onTrackingAction}
         operator={props.operator}
+        requiresCompletionConfirm={props.requiresCompletionConfirm}
         onOperatorInvalid={props.onOperatorInvalid}
       />
       <IssueStatusCell
@@ -729,6 +1034,8 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
         tracking={props.tracking}
         onTrackingAction={props.onTrackingAction}
         operator={props.operator}
+        requiresCompletionConfirm={props.requiresFixCompletionConfirm}
+        onConfirmCompletion={props.onConfirmFinalFix}
         onOperatorInvalid={props.onOperatorInvalid}
       />
       <IssueSelectionCell
@@ -760,6 +1067,7 @@ type PainIssueTableToolbarProps = {
   submitting: boolean;
   canBatchFix: boolean;
   canBatchUndo: boolean;
+  completesPendingDecision: boolean;
   onOperatorChange: (value: string) => void;
   onUpdateDecisions: (
     numbers: string[],
@@ -767,6 +1075,7 @@ type PainIssueTableToolbarProps = {
   ) => void;
   onBatchAction: (type: 'mark_issues_fixed' | 'undo_issues_fixed') => void;
   onBatchDecision: (valid: boolean) => void;
+  onRequestBatchInvalid: () => void;
 };
 
 const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
@@ -870,6 +1179,31 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
     );
   }
   if (!props.pendingDecisionMode) return null;
+  const validConfirmation = getBatchDecisionConfirmation(
+    true,
+    selectedCount,
+    props.completesPendingDecision
+  );
+  const invalidConfirmation = getBatchDecisionConfirmation(
+    false,
+    selectedCount,
+    props.completesPendingDecision
+  );
+  const validBatchButton = (
+    <Button
+      size="small"
+      className="issue-pain-bulk-button !border-emerald-200 !bg-emerald-50 !px-3 !font-medium !text-emerald-700 !shadow-none hover:!border-emerald-300 hover:!bg-emerald-100"
+      disabled={!selectedCount || props.submitting}
+      loading={props.submitting}
+      onClick={
+        props.completesPendingDecision
+          ? () => props.onBatchDecision(true)
+          : undefined
+      }
+    >
+      批量判为是
+    </Button>
+  );
   return (
     <div className="flex flex-wrap items-start justify-end gap-3 border-b border-slate-200 bg-slate-50/70 px-3 py-2.5">
       <span className="mr-auto text-xs text-slate-500">
@@ -878,38 +1212,29 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
       </span>
       {operatorField}
       <div className="flex h-7 items-center gap-2">
-        <Popconfirm
-          title="批量判定确认"
-          description={`将把已选的 ${selectedCount} 个 Issue 判定为“是”（有效问题），确认提交吗？`}
-          okText="确认"
-          cancelText="取消"
-          onConfirm={() => props.onBatchDecision(true)}
-        >
-          <Button
-            size="small"
-            className="issue-pain-bulk-button !border-emerald-200 !bg-emerald-50 !px-3 !font-medium !text-emerald-700 !shadow-none hover:!border-emerald-300 hover:!bg-emerald-100"
-            disabled={!selectedCount || props.submitting}
-            loading={props.submitting}
+        {props.completesPendingDecision ? (
+          validBatchButton
+        ) : (
+          <Popconfirm
+            title={validConfirmation.title}
+            description={validConfirmation.description}
+            okText="确认"
+            cancelText="取消"
+            onConfirm={() => props.onBatchDecision(true)}
           >
-            批量判为是
-          </Button>
-        </Popconfirm>
-        <Popconfirm
-          title="批量判定确认"
-          description={`将把已选的 ${selectedCount} 个 Issue 判定为“否”（非有效问题），确认提交吗？`}
-          okText="确认"
-          cancelText="取消"
-          onConfirm={() => props.onBatchDecision(false)}
+            {validBatchButton}
+          </Popconfirm>
+        )}
+        <Button
+          size="small"
+          className="issue-pain-bulk-button !border-rose-200 !bg-rose-50 !px-3 !font-medium !text-rose-600 !shadow-none hover:!border-rose-300 hover:!bg-rose-100"
+          disabled={!selectedCount || props.submitting}
+          loading={props.submitting}
+          title={invalidConfirmation.title}
+          onClick={props.onRequestBatchInvalid}
         >
-          <Button
-            size="small"
-            className="issue-pain-bulk-button !border-rose-200 !bg-rose-50 !px-3 !font-medium !text-rose-600 !shadow-none hover:!border-rose-300 hover:!bg-rose-100"
-            disabled={!selectedCount || props.submitting}
-            loading={props.submitting}
-          >
-            批量判为否
-          </Button>
-        </Popconfirm>
+          批量判为否
+        </Button>
       </div>
     </div>
   );
@@ -1021,11 +1346,16 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   const [selectedNumbers, setSelectedNumbers] = React.useState<string[]>([]);
   const [batchSubmitting, setBatchSubmitting] = React.useState(false);
   const [batchOperatorError, setBatchOperatorError] = React.useState('');
+  const [batchInvalidReasonOpen, setBatchInvalidReasonOpen] =
+    React.useState(false);
+  const finalDecisionConfirm = useFinalIssueDecisionConfirm();
+  const finalFixConfirm = useFinalIssueFixConfirm();
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
   const issueListKey = issues.map((issue) => issue.number).join(',');
   React.useEffect(() => {
     setCurrentPage(1);
     setSelectedNumbers([]);
+    setBatchInvalidReasonOpen(false);
   }, [issueListKey]);
   const maxPage = Math.max(1, Math.ceil(issues.length / pageSize));
   const safeCurrentPage = Math.min(currentPage, maxPage);
@@ -1076,6 +1406,24 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     !pendingDecisionMode;
   const tableLayout = getPainIssueTableLayout(responsive);
   const selectedSet = new Set(selectedNumbers);
+  const undecidedIssueNumbers = getUndecidedIssueNumbers(tracking);
+  const finalUndecidedIssueNumber =
+    undecidedIssueNumbers.length === 1 ? undecidedIssueNumbers[0] : null;
+  const completesPendingDecision = selectionCompletesDecision(
+    undecidedIssueNumbers,
+    selectedSet
+  );
+  const unresolvedFixIssueNumbers = (tracking?.activeIssues ?? [])
+    .filter((issue) => issue.valid === true && !issue.fixed)
+    .map((issue) => issue.number);
+  const finalUnfixedIssueNumber =
+    unresolvedFixIssueNumbers.length === 1
+      ? unresolvedFixIssueNumbers[0]
+      : null;
+  const completesFix = selectionCompletesDecision(
+    unresolvedFixIssueNumbers,
+    selectedSet
+  );
   const selectedTrackingIssues = selectedNumbers.flatMap((number) => {
     const issue = activeIssueMap.get(number);
     return issue ? [issue] : [];
@@ -1116,6 +1464,13 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
       setBatchOperatorError(validation);
       return;
     }
+    if (
+      type === 'mark_issues_fixed' &&
+      completesFix &&
+      !(await finalFixConfirm.confirm(unresolvedFixIssueNumbers.length))
+    ) {
+      return;
+    }
     setBatchSubmitting(true);
     setBatchOperatorError('');
     try {
@@ -1133,13 +1488,19 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
       setBatchSubmitting(false);
     }
   };
-  const applyBatchDecision = async (valid: boolean) => {
-    if (!tracking || !onTrackingAction || !selectedNumbers.length) return;
+  const applyBatchDecision = async (valid: boolean, reason?: string) => {
+    if (!tracking || !onTrackingAction || !selectedNumbers.length) return false;
     const validation = validateOperator(operator);
     if (validation) {
       setBatchOperatorError(validation);
       document.getElementById(batchOperatorInputId)?.focus();
-      return;
+      return false;
+    }
+    if (
+      completesPendingDecision &&
+      !(await finalDecisionConfirm.confirm(undecidedIssueNumbers.length))
+    ) {
+      return false;
     }
     setBatchSubmitting(true);
     setBatchOperatorError('');
@@ -1151,13 +1512,25 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         operator: normalizedOperator,
         issueNumbers: selectedNumbers,
         valid,
+        reason,
       });
       setSelectedNumbers([]);
+      return true;
     } catch {
       // 页面级 action handler 已展示错误信息，保留选择便于重试。
+      return false;
     } finally {
       setBatchSubmitting(false);
     }
+  };
+  const requestBatchInvalidDecision = () => {
+    const validation = validateOperator(operator);
+    if (validation) {
+      setBatchOperatorError(validation);
+      document.getElementById(batchOperatorInputId)?.focus();
+      return;
+    }
+    setBatchInvalidReasonOpen(true);
   };
 
   if (!issues.length) {
@@ -1185,6 +1558,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         submitting={batchSubmitting}
         canBatchFix={canBatchFix}
         canBatchUndo={canBatchUndo}
+        completesPendingDecision={completesPendingDecision}
         onOperatorChange={(value) => {
           setOperator(value);
           if (batchOperatorError) setBatchOperatorError('');
@@ -1192,6 +1566,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         onUpdateDecisions={updateDecisions}
         onBatchAction={(type) => void applyBatchAction(type)}
         onBatchDecision={(valid) => void applyBatchDecision(valid)}
+        onRequestBatchInvalid={requestBatchInvalidDecision}
       />
       <div className="overflow-x-auto">
         <table
@@ -1229,6 +1604,13 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
                 showAction={showAction}
                 showSelection={showSelection}
                 pendingDecisionMode={pendingDecisionMode}
+                requiresCompletionConfirm={
+                  issue.number === finalUndecidedIssueNumber
+                }
+                requiresFixCompletionConfirm={
+                  issue.number === finalUnfixedIssueNumber
+                }
+                onConfirmFinalFix={() => finalFixConfirm.confirm()}
                 decisions={decisions}
                 onDecisionsChange={onDecisionsChange}
                 updateDecisions={updateDecisions}
@@ -1265,6 +1647,20 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
           />
         </div>
       ) : null}
+      <InvalidDecisionReasonModal
+        open={batchInvalidReasonOpen}
+        subject={`已选择 ${selectedNumbers.length} 个 Issue`}
+        completesDecision={completesPendingDecision}
+        submitting={batchSubmitting}
+        onCancel={() => setBatchInvalidReasonOpen(false)}
+        onConfirm={async (reason) => {
+          const success = await applyBatchDecision(false, reason);
+          if (success) setBatchInvalidReasonOpen(false);
+          return success;
+        }}
+      />
+      {finalDecisionConfirm.modal}
+      {finalFixConfirm.modal}
       <style jsx global>{`
         .issue-pain-bulk-button.ant-btn {
           border-radius: 10px !important;
@@ -1286,6 +1682,14 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         .issue-pain-table-responsive td {
           padding-left: 8px !important;
           padding-right: 8px !important;
+        }
+        .issue-pain-confirm-modal .ant-modal-content {
+          overflow: hidden;
+          border-radius: 16px !important;
+        }
+        .issue-pain-confirm-modal .ant-modal-confirm-btns .ant-btn {
+          border-radius: 10px !important;
+          box-shadow: none !important;
         }
       `}</style>
     </div>

@@ -41,6 +41,7 @@ const normalizeRecipients = (recipients: string[]) =>
 const WeeklyReportManagementSection: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [savingPreview, setSavingPreview] = useState(false);
+  const [savingFormalAuto, setSavingFormalAuto] = useState(false);
   const [sendingFormal, setSendingFormal] = useState(false);
   const [previewRecipients, setPreviewRecipients] = useState<string[]>([]);
   const [recordPage, setRecordPage] = useState(1);
@@ -107,6 +108,26 @@ const WeeklyReportManagementSection: React.FC = () => {
     }
   }, [messageApi, refetchFormalRecords]);
 
+  const saveFormalAutoConfig = useCallback(
+    async (formalAutoEnabled: boolean) => {
+      setSavingFormalAuto(true);
+      try {
+        const result = await updateWeeklyReportPreviewConfig({
+          formal_auto_enabled: formalAutoEnabled,
+        });
+        messageApi.success(result.message);
+        await refetchPreviewConfig();
+      } catch (error) {
+        messageApi.error(
+          error instanceof Error ? error.message : '更新正式周报定时配置失败'
+        );
+      } finally {
+        setSavingFormalAuto(false);
+      }
+    },
+    [messageApi, refetchPreviewConfig]
+  );
+
   const columns = useMemo<ColumnsType<WeeklyReportFormalRecord>>(
     () => [
       {
@@ -159,6 +180,17 @@ const WeeklyReportManagementSection: React.FC = () => {
   const lastPreviewText = previewConfig?.last_preview_at
     ? `；最近预览：${formatDateTime(previewConfig.last_preview_at)}（${
         previewConfig.last_preview_status === 'sent' ? '发送成功' : '发送失败'
+      }）`
+    : '';
+  const formalAutoEnabled = previewConfig?.formal_auto_enabled === true;
+  const nextFormalText = previewConfig?.next_formal_at
+    ? formatDateTime(previewConfig.next_formal_at)
+    : formalAutoEnabled
+    ? '--'
+    : '任务已关闭';
+  const lastFormalText = previewConfig?.last_formal_at
+    ? `；最近自动发送：${formatDateTime(previewConfig.last_formal_at)}（${
+        previewConfig.last_formal_status === 'sent' ? '发送成功' : '发送失败'
       }）`
     : '';
 
@@ -222,28 +254,48 @@ const WeeklyReportManagementSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="font-semibold text-slate-800">正式周报</div>
-          <div className="mt-1 text-sm text-slate-500">
-            点击后立即发送周报至各仓库负责人和抄送人，并记录发送结果。
+      <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="font-semibold text-slate-800">每周二正式周报</div>
+            <div className="mt-1 text-sm text-slate-500">
+              开启后，正式周报将在预览周报发送两小时后的每周二 17:00
+              自动发送。正式收件人继续使用系统现有固定 To/CC 配置。
+            </div>
+            <div className="mt-2 text-xs text-slate-500">
+              下次触发：{nextFormalText}
+              {lastFormalText}
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-2 text-sm font-medium text-slate-700">
+            <span>{formalAutoEnabled ? '已开启' : '已关闭'}</span>
+            <Switch
+              checked={formalAutoEnabled}
+              loading={previewConfigLoading || savingFormalAuto}
+              onChange={(checked) => void saveFormalAutoConfig(checked)}
+            />
           </div>
         </div>
-        <Popconfirm
-          title="确认发送正式周报？"
-          description="将立即发送周报至各仓库负责人和抄送人。"
-          okText="确认发送"
-          cancelText="取消"
-          onConfirm={() => sendFormalReport()}
-        >
-          <Button
-            type="primary"
-            className="rounded-full"
-            loading={sendingFormal}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-100 pt-4">
+          <span className="text-sm text-slate-500">
+            如需提前或补发，仍可手动立即发送并记录结果。
+          </span>
+          <Popconfirm
+            title="确认发送正式周报？"
+            description="将立即发送周报至各仓库负责人和抄送人。"
+            okText="确认发送"
+            cancelText="取消"
+            onConfirm={() => sendFormalReport()}
           >
-            发送正式周报
-          </Button>
-        </Popconfirm>
+            <Button
+              type="primary"
+              className="rounded-full"
+              loading={sendingFormal}
+            >
+              发送正式周报
+            </Button>
+          </Popconfirm>
+        </div>
       </div>
 
       <Table<WeeklyReportFormalRecord>

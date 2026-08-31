@@ -279,6 +279,7 @@ export type RepoRerunScheduleConfig = {
 export type WeeklyReportPreviewConfig = {
   preview_enabled: boolean;
   preview_recipients: string[];
+  formal_auto_enabled: boolean;
   timezone: string;
   updated_by?: string;
   updated_at?: string | null;
@@ -286,6 +287,10 @@ export type WeeklyReportPreviewConfig = {
   last_preview_status?: 'sent' | 'failed' | '';
   last_preview_result?: Record<string, unknown>;
   next_preview_at?: string | null;
+  last_formal_at?: string | null;
+  last_formal_status?: 'sent' | 'failed' | '';
+  last_formal_result?: Record<string, unknown>;
+  next_formal_at?: string | null;
 };
 
 export type WeeklyReportFormalRecord = {
@@ -773,7 +778,11 @@ export const fetchWeeklyReportPreviewConfig = async (
 };
 
 export const updateWeeklyReportPreviewConfig = async (
-  payload: { preview_enabled?: boolean; preview_recipients?: string[] },
+  payload: {
+    preview_enabled?: boolean;
+    preview_recipients?: string[];
+    formal_auto_enabled?: boolean;
+  },
   token = getCompassOperatorToken()
 ): Promise<{ message: string; data: WeeklyReportPreviewConfig }> => {
   if (!token) throw new Error('未登录');

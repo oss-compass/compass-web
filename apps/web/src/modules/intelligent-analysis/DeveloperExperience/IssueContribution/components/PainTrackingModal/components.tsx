@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   CheckCircleFilled,
+  DownOutlined,
   HistoryOutlined,
   LinkOutlined,
   UndoOutlined,
@@ -138,6 +139,8 @@ export const IssueFixButton: React.FC<{
   operator?: string;
   /** 受控模式下提交人校验失败时的回调，由外部展示提示。 */
   onOperatorInvalid?: (message: string) => void;
+  /** 本次完成修复会触发痛点状态流转时，由外部执行最终确认。 */
+  beforeMarkFixed?: () => Promise<boolean>;
 }> = ({
   tracking,
   issue,
@@ -145,6 +148,7 @@ export const IssueFixButton: React.FC<{
   compact,
   operator: sharedOperator,
   onOperatorInvalid,
+  beforeMarkFixed,
 }) => {
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
   const [open, setOpen] = useState(false);
@@ -194,6 +198,7 @@ export const IssueFixButton: React.FC<{
         setConfirmOpen(true);
         return;
       }
+      if (beforeMarkFixed && !(await beforeMarkFixed())) return;
       await performAction();
       return;
     }
@@ -208,6 +213,7 @@ export const IssueFixButton: React.FC<{
       setConfirmOpen(true);
       return;
     }
+    if (beforeMarkFixed && !(await beforeMarkFixed())) return;
     await performAction();
   };
 
@@ -402,43 +408,64 @@ export const ArchivedIssueList: React.FC<{
 export const TrackingHistoryTable: React.FC<{
   history: IssuePainTrackingHistory[];
 }> = ({ history }) => {
+  const [open, setOpen] = useState(false);
   if (!history.length) return null;
   return (
     <div className="mt-6">
-      <div className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
-        <HistoryOutlined /> 流转记录
-      </div>
-      <Table
-        size="small"
-        rowKey={(item, index) => `${item.at}-${index}`}
-        dataSource={[...history].reverse()}
-        pagination={history.length > 6 ? { pageSize: 6, size: 'small' } : false}
-        columns={[
-          {
-            title: '时间',
-            dataIndex: 'at',
-            width: 130,
-            render: formatTrackingTime,
-          },
-          { title: '操作人', dataIndex: 'by', width: 90 },
-          {
-            title: '动作',
-            dataIndex: 'action',
-            width: 140,
-            render: (value: string) => ACTION_LABELS[value] || value,
-          },
-          {
-            title: '状态变化',
-            width: 180,
-            render: (_value, item) =>
-              `${TRACKING_STATUS_SHORT_LABELS[item.from] || item.from} → ${
-                TRACKING_STATUS_SHORT_LABELS[item.to] || item.to
-              }`,
-          },
-          { title: '原因', dataIndex: 'reason' },
-        ]}
-        scroll={{ x: 680 }}
-      />
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+      >
+        <HistoryOutlined className="text-slate-500" />
+        <span>操作记录</span>
+        <span className="font-normal text-slate-400">
+          共 {history.length} 条
+        </span>
+        <DownOutlined
+          className={`ml-auto text-[11px] text-slate-400 transition-transform ${
+            open ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+      {open ? (
+        <div className="mt-2 overflow-hidden rounded-xl border border-slate-200">
+          <Table
+            size="small"
+            rowKey={(item, index) => `${item.at}-${index}`}
+            dataSource={[...history].reverse()}
+            pagination={
+              history.length > 6 ? { pageSize: 6, size: 'small' } : false
+            }
+            columns={[
+              {
+                title: '时间',
+                dataIndex: 'at',
+                width: 130,
+                render: formatTrackingTime,
+              },
+              { title: '操作人', dataIndex: 'by', width: 90 },
+              {
+                title: '动作',
+                dataIndex: 'action',
+                width: 140,
+                render: (value: string) => ACTION_LABELS[value] || value,
+              },
+              {
+                title: '状态变化',
+                width: 180,
+                render: (_value, item) =>
+                  `${TRACKING_STATUS_SHORT_LABELS[item.from] || item.from} → ${
+                    TRACKING_STATUS_SHORT_LABELS[item.to] || item.to
+                  }`,
+              },
+              { title: '原因', dataIndex: 'reason' },
+            ]}
+            scroll={{ x: 680 }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

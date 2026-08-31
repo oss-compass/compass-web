@@ -13,7 +13,10 @@ import {
   IssueFixButton,
   TrackingHistoryTable,
 } from './components';
-import PainIssueTable from '../PainIssueTable';
+import PainIssueTable, {
+  InvalidDecisionReasonModal,
+  useFinalIssueDecisionConfirm,
+} from '../PainIssueTable';
 import { useTrackingOperator } from './hooks';
 import type { PainTrackingModalProps } from './types';
 import {
@@ -153,15 +156,18 @@ const PainOverallDecision: React.FC<{
   const [reason, setReason] = useState('');
   const [operatorError, setOperatorError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [invalidReasonOpen, setInvalidReasonOpen] = useState(false);
+  const finalDecisionConfirm = useFinalIssueDecisionConfirm();
   const overall = tracking.activeIssues[0];
   const decided = overall?.valid ?? null;
 
-  const decide = async (valid: boolean) => {
+  const submitDecision = async (valid: boolean, decisionReason?: string) => {
     const validation = validateOperator(operator);
     if (validation) {
       setOperatorError(validation);
-      return;
+      return false;
     }
+    if (!(await finalDecisionConfirm.confirm())) return false;
     setSubmitting(true);
     try {
       await onAction({
@@ -170,13 +176,24 @@ const PainOverallDecision: React.FC<{
         operator: rememberOperator(operator),
         issueNumber: overall?.number ?? '__pain__',
         valid,
-        reason: valid ? undefined : reason.trim() || undefined,
+        reason: valid ? undefined : decisionReason,
       });
+      return true;
     } catch {
       // 页面级 action handler 已展示错误信息，保留输入便于重试。
+      return false;
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const requestInvalidDecision = () => {
+    const validation = validateOperator(operator);
+    if (validation) {
+      setOperatorError(validation);
+      return;
+    }
+    setInvalidReasonOpen(true);
   };
 
   return (
@@ -213,13 +230,13 @@ const PainOverallDecision: React.FC<{
         </div>
         <div>
           <div className="mb-1 text-xs font-medium text-slate-600">
-            判断原因（选填，可后续补充）
+            判断原因
           </div>
           <Input
             size="small"
             className="issue-pain-batch-operator !h-7 !w-56 !border-slate-200 !bg-white !px-2.5"
             value={reason}
-            placeholder="判否后可补充原因再点一次否更新"
+            placeholder="判断原因"
             maxLength={200}
             onChange={(event) => setReason(event.target.value)}
           />
@@ -237,7 +254,7 @@ const PainOverallDecision: React.FC<{
                   ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                   : 'border-transparent text-slate-500 hover:bg-white hover:text-slate-700'
               }`}
-              onClick={() => void decide(true)}
+              onClick={() => void submitDecision(true)}
             >
               <CheckOutlined className="text-xs" />是
             </button>
@@ -249,12 +266,29 @@ const PainOverallDecision: React.FC<{
                   ? 'border-rose-200 bg-rose-50 text-rose-600'
                   : 'border-transparent text-slate-500 hover:bg-white hover:text-slate-700'
               }`}
-              onClick={() => void decide(false)}
+              onClick={requestInvalidDecision}
             >
               <CloseOutlined className="text-xs" />否
             </button>
           </div>
         </div>
+        <InvalidDecisionReasonModal
+          open={invalidReasonOpen}
+          subject="当前痛点整体"
+          initialReason={reason}
+          completesDecision
+          submitting={submitting}
+          onCancel={() => setInvalidReasonOpen(false)}
+          onConfirm={async (decisionReason) => {
+            const success = await submitDecision(false, decisionReason);
+            if (success) {
+              setReason(decisionReason);
+              setInvalidReasonOpen(false);
+            }
+            return success;
+          }}
+        />
+        {finalDecisionConfirm.modal}
       </div>
       {decided !== null ? (
         <div className="mt-2 text-xs text-slate-400">
@@ -600,6 +634,14 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
             border-color: #cbd5e1 !important;
             background: #e2e8f0 !important;
             color: #94a3b8 !important;
+          }
+          .issue-pain-confirm-modal .ant-modal-content {
+            overflow: hidden;
+            border-radius: 16px !important;
+          }
+          .issue-pain-confirm-modal .ant-modal-confirm-btns .ant-btn {
+            border-radius: 10px !important;
+            box-shadow: none !important;
           }
         `}</style>
       </div>
