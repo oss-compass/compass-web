@@ -173,7 +173,7 @@ export const useFinalIssueDecisionConfirm = () =>
 const useFinalIssueFixConfirm = () => useFinalIssueTransitionConfirm('fix');
 
 const getUndecidedIssueNumbers = (tracking?: IssuePainTracking): string[] =>
-  (tracking?.activeIssues ?? [])
+  [...(tracking?.activeIssues ?? []), ...(tracking?.archivedIssues ?? [])]
     .filter((issue) => issue.valid !== true && issue.valid !== false)
     .map((issue) => issue.number);
 
@@ -583,14 +583,35 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
   return (
     <>
       <td className="border-b border-slate-100 px-3 py-2.5">
-        <a
-          href={issue.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
-        >
-          <LinkOutlined className="text-[11px]" />#{issue.number}
-        </a>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {issue.url ? (
+            <a
+              href={issue.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
+            >
+              <LinkOutlined className="text-[11px]" />#{issue.number}
+            </a>
+          ) : (
+            <span className="font-semibold text-slate-600">
+              #{issue.number}
+            </span>
+          )}
+          {issue.historical ? (
+            <Tooltip
+              title={
+                issue.last_seen_period
+                  ? `最后出现于 ${issue.last_seen_period}`
+                  : '未在当前期报告中出现'
+              }
+            >
+              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium leading-none text-slate-500">
+                历史
+              </span>
+            </Tooltip>
+          ) : null}
+        </div>
         <Tooltip title={issue.title} placement="topLeft">
           <div className="mt-1 line-clamp-2 break-words leading-5 text-slate-600">
             {issue.title}
@@ -987,6 +1008,7 @@ const IssueSelectionCell: React.FC<{
 type PainIssueTableRowProps = {
   issue: IssueReportPainIssue;
   activeIssue?: ActiveTrackingIssue;
+  actionIssue?: ActiveTrackingIssue;
   showDecisionColumn: boolean;
   draftMode: boolean;
   showStatus: boolean;
@@ -1008,7 +1030,7 @@ type PainIssueTableRowProps = {
 };
 
 const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
-  const { issue, activeIssue } = props;
+  const { issue, activeIssue, actionIssue } = props;
   return (
     <tr className="align-top">
       <IssueSummaryCells issue={issue} />
@@ -1037,7 +1059,7 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
       />
       <IssueActionCell
         show={props.showAction}
-        activeIssue={activeIssue}
+        activeIssue={actionIssue}
         tracking={props.tracking}
         onTrackingAction={props.onTrackingAction}
         operator={props.operator}
@@ -1049,8 +1071,9 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
         show={props.showSelection}
         disabled={
           !props.draftMode &&
-          !props.pendingDecisionMode &&
-          activeIssue?.valid !== true
+          (props.pendingDecisionMode
+            ? !activeIssue
+            : actionIssue?.valid !== true)
         }
         checked={props.selected}
         onChange={(checked) => props.onSelectionChange(issue.number, checked)}
@@ -1391,6 +1414,12 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   const activeIssueMap = new Map(
     (tracking?.activeIssues ?? []).map((issue) => [issue.number, issue])
   );
+  const trackingIssueMap = new Map(
+    [
+      ...(tracking?.activeIssues ?? []),
+      ...(tracking?.archivedIssues ?? []),
+    ].map((issue) => [issue.number, issue])
+  );
   const decisionMode = Boolean(decisions && onDecisionsChange);
   const operationMode = Boolean(
     !decisionMode &&
@@ -1412,8 +1441,8 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     decisionMode || pendingDecisionMode
       ? issues
       : [...issues].sort((a, b) => {
-          const aInvalid = activeIssueMap.get(a.number)?.valid === false;
-          const bInvalid = activeIssueMap.get(b.number)?.valid === false;
+          const aInvalid = trackingIssueMap.get(a.number)?.valid === false;
+          const bInvalid = trackingIssueMap.get(b.number)?.valid === false;
           if (aInvalid !== bInvalid) return aInvalid ? 1 : -1;
           return 0;
         });
@@ -1424,7 +1453,11 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
       )
     : sortedIssues;
   const showDecisionColumn = decisionMode || pendingDecisionMode;
-  const decidedCount = (tracking?.activeIssues ?? []).filter(
+  const displayedTrackingIssues = issues.flatMap((issue) => {
+    const trackingIssue = trackingIssueMap.get(issue.number);
+    return trackingIssue ? [trackingIssue] : [];
+  });
+  const decidedCount = displayedTrackingIssues.filter(
     (item) => item.valid === true || item.valid === false
   ).length;
   const showSelection = decisionMode || operationMode || pendingDecisionMode;
@@ -1464,7 +1497,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     .filter(
       (issue) =>
         decisionMode ||
-        pendingDecisionMode ||
+        (pendingDecisionMode && trackingIssueMap.has(issue.number)) ||
         activeIssueMap.get(issue.number)?.valid === true
     )
     .map((issue) => issue.number);
@@ -1576,7 +1609,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         pendingDecisionMode={pendingDecisionMode}
         decisions={decisions}
         issueCount={issues.length}
-        activeIssueCount={tracking?.activeIssues.length ?? 0}
+        activeIssueCount={displayedTrackingIssues.length}
         decidedCount={decidedCount}
         selectedNumbers={selectedNumbers}
         operatorInputId={batchOperatorInputId}
@@ -1624,7 +1657,8 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
               <PainIssueTableRow
                 key={issue.number}
                 issue={issue}
-                activeIssue={activeIssueMap.get(issue.number)}
+                activeIssue={trackingIssueMap.get(issue.number)}
+                actionIssue={activeIssueMap.get(issue.number)}
                 showDecisionColumn={showDecisionColumn}
                 draftMode={decisionMode}
                 showStatus={showStatus}

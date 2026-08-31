@@ -54,6 +54,7 @@ export const ACTION_LABELS: Record<string, string> = {
   retest_failed: '自动复测不通过',
   auto_passed: '自动判定闭环',
   reopened: '再次复现并重新激活',
+  new_issues_pending_confirmation: '新增 Issue 待确认',
 };
 
 export const TRACKING_STATUS_SHORT_LABELS: Record<number, string> = {

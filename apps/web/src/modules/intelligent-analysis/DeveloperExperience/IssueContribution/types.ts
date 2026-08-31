@@ -81,10 +81,12 @@ export type IssueReportPainIssue = {
   number: string;
   title: string;
   url: string;
-  score: number;
+  score: number | null;
   metric_code: string;
   reason: string;
   evidence: IssueReportPainIssueEvidence[];
+  historical?: boolean;
+  last_seen_period?: string;
 };
 
 export type IssueReportPain = {

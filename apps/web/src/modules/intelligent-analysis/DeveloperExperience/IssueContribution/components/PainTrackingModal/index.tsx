@@ -8,7 +8,11 @@ import {
 } from '@ant-design/icons';
 import { Alert, Button, Input, Modal, Progress, Steps, Tooltip } from 'antd';
 import toast from 'react-hot-toast';
-import type { IssuePainTracking } from '../../types';
+import type {
+  IssuePainTracking,
+  IssueReportPain,
+  IssueReportPainIssue,
+} from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
 import { getPriorityLabel, getPriorityTone } from '../../presentation';
 import {
@@ -109,6 +113,37 @@ const getPassedPresentation = (
           .join('、')} 未复现。`
       : `系统判定时间：${formatTrackingTime(tracking.retest?.at)}`,
   };
+};
+
+const getPendingTrackedIssues = (tracking: IssuePainTracking) => [
+  ...tracking.activeIssues,
+  ...tracking.archivedIssues,
+];
+
+const getPendingPainIssues = (
+  pain: IssueReportPain,
+  tracking: IssuePainTracking
+): IssueReportPainIssue[] => {
+  const currentIssues = pain.low_score_issues ?? [];
+  const currentNumbers = new Set(currentIssues.map((issue) => issue.number));
+  const historicalIssues = tracking.archivedIssues
+    .filter((issue) => !issue.synthetic && !currentNumbers.has(issue.number))
+    .map<IssueReportPainIssue>((issue) => ({
+      number: issue.number,
+      title: issue.title,
+      url: issue.url,
+      score: issue.score,
+      metric_code: issue.metric_code ?? '',
+      reason: issue.last_seen_period
+        ? `历史 Issue，最后出现于 ${shortTrackingPeriod(
+            issue.last_seen_period
+          )}`
+        : '历史 Issue，未在当前期报告中出现',
+      evidence: [],
+      historical: true,
+      last_seen_period: issue.last_seen_period,
+    }));
+  return [...currentIssues, ...historicalIssues];
 };
 
 const RepairIssueOperationSection: React.FC<{
@@ -389,8 +424,10 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const trend = tracking.issueCountTrend.slice(-4);
   const percent = getFixProgressPercent(tracking);
   const passedPresentation = getPassedPresentation(tracking, isObserve);
-  const pendingTotalCount = tracking.activeIssues.length;
-  const pendingDecidedCount = tracking.activeIssues.filter(
+  const pendingTrackedIssues = getPendingTrackedIssues(tracking);
+  const pendingPainIssues = getPendingPainIssues(pain, tracking);
+  const pendingTotalCount = pendingTrackedIssues.length;
+  const pendingDecidedCount = pendingTrackedIssues.filter(
     (item) => item.valid === true || item.valid === false
   ).length;
 
@@ -452,7 +489,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               <div className="mb-2 flex items-center text-sm font-semibold text-slate-700">
                 <span>涉及 Issue</span>
                 <span className="ml-1.5 font-normal text-slate-400">
-                  共 {pain.low_score_issues?.length ?? 0} 条
+                  共 {pendingPainIssues.length} 条
                 </span>
                 <Tooltip
                   title={
@@ -490,23 +527,24 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                   size={['100%', 6]}
                 />
               </div>
-              {pain.low_score_issues?.length ? (
+              {pendingPainIssues.length ? (
                 <div className="mt-4">
                   <PainIssueTable
-                    issues={pain.low_score_issues}
+                    issues={pendingPainIssues}
                     tracking={tracking}
                     onTrackingAction={onAction}
                     responsive
                   />
                 </div>
-              ) : (
+              ) : null}
+              {!pain.low_score_issues?.length ? (
                 <div className="mt-4">
                   <PainOverallDecision
                     tracking={tracking}
                     onAction={onAction}
                   />
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         ) : null}
