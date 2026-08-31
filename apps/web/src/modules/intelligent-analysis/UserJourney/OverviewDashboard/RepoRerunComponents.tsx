@@ -26,6 +26,19 @@ export const NON_TERMINAL_RERUN_STATUSES = new Set([
   'running',
 ]);
 
+const DEFAULT_RERUN_OS = 'debian-13';
+
+const getDefaultRerunOs = (osTags: unknown, busyOs: Iterable<string> = []) => {
+  const options = (Array.isArray(osTags) ? osTags : [])
+    .map((item) => String(item || '').trim())
+    .filter(Boolean);
+  const busySet = new Set(busyOs);
+  const availableOptions = options.filter((os) => !busySet.has(os));
+  return availableOptions.includes(DEFAULT_RERUN_OS)
+    ? DEFAULT_RERUN_OS
+    : availableOptions[0] || '';
+};
+
 const FINAL_REVIEW_STATUSES = new Set(['approved', 'published']);
 
 export const isRerunReviewCompleted = (job?: RepoRerunJob | null) =>
@@ -116,6 +129,31 @@ export const getRerunStatusMeta = (status?: string, reviewStatus?: string) => {
 
 export const isActiveRerunJob = (job?: RepoRerunJob | null) =>
   !!job && NON_TERMINAL_RERUN_STATUSES.has(String(job.status || '').trim());
+
+const getBusyRerunOs = (node: DevxNodeStatus, records: RepoRerunJob[]) => {
+  const nodeIdentities = new Set(
+    [node.node_id, node.node_name, node.name, node.hostname]
+      .map((item) => String(item || '').trim())
+      .filter(Boolean)
+  );
+  const busyOs = new Set<string>();
+  records.forEach((record) => {
+    if (!isActiveRerunJob(record)) return;
+    const recordIdentities = [
+      record.selected_node_id,
+      record.selected_node_name,
+      record.worker_node,
+    ]
+      .map((item) => String(item || '').trim())
+      .filter(Boolean);
+    if (!recordIdentities.some((identity) => nodeIdentities.has(identity))) {
+      return;
+    }
+    const os = String(record.selected_os || record.third_party_os || '').trim();
+    if (os) busyOs.add(os);
+  });
+  return busyOs;
+};
 
 export const getDevxNodeDisplayName = (node: DevxNodeStatus, index: number) =>
   String(
@@ -385,6 +423,7 @@ type RepoRerunInfoCardProps = {
   nodeStatusesError?: string;
   selectedNodeKey?: string;
   selectedOs?: string;
+  busyOs?: string[];
   nodeSelectable?: boolean;
   onSelectNode?: (nodeKey: string, node: DevxNodeStatus) => void;
   onSelectOs?: (os: string) => void;
@@ -403,6 +442,7 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
   nodeStatusesError = '',
   selectedNodeKey = '',
   selectedOs = '',
+  busyOs = [],
   nodeSelectable = false,
   onSelectNode,
   onSelectOs,
@@ -640,11 +680,18 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                             }
                             disabled={!nodeOsOptions.length}
                             options={nodeOsOptions.map((os) => ({
-                              label: os,
+                              label: busyOs.includes(os)
+                                ? `${os}（重跑中）`
+                                : os,
                               value: os,
+                              disabled: busyOs.includes(os),
                             }))}
                             onChange={onSelectOs}
                           />
+                        </div>
+                        <div className="mt-2 text-xs leading-5 text-amber-700">
+                          默认选择 debian-13，历史报告同样基于 debian-13
+                          生成。如需复现历史报告中的痛点，请保持该选项。
                         </div>
                       </div>
                     ) : null}
@@ -730,13 +777,24 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
     [selectedNode]
   );
   const osOptionsKey = osOptions.join('\u0000');
-  const defaultOs = osOptions[0] || '';
+  const busyOs = useMemo(
+    () =>
+      selectedNode
+        ? Array.from(getBusyRerunOs(selectedNode, rerunRecords)).filter((os) =>
+            osOptions.includes(os)
+          )
+        : [],
+    [osOptions, rerunRecords, selectedNode]
+  );
+  const busyOsKey = busyOs.join('\u0000');
+  const defaultOs = getDefaultRerunOs(osOptions, busyOs);
 
   useEffect(() => {
     setSelectedOs(defaultOs);
-  }, [defaultOs, open, selectedNodeKey, osOptionsKey]);
+  }, [busyOsKey, defaultOs, open, selectedNodeKey, osOptionsKey]);
 
-  const hasValidSelectedOs = osOptions.includes(selectedOs);
+  const hasValidSelectedOs =
+    osOptions.includes(selectedOs) && !busyOs.includes(selectedOs);
   const submitDisabled =
     !canCurrentUserOperate || !selectedNode || !hasValidSelectedOs;
   const submitTooltip = !canCurrentUserOperate
@@ -745,6 +803,8 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
     ? '请先选择节点'
     : !osOptions.length
     ? '该节点未提供可用操作系统'
+    : busyOs.length === osOptions.length
+    ? '该节点的所有操作系统均有重跑任务进行中'
     : !hasValidSelectedOs
     ? '请选择操作系统'
     : '';
@@ -799,12 +859,15 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
           nodeStatusesError={nodeStatusesError}
           selectedNodeKey={selectedNodeKey}
           selectedOs={selectedOs}
+          busyOs={busyOs}
           nodeSelectable={!!operatorUser && canCurrentUserOperate}
           onSelectNode={(nodeKey, node) => {
-            const firstOs = (Array.isArray(node.os_tags) ? node.os_tags : [])
-              .map((item) => String(item || '').trim())
-              .find(Boolean);
-            setSelectedOs(firstOs || '');
+            setSelectedOs(
+              getDefaultRerunOs(
+                node.os_tags,
+                getBusyRerunOs(node, rerunRecords)
+              )
+            );
             onSelectNode?.(nodeKey, node);
           }}
           onSelectOs={setSelectedOs}
@@ -926,16 +989,14 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
             <Button key="close" onClick={onClose}>
               关闭
             </Button>,
-            rerunRecords.some(isRerunReviewPending) ? (
-              <Button
-                key="rerun"
-                type="primary"
-                disabled={!canCurrentUserOperate}
-                onClick={onRerun}
-              >
-                再次重跑
-              </Button>
-            ) : null,
+            <Button
+              key="rerun"
+              type="primary"
+              disabled={!canCurrentUserOperate}
+              onClick={onRerun}
+            >
+              再次重跑
+            </Button>,
           ]
         : [
             <Button
