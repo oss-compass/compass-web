@@ -1,5 +1,11 @@
 import React from 'react';
-import { CheckOutlined, CloseOutlined, LinkOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  ExclamationCircleFilled,
+  LinkOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import {
   Button,
   Checkbox,
@@ -9,6 +15,7 @@ import {
   Popconfirm,
   Tooltip,
 } from 'antd';
+import toast from 'react-hot-toast';
 import { getScoreTone } from '../presentation';
 import type {
   IssuePainTracking,
@@ -111,7 +118,7 @@ const useFinalIssueTransitionConfirm = (type: FinalIssueConfirmType) => {
     <Modal
       open={open}
       className="issue-pain-confirm-modal"
-      title={type === 'decision' ? '确认完成痛点判定？' : '确认全部修复完成？'}
+      title={type === 'decision' ? '确认完成痛点判定？' : '确认修复完成？'}
       width={520}
       centered
       destroyOnHidden
@@ -1119,18 +1126,22 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
   }
 
   const operatorField = (
-    <div className="flex items-start gap-2">
-      <label
-        htmlFor={props.operatorInputId}
-        className="pt-1.5 text-xs font-medium text-slate-600"
-      >
-        提交人 <span className="text-rose-500">*</span>
-      </label>
-      <div>
+    <div className="shrink-0">
+      <div className="flex h-7 items-center gap-2">
+        <UserOutlined
+          className={props.operatorError ? 'text-rose-500' : 'text-slate-400'}
+        />
+        <label
+          htmlFor={props.operatorInputId}
+          className="shrink-0 text-xs font-medium text-slate-600"
+        >
+          提交人<span className="ml-0.5 text-rose-500">*</span>
+        </label>
         <Input
           id={props.operatorInputId}
           size="small"
-          className={`issue-pain-batch-operator !h-7 !w-32 !bg-white !px-2.5 ${
+          status={props.operatorError ? 'error' : undefined}
+          className={`issue-pain-batch-operator !h-7 !w-36 !bg-white !px-2.5 ${
             props.operatorError ? '!border-rose-400' : '!border-slate-200'
           }`}
           value={props.operator}
@@ -1140,18 +1151,22 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
           aria-label="提交人"
           onChange={(event) => props.onOperatorChange(event.target.value)}
         />
-        {props.operatorError ? (
-          <div className="mt-1 max-w-52 text-[10px] text-rose-500">
-            {props.operatorError}
-          </div>
-        ) : null}
       </div>
+      {props.operatorError ? (
+        <div
+          role="alert"
+          className="mt-1 flex items-center justify-end gap-1 text-[11px] leading-4 text-rose-500"
+        >
+          <ExclamationCircleFilled className="shrink-0" />
+          <span>{props.operatorError}</span>
+        </div>
+      ) : null}
     </div>
   );
 
   if (props.operationMode) {
     return (
-      <div className="flex flex-wrap items-start justify-end gap-3 border-b border-slate-200 bg-slate-50/70 px-3 py-2.5">
+      <div className="flex flex-wrap items-center justify-end gap-3 border-b border-slate-200 bg-slate-50/70 px-3 py-2">
         <span className="mr-auto text-xs text-slate-500">
           已选 {selectedCount} 项
         </span>
@@ -1205,7 +1220,7 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
     </Button>
   );
   return (
-    <div className="flex flex-wrap items-start justify-end gap-3 border-b border-slate-200 bg-slate-50/70 px-3 py-2.5">
+    <div className="flex flex-wrap items-center justify-end gap-3 border-b border-slate-200 bg-slate-50/70 px-3 py-2">
       <span className="mr-auto text-xs text-slate-500">
         已判定 {props.decidedCount}/{props.activeIssueCount} 项 · 已选{' '}
         {selectedCount} 项
@@ -1351,6 +1366,20 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   const finalDecisionConfirm = useFinalIssueDecisionConfirm();
   const finalFixConfirm = useFinalIssueFixConfirm();
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
+  const notifyOperatorInvalid = React.useCallback(
+    (message: string) => {
+      const prompt =
+        message === '请填写提交人'
+          ? '请先填写提交人，再进行判定或修复操作'
+          : message;
+      setBatchOperatorError(prompt);
+      document.getElementById(batchOperatorInputId)?.focus();
+      toast.error(prompt, {
+        id: `issue-pain-operator-${batchOperatorInputId}`,
+      });
+    },
+    [batchOperatorInputId]
+  );
   const issueListKey = issues.map((issue) => issue.number).join(',');
   React.useEffect(() => {
     setCurrentPage(1);
@@ -1461,7 +1490,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     if (!tracking || !onTrackingAction || !selectedNumbers.length) return;
     const validation = validateOperator(operator);
     if (validation) {
-      setBatchOperatorError(validation);
+      notifyOperatorInvalid(validation);
       return;
     }
     if (
@@ -1492,8 +1521,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     if (!tracking || !onTrackingAction || !selectedNumbers.length) return false;
     const validation = validateOperator(operator);
     if (validation) {
-      setBatchOperatorError(validation);
-      document.getElementById(batchOperatorInputId)?.focus();
+      notifyOperatorInvalid(validation);
       return false;
     }
     if (
@@ -1526,8 +1554,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   const requestBatchInvalidDecision = () => {
     const validation = validateOperator(operator);
     if (validation) {
-      setBatchOperatorError(validation);
-      document.getElementById(batchOperatorInputId)?.focus();
+      notifyOperatorInvalid(validation);
       return;
     }
     setBatchInvalidReasonOpen(true);
@@ -1618,10 +1645,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
                 onTrackingAction={onTrackingAction}
                 operator={operator}
                 selected={selectedSet.has(issue.number)}
-                onOperatorInvalid={(message) => {
-                  setBatchOperatorError(message);
-                  document.getElementById(batchOperatorInputId)?.focus();
-                }}
+                onOperatorInvalid={notifyOperatorInvalid}
                 onSelectionChange={(number, checked) =>
                   setSelectedNumbers((current) =>
                     checked

@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {
   CheckOutlined,
   CloseOutlined,
+  ExclamationCircleFilled,
   InfoCircleOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { Alert, Button, Input, Modal, Progress, Steps, Tooltip } from 'antd';
+import toast from 'react-hot-toast';
 import type { IssuePainTracking } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
 import { getPriorityLabel, getPriorityTone } from '../../presentation';
@@ -157,14 +160,23 @@ const PainOverallDecision: React.FC<{
   const [operatorError, setOperatorError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [invalidReasonOpen, setInvalidReasonOpen] = useState(false);
+  const operatorInputId = React.useId();
   const finalDecisionConfirm = useFinalIssueDecisionConfirm();
   const overall = tracking.activeIssues[0];
   const decided = overall?.valid ?? null;
 
+  const notifyOperatorInvalid = (message: string) => {
+    const prompt =
+      message === '请填写提交人' ? '请先填写提交人，再进行痛点判定' : message;
+    setOperatorError(prompt);
+    document.getElementById(operatorInputId)?.focus();
+    toast.error(prompt, { id: `issue-pain-operator-${operatorInputId}` });
+  };
+
   const submitDecision = async (valid: boolean, decisionReason?: string) => {
     const validation = validateOperator(operator);
     if (validation) {
-      setOperatorError(validation);
+      notifyOperatorInvalid(validation);
       return false;
     }
     if (!(await finalDecisionConfirm.confirm())) return false;
@@ -190,7 +202,7 @@ const PainOverallDecision: React.FC<{
   const requestInvalidDecision = () => {
     const validation = validateOperator(operator);
     if (validation) {
-      setOperatorError(validation);
+      notifyOperatorInvalid(validation);
       return;
     }
     setInvalidReasonOpen(true);
@@ -202,14 +214,22 @@ const PainOverallDecision: React.FC<{
         当前痛点没有关联具体 Issue，请判断该痛点整体是否有效。
       </div>
       <div className="mt-3 flex flex-wrap items-start gap-4">
-        <div>
-          <div className="mb-1 text-xs font-medium text-slate-600">
-            提交人 <span className="text-rose-500">*</span>
-          </div>
-          <div className="flex items-start gap-2">
+        <div className="shrink-0">
+          <div className="flex h-7 items-center gap-2">
+            <UserOutlined
+              className={operatorError ? 'text-rose-500' : 'text-slate-400'}
+            />
+            <label
+              htmlFor={operatorInputId}
+              className="shrink-0 text-xs font-medium text-slate-600"
+            >
+              提交人<span className="ml-0.5 text-rose-500">*</span>
+            </label>
             <Input
+              id={operatorInputId}
               size="small"
-              className={`issue-pain-batch-operator !h-7 !w-32 !bg-white !px-2.5 ${
+              status={operatorError ? 'error' : undefined}
+              className={`issue-pain-batch-operator !h-7 !w-36 !bg-white !px-2.5 ${
                 operatorError ? '!border-rose-400' : '!border-slate-200'
               }`}
               value={operator}
@@ -221,12 +241,16 @@ const PainOverallDecision: React.FC<{
                 if (event.target.value.trim()) setOperatorError('');
               }}
             />
-            {operatorError ? (
-              <div className="-mt-0.5 text-[10px] leading-7 text-rose-500">
-                {operatorError}
-              </div>
-            ) : null}
           </div>
+          {operatorError ? (
+            <div
+              role="alert"
+              className="mt-1 flex items-center justify-end gap-1 text-[11px] leading-4 text-rose-500"
+            >
+              <ExclamationCircleFilled className="shrink-0" />
+              <span>{operatorError}</span>
+            </div>
+          ) : null}
         </div>
         <div>
           <div className="mb-1 text-xs font-medium text-slate-600">
