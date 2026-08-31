@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Empty, Spin, message } from 'antd';
+import { Empty, Spin } from 'antd';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import {
   fetchIssuePainTrackings,
@@ -13,6 +14,7 @@ import type {
   IssueReportCatalogRecord,
   IssueReportRecord,
 } from './types';
+import { getTrackingStatusMeta } from './components/PainTrackingModal/constants';
 import ExperienceBackLink from '../components/ExperienceBackLink';
 import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
@@ -161,6 +163,73 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
         ...payload,
         community: report.community,
       });
+      if (payload.type === 'decide_issue' || payload.type === 'decide_issues') {
+        const previous = painTrackings?.items.find(
+          (item) => item.trackingKey === response.data.trackingKey
+        );
+        if (previous && previous.status !== response.data.status) {
+          // 全部判定完成，状态自动流转
+          toast.success(
+            `判定提交成功，全部判定完成，已进入「${
+              getTrackingStatusMeta(
+                response.data.status,
+                response.data.trackingType
+              ).label
+            }」`
+          );
+        } else if (payload.type === 'decide_issues') {
+          toast.success(`已批量判定 ${payload.issueNumbers.length} 项`);
+        } else {
+          const previousIssue = previous?.activeIssues.find(
+            (item) => item.number === payload.issueNumber
+          );
+          if (previousIssue && previousIssue.valid === payload.valid) {
+            toast.success('判断原因已保存');
+          } else {
+            toast.success(
+              payload.valid ? '已判定为有效问题' : '已判定为非有效问题'
+            );
+          }
+        }
+      }
+      if (
+        payload.type === 'mark_issues_fixed' ||
+        payload.type === 'undo_issues_fixed'
+      ) {
+        const previous = painTrackings?.items.find(
+          (item) => item.trackingKey === response.data.trackingKey
+        );
+        const count = payload.issueNumbers?.length ?? 0;
+        const statusChanged =
+          previous !== undefined && previous.status !== response.data.status;
+        const actionLabel =
+          payload.type === 'mark_issues_fixed'
+            ? `已批量标记 ${count} 项为已修复`
+            : `已批量撤销 ${count} 项修复标记`;
+        if (statusChanged) {
+          // 全部 Issue 修复后自动流转（或撤销后回退）
+          toast.success(
+            `${actionLabel}，已进入「${
+              getTrackingStatusMeta(
+                response.data.status,
+                response.data.trackingType
+              ).label
+            }」`
+          );
+        } else {
+          toast.success(actionLabel);
+        }
+      }
+      if (
+        payload.type === 'mark_issue_fixed' ||
+        payload.type === 'undo_issue_fixed'
+      ) {
+        toast.success(
+          payload.type === 'mark_issue_fixed'
+            ? '已标记为已修复'
+            : '已撤销修复标记'
+        );
+      }
       setPainTrackings((current) =>
         current
           ? {
@@ -175,9 +244,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
       );
       return response.data;
     } catch (error) {
-      message.error(
-        error instanceof Error ? error.message : '痛点跟踪操作失败'
-      );
+      toast.error(error instanceof Error ? error.message : '痛点跟踪操作失败');
       throw error;
     }
   };

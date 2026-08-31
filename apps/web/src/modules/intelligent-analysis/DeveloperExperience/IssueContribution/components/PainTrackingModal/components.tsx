@@ -134,11 +134,24 @@ export const IssueFixButton: React.FC<{
   issue: IssuePainTrackingIssue;
   onAction: (payload: PainTrackingAction) => Promise<IssuePainTracking>;
   compact?: boolean;
-}> = ({ tracking, issue, onAction, compact }) => {
+  /** 外部共享的提交人（如表格右上角输入框）。传入后按钮不再弹操作人 Popover，仅校验该值。 */
+  operator?: string;
+  /** 受控模式下提交人校验失败时的回调，由外部展示提示。 */
+  onOperatorInvalid?: (message: string) => void;
+}> = ({
+  tracking,
+  issue,
+  onAction,
+  compact,
+  operator: sharedOperator,
+  onOperatorInvalid,
+}) => {
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
   const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const shared = typeof sharedOperator === 'string';
   const actionType: IssuePainTrackingActionType = issue.fixed
     ? 'undo_issue_fixed'
     : 'mark_issue_fixed';
@@ -147,13 +160,14 @@ export const IssueFixButton: React.FC<{
     (tracking.status === IssuePainTrackingStatus.TRACKING ||
       (tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST &&
         issue.fixed));
-  const operatorValidation = validateOperator(operator);
 
   const performAction = async () => {
     setSubmitting(true);
     setError('');
     try {
-      const normalized = rememberOperator(operator);
+      const normalized = rememberOperator(
+        shared ? sharedOperator ?? '' : operator
+      );
       await onAction({
         trackingKey: tracking.trackingKey,
         type: actionType,
@@ -161,14 +175,28 @@ export const IssueFixButton: React.FC<{
         issueNumber: issue.number,
       });
       setOpen(false);
+      setConfirmOpen(false);
     } catch {
-      // 页面级 action handler 已展示错误信息；这里保持气泡打开便于重试。
+      // 页面级 action handler 已展示错误信息；这里保持弹窗打开便于重试。
     } finally {
       setSubmitting(false);
     }
   };
 
   const submit = async () => {
+    if (shared) {
+      const sharedValidation = validateOperator(sharedOperator ?? '');
+      if (sharedValidation) {
+        onOperatorInvalid?.(sharedValidation);
+        return;
+      }
+      if (actionType === 'undo_issue_fixed') {
+        setConfirmOpen(true);
+        return;
+      }
+      await performAction();
+      return;
+    }
     const validation = validateOperator(operator);
     if (validation) {
       setError(validation);
@@ -177,16 +205,7 @@ export const IssueFixButton: React.FC<{
     }
     if (actionType === 'undo_issue_fixed') {
       setOpen(false);
-      Modal.confirm({
-        title: '确认撤销修复标记？',
-        content:
-          '撤销后，该 Issue 将恢复为待修复状态；若痛点正在等待复测，也会重新进入修复流程。',
-        okText: '确认撤销',
-        cancelText: '取消',
-        okButtonProps: { danger: true },
-        centered: true,
-        onOk: performAction,
-      });
+      setConfirmOpen(true);
       return;
     }
     await performAction();
@@ -196,7 +215,7 @@ export const IssueFixButton: React.FC<{
     <button
       type="button"
       disabled={!canChange || submitting}
-      onClick={() => (operatorValidation ? setOpen(true) : void submit())}
+      onClick={() => (shared ? void submit() : setOpen(true))}
       className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition-colors ${
         canChange
           ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100'
@@ -215,48 +234,89 @@ export const IssueFixButton: React.FC<{
     <button
       type="button"
       disabled={submitting}
-      onClick={() => (operatorValidation ? setOpen(true) : void submit())}
+      onClick={() => (shared ? void submit() : setOpen(true))}
       className="inline-flex shrink-0 items-center whitespace-nowrap rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-1.5 text-[11px] font-semibold text-sky-700 transition-colors hover:border-sky-300 hover:bg-sky-100 disabled:cursor-wait disabled:opacity-60"
     >
       {submitting ? '提交中…' : '完成修复'}
     </button>
   ) : null;
 
-  if (!canChange || (!open && !operatorValidation)) return trigger;
-  return (
-    <Popover
-      open={open}
-      onOpenChange={setOpen}
-      trigger="click"
-      placement="topRight"
-      content={
-        <div className="w-56 space-y-2">
-          <div className="text-xs font-semibold text-slate-700">填写操作人</div>
-          <Input
-            size="small"
-            value={operator}
-            maxLength={20}
-            placeholder="姓名，后续自动记住"
-            onChange={(event) => setOperator(event.target.value)}
-            onPressEnter={() => void submit()}
-          />
-          {error ? (
-            <div className="text-[11px] text-rose-500">{error}</div>
-          ) : null}
-          <Button
-            size="small"
-            type="primary"
-            block
-            loading={submitting}
-            onClick={() => void submit()}
-          >
-            确认操作
-          </Button>
-        </div>
-      }
+  const undoConfirmModal = (
+    <Modal
+      open={confirmOpen}
+      title="确认撤销修复标记？"
+      width={420}
+      centered
+      okText="确认撤销"
+      cancelText="取消"
+      okButtonProps={{ danger: true }}
+      confirmLoading={submitting}
+      onOk={() => {
+        // 确认时二次校验：受控模式下共享输入框可能在弹窗打开期间被清空。
+        const value = shared ? sharedOperator ?? '' : operator;
+        const validation = validateOperator(value);
+        if (validation) {
+          setConfirmOpen(false);
+          onOperatorInvalid?.(validation);
+          return;
+        }
+        void performAction();
+      }}
+      onCancel={() => setConfirmOpen(false)}
     >
-      {trigger}
-    </Popover>
+      <div className="text-sm leading-6 text-slate-600">
+        撤销后，该 Issue
+        将恢复为待修复状态；若痛点正在等待复测，也会重新进入修复流程。
+      </div>
+    </Modal>
+  );
+
+  if (!canChange || shared)
+    return (
+      <>
+        {trigger}
+        {undoConfirmModal}
+      </>
+    );
+  return (
+    <>
+      <Popover
+        open={open}
+        onOpenChange={setOpen}
+        trigger="click"
+        placement="topRight"
+        content={
+          <div className="w-56 space-y-2">
+            <div className="text-xs font-semibold text-slate-700">
+              填写操作人
+            </div>
+            <Input
+              size="small"
+              value={operator}
+              maxLength={20}
+              placeholder="姓名，后续自动记住"
+              onChange={(event) => setOperator(event.target.value)}
+              onPressEnter={() => void submit()}
+            />
+            {error ? (
+              <div className="text-[11px] text-rose-500">{error}</div>
+            ) : null}
+            <Button
+              size="small"
+              type="primary"
+              block
+              loading={submitting}
+              onClick={() => void submit()}
+            >
+              确认操作
+            </Button>
+          </div>
+        }
+      >
+        {trigger}
+      </Popover>
+      {undoConfirmModal}
+    </>
   );
 };
 

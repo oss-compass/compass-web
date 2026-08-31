@@ -13,7 +13,7 @@ export const shortTrackingPeriod = (period: string): string =>
 
 export const validateOperator = (value: string): string | null => {
   const normalized = value.trim();
-  if (!normalized) return '请填写操作人';
+  if (!normalized) return '请填写提交人';
   if (!/^[\u4e00-\u9fa5a-zA-Z0-9 \-_]{1,20}$/.test(normalized)) {
     return '仅支持中文、字母、数字、空格、- 和 _，最多 20 个字符';
   }

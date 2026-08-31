@@ -1113,98 +1113,102 @@ const RepoManagementPage: React.FC = () => {
     setSelectedRerunNodeKey('');
   }, []);
 
-  const handleConfirmRerun = useCallback(async () => {
-    if (!rerunModal.repo) return;
-    if (!operatorUser) {
-      setLoginError('请先登录后再操作');
-      return;
-    }
-    if (!canOperateRepo(operatorUser, rerunModal.repo)) {
-      messageApi.error('当前账号无权操作该仓库');
-      return;
-    }
-    const missingConfigLabels = getRerunMissingConfigLabels(rerunModal.repo);
-    if (missingConfigLabels.length) {
-      const text = `请先编辑该仓库并配置${missingConfigLabels.join(
-        '和'
-      )}后再进行重跑`;
-      setLoginError(text);
-      messageApi.warning(text);
-      return;
-    }
-    if (rerunNodesLoading) {
-      setLoginError('节点状态加载中，请稍后再试');
-      return;
-    }
-
-    const selectedNodeIndex = rerunNodes.findIndex(
-      (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
-    );
-    const selectedNode =
-      selectedNodeIndex >= 0 ? rerunNodes[selectedNodeIndex] : null;
-    if (!selectedNode) {
-      setLoginError('请先选择一个节点后再确认重跑');
-      messageApi.warning('请先选择一个节点后再确认重跑');
-      return;
-    }
-
-    setRerunning(true);
-    setLoginError('');
-    try {
-      const result = await triggerOverviewRepoRerun(
-        rerunModal.repo.project_key,
-        {
-          selected_node_id:
-            String(
-              selectedNode.node_id ||
-                getDevxNodeKey(selectedNode, selectedNodeIndex)
-            ).trim() || undefined,
-          selected_node_name:
-            String(
-              selectedNode.node_name ||
-                selectedNode.name ||
-                selectedNode.hostname ||
-                ''
-            ).trim() || undefined,
-          selected_node_hardware:
-            String(selectedNode.hardware || '').trim() || undefined,
-        }
-      );
-      const projectKey = rerunModal.repo.project_key;
-      const targetRepo = rerunModal.repo;
-      setRerunStatusMap((prev) => ({
-        ...prev,
-        [projectKey]: result.data,
-      }));
-      setRerunRecords([result.data]);
-      setRerunRecordsError('');
-      setRerunRecordsLoading(false);
-      messageApi.success(result.message || '已触发重跑');
-      closeRerunModal();
-      setRerunRecordsModal({ open: true, repo: targetRepo });
-      void loadRerunRecords(projectKey);
-    } catch (error) {
-      const text =
-        error instanceof Error ? error.message : '重跑失败，请稍后重试';
-      if (/token|未登录|过期/i.test(text)) {
-        clearCompassOperatorToken();
-        setOperatorUser(null);
+  const handleConfirmRerun = useCallback(
+    async (selectedOs: string) => {
+      if (!rerunModal.repo) return;
+      if (!operatorUser) {
+        setLoginError('请先登录后再操作');
+        return;
       }
-      setLoginError(text);
-    } finally {
-      setRerunning(false);
-    }
-  }, [
-    canOperateRepo,
-    closeRerunModal,
-    loadRerunRecords,
-    messageApi,
-    operatorUser,
-    rerunModal.repo,
-    rerunNodes,
-    rerunNodesLoading,
-    selectedRerunNodeKey,
-  ]);
+      if (!canOperateRepo(operatorUser, rerunModal.repo)) {
+        messageApi.error('当前账号无权操作该仓库');
+        return;
+      }
+      const missingConfigLabels = getRerunMissingConfigLabels(rerunModal.repo);
+      if (missingConfigLabels.length) {
+        const text = `请先编辑该仓库并配置${missingConfigLabels.join(
+          '和'
+        )}后再进行重跑`;
+        setLoginError(text);
+        messageApi.warning(text);
+        return;
+      }
+      if (rerunNodesLoading) {
+        setLoginError('节点状态加载中，请稍后再试');
+        return;
+      }
+
+      const selectedNodeIndex = rerunNodes.findIndex(
+        (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
+      );
+      const selectedNode =
+        selectedNodeIndex >= 0 ? rerunNodes[selectedNodeIndex] : null;
+      if (!selectedNode) {
+        setLoginError('请先选择一个节点后再确认重跑');
+        messageApi.warning('请先选择一个节点后再确认重跑');
+        return;
+      }
+
+      setRerunning(true);
+      setLoginError('');
+      try {
+        const result = await triggerOverviewRepoRerun(
+          rerunModal.repo.project_key,
+          {
+            selected_node_id:
+              String(
+                selectedNode.node_id ||
+                  getDevxNodeKey(selectedNode, selectedNodeIndex)
+              ).trim() || undefined,
+            selected_node_name:
+              String(
+                selectedNode.node_name ||
+                  selectedNode.name ||
+                  selectedNode.hostname ||
+                  ''
+              ).trim() || undefined,
+            selected_node_hardware:
+              String(selectedNode.hardware || '').trim() || undefined,
+            selected_os: selectedOs,
+          }
+        );
+        const projectKey = rerunModal.repo.project_key;
+        const targetRepo = rerunModal.repo;
+        setRerunStatusMap((prev) => ({
+          ...prev,
+          [projectKey]: result.data,
+        }));
+        setRerunRecords([result.data]);
+        setRerunRecordsError('');
+        setRerunRecordsLoading(false);
+        messageApi.success(result.message || '已触发重跑');
+        closeRerunModal();
+        setRerunRecordsModal({ open: true, repo: targetRepo });
+        void loadRerunRecords(projectKey);
+      } catch (error) {
+        const text =
+          error instanceof Error ? error.message : '重跑失败，请稍后重试';
+        if (/token|未登录|过期/i.test(text)) {
+          clearCompassOperatorToken();
+          setOperatorUser(null);
+        }
+        setLoginError(text);
+      } finally {
+        setRerunning(false);
+      }
+    },
+    [
+      canOperateRepo,
+      closeRerunModal,
+      loadRerunRecords,
+      messageApi,
+      operatorUser,
+      rerunModal.repo,
+      rerunNodes,
+      rerunNodesLoading,
+      selectedRerunNodeKey,
+    ]
+  );
 
   const handleCancelRerunJob = useCallback(
     async (record: RepoManagementItem | null, job: RepoRerunJob) => {
@@ -2216,8 +2220,8 @@ const RepoManagementPage: React.FC = () => {
             setRerunAccessModal({ open: true, repo: targetRepo });
           }
         }}
-        onConfirmRerun={() => {
-          void handleConfirmRerun();
+        onConfirmRerun={(selectedOs) => {
+          void handleConfirmRerun(selectedOs);
         }}
         nodeStatuses={rerunNodes}
         nodeStatusesLoading={rerunNodesLoading}

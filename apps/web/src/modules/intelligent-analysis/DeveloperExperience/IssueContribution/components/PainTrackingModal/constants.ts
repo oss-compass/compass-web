@@ -42,10 +42,15 @@ export const getTrackingStatusMeta = (
 
 export const ACTION_LABELS: Record<string, string> = {
   confirm: '确认痛点',
+  confirm_issues: '逐项确认涉及 Issue',
+  decide_issue: '判定 Issue 有效性',
+  decide_issues: '批量判定 Issue 有效性',
   mark_invalid: '判定为非有效问题',
   rollback_to_pending: '回退到待确认',
   mark_issue_fixed: '标记已修复',
   undo_issue_fixed: '撤销修复标记',
+  mark_issues_fixed: '批量标记已修复',
+  undo_issues_fixed: '批量撤销修复标记',
   retest_failed: '自动复测不通过',
   auto_passed: '自动判定闭环',
   reopened: '再次复现并重新激活',

@@ -9,6 +9,14 @@ import IssuePriorityTag from './IssuePriorityTag';
 
 const ALL = '__ALL__';
 const ISSUE_PAGE_SIZE = 10;
+const ISSUE_STAGE_ORDER = ['I0', 'I1', 'I2', 'I3', 'G'] as const;
+
+const getStageOrder = (stageId?: string): number => {
+  const index = ISSUE_STAGE_ORDER.indexOf(
+    String(stageId || '').toUpperCase() as (typeof ISSUE_STAGE_ORDER)[number]
+  );
+  return index === -1 ? ISSUE_STAGE_ORDER.length : index;
+};
 
 type SortKey = 'repo' | 'team' | 'stage' | 'title' | 'prio' | 'state';
 
@@ -93,9 +101,23 @@ const IssuePainDetailModal: React.FC<Props> = ({
 
   const options = React.useMemo(
     () => ({
-      stages: Array.from(new Set(items.map((item) => item.stageName))).filter(
-        Boolean
-      ),
+      stages: Array.from(
+        items.reduce((stageOrderByName, item) => {
+          if (!item.stageName) return stageOrderByName;
+          const order = getStageOrder(item.stageId);
+          stageOrderByName.set(
+            item.stageName,
+            Math.min(stageOrderByName.get(item.stageName) ?? order, order)
+          );
+          return stageOrderByName;
+        }, new Map<string, number>())
+      )
+        .sort(
+          ([leftName, leftOrder], [rightName, rightOrder]) =>
+            leftOrder - rightOrder ||
+            leftName.localeCompare(rightName, 'zh-Hans-CN')
+        )
+        .map(([stageName]) => stageName),
       prios: Array.from(new Set(items.map((item) => item.prio))).filter(
         Boolean
       ),

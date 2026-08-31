@@ -288,6 +288,10 @@ export type IssuePainTrackingIssue = {
   first_seen_period: string;
   last_seen_period: string;
   synthetic?: boolean;
+  valid?: boolean | null;
+  decision_reason?: string | null;
+  decided_by?: string | null;
+  decided_at?: string | null;
 };
 
 export type IssuePainTrackingHistory = {
@@ -357,11 +361,14 @@ export type IssuePainTrackingResponse = {
 };
 
 export type IssuePainTrackingActionType =
-  | 'confirm'
-  | 'mark_invalid'
+  | 'confirm_issues'
+  | 'decide_issue'
+  | 'decide_issues'
   | 'rollback_to_pending'
   | 'mark_issue_fixed'
-  | 'undo_issue_fixed';
+  | 'undo_issue_fixed'
+  | 'mark_issues_fixed'
+  | 'undo_issues_fixed';
 
 export type IssuePainTrackingActionPayload = {
   community: string;
@@ -369,7 +376,14 @@ export type IssuePainTrackingActionPayload = {
   type: IssuePainTrackingActionType;
   operator: string;
   issueNumber?: string;
+  issueNumbers?: string[];
   reason?: string;
+  valid?: boolean;
+  decisions?: Array<{
+    issueNumber: string;
+    valid: boolean;
+    reason?: string;
+  }>;
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -477,8 +491,12 @@ export type IssueTopPainsQuery = {
   repoPeriods?: string;
   /** 优先级 P0/P1/P2/P3 */
   prio?: string;
+  /** 生命周期阶段名称 */
+  stage?: string;
   /** 痛点跟踪状态 */
-  state?: number;
+  state?: string | number;
+  /** 报告周期排序 */
+  periodOrder?: 'asc' | 'desc';
   page?: number;
   pageSize?: number;
 };
@@ -492,4 +510,6 @@ export type IssueTopPainsApiResponse = {
   repoOptions: string[];
   /** 过滤前存在的优先级档位（供表头筛选器） */
   prioOptions: string[];
+  /** 按生命周期排列的阶段候选项 */
+  stageOptions: string[];
 };

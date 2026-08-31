@@ -224,6 +224,8 @@ export type RepoRerunJob = {
   selected_node_id?: string;
   selected_node_name?: string;
   selected_node_hardware?: string;
+  selected_os?: string;
+  third_party_os?: string;
   progress_current_phase?: string;
   progress_completed_phases?: string[];
   error_message?: string;
@@ -325,6 +327,7 @@ export type DevxNodeStatus = {
   name?: string;
   hostname?: string;
   hardware?: string;
+  os_tags?: string[];
   max_slots?: number;
   used_slots?: number;
   free_slots?: number;
@@ -620,6 +623,7 @@ export const triggerOverviewRepoRerun = async (
     selected_node_id?: string;
     selected_node_name?: string;
     selected_node_hardware?: string;
+    selected_os?: string;
   },
   token = getCompassOperatorToken()
 ): Promise<{ message: string; data: RepoRerunJob }> => {

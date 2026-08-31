@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Alert, Button, Input, Modal, Table, Tag, Tooltip } from 'antd';
+import { Alert, Button, Input, Modal, Select, Table, Tag, Tooltip } from 'antd';
 import {
   CheckOutlined,
   CheckCircleOutlined,
@@ -296,6 +296,13 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
         render: (value) => String(value || '').trim() || '--',
       },
       {
+        title: '操作系统',
+        dataIndex: 'selected_os',
+        key: 'selected_os',
+        width: 160,
+        render: (value) => String(value || '').trim() || '--',
+      },
+      {
         title: '报告ID',
         key: 'generated_report_id',
         width: 260,
@@ -357,7 +364,7 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
         hideOnSinglePage: true,
         size: 'small',
       }}
-      scroll={{ x: 1248 }}
+      scroll={{ x: 1408 }}
       size="middle"
       tableLayout="fixed"
       locale={{ emptyText }}
@@ -377,8 +384,10 @@ type RepoRerunInfoCardProps = {
   nodeStatusesLoading?: boolean;
   nodeStatusesError?: string;
   selectedNodeKey?: string;
+  selectedOs?: string;
   nodeSelectable?: boolean;
   onSelectNode?: (nodeKey: string, node: DevxNodeStatus) => void;
+  onSelectOs?: (os: string) => void;
 };
 
 const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
@@ -393,8 +402,10 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
   nodeStatusesLoading = false,
   nodeStatusesError = '',
   selectedNodeKey = '',
+  selectedOs = '',
   nodeSelectable = false,
   onSelectNode,
+  onSelectOs,
 }) => {
   if (!repo) return null;
   const repoNames = Array.isArray(operatorUser?.repo_names)
@@ -542,6 +553,11 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                       )
                     : 0;
                 const selected = nodeSelectable && selectedNodeKey === nodeKey;
+                const nodeOsOptions = (
+                  Array.isArray(node.os_tags) ? node.os_tags : []
+                )
+                  .map((item) => String(item || '').trim())
+                  .filter(Boolean);
                 return (
                   <div
                     key={nodeKey}
@@ -601,6 +617,37 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                         {used} / {total || 0}
                       </span>
                     </div>
+                    {selected ? (
+                      <div
+                        className="mt-3 border-t border-slate-100 pt-3"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="shrink-0 text-xs text-slate-500">
+                            操作系统:
+                          </span>
+                          <Select
+                            className="min-w-0 flex-1 [&_.ant-select-selector]:!rounded-md [&_.ant-select-selector]:!border-slate-300 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!shadow-sm hover:[&_.ant-select-selector]:!border-emerald-400"
+                            size="small"
+                            suffixIcon={
+                              <DownOutlined className="text-slate-500" />
+                            }
+                            value={selectedOs || undefined}
+                            placeholder={
+                              nodeOsOptions.length
+                                ? '请选择操作系统'
+                                : '该节点暂无可用操作系统'
+                            }
+                            disabled={!nodeOsOptions.length}
+                            options={nodeOsOptions.map((os) => ({
+                              label: os,
+                              value: os,
+                            }))}
+                            onChange={onSelectOs}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })}
@@ -628,7 +675,7 @@ type RepoRerunModalProps = {
   rerunning: boolean;
   onCancel: () => void;
   onSwitchAccount: () => void;
-  onConfirmRerun: () => void;
+  onConfirmRerun: (selectedOs: string) => void;
   onCancelRecord: (record: RepoRerunJob) => void;
   canCancelRecord: (record: RepoRerunJob) => boolean;
   nodeStatuses?: DevxNodeStatus[];
@@ -666,91 +713,143 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
   rerunRecordsExpanded,
   onToggleRerunRecords,
   onOpenChangePassword,
-}) => (
-  <Modal
-    open={open}
-    title={repo ? `${repo.name} · 重跑` : '仓库重跑'}
-    onCancel={onCancel}
-    destroyOnHidden
-    width="80vw"
-    footer={[
-      <Button key="switch" onClick={onSwitchAccount}>
-        切换账号
-      </Button>,
-      <Button key="cancel" onClick={onCancel}>
-        取消
-      </Button>,
-      <Tooltip
-        key="submit"
-        title={!canCurrentUserOperate ? '当前账号无权操作该仓库！' : ''}
-      >
-        <span className="inline-flex">
-          <Button
-            type="primary"
-            loading={rerunning}
-            disabled={!canCurrentUserOperate}
-            onClick={onConfirmRerun}
-          >
-            确认重跑
-          </Button>
-        </span>
-      </Tooltip>,
-    ]}
-  >
-    <div className="flex flex-col gap-4">
-      <RepoRerunInfoCard
-        repo={repo}
-        hardware={hardware}
-        operatorUser={operatorUser}
-        canOperate={canCurrentUserOperate}
-        loginHint=""
-        onOpenChangePassword={onOpenChangePassword}
-        nodeSectionTitle="选择节点"
-        nodeStatuses={nodeStatuses}
-        nodeStatusesLoading={nodeStatusesLoading}
-        nodeStatusesError={nodeStatusesError}
-        selectedNodeKey={selectedNodeKey}
-        nodeSelectable={!!operatorUser && canCurrentUserOperate}
-        onSelectNode={onSelectNode}
-      />
+}) => {
+  const [selectedOs, setSelectedOs] = useState('');
+  const selectedNode = useMemo(
+    () =>
+      nodeStatuses?.find(
+        (node, index) => getDevxNodeKey(node, index) === selectedNodeKey
+      ) ?? null,
+    [nodeStatuses, selectedNodeKey]
+  );
+  const osOptions = useMemo(
+    () =>
+      (Array.isArray(selectedNode?.os_tags) ? selectedNode.os_tags : [])
+        .map((item) => String(item || '').trim())
+        .filter(Boolean),
+    [selectedNode]
+  );
+  const osOptionsKey = osOptions.join('\u0000');
+  const defaultOs = osOptions[0] || '';
 
-      {operatorUser && shouldShowRerunRecordsTable ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <button
-            type="button"
-            className="flex w-full items-center justify-between text-left"
-            onClick={onToggleRerunRecords}
-          >
-            <span className="text-sm font-medium text-slate-900">重跑记录</span>
-            <span className="inline-flex items-center gap-2 text-xs text-slate-500">
-              {rerunRecordsLoading ? '加载中' : `${rerunRecords.length} 条`}
-              {rerunRecordsExpanded ? <DownOutlined /> : <RightOutlined />}
-            </span>
-          </button>
-          {rerunRecordsExpanded ? (
-            <div className="mt-3">
-              {rerunRecordsError ? (
-                <Alert
-                  className="mb-3"
-                  type="error"
-                  showIcon
-                  message={rerunRecordsError}
+  useEffect(() => {
+    setSelectedOs(defaultOs);
+  }, [defaultOs, open, selectedNodeKey, osOptionsKey]);
+
+  const hasValidSelectedOs = osOptions.includes(selectedOs);
+  const submitDisabled =
+    !canCurrentUserOperate || !selectedNode || !hasValidSelectedOs;
+  const submitTooltip = !canCurrentUserOperate
+    ? '当前账号无权操作该仓库！'
+    : !selectedNode
+    ? '请先选择节点'
+    : !osOptions.length
+    ? '该节点未提供可用操作系统'
+    : !hasValidSelectedOs
+    ? '请选择操作系统'
+    : '';
+
+  return (
+    <Modal
+      open={open}
+      title={repo ? `${repo.name} · 重跑` : '仓库重跑'}
+      onCancel={onCancel}
+      destroyOnHidden
+      width="80vw"
+      style={{ top: 24, paddingBottom: 0 }}
+      styles={{
+        body: {
+          maxHeight: 'calc(100vh - 168px)',
+          overflowX: 'hidden',
+          overflowY: 'auto',
+        },
+      }}
+      footer={[
+        <Button key="switch" onClick={onSwitchAccount}>
+          切换账号
+        </Button>,
+        <Button key="cancel" onClick={onCancel}>
+          取消
+        </Button>,
+        <Tooltip key="submit" title={submitTooltip}>
+          <span className="inline-flex">
+            <Button
+              type="primary"
+              loading={rerunning}
+              disabled={submitDisabled}
+              onClick={() => onConfirmRerun(selectedOs)}
+            >
+              确认重跑
+            </Button>
+          </span>
+        </Tooltip>,
+      ]}
+    >
+      <div className="flex flex-col gap-4">
+        <RepoRerunInfoCard
+          repo={repo}
+          hardware={hardware}
+          operatorUser={operatorUser}
+          canOperate={canCurrentUserOperate}
+          loginHint=""
+          onOpenChangePassword={onOpenChangePassword}
+          nodeSectionTitle="选择节点"
+          nodeStatuses={nodeStatuses}
+          nodeStatusesLoading={nodeStatusesLoading}
+          nodeStatusesError={nodeStatusesError}
+          selectedNodeKey={selectedNodeKey}
+          selectedOs={selectedOs}
+          nodeSelectable={!!operatorUser && canCurrentUserOperate}
+          onSelectNode={(nodeKey, node) => {
+            const firstOs = (Array.isArray(node.os_tags) ? node.os_tags : [])
+              .map((item) => String(item || '').trim())
+              .find(Boolean);
+            setSelectedOs(firstOs || '');
+            onSelectNode?.(nodeKey, node);
+          }}
+          onSelectOs={setSelectedOs}
+        />
+
+        {operatorUser && shouldShowRerunRecordsTable ? (
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between text-left"
+              onClick={onToggleRerunRecords}
+            >
+              <span className="text-sm font-medium text-slate-900">
+                重跑记录
+              </span>
+              <span className="inline-flex items-center gap-2 text-xs text-slate-500">
+                {rerunRecordsLoading ? '加载中' : `${rerunRecords.length} 条`}
+                {rerunRecordsExpanded ? <DownOutlined /> : <RightOutlined />}
+              </span>
+            </button>
+            {rerunRecordsExpanded ? (
+              <div className="mt-3">
+                {rerunRecordsError ? (
+                  <Alert
+                    className="mb-3"
+                    type="error"
+                    showIcon
+                    message={rerunRecordsError}
+                  />
+                ) : null}
+                <RerunRecordsTable
+                  records={rerunRecords}
+                  loading={rerunRecordsLoading}
+                  cancelingJobId={cancelingJobId}
+                  canCancelRecord={canCancelRecord}
+                  onCancelRecord={onCancelRecord}
                 />
-              ) : null}
-              <RerunRecordsTable
-                records={rerunRecords}
-                loading={rerunRecordsLoading}
-                cancelingJobId={cancelingJobId}
-                canCancelRecord={canCancelRecord}
-                onCancelRecord={onCancelRecord}
-              />
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  </Modal>
-);
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </Modal>
+  );
+};
 
 type RepoRerunRecordsModalProps = {
   open: boolean;

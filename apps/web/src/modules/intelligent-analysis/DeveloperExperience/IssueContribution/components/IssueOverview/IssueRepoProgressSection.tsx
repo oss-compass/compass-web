@@ -5,6 +5,11 @@ import { Segmented, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
+import {
+  ProgressSortHeader,
+  type ProgressMetricSortKey,
+  type ProgressMetricSortOrder,
+} from '../../../../UserJourney/OverviewDashboard/RepoProgressSection';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
 import { fetchIssueTopPains } from '../../data';
 import type { IssueOverviewRepo } from '../../types';
@@ -13,6 +18,23 @@ import IssuePainDetailModal from './IssuePainDetailModal';
 const { Title } = Typography;
 
 type ProgressView = 'team' | 'repo';
+type ProgressBucket = 'pending' | 'inProgress' | 'resolved';
+
+type ProgressCounts = {
+  painPending: number;
+  painInProgress: number;
+  painResolved: number;
+};
+
+type DetailTarget =
+  | { type: 'team'; name: string; bucket?: ProgressBucket }
+  | { type: 'repo'; repo: IssueOverviewRepo; bucket?: ProgressBucket };
+
+const PROGRESS_BUCKET_LABELS: Record<ProgressBucket, string> = {
+  pending: '待处理',
+  inProgress: '进行中',
+  resolved: '已闭环',
+};
 
 type TeamRow = {
   id: string;
@@ -53,6 +75,16 @@ const reportSortName = (repo: IssueOverviewRepo) =>
 
 const teamReportSortName = (team: TeamRow) =>
   team.repos.map(reportSortName).sort((a, b) => a.localeCompare(b))[0] ?? '';
+
+const progressSortValue = (
+  row: ProgressCounts,
+  key: Exclude<ProgressMetricSortKey, 'none'>
+) =>
+  key === 'pending'
+    ? row.painPending
+    : key === 'inProgress'
+    ? row.painInProgress
+    : row.painResolved;
 
 const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
   const groups = new Map<string, IssueOverviewRepo[]>();
@@ -110,11 +142,13 @@ const IssueRepoProgressSection: React.FC<Props> = ({
 }) => {
   const [view, setView] = React.useState<ProgressView>('team');
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
-  const [detailTarget, setDetailTarget] = React.useState<
-    | { type: 'team'; name: string }
-    | { type: 'repo'; repo: IssueOverviewRepo }
-    | null
-  >(null);
+  const [progressSortKey, setProgressSortKey] =
+    React.useState<ProgressMetricSortKey>('none');
+  const [progressSortOrder, setProgressSortOrder] =
+    React.useState<ProgressMetricSortOrder>('desc');
+  const [detailTarget, setDetailTarget] = React.useState<DetailTarget | null>(
+    null
+  );
   const teamRows = React.useMemo(() => buildTeamRows(repos), [repos]);
 
   const { data: detailData, isFetching: detailLoading } = useQuery({
@@ -132,6 +166,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               : detailTarget?.type === 'repo'
               ? `${detailTarget.repo.repoShort}@${detailTarget.repo.period}`
               : undefined,
+          state: detailTarget?.bucket,
           page: 1,
           pageSize: 5000,
         },
@@ -141,24 +176,58 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     keepPreviousData: true,
   });
 
-  const openPainDetails = (
-    target:
-      | { type: 'team'; name: string }
-      | { type: 'repo'; repo: IssueOverviewRepo }
-  ) => {
+  const openPainDetails = (target: DetailTarget) => {
     setDetailTarget(target);
   };
+
+  const progressSorter = React.useCallback(
+    <T extends ProgressCounts>(left: T, right: T) => {
+      if (progressSortKey === 'none') return 0;
+      const direction = progressSortOrder === 'asc' ? 1 : -1;
+      return (
+        (progressSortValue(left, progressSortKey) -
+          progressSortValue(right, progressSortKey)) *
+        direction
+      );
+    },
+    [progressSortKey, progressSortOrder]
+  );
+
+  const progressHeader = (
+    <ProgressSortHeader
+      sortKey={progressSortKey}
+      sortOrder={progressSortOrder}
+      onSortKeyChange={setProgressSortKey}
+      onSortOrderChange={setProgressSortOrder}
+    />
+  );
+
+  const sortByProgress = React.useCallback(
+    <T extends ProgressCounts>(rows: T[]): T[] =>
+      progressSortKey === 'none' ? rows : [...rows].sort(progressSorter),
+    [progressSortKey, progressSorter]
+  );
 
   const progressCell = (
     pending: number,
     inProgress: number,
-    resolved: number
+    resolved: number,
+    onBucketClick?: (bucket: ProgressBucket) => void
   ) => (
-    <IssueProgressBar
-      pending={pending}
-      inProgress={inProgress}
-      resolved={resolved}
-    />
+    <div
+      onClick={onBucketClick ? (event) => event.stopPropagation() : undefined}
+    >
+      <IssueProgressBar
+        pending={pending}
+        inProgress={inProgress}
+        resolved={resolved}
+        onBucketClick={
+          onBucketClick
+            ? (bucket) => onBucketClick(bucket as ProgressBucket)
+            : undefined
+        }
+      />
+    </div>
   );
   const closeRateCell = (rate: number) => (
     <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
@@ -232,14 +301,15 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         render: (_value: number, record) => repoScoreCell(record),
       },
       {
-        title: '问题处理进展',
+        title: progressHeader,
         key: 'progress',
         width: 230,
         render: (_value, record) =>
           progressCell(
             record.painPending,
             record.painInProgress,
-            record.painResolved
+            record.painResolved,
+            (bucket) => openPainDetails({ type: 'repo', repo: record, bucket })
           ),
       },
       {
@@ -289,7 +359,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
     ],
-    [onOpenScoreTrend, reportHref]
+    [onOpenScoreTrend, progressHeader, reportHref]
   );
 
   const teamColumns = React.useMemo<TableProps<TeamRow>['columns']>(
@@ -342,14 +412,20 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
       {
-        title: '问题处理进展',
+        title: progressHeader,
         key: 'progress',
         width: TEAM_COLUMN_WIDTHS[4],
         render: (_value, record) =>
           progressCell(
             record.painPending,
             record.painInProgress,
-            record.painResolved
+            record.painResolved,
+            (bucket) =>
+              openPainDetails({
+                type: 'team',
+                name: record.name,
+                bucket,
+              })
           ),
       },
       {
@@ -387,7 +463,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         render: () => <span className="text-slate-300">-</span>,
       },
     ],
-    [expandedRowKeys]
+    [expandedRowKeys, progressHeader]
   );
 
   return (
@@ -410,7 +486,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         {view === 'team' ? (
           <Table<TeamRow>
             className="overview-ant-table"
-            dataSource={teamRows}
+            dataSource={sortByProgress(teamRows)}
             columns={teamColumns}
             rowKey="id"
             pagination={false}
@@ -434,7 +510,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                       ))}
                     </colgroup>
                     <tbody>
-                      {team.repos.map((repo, index) => (
+                      {sortByProgress(team.repos).map((repo, index) => (
                         <tr
                           key={`${repo.community}-${repo.period}`}
                           className="overview-expanded-row"
@@ -456,7 +532,13 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                             {progressCell(
                               repo.painPending,
                               repo.painInProgress,
-                              repo.painResolved
+                              repo.painResolved,
+                              (bucket) =>
+                                openPainDetails({
+                                  type: 'repo',
+                                  repo,
+                                  bucket,
+                                })
                             )}
                           </td>
                           <td className="overview-expanded-cell">
@@ -493,7 +575,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ) : (
           <Table<IssueOverviewRepo>
             className="overview-ant-table"
-            dataSource={repos}
+            dataSource={sortByProgress(repos)}
             columns={repoColumns}
             rowKey={(repo) => `${repo.community}-${repo.period}`}
             pagination={false}
@@ -518,7 +600,11 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                 detailTarget.type === 'team'
                   ? detailTarget.name
                   : detailTarget.repo.repoShort
-              } · 总问题数`
+              } · ${
+                detailTarget.bucket
+                  ? PROGRESS_BUCKET_LABELS[detailTarget.bucket]
+                  : '总问题数'
+              }`
             : '问题详情'
         }
       />

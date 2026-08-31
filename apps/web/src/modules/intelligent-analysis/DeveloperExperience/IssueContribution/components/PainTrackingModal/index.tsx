@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Input, Modal, Progress, Radio, Steps } from 'antd';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons';
+import { Alert, Button, Input, Modal, Progress, Steps, Tooltip } from 'antd';
 import type { IssuePainTracking } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
 import { getPriorityLabel, getPriorityTone } from '../../presentation';
-import { ArchivedIssueList, TrackingHistoryTable } from './components';
+import {
+  ArchivedIssueList,
+  IssueFixButton,
+  TrackingHistoryTable,
+} from './components';
 import PainIssueTable from '../PainIssueTable';
 import { useTrackingOperator } from './hooks';
 import type { PainTrackingModalProps } from './types';
@@ -96,6 +105,170 @@ const getPassedPresentation = (
   };
 };
 
+const RepairIssueOperationSection: React.FC<{
+  pain: PainTrackingModalProps['pain'];
+  tracking: PainTrackingModalProps['tracking'];
+  onAction: PainTrackingModalProps['onAction'];
+  pendingRetest?: boolean;
+}> = ({ pain, tracking, onAction, pendingRetest = false }) => {
+  const painLevelIssue = tracking.painLevelOnly
+    ? tracking.activeIssues[0]
+    : undefined;
+  if (!painLevelIssue) {
+    return (
+      <PainIssueTable
+        issues={pain.low_score_issues ?? []}
+        tracking={tracking}
+        onTrackingAction={onAction}
+        responsive
+      />
+    );
+  }
+  return (
+    <div className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3">
+      <span className="text-xs text-slate-500">
+        {pendingRetest
+          ? '痛点整体已修复，可在自动复测前撤销修复标记。'
+          : '当前痛点没有关联具体 Issue，可直接完成痛点整体修复。'}
+      </span>
+      <IssueFixButton
+        tracking={tracking}
+        issue={painLevelIssue}
+        onAction={onAction}
+        compact
+      />
+    </div>
+  );
+};
+
+/**
+ * 无具体 Issue 的痛点整体即时判定：提交人 + 判断原因 + 是/否即时提交，
+ * 每次提交前校验提交人，全部判定完成后由后端自动流转状态。
+ */
+const PainOverallDecision: React.FC<{
+  tracking: IssuePainTracking;
+  onAction: PainTrackingModalProps['onAction'];
+}> = ({ tracking, onAction }) => {
+  const { operator, setOperator, rememberOperator } = useTrackingOperator();
+  const [reason, setReason] = useState('');
+  const [operatorError, setOperatorError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const overall = tracking.activeIssues[0];
+  const decided = overall?.valid ?? null;
+
+  const decide = async (valid: boolean) => {
+    const validation = validateOperator(operator);
+    if (validation) {
+      setOperatorError(validation);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await onAction({
+        trackingKey: tracking.trackingKey,
+        type: 'decide_issue',
+        operator: rememberOperator(operator),
+        issueNumber: overall?.number ?? '__pain__',
+        valid,
+        reason: valid ? undefined : reason.trim() || undefined,
+      });
+    } catch {
+      // 页面级 action handler 已展示错误信息，保留输入便于重试。
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+      <div className="text-sm font-medium text-slate-700">
+        当前痛点没有关联具体 Issue，请判断该痛点整体是否有效。
+      </div>
+      <div className="mt-3 flex flex-wrap items-start gap-4">
+        <div>
+          <div className="mb-1 text-xs font-medium text-slate-600">
+            提交人 <span className="text-rose-500">*</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Input
+              size="small"
+              className={`issue-pain-batch-operator !h-7 !w-32 !bg-white !px-2.5 ${
+                operatorError ? '!border-rose-400' : '!border-slate-200'
+              }`}
+              value={operator}
+              placeholder="请输入提交人"
+              maxLength={20}
+              autoComplete="off"
+              onChange={(event) => {
+                setOperator(event.target.value);
+                if (event.target.value.trim()) setOperatorError('');
+              }}
+            />
+            {operatorError ? (
+              <div className="-mt-0.5 text-[10px] leading-7 text-rose-500">
+                {operatorError}
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div>
+          <div className="mb-1 text-xs font-medium text-slate-600">
+            判断原因（选填，可后续补充）
+          </div>
+          <Input
+            size="small"
+            className="issue-pain-batch-operator !h-7 !w-56 !border-slate-200 !bg-white !px-2.5"
+            value={reason}
+            placeholder="判否后可补充原因再点一次否更新"
+            maxLength={200}
+            onChange={(event) => setReason(event.target.value)}
+          />
+        </div>
+        <div>
+          <div className="mb-1 text-xs font-medium text-slate-600">
+            是否为有效问题
+          </div>
+          <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-100/80 p-1">
+            <button
+              type="button"
+              disabled={submitting}
+              className={`inline-flex min-w-16 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-4 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed ${
+                decided === true
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                  : 'border-transparent text-slate-500 hover:bg-white hover:text-slate-700'
+              }`}
+              onClick={() => void decide(true)}
+            >
+              <CheckOutlined className="text-xs" />是
+            </button>
+            <button
+              type="button"
+              disabled={submitting}
+              className={`inline-flex min-w-16 cursor-pointer items-center justify-center gap-1.5 rounded-lg border px-4 py-1 text-sm font-medium transition-colors disabled:cursor-not-allowed ${
+                decided === false
+                  ? 'border-rose-200 bg-rose-50 text-rose-600'
+                  : 'border-transparent text-slate-500 hover:bg-white hover:text-slate-700'
+              }`}
+              onClick={() => void decide(false)}
+            >
+              <CloseOutlined className="text-xs" />否
+            </button>
+          </div>
+        </div>
+      </div>
+      {decided !== null ? (
+        <div className="mt-2 text-xs text-slate-400">
+          当前判定：{decided ? '有效问题' : '非有效问题'}
+          {decided === false && overall?.decision_reason
+            ? `（原因：${overall.decision_reason}）`
+            : ''}
+          ，重新点击可改判。
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   open,
   pain,
@@ -105,13 +278,6 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   onAction,
 }) => {
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
-  const [submitting, setSubmitting] = useState(false);
-  const [operatorError, setOperatorError] = useState('');
-  const [decision, setDecision] = useState<
-    'confirm' | 'mark_invalid' | undefined
-  >('confirm');
-  const [invalidReason, setInvalidReason] = useState('');
-  const [invalidReasonError, setInvalidReasonError] = useState('');
   const [rollbackModalOpen, setRollbackModalOpen] = useState(false);
   const [rollbackReason, setRollbackReason] = useState('');
   const [rollbackOperatorError, setRollbackOperatorError] = useState('');
@@ -120,16 +286,12 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
 
   useEffect(() => {
     if (open) {
-      setOperatorError('');
-      setDecision('confirm');
-      setInvalidReason('');
-      setInvalidReasonError('');
       setRollbackModalOpen(false);
       setRollbackReason('');
       setRollbackOperatorError('');
       setRollbackReasonError('');
     }
-  }, [open]);
+  }, [open, tracking.status, tracking.trackingKey]);
 
   const isObserve = tracking.trackingType === 'observe';
   const priorityTone = getPriorityTone(pain.prio);
@@ -137,32 +299,6 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const flowItems = getFlowItems(tracking, isObserve).map((item, index) =>
     index >= currentStep ? { ...item, description: null } : item
   );
-
-  const submitDecision = async (type: 'confirm' | 'mark_invalid') => {
-    const validation = validateOperator(operator);
-    if (validation) {
-      setOperatorError(validation);
-      return;
-    }
-    const normalizedReason = invalidReason.trim();
-    if (type === 'mark_invalid' && !normalizedReason) {
-      setInvalidReasonError('请填写判断原因');
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await onAction({
-        trackingKey: tracking.trackingKey,
-        type,
-        operator: rememberOperator(operator),
-        reason: type === 'mark_invalid' ? normalizedReason : undefined,
-      });
-    } catch {
-      // 页面级 action handler 已展示错误信息，弹窗保留当前输入。
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const submitRollback = async () => {
     const validation = validateOperator(operator);
@@ -195,13 +331,18 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const trend = tracking.issueCountTrend.slice(-4);
   const percent = getFixProgressPercent(tracking);
   const passedPresentation = getPassedPresentation(tracking, isObserve);
+  const pendingTotalCount = tracking.activeIssues.length;
+  const pendingDecidedCount = tracking.activeIssues.filter(
+    (item) => item.valid === true || item.valid === false
+  ).length;
 
   return (
     <Modal
       open={open}
       onCancel={onClose}
       footer={null}
-      width="70%"
+      width="calc(100vw - 32px)"
+      style={{ maxWidth: 1280 }}
       destroyOnClose
       styles={{
         body: {
@@ -250,133 +391,64 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
         {tracking.status === IssuePainTrackingStatus.PENDING ? (
           <div className="space-y-4">
             <div>
-              <div className="mb-2 text-sm font-semibold text-slate-700">
-                涉及 Issue
+              <div className="mb-2 flex items-center text-sm font-semibold text-slate-700">
+                <span>涉及 Issue</span>
                 <span className="ml-1.5 font-normal text-slate-400">
                   共 {pain.low_score_issues?.length ?? 0} 条
                 </span>
-              </div>
-              <PainIssueTable issues={pain.low_score_issues ?? []} />
-            </div>
-            {isObserve ? (
-              <div className="rounded-lg border border-sky-100 bg-sky-50/70 px-3.5 py-2.5">
-                <div className="text-sm font-semibold text-sky-800">
-                  创建、首响与分配阶段无需逐项修复
-                </div>
-                <div className="mt-1 text-xs leading-5 text-sky-700/80">
-                  这两个阶段关注 Issue 是否被顺利接收和响应，不要求逐个标记
-                  Issue 修复。确认后，系统会检查后续每期报告；连续{' '}
-                  {tracking.passMissPeriods}
-                  期未再出现该痛点时，自动标记为已闭环。
-                </div>
-              </div>
-            ) : (
-              <div className="rounded-lg border border-sky-100 bg-sky-50/70 px-3.5 py-2.5">
-                <div className="text-sm font-semibold text-sky-800">
-                  确认后可逐个完成 Issue 修复
-                </div>
-                <div className="mt-1 text-xs leading-5 text-sky-700/80">
-                  所有关联 Issue 完成修复后，痛点将自动进入待复测状态。
-                </div>
-              </div>
-            )}
-            <div className="space-y-5 border-t border-slate-200 pt-5">
-              <div>
-                <div className="text-sm font-medium text-slate-700">
-                  是否确认该痛点
-                  <span className="ml-1 text-rose-500">*</span>
-                </div>
-                <div className="mt-1 text-xs leading-5 text-slate-500">
-                  请根据涉及 Issue 判断该痛点是否真实存在。
-                </div>
-                <Radio.Group
-                  className="mt-3"
-                  value={decision}
-                  onChange={(event) => {
-                    setDecision(event.target.value);
-                    setInvalidReasonError('');
-                  }}
-                >
-                  <Radio value="confirm">
-                    <span className="text-sm text-slate-700">是</span>
-                  </Radio>
-                  <Radio value="mark_invalid">
-                    <span className="text-sm text-slate-700">
-                      否（非有效问题）
-                    </span>
-                  </Radio>
-                </Radio.Group>
-                {decision === 'mark_invalid' ||
-                (decision === 'confirm' && !isObserve) ? (
-                  <div className="mt-2 text-xs leading-5 text-slate-500">
-                    {decision === 'confirm'
-                      ? '确认后进入修复流程，逐个处理当前关联 Issue。'
-                      : '选择“否”后，该痛点将结束管理流程。'}
-                  </div>
-                ) : null}
-              </div>
-
-              {decision === 'mark_invalid' ? (
-                <div>
-                  <div className="text-sm font-medium text-slate-700">
-                    判断原因
-                    <span className="ml-1 text-rose-500">*</span>
-                  </div>
-                  <Input.TextArea
-                    className="mt-2 !rounded-lg !border-slate-300 !px-3 !py-2"
-                    value={invalidReason}
-                    maxLength={200}
-                    rows={3}
-                    showCount
-                    placeholder="请说明该现象不属于有效问题的判断依据"
-                    onChange={(event) => {
-                      setInvalidReason(event.target.value);
-                      if (event.target.value.trim()) setInvalidReasonError('');
-                    }}
-                  />
-                  {invalidReasonError ? (
-                    <div className="mt-1 text-xs text-rose-500">
-                      {invalidReasonError}
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
-
-              <div>
-                <div className="text-sm font-medium text-slate-700">
-                  提交人
-                  <span className="ml-1 text-rose-500">*</span>
-                </div>
-                <Input
-                  className="mt-2 !rounded-lg !border-slate-300 !px-3 !py-2"
-                  value={operator}
-                  maxLength={20}
-                  placeholder="请输入提交人姓名"
-                  onChange={(event) => setOperator(event.target.value)}
-                />
-                {operatorError ? (
-                  <div className="mt-1 text-xs text-rose-500">
-                    {operatorError}
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="flex justify-end border-t border-slate-200 pt-4">
-                <Button
-                  className="!h-9 !rounded-lg !border-sky-600 !bg-sky-600 !px-5 !font-semibold !shadow-none"
-                  type="primary"
-                  loading={submitting}
-                  disabled={
-                    !decision ||
-                    (decision === 'mark_invalid' && !invalidReason.trim())
+                <Tooltip
+                  title={
+                    isObserve
+                      ? `创建、首响与分配阶段关注 Issue 是否被顺利接收和响应，不要求逐个标记修复。确认后系统会检查后续报告；连续 ${tracking.passMissPeriods} 期未再出现时自动标记为已闭环。`
+                      : '确认后可逐个完成 Issue 修复；所有有效 Issue 完成修复后，痛点将自动进入待复测状态。'
                   }
-                  onClick={() => decision && void submitDecision(decision)}
                 >
-                  {decision === 'mark_invalid'
-                    ? '提交为非有效问题'
-                    : '确认痛点'}
-                </Button>
+                  <span className="ml-2 inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full bg-slate-100 text-[13px] font-normal leading-none text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-600">
+                    <InfoCircleOutlined />
+                  </span>
+                </Tooltip>
               </div>
+              <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <InfoCircleOutlined className="text-amber-500" />
+                    待确认：请逐条判断“是否为有效问题”
+                  </div>
+                  <span className="shrink-0 text-sm font-semibold text-amber-600">
+                    {pendingDecidedCount}/{pendingTotalCount}
+                  </span>
+                </div>
+                <Progress
+                  percent={
+                    pendingTotalCount
+                      ? Math.round(
+                          (pendingDecidedCount / pendingTotalCount) * 100
+                        )
+                      : 0
+                  }
+                  showInfo={false}
+                  className="!mb-0 mt-2"
+                  strokeColor="#f59e0b"
+                  size={['100%', 6]}
+                />
+              </div>
+              {pain.low_score_issues?.length ? (
+                <div className="mt-4">
+                  <PainIssueTable
+                    issues={pain.low_score_issues}
+                    tracking={tracking}
+                    onTrackingAction={onAction}
+                    responsive
+                  />
+                </div>
+              ) : (
+                <div className="mt-4">
+                  <PainOverallDecision
+                    tracking={tracking}
+                    onAction={onAction}
+                  />
+                </div>
+              )}
             </div>
           </div>
         ) : null}
@@ -407,6 +479,12 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 ))}
               </div>
             </div>
+            <PainIssueTable
+              issues={pain.low_score_issues ?? []}
+              tracking={tracking}
+              onTrackingAction={onAction}
+              responsive
+            />
           </div>
         ) : null}
 
@@ -428,10 +506,10 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 全部 Issue 修复后自动进入“已修复待复测”。
               </div>
             </div>
-            <PainIssueTable
-              issues={pain.low_score_issues ?? []}
+            <RepairIssueOperationSection
+              pain={pain}
               tracking={tracking}
-              onTrackingAction={onAction}
+              onAction={onAction}
             />
             <ArchivedIssueList issues={tracking.archivedIssues} />
           </div>
@@ -445,22 +523,31 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               message="已修复，等待下一期报告自动复测"
               description="下一期报告未复现，系统将自动判定复测通过；若再次出现，会自动重置复现 Issue 的修复标记。"
             />
-            <PainIssueTable
-              issues={pain.low_score_issues ?? []}
+            <RepairIssueOperationSection
+              pain={pain}
               tracking={tracking}
-              onTrackingAction={onAction}
+              onAction={onAction}
+              pendingRetest
             />
             <ArchivedIssueList issues={tracking.archivedIssues} />
           </div>
         ) : null}
 
         {tracking.status === IssuePainTrackingStatus.PASSED ? (
-          <Alert
-            type="success"
-            showIcon
-            message={passedPresentation.message}
-            description={passedPresentation.description}
-          />
+          <div className="space-y-4">
+            <Alert
+              type="success"
+              showIcon
+              message={passedPresentation.message}
+              description={passedPresentation.description}
+            />
+            <PainIssueTable
+              issues={pain.low_score_issues ?? []}
+              tracking={tracking}
+              onTrackingAction={onAction}
+              responsive
+            />
+          </div>
         ) : null}
 
         {tracking.status === IssuePainTrackingStatus.INVALID ? (
@@ -483,6 +570,12 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 </div>
               }
             />
+            <PainIssueTable
+              issues={pain.low_score_issues ?? []}
+              tracking={tracking}
+              onTrackingAction={onAction}
+              responsive
+            />
             <div className="flex justify-end">
               <Button
                 danger
@@ -496,6 +589,19 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
         ) : null}
 
         <TrackingHistoryTable history={tracking.history} />
+        <style jsx global>{`
+          .issue-pain-form-input.ant-input {
+            border-radius: 12px !important;
+          }
+          .issue-pain-submit-button.ant-btn {
+            border-radius: 12px !important;
+          }
+          .issue-pain-submit-button.ant-btn:disabled {
+            border-color: #cbd5e1 !important;
+            background: #e2e8f0 !important;
+            color: #94a3b8 !important;
+          }
+        `}</style>
       </div>
       <Modal
         open={rollbackModalOpen}

@@ -70,8 +70,12 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const [painFilters, setPainFilters] = React.useState<{
     repo?: string;
     prio?: string;
+    stage?: string;
     state?: number;
   }>({});
+  const [painPeriodOrder, setPainPeriodOrder] = React.useState<
+    'ascend' | 'descend' | null
+  >(null);
   const [painOverviewDetail, setPainOverviewDetail] =
     React.useState<PainOverviewDetailTarget | null>(null);
 
@@ -79,6 +83,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   React.useEffect(() => {
     setPainPage(1);
     setPainFilters({});
+    setPainPeriodOrder(null);
     setPainOverviewDetail(null);
   }, [org]);
 
@@ -101,7 +106,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       painPageSize,
       painFilters.repo,
       painFilters.prio,
+      painFilters.stage,
       painFilters.state,
+      painPeriodOrder,
     ],
     queryFn: ({ signal }) =>
       fetchIssueTopPains(
@@ -109,7 +116,14 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           org,
           repo: painFilters.repo,
           prio: painFilters.prio,
+          stage: painFilters.stage,
           state: painFilters.state,
+          periodOrder:
+            painPeriodOrder === 'ascend'
+              ? 'asc'
+              : painPeriodOrder === 'descend'
+              ? 'desc'
+              : undefined,
           page: painPage,
           pageSize: painPageSize,
         },
@@ -208,6 +222,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
 
   const painRepos = pains?.repoOptions ?? [];
   const painPris = pains?.prioOptions ?? [];
+  const painStages = pains?.stageOptions ?? [];
   const renderPainSummaryValue = (
     value: number,
     target: PainOverviewDetailTarget,
@@ -252,7 +267,10 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     {
       title: '周期',
       dataIndex: 'periodLabel',
+      key: 'period',
       width: 168,
+      sorter: true,
+      sortOrder: painPeriodOrder,
     },
     {
       title: '优先级',
@@ -266,7 +284,14 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       filteredValue: painFilters.prio ? [painFilters.prio] : null,
       render: (v: string) => <IssuePriorityTag priority={v} />,
     },
-    { title: '阶段', dataIndex: 'stageName', width: 128 },
+    {
+      title: '阶段',
+      dataIndex: 'stageName',
+      width: 128,
+      filters: painStages.map((stage) => ({ text: stage, value: stage })),
+      filterMultiple: false,
+      filteredValue: painFilters.stage ? [painFilters.stage] : null,
+    },
     {
       title: '痛点',
       dataIndex: 'title',
@@ -609,19 +634,30 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             showSizeChanger: false,
             showTotal: (total) => `共 ${total} 条`,
           }}
-          onChange={(pagination, filters) => {
+          onChange={(pagination, filters, sorter) => {
             const repo = (filters.repoShort?.[0] as string) || undefined;
             const prio = (filters.prio?.[0] as string) || undefined;
+            const stage = (filters.stageName?.[0] as string) || undefined;
             const state = filters.trackingStatus?.[0]
               ? Number(filters.trackingStatus[0])
               : undefined;
+            const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
+            const periodOrder =
+              activeSorter?.columnKey === 'period'
+                ? activeSorter.order ?? null
+                : null;
             const filtersChanged =
               repo !== painFilters.repo ||
               prio !== painFilters.prio ||
+              stage !== painFilters.stage ||
               state !== painFilters.state;
-            if (filtersChanged) setPainFilters({ repo, prio, state });
-            // 筛选变化时回到第一页，否则跟随翻页器
-            setPainPage(filtersChanged ? 1 : pagination.current ?? 1);
+            const sortChanged = periodOrder !== painPeriodOrder;
+            if (filtersChanged) setPainFilters({ repo, prio, stage, state });
+            if (sortChanged) setPainPeriodOrder(periodOrder);
+            // 筛选或排序变化时回到第一页，否则跟随翻页器
+            setPainPage(
+              filtersChanged || sortChanged ? 1 : pagination.current ?? 1
+            );
           }}
           scroll={{ x: 1742 }}
           locale={{ emptyText: '当前无匹配的待办痛点' }}

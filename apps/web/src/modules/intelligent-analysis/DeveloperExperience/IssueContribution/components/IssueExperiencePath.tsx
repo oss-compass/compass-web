@@ -26,7 +26,6 @@ import type {
 } from '../types';
 import { IssuePainTrackingStatus } from '../types';
 import PainTrackingModal, {
-  IssueFixButton,
   TrackingActionButton,
   TrackingProgress,
 } from './PainTrackingModal';
@@ -522,24 +521,7 @@ const StagePainCard: React.FC<{
                 <FlagOutlined className="text-rose-400" />
                 涉及 Issue 明细 · {issues.length} 个
               </div>
-              <PainIssueTable
-                issues={issues}
-                tracking={tracking}
-                onTrackingAction={onTrackingAction}
-              />
-            </div>
-          ) : null}
-          {tracking?.painLevelOnly && onTrackingAction ? (
-            <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <span className="text-xs text-slate-500">
-                当前痛点没有关联 Issue，可直接标记痛点整体已修复。
-              </span>
-              <IssueFixButton
-                tracking={tracking}
-                issue={tracking.activeIssues[0]}
-                onAction={onTrackingAction}
-                compact
-              />
+              <PainIssueTable issues={issues} tracking={tracking} />
             </div>
           ) : null}
         </div>
