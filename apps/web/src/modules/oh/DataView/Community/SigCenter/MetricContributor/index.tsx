@@ -5,7 +5,7 @@ import MyTable from '@common/components/Table';
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import {
-  useContributionTypeLsit,
+  useContributionTypeList,
   useEcologicalType,
   useMileageOptions,
 } from '@modules/analyze/DataView/MetricDetail/MetricContributor/contribution';
@@ -379,7 +379,7 @@ const MerticTable = () => {
           />
         );
       },
-      filters: useContributionTypeLsit(),
+      filters: useContributionTypeList(),
       filterMode: 'tree',
       align: 'left',
       width: '300px',

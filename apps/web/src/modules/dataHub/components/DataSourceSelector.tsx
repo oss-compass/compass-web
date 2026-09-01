@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 const DataSourceSelector = ({
   defaultValue = 'https://oss-compass.isrc.ac.cn',
   onChange,
-  hideenCompass = false,
+  hiddenCompass = false,
 }) => {
   const { t } = useTranslation();
   const apiBaseUrl = `${window.location.origin}`;
@@ -35,15 +35,15 @@ const DataSourceSelector = ({
         ]
       : defaultOptions;
 
-    // 当 hideenCompass 为 true 时，过滤掉 OSS Compass 选项
-    if (hideenCompass) {
+    // 当 hiddenCompass 为 true 时，过滤掉 OSS Compass 选项
+    if (hiddenCompass) {
       newOptions = newOptions.filter(
         (option) => option.label !== 'OSS Compass'
       );
     }
 
     setOptions(newOptions);
-  }, [apiBaseUrl, hideenCompass, t]);
+  }, [apiBaseUrl, hiddenCompass, t]);
 
   return (
     <div>

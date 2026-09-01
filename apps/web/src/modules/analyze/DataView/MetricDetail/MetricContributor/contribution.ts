@@ -120,7 +120,7 @@ const useContributionTypeMap = () => {
   };
 };
 // 领域画像 filter
-export const useContributionTypeLsit = () => {
+export const useContributionTypeList = () => {
   const obj = useContributionTypeMap();
   const result = [];
 

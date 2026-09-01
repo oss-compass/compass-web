@@ -6,7 +6,7 @@ import MyTable from '@common/components/Table';
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import {
-  useContributionTypeLsit,
+  useContributionTypeList,
   useEcologicalType,
   useMileageOptions,
 } from '@modules/analyze/DataView/MetricDetail/MetricContributor/contribution';

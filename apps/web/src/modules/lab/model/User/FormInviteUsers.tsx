@@ -6,11 +6,11 @@ import Pagination from '@common/components/Antd/Pagination';
 import useEventEmitter from 'ahooks/lib/useEventEmitter';
 import { ReFetch } from '@common/constant';
 import { useTranslation } from 'react-i18next';
-import { myPermisssion } from './type';
+import { myPermissions } from './type';
 
 const per = 6;
 const FormInviteUsers = forwardRef(
-  (props: { modelId: number; permission: myPermisssion }, ref) => {
+  (props: { modelId: number; permission: myPermissions }, ref) => {
     const { modelId, permission } = props;
     const { t } = useTranslation();
 
