@@ -18,7 +18,6 @@ import { getTrackingStatusMeta } from './components/PainTrackingModal/constants'
 import ExperienceBackLink from '../components/ExperienceBackLink';
 import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
-import IssueExecutiveSummary from './components/IssueExecutiveSummary';
 import IssueExperiencePath from './components/IssueExperiencePath';
 import IssueScoreOverview from './components/IssueScoreOverview';
 
@@ -367,7 +366,6 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 pains={report.data.report_context.top_pains}
                 recommendations={report.data.report_context.top_recs}
                 issueScoreRows={report.data.report_context.issue_score_rows}
-                sampleSize={report.data.report_context.n_total}
                 activeStageId={activeStageId}
                 focusPainId={requestedPain}
                 onStageChange={setActiveStageId}
@@ -378,7 +376,6 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 stages={visibleStages}
                 issueScoreRows={report.data.report_context.issue_score_rows}
               />
-              <IssueExecutiveSummary context={report.data.report_context} />
             </IssueReportOverview>
 
             <footer className="px-1 pb-2 text-[11px] leading-5 text-slate-500">

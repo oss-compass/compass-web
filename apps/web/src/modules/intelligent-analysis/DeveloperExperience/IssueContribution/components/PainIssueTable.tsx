@@ -17,6 +17,10 @@ import {
 } from 'antd';
 import toast from 'react-hot-toast';
 import { getScoreTone } from '../presentation';
+import {
+  getPainIssuePriorityMeta,
+  resolvePainIssuePriority,
+} from '../issuePriority';
 import type {
   IssuePainTracking,
   IssuePainTrackingActionPayload,
@@ -48,8 +52,9 @@ const getEvidenceMeta = (type: string) =>
 
 const PAIN_ISSUE_TABLE_LAYOUTS = {
   default: {
-    table: 'min-w-[1090px]',
+    table: 'min-w-[1190px]',
     issue: 'w-[210px]',
+    priority: 'w-[110px]',
     score: 'w-[68px]',
     reason: 'w-[230px]',
     decision: 'w-[150px]',
@@ -59,9 +64,10 @@ const PAIN_ISSUE_TABLE_LAYOUTS = {
   },
   responsive: {
     table: 'issue-pain-table-responsive min-w-0',
-    issue: 'w-[18%]',
+    issue: 'w-[16%]',
+    priority: 'w-[10%]',
     score: 'w-[6%]',
-    reason: 'w-[18%]',
+    reason: 'w-[16%]',
     decision: 'w-[16%]',
     status: 'w-[11%]',
     action: 'w-[14%]',
@@ -580,6 +586,8 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
     rawIssueScore !== '' &&
     Number.isFinite(Number(rawIssueScore));
   const issueTone = hasIssueScore ? getScoreTone(Number(rawIssueScore)) : null;
+  const issuePriority = resolvePainIssuePriority(issue.priority, rawIssueScore);
+  const priorityMeta = getPainIssuePriorityMeta(issuePriority);
   return (
     <>
       <td className="border-b border-slate-100 px-3 py-2.5">
@@ -617,6 +625,21 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
             {issue.title}
           </div>
         </Tooltip>
+      </td>
+      <td className="border-b border-slate-100 px-2 py-2.5 text-center">
+        {priorityMeta ? (
+          <Tooltip
+            title={`${priorityMeta.description}（${priorityMeta.minScore}–${priorityMeta.maxScore} 分）`}
+          >
+            <span
+              className={`inline-flex whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-bold ${priorityMeta.badgeClass}`}
+            >
+              {priorityMeta.label}
+            </span>
+          </Tooltip>
+        ) : (
+          <span className="text-slate-400">—</span>
+        )}
       </td>
       <td className="border-b border-slate-100 px-3 py-2.5 text-center">
         {issueTone ? (
@@ -1307,6 +1330,11 @@ const PainIssueTableHead: React.FC<{
         className={`border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500 ${layout.issue}`}
       >
         Issue
+      </th>
+      <th
+        className={`border-b border-slate-200 px-2 py-2 text-center text-[11px] font-semibold text-slate-500 ${layout.priority}`}
+      >
+        优先级
       </th>
       <th
         className={`border-b border-slate-200 px-2 py-2 text-center text-[11px] font-semibold text-slate-500 ${layout.score}`}

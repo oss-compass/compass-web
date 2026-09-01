@@ -15,6 +15,8 @@ import type {
 } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
 import { getPriorityLabel, getPriorityTone } from '../../presentation';
+import { resolvePainIssuePriority } from '../../issuePriority';
+import type { PainIssuePriority } from '../../issuePriority';
 import {
   ArchivedIssueList,
   IssueFixButton,
@@ -24,6 +26,7 @@ import PainIssueTable, {
   InvalidDecisionReasonModal,
   useFinalIssueDecisionConfirm,
 } from '../PainIssueTable';
+import PainIssuePriorityFilter from '../PainIssuePriorityFilter';
 import { useTrackingOperator } from './hooks';
 import type { PainTrackingModalProps } from './types';
 import {
@@ -376,6 +379,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const [rollbackOperatorError, setRollbackOperatorError] = useState('');
   const [rollbackReasonError, setRollbackReasonError] = useState('');
   const [rollbackSubmitting, setRollbackSubmitting] = useState(false);
+  const [issuePriorityFilter, setIssuePriorityFilter] =
+    useState<PainIssuePriority>();
 
   useEffect(() => {
     if (open) {
@@ -383,6 +388,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
       setRollbackReason('');
       setRollbackOperatorError('');
       setRollbackReasonError('');
+      setIssuePriorityFilter(undefined);
     }
   }, [open, tracking.status, tracking.trackingKey]);
 
@@ -426,6 +432,13 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const passedPresentation = getPassedPresentation(tracking, isObserve);
   const pendingTrackedIssues = getPendingTrackedIssues(tracking);
   const pendingPainIssues = getPendingPainIssues(pain, tracking);
+  const filteredPendingPainIssues = issuePriorityFilter
+    ? pendingPainIssues.filter(
+        (issue) =>
+          resolvePainIssuePriority(issue.priority, issue.score) ===
+          issuePriorityFilter
+      )
+    : pendingPainIssues;
   const pendingTotalCount = pendingTrackedIssues.length;
   const pendingDecidedCount = pendingTrackedIssues.filter(
     (item) => item.valid === true || item.valid === false
@@ -486,11 +499,18 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
         {tracking.status === IssuePainTrackingStatus.PENDING ? (
           <div className="space-y-4">
             <div>
-              <div className="mb-2 flex items-center text-sm font-semibold text-slate-700">
+              <div className="mb-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-700">
                 <span>涉及 Issue</span>
-                <span className="ml-1.5 font-normal text-slate-400">
+                <span className="font-normal text-slate-400">
                   共 {pendingPainIssues.length} 条
                 </span>
+                <div>
+                  <PainIssuePriorityFilter
+                    issues={pendingPainIssues}
+                    value={issuePriorityFilter}
+                    onChange={setIssuePriorityFilter}
+                  />
+                </div>
                 <Tooltip
                   title={
                     isObserve
@@ -530,7 +550,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               {pendingPainIssues.length ? (
                 <div className="mt-4">
                   <PainIssueTable
-                    issues={pendingPainIssues}
+                    issues={filteredPendingPainIssues}
                     tracking={tracking}
                     onTrackingAction={onAction}
                     responsive

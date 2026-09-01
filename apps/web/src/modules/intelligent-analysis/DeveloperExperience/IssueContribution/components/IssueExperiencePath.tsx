@@ -15,6 +15,8 @@ import {
 } from '../presentation';
 import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
 import type { MetricDefinition } from '../metricDefinitions';
+import { resolvePainIssuePriority } from '../issuePriority';
+import type { PainIssuePriority } from '../issuePriority';
 import type {
   IssuePainTracking,
   IssuePainTrackingActionPayload,
@@ -31,6 +33,7 @@ import PainTrackingModal, {
 } from './PainTrackingModal';
 import HintIcon from './HintIcon';
 import PainIssueTable from './PainIssueTable';
+import PainIssuePriorityFilter from './PainIssuePriorityFilter';
 import IssueStageDirectory from './IssueStageDirectory';
 
 type IssueExperiencePathProps = {
@@ -39,7 +42,6 @@ type IssueExperiencePathProps = {
   pains: IssueReportPain[];
   recommendations: IssueReportRecommendation[];
   issueScoreRows?: IssueScoreRow[];
-  sampleSize: number;
   activeStageId: string;
   focusPainId?: string;
   onStageChange: (stageId: string) => void;
@@ -106,6 +108,11 @@ const MetricDefinitionContent: React.FC<{
           </tbody>
         </table>
       </div>
+      {definition.note ? (
+        <p className="mt-2 text-[11px] leading-5 text-slate-500">
+          说明：{definition.note}
+        </p>
+      ) : null}
     </div>
   </div>
 );
@@ -188,7 +195,6 @@ const StageIssueScoreSection: React.FC<{
 }> = ({ stageId, entries }) => {
   const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
-  const lowCount = entries.filter((entry) => entry.score < 60).length;
   const visibleEntries = entries.slice(
     (page - 1) * STAGE_SCORE_PAGE_SIZE,
     page * STAGE_SCORE_PAGE_SIZE
@@ -211,11 +217,6 @@ const StageIssueScoreSection: React.FC<{
           <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
             {entries.length} 个 Issue
           </span>
-          {lowCount ? (
-            <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-semibold text-rose-600">
-              低于 60 分 {lowCount} 个
-            </span>
-          ) : null}
         </span>
         <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400">
           {open ? '收起' : '展开'}
@@ -400,14 +401,33 @@ const StagePainCard: React.FC<{
   focused?: boolean;
   tracking?: IssuePainTracking;
   metricNamesByCode: Map<string, string>;
+  issuePriorityFilter?: PainIssuePriority;
+  onIssuePriorityFilterChange: (
+    priority: PainIssuePriority | undefined
+  ) => void;
   onTrackingAction?: (
     payload: Omit<IssuePainTrackingActionPayload, 'community'>
   ) => Promise<IssuePainTracking>;
-}> = ({ pain, focused, tracking, metricNamesByCode, onTrackingAction }) => {
+}> = ({
+  pain,
+  focused,
+  tracking,
+  metricNamesByCode,
+  issuePriorityFilter,
+  onIssuePriorityFilterChange,
+  onTrackingAction,
+}) => {
   const tone = getPriorityTone(pain.prio);
   const issues = pain.low_score_issues ?? [];
   const [open, setOpen] = useState(true);
   const [trackingModalOpen, setTrackingModalOpen] = useState(false);
+  const filteredIssues = issuePriorityFilter
+    ? issues.filter(
+        (issue) =>
+          resolvePainIssuePriority(issue.priority, issue.score) ===
+          issuePriorityFilter
+      )
+    : issues;
   const evidenceMetricCode = pain.evidence.match(/^([A-Z0-9_-]+)\s*[:：]/)?.[1];
   const painMetricCodes = Array.from(
     new Set(
@@ -517,11 +537,18 @@ const StagePainCard: React.FC<{
 
           {issues.length ? (
             <div className="mt-3">
-              <div className="mb-2 flex items-center gap-1.5 text-[12px] font-semibold text-slate-500">
-                <FlagOutlined className="text-rose-400" />
-                涉及 Issue 明细 · {issues.length} 个
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-1.5 text-[12px] font-semibold text-slate-500">
+                  <FlagOutlined className="text-rose-400" />
+                  涉及 Issue · {issues.length} 个
+                </div>
+                <PainIssuePriorityFilter
+                  issues={issues}
+                  value={issuePriorityFilter}
+                  onChange={onIssuePriorityFilterChange}
+                />
               </div>
-              <PainIssueTable issues={issues} tracking={tracking} />
+              <PainIssueTable issues={filteredIssues} tracking={tracking} />
             </div>
           ) : null}
         </div>
@@ -546,7 +573,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   pains,
   recommendations,
   issueScoreRows,
-  sampleSize,
   activeStageId,
   focusPainId,
   onStageChange,
@@ -556,6 +582,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   const selectedStage = stages.find((stage) => stage.id === activeStageId);
   const activeStage = selectedStage ?? stages[0];
   const stageScrollRef = useRef<HTMLDivElement | null>(null);
+  const [issuePriorityFilter, setIssuePriorityFilter] =
+    useState<PainIssuePriority>();
+
+  useEffect(() => {
+    setIssuePriorityFilter(undefined);
+  }, [activeStage?.id]);
 
   useEffect(() => {
     if (!activeStageId) return;
@@ -925,11 +957,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     </span>
                     {[
                       {
-                        label: '痛点 Issue',
-                        value: `${activeStage.pain_count}/${sampleSize}`,
-                        badgeClass: 'bg-rose-50 text-rose-600',
-                      },
-                      {
                         label: '效率',
                         value: `${
                           activeStage.metrics_obj.length &&
@@ -1097,10 +1124,12 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                       <div className="mt-4 flex flex-col gap-4">
                         {stagePains.map((pain) => (
                           <StagePainCard
-                            key={pain.id}
+                            key={`${pain.stage_id}-${pain.id}`}
                             pain={pain}
                             focused={pain.id === focusPainId}
                             metricNamesByCode={metricNamesByCode}
+                            issuePriorityFilter={issuePriorityFilter}
+                            onIssuePriorityFilterChange={setIssuePriorityFilter}
                             tracking={trackingByPain?.get(
                               `${pain.stage_id}#${pain.id}`
                             )}

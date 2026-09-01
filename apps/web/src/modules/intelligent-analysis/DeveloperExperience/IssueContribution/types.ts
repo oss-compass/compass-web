@@ -82,6 +82,8 @@ export type IssueReportPainIssue = {
   title: string;
   url: string;
   score: number | null;
+  /** 后端按低分样本均分计算；旧报告由前端根据 score 兼容回算。 */
+  priority?: 'P0' | 'P1' | 'P2' | 'P3' | null;
   metric_code: string;
   reason: string;
   evidence: IssueReportPainIssueEvidence[];
