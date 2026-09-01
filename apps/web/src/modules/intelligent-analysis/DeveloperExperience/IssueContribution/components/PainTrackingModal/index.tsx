@@ -8,20 +8,11 @@ import {
 } from '@ant-design/icons';
 import { Alert, Button, Input, Modal, Progress, Steps, Tooltip } from 'antd';
 import toast from 'react-hot-toast';
-import type {
-  IssuePainTracking,
-  IssueReportPain,
-  IssueReportPainIssue,
-} from '../../types';
+import type { IssuePainTracking } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
-import { getPriorityLabel, getPriorityTone } from '../../presentation';
 import { resolvePainIssuePriority } from '../../issuePriority';
 import type { PainIssuePriority } from '../../issuePriority';
-import {
-  ArchivedIssueList,
-  IssueFixButton,
-  TrackingHistoryTable,
-} from './components';
+import { IssueFixButton, TrackingHistoryTable } from './components';
 import PainIssueTable, {
   InvalidDecisionReasonModal,
   useFinalIssueDecisionConfirm,
@@ -116,37 +107,6 @@ const getPassedPresentation = (
           .join('、')} 未复现。`
       : `系统判定时间：${formatTrackingTime(tracking.retest?.at)}`,
   };
-};
-
-const getPendingTrackedIssues = (tracking: IssuePainTracking) => [
-  ...tracking.activeIssues,
-  ...tracking.archivedIssues,
-];
-
-const getPendingPainIssues = (
-  pain: IssueReportPain,
-  tracking: IssuePainTracking
-): IssueReportPainIssue[] => {
-  const currentIssues = pain.low_score_issues ?? [];
-  const currentNumbers = new Set(currentIssues.map((issue) => issue.number));
-  const historicalIssues = tracking.archivedIssues
-    .filter((issue) => !issue.synthetic && !currentNumbers.has(issue.number))
-    .map<IssueReportPainIssue>((issue) => ({
-      number: issue.number,
-      title: issue.title,
-      url: issue.url,
-      score: issue.score,
-      metric_code: issue.metric_code ?? '',
-      reason: issue.last_seen_period
-        ? `历史 Issue，最后出现于 ${shortTrackingPeriod(
-            issue.last_seen_period
-          )}`
-        : '历史 Issue，未在当前期报告中出现',
-      evidence: [],
-      historical: true,
-      last_seen_period: issue.last_seen_period,
-    }));
-  return [...currentIssues, ...historicalIssues];
 };
 
 const RepairIssueOperationSection: React.FC<{
@@ -393,7 +353,6 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   }, [open, tracking.status, tracking.trackingKey]);
 
   const isObserve = tracking.trackingType === 'observe';
-  const priorityTone = getPriorityTone(pain.prio);
   const currentStep = getCurrentFlowStep(tracking.status, isObserve);
   const flowItems = getFlowItems(tracking, isObserve).map((item, index) =>
     index >= currentStep ? { ...item, description: null } : item
@@ -430,8 +389,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const trend = tracking.issueCountTrend.slice(-4);
   const percent = getFixProgressPercent(tracking);
   const passedPresentation = getPassedPresentation(tracking, isObserve);
-  const pendingTrackedIssues = getPendingTrackedIssues(tracking);
-  const pendingPainIssues = getPendingPainIssues(pain, tracking);
+  const pendingPainIssues = pain.low_score_issues ?? [];
   const filteredPendingPainIssues = issuePriorityFilter
     ? pendingPainIssues.filter(
         (issue) =>
@@ -439,8 +397,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           issuePriorityFilter
       )
     : pendingPainIssues;
-  const pendingTotalCount = pendingTrackedIssues.length;
-  const pendingDecidedCount = pendingTrackedIssues.filter(
+  const pendingTotalCount = tracking.activeIssues.length;
+  const pendingDecidedCount = tracking.activeIssues.filter(
     (item) => item.valid === true || item.valid === false
   ).length;
 
@@ -477,23 +435,15 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           />
         </div>
 
-        <div className="rounded-lg border border-rose-100 bg-rose-50/80 px-3.5 py-3 text-sm leading-relaxed text-rose-800">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${priorityTone.badge}`}
-            >
-              {getPriorityLabel(pain.prio)}
-            </span>
-            {metricLabels.map((label) => (
-              <span
-                key={label}
-                className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600"
-              >
-                {label}
-              </span>
-            ))}
+        <div className="rounded-lg border border-rose-100 bg-rose-50/80 px-3.5 py-3">
+          <div className="text-sm font-semibold leading-6 text-slate-900">
+            {metricLabels.length ? metricLabels.join(' · ') : pain.title}
           </div>
-          <div className="mt-2 font-semibold text-slate-800">{pain.title}</div>
+          {metricLabels.length ? (
+            <div className="mt-0.5 text-xs leading-5 text-slate-500">
+              {pain.title}
+            </div>
+          ) : null}
         </div>
 
         {tracking.status === IssuePainTrackingStatus.PENDING ? (
@@ -627,7 +577,6 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               tracking={tracking}
               onAction={onAction}
             />
-            <ArchivedIssueList issues={tracking.archivedIssues} />
           </div>
         ) : null}
 
@@ -645,7 +594,6 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               onAction={onAction}
               pendingRetest
             />
-            <ArchivedIssueList issues={tracking.archivedIssues} />
           </div>
         ) : null}
 

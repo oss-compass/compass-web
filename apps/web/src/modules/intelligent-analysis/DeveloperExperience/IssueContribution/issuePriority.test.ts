@@ -1,4 +1,5 @@
 import {
+  getHighestPainIssuePriority,
   getPainIssuePriority,
   resolvePainIssuePriority,
 } from './issuePriority';
@@ -29,5 +30,15 @@ describe('pain issue priority', () => {
   it('prefers the API priority and falls back to score', () => {
     expect(resolvePainIssuePriority('P2', 20)).toBe('P2');
     expect(resolvePainIssuePriority(undefined, 20)).toBe('P0');
+  });
+
+  it('uses the highest priority among the pain issues', () => {
+    expect(
+      getHighestPainIssuePriority([
+        { priority: 'P2', score: 65 },
+        { priority: 'P1', score: 55 },
+      ])
+    ).toBe('P1');
+    expect(getHighestPainIssuePriority([])).toBeUndefined();
   });
 });

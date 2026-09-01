@@ -5,10 +5,10 @@ import { SEVERITY_CFG } from '../../../../UserJourney/OverviewDashboard/constant
 export type IssuePriority = 'P0' | 'P1' | 'P2' | 'P3';
 
 const ISSUE_PRIORITY_META = {
-  P0: SEVERITY_CFG.P0_BLOCKER,
-  P1: SEVERITY_CFG.P1_CRITICAL,
-  P2: SEVERITY_CFG.P2_MAJOR,
-  P3: SEVERITY_CFG.P3_MINOR,
+  P0: { ...SEVERITY_CFG.P0_BLOCKER, label: 'P0 完全阻塞' },
+  P1: { ...SEVERITY_CFG.P1_CRITICAL, label: 'P1 显著影响' },
+  P2: { ...SEVERITY_CFG.P2_MAJOR, label: 'P2 明显影响' },
+  P3: { ...SEVERITY_CFG.P3_MINOR, label: 'P3 轻微影响' },
 } as const;
 
 export const ISSUE_PRIORITY_LEVELS = (

@@ -50,17 +50,34 @@ const getEvidenceMeta = (type: string) =>
     cls: 'bg-slate-100 text-slate-500',
   };
 
+const formatEvidenceTime = (value: string, compact = false) => {
+  const normalized = String(value || '')
+    .trim()
+    .replace('T', ' ');
+  if (!normalized) return '';
+  return compact ? normalized.slice(5, 16) : normalized.slice(0, 19);
+};
+
+const sortEvidenceByTime = (evidence: IssueReportPainIssue['evidence']) =>
+  [...evidence].sort((left, right) => {
+    if (!left.time) return 1;
+    if (!right.time) return -1;
+    return left.time.localeCompare(right.time);
+  });
+
 const PAIN_ISSUE_TABLE_LAYOUTS = {
   default: {
-    table: 'min-w-[1190px]',
+    table: 'min-w-[1320px]',
     issue: 'w-[210px]',
     priority: 'w-[110px]',
     score: 'w-[68px]',
     reason: 'w-[230px]',
+    evidence: 'w-[280px]',
     decision: 'w-[150px]',
     status: 'w-[150px]',
     action: 'w-[140px]',
     selection: 'w-[44px]',
+    report: 'w-[130px]',
   },
   responsive: {
     table: 'issue-pain-table-responsive min-w-0',
@@ -68,15 +85,32 @@ const PAIN_ISSUE_TABLE_LAYOUTS = {
     priority: 'w-[10%]',
     score: 'w-[6%]',
     reason: 'w-[16%]',
+    evidence: 'w-[20%]',
     decision: 'w-[16%]',
     status: 'w-[11%]',
     action: 'w-[14%]',
     selection: 'w-[4%]',
+    report: 'w-[12%]',
+  },
+  reportResponsive: {
+    table: 'issue-pain-table-responsive min-w-0',
+    issue: 'w-[22%]',
+    priority: 'w-[12%]',
+    score: 'w-[7%]',
+    reason: 'w-[22%]',
+    evidence: 'w-[22%]',
+    decision: 'w-0',
+    status: 'w-0',
+    action: 'w-0',
+    selection: 'w-0',
+    report: 'w-[15%]',
   },
 } as const;
 
-const getPainIssueTableLayout = (responsive: boolean) =>
-  responsive
+const getPainIssueTableLayout = (responsive: boolean, showReportLink = false) =>
+  responsive && showReportLink
+    ? PAIN_ISSUE_TABLE_LAYOUTS.reportResponsive
+    : responsive
     ? PAIN_ISSUE_TABLE_LAYOUTS.responsive
     : PAIN_ISSUE_TABLE_LAYOUTS.default;
 
@@ -179,7 +213,7 @@ export const useFinalIssueDecisionConfirm = () =>
 const useFinalIssueFixConfirm = () => useFinalIssueTransitionConfirm('fix');
 
 const getUndecidedIssueNumbers = (tracking?: IssuePainTracking): string[] =>
-  [...(tracking?.activeIssues ?? []), ...(tracking?.archivedIssues ?? [])]
+  (tracking?.activeIssues ?? [])
     .filter((issue) => issue.valid !== true && issue.valid !== false)
     .map((issue) => issue.number);
 
@@ -323,6 +357,7 @@ type PainIssueTableProps = {
   tracking?: IssuePainTracking;
   pagination?: boolean;
   responsive?: boolean;
+  renderReportLink?: (issue: IssueReportPainIssue) => React.ReactNode;
   decisions?: Record<string, PainIssueDecisionDraft>;
   onDecisionsChange?: (
     decisions: Record<string, PainIssueDecisionDraft>
@@ -588,38 +623,18 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
   const issueTone = hasIssueScore ? getScoreTone(Number(rawIssueScore)) : null;
   const issuePriority = resolvePainIssuePriority(issue.priority, rawIssueScore);
   const priorityMeta = getPainIssuePriorityMeta(issuePriority);
+  const sortedEvidence = sortEvidenceByTime(issue.evidence);
   return (
     <>
       <td className="border-b border-slate-100 px-3 py-2.5">
-        <div className="flex flex-wrap items-center gap-1.5">
-          {issue.url ? (
-            <a
-              href={issue.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
-            >
-              <LinkOutlined className="text-[11px]" />#{issue.number}
-            </a>
-          ) : (
-            <span className="font-semibold text-slate-600">
-              #{issue.number}
-            </span>
-          )}
-          {issue.historical ? (
-            <Tooltip
-              title={
-                issue.last_seen_period
-                  ? `最后出现于 ${issue.last_seen_period}`
-                  : '未在当前期报告中出现'
-              }
-            >
-              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium leading-none text-slate-500">
-                历史
-              </span>
-            </Tooltip>
-          ) : null}
-        </div>
+        <a
+          href={issue.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
+        >
+          <LinkOutlined className="text-[11px]" />#{issue.number}
+        </a>
         <Tooltip title={issue.title} placement="topLeft">
           <div className="mt-1 line-clamp-2 break-words leading-5 text-slate-600">
             {issue.title}
@@ -673,29 +688,30 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
         </Tooltip>
       </td>
       <td className="border-b border-slate-100 px-3 py-2.5 align-top">
-        {issue.evidence.length ? (
+        {sortedEvidence.length ? (
           <Tooltip
             title={
-              <div className="w-[500px] max-w-[76vw] space-y-2">
-                {issue.evidence.map((ev, index) => {
+              <div className="w-[620px] max-w-[80vw] space-y-2">
+                {sortedEvidence.map((ev, index) => {
                   const meta = getEvidenceMeta(ev.type);
                   return (
                     <div
                       key={`${ev.type}-tooltip-${index}`}
-                      className="flex items-start gap-2"
+                      className="grid grid-cols-[120px_58px_100px_minmax(0,1fr)] items-start gap-2"
                     >
+                      <span className="inline-flex h-5 items-center justify-end whitespace-nowrap text-right font-mono text-[10px] tabular-nums leading-5 text-slate-400">
+                        {formatEvidenceTime(ev.time)}
+                      </span>
                       <span
-                        className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${meta.cls}`}
+                        className={`mt-0.5 inline-flex w-full justify-center rounded px-1.5 py-0.5 text-center text-[10px] font-semibold ${meta.cls}`}
                       >
                         {meta.label}
                       </span>
+                      <span className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold leading-5 text-slate-500">
+                        {ev.actor ? `${ev.actor}：` : '—'}
+                      </span>
                       <div className="min-w-0 break-words text-[12px] leading-5 text-slate-700">
-                        {ev.actor ? (
-                          <span className="mr-1 font-semibold text-slate-500">
-                            {ev.actor}：
-                          </span>
-                        ) : null}
-                        <span>{ev.text}</span>
+                        {ev.text}
                       </div>
                     </div>
                   );
@@ -704,20 +720,23 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
             }
             placement="topLeft"
             color="#ffffff"
-            overlayStyle={{ maxWidth: 560 }}
+            overlayStyle={{ maxWidth: 680 }}
             overlayInnerStyle={{ padding: 12 }}
           >
             <div className="h-11 overflow-hidden">
               <ul className="space-y-1">
-                {issue.evidence.slice(0, 2).map((ev, index) => {
+                {sortedEvidence.slice(0, 2).map((ev, index) => {
                   const meta = getEvidenceMeta(ev.type);
                   return (
                     <li
                       key={`${ev.type}-${index}`}
                       className="flex h-5 min-w-0 items-start gap-1.5 overflow-hidden"
                     >
+                      <span className="mt-0.5 w-[72px] shrink-0 whitespace-nowrap text-right font-mono text-[9px] tabular-nums leading-5 text-slate-400">
+                        {formatEvidenceTime(ev.time, true)}
+                      </span>
                       <span
-                        className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${meta.cls}`}
+                        className={`mt-0.5 inline-flex w-[44px] shrink-0 justify-center rounded px-1 py-0.5 text-center text-[10px] font-semibold ${meta.cls}`}
                       >
                         {meta.label}
                       </span>
@@ -1037,6 +1056,7 @@ type PainIssueTableRowProps = {
   showStatus: boolean;
   showAction: boolean;
   showSelection: boolean;
+  renderReportLink?: PainIssueTableProps['renderReportLink'];
   pendingDecisionMode: boolean;
   requiresCompletionConfirm: boolean;
   requiresFixCompletionConfirm: boolean;
@@ -1059,7 +1079,7 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
       <IssueSummaryCells issue={issue} />
       <IssueDecisionCell
         issue={issue}
-        activeIssue={activeIssue}
+        activeIssue={props.pendingDecisionMode ? actionIssue : activeIssue}
         show={props.showDecisionColumn}
         draftMode={props.draftMode}
         decisions={props.decisions}
@@ -1095,12 +1115,17 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
         disabled={
           !props.draftMode &&
           (props.pendingDecisionMode
-            ? !activeIssue
+            ? !actionIssue
             : actionIssue?.valid !== true)
         }
         checked={props.selected}
         onChange={(checked) => props.onSelectionChange(issue.number, checked)}
       />
+      {props.renderReportLink ? (
+        <td className="border-b border-slate-100 px-3 py-2.5 text-center">
+          {props.renderReportLink(issue)}
+        </td>
+      ) : null}
     </tr>
   );
 };
@@ -1308,6 +1333,7 @@ const PainIssueTableHead: React.FC<{
   showStatus: boolean;
   showAction: boolean;
   showSelection: boolean;
+  showReportLink: boolean;
   allNumbers: string[];
   allSelected: boolean;
   someSelected: boolean;
@@ -1319,6 +1345,7 @@ const PainIssueTableHead: React.FC<{
   showStatus,
   showAction,
   showSelection,
+  showReportLink,
   allNumbers,
   allSelected,
   someSelected,
@@ -1346,7 +1373,9 @@ const PainIssueTableHead: React.FC<{
       >
         低分原因
       </th>
-      <th className="border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+      <th
+        className={`border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500 ${layout.evidence}`}
+      >
         原文依据
       </th>
       {showDecisionColumn ? (
@@ -1393,6 +1422,13 @@ const PainIssueTableHead: React.FC<{
           </Tooltip>
         </th>
       ) : null}
+      {showReportLink ? (
+        <th
+          className={`border-b border-slate-200 px-3 py-2 text-center text-[11px] font-semibold text-slate-500 ${layout.report}`}
+        >
+          报告链接
+        </th>
+      ) : null}
     </tr>
   </thead>
 );
@@ -1402,6 +1438,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   tracking,
   pagination = true,
   responsive = false,
+  renderReportLink,
   decisions,
   onDecisionsChange,
   onTrackingAction,
@@ -1494,7 +1531,10 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     Boolean(tracking && onTrackingAction) &&
     !decisionMode &&
     !pendingDecisionMode;
-  const tableLayout = getPainIssueTableLayout(responsive);
+  const tableLayout = getPainIssueTableLayout(
+    responsive,
+    Boolean(renderReportLink)
+  );
   const selectedSet = new Set(selectedNumbers);
   const undecidedIssueNumbers = getUndecidedIssueNumbers(tracking);
   const finalUndecidedIssueNumber =
@@ -1525,7 +1565,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     .filter(
       (issue) =>
         decisionMode ||
-        (pendingDecisionMode && trackingIssueMap.has(issue.number)) ||
+        (pendingDecisionMode && activeIssueMap.has(issue.number)) ||
         activeIssueMap.get(issue.number)?.valid === true
     )
     .map((issue) => issue.number);
@@ -1667,6 +1707,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
             showStatus={showStatus}
             showAction={showAction}
             showSelection={showSelection}
+            showReportLink={Boolean(renderReportLink)}
             allNumbers={allNumbers}
             allSelected={allSelected}
             someSelected={someSelected}
@@ -1692,6 +1733,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
                 showStatus={showStatus}
                 showAction={showAction}
                 showSelection={showSelection}
+                renderReportLink={renderReportLink}
                 pendingDecisionMode={pendingDecisionMode}
                 requiresCompletionConfirm={
                   issue.number === finalUndecidedIssueNumber

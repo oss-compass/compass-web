@@ -3,11 +3,13 @@ import Link from 'next/link';
 import { FilterFilled } from '@ant-design/icons';
 import { Dropdown, Modal, Pagination, Radio, Tooltip } from 'antd';
 import type { IssueOverviewTopPain } from '../../types';
+import { resolvePainIssuePriority } from '../../issuePriority';
 import { getTrackingStatusMeta } from '../PainTrackingModal/constants';
 import PainIssueTable from '../PainIssueTable';
-import IssuePriorityTag from './IssuePriorityTag';
+import IssuePriorityTag, { ISSUE_PRIORITY_LEVELS } from './IssuePriorityTag';
 
 const ALL = '__ALL__';
+const PAIN_PAGE_SIZE = 10;
 const ISSUE_PAGE_SIZE = 10;
 const ISSUE_STAGE_ORDER = ['I0', 'I1', 'I2', 'I3', 'G'] as const;
 
@@ -18,7 +20,14 @@ const getStageOrder = (stageId?: string): number => {
   return index === -1 ? ISSUE_STAGE_ORDER.length : index;
 };
 
-type SortKey = 'repo' | 'team' | 'stage' | 'title' | 'prio' | 'state';
+type SortKey =
+  | 'repo'
+  | 'team'
+  | 'stage'
+  | 'metric'
+  | 'title'
+  | 'prio'
+  | 'state';
 
 type Props = {
   open: boolean;
@@ -46,6 +55,71 @@ const getPainStateMeta = (item: IssueOverviewTopPain) => {
 
 const getPainStateLabel = (item: IssueOverviewTopPain) =>
   getPainStateMeta(item)?.label || item.state || '--';
+
+const getPainMetricLabel = (item: IssueOverviewTopPain) =>
+  item.metricLabels?.filter(Boolean).join('、') ||
+  item.metricCodes?.filter(Boolean).join('、') ||
+  '--';
+
+const PainIssuePriorityDistribution: React.FC<{
+  item: IssueOverviewTopPain;
+  onOpen: (priority?: 'P0' | 'P1' | 'P2' | 'P3') => void;
+}> = ({ item, onOpen }) => {
+  const issues = item.lowScoreIssues ?? [];
+  const counts = issues.reduce<Record<'P0' | 'P1' | 'P2' | 'P3', number>>(
+    (result, issue) => {
+      const priority = resolvePainIssuePriority(issue.priority, issue.score);
+      if (priority) result[priority] += 1;
+      return result;
+    },
+    { P0: 0, P1: 0, P2: 0, P3: 0 }
+  );
+
+  if (!issues.length) return <span className="text-slate-400">0</span>;
+
+  return (
+    <div className="overview-progress-cell !gap-1.5">
+      <div className="overview-progress-bar">
+        {ISSUE_PRIORITY_LEVELS.map((level) =>
+          counts[level.priority] > 0 ? (
+            <span
+              key={level.priority}
+              className="overview-progress-segment"
+              style={{
+                width: `${(counts[level.priority] / issues.length) * 100}%`,
+                background: level.tagColor,
+              }}
+            />
+          ) : null
+        )}
+      </div>
+      <div className="overview-progress-meta !gap-x-1.5 !gap-y-0 text-[10px]">
+        <button
+          type="button"
+          className="whitespace-nowrap text-xs font-semibold tabular-nums leading-[18px] text-[#64748b] hover:underline"
+          onClick={() => onOpen()}
+        >
+          总 {issues.length}
+        </button>
+        {ISSUE_PRIORITY_LEVELS.filter(
+          (level) => counts[level.priority] > 0
+        ).map((level) => (
+          <React.Fragment key={level.priority}>
+            <span className="text-slate-300">|</span>
+            <button
+              type="button"
+              className="overview-progress-text hover:underline"
+              style={{ color: level.tagColor }}
+              onClick={() => onOpen(level.priority)}
+            >
+              {level.priority} {counts[level.priority]}
+            </button>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const escapeCsvCell = (value: unknown) => {
   const text = String(value ?? '');
@@ -89,6 +163,10 @@ const IssuePainDetailModal: React.FC<Props> = ({
   const [stateFilter, setStateFilter] = React.useState(ALL);
   const [issueDetailPain, setIssueDetailPain] =
     React.useState<IssueOverviewTopPain | null>(null);
+  const [issueDetailPriority, setIssueDetailPriority] = React.useState<
+    'P0' | 'P1' | 'P2' | 'P3' | undefined
+  >();
+  const [painPage, setPainPage] = React.useState(1);
   const [issuePage, setIssuePage] = React.useState(1);
 
   const resetFilters = () => {
@@ -96,8 +174,14 @@ const IssuePainDetailModal: React.FC<Props> = ({
     setPrioFilter(ALL);
     setStateFilter(ALL);
     setIssueDetailPain(null);
+    setIssueDetailPriority(undefined);
+    setPainPage(1);
     setIssuePage(1);
   };
+
+  React.useEffect(() => {
+    setPainPage(1);
+  }, [stageFilter, prioFilter, stateFilter]);
 
   const options = React.useMemo(
     () => ({
@@ -137,6 +221,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
       const sortValue = (item: IssueOverviewTopPain) => {
         if (sortKey === 'repo') return item.repoShort;
         if (sortKey === 'team') return repoTeams[item.repoShort] || '';
+        if (sortKey === 'metric') return getPainMetricLabel(item);
         if (sortKey === 'state') return getPainStateLabel(item);
         return String(item[sortKey] || '');
       };
@@ -156,7 +241,16 @@ const IssuePainDetailModal: React.FC<Props> = ({
     stageFilter,
     stateFilter,
   ]);
-  const issueDetailItems = issueDetailPain?.lowScoreIssues ?? [];
+  const pagedDisplayedItems = displayedItems.slice(
+    (painPage - 1) * PAIN_PAGE_SIZE,
+    painPage * PAIN_PAGE_SIZE
+  );
+  const issueDetailItems = (issueDetailPain?.lowScoreIssues ?? []).filter(
+    (issue) =>
+      !issueDetailPriority ||
+      resolvePainIssuePriority(issue.priority, issue.score) ===
+        issueDetailPriority
+  );
   const pagedIssueDetailItems = issueDetailItems.slice(
     (issuePage - 1) * ISSUE_PAGE_SIZE,
     issuePage * ISSUE_PAGE_SIZE
@@ -170,11 +264,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
         '仓库',
         '责任团队',
         '阶段',
-        '问题描述',
+        '指标',
+        '痛点描述',
         '优先级',
         '状态',
         '涉及 Issue 数',
-        '建议动作',
         '相关报告',
       ],
       displayedItems.map((item, index) => [
@@ -182,11 +276,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
         item.repoShort,
         repoTeams[item.repoShort] || '--',
         item.stageName || '--',
+        getPainMetricLabel(item),
         item.title || '--',
         item.prio || '--',
         getPainStateLabel(item),
         item.lowScoreIssues?.length ?? 0,
-        item.action || '--',
         reportHref(item.community, item.period, item.stageId, item.painId),
       ])
     );
@@ -195,7 +289,18 @@ const IssuePainDetailModal: React.FC<Props> = ({
   const exportIssueRows = () => {
     downloadCsv(
       `涉及Issue_${issueDetailPain?.title || '详情'}.csv`,
-      ['序号', 'Issue', '标题', '链接', '得分', '指标', '低分原因', '原文依据'],
+      [
+        '序号',
+        'Issue',
+        '标题',
+        '链接',
+        '得分',
+        '指标',
+        '低分原因',
+        '原文依据',
+        '报告周期',
+        '报告链接',
+      ],
       issueDetailItems.map((issue, index) => [
         index + 1,
         `#${issue.number}`,
@@ -209,12 +314,21 @@ const IssuePainDetailModal: React.FC<Props> = ({
               .map(
                 (evidence) =>
                   `[${evidence.type || '记录'}] ${
-                    evidence.actor ? `${evidence.actor}：` : ''
-                  }${evidence.text || ''}${
-                    evidence.url ? `（${evidence.url}）` : ''
-                  }`
+                    evidence.time ? `${evidence.time.replace('T', ' ')} ` : ''
+                  }${evidence.actor ? `${evidence.actor}：` : ''}${
+                    evidence.text || ''
+                  }${evidence.url ? `（${evidence.url}）` : ''}`
               )
               .join(' | ')
+          : '--',
+        issue.report_period || issueDetailPain?.period || '--',
+        issueDetailPain
+          ? reportHref(
+              issueDetailPain.community,
+              issue.report_period || issueDetailPain.period,
+              issueDetailPain.stageId,
+              issue.report_pain_id || issueDetailPain.painId
+            )
           : '--',
       ])
     );
@@ -290,8 +404,25 @@ const IssuePainDetailModal: React.FC<Props> = ({
         open={open}
         onCancel={onClose}
         afterClose={resetFilters}
+        centered
+        wrapClassName="issue-pain-viewport-modal"
         footer={null}
         width="min(96vw, 1420px)"
+        styles={{
+          content: {
+            display: 'flex',
+            flexDirection: 'column',
+            height: '80vh',
+            overflow: 'hidden',
+          },
+          body: {
+            boxSizing: 'border-box',
+            flex: '1 1 auto',
+            minHeight: 0,
+            maxWidth: '100%',
+            overflow: 'hidden',
+          },
+        }}
         title={
           <div className="mr-6 flex items-center justify-between gap-3">
             <span>{`${title}（共${displayedItems.length}条）`}</span>
@@ -307,147 +438,181 @@ const IssuePainDetailModal: React.FC<Props> = ({
         }
         destroyOnHidden
       >
-        <div className="max-h-[70vh] w-full overflow-y-auto overflow-x-hidden rounded-xl border border-slate-200">
-          <table className="w-full min-w-0 table-fixed border-collapse text-center text-[12px] text-slate-700 md:text-[13px] [&_td]:whitespace-normal [&_td]:break-words [&_th]:whitespace-normal [&_th]:break-words">
-            <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
-              <tr>
-                <th className="w-[5%] px-1.5 py-3">序号</th>
-                <th className="w-[8%] px-1.5 py-3">
-                  {sortableHeader('仓库', 'repo')}
-                </th>
-                <th className="w-[9%] px-1.5 py-3">
-                  {sortableHeader('责任团队', 'team')}
-                </th>
-                <th className="w-[8%] px-1.5 py-3">
-                  {filterHeader(
-                    '阶段',
-                    'stage',
-                    stageFilter,
-                    options.stages,
-                    setStageFilter
-                  )}
-                </th>
-                <th className="w-[18%] px-2 py-3">
-                  {sortableHeader('问题描述', 'title')}
-                </th>
-                <th className="w-[7%] px-1 py-3">
-                  {filterHeader(
-                    '优先级',
-                    'prio',
-                    prioFilter,
-                    options.prios,
-                    setPrioFilter
-                  )}
-                </th>
-                <th className="w-[10%] px-1.5 py-3">
-                  {filterHeader(
-                    '状态',
-                    'state',
-                    stateFilter,
-                    options.states,
-                    setStateFilter
-                  )}
-                </th>
-                <th className="w-[8%] px-1.5 py-3">涉及 Issue</th>
-                <th className="w-[18%] px-2 py-3">建议动作</th>
-                <th className="w-[8%] px-1.5 py-3">相关报告</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
-              {loading ? (
+        <div className="flex h-full min-h-0 w-full max-w-full flex-col gap-3 overflow-hidden">
+          <div
+            className={`min-h-0 min-w-0 flex-1 overflow-x-hidden rounded-xl border border-slate-200 ${
+              issueDetailPain ? 'overflow-y-hidden' : 'overflow-y-auto'
+            }`}
+          >
+            <table className="w-full min-w-0 table-fixed border-collapse text-center text-[12px] text-slate-700 md:text-[13px] [&_td]:whitespace-normal [&_td]:break-words [&_th]:whitespace-normal [&_th]:break-words">
+              <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
                 <tr>
-                  <td colSpan={10} className="px-4 py-12 text-slate-400">
-                    加载中...
-                  </td>
+                  <th className="w-[4%] px-1.5 py-3">序号</th>
+                  <th className="w-[10%] px-1.5 py-3">
+                    {sortableHeader('仓库', 'repo')}
+                  </th>
+                  <th className="w-[8%] px-1.5 py-3">
+                    {sortableHeader('责任团队', 'team')}
+                  </th>
+                  <th className="w-[7%] px-1.5 py-3">
+                    {filterHeader(
+                      '阶段',
+                      'stage',
+                      stageFilter,
+                      options.stages,
+                      setStageFilter
+                    )}
+                  </th>
+                  <th className="w-[12%] px-2 py-3">
+                    {sortableHeader('指标', 'metric')}
+                  </th>
+                  <th className="w-[15%] px-2 py-3">
+                    {sortableHeader('痛点描述', 'title')}
+                  </th>
+                  <th className="w-[7%] px-1 py-3">
+                    {filterHeader(
+                      '优先级',
+                      'prio',
+                      prioFilter,
+                      options.prios,
+                      setPrioFilter
+                    )}
+                  </th>
+                  <th className="w-[9%] px-1.5 py-3">
+                    {filterHeader(
+                      '状态',
+                      'state',
+                      stateFilter,
+                      options.states,
+                      setStateFilter
+                    )}
+                  </th>
+                  <th className="w-[23%] px-1.5 py-3">涉及 Issue</th>
+                  <th className="w-[6%] px-1.5 py-3">相关报告</th>
                 </tr>
-              ) : displayedItems.length ? (
-                displayedItems.map((item, index) => (
-                  <tr key={item.key} className="align-top hover:bg-slate-50/80">
-                    <td className="px-2 py-3 text-slate-400">{index + 1}</td>
-                    <td className="px-1.5 py-3 font-medium">
-                      {item.repoShort}
-                    </td>
-                    <td className="px-1.5 py-3 text-center">
-                      {repoTeams[item.repoShort] || '--'}
-                    </td>
-                    <td className="px-1.5 py-3">{item.stageName || '--'}</td>
-                    <td className="px-2 py-3 text-center leading-5">
-                      <Tooltip title={item.title}>{item.title || '--'}</Tooltip>
-                    </td>
-                    <td className="px-1 py-3">
-                      <IssuePriorityTag priority={item.prio} />
-                    </td>
-                    <td className="px-1.5 py-3">
-                      {getPainStateMeta(item) ? (
-                        <span
-                          className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold ${
-                            getPainStateMeta(item)?.className
-                          }`}
-                        >
-                          {getPainStateLabel(item)}
-                        </span>
-                      ) : (
-                        item.state || '--'
-                      )}
-                    </td>
-                    <td className="px-1.5 py-3">
-                      {(item.lowScoreIssues?.length ?? 0) > 0 ? (
-                        <button
-                          type="button"
-                          className="font-semibold text-blue-600 transition-colors hover:text-blue-700 hover:underline"
-                          onClick={() => {
-                            setIssuePage(1);
-                            setIssueDetailPain(item);
-                          }}
-                        >
-                          {item.lowScoreIssues?.length ?? 0}
-                        </button>
-                      ) : (
-                        <span className="text-slate-400">0</span>
-                      )}
-                    </td>
-                    <td className="px-2 py-3 text-left leading-5">
-                      <Tooltip title={item.action}>
-                        {item.action || '--'}
-                      </Tooltip>
-                    </td>
-                    <td className="px-1.5 py-3">
-                      <Link
-                        href={reportHref(
-                          item.community,
-                          item.period,
-                          item.stageId,
-                          item.painId
-                        )}
-                        className="overview-table-link text-blue-600 hover:text-blue-700"
-                      >
-                        查看报告
-                      </Link>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white">
+                {loading ? (
+                  <tr>
+                    <td colSpan={10} className="px-4 py-12 text-slate-400">
+                      加载中...
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={10} className="px-4 py-12 text-slate-400">
-                    暂无匹配问题
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                ) : displayedItems.length ? (
+                  pagedDisplayedItems.map((item, index) => (
+                    <tr
+                      key={item.key}
+                      className="align-top hover:bg-slate-50/80"
+                    >
+                      <td className="px-2 py-3 text-slate-400">
+                        {(painPage - 1) * PAIN_PAGE_SIZE + index + 1}
+                      </td>
+                      <td className="px-1.5 py-3 font-medium">
+                        {item.repoShort}
+                      </td>
+                      <td className="px-1.5 py-3 text-center">
+                        {repoTeams[item.repoShort] || '--'}
+                      </td>
+                      <td className="px-1.5 py-3">{item.stageName || '--'}</td>
+                      <td className="px-2 py-3 text-center leading-5">
+                        <Tooltip title={getPainMetricLabel(item)}>
+                          {getPainMetricLabel(item)}
+                        </Tooltip>
+                      </td>
+                      <td className="px-2 py-3 text-center leading-5">
+                        <Tooltip title={item.title}>
+                          {item.title || '--'}
+                        </Tooltip>
+                      </td>
+                      <td className="px-1 py-3">
+                        <IssuePriorityTag priority={item.prio} />
+                      </td>
+                      <td className="px-1.5 py-3">
+                        {getPainStateMeta(item) ? (
+                          <span
+                            className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold ${
+                              getPainStateMeta(item)?.className
+                            }`}
+                          >
+                            {getPainStateLabel(item)}
+                          </span>
+                        ) : (
+                          item.state || '--'
+                        )}
+                      </td>
+                      <td className="px-1.5 py-3">
+                        <PainIssuePriorityDistribution
+                          item={item}
+                          onOpen={(priority) => {
+                            setIssuePage(1);
+                            setIssueDetailPriority(priority);
+                            setIssueDetailPain(item);
+                          }}
+                        />
+                      </td>
+                      <td className="px-1.5 py-3">
+                        <Link
+                          href={reportHref(
+                            item.community,
+                            item.period,
+                            item.stageId,
+                            item.painId
+                          )}
+                          className="overview-table-link text-blue-600 hover:text-blue-700"
+                        >
+                          查看报告
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={10} className="px-4 py-12 text-slate-400">
+                      暂无匹配问题
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex shrink-0 items-center justify-between gap-4 px-1">
+            <span className="text-xs text-slate-500">
+              共 {displayedItems.length} 条
+            </span>
+            <Pagination
+              current={painPage}
+              pageSize={PAIN_PAGE_SIZE}
+              total={displayedItems.length}
+              showSizeChanger={false}
+              size="small"
+              onChange={setPainPage}
+            />
+          </div>
         </div>
       </Modal>
       <Modal
         open={issueDetailPain !== null}
         onCancel={() => {
           setIssueDetailPain(null);
+          setIssueDetailPriority(undefined);
           setIssuePage(1);
         }}
+        centered
+        wrapClassName="issue-pain-viewport-modal"
         footer={null}
-        width="70%"
+        width="min(96vw, 1420px)"
         styles={{
+          content: {
+            display: 'flex',
+            flexDirection: 'column',
+            height: '80vh',
+            overflow: 'hidden',
+          },
           body: {
-            height: '70vh',
+            boxSizing: 'border-box',
+            flex: '1 1 auto',
+            minHeight: 0,
+            maxWidth: '100%',
             overflow: 'hidden',
             paddingRight: '8px',
           },
@@ -455,7 +620,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
         title={
           <div className="flex items-center justify-between gap-3 pr-8">
             <span className="text-base font-semibold text-slate-800">
-              涉及 Issue
+              涉及 Issue{issueDetailPriority ? ` · ${issueDetailPriority}` : ''}
             </span>
             <button
               type="button"
@@ -469,7 +634,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
         }
         destroyOnHidden
       >
-        <div className="flex h-full min-h-0 flex-col gap-4">
+        <div className="flex h-full min-h-0 max-w-full flex-col gap-4 overflow-hidden">
           <div className="shrink-0 rounded-lg border border-rose-100 bg-rose-50/80 px-3.5 py-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-slate-800">
@@ -480,8 +645,31 @@ const IssuePainDetailModal: React.FC<Props> = ({
               </span>
             </div>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <PainIssueTable issues={pagedIssueDetailItems} pagination={false} />
+          <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+            <PainIssueTable
+              issues={pagedIssueDetailItems}
+              pagination={false}
+              responsive
+              renderReportLink={(issue) => {
+                const period = issue.report_period || issueDetailPain?.period;
+                if (!issueDetailPain || !period) {
+                  return <span className="text-slate-300">--</span>;
+                }
+                return (
+                  <Link
+                    href={reportHref(
+                      issueDetailPain.community,
+                      period,
+                      issueDetailPain.stageId,
+                      issue.report_pain_id || issueDetailPain.painId
+                    )}
+                    className="overview-table-link break-all text-blue-600 hover:text-blue-700"
+                  >
+                    {period}
+                  </Link>
+                );
+              }}
+            />
           </div>
           <div className="flex shrink-0 items-center justify-between gap-4 border-t border-slate-200 pt-3">
             <span className="text-xs text-slate-500">
@@ -498,6 +686,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
           </div>
         </div>
       </Modal>
+      <style jsx global>{`
+        .issue-pain-viewport-modal {
+          overflow: hidden !important;
+        }
+      `}</style>
     </>
   );
 };

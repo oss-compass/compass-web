@@ -87,8 +87,10 @@ export type IssueReportPainIssue = {
   metric_code: string;
   reason: string;
   evidence: IssueReportPainIssueEvidence[];
-  historical?: boolean;
-  last_seen_period?: string;
+  /** 总览跨周期合并后，该 Issue 最后出现的报告来源。 */
+  report_period?: string;
+  report_version?: string;
+  report_pain_id?: string;
 };
 
 export type IssueReportPain = {
@@ -448,6 +450,8 @@ export type IssueOverviewTopPain = {
   periodLabel: string;
   prio: string;
   stageName: string;
+  metricCodes?: string[];
+  metricLabels?: string[];
   title: string;
   evidence: string;
   impact: string;

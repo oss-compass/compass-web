@@ -7,12 +7,7 @@ import {
   ProfileOutlined,
 } from '@ant-design/icons';
 import { Pagination, Popover, Tooltip } from 'antd';
-import {
-  getPriorityTone,
-  getPriorityLabel,
-  getScoreTone,
-  stripMetricCode,
-} from '../presentation';
+import { getScoreTone, stripMetricCode } from '../presentation';
 import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
 import type { MetricDefinition } from '../metricDefinitions';
 import { resolvePainIssuePriority } from '../issuePriority';
@@ -56,6 +51,20 @@ const normalizePainMetricCode = (value: string) =>
     .trim()
     .replace(/[-\s]+/g, '_')
     .toUpperCase();
+
+const matchesStage = (
+  stage: IssueReportStage,
+  stageId: string,
+  stageName: string
+) => {
+  if (stageId) return stageId === stage.id;
+  const normalizedName = stageName.trim();
+  return (
+    normalizedName === stage.name ||
+    stage.name.includes(normalizedName) ||
+    normalizedName.includes(stage.name)
+  );
+};
 
 /**
  * 关键指标卡片 hover 浮窗内容：展示「指标含义」文字 + 「算分算法」评分表。
@@ -417,15 +426,23 @@ const StagePainCard: React.FC<{
   onIssuePriorityFilterChange,
   onTrackingAction,
 }) => {
-  const tone = getPriorityTone(pain.prio);
   const issues = pain.low_score_issues ?? [];
   const [open, setOpen] = useState(true);
   const [trackingModalOpen, setTrackingModalOpen] = useState(false);
-  const filteredIssues = issuePriorityFilter
+  const effectiveIssuePriorityFilter =
+    issuePriorityFilter &&
+    issues.some(
+      (issue) =>
+        resolvePainIssuePriority(issue.priority, issue.score) ===
+        issuePriorityFilter
+    )
+      ? issuePriorityFilter
+      : undefined;
+  const filteredIssues = effectiveIssuePriorityFilter
     ? issues.filter(
         (issue) =>
           resolvePainIssuePriority(issue.priority, issue.score) ===
-          issuePriorityFilter
+          effectiveIssuePriorityFilter
       )
     : issues;
   const evidenceMetricCode = pain.evidence.match(/^([A-Z0-9_-]+)\s*[:：]/)?.[1];
@@ -445,7 +462,7 @@ const StagePainCard: React.FC<{
     new Set(
       painMetricCodes.flatMap((code) => {
         const chineseName = metricNamesByCode.get(code);
-        return chineseName ? [chineseName] : [];
+        return [chineseName || code];
       })
     )
   );
@@ -466,24 +483,16 @@ const StagePainCard: React.FC<{
           aria-expanded={open}
           className="min-w-0 flex-1 text-left"
         >
-          <span className="flex flex-wrap items-center gap-2">
-            <span
-              className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${tone.badge}`}
-            >
-              {getPriorityLabel(pain.prio)}
+          <span className="block text-sm font-semibold leading-6 text-slate-900">
+            {painMetricLabels.length
+              ? painMetricLabels.join(' · ')
+              : pain.title}
+          </span>
+          {painMetricLabels.length ? (
+            <span className="mt-0.5 block text-xs leading-5 text-slate-500">
+              {pain.title}
             </span>
-            {painMetricLabels.map((label) => (
-              <span
-                key={label}
-                className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600"
-              >
-                {label}
-              </span>
-            ))}
-          </span>
-          <span className="mt-2 block text-sm font-semibold leading-6 text-slate-900">
-            {pain.title}
-          </span>
+          ) : null}
           {tracking?.trackingType === 'fix' &&
           tracking.status === IssuePainTrackingStatus.TRACKING &&
           tracking.activeTotal > 0 ? (
@@ -526,10 +535,6 @@ const StagePainCard: React.FC<{
         <div className="border-t border-rose-100 px-4 py-4">
           <div className="grid gap-2 text-xs leading-5">
             <p className="px-1 text-slate-600">
-              <span className="font-semibold text-slate-400">关键证据 · </span>
-              {pain.evidence}
-            </p>
-            <p className="px-1 text-slate-600">
               <span className="font-semibold text-slate-400">体验影响 · </span>
               {pain.impact}
             </p>
@@ -544,7 +549,7 @@ const StagePainCard: React.FC<{
                 </div>
                 <PainIssuePriorityFilter
                   issues={issues}
-                  value={issuePriorityFilter}
+                  value={effectiveIssuePriorityFilter}
                   onChange={onIssuePriorityFilterChange}
                 />
               </div>
@@ -582,12 +587,24 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   const selectedStage = stages.find((stage) => stage.id === activeStageId);
   const activeStage = selectedStage ?? stages[0];
   const stageScrollRef = useRef<HTMLDivElement | null>(null);
-  const [issuePriorityFilter, setIssuePriorityFilter] =
-    useState<PainIssuePriority>();
+  const activeStageHasP0 = Boolean(
+    activeStage &&
+      pains.some(
+        (pain) =>
+          matchesStage(activeStage, pain.stage_id, pain.stage_name) &&
+          (pain.low_score_issues ?? []).some(
+            (issue) =>
+              resolvePainIssuePriority(issue.priority, issue.score) === 'P0'
+          )
+      )
+  );
+  const [issuePriorityFilter, setIssuePriorityFilter] = useState<
+    PainIssuePriority | undefined
+  >(activeStageHasP0 ? 'P0' : undefined);
 
   useEffect(() => {
-    setIssuePriorityFilter(undefined);
-  }, [activeStage?.id]);
+    setIssuePriorityFilter(activeStageHasP0 ? 'P0' : undefined);
+  }, [activeStage?.id, activeStageHasP0]);
 
   useEffect(() => {
     if (!activeStageId) return;
@@ -664,19 +681,6 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
     (metric) => getMetricCategory(metric.code) === 'efficiency'
   ).length;
 
-  const matchesStage = (
-    stage: IssueReportStage,
-    stageId: string,
-    stageName: string
-  ) => {
-    if (stageId) return stageId === stage.id;
-    const normalizedName = stageName.trim();
-    return (
-      normalizedName === stage.name ||
-      stage.name.includes(normalizedName) ||
-      normalizedName.includes(stage.name)
-    );
-  };
   const getStagePains = (stage: IssueReportStage) =>
     pains.filter((pain) => matchesStage(stage, pain.stage_id, pain.stage_name));
   const getStageRecommendations = (

@@ -293,7 +293,21 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       filteredValue: painFilters.stage ? [painFilters.stage] : null,
     },
     {
-      title: '痛点',
+      title: '指标',
+      dataIndex: 'metricLabels',
+      width: 200,
+      ellipsis: true,
+      render: (labels: string[] | undefined) => {
+        const value = labels?.length ? labels.join(' · ') : '--';
+        return (
+          <Tooltip title={value} placement="topLeft">
+            <span className="font-medium text-slate-700">{value}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '痛点描述',
       dataIndex: 'title',
       width: 300,
       ellipsis: true,
@@ -659,7 +673,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
               filtersChanged || sortChanged ? 1 : pagination.current ?? 1
             );
           }}
-          scroll={{ x: 1742 }}
+          scroll={{ x: 1942 }}
           locale={{ emptyText: '当前无匹配的待办痛点' }}
         />
       </div>

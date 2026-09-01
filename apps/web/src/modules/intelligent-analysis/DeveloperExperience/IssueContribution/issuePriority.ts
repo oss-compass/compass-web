@@ -89,3 +89,16 @@ export const resolvePainIssuePriority = (
   score: unknown
 ): PainIssuePriority | undefined =>
   normalizePainIssuePriority(priority) ?? getPainIssuePriority(score);
+
+export const getHighestPainIssuePriority = (
+  issues: ReadonlyArray<{ priority?: unknown; score?: unknown }> | undefined
+): PainIssuePriority | undefined => {
+  if (!issues?.length) return undefined;
+  const priorities = issues.flatMap((issue) => {
+    const priority = resolvePainIssuePriority(issue.priority, issue.score);
+    return priority ? [priority] : [];
+  });
+  return PAIN_ISSUE_PRIORITY_LEVELS.find(({ priority }) =>
+    priorities.includes(priority)
+  )?.priority;
+};

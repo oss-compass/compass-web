@@ -55,6 +55,7 @@ export const ACTION_LABELS: Record<string, string> = {
   auto_passed: '自动判定闭环',
   reopened: '再次复现并重新激活',
   new_issues_pending_confirmation: '新增 Issue 待确认',
+  active_issue_scope_reconciled: '更新当前期 Issue 范围',
 };
 
 export const TRACKING_STATUS_SHORT_LABELS: Record<number, string> = {

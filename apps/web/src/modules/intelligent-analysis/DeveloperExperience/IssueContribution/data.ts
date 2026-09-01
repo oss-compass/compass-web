@@ -8,6 +8,7 @@ import type {
   IssueTopPainsApiResponse,
   IssueTopPainsQuery,
 } from './types';
+import { getHighestPainIssuePriority } from './issuePriority';
 
 /**
  * 报告数据已入库 cogito-backend（ES），此处直连后端 API。
@@ -105,7 +106,33 @@ export const fetchIssueTopPains = async (
     throw new Error(`Issue top pains request failed: ${response.status}`);
   }
 
-  return response.json() as Promise<IssueTopPainsApiResponse>;
+  const data = (await response.json()) as IssueTopPainsApiResponse;
+  return {
+    ...data,
+    items: data.items.map((pain) => {
+      const fallbackMetricCodes = Array.from(
+        new Set(
+          (pain.lowScoreIssues ?? [])
+            .map((issue) => issue.metric_code)
+            .filter(Boolean)
+            .map((code) => code.replace(/[-\s]+/g, '_').toUpperCase())
+        )
+      );
+      const metricCodes = pain.metricCodes?.length
+        ? pain.metricCodes
+        : fallbackMetricCodes;
+      return {
+        ...pain,
+        // 总览痛点只按关联 Issue 的最高优先级定级，不读取报告 pain.prio。
+        // 无关联 Issue 的治理型痛点按最低优先级 P3 兜底。
+        prio: getHighestPainIssuePriority(pain.lowScoreIssues) ?? 'P3',
+        metricCodes,
+        metricLabels: pain.metricLabels?.length
+          ? pain.metricLabels
+          : metricCodes,
+      };
+    }),
+  };
 };
 
 export const fetchIssuePainTrackings = async (
