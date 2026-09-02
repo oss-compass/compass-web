@@ -105,7 +105,7 @@ const selectCls =
 const LabelTag: React.FC<{ text: string }> = ({ text }) => (
   <span
     style={{ height: SELECT_H, lineHeight: `${SELECT_H}px` }}
-    className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-slate-200/80 bg-slate-50 px-2.5 text-xs font-medium text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
+    className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-slate-200/80 bg-slate-50 px-2.5 text-xs font-medium text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,0.06)] 2xl:px-2"
   >
     {text}
   </span>
@@ -154,11 +154,15 @@ const CascadingSelects: React.FC<{
   const initProjectKey = mode === 'view' ? currentEntry?.projectKey ?? '' : '';
   const initHardware =
     mode === 'view' ? currentEntry?.hardware_access ?? '' : '';
+  const initOperatingSystem =
+    mode === 'view' ? currentEntry?.operating_system ?? 'debian-13' : '';
 
   const [org, setOrg] = useState<string>(initOrg);
   const [sig, setSig] = useState<string>(initSig);
   const [projectKey, setProjectKey] = useState<string>(initProjectKey);
   const [hardware, setHardware] = useState<string>(initHardware);
+  const [operatingSystem, setOperatingSystem] =
+    useState<string>(initOperatingSystem);
 
   // Sync state when external currentFileKey changes (view mode only)
   useEffect(() => {
@@ -167,6 +171,7 @@ const CascadingSelects: React.FC<{
       setSig(selectedSig ?? currentEntry.sig);
       setProjectKey(currentEntry.projectKey);
       setHardware(currentEntry.hardware_access);
+      setOperatingSystem(currentEntry.operating_system || 'debian-13');
     }
   }, [currentEntry, mode, selectedSig]);
 
@@ -220,12 +225,27 @@ const CascadingSelects: React.FC<{
     return toOptions(hws);
   }, [safeRegistry, org, sig, projectKey]);
 
+  const operatingSystemOptions = useMemo(() => {
+    const systems = uniq(
+      filterRegistryEntriesFromRegistry(safeRegistry, {
+        org: org || undefined,
+        sig: sig || undefined,
+        projectKey: projectKey || undefined,
+        hardware_access: hardware || undefined,
+      })
+        .map(([, entry]) => entry.operating_system || 'debian-13')
+        .filter(Boolean)
+    );
+    return toOptions(systems);
+  }, [safeRegistry, org, sig, projectKey, hardware]);
+
   const versionOptions = useMemo(() => {
     return filterRegistryEntriesFromRegistry(safeRegistry, {
       org: org || undefined,
       sig: sig || undefined,
       projectKey: projectKey || undefined,
       hardware_access: hardware || undefined,
+      operating_system: operatingSystem || undefined,
     })
       .filter(([fileKey]) => !excludeFileKeys.includes(fileKey))
       .map(([fileKey, e]) => ({
@@ -238,7 +258,15 @@ const CascadingSelects: React.FC<{
         const dateB = b.label.split('@')[0] ?? '';
         return dateB.localeCompare(dateA);
       });
-  }, [safeRegistry, org, sig, projectKey, hardware, excludeFileKeys]);
+  }, [
+    safeRegistry,
+    org,
+    sig,
+    projectKey,
+    hardware,
+    operatingSystem,
+    excludeFileKeys,
+  ]);
 
   const currentFileKeyDerived = useMemo(() => {
     if (versionOptions.length === 0) return '';
@@ -251,18 +279,25 @@ const CascadingSelects: React.FC<{
     setSig('');
     setProjectKey('');
     setHardware('');
+    setOperatingSystem('');
   }
   function handleSigChange(value: string) {
     setSig(value);
     setProjectKey('');
     setHardware('');
+    setOperatingSystem('');
   }
   function handleProjectChange(value: string) {
     setProjectKey(value);
     setHardware('');
+    setOperatingSystem('');
   }
   function handleHardwareChange(value: string) {
     setHardware(value);
+    setOperatingSystem('');
+  }
+  function handleOperatingSystemChange(value: string) {
+    setOperatingSystem(value);
   }
   function selectFileKey(fileKey: string) {
     onSelectFileKey(fileKey, { sig });
@@ -288,10 +323,14 @@ const CascadingSelects: React.FC<{
   return (
     <div
       ref={containerRef}
-      className="flex items-center gap-2"
+      className={`min-w-0 items-center gap-1.5 2xl:gap-2 ${
+        mode === 'view'
+          ? 'flex flex-1 flex-nowrap justify-end md:grid md:grid-cols-2 2xl:justify-start'
+          : 'grid grid-cols-2'
+      }`}
       style={{ position: 'relative' }}
     >
-      <div className="flex items-center">
+      <div className="flex min-w-0 items-center">
         <LabelTag text="组织" />
         <Select
           value={org || undefined}
@@ -299,24 +338,24 @@ const CascadingSelects: React.FC<{
           onChange={handleOrgChange}
           options={orgOptions}
           style={{ height: SELECT_H }}
-          className={`${selectCls} min-w-[90px]`}
+          className={`${selectCls} w-[90px] xl:w-[72px]`}
           dropdownStyle={{ minWidth: 120 }}
           getPopupContainer={getContainer}
         />
       </div>
-      <div className="flex items-center">
+      <div className="flex min-w-0 items-center">
         <LabelTag text="SIG" />
         <Select
           value={sig}
           onChange={handleSigChange}
           options={sigOptions}
           style={{ height: SELECT_H }}
-          className={`${selectCls} min-w-[130px]`}
+          className={`${selectCls} w-[130px] xl:w-[84px]`}
           dropdownStyle={{ minWidth: 160 }}
           getPopupContainer={getContainer}
         />
       </div>
-      <div className="flex items-center">
+      <div className="flex min-w-0 items-center">
         <LabelTag text="项目" />
         <Select
           value={projectKey || undefined}
@@ -324,12 +363,12 @@ const CascadingSelects: React.FC<{
           onChange={handleProjectChange}
           options={projectOptions}
           style={{ height: SELECT_H }}
-          className={`${selectCls} min-w-[150px]`}
+          className={`${selectCls} w-[150px] xl:w-[96px]`}
           dropdownStyle={{ minWidth: 180 }}
           getPopupContainer={getContainer}
         />
       </div>
-      <div className="flex items-center">
+      <div className="flex min-w-0 items-center">
         <LabelTag text="硬件环境" />
         <Select
           value={hardware || undefined}
@@ -337,12 +376,25 @@ const CascadingSelects: React.FC<{
           onChange={handleHardwareChange}
           options={hardwareOptions}
           style={{ height: SELECT_H }}
-          className={`${selectCls} min-w-[140px]`}
+          className={`${selectCls} w-[140px] xl:w-[105px]`}
           dropdownStyle={{ minWidth: 200 }}
           getPopupContainer={getContainer}
         />
       </div>
-      <div className="flex items-center">
+      <div className="flex min-w-0 items-center">
+        <LabelTag text="操作系统" />
+        <Select
+          value={operatingSystem || undefined}
+          placeholder="全部"
+          onChange={handleOperatingSystemChange}
+          options={operatingSystemOptions}
+          style={{ height: SELECT_H }}
+          className={`${selectCls} w-[130px] xl:w-[100px]`}
+          dropdownStyle={{ minWidth: 160 }}
+          getPopupContainer={getContainer}
+        />
+      </div>
+      <div className="flex min-w-0 items-center">
         <LabelTag text="版本" />
         <Select
           value={
@@ -352,7 +404,7 @@ const CascadingSelects: React.FC<{
           onChange={handleVersionChange}
           options={versionOptions}
           style={{ height: SELECT_H }}
-          className={`${selectCls} min-w-[130px] [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500`}
+          className={`${selectCls} w-[190px] xl:w-[140px] [&_.ant-select-selection-item]:!text-xs [&_.ant-select-selection-item]:!tracking-[0.08em] [&_.ant-select-selection-item]:!text-slate-500`}
           dropdownStyle={{ minWidth: 160 }}
           getPopupContainer={getContainer}
         />
@@ -441,11 +493,13 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <nav
-      className={`flex h-14 items-center justify-between px-6 md:h-12 md:px-4 ${
-        transparent ? 'pt-5' : 'border-b border-t bg-white/90'
+      className={`grid min-h-14 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 px-4 md:min-h-12 2xl:grid-cols-1 ${
+        transparent
+          ? 'bg-transparent pb-2 pt-5 2xl:pt-3'
+          : 'border-b border-t bg-white/90 py-2'
       }`}
     >
-      <div className="flex min-w-0 flex-1 items-center gap-3">
+      <div className="flex min-w-0 max-w-[260px] items-center gap-3">
         {overviewHref ? (
           <Link
             href={overviewHref}
@@ -490,7 +544,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         ) : null}
       </div>
 
-      <div className="flex flex-shrink-0 items-center gap-3 md:flex">
+      <div className="flex min-w-0 flex-nowrap items-center justify-end gap-2 md:items-start 2xl:w-full 2xl:justify-start">
         {compareMode ? (
           projects.map((project, index) => (
             <React.Fragment key={project.queryKey}>

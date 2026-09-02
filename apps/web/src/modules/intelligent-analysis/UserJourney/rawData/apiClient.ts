@@ -1016,6 +1016,7 @@ export type OverviewCardItem = {
   teamOwner?: string;
   repoCount?: number;
   hardwareEnv?: string;
+  operatingSystem?: string;
   latestReportId?: string;
   detailReportUrl?: string;
   latestScore?: number | null;
@@ -1203,6 +1204,7 @@ export type OverviewCardsResponse = {
   teamOptions?: string[];
   repoOptions?: Array<{ value: string; label: string }>;
   hardwareOptions?: string[];
+  operatingSystemOptions?: string[];
   items: OverviewCardItem[];
 };
 
@@ -1337,6 +1339,7 @@ export const fetchOverviewCards = async (params: {
   team?: string;
   repo?: string;
   hardwareEnv?: string;
+  operatingSystem?: string;
   sig?: string;
   keyword?: string;
   page?: number;
@@ -1354,6 +1357,8 @@ export const fetchOverviewCards = async (params: {
   if (params.team) search.set('team', params.team);
   if (params.repo) search.set('repo', params.repo);
   if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
+  if (params.operatingSystem)
+    search.set('operating_system', params.operatingSystem);
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   search.set('page', String(params.page ?? 1));

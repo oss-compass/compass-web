@@ -15,10 +15,15 @@ type RegistryEntry = {
   sig: string;
   projectName: string;
   hardware_access: string;
+  operating_system: string;
+};
+
+type BackendRegistryEntry = Omit<RegistryEntry, 'operating_system'> & {
+  operating_system?: string;
 };
 
 type BackendRegistryResponse = {
-  entries: Record<string, RegistryEntry>;
+  entries: Record<string, BackendRegistryEntry>;
   default_file_map: Record<string, string>;
   fallback_project: string;
   project_options: Array<{ value: string; label: string }>;
@@ -56,8 +61,17 @@ const transformBackendRegistry = (
   const fileKeyToProjectKey: Record<string, string> = {};
   const versionMap: Record<string, string> = {};
   const labelMap: Record<string, string> = {};
+  const entries = Object.fromEntries(
+    Object.entries(data.entries).map(([fileKey, entry]) => [
+      fileKey,
+      {
+        ...entry,
+        operating_system: entry.operating_system || 'debian-13',
+      },
+    ])
+  ) as Record<string, RegistryEntry>;
 
-  for (const [fk, entry] of Object.entries(data.entries)) {
+  for (const [fk, entry] of Object.entries(entries)) {
     fileKeyToProjectKey[fk] = entry.projectKey;
     versionMap[fk] = entry.version;
     if (!labelMap[entry.projectKey]) {
@@ -66,7 +80,7 @@ const transformBackendRegistry = (
   }
 
   return {
-    entries: data.entries,
+    entries,
     defaultFileMap: data.default_file_map,
     fallbackProject: data.fallback_project,
     projectOptions: data.project_options,
@@ -136,6 +150,7 @@ export const filterRegistryEntriesFromRegistry = (
     sig?: string;
     projectKey?: string;
     hardware_access?: string;
+    operating_system?: string;
   }
 ): Array<[string, RegistryEntry]> => {
   return Object.entries(registry.entries).filter(([, entry]) => {
@@ -146,6 +161,11 @@ export const filterRegistryEntriesFromRegistry = (
     if (
       filters.hardware_access &&
       entry.hardware_access !== filters.hardware_access
+    )
+      return false;
+    if (
+      filters.operating_system &&
+      entry.operating_system !== filters.operating_system
     )
       return false;
     return true;

@@ -115,6 +115,7 @@ export type RepoProgressRow = {
   name: string;
   team: string;
   hardwareEnv: string;
+  operatingSystem: string;
   score: number | null;
   successRate: number | null;
   executionTime: number | null;

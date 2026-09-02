@@ -19,6 +19,14 @@ const { Title } = Typography;
 
 type ProgressView = 'team' | 'repo';
 type ProgressBucket = 'pending' | 'inProgress' | 'resolved';
+type TeamTableSortKey =
+  | 'name'
+  | 'repoCount'
+  | 'score'
+  | 'painTotal'
+  | 'closeRate'
+  | 'report';
+type TableSortOrder = 'ascend' | 'descend' | null;
 
 type ProgressCounts = {
   painPending: number;
@@ -146,6 +154,10 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     React.useState<ProgressMetricSortKey>('none');
   const [progressSortOrder, setProgressSortOrder] =
     React.useState<ProgressMetricSortOrder>('desc');
+  const [teamTableSort, setTeamTableSort] = React.useState<{
+    key?: TeamTableSortKey;
+    order: TableSortOrder;
+  }>({ order: null });
   const [detailTarget, setDetailTarget] = React.useState<DetailTarget | null>(
     null
   );
@@ -197,7 +209,10 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     <ProgressSortHeader
       sortKey={progressSortKey}
       sortOrder={progressSortOrder}
-      onSortKeyChange={setProgressSortKey}
+      onSortKeyChange={(key) => {
+        setTeamTableSort({ order: null });
+        setProgressSortKey(key);
+      }}
       onSortOrderChange={setProgressSortOrder}
     />
   );
@@ -206,6 +221,52 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     <T extends ProgressCounts>(rows: T[]): T[] =>
       progressSortKey === 'none' ? rows : [...rows].sort(progressSorter),
     [progressSortKey, progressSorter]
+  );
+
+  const sortExpandedTeamRepos = React.useCallback(
+    (teamRepos: IssueOverviewRepo[]) => {
+      if (progressSortKey !== 'none') return sortByProgress(teamRepos);
+      if (!teamTableSort.key || !teamTableSort.order) return teamRepos;
+      const direction = teamTableSort.order === 'ascend' ? 1 : -1;
+      const value = (repo: IssueOverviewRepo): string | number => {
+        switch (teamTableSort.key) {
+          case 'score':
+            return repo.idxTotal;
+          case 'painTotal':
+            return repo.painTotal;
+          case 'closeRate':
+            return repo.painCloseRate;
+          case 'report':
+            return reportSortName(repo);
+          // 团队名称和仓库数在单仓行没有可比较的同名值，统一以仓库名
+          // 作为稳定的展开区排序字段。
+          case 'name':
+          case 'repoCount':
+          default:
+            return repo.repoShort;
+        }
+      };
+      return [...teamRepos].sort((left, right) => {
+        const leftValue = value(left);
+        const rightValue = value(right);
+        const result =
+          typeof leftValue === 'string' && typeof rightValue === 'string'
+            ? leftValue.localeCompare(rightValue, 'zh-CN')
+            : Number(leftValue) - Number(rightValue);
+        return result === 0
+          ? left.repoShort.localeCompare(right.repoShort, 'zh-CN')
+          : result * direction;
+      });
+    },
+    [progressSortKey, sortByProgress, teamTableSort]
+  );
+  const displayedTeamRows = React.useMemo(
+    () =>
+      sortByProgress(teamRows).map((team) => ({
+        ...team,
+        repos: sortExpandedTeamRepos(team.repos),
+      })),
+    [sortByProgress, sortExpandedTeamRepos, teamRows]
   );
 
   const progressCell = (
@@ -380,6 +441,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         width: TEAM_COLUMN_WIDTHS[1],
         align: 'left',
         sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
+        sortOrder: teamTableSort.key === 'name' ? teamTableSort.order : null,
         render: (value, record) => (
           <span className="overview-expand-label">
             <RightOutlined
@@ -397,6 +459,8 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         key: 'repoCount',
         width: TEAM_COLUMN_WIDTHS[2],
         sorter: (a, b) => a.repoCount - b.repoCount,
+        sortOrder:
+          teamTableSort.key === 'repoCount' ? teamTableSort.order : null,
         render: (value: number) => `${value} 个`,
       },
       {
@@ -405,6 +469,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         key: 'score',
         width: TEAM_COLUMN_WIDTHS[3],
         sorter: (a, b) => a.score - b.score,
+        sortOrder: teamTableSort.key === 'score' ? teamTableSort.order : null,
         render: (value: number) => (
           <span className="text-sm font-semibold text-slate-700">
             {value.toFixed(1)}
@@ -433,6 +498,8 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         key: 'painTotal',
         width: TEAM_COLUMN_WIDTHS[5],
         sorter: (a, b) => a.painTotal - b.painTotal,
+        sortOrder:
+          teamTableSort.key === 'painTotal' ? teamTableSort.order : null,
         render: (_value, record) => (
           <button
             type="button"
@@ -452,6 +519,8 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         key: 'closeRate',
         width: TEAM_COLUMN_WIDTHS[6],
         sorter: (a, b) => a.closeRate - b.closeRate,
+        sortOrder:
+          teamTableSort.key === 'closeRate' ? teamTableSort.order : null,
         render: (value: number) => closeRateCell(value),
       },
       {
@@ -460,10 +529,11 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         width: TEAM_COLUMN_WIDTHS[7],
         sorter: (a, b) =>
           teamReportSortName(a).localeCompare(teamReportSortName(b), 'zh-CN'),
+        sortOrder: teamTableSort.key === 'report' ? teamTableSort.order : null,
         render: () => <span className="text-slate-300">-</span>,
       },
     ],
-    [expandedRowKeys, progressHeader]
+    [expandedRowKeys, progressHeader, teamTableSort]
   );
 
   return (
@@ -486,13 +556,21 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         {view === 'team' ? (
           <Table<TeamRow>
             className="overview-ant-table"
-            dataSource={sortByProgress(teamRows)}
+            dataSource={displayedTeamRows}
             columns={teamColumns}
             rowKey="id"
             pagination={false}
             tableLayout="fixed"
             scroll={{ x: TEAM_TABLE_WIDTH }}
             locale={{ emptyText: '暂无责任团队数据' }}
+            onChange={(_pagination, _filters, sorter) => {
+              const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
+              setProgressSortKey('none');
+              setTeamTableSort({
+                key: activeSorter.columnKey as TeamTableSortKey | undefined,
+                order: activeSorter.order ?? null,
+              });
+            }}
             expandable={{
               expandedRowKeys,
               expandRowByClick: true,
@@ -510,7 +588,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                       ))}
                     </colgroup>
                     <tbody>
-                      {sortByProgress(team.repos).map((repo, index) => (
+                      {team.repos.map((repo, index) => (
                         <tr
                           key={`${repo.community}-${repo.period}`}
                           className="overview-expanded-row"

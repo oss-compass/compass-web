@@ -264,6 +264,7 @@ export type BackendReportData = {
       role?: string;
       background?: string;
       hardware_access?: string;
+      operating_system?: string;
       language?: string;
     };
   };

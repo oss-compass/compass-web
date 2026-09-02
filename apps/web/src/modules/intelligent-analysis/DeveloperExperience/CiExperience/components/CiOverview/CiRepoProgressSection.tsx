@@ -13,6 +13,14 @@ const COLUMN_WIDTHS = [64, 210, 110, 138, 230, 110, 100, 110] as const;
 const TABLE_WIDTH = COLUMN_WIDTHS.reduce((sum, width) => sum + width, 0);
 
 type RepoRow = CiRepoSummary & { teamName: string; issues: CiTopIssue[] };
+type TeamSortKey =
+  | 'name'
+  | 'repoCount'
+  | 'score'
+  | 'total'
+  | 'closeRate'
+  | 'report';
+type TableSortOrder = 'ascend' | 'descend' | null;
 type TeamRow = {
   id: string;
   name: string;
@@ -47,6 +55,10 @@ const CiRepoProgressSection: React.FC<Props> = ({
 }) => {
   const [view, setView] = React.useState<'team' | 'repo'>('team');
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
+  const [teamSort, setTeamSort] = React.useState<{
+    key?: TeamSortKey;
+    order: TableSortOrder;
+  }>({ order: null });
   const [detail, setDetail] = React.useState<{
     title: string;
     issues: CiTopIssue[];
@@ -120,6 +132,51 @@ const CiRepoProgressSection: React.FC<Props> = ({
       issues: rows.flatMap((repo) => repo.issues),
       teams: Object.fromEntries(rows.map((repo) => [repo.slug, repo.teamName])),
     });
+
+  const sortExpandedRepos = React.useCallback(
+    (teamRepos: RepoRow[]) => {
+      if (!teamSort.key || !teamSort.order) return teamRepos;
+      const direction = teamSort.order === 'ascend' ? 1 : -1;
+      const value = (repo: RepoRow): string | number => {
+        switch (teamSort.key) {
+          case 'score':
+            return repo.scoreOverall ?? -1;
+          case 'total':
+            return repo.issues.length;
+          case 'closeRate': {
+            const counts = statusCounts(repo.issues);
+            return repo.issues.length ? counts.faded / repo.issues.length : 1;
+          }
+          case 'report':
+            return reportName(repo);
+          case 'name':
+          case 'repoCount':
+          default:
+            return repo.slug;
+        }
+      };
+      return [...teamRepos].sort((left, right) => {
+        const leftValue = value(left);
+        const rightValue = value(right);
+        const result =
+          typeof leftValue === 'string' && typeof rightValue === 'string'
+            ? leftValue.localeCompare(rightValue, 'zh-CN')
+            : Number(leftValue) - Number(rightValue);
+        return result === 0
+          ? left.slug.localeCompare(right.slug, 'zh-CN')
+          : result * direction;
+      });
+    },
+    [teamSort]
+  );
+  const displayedTeamRows = React.useMemo(
+    () =>
+      teamRows.map((team) => ({
+        ...team,
+        repos: sortExpandedRepos(team.repos),
+      })),
+    [sortExpandedRepos, teamRows]
+  );
 
   const repoColumns = React.useMemo<TableProps<RepoRow>['columns']>(
     () => [
@@ -218,9 +275,11 @@ const CiRepoProgressSection: React.FC<Props> = ({
       {
         title: '责任团队',
         dataIndex: 'name',
+        key: 'name',
         width: COLUMN_WIDTHS[1],
         align: 'left',
         sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
+        sortOrder: teamSort.key === 'name' ? teamSort.order : null,
         render: (value, row) => (
           <span className="overview-expand-label">
             <RightOutlined
@@ -235,15 +294,19 @@ const CiRepoProgressSection: React.FC<Props> = ({
       {
         title: '负责仓库',
         dataIndex: 'repoCount',
+        key: 'repoCount',
         width: COLUMN_WIDTHS[2],
         sorter: (a, b) => a.repoCount - b.repoCount,
+        sortOrder: teamSort.key === 'repoCount' ? teamSort.order : null,
         render: (value: number) => `${value} 个`,
       },
       {
         title: '综合体验评分',
         dataIndex: 'score',
+        key: 'score',
         width: COLUMN_WIDTHS[3],
         sorter: (a, b) => (a.score ?? -1) - (b.score ?? -1),
+        sortOrder: teamSort.key === 'score' ? teamSort.order : null,
         render: (value: number | null) => value?.toFixed(1) ?? '—',
       },
       {
@@ -253,8 +316,10 @@ const CiRepoProgressSection: React.FC<Props> = ({
       },
       {
         title: '总问题数',
+        key: 'total',
         width: COLUMN_WIDTHS[5],
         sorter: (a, b) => a.total - b.total,
+        sortOrder: teamSort.key === 'total' ? teamSort.order : null,
         render: (_v, row) => (
           <button
             type="button"
@@ -271,21 +336,25 @@ const CiRepoProgressSection: React.FC<Props> = ({
       {
         title: '闭环率',
         dataIndex: 'closeRate',
+        key: 'closeRate',
         width: COLUMN_WIDTHS[6],
         sorter: (a, b) => a.closeRate - b.closeRate,
+        sortOrder: teamSort.key === 'closeRate' ? teamSort.order : null,
         render: (value: number) => rate(value),
       },
       {
         title: '最新报告',
+        key: 'report',
         width: COLUMN_WIDTHS[7],
         sorter: (a, b) =>
           (a.repos.map(reportName).sort()[0] ?? '').localeCompare(
             b.repos.map(reportName).sort()[0] ?? ''
           ),
+        sortOrder: teamSort.key === 'report' ? teamSort.order : null,
         render: () => <span className="text-slate-300">-</span>,
       },
     ],
-    [expandedRowKeys]
+    [expandedRowKeys, teamSort]
   );
 
   return (
@@ -308,12 +377,19 @@ const CiRepoProgressSection: React.FC<Props> = ({
         {view === 'team' ? (
           <Table<TeamRow>
             className="overview-ant-table"
-            dataSource={teamRows}
+            dataSource={displayedTeamRows}
             columns={teamColumns}
             rowKey="id"
             pagination={false}
             tableLayout="fixed"
             scroll={{ x: TABLE_WIDTH }}
+            onChange={(_pagination, _filters, sorter) => {
+              const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
+              setTeamSort({
+                key: activeSorter.columnKey as TeamSortKey | undefined,
+                order: activeSorter.order ?? null,
+              });
+            }}
             expandable={{
               expandedRowKeys,
               expandRowByClick: true,

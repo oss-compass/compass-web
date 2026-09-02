@@ -312,6 +312,9 @@ const toRepoProgressRow = (job: RepoRerunJob | null): RepoProgressRow | null =>
           String(
             job.selected_node_hardware || job.third_party_hardware || ''
           ).trim() || '',
+        operatingSystem:
+          String(job.selected_os || job.third_party_os || '').trim() ||
+          'debian-13',
         score: null,
         successRate: null,
         executionTime: null,

@@ -392,6 +392,7 @@ const toRepoProgressRow = (record: RepoManagementItem): RepoProgressRow => ({
   name: getRepoDisplayName(record),
   team: record.team_name || '未分配团队',
   hardwareEnv: getRecordHardwareEnvs(record)[0] || '',
+  operatingSystem: 'debian-13',
   score: null,
   successRate: null,
   executionTime: null,

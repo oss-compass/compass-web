@@ -358,13 +358,17 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
   );
 };
 
-type HardwareEnvFilterHeaderProps = {
+type ColumnValueFilterHeaderProps = {
+  label: string;
+  allLabel: string;
   value: string;
   options: string[];
   onChange: (next: string) => void;
 };
 
-const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
+const ColumnValueFilterHeader: React.FC<ColumnValueFilterHeaderProps> = ({
+  label,
+  allLabel,
   value,
   options,
   onChange,
@@ -423,16 +427,16 @@ const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
     };
   }, [open, updatePopupPosition]);
 
-  const titleSuffix = value ? `当前筛选：${value}` : '筛选硬件环境';
+  const titleSuffix = value ? `当前筛选：${value}` : `筛选${label}`;
   const filterOptions = useMemo(
     () => [
-      { value: '', label: '全部环境' },
+      { value: '', label: allLabel },
       ...options.map((item) => ({
         value: item,
         label: item,
       })),
     ],
-    [options]
+    [allLabel, options]
   );
 
   return (
@@ -443,10 +447,10 @@ const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
       onClick={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
     >
-      <span>硬件环境</span>
+      <span className="whitespace-nowrap">{label}</span>
       <button
         type="button"
-        aria-label="筛选硬件环境"
+        aria-label={`筛选${label}`}
         title={titleSuffix}
         className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
           value
@@ -470,7 +474,7 @@ const HardwareEnvFilterHeader: React.FC<HardwareEnvFilterHeaderProps> = ({
               onMouseDown={(event) => event.stopPropagation()}
             >
               <div className="mb-2 text-xs font-semibold text-slate-500">
-                硬件环境
+                {label}
               </div>
               <div className="flex max-h-64 flex-col gap-1 overflow-y-auto">
                 {filterOptions.map((option) => {
@@ -524,6 +528,9 @@ type RepoProgressSectionProps = {
   hardwareEnvFilter: string;
   hardwareEnvOptions: string[];
   onHardwareEnvFilterChange: (hardwareEnv: string) => void;
+  operatingSystemFilter: string;
+  operatingSystemOptions: string[];
+  onOperatingSystemFilterChange: (operatingSystem: string) => void;
   isLoading: boolean;
   teamRows: TeamProgressRow[];
   repoRows: RepoProgressRow[];
@@ -564,6 +571,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   hardwareEnvFilter,
   hardwareEnvOptions,
   onHardwareEnvFilterChange,
+  operatingSystemFilter,
+  operatingSystemOptions,
+  onOperatingSystemFilterChange,
   isLoading,
   teamRows,
   repoRows,
@@ -604,7 +614,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(130, 122),
             rw(36, 28),
             rw(70, 58),
-            rw(90, 78),
+            rw(84, 78),
+            rw(84, 78),
             rw(64, 56),
             rw(50, 44),
           ]
@@ -618,7 +629,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(150, 140),
             rw(40, 30),
             rw(80, 70),
-            rw(96, 84),
+            rw(90, 82),
+            rw(90, 82),
             rw(78, 68),
             rw(58, 50),
           ],
@@ -638,7 +650,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(132, 122),
             rw(36, 28),
             rw(70, 58),
-            rw(118, 104),
+            rw(94, 82),
+            rw(84, 78),
             rw(76, 64),
             rw(58, 50),
           ]
@@ -652,7 +665,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(160, 150),
             rw(40, 30),
             rw(80, 70),
-            rw(126, 112),
+            rw(102, 90),
+            rw(90, 82),
             rw(100, 86),
             rw(72, 64),
           ],
@@ -1777,13 +1791,32 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
 
   const hardwareEnvHeaderTitle = useMemo(
     () => (
-      <HardwareEnvFilterHeader
+      <ColumnValueFilterHeader
+        label="硬件环境"
+        allLabel="全部环境"
         value={hardwareEnvFilter}
         options={hardwareEnvOptions}
         onChange={onHardwareEnvFilterChange}
       />
     ),
     [hardwareEnvFilter, hardwareEnvOptions, onHardwareEnvFilterChange]
+  );
+
+  const operatingSystemHeaderTitle = useMemo(
+    () => (
+      <ColumnValueFilterHeader
+        label="操作系统"
+        allLabel="全部系统"
+        value={operatingSystemFilter}
+        options={operatingSystemOptions}
+        onChange={onOperatingSystemFilterChange}
+      />
+    ),
+    [
+      operatingSystemFilter,
+      operatingSystemOptions,
+      onOperatingSystemFilterChange,
+    ]
   );
 
   const repoColumns = useMemo<TableProps<RepoProgressRow>['columns']>(
@@ -1996,9 +2029,22 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           ),
       },
       {
+        title: operatingSystemHeaderTitle,
+        dataIndex: 'operatingSystem',
+        key: 'operatingSystem',
+        width: repoColumnWidths[10],
+        ellipsis: true,
+        render: (value, record) =>
+          isBeatRepo(record.id) ? (
+            <span className="text-slate-400">-</span>
+          ) : (
+            value || 'debian-13'
+          ),
+      },
+      {
         title: sortableTitle('详细报告', repoSortArrow('detail')),
         key: 'detail',
-        width: repoColumnWidths[10],
+        width: repoColumnWidths[11],
         render: (_value, record) => renderDetailLink(record),
         onHeaderCell: () => ({
           onClick: () => handleRepoSortWithReset('detail'),
@@ -2011,7 +2057,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             {
               title: '操作',
               key: 'actions',
-              width: repoColumnWidths[11],
+              width: repoColumnWidths[12],
               render: (_value, record) => renderRerunAction(record),
             },
           ]),
@@ -2029,6 +2075,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
       hardwareEnvHeaderTitle,
+      operatingSystemHeaderTitle,
     ]
   );
   const visibleRepoColumns = useMemo(
@@ -2042,7 +2089,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     () =>
       showActionColumn
         ? repoScrollX
-        : repoScrollX - (repoColumnWidths[11] ?? 0),
+        : repoScrollX - (repoColumnWidths[12] ?? 0),
     [showActionColumn, repoColumnWidths, repoScrollX]
   );
 
@@ -2255,9 +2302,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         },
       },
       {
+        title: operatingSystemHeaderTitle,
+        key: 'operatingSystem',
+        width: teamColumnWidths[10],
+        ellipsis: true,
+        render: (_value, record) => {
+          const repos = hideBeatRepos
+            ? record.repos.filter((repo) => !isBeatRepo(repo.id))
+            : record.repos;
+          const systems = Array.from(
+            new Set(repos.map((repo) => repo.operatingSystem || 'debian-13'))
+          );
+          return systems.length ? systems.join('、') : '-';
+        },
+      },
+      {
         title: '最新报告',
         key: 'detail',
-        width: teamColumnWidths[10],
+        width: teamColumnWidths[11],
         render: () => <span className="text-slate-400">-</span>,
       },
       ...(captureMode
@@ -2266,7 +2328,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             {
               title: '操作',
               key: 'actions',
-              width: teamColumnWidths[11],
+              width: teamColumnWidths[12],
               render: () => <span className="text-slate-400">-</span>,
             },
           ]),
@@ -2283,6 +2345,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
       hardwareEnvHeaderTitle,
+      operatingSystemHeaderTitle,
       hideBeatRepos,
     ]
   );
@@ -2297,7 +2360,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     () =>
       showActionColumn
         ? teamScrollX
-        : teamScrollX - (teamColumnWidths[11] ?? 0),
+        : teamScrollX - (teamColumnWidths[12] ?? 0),
     [showActionColumn, teamColumnWidths, teamScrollX]
   );
 
@@ -2540,7 +2603,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           >
             <colgroup>
               {teamColumnWidths
-                .filter((_, index) => showActionColumn || index !== 11)
+                .filter((_, index) => showActionColumn || index !== 12)
                 .map((width, index) => (
                   <col key={index} style={{ width }} />
                 ))}
@@ -2709,6 +2772,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                     )}
                   </td>
                   <td className="overview-expanded-cell">
+                    {isBeatRepo(repo.id) ? (
+                      <span className="text-slate-400">-</span>
+                    ) : (
+                      repo.operatingSystem || 'debian-13'
+                    )}
+                  </td>
+                  <td className="overview-expanded-cell">
                     {renderDetailLink(repo)}
                   </td>
                   {showActionColumn ? (
@@ -2828,6 +2898,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       if (repoFilter) search.set('repo', repoFilter);
       if (hardwareEnvFilter) {
         search.set('hardware_env', hardwareEnvFilter);
+      }
+      if (operatingSystemFilter) {
+        search.set('operating_system', operatingSystemFilter);
       }
       search.set('view', progressView);
 

@@ -349,6 +349,9 @@ const buildHardwareLabel = (report: BackendReportData) =>
   normalizeText(report.meta.persona?.hardware_access) ||
   USER_JOURNEY_DEFAULT_HARDWARE;
 
+const buildOperatingSystemLabel = (report: BackendReportData) =>
+  normalizeText(report.meta.persona?.operating_system) || 'debian-13';
+
 const buildAgentVersionLabel = (report: BackendReportData) => {
   const agentVersion = normalizeText(report.meta.agent_version);
 
@@ -369,6 +372,11 @@ const buildReportMetadata = (
     key: 'hardware',
     label: '硬件环境',
     value: buildHardwareLabel(report),
+  },
+  {
+    key: 'operating-system',
+    label: '操作系统',
+    value: buildOperatingSystemLabel(report),
   },
   {
     key: 'purpose',

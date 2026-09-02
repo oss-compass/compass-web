@@ -129,6 +129,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const [repoFilter, setRepoFilter] = useState('');
   const [teamFilter, setTeamFilter] = useState('');
   const [hardwareEnvFilter, setHardwareEnvFilter] = useState('');
+  const [operatingSystemFilter, setOperatingSystemFilter] = useState('');
   const [repoSortKey, setRepoSortKey] = useState<RepoSortKey>('closeRate');
   const [repoSortAsc, setRepoSortAsc] = useState(true);
   const [teamSortKey, setTeamSortKey] = useState<TeamSortKey>('closeRate');
@@ -160,6 +161,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       repoFilter,
       teamFilter,
       hardwareEnvFilter,
+      operatingSystemFilter,
       issueSourceMode,
       includeCommonIssues,
     ],
@@ -180,6 +182,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
         hardwareEnv: hardwareEnvFilter || undefined,
+        operatingSystem: operatingSystemFilter || undefined,
         page: 1,
         size: 200,
       }),
@@ -194,6 +197,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       repoFilter,
       teamFilter,
       hardwareEnvFilter,
+      operatingSystemFilter,
       issueSourceMode,
       includeCommonIssues,
     ],
@@ -214,6 +218,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         team: teamFilter || undefined,
         repo: repoFilter || undefined,
         hardwareEnv: hardwareEnvFilter || undefined,
+        operatingSystem: operatingSystemFilter || undefined,
         page: 1,
         size: 200,
       }),
@@ -357,6 +362,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         hardwareEnv: normalizeHardwareEnv(
           card.hardwareEnv || issues[0]?.chipModel || ''
         ),
+        operatingSystem: String(card.operatingSystem || 'debian-13').trim(),
         score: card.latestScore ?? issues[0]?.score ?? null,
         successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
         executionTime: card.latestExecutionTime ?? null,
@@ -487,6 +493,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           .map((row) => normalizeHardwareEnv(row.hardwareEnv))
           .filter(Boolean)
       )
+    ).sort((a, b) => a.localeCompare(b));
+  }, [cardsResp, repoRows]);
+
+  const operatingSystemOptions = useMemo(() => {
+    const fromApi = (cardsResp?.operatingSystemOptions ?? []).filter(Boolean);
+    if (fromApi.length) return fromApi;
+    return Array.from(
+      new Set(repoRows.map((row) => row.operatingSystem).filter(Boolean))
     ).sort((a, b) => a.localeCompare(b));
   }, [cardsResp, repoRows]);
 
@@ -832,6 +846,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
               hardwareEnvFilter={hardwareEnvFilter}
               hardwareEnvOptions={hardwareEnvOptions}
               onHardwareEnvFilterChange={setHardwareEnvFilter}
+              operatingSystemFilter={operatingSystemFilter}
+              operatingSystemOptions={operatingSystemOptions}
+              onOperatingSystemFilterChange={setOperatingSystemFilter}
               isLoading={isLoading}
               teamRows={sortedTeamRows}
               repoRows={sortedRepoRows}
