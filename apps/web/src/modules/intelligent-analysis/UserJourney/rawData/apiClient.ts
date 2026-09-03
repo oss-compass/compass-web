@@ -483,6 +483,7 @@ export const fetchRepoManagementRepos = async (
     status?: 'online' | 'registered' | 'offline';
     sortKey?: 'benchmark_repo_name' | 'overview_enabled';
     sortOrder?: 'ascend' | 'descend';
+    reportType?: 'community' | 'issue';
     page?: number;
     size?: number;
   },
@@ -499,6 +500,7 @@ export const fetchRepoManagementRepos = async (
   if (params.status) search.set('status', params.status);
   if (params.sortKey) search.set('sort_key', params.sortKey);
   if (params.sortOrder) search.set('sort_order', params.sortOrder);
+  if (params.reportType) search.set('report_type', params.reportType);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiAuthedFetch<RepoManagementListResponse>(
@@ -520,6 +522,7 @@ export const upsertRepoManagementRepo = async (
     benchmark_repo_name?: string;
     overview_enabled?: boolean;
     remark?: string;
+    report_type?: 'community' | 'issue';
   },
   token = getCompassOperatorToken()
 ): Promise<{ message: string; data: RepoManagementItem }> => {

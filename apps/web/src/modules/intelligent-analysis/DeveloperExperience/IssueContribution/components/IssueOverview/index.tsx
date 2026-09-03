@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Empty, Skeleton, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
+import { buildIssueRepoManagementHref } from '../../../routes';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
 import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
 import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
@@ -78,6 +79,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   >(null);
   const [painOverviewDetail, setPainOverviewDetail] =
     React.useState<PainOverviewDetailTarget | null>(null);
+  const repoManagementHref = buildIssueRepoManagementHref({ org });
 
   // 切换组织时重置痛点表格的分页与筛选状态
   React.useEffect(() => {
@@ -620,6 +622,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         org={org}
         repos={latestReposByPeriod(data.repos)}
         reportHref={reportHref}
+        repoManagementHref={repoManagementHref}
         onOpenScoreTrend={(repo) =>
           setTrendModal({
             title: `${repo.repoShort} · 得分趋势`,

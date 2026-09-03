@@ -123,6 +123,10 @@ export const buildIssueContributionHref = (
   query?: ExperienceRouteQuery
 ) => buildExperienceModuleHref('issue-contribution', scope, query);
 
+export const buildIssueRepoManagementHref = (
+  scope: ExperienceRouteScope = {}
+) => `${getExperienceBasePath(scope)}/issue-contribution/repo-management`;
+
 export const buildCiExperienceHref = (
   scope: ExperienceRouteScope = {},
   query?: ExperienceRouteQuery

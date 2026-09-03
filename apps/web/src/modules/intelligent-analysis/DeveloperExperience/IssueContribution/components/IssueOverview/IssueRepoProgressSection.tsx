@@ -60,6 +60,7 @@ type TeamRow = {
 type Props = {
   org?: string;
   repos: IssueOverviewRepo[];
+  repoManagementHref: string;
   reportHref: (
     community: string,
     period?: string,
@@ -145,6 +146,7 @@ const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
 const IssueRepoProgressSection: React.FC<Props> = ({
   org,
   repos,
+  repoManagementHref,
   reportHref,
   onOpenScoreTrend,
 }) => {
@@ -552,6 +554,12 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               { label: '仓库', value: 'repo' },
             ]}
           />
+          <Link
+            href={repoManagementHref}
+            className="ml-auto inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50"
+          >
+            仓库管理
+          </Link>
         </div>
         {view === 'team' ? (
           <Table<TeamRow>

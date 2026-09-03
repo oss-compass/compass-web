@@ -36,6 +36,10 @@ import CloseRateTrendModal from './CloseRateTrendModal';
 import ScoreTrendModal from './ScoreTrendModal';
 import { CloseRateSparkline, ScoreSparkline } from './CloseRateTrendChart';
 import { buildCloseRateTrend } from './closeRateTrend';
+import {
+  getRerunNodeConstraintError,
+  getSelectableRerunNodes,
+} from './rerunPolicy';
 import type { CloseRateTrendPoint } from './closeRateTrend';
 import {
   buildScoreTrend,
@@ -111,17 +115,6 @@ const SEVERITY_ORDER: KnownSeverity[] = [
 
 const BEAT_REPO_IDS = new Set<string>();
 
-const ASCEND_950_ONLY_REPO_IDS = new Set([
-  'cann_atvoss',
-  'cann_ops_tensor',
-  'cann_ops_rand',
-  'cann_ops_fft',
-  'cann_ops_collections',
-  'cann_ops_gnn',
-  'cann_cannbot_dsl',
-  'cann_asc_comm',
-]);
-
 const normalizeRepoId = (value: unknown) =>
   String(value || '')
     .trim()
@@ -130,9 +123,6 @@ const normalizeRepoId = (value: unknown) =>
 
 const isBeatRepo = (value: unknown) =>
   BEAT_REPO_IDS.has(normalizeRepoId(value));
-
-const isAscend950OnlyRepo = (value: unknown) =>
-  ASCEND_950_ONLY_REPO_IDS.has(normalizeRepoId(value));
 
 const supportsRepoRerun = (value: unknown) => !isBeatRepo(value);
 
@@ -759,15 +749,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [rerunNodesLoading, setRerunNodesLoading] = useState(false);
   const [rerunNodesError, setRerunNodesError] = useState('');
   const [selectedRerunNodeKey, setSelectedRerunNodeKey] = useState('');
-  const rerunRepoRequiresAscend950 = isAscend950OnlyRepo(rerunModal.repo?.id);
   const selectableRerunNodes = useMemo(
-    () =>
-      rerunRepoRequiresAscend950
-        ? rerunNodes.filter(
-            (node) => normalizeHardwareEnv(node.hardware) === 'ascend-950'
-          )
-        : rerunNodes,
-    [rerunNodes, rerunRepoRequiresAscend950]
+    () => getSelectableRerunNodes(rerunModal.repo?.id, rerunNodes),
+    [rerunModal.repo?.id, rerunNodes]
   );
   const [rerunRecordsExpanded, setRerunRecordsExpanded] = useState(false);
   const [rerunRecordsModalExpanded, setRerunRecordsModalExpanded] =
@@ -3167,11 +3151,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         nodeStatusesLoading={rerunNodesLoading}
         nodeStatusesError={
           rerunNodesError ||
-          (rerunRepoRequiresAscend950 &&
-          !rerunNodesLoading &&
-          !selectableRerunNodes.length
-            ? '该仓库仅支持 ascend-950，当前暂无可用节点'
-            : '')
+          getRerunNodeConstraintError(
+            rerunModal.repo?.id,
+            selectableRerunNodes,
+            rerunNodesLoading
+          )
         }
         selectedNodeKey={selectedRerunNodeKey}
         onSelectNode={(nodeKey) => {

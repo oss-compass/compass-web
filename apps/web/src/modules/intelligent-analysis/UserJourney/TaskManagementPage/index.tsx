@@ -70,6 +70,10 @@ import {
   RerunActionButton,
 } from '../OverviewDashboard/RepoRerunComponents';
 import { getReportDisplayText } from '../OverviewDashboard/utils';
+import {
+  getRerunNodeConstraintError,
+  getSelectableRerunNodes,
+} from '../OverviewDashboard/rerunPolicy';
 import type { RepoProgressRow } from '../OverviewDashboard/types';
 
 const { Title } = Typography;
@@ -534,6 +538,10 @@ const TaskManagementPage: React.FC = () => {
   const [rerunNodesLoading, setRerunNodesLoading] = useState(false);
   const [rerunNodesError, setRerunNodesError] = useState('');
   const [selectedRerunNodeKey, setSelectedRerunNodeKey] = useState('');
+  const selectableRerunNodes = useMemo(
+    () => getSelectableRerunNodes(rerunModal.job?.project_key, rerunNodes),
+    [rerunModal.job?.project_key, rerunNodes]
+  );
 
   const loadOperatorUser = useCallback(async () => {
     const token = getCompassOperatorToken();
@@ -743,17 +751,17 @@ const TaskManagementPage: React.FC = () => {
       setSelectedRerunNodeKey('');
       return;
     }
-    if (!rerunNodes.length) {
+    if (!selectableRerunNodes.length) {
       setSelectedRerunNodeKey('');
       return;
     }
-    const hasSelected = rerunNodes.some(
+    const hasSelected = selectableRerunNodes.some(
       (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
     );
     if (!hasSelected) {
-      setSelectedRerunNodeKey(getPreferredRerunNodeKey(rerunNodes));
+      setSelectedRerunNodeKey(getPreferredRerunNodeKey(selectableRerunNodes));
     }
-  }, [rerunModal.open, rerunNodes, selectedRerunNodeKey]);
+  }, [rerunModal.open, selectableRerunNodes, selectedRerunNodeKey]);
 
   useEffect(() => {
     if (!rerunRecordsModal.open || !rerunRecordsModal.job) return undefined;
@@ -905,11 +913,11 @@ const TaskManagementPage: React.FC = () => {
         return;
       }
 
-      const selectedNodeIndex = rerunNodes.findIndex(
+      const selectedNodeIndex = selectableRerunNodes.findIndex(
         (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
       );
       const selectedNode =
-        selectedNodeIndex >= 0 ? rerunNodes[selectedNodeIndex] : null;
+        selectedNodeIndex >= 0 ? selectableRerunNodes[selectedNodeIndex] : null;
       if (!selectedNode) {
         setLoginError('请先选择一个节点后再确认重跑');
         messageApi.warning('请先选择一个节点后再确认重跑');
@@ -962,7 +970,7 @@ const TaskManagementPage: React.FC = () => {
       operatorUser,
       refetchTaskList,
       rerunModal.job,
-      rerunNodes,
+      selectableRerunNodes,
       rerunNodesLoading,
       selectedRerunNodeKey,
     ]
@@ -1550,9 +1558,16 @@ const TaskManagementPage: React.FC = () => {
         onConfirmRerun={(selectedOs) => {
           void handleConfirmRerun(selectedOs);
         }}
-        nodeStatuses={rerunNodes}
+        nodeStatuses={selectableRerunNodes}
         nodeStatusesLoading={rerunNodesLoading}
-        nodeStatusesError={rerunNodesError}
+        nodeStatusesError={
+          rerunNodesError ||
+          getRerunNodeConstraintError(
+            rerunModal.job?.project_key,
+            selectableRerunNodes,
+            rerunNodesLoading
+          )
+        }
         selectedNodeKey={selectedRerunNodeKey}
         onSelectNode={(nodeKey) => {
           setSelectedRerunNodeKey(nodeKey);

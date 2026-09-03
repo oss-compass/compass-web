@@ -76,6 +76,10 @@ import type {
   RepoProgressRow,
 } from '../OverviewDashboard/types';
 import { getReportDisplayText } from '../OverviewDashboard/utils';
+import {
+  getRerunNodeConstraintError,
+  getSelectableRerunNodes,
+} from '../OverviewDashboard/rerunPolicy';
 import { useRegistryData } from '../hooks/useRegistryData';
 import CompetitorRepoSection from './CompetitorRepoSection';
 
@@ -430,8 +434,21 @@ type OwnerContact = {
   email: string;
 };
 
-const RepoManagementPage: React.FC = () => {
+type RepoManagementPageProps = {
+  reportType?: 'community' | 'issue';
+};
+
+const REPO_MANAGEMENT_PAGE_META = {
+  community: { title: '仓库管理', communityOnlyClassName: '' },
+  issue: { title: 'Issue 仓库管理', communityOnlyClassName: 'hidden' },
+} as const;
+
+const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
+  reportType = 'community',
+}) => {
   const router = useRouter();
+  const isIssueManagement = reportType === 'issue';
+  const pageMeta = REPO_MANAGEMENT_PAGE_META[reportType];
   const screens = Grid.useBreakpoint();
   const queryClient = useQueryClient();
   const [messageApi, contextHolder] = message.useMessage();
@@ -503,6 +520,10 @@ const RepoManagementPage: React.FC = () => {
   const [rerunNodesLoading, setRerunNodesLoading] = useState(false);
   const [rerunNodesError, setRerunNodesError] = useState('');
   const [selectedRerunNodeKey, setSelectedRerunNodeKey] = useState('');
+  const selectableRerunNodes = useMemo(
+    () => getSelectableRerunNodes(rerunModal.repo?.project_key, rerunNodes),
+    [rerunModal.repo?.project_key, rerunNodes]
+  );
   const [rerunRecordsExpanded, setRerunRecordsExpanded] = useState(false);
   const [rerunRecordsModalExpanded, setRerunRecordsModalExpanded] =
     useState(true);
@@ -596,6 +617,7 @@ const RepoManagementPage: React.FC = () => {
   } = useQuery({
     queryKey: [
       'repo-management-list',
+      reportType,
       operatorUser?.username,
       keyword,
       teamFilter,
@@ -616,6 +638,7 @@ const RepoManagementPage: React.FC = () => {
         status: statusFilter === 'all' ? undefined : statusFilter,
         sortKey: serverSort.key,
         sortOrder: serverSort.order,
+        reportType,
         page,
         size: pageSize,
       }),
@@ -772,6 +795,10 @@ const RepoManagementPage: React.FC = () => {
   }, [router.query.org]);
 
   useEffect(() => {
+    if (isIssueManagement) {
+      setRerunStatusMap({});
+      return undefined;
+    }
     const projectKeys = repoItems
       .map((item) => item.project_key)
       .filter(Boolean);
@@ -803,7 +830,7 @@ const RepoManagementPage: React.FC = () => {
       alive = false;
       window.clearInterval(timer);
     };
-  }, [repoItems]);
+  }, [isIssueManagement, repoItems]);
 
   const closeRerunModal = useCallback(() => {
     setRerunModal({ open: false, repo: null });
@@ -857,7 +884,9 @@ const RepoManagementPage: React.FC = () => {
 
   useEffect(() => {
     const shouldLoadRerunNodes =
-      (rerunModal.open || rerunRecordsModal.open) && !!operatorUser;
+      !isIssueManagement &&
+      (rerunModal.open || rerunRecordsModal.open) &&
+      !!operatorUser;
     if (!shouldLoadRerunNodes) {
       setRerunNodes([]);
       setRerunNodesError('');
@@ -890,24 +919,29 @@ const RepoManagementPage: React.FC = () => {
     return () => {
       alive = false;
     };
-  }, [operatorUser, rerunModal.open, rerunRecordsModal.open]);
+  }, [
+    isIssueManagement,
+    operatorUser,
+    rerunModal.open,
+    rerunRecordsModal.open,
+  ]);
 
   useEffect(() => {
     if (!rerunModal.open) {
       setSelectedRerunNodeKey('');
       return;
     }
-    if (!rerunNodes.length) {
+    if (!selectableRerunNodes.length) {
       setSelectedRerunNodeKey('');
       return;
     }
-    const hasSelected = rerunNodes.some(
+    const hasSelected = selectableRerunNodes.some(
       (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
     );
     if (!hasSelected) {
-      setSelectedRerunNodeKey(getPreferredRerunNodeKey(rerunNodes));
+      setSelectedRerunNodeKey(getPreferredRerunNodeKey(selectableRerunNodes));
     }
-  }, [rerunModal.open, rerunNodes, selectedRerunNodeKey]);
+  }, [rerunModal.open, selectableRerunNodes, selectedRerunNodeKey]);
 
   useEffect(() => {
     if (!rerunRecordsModal.open || !rerunRecordsModal.repo) return undefined;
@@ -1139,11 +1173,11 @@ const RepoManagementPage: React.FC = () => {
         return;
       }
 
-      const selectedNodeIndex = rerunNodes.findIndex(
+      const selectedNodeIndex = selectableRerunNodes.findIndex(
         (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
       );
       const selectedNode =
-        selectedNodeIndex >= 0 ? rerunNodes[selectedNodeIndex] : null;
+        selectedNodeIndex >= 0 ? selectableRerunNodes[selectedNodeIndex] : null;
       if (!selectedNode) {
         setLoginError('请先选择一个节点后再确认重跑');
         messageApi.warning('请先选择一个节点后再确认重跑');
@@ -1205,7 +1239,7 @@ const RepoManagementPage: React.FC = () => {
       messageApi,
       operatorUser,
       rerunModal.repo,
-      rerunNodes,
+      selectableRerunNodes,
       rerunNodesLoading,
       selectedRerunNodeKey,
     ]
@@ -1305,6 +1339,7 @@ const RepoManagementPage: React.FC = () => {
         owner: ownerContacts.map((contact) => contact.name.trim()),
         owner_email: ownerContacts.map((contact) => contact.email.trim()),
         hardware_envs: parseHardwareEnvInput(values.hardware_env),
+        report_type: reportType,
       };
       await upsertRepoManagementRepo(payload);
       messageApi.success(editingRecord ? '仓库信息已更新' : '仓库已创建');
@@ -1343,21 +1378,37 @@ const RepoManagementPage: React.FC = () => {
           benchmark_repo_name: record.benchmark_repo_name,
           overview_enabled: checked,
           remark: record.remark,
+          report_type: reportType,
         });
-        messageApi.success(checked ? '已上线总览看板' : '已下线总览看板');
+        messageApi.success(
+          checked
+            ? isIssueManagement
+              ? '已上线 Issue 总览'
+              : '已上线总览看板'
+            : isIssueManagement
+            ? '已下线 Issue 总览'
+            : '已下线总览看板'
+        );
         await refetchRepoList();
         await queryClient.invalidateQueries({
           queryKey: ['repo-management-list'],
         });
       } catch (error) {
         messageApi.error(
-          error instanceof Error ? error.message : '更新总览看板状态失败'
+          error instanceof Error ? error.message : '更新总览状态失败'
         );
       } finally {
         setOverviewUpdatingRepo('');
       }
     },
-    [isAdmin, messageApi, queryClient, refetchRepoList]
+    [
+      isAdmin,
+      isIssueManagement,
+      messageApi,
+      queryClient,
+      refetchRepoList,
+      reportType,
+    ]
   );
 
   const handleAddOwnerContact = async () => {
@@ -1532,57 +1583,68 @@ const RepoManagementPage: React.FC = () => {
         width: 180,
         render: (_value, record) => formatTextList(record.owner) || '-',
       },
-      {
-        title: (
-          <HeaderFilter
-            label="硬件环境"
-            value={hardwareFilter}
-            allLabel="全部环境"
-            options={hardwareHeaderOptions}
-            onChange={(nextValue) => {
-              setHardwareFilter(nextValue);
-              setPage(1);
-            }}
-          />
-        ),
-        dataIndex: 'hardware_env',
-        key: 'hardware_env',
-        width: 140,
-        render: (_value: string, record) => {
-          const envs = getRecordHardwareEnvs(record);
-          if (!envs.length) return '-';
-          return (
-            <Space size={[4, 4]} wrap>
-              {envs.map((env) => (
-                <Tag key={env} color="processing">
-                  {env}
-                </Tag>
-              ))}
-            </Space>
-          );
-        },
-      },
+      ...(isIssueManagement
+        ? []
+        : [
+            {
+              title: (
+                <HeaderFilter
+                  label="硬件环境"
+                  value={hardwareFilter}
+                  allLabel="全部环境"
+                  options={hardwareHeaderOptions}
+                  onChange={(nextValue: string) => {
+                    setHardwareFilter(nextValue);
+                    setPage(1);
+                  }}
+                />
+              ),
+              dataIndex: 'hardware_env',
+              key: 'hardware_env',
+              width: 140,
+              render: (_value: string, record: RepoManagementItem) => {
+                const envs = getRecordHardwareEnvs(record);
+                if (!envs.length) return '-';
+                return (
+                  <Space size={[4, 4]} wrap>
+                    {envs.map((env) => (
+                      <Tag key={env} color="processing">
+                        {env}
+                      </Tag>
+                    ))}
+                  </Space>
+                );
+              },
+            },
+          ]),
       {
         title: sortableTitle('最新报告'),
         key: 'latestReport',
         width: 150,
         sorter: (left, right) =>
-          getReportDisplayText(getRepoLatestReportId(left)).localeCompare(
-            getReportDisplayText(getRepoLatestReportId(right)),
+          getRepoLatestReportId(left).localeCompare(
+            getRepoLatestReportId(right),
             'zh-CN'
           ),
         sortDirections: ['ascend', 'descend'],
         render: (_value, record) => {
           const reportId = getRepoLatestReportId(record);
-          const displayText = getReportDisplayText(reportId);
+          const displayText = isIssueManagement
+            ? reportId.replace('_to_', ' 至 ')
+            : getReportDisplayText(reportId);
           if (!reportId) return <span className="text-slate-300">--</span>;
-          return (
-            <Link
-              href={`/intelligent-analysis/community-experience?project=${encodeURIComponent(
+          const org =
+            typeof router.query.org === 'string' ? router.query.org.trim() : '';
+          const orgSegment = org ? `/${encodeURIComponent(org)}` : '';
+          const href = isIssueManagement
+            ? `/intelligent-analysis${orgSegment}/experience/issue-contribution?repo=${encodeURIComponent(
+                getRepoDisplayName(record)
+              )}&period=${encodeURIComponent(reportId)}`
+            : `/intelligent-analysis/community-experience?project=${encodeURIComponent(
                 reportId
-              )}`}
-              className="overview-table-link"
-            >
+              )}`;
+          return (
+            <Link href={href} className="overview-table-link">
               {displayText || reportId}
             </Link>
           );
@@ -1606,7 +1668,7 @@ const RepoManagementPage: React.FC = () => {
         }),
       },
       {
-        title: sortableTitle('总览看板'),
+        title: sortableTitle(isIssueManagement ? 'Issue 总览' : '总览看板'),
         dataIndex: 'overview_enabled',
         key: 'overview_enabled',
         width: 120,
@@ -1669,7 +1731,7 @@ const RepoManagementPage: React.FC = () => {
           const canManageRecord = canEditRepo(record);
           return (
             <Space size={4} wrap>
-              {canManageRecord ? (
+              {canManageRecord && !isIssueManagement ? (
                 <RerunActionButton
                   job={rerunStatusMap[record.project_key]}
                   loading={
@@ -1721,6 +1783,7 @@ const RepoManagementPage: React.FC = () => {
       canEditRepo,
       handleToggleOverviewEnabled,
       isAdmin,
+      isIssueManagement,
       openRerunModal,
       openRerunRecordsModal,
       rerunStatusLoading,
@@ -1728,6 +1791,7 @@ const RepoManagementPage: React.FC = () => {
       screens.xl,
       serverSort.key,
       serverSort.order,
+      router.query.org,
       handleDelete,
       handleOpenEdit,
       hardwareFilter,
@@ -1814,7 +1878,7 @@ const RepoManagementPage: React.FC = () => {
                     {isAdmin ? (
                       <Button
                         type="text"
-                        className={headerButtonClassName}
+                        className={`${headerButtonClassName} ${pageMeta.communityOnlyClassName}`}
                         onClick={() => {
                           window.location.href = '/pain-admin/#/report-reviews';
                         }}
@@ -1823,7 +1887,7 @@ const RepoManagementPage: React.FC = () => {
                       </Button>
                     ) : null}
                     <Title level={4} className="!mb-0 !mt-0">
-                      仓库管理
+                      {pageMeta.title}
                     </Title>
                   </div>
                   {/* <span className="text-sm text-slate-500">
@@ -1839,7 +1903,7 @@ const RepoManagementPage: React.FC = () => {
                   { key: 'cann', label: 'CANN 仓库' },
                   { key: 'competitor', label: '竞品仓库' },
                 ]}
-                className="-mb-3"
+                className={`-mb-3 ${pageMeta.communityOnlyClassName}`}
                 onChange={(key) =>
                   setRepoCategory(key as 'cann' | 'competitor')
                 }
@@ -1863,7 +1927,7 @@ const RepoManagementPage: React.FC = () => {
                 />
                 <Space wrap className="ml-auto justify-end">
                   <Button
-                    className={`${controlClassName} px-3 font-semibold text-slate-700`}
+                    className={`${controlClassName} ${pageMeta.communityOnlyClassName} px-3 font-semibold text-slate-700`}
                     onClick={() => {
                       void router.push(taskManagementHref);
                     }}
@@ -2096,19 +2160,21 @@ const RepoManagementPage: React.FC = () => {
               />
             </Form.Item>
 
-            <Form.Item label="硬件环境" name="hardware_env">
-              <Select
-                allowClear
-                placeholder="请选择硬件环境"
-                className={`${filterSelectClassName} w-full`}
-                popupMatchSelectWidth={false}
-                popupClassName="overview-select-dropdown"
-                options={editorHardwareOptions.map((item) => ({
-                  value: item,
-                  label: item,
-                }))}
-              />
-            </Form.Item>
+            {!isIssueManagement ? (
+              <Form.Item label="硬件环境" name="hardware_env">
+                <Select
+                  allowClear
+                  placeholder="请选择硬件环境"
+                  className={`${filterSelectClassName} w-full`}
+                  popupMatchSelectWidth={false}
+                  popupClassName="overview-select-dropdown"
+                  options={editorHardwareOptions.map((item) => ({
+                    value: item,
+                    label: item,
+                  }))}
+                />
+              </Form.Item>
+            ) : null}
 
             <Form.Item label="竞品仓库" name="benchmark_repo_name">
               <Select
@@ -2224,9 +2290,16 @@ const RepoManagementPage: React.FC = () => {
         onConfirmRerun={(selectedOs) => {
           void handleConfirmRerun(selectedOs);
         }}
-        nodeStatuses={rerunNodes}
+        nodeStatuses={selectableRerunNodes}
         nodeStatusesLoading={rerunNodesLoading}
-        nodeStatusesError={rerunNodesError}
+        nodeStatusesError={
+          rerunNodesError ||
+          getRerunNodeConstraintError(
+            rerunModal.repo?.project_key,
+            selectableRerunNodes,
+            rerunNodesLoading
+          )
+        }
         selectedNodeKey={selectedRerunNodeKey}
         onSelectNode={(nodeKey) => {
           setSelectedRerunNodeKey(nodeKey);
