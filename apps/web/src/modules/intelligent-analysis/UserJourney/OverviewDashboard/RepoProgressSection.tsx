@@ -109,12 +109,17 @@ const SEVERITY_ORDER: KnownSeverity[] = [
   'P3_MINOR',
 ];
 
-const BEAT_REPO_IDS = new Set([
+const BEAT_REPO_IDS = new Set<string>();
+
+const ASCEND_950_ONLY_REPO_IDS = new Set([
   'cann_atvoss',
   'cann_ops_tensor',
   'cann_ops_rand',
   'cann_ops_fft',
   'cann_ops_collections',
+  'cann_ops_gnn',
+  'cann_cannbot_dsl',
+  'cann_asc_comm',
 ]);
 
 const normalizeRepoId = (value: unknown) =>
@@ -125,6 +130,9 @@ const normalizeRepoId = (value: unknown) =>
 
 const isBeatRepo = (value: unknown) =>
   BEAT_REPO_IDS.has(normalizeRepoId(value));
+
+const isAscend950OnlyRepo = (value: unknown) =>
+  ASCEND_950_ONLY_REPO_IDS.has(normalizeRepoId(value));
 
 const supportsRepoRerun = (value: unknown) => !isBeatRepo(value);
 
@@ -751,6 +759,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [rerunNodesLoading, setRerunNodesLoading] = useState(false);
   const [rerunNodesError, setRerunNodesError] = useState('');
   const [selectedRerunNodeKey, setSelectedRerunNodeKey] = useState('');
+  const rerunRepoRequiresAscend950 = isAscend950OnlyRepo(rerunModal.repo?.id);
+  const selectableRerunNodes = useMemo(
+    () =>
+      rerunRepoRequiresAscend950
+        ? rerunNodes.filter(
+            (node) => normalizeHardwareEnv(node.hardware) === 'ascend-950'
+          )
+        : rerunNodes,
+    [rerunNodes, rerunRepoRequiresAscend950]
+  );
   const [rerunRecordsExpanded, setRerunRecordsExpanded] = useState(false);
   const [rerunRecordsModalExpanded, setRerunRecordsModalExpanded] =
     useState(true);
@@ -1301,17 +1319,17 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       setSelectedRerunNodeKey('');
       return;
     }
-    if (!rerunNodes.length) {
+    if (!selectableRerunNodes.length) {
       setSelectedRerunNodeKey('');
       return;
     }
-    const hasSelected = rerunNodes.some(
+    const hasSelected = selectableRerunNodes.some(
       (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
     );
     if (!hasSelected) {
-      setSelectedRerunNodeKey(getPreferredRerunNodeKey(rerunNodes));
+      setSelectedRerunNodeKey(getPreferredRerunNodeKey(selectableRerunNodes));
     }
-  }, [rerunModal.open, rerunNodes, selectedRerunNodeKey]);
+  }, [rerunModal.open, selectableRerunNodes, selectedRerunNodeKey]);
 
   const handleConfirmRerun = useCallback(
     async (selectedOs: string) => {
@@ -1328,11 +1346,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         setLoginError('节点状态加载中，请稍后再试');
         return;
       }
-      const selectedNodeIndex = rerunNodes.findIndex(
+      const selectedNodeIndex = selectableRerunNodes.findIndex(
         (node, index) => getDevxNodeKey(node, index) === selectedRerunNodeKey
       );
       const selectedNode =
-        selectedNodeIndex >= 0 ? rerunNodes[selectedNodeIndex] : null;
+        selectedNodeIndex >= 0 ? selectableRerunNodes[selectedNodeIndex] : null;
       if (!selectedNode) {
         setLoginError('请先选择一个节点后再确认重跑');
         messageApi.warning('请先选择一个节点后再确认重跑');
@@ -1391,7 +1409,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       messageApi,
       operatorUser,
       rerunModal.repo,
-      rerunNodes,
+      selectableRerunNodes,
       rerunNodesLoading,
       selectedRerunNodeKey,
     ]
@@ -3145,9 +3163,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         onConfirmRerun={(selectedOs) => {
           void handleConfirmRerun(selectedOs);
         }}
-        nodeStatuses={rerunNodes}
+        nodeStatuses={selectableRerunNodes}
         nodeStatusesLoading={rerunNodesLoading}
-        nodeStatusesError={rerunNodesError}
+        nodeStatusesError={
+          rerunNodesError ||
+          (rerunRepoRequiresAscend950 &&
+          !rerunNodesLoading &&
+          !selectableRerunNodes.length
+            ? '该仓库仅支持 ascend-950，当前暂无可用节点'
+            : '')
+        }
         selectedNodeKey={selectedRerunNodeKey}
         onSelectNode={(nodeKey) => {
           setSelectedRerunNodeKey(nodeKey);

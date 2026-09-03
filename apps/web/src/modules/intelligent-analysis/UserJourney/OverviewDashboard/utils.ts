@@ -49,6 +49,9 @@ export const normalizeHardwareEnv = (value: unknown): string => {
   if (normalized === 'ascend 910c' || normalized === '910c') {
     return 'ascend-910c';
   }
+  if (normalized === 'ascend 950' || normalized === '950') {
+    return 'ascend-950';
+  }
   return text;
 };
 
