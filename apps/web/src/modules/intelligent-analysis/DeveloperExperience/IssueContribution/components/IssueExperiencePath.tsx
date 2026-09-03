@@ -446,14 +446,15 @@ const StagePainCard: React.FC<{
       )
     : issues;
   const evidenceMetricCode = pain.evidence.match(/^([A-Z0-9_-]+)\s*[:：]/)?.[1];
+  const explicitMetricCodes = pain.metric_code?.trim()
+    ? [pain.metric_code]
+    : (pain.metric_codes ?? []).filter((code) => Boolean(code?.trim()));
   const painMetricCodes = Array.from(
     new Set(
-      [
-        ...(tracking?.metricCodes ?? []),
-        tracking?.metricCode,
-        ...issues.map((issue) => issue.metric_code),
-        evidenceMetricCode,
-      ]
+      (explicitMetricCodes.length
+        ? explicitMetricCodes
+        : [...issues.map((issue) => issue.metric_code), evidenceMetricCode]
+      )
         .filter((code): code is string => Boolean(code?.trim()))
         .map(normalizePainMetricCode)
     )
@@ -461,6 +462,12 @@ const StagePainCard: React.FC<{
   const painMetricLabels = Array.from(
     new Set(
       painMetricCodes.flatMap((code) => {
+        if (
+          pain.metric_name?.trim() &&
+          normalizePainMetricCode(pain.metric_code) === code
+        ) {
+          return [pain.metric_name.trim()];
+        }
         const chineseName = metricNamesByCode.get(code);
         return [chineseName || code];
       })

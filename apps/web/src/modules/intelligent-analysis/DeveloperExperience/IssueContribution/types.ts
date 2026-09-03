@@ -97,6 +97,10 @@ export type IssueReportPain = {
   prio: string;
   id: string;
   title: string;
+  /** 当前报告为痛点显式指定的指标；标题展示应优先使用该字段。 */
+  metric_code?: string;
+  metric_name?: string;
+  metric_codes?: string[];
   stage_id: string;
   stage_name: string;
   evidence: string;
