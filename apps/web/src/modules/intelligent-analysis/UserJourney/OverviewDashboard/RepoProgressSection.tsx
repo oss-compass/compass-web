@@ -190,6 +190,7 @@ const PROGRESS_LABEL_MAP: Record<
 };
 
 type ProgressSortHeaderProps = {
+  label?: string;
   sortKey: ProgressMetricSortKey;
   sortOrder: ProgressMetricSortOrder;
   onSortKeyChange: (next: ProgressMetricSortKey) => void;
@@ -197,6 +198,7 @@ type ProgressSortHeaderProps = {
 };
 
 export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
+  label = '问题处理进展',
   sortKey,
   sortOrder,
   onSortKeyChange,
@@ -271,10 +273,10 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
       onClick={(event) => event.stopPropagation()}
       onMouseDown={(event) => event.stopPropagation()}
     >
-      <span>问题处理进展</span>
+      <span>{label}</span>
       <button
         type="button"
-        aria-label="设置问题处理进展排序"
+        aria-label={`设置${label}排序`}
         title={titleSuffix}
         className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
           sortKey !== 'none'

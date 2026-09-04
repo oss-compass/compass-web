@@ -434,6 +434,12 @@ export type IssueOverviewRepo = {
   painInProgress: number;
   painResolved: number;
   painCloseRate: number;
+  /** 各仓库对比的问题处理进展仅使用 P0 痛点口径。 */
+  p0PainTotal: number;
+  p0PainPending: number;
+  p0PainInProgress: number;
+  p0PainResolved: number;
+  p0PainCloseRate: number;
   confidence: string;
   responderCount: number;
   responseCount: number;
