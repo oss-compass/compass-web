@@ -10,23 +10,8 @@ import { useTranslation } from 'next-i18next';
 import { TransOpt } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 import { getYAxisWithUnit } from '@common/options';
-import { convertMonthsToDays } from '@common/utils/format';
+import { convertResult } from './utils';
 import { DataContainerResult } from '@modules/analyze/type';
-
-// convert months to days.
-const convertResult = (result: DataContainerResult) => {
-  result.summaryMean = result.summaryMean.map((value) =>
-    convertMonthsToDays(value)
-  );
-  result.summaryMedian = result.summaryMean.map((value) =>
-    convertMonthsToDays(value)
-  );
-  result.yResults = result.yResults.map((item) => {
-    item.data = item.data.map((value) => convertMonthsToDays(value));
-    return item;
-  });
-  return result;
-};
 
 const UpdatedSince = () => {
   const { t, i18n } = useTranslation();
