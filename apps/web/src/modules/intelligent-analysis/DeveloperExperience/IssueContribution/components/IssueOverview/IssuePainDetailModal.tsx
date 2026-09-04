@@ -223,6 +223,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
         if (sortKey === 'team') return repoTeams[item.repoShort] || '';
         if (sortKey === 'metric') return getPainMetricLabel(item);
         if (sortKey === 'state') return getPainStateLabel(item);
+        // 类型上只有 stageName 字段，sortKey 'stage' 需显式映射，
+        // 否则落到 item['stage']（不存在）后所有行排序值都是空串
+        if (sortKey === 'stage') return item.stageName || '';
         return String(item[sortKey] || '');
       };
       const left = sortValue(a);
