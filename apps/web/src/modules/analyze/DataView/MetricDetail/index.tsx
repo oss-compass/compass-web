@@ -31,7 +31,9 @@ const MetricDetail = () => {
   const queryTab = router.query?.tab as string;
   const { isLoading, verifiedItems } = useLabelStatus();
   const [tab, setTab] = useState<string>(queryTab || 'contributor');
-  if (isLoading || verifiedItems.length > 1) {
+  // verifiedItems 为空（如无效 shortCode 或校验失败）时子组件会对
+  // verifiedItems[0] 解构导致整页崩溃，这里必须一并拦下
+  if (isLoading || verifiedItems.length !== 1) {
     return null;
   }
 
