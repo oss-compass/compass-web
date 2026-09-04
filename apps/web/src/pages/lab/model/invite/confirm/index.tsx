@@ -11,6 +11,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useTranslation, Trans } from 'next-i18next';
 import { toast } from 'react-hot-toast';
 import CheckTerms from '@modules/lab/model/components/CheckTerms';
+import { getSameOriginHref } from '@common/utils';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
@@ -68,10 +69,13 @@ const Content = () => {
         <Button
           size="lg"
           onClick={() => {
-            if (select) {
-              window.location.href = acceptUrl;
-            } else {
+            if (!select) {
               toast.error(t('lab:please_check_the_terms'));
+              return;
+            }
+            const target = getSameOriginHref(acceptUrl);
+            if (target) {
+              window.location.href = target;
             }
           }}
         >
