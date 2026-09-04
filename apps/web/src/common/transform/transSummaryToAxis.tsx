@@ -16,6 +16,9 @@ function getSummaryMap(
   const metric = summaryData[firstKey];
   metric.forEach((i: any) => {
     const xAxis = i[xKey] as string;
+    // 统计字段在 schema 中可为 null，此时该月份无数据，
+    // 跳过即可，下游会按 undefined 渲染 '-'
+    if (!i || !i[secondKey]) return;
     const yAxis = i[secondKey] as { mean: number; median: number };
     summaryDateMap.set(xAxis, { mean: yAxis['mean'], median: yAxis['median'] });
   });
