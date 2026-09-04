@@ -17,57 +17,8 @@ import * as RadioGroup from '@radix-ui/react-radio-group';
 import DownCardLoadImage from './DownCardLoadImage';
 import { AiOutlineLoading } from 'react-icons/ai';
 import useCompareItems from '@modules/analyze/hooks/useCompareItems';
-import useQueryDateRange from '@modules/analyze/hooks/useQueryDateRange';
-import { rangeTags } from '../constant';
-import { format } from 'date-fns';
-import { toUnderline } from '@common/utils/format';
+import { useGetSvgUrl } from './useGetSvgUrl';
 
-const queryMap = {
-  metricCodequality: 'collab_dev_index',
-  metricCommunity: 'community',
-  metricActivity: 'activity',
-  metricGroupActivity: 'organizations_activity',
-};
-
-const useGetSvgUrl = (
-  slug: string,
-  id: string,
-  yAxisScale: boolean,
-  onePointSys: boolean,
-  yKey: string
-) => {
-  const { range, timeStart, timeEnd } = useQueryDateRange();
-  let url = `/chart/${slug}.svg`;
-  let metrc = '';
-  let field = '';
-  if (id === 'topic_overview') {
-    metrc = 'overview';
-  } else {
-    const [metrcKey, fieldKey] = yKey.split('.');
-    metrc = queryMap[metrcKey];
-    if (id.indexOf('overview') === -1) {
-      field = toUnderline(fieldKey);
-    }
-  }
-  metrc && (url += `?metric=${metrc}`);
-  field && (url += `&field=${field}`);
-  !onePointSys && (url += `&y_trans=1`);
-  !yAxisScale && (url += `&y_abs=1`);
-  if (
-    id === 'code_quality_is_maintained' ||
-    id === 'code_quality_loc_frequency'
-  ) {
-    url += `&chart=bar`;
-  }
-  if (rangeTags.includes(range)) {
-    url += `&range=${range}`;
-  } else {
-    const begin_date = format(timeStart!, 'yyyy-MM-dd');
-    const end_date = format(timeEnd!, 'yyyy-MM-dd');
-    url += `&begin_date=${begin_date}&end_date=${end_date}`;
-  }
-  return url;
-};
 const DownloadAndShare = (props: {
   cardRef: RefObject<HTMLElement>;
   downloadImageSize?: 'middle' | 'full';
