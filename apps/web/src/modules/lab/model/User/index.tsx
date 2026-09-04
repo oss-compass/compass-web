@@ -12,7 +12,6 @@ import {
 } from '@oss-compass/graphql';
 import gqlClient from '@common/gqlClient';
 import useEventEmitter from 'ahooks/lib/useEventEmitter';
-import { ReFetch } from '@common/constant';
 import { useTranslation } from 'react-i18next';
 
 const per = 6;
@@ -40,12 +39,12 @@ const UserManage = () => {
 
   const inviteUsers = useRef(null);
   const event$ = useEventEmitter<string>();
-  event$.useSubscription((flag) => {
-    if (flag === ReFetch) {
-      refetch();
-    } else {
-      inviteUsers.current?.refetch();
-    }
+  // 成员列表里包含“等待确认加入”的被邀请人，两个列表相互依赖：
+  // 发出/取消邀请、删除成员、修改权限后都需要同时刷新两边，
+  // 否则其中一边会停留在旧状态（如已取消的邀请仍显示在待确认列表）
+  event$.useSubscription(() => {
+    refetch();
+    inviteUsers.current?.refetch();
   });
 
   if (isLoading) {
