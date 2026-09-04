@@ -14,13 +14,18 @@ export interface HighchartsDependencyWheelProps {
   _tracing?: string;
 }
 const loadHighchartsModules = async (callback) => {
-  Promise.all([
-    import('highcharts/modules/map'),
-    import('highcharts/modules/sankey'),
-    import('highcharts/modules/dependency-wheel'),
-    import('highcharts/modules/exporting'),
-    import('highcharts/modules/accessibility'),
-  ]).then(callback);
+  try {
+    // dependency-wheel 在模块求值时读取 seriesTypes.sankey，
+    // sankey 必须先于 dependency-wheel 加载完成注册，不能并行加载
+    await import('highcharts/modules/map');
+    await import('highcharts/modules/sankey');
+    await import('highcharts/modules/dependency-wheel');
+    await import('highcharts/modules/exporting');
+    await import('highcharts/modules/accessibility');
+    callback();
+  } catch (error) {
+    console.error('Failed to load Highcharts modules:', error);
+  }
 };
 const DependencywheelCommon: React.FC<HighchartsDependencyWheelProps> = ({
   data,
