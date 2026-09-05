@@ -23,6 +23,7 @@ import {
   TabsProps,
   Tag,
 } from 'antd';
+import Analyzing from '@modules/oh/components/Analyzing';
 import PanoramaChart from '../../GovernancePlatform/Overview/Project/PanoramaChart';
 import DeveloperRegionChart from '../../GovernancePlatform/Overview/Project/DeveloperRegionChart';
 import RepoTable from '../../GovernancePlatform/Overview/Project/RepoTable';
@@ -683,7 +684,7 @@ const GovernanceTabPanel: React.FC<{
     null
   );
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const { data: organizationRegions } = useQuery({
+  const { data: organizationRegions, isError: orgRegionsError } = useQuery({
     queryKey: ['intelligent-analysis', 'organizations', 'regions', dataset],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -705,7 +706,7 @@ const GovernanceTabPanel: React.FC<{
     },
     staleTime: 1000 * 60 * 5,
   });
-  const { data: developerRegions } = useQuery({
+  const { data: developerRegions, isError: devRegionsError } = useQuery({
     queryKey: ['intelligent-analysis', 'developers', 'regions', dataset],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -791,6 +792,10 @@ const GovernanceTabPanel: React.FC<{
   const handleTableRegionChange = (regions: string[]) => {
     setTableModal((current) => (current ? { ...current, regions } : current));
   };
+
+  if (orgRegionsError && devRegionsError) {
+    return <Analyzing />;
+  }
 
   return (
     <>
