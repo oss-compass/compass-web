@@ -29,7 +29,7 @@ const transHundredMarkSystem = (oneMark: number | string): number | string => {
     return '-';
   }
   oneMark = Number(oneMark);
-  if (oneMark < 0 || oneMark > 1) {
+  if (isNaN(oneMark) || oneMark < 0 || oneMark > 1) {
     return '-';
   }
   let index = 0;

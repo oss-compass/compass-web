@@ -8,6 +8,13 @@ describe('utils number ', () => {
     expect(transHundredMarkSystem(0)).toBe(0);
     expect(transHundredMarkSystem(0.5)).toBe(80);
     expect(transHundredMarkSystem(0.7)).toBe(90);
-    // expect(transHundredMarkSystem(null)).toBeNull();
+  });
+
+  it('transHundredMarkSystem returns "-" for missing / non-numeric input', () => {
+    expect(transHundredMarkSystem('-')).toBe('-');
+    expect(transHundredMarkSystem(null)).toBe('-');
+    expect(transHundredMarkSystem(undefined)).toBe('-');
+    expect(transHundredMarkSystem(NaN)).toBe('-');
+    expect(transHundredMarkSystem('N/A')).toBe('-');
   });
 });
