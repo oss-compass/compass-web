@@ -1,6 +1,7 @@
 import React from 'react';
 import Banner from './Banner';
 import Introduce from './Introduce';
+import Charter from './05Charter';
 import Board from './10Board';
 import Members from './20Members';
 import TechnicalCommittee from './30TechnicalCommittee';
@@ -17,6 +18,7 @@ const About = () => {
       <div className="py-20">
         <div className="mx-auto  w-[1000px] md:w-full md:px-4">
           <Introduce />
+          <Charter />
           <Board />
           <Members />
           <TechnicalCommittee />
