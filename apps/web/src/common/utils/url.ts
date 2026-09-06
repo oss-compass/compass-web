@@ -64,8 +64,8 @@ export function getProvider(url: string) {
 export function fillHttps(url?: string): string {
   if (!url) return '';
   const trimmedUrl = url.endsWith('/') ? url.slice(0, -1) : url;
-  if (trimmedUrl.indexOf('https') === -1) {
-    return `https://${trimmedUrl}`;
+  if (!trimmedUrl.startsWith('https://')) {
+    return `https://${trimmedUrl.replace(/^http:\/\//, '')}`;
   }
   return trimmedUrl;
 }

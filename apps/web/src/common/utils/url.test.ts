@@ -10,6 +10,7 @@ import {
   removeExtname,
   removeTrailingSlash,
   getNameSpacePng,
+  fillHttps,
 } from './url';
 
 describe('utils url ', () => {
@@ -221,6 +222,34 @@ describe('utils url ', () => {
 
     testCases.map((item) => {
       expect(getNameSpacePng(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('fillHttps', function () {
+    const testCases = [
+      { input: 'github.com/cli/cli', result: 'https://github.com/cli/cli' },
+      {
+        input: 'http://github.com/cli/cli',
+        result: 'https://github.com/cli/cli',
+      },
+      {
+        input: 'https://github.com/cli/cli',
+        result: 'https://github.com/cli/cli',
+      },
+      {
+        input: 'https://github.com/cli/cli/',
+        result: 'https://github.com/cli/cli',
+      },
+      {
+        input: 'http://gitee.com/dotnetchina/MiniWord',
+        result: 'https://gitee.com/dotnetchina/MiniWord',
+      },
+      { input: '', result: '' },
+      { input: undefined, result: '' },
+    ];
+
+    testCases.map((item) => {
+      expect(fillHttps(item.input)).toEqual(item.result);
     });
   });
 });
