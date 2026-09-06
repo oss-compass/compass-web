@@ -11,7 +11,7 @@ const filterDataByCommunityRepoType = (
 ) => {
   const result: any = {};
   Object.keys(data).forEach((key: any) => {
-    result[key] = data[key].filter((item: any) => {
+    result[key] = (data[key] || []).filter((item: any) => {
       // if type not exist then return true
       if (!item.type) return true;
       return item.type === communityRepoType;
@@ -42,7 +42,7 @@ export function transDataForOverview(
   const metricObj: any = {};
   for (let i = 0; i < maxLen; i++) {
     opts.forEach(({ type, key }) => {
-      const item = filteredData[type][i];
+      const item = filteredData[type]?.[i];
       if (item) {
         const time = item[timeKey];
         set(metricObj, [time, [key]], item[key]);

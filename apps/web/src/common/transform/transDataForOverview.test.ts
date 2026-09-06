@@ -33,4 +33,35 @@ describe('transDataForOverview', () => {
     // console.log(JSON.stringify(result, null, 2));
     expect(result).toEqual(overviewOutputData);
   });
+
+  it('tolerates a metric type missing from the data (partial response)', () => {
+    const partialData = {
+      metricActivity: (overviewData.data as any).metricActivity,
+    };
+
+    const result = transDataForOverview(partialData, opts, dateKey);
+
+    const activity = result.yAxisResult.find((r) => r.name === 'activityScore');
+    const codeQuality = result.yAxisResult.find(
+      (r) => r.name === 'codeQualityGuarantee'
+    );
+    expect(activity.data.length).toBe(result.xAxis.length);
+    expect(activity.data.some((v) => v !== null)).toBe(true);
+    expect(codeQuality.data.every((v) => v === null)).toBe(true);
+  });
+
+  it('tolerates a metric type that is null in the data (partial response)', () => {
+    const partialData = {
+      ...(overviewData.data as any),
+      metricCommunity: null,
+    };
+
+    const result = transDataForOverview(partialData, opts, dateKey);
+
+    const community = result.yAxisResult.find(
+      (r) => r.name === 'communitySupportScore'
+    );
+    expect(community.data.every((v) => v === null)).toBe(true);
+    expect(result.xAxis.length).toBeGreaterThan(0);
+  });
 });
