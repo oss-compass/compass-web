@@ -21,7 +21,6 @@ const useHashchangeEvent = (
         let parts = hash.split('?');
         hash = parts[0];
       }
-      console.log('hashChangeHandle', hash);
 
       const id = hash.replace('#', '');
       setActiveId(id);
@@ -35,9 +34,13 @@ const useHashchangeEvent = (
 
   useDebounce(
     () => {
-      console.log(activeId);
       if (!activeId) return;
-      const decodedId = decodeURIComponent(activeId);
+      let decodedId = activeId;
+      try {
+        decodedId = decodeURIComponent(activeId);
+      } catch (e) {
+        // hash may contain a malformed percent sequence; use it as-is
+      }
       const el = document.getElementById(decodedId);
       if (!el) return;
       const cards = document.querySelectorAll(`.${cardClassName}`);
