@@ -74,7 +74,9 @@ export const getDeveloperLink = (url: string) => {
     ? 'gitee'
     : hostname.includes('github.com')
     ? 'github'
-    : hostname.includes('gitcode.com') || hostname.includes('atomgit.com')
+    : hostname.includes('gitcode.com')
+    ? 'gitcode'
+    : hostname.includes('atomgit.com')
     ? 'atomgit'
     : 'github';
   return `/developer/${platform}/${encodeURIComponent(user)}`;
