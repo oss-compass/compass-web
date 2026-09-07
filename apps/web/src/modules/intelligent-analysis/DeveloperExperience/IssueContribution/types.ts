@@ -445,6 +445,14 @@ export type IssueOverviewRepo = {
   responseCount: number;
   level: IssueOverviewLevel;
   stages: IssueOverviewStage[];
+  metrics?: Array<{
+    stageId: string;
+    stageName: string;
+    code: string;
+    name: string;
+    axis: 'objective' | 'subjective';
+    score: number;
+  }>;
   idxTrend: number[]; // 该仓综合指数按周（时间升序）
   idxTrendPeriods: string[]; // 与 idxTrend 对齐的周期标签（时间升序）
 };

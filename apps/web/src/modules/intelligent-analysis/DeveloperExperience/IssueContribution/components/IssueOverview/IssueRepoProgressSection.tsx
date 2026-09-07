@@ -76,6 +76,11 @@ const TEAM_TABLE_WIDTH = TEAM_COLUMN_WIDTHS.reduce(
   0
 );
 
+const reportDateLabel = (period: string) => {
+  const [, endDate] = String(period || '').split('_to_');
+  return endDate || period || '-';
+};
+
 const painCount = (repo: IssueOverviewRepo) =>
   repo.stages.reduce((total, stage) => total + stage.painCount, 0);
 
@@ -434,7 +439,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
             href={reportHref(record.community, record.period)}
             className="overview-table-link"
           >
-            查看报告
+            {reportDateLabel(record.period)}
           </Link>
         ),
       },
@@ -663,7 +668,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                               href={reportHref(repo.community, repo.period)}
                               className="overview-table-link"
                             >
-                              查看报告
+                              {reportDateLabel(repo.period)}
                             </Link>
                           </td>
                         </tr>

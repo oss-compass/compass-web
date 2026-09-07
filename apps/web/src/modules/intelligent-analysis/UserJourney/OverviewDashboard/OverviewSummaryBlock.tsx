@@ -65,7 +65,7 @@ const formatTrendWindowLabel = (value: TrendWindow): string => {
   return `${value.start} ~ ${value.end}`;
 };
 
-const TrendWindowPicker: React.FC<{
+export const TrendWindowPicker: React.FC<{
   value: TrendWindow;
   onChange: (next: TrendWindow) => void;
 }> = ({ value, onChange }) => {
@@ -315,35 +315,69 @@ const buildPriorityProgress = (issues: DashboardIssue[]) =>
     };
   });
 
-const TrendChart: React.FC<{
+export const TrendChart: React.FC<{
   points: WeeklyCloseRateTrendPoint[];
   mode?: 'overall' | 'common';
-}> = ({ points, mode = 'overall' }) => {
+  /** 开启后按容器纵横比扩展绘图区高度，让图表尽量撑满父容器。 */
+  fitContainerHeight?: boolean;
+}> = ({ points, mode = 'overall', fitContainerHeight = false }) => {
   const chartId = React.useId();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
   const [tooltipPos, setTooltipPos] = React.useState({ left: 0, top: 0 });
+  const [containerRatio, setContainerRatio] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!fitContainerHeight) return;
+    const wrapper = wrapperRef.current;
+    if (!wrapper || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver((entries) => {
+      const rect = entries[0]?.contentRect;
+      if (rect && rect.width > 0 && rect.height > 0) {
+        setContainerRatio(rect.height / rect.width);
+      }
+    });
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [fitContainerHeight]);
+
   const n = points.length;
   if (n === 0) return null;
   const maxTotal = Math.max(0, ...points.map((p) => p.total));
   const yMax = getNiceMax(maxTotal);
-  const plotH = TREND_PLOT_BOTTOM - TREND_PLOT_TOP;
-  const plotW = TREND_PLOT_RIGHT - TREND_PLOT_LEFT;
+  // 顶部轴标题与底部周标签留白固定，仅按容器纵横比扩展绘图区高度。
+  const viewBoxH =
+    fitContainerHeight && containerRatio > 0
+      ? Math.min(
+          400,
+          Math.max(
+            TREND_VIEWBOX_H,
+            Math.round(TREND_VIEWBOX_W * containerRatio)
+          )
+        )
+      : TREND_VIEWBOX_H;
+  const plotBottom = viewBoxH - (TREND_VIEWBOX_H - TREND_PLOT_BOTTOM);
+  const plotH = plotBottom - TREND_PLOT_TOP;
+  // 撑满模式下收紧左右轴留白（52→40），让绘图区占满更多宽度。
+  const plotLeft = fitContainerHeight ? 40 : TREND_PLOT_LEFT;
+  const plotRight = fitContainerHeight ? 560 : TREND_PLOT_RIGHT;
+  const plotW = plotRight - plotLeft;
   const step = n > 0 ? plotW / n : plotW;
   const barW = Math.min(36, step * 0.48);
 
-  const xCenter = (index: number) => TREND_PLOT_LEFT + step * (index + 0.5);
+  const xCenter = (index: number) => plotLeft + step * (index + 0.5);
   const yForCount = (value: number) =>
-    TREND_PLOT_BOTTOM - (Math.max(0, value) / yMax) * plotH;
+    plotBottom - (Math.max(0, value) / yMax) * plotH;
   const yForRate = (value: number) =>
-    TREND_PLOT_BOTTOM - (Math.max(0, Math.min(100, value)) / 100) * plotH;
+    plotBottom - (Math.max(0, Math.min(100, value)) / 100) * plotH;
 
   const yTextMin = TREND_LABEL_SAFE_TOP;
   const ratePointYs = points.map((p) => yForRate(p.closeRate));
   const rateLabelYs = ratePointYs.map((y) => Math.max(yTextMin, y - 16));
   const totalTopYs = points.map((p) => yForCount(p.total));
   const totalLabelYs = totalTopYs.map((y) => Math.max(yTextMin, y - 8));
-  const showRateLabel = points.map((p) => p.closeRate > 0);
+  // 闭环率为 0 时也显示弱化标签，避免折线贴轴时无从识别数值。
+  const showRateLabel = points.map((p) => p.closeRate >= 0);
   const showTotalLabel = points.map((p, index) => {
     if (p.total < 0) return false;
     if (!showRateLabel[index]) return true;
@@ -362,9 +396,9 @@ const TrendChart: React.FC<{
   const polylinePoints = points
     .map((p, index) => `${xCenter(index)},${yForRate(p.closeRate)}`)
     .join(' ');
-  const areaPoints = `${TREND_PLOT_LEFT},${TREND_PLOT_BOTTOM} ${polylinePoints} ${xCenter(
+  const areaPoints = `${plotLeft},${plotBottom} ${polylinePoints} ${xCenter(
     n - 1
-  )},${TREND_PLOT_BOTTOM}`;
+  )},${plotBottom}`;
   const activePoint = activeIndex == null ? null : points[activeIndex];
   const activeX = activeIndex == null ? null : xCenter(activeIndex);
 
@@ -374,7 +408,7 @@ const TrendChart: React.FC<{
     const rect = wrapper.getBoundingClientRect();
     const leftPx = (xCenter(index) / TREND_VIEWBOX_W) * rect.width;
     const topPx =
-      (Math.min(ratePointYs[index], totalTopYs[index]) / TREND_VIEWBOX_H) *
+      (Math.min(ratePointYs[index], totalTopYs[index]) / viewBoxH) *
       rect.height;
     setTooltipPos({
       left: Math.min(
@@ -398,7 +432,7 @@ const TrendChart: React.FC<{
     >
       <svg
         className="oj-trend-svg"
-        viewBox={`0 0 ${TREND_VIEWBOX_W} ${TREND_VIEWBOX_H}`}
+        viewBox={`0 0 ${TREND_VIEWBOX_W} ${viewBoxH}`}
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -424,7 +458,7 @@ const TrendChart: React.FC<{
           </linearGradient>
         </defs>
         <rect
-          x={TREND_PLOT_LEFT}
+          x={plotLeft}
           y={TREND_PLOT_TOP}
           width={plotW}
           height={plotH}
@@ -434,11 +468,11 @@ const TrendChart: React.FC<{
         {ticks.slice(0, 4).map((t, i) => {
           const y = yForCount(t);
           const nextY =
-            i < ticks.length - 1 ? yForCount(ticks[i + 1]) : TREND_PLOT_BOTTOM;
+            i < ticks.length - 1 ? yForCount(ticks[i + 1]) : plotBottom;
           return (
             <rect
               key={`band-${i}`}
-              x={TREND_PLOT_LEFT}
+              x={plotLeft}
               y={y}
               width={plotW}
               height={nextY - y}
@@ -453,32 +487,32 @@ const TrendChart: React.FC<{
         {gridYs.slice(0, 4).map((y, i) => (
           <line
             key={`g-${i}`}
-            x1={TREND_PLOT_LEFT}
+            x1={plotLeft}
             y1={y}
-            x2={TREND_PLOT_RIGHT}
+            x2={plotRight}
             y2={y}
             className="oj-trend-grid"
           />
         ))}
         <line
-          x1={TREND_PLOT_LEFT}
-          y1={TREND_PLOT_BOTTOM}
-          x2={TREND_PLOT_RIGHT}
-          y2={TREND_PLOT_BOTTOM}
+          x1={plotLeft}
+          y1={plotBottom}
+          x2={plotRight}
+          y2={plotBottom}
           className="oj-trend-axis-line"
         />
         <line
-          x1={TREND_PLOT_LEFT}
+          x1={plotLeft}
           y1={TREND_PLOT_TOP}
-          x2={TREND_PLOT_LEFT}
-          y2={TREND_PLOT_BOTTOM}
+          x2={plotLeft}
+          y2={plotBottom}
           className="oj-trend-axis-line"
         />
         <line
-          x1={TREND_PLOT_RIGHT}
+          x1={plotRight}
           y1={TREND_PLOT_TOP}
-          x2={TREND_PLOT_RIGHT}
-          y2={TREND_PLOT_BOTTOM}
+          x2={plotRight}
+          y2={plotBottom}
           className="oj-trend-axis-line"
         />
 
@@ -486,7 +520,7 @@ const TrendChart: React.FC<{
           <text
             key={`yl-${i}`}
             className="oj-trend-axis oj-trend-axis-y"
-            x={TREND_LEFT_AXIS_X}
+            x={plotLeft - 8}
             y={yForCount(t) + 4}
             textAnchor="end"
           >
@@ -495,9 +529,9 @@ const TrendChart: React.FC<{
         ))}
         <text
           className="oj-trend-axis-title oj-trend-axis-title-y"
-          x={TREND_LEFT_AXIS_X}
+          x={fitContainerHeight ? 4 : TREND_LEFT_AXIS_X}
           y={16}
-          textAnchor="end"
+          textAnchor={fitContainerHeight ? 'start' : 'end'}
         >
           问题数
         </text>
@@ -506,7 +540,7 @@ const TrendChart: React.FC<{
           <text
             key={`yr-${i}`}
             className="oj-trend-axis oj-trend-axis-y"
-            x={TREND_RIGHT_AXIS_X}
+            x={plotRight + 8}
             y={yForRate(t) + 4}
           >
             {t}%
@@ -514,9 +548,9 @@ const TrendChart: React.FC<{
         ))}
         <text
           className="oj-trend-axis-title oj-trend-axis-title-y"
-          x={TREND_RIGHT_AXIS_X}
+          x={fitContainerHeight ? TREND_VIEWBOX_W - 4 : TREND_RIGHT_AXIS_X}
           y={16}
-          textAnchor="start"
+          textAnchor={fitContainerHeight ? 'end' : 'start'}
         >
           闭环率
         </text>
@@ -532,7 +566,7 @@ const TrendChart: React.FC<{
             x1={activeX}
             y1={TREND_PLOT_TOP}
             x2={activeX}
-            y2={TREND_PLOT_BOTTOM}
+            y2={plotBottom}
             className="oj-trend-active-guide"
           />
         ) : null}
@@ -637,7 +671,11 @@ const TrendChart: React.FC<{
               />
               {shouldLabel ? (
                 <text
-                  className="oj-trend-val oj-trend-val-green"
+                  className={`oj-trend-val ${
+                    p.closeRate > 0
+                      ? 'oj-trend-val-green'
+                      : 'oj-trend-val-muted'
+                  }`}
                   x={x}
                   y={rateLabelYs[index]}
                   textAnchor="middle"
@@ -654,7 +692,7 @@ const TrendChart: React.FC<{
             key={`x-${index}`}
             className="oj-trend-axis"
             x={xCenter(index)}
-            y={182}
+            y={plotBottom + 26}
             textAnchor="middle"
           >
             {p.label}
@@ -664,7 +702,7 @@ const TrendChart: React.FC<{
         {points.map((_, index) => (
           <rect
             key={`hover-${index}`}
-            x={TREND_PLOT_LEFT + step * index}
+            x={plotLeft + step * index}
             y={TREND_PLOT_TOP}
             width={step}
             height={plotH}

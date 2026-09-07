@@ -1168,6 +1168,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         stroke-linejoin: round;
       }
 
+      .oj-trend-val-muted {
+        fill: #94a3b8;
+        paint-order: stroke;
+        stroke: rgba(255, 255, 255, 0.94);
+        stroke-width: 1.2px;
+        stroke-linejoin: round;
+      }
+
       .oj-trend-rate-area {
         pointer-events: none;
       }

@@ -23,6 +23,20 @@ type ScoreTrendChartProps = {
   axisTitle?: string;
   tooltipLabel?: string;
   valueType?: 'score' | 'percent';
+  integerScale?: boolean;
+  fitContainerHeight?: boolean;
+};
+
+const getIntegerScaleRange = (minValue: number, maxValue: number) => {
+  const span = Math.max(1, Math.ceil(maxValue) - Math.floor(minValue));
+  const step = Math.max(1, Math.ceil(span / 4));
+  let lower = Math.max(0, Math.floor(minValue / step) * step);
+  let upper = lower + step * 4;
+  if (upper < maxValue) {
+    upper = Math.ceil(maxValue / step) * step;
+    lower = Math.max(0, upper - step * 4);
+  }
+  return { lower, upper, usingFiveScale: false };
 };
 
 const getFiveScaleRange = (minScore: number, maxScore: number) => {
@@ -73,11 +87,26 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   axisTitle = '综合体验评分',
   tooltipLabel = '周度评分',
   valueType = 'score',
+  integerScale = false,
+  fitContainerHeight = false,
 }) => {
   const chartId = React.useId();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
   const [tooltipPos, setTooltipPos] = React.useState({ left: 0, top: 0 });
+  const [containerRatio, setContainerRatio] = React.useState(0);
+  React.useEffect(() => {
+    if (!fitContainerHeight || !wrapperRef.current) return undefined;
+    const wrapper = wrapperRef.current;
+    const updateRatio = () => {
+      const rect = wrapper.getBoundingClientRect();
+      if (rect.width > 0) setContainerRatio(rect.height / rect.width);
+    };
+    updateRatio();
+    const observer = new ResizeObserver(updateRatio);
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [fitContainerHeight]);
   const validScores = points
     .map((point) => point.score)
     .filter(
@@ -87,19 +116,26 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   if (!validScores.length) return null;
 
   const n = points.length;
-  const plotH = SCORE_PLOT_BOTTOM - SCORE_PLOT_TOP;
+  const viewBoxH =
+    fitContainerHeight && containerRatio > 0
+      ? Math.max(SCORE_VIEWBOX_H, SCORE_VIEWBOX_W * containerRatio)
+      : SCORE_VIEWBOX_H;
+  const plotBottom = viewBoxH - (SCORE_VIEWBOX_H - SCORE_PLOT_BOTTOM);
+  const plotH = plotBottom - SCORE_PLOT_TOP;
   const plotW = SCORE_PLOT_RIGHT - SCORE_PLOT_LEFT;
   const step = n > 1 ? plotW / (n - 1) : 0;
-  const { lower, upper, usingFiveScale } = getScoreRange(validScores);
+  const { lower, upper, usingFiveScale } = integerScale
+    ? getIntegerScaleRange(Math.min(...validScores), Math.max(...validScores))
+    : getScoreRange(validScores);
   const formatValue = valueType === 'percent' ? formatPercent : formatScore;
   const range = Math.max(upper - lower, 1);
   const yForScore = (value: number) =>
-    SCORE_PLOT_BOTTOM - ((value - lower) / range) * plotH;
+    plotBottom - ((value - lower) / range) * plotH;
   const xCenter = (index: number) => SCORE_PLOT_LEFT + step * index;
   const yTextMin = SCORE_LABEL_SAFE_TOP;
 
   const scorePointYs = points.map((point) =>
-    point.score == null ? SCORE_PLOT_BOTTOM : yForScore(point.score)
+    point.score == null ? plotBottom : yForScore(point.score)
   );
   const scoreLabelYs = scorePointYs.map((y) => Math.max(yTextMin, y - 16));
   const ticks = Array.from({ length: 5 }, (_item, index) =>
@@ -124,11 +160,9 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   })();
   const areaPoints =
     firstValidIndex >= 0 && lastValidIndex >= 0 && polylinePoints
-      ? `${xCenter(
-          firstValidIndex
-        )},${SCORE_PLOT_BOTTOM} ${polylinePoints} ${xCenter(
+      ? `${xCenter(firstValidIndex)},${plotBottom} ${polylinePoints} ${xCenter(
           lastValidIndex
-        )},${SCORE_PLOT_BOTTOM}`
+        )},${plotBottom}`
       : '';
 
   const updateTooltip = (index: number) => {
@@ -136,7 +170,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
     if (!wrapper) return;
     const rect = wrapper.getBoundingClientRect();
     const leftPx = (xCenter(index) / SCORE_VIEWBOX_W) * rect.width;
-    const topPx = (scorePointYs[index] / SCORE_VIEWBOX_H) * rect.height;
+    const topPx = (scorePointYs[index] / viewBoxH) * rect.height;
     setTooltipPos({
       left: Math.min(
         Math.max(leftPx, SCORE_TOOLTIP_HALF_WIDTH),
@@ -164,7 +198,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
     >
       <svg
         className="oj-trend-svg"
-        viewBox={`0 0 ${SCORE_VIEWBOX_W} ${SCORE_VIEWBOX_H}`}
+        viewBox={`0 0 ${SCORE_VIEWBOX_W} ${viewBoxH}`}
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -202,9 +236,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
         {ticks.slice(0, 4).map((tick, index) => {
           const y = yForScore(tick);
           const nextY =
-            index < ticks.length - 1
-              ? yForScore(ticks[index + 1])
-              : SCORE_PLOT_BOTTOM;
+            index < ticks.length - 1 ? yForScore(ticks[index + 1]) : plotBottom;
           return (
             <rect
               key={`band-${tick}`}
@@ -233,16 +265,16 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
         ))}
         <line
           x1={SCORE_PLOT_LEFT}
-          y1={SCORE_PLOT_BOTTOM}
+          y1={plotBottom}
           x2={SCORE_PLOT_RIGHT}
-          y2={SCORE_PLOT_BOTTOM}
+          y2={plotBottom}
           className="oj-trend-axis-line"
         />
         <line
           x1={SCORE_PLOT_LEFT}
           y1={SCORE_PLOT_TOP}
           x2={SCORE_PLOT_LEFT}
-          y2={SCORE_PLOT_BOTTOM}
+          y2={plotBottom}
           className="oj-trend-axis-line"
         />
 
@@ -280,7 +312,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
             x1={activeX}
             y1={SCORE_PLOT_TOP}
             x2={activeX}
-            y2={SCORE_PLOT_BOTTOM}
+            y2={plotBottom}
             stroke={SCORE_BLUE_GUIDE}
             strokeWidth={1}
             strokeDasharray="4 4"
@@ -343,7 +375,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
             x={xCenter(index) - (n > 1 ? step / 2 : plotW / 2)}
             y={SCORE_PLOT_TOP}
             width={n > 1 ? step : plotW}
-            height={SCORE_PLOT_BOTTOM - SCORE_PLOT_TOP}
+            height={plotBottom - SCORE_PLOT_TOP}
             className="oj-trend-hover-zone"
             onMouseEnter={() => handleActivate(index)}
             onMouseMove={() => handleActivate(index)}
@@ -354,7 +386,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
           <text
             key={`x-${point.key}`}
             x={xCenter(index)}
-            y={182}
+            y={viewBoxH - 14}
             textAnchor="middle"
             className="oj-trend-axis"
           >
