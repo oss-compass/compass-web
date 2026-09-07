@@ -13,6 +13,12 @@ const PAIN_PAGE_SIZE = 10;
 const ISSUE_PAGE_SIZE = 10;
 const ISSUE_STAGE_ORDER = ['I0', 'I1', 'I2', 'I3', 'G'] as const;
 
+const reportDateLabel = (period?: string) => {
+  const value = String(period || '');
+  const [, endDate] = value.split('_to_');
+  return endDate || value || '--';
+};
+
 const getStageOrder = (stageId?: string): number => {
   const index = ISSUE_STAGE_ORDER.indexOf(
     String(stageId || '').toUpperCase() as (typeof ISSUE_STAGE_ORDER)[number]
@@ -560,7 +566,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                           )}
                           className="overview-table-link text-blue-600 hover:text-blue-700"
                         >
-                          查看报告
+                          {reportDateLabel(item.period)}
                         </Link>
                       </td>
                     </tr>
@@ -665,7 +671,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                     )}
                     className="overview-table-link break-all text-blue-600 hover:text-blue-700"
                   >
-                    {period}
+                    {reportDateLabel(period)}
                   </Link>
                 );
               }}
