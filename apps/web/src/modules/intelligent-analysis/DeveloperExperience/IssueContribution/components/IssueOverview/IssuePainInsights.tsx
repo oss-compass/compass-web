@@ -661,7 +661,13 @@ export const IssueFrequentPainSection: React.FC<
       width: 92,
       render: (value: string) => <IssuePriorityTag priority={value} />,
     },
-    { title: '覆盖仓数', dataIndex: 'repoCount', width: 100, align: 'right' },
+    {
+      title: '覆盖仓数',
+      dataIndex: 'repoCount',
+      width: 100,
+      align: 'right',
+      sorter: (left, right) => left.repoCount - right.repoCount,
+    },
     {
       title:
         view === 'open'
@@ -671,6 +677,15 @@ export const IssueFrequentPainSection: React.FC<
           : '涉及 Issue 数',
       width: 156,
       align: 'center',
+      sorter: (left, right) => {
+        const countOf = (record: FrequentPain) =>
+          view === 'open'
+            ? record.open
+            : view === 'done'
+            ? record.done
+            : record.total;
+        return countOf(left) - countOf(right);
+      },
       render: (_value, record) => {
         const count =
           view === 'open'

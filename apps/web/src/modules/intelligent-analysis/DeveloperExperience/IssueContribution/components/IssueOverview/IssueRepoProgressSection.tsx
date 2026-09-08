@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { RightOutlined } from '@ant-design/icons';
-import { Segmented, Table, Tooltip, Typography } from 'antd';
+import { Segmented, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
@@ -361,12 +361,8 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         key: 'repoShort',
         width: 170,
         sorter: (a, b) => a.repoShort.localeCompare(b.repoShort),
-        render: (value, record) => (
-          <Tooltip
-            title={`${record.periodLabel} · 置信度 ${record.confidence}`}
-          >
-            <span className="font-semibold text-slate-700">{value}</span>
-          </Tooltip>
+        render: (value) => (
+          <span className="font-semibold text-slate-700">{value}</span>
         ),
       },
       {
