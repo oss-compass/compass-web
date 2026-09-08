@@ -1890,6 +1890,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         border: none;
       }
 
+      .overview-category-row > .overview-expanded-cell {
+        background: #f1f5f9;
+        font-weight: 600;
+      }
+
       .overview-expanded-table tbody tr:first-child td {
         border-top: 1px solid #eef2f6;
       }

@@ -6,6 +6,11 @@ import React, {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { buildOperatorCategoryTrends } from './operatorCategoryTrends';
+import {
+  groupOperatorRepos,
+  summarizeOperatorRepos,
+} from './operatorCategories';
 import { useRouter } from 'next/router';
 import {
   Button,
@@ -607,31 +612,31 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         ? [
             rw(36, 28),
             rw(130, 112),
-            rw(52, 44),
+            rw(82, 70),
             rw(88, 74),
             rw(62, 54),
             rw(62, 54),
             rw(130, 122),
             rw(36, 28),
             rw(70, 58),
-            rw(84, 78),
-            rw(84, 78),
-            rw(64, 56),
+            rw(78, 70),
+            rw(78, 70),
+            rw(62, 54),
             rw(50, 44),
           ]
         : [
             rw(40, 30),
             rw(150, 130),
-            rw(60, 50),
+            rw(96, 82),
             rw(96, 84),
             rw(70, 60),
             rw(70, 60),
             rw(150, 140),
             rw(40, 30),
             rw(80, 70),
-            rw(90, 82),
-            rw(90, 82),
-            rw(78, 68),
+            rw(86, 76),
+            rw(86, 76),
+            rw(74, 64),
             rw(58, 50),
           ],
     [isCompactTable, repoWidthScale]
@@ -642,7 +647,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       isCompactTable
         ? [
             rw(36, 28),
-            rw(72, 62),
+            rw(108, 92),
             rw(52, 44),
             rw(88, 74),
             rw(62, 54),
@@ -650,14 +655,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(132, 122),
             rw(36, 28),
             rw(70, 58),
-            rw(94, 82),
-            rw(84, 78),
-            rw(76, 64),
+            rw(82, 72),
+            rw(76, 68),
+            rw(70, 60),
             rw(58, 50),
           ]
         : [
             rw(40, 30),
-            rw(80, 70),
+            rw(130, 110),
             rw(60, 50),
             rw(96, 84),
             rw(70, 60),
@@ -665,15 +670,16 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(160, 150),
             rw(40, 30),
             rw(80, 70),
-            rw(102, 90),
-            rw(90, 82),
-            rw(100, 86),
+            rw(92, 80),
+            rw(82, 72),
+            rw(88, 76),
             rw(72, 64),
           ],
     [isCompactTable, repoWidthScale]
   );
   const teamScrollX = teamColumnWidths.reduce((sum, w) => sum + w, 0);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
   const [progressSortKey, setProgressSortKey] =
     useState<ProgressMetricSortKey>('none');
   const [progressSortOrder, setProgressSortOrder] =
@@ -2558,7 +2564,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   ]);
 
   useEffect(() => {
-    if (!autoExpandAllTeams || progressView !== 'team') return;
+    if ((!autoExpandAllTeams && !repoFilter) || progressView !== 'team') return;
     const nextKeys = displayedTeamRowsForTable.map((row) => row.id);
     setExpandedRowKeys((prev) => {
       if (
@@ -2569,10 +2575,14 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       }
       return nextKeys;
     });
-  }, [autoExpandAllTeams, displayedTeamRowsForTable, progressView]);
+  }, [autoExpandAllTeams, displayedTeamRowsForTable, progressView, repoFilter]);
+
+  useEffect(() => {
+    if (repoFilter) setCollapsedCategories([]);
+  }, [repoFilter]);
 
   const renderExpandedRepoRows = useCallback(
-    (repos: RepoProgressRow[]) => {
+    (repos: RepoProgressRow[], grouped = false) => {
       // 按 teamSortKey 对仓库列表排序（repoCount 不适用于单仓库，跳过）
       let sortedRepos = hideBeatRepos
         ? repos.filter((repo) => !isBeatRepo(repo.id))
@@ -2598,7 +2608,42 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         });
       }
       const visibleRepos = sortedByProgressMetric(sortedRepos);
-      if (!visibleRepos.length) return null;
+      if (!visibleRepos.length && !grouped) return null;
+      const sections = (
+        grouped
+          ? groupOperatorRepos(visibleRepos)
+          : [{ key: 'all', label: '', repos: visibleRepos }]
+      ).map((section) => {
+        const repos = section.repos.map((repo) => ({
+          ...repo,
+          overall: repoDerived.get(repo.id)?.metrics ?? repo.overall,
+          issues: repoDerived.get(repo.id)?.issues ?? repo.issues,
+        }));
+        const summary = summarizeOperatorRepos(repos);
+        const issues = repos.flatMap((repo) => repo.issues);
+        const metrics = buildMetricSummaryFromPainRows(issues);
+        const row: TeamProgressRow = {
+          id: `category:${section.key}`,
+          name: section.label,
+          repoCount: repos.length,
+          repos,
+          issues,
+          score: summary.score,
+          successRate: summary.successRate,
+          executionTime: summary.executionTime,
+          overall: metrics,
+          key: metrics,
+        };
+        return {
+          ...section,
+          summary,
+          row,
+          ...buildOperatorCategoryTrends(repos),
+        };
+      });
+      const columnCount = teamColumnWidths.filter(
+        (_, index) => showActionColumn || index !== 12
+      ).length;
       return (
         <div className="overview-expanded-rows">
           <table
@@ -2613,199 +2658,367 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                 ))}
             </colgroup>
             <tbody>
-              {visibleRepos.map((repo, index) => (
-                <tr
-                  key={repo.id}
-                  className="overview-expanded-row"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <td className="overview-expanded-cell overview-expanded-cell-index" />
-                  <td className="overview-expanded-cell overview-expanded-cell-name">
-                    <span className="overview-expanded-repo-name">
-                      <span className="overview-repo-name-cell">
-                        <span>{repo.name}</span>
-                        {renderBenchmarkTag(repo)}
-                        {isBeatRepo(repo.id) ? (
-                          <span className="text-slate-400">
-                            （仅支持950，内测中）
-                          </span>
-                        ) : null}
-                      </span>
-                    </span>
-                  </td>
-                  <td className="overview-expanded-cell overview-expanded-cell-empty">
-                    -
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {isBeatRepo(repo.id) ? (
-                      <span className="text-slate-400">-</span>
-                    ) : (
-                      renderScoreTrendCell(
-                        repo.name,
-                        repo.score,
-                        repoDerived.get(repo.id)?.scoreTrend
-                      )
-                    )}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {isBeatRepo(repo.id) ? (
-                      <span className="text-slate-400">-</span>
-                    ) : (
-                      renderSuccessRateTrendCell(
-                        repo.name,
-                        repo.successRate,
-                        repoDerived.get(repo.id)?.successRateTrend,
-                        repo.score
-                      )
-                    )}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {isBeatRepo(repo.id) ? (
-                      <span className="text-slate-400">-</span>
-                    ) : (
-                      formatExecutionTime(repo.executionTime)
-                    )}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {(() => {
-                      if (isBeatRepo(repo.id)) {
-                        return <span className="text-slate-400">-</span>;
-                      }
-                      const derived = repoDerived.get(repo.id);
-                      const metrics = derived?.metrics ?? repo.overall;
-                      const rowForModal = derived
-                        ? ({
-                            ...repo,
-                            issues: derived.issues,
-                          } as RepoProgressRow)
-                        : repo;
-                      return (
-                        <IssueProgressBar
-                          pending={metrics.pending}
-                          inProgress={metrics.inProgress}
-                          resolved={metrics.resolved}
-                          onBucketClick={(bucket) =>
-                            onOpenRepoIssues(rowForModal, bucket)
+              {sections.map((section) => (
+                <React.Fragment key={section.key}>
+                  {grouped && (
+                    <tr className="overview-category-row">
+                      <td className="overview-expanded-cell" />
+                      <td className="overview-expanded-cell overview-expanded-cell-name">
+                        <button
+                          type="button"
+                          className="overview-expand-label w-full text-left text-sm text-slate-700"
+                          aria-expanded={
+                            !collapsedCategories.includes(section.key)
                           }
-                        />
-                      );
-                    })()}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {(() => {
-                      if (isBeatRepo(repo.id)) {
-                        return <span className="text-slate-400">-</span>;
-                      }
-                      const derived = repoDerived.get(repo.id);
-                      const metrics = derived?.metrics ?? repo.overall;
-                      const rowForModal = derived
-                        ? ({
-                            ...repo,
-                            issues: derived.issues,
-                          } as RepoProgressRow)
-                        : repo;
-                      return (
+                          onClick={() =>
+                            setCollapsedCategories((prev) =>
+                              prev.includes(section.key)
+                                ? prev.filter((key) => key !== section.key)
+                                : [...prev, section.key]
+                            )
+                          }
+                        >
+                          <RightOutlined
+                            className={`overview-expand-icon ${
+                              collapsedCategories.includes(section.key)
+                                ? ''
+                                : 'is-expanded'
+                            }`}
+                          />
+                          {section.label}
+                        </button>
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length} 个
+                      </td>
+                      <td
+                        className="overview-expanded-cell"
+                        title="分类内有效仓库评分的平均值"
+                      >
+                        {renderScoreTrendCell(
+                          section.label,
+                          section.summary.score,
+                          section.scoreTrend
+                        )}
+                      </td>
+                      <td
+                        className="overview-expanded-cell"
+                        title="分类内有效仓库成功率的平均值"
+                      >
+                        {renderSuccessRateTrendCell(
+                          section.label,
+                          section.summary.successRate,
+                          section.successRateTrend
+                        )}
+                      </td>
+                      <td
+                        className="overview-expanded-cell"
+                        title="分类内有效仓库耗时的平均值"
+                      >
+                        {formatExecutionTime(section.summary.executionTime)}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length ? (
+                          <IssueProgressBar
+                            pending={section.summary.pending}
+                            inProgress={section.summary.inProgress}
+                            resolved={section.summary.resolved}
+                            onBucketClick={(bucket) =>
+                              onOpenTeamIssues(section.row, bucket)
+                            }
+                          />
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                      <td className="overview-expanded-cell">
                         <button
                           type="button"
                           className="overview-table-link overview-table-link-strong"
-                          onClick={() => onOpenRepoIssues(rowForModal, 'total')}
+                          onClick={() => onOpenTeamIssues(section.row, 'total')}
                         >
-                          {metrics.total}
+                          {section.summary.total}
                         </button>
-                      );
-                    })()}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {(() => {
-                      if (isBeatRepo(repo.id)) {
-                        return <span className="text-slate-400">-</span>;
-                      }
-                      const derived = repoDerived.get(repo.id);
-                      const metrics = derived?.metrics ?? repo.overall;
-                      const trendPoints =
-                        derived?.trend ?? buildCloseRateTrend(repo.issues, 7);
-                      const displayRate =
-                        metrics.total === 0 ? 100 : metrics.closeRate;
-                      const sparkValues =
-                        metrics.total === 0
-                          ? Array.from({ length: 5 }, () => 100)
-                          : trendPoints
-                              .slice(-5)
-                              .map((point) => point.closeRate);
-                      return (
+                      </td>
+                      <td
+                        className="overview-expanded-cell"
+                        title="分类内仓库闭环率的平均值"
+                      >
                         <div className="overview-close-rate-cell">
                           <button
                             type="button"
                             className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
                             title="查看闭环率趋势"
+                            disabled={!section.closeRateTrend.length}
                             onClick={(event) => {
                               event.stopPropagation();
-                              const modalPoints =
-                                metrics.total === 0
-                                  ? trendPoints.map((point) => ({
-                                      ...point,
-                                      closeRate:
-                                        point.total === 0
-                                          ? 100
-                                          : point.closeRate,
-                                    }))
-                                  : trendPoints;
+                              if (!section.closeRateTrend.length) return;
                               setCloseRateModal({
                                 open: true,
-                                title: `${repo.name} · 闭环率趋势`,
-                                points: modalPoints,
+                                title: `${section.label} · 闭环率趋势`,
+                                points: section.closeRateTrend,
                               });
                             }}
                           >
-                            <CloseRateSparkline values={sparkValues} />
+                            <CloseRateSparkline
+                              values={section.closeRateTrend
+                                .slice(-5)
+                                .map((point) => point.closeRate)}
+                            />
                           </button>
                           <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
-                            {formatPercent(displayRate)}
+                            {formatPercent(section.summary.closeRate)}
                           </span>
                         </div>
-                      );
-                    })()}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {isBeatRepo(repo.id) ? (
-                      <span className="text-slate-400">-</span>
-                    ) : (
-                      repo.hardwareEnv || (
-                        <span className="text-slate-400">-</span>
-                      )
-                    )}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {isBeatRepo(repo.id) ? (
-                      <span className="text-slate-400">-</span>
-                    ) : (
-                      repo.operatingSystem || 'debian-13'
-                    )}
-                  </td>
-                  <td className="overview-expanded-cell">
-                    {renderDetailLink(repo)}
-                  </td>
-                  {showActionColumn ? (
-                    <td className="overview-expanded-cell">
-                      {supportsRepoRerun(repo.id) ? (
-                        <RerunActionButton
-                          job={rerunStatusMap[repo.id]}
-                          loading={
-                            rerunStatusLoading && !rerunStatusMap[repo.id]
-                          }
-                          onOpenRecords={() => {
-                            void openRerunRecordsModal(repo);
-                          }}
-                          onOpenRerun={() => {
-                            void openRerunModal(repo);
-                          }}
-                        />
-                      ) : (
-                        <span className="text-slate-400">-</span>
+                      </td>
+                      <td
+                        className="overview-expanded-cell"
+                        title="按子仓库最新报告汇总，最多展示两个硬件环境"
+                      >
+                        {section.summary.hardwareEnvs.length
+                          ? section.summary.hardwareEnvs.join('、')
+                          : '-'}
+                      </td>
+                      <td
+                        className="overview-expanded-cell"
+                        title="按子仓库最新报告汇总，最多展示两个操作系统"
+                      >
+                        {section.summary.operatingSystems.length
+                          ? section.summary.operatingSystems.join('、')
+                          : '-'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.summary.latestRepo
+                          ? renderDetailLink(section.summary.latestRepo)
+                          : '-'}
+                      </td>
+                      {showActionColumn && (
+                        <td className="overview-expanded-cell">-</td>
                       )}
-                    </td>
-                  ) : null}
-                </tr>
+                    </tr>
+                  )}
+                  {(!grouped || !collapsedCategories.includes(section.key)) && (
+                    <>
+                      {grouped && !section.repos.length && (
+                        <tr>
+                          <td
+                            colSpan={columnCount}
+                            className="px-12 py-3 text-sm text-slate-400"
+                          >
+                            暂无已上线仓库匹配当前筛选条件
+                          </td>
+                        </tr>
+                      )}
+                      {section.repos.map((repo, index) => (
+                        <tr
+                          key={repo.id}
+                          className="overview-expanded-row"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <td className="overview-expanded-cell overview-expanded-cell-index" />
+                          <td className="overview-expanded-cell overview-expanded-cell-name">
+                            <span
+                              className="overview-expanded-repo-name"
+                              style={grouped ? { paddingLeft: 20 } : undefined}
+                            >
+                              <span className="overview-repo-name-cell">
+                                <span>{repo.name}</span>
+                                {renderBenchmarkTag(repo)}
+                                {isBeatRepo(repo.id) ? (
+                                  <span className="text-slate-400">
+                                    （仅支持950，内测中）
+                                  </span>
+                                ) : null}
+                              </span>
+                            </span>
+                          </td>
+                          <td className="overview-expanded-cell overview-expanded-cell-empty">
+                            -
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {isBeatRepo(repo.id) ? (
+                              <span className="text-slate-400">-</span>
+                            ) : (
+                              renderScoreTrendCell(
+                                repo.name,
+                                repo.score,
+                                repoDerived.get(repo.id)?.scoreTrend
+                              )
+                            )}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {isBeatRepo(repo.id) ? (
+                              <span className="text-slate-400">-</span>
+                            ) : (
+                              renderSuccessRateTrendCell(
+                                repo.name,
+                                repo.successRate,
+                                repoDerived.get(repo.id)?.successRateTrend,
+                                repo.score
+                              )
+                            )}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {isBeatRepo(repo.id) ? (
+                              <span className="text-slate-400">-</span>
+                            ) : (
+                              formatExecutionTime(repo.executionTime)
+                            )}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {(() => {
+                              if (isBeatRepo(repo.id)) {
+                                return (
+                                  <span className="text-slate-400">-</span>
+                                );
+                              }
+                              const derived = repoDerived.get(repo.id);
+                              const metrics = derived?.metrics ?? repo.overall;
+                              const rowForModal = derived
+                                ? ({
+                                    ...repo,
+                                    issues: derived.issues,
+                                  } as RepoProgressRow)
+                                : repo;
+                              return (
+                                <IssueProgressBar
+                                  pending={metrics.pending}
+                                  inProgress={metrics.inProgress}
+                                  resolved={metrics.resolved}
+                                  onBucketClick={(bucket) =>
+                                    onOpenRepoIssues(rowForModal, bucket)
+                                  }
+                                />
+                              );
+                            })()}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {(() => {
+                              if (isBeatRepo(repo.id)) {
+                                return (
+                                  <span className="text-slate-400">-</span>
+                                );
+                              }
+                              const derived = repoDerived.get(repo.id);
+                              const metrics = derived?.metrics ?? repo.overall;
+                              const rowForModal = derived
+                                ? ({
+                                    ...repo,
+                                    issues: derived.issues,
+                                  } as RepoProgressRow)
+                                : repo;
+                              return (
+                                <button
+                                  type="button"
+                                  className="overview-table-link overview-table-link-strong"
+                                  onClick={() =>
+                                    onOpenRepoIssues(rowForModal, 'total')
+                                  }
+                                >
+                                  {metrics.total}
+                                </button>
+                              );
+                            })()}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {(() => {
+                              if (isBeatRepo(repo.id)) {
+                                return (
+                                  <span className="text-slate-400">-</span>
+                                );
+                              }
+                              const derived = repoDerived.get(repo.id);
+                              const metrics = derived?.metrics ?? repo.overall;
+                              const trendPoints =
+                                derived?.trend ??
+                                buildCloseRateTrend(repo.issues, 7);
+                              const displayRate =
+                                metrics.total === 0 ? 100 : metrics.closeRate;
+                              const sparkValues =
+                                metrics.total === 0
+                                  ? Array.from({ length: 5 }, () => 100)
+                                  : trendPoints
+                                      .slice(-5)
+                                      .map((point) => point.closeRate);
+                              return (
+                                <div className="overview-close-rate-cell">
+                                  <button
+                                    type="button"
+                                    className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                                    title="查看闭环率趋势"
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      const modalPoints =
+                                        metrics.total === 0
+                                          ? trendPoints.map((point) => ({
+                                              ...point,
+                                              closeRate:
+                                                point.total === 0
+                                                  ? 100
+                                                  : point.closeRate,
+                                            }))
+                                          : trendPoints;
+                                      setCloseRateModal({
+                                        open: true,
+                                        title: `${repo.name} · 闭环率趋势`,
+                                        points: modalPoints,
+                                      });
+                                    }}
+                                  >
+                                    <CloseRateSparkline values={sparkValues} />
+                                  </button>
+                                  <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+                                    {formatPercent(displayRate)}
+                                  </span>
+                                </div>
+                              );
+                            })()}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {isBeatRepo(repo.id) ? (
+                              <span className="text-slate-400">-</span>
+                            ) : (
+                              repo.hardwareEnv || (
+                                <span className="text-slate-400">-</span>
+                              )
+                            )}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {isBeatRepo(repo.id) ? (
+                              <span className="text-slate-400">-</span>
+                            ) : (
+                              repo.operatingSystem || 'debian-13'
+                            )}
+                          </td>
+                          <td className="overview-expanded-cell">
+                            {renderDetailLink(repo)}
+                          </td>
+                          {showActionColumn ? (
+                            <td className="overview-expanded-cell">
+                              {supportsRepoRerun(repo.id) ? (
+                                <RerunActionButton
+                                  job={rerunStatusMap[repo.id]}
+                                  loading={
+                                    rerunStatusLoading &&
+                                    !rerunStatusMap[repo.id]
+                                  }
+                                  onOpenRecords={() => {
+                                    void openRerunRecordsModal(repo);
+                                  }}
+                                  onOpenRerun={() => {
+                                    void openRerunModal(repo);
+                                  }}
+                                />
+                              ) : (
+                                <span className="text-slate-400">-</span>
+                              )}
+                            </td>
+                          ) : null}
+                        </tr>
+                      ))}
+                    </>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
@@ -2813,9 +3026,13 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       );
     },
     [
+      collapsedCategories,
+      hideBeatRepos,
+      showActionColumn,
       compareTeamNames,
       getRepoSortValueWithMetrics,
       onOpenRepoIssues,
+      onOpenTeamIssues,
       repoDerived,
       renderScoreTrendCell,
       renderSuccessRateTrendCell,
@@ -2843,7 +3060,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             : prev.filter((key) => key !== record.id)
         );
       },
-      expandedRowRender: (record) => renderExpandedRepoRows(record.repos),
+      expandedRowRender: (record) =>
+        renderExpandedRepoRows(record.repos, record.name === '算子分队'),
     }),
     [
       currentTab,

@@ -359,6 +359,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         id: card.id,
         name: card.name,
         team: card.team || card.sig,
+        repoCategory: card.repoCategory,
+        latestReportMetadata: card.latestReportMetadata
+          ? {
+              ...card.latestReportMetadata,
+              hardwareEnv: normalizeHardwareEnv(
+                card.latestReportMetadata.hardwareEnv
+              ),
+            }
+          : null,
         hardwareEnv: normalizeHardwareEnv(
           card.hardwareEnv || issues[0]?.chipModel || ''
         ),

@@ -1,4 +1,7 @@
-import type { OverviewPainPointRow } from '../rawData/apiClient';
+import type {
+  OverviewPainPointRow,
+  LatestReportMetadata,
+} from '../rawData/apiClient';
 
 export type Severity = OverviewPainPointRow['severity'];
 export type ProgressTab = 'overall' | 'key';
@@ -111,6 +114,8 @@ export type OverviewCapabilityBenchmarkSummary = {
 };
 
 export type RepoProgressRow = {
+  latestReportMetadata?: LatestReportMetadata | null;
+  repoCategory?: string;
   id: string;
   name: string;
   team: string;

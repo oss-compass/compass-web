@@ -1011,7 +1011,15 @@ export type OverviewPainPointRow = {
   }>;
 };
 
+export type LatestReportMetadata = {
+  generatedAt: string;
+  hardwareEnv: string;
+  operatingSystem: string;
+};
+
 export type OverviewCardItem = {
+  latestReportMetadata?: LatestReportMetadata | null;
+  repoCategory?: string;
   id: string;
   name: string;
   sig: string;
