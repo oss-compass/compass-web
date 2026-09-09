@@ -51,7 +51,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     isError: loadError,
   } = useQuery({
     // 查询键带数据模型版本，避免旧的无 metrics 响应命中五分钟客户端缓存。
-    queryKey: ['issue-overview', 'with-metrics-v1', org],
+    queryKey: ['issue-overview', 'with-repo-category-v2', org],
     queryFn: ({ signal }) => fetchIssueOverview(org, signal),
     staleTime: ISSUE_QUERY_STALE_TIME,
   });
@@ -272,6 +272,14 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             subtitle: '该仓各周综合体验指数（时间升序）',
             values: repo.idxTrend,
             labels: repo.idxTrendPeriods.map(shortPeriod),
+          })
+        }
+        onOpenAggregateScoreTrend={(name, values, periods) =>
+          setTrendModal({
+            title: `${name} · 得分趋势`,
+            subtitle: '各仓库同周期综合体验指数平均值（时间升序）',
+            values,
+            labels: periods.map(shortPeriod),
           })
         }
       />

@@ -5,6 +5,7 @@ import { Segmented, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
+import { groupOperatorRepos } from '../../../../UserJourney/OverviewDashboard/operatorCategories';
 import {
   ProgressSortHeader,
   type ProgressMetricSortKey,
@@ -36,6 +37,12 @@ type ProgressCounts = {
 
 type DetailTarget =
   | { type: 'team'; name: string; bucket?: ProgressBucket }
+  | {
+      type: 'category';
+      name: string;
+      repos: IssueOverviewRepo[];
+      bucket?: ProgressBucket;
+    }
   | { type: 'repo'; repo: IssueOverviewRepo; bucket?: ProgressBucket };
 
 const PROGRESS_BUCKET_LABELS: Record<ProgressBucket, string> = {
@@ -54,6 +61,8 @@ type TeamRow = {
   painInProgress: number;
   painResolved: number;
   closeRate: number;
+  scoreTrend: number[];
+  scoreTrendPeriods: string[];
   repos: IssueOverviewRepo[];
 };
 
@@ -68,6 +77,11 @@ type Props = {
     painId?: string
   ) => string;
   onOpenScoreTrend: (repo: IssueOverviewRepo) => void;
+  onOpenAggregateScoreTrend: (
+    name: string,
+    values: number[],
+    periods: string[]
+  ) => void;
 };
 
 const TEAM_COLUMN_WIDTHS = [64, 210, 110, 138, 230, 110, 100, 110] as const;
@@ -100,6 +114,59 @@ const progressSortValue = (
     ? row.painInProgress
     : row.painResolved;
 
+export const buildAggregateRow = (
+  name: string,
+  repos: IssueOverviewRepo[]
+): TeamRow => {
+  const painTotal = repos.reduce((sum, repo) => sum + repo.painTotal, 0);
+  const painPending = repos.reduce((sum, repo) => sum + repo.painPending, 0);
+  const painInProgress = repos.reduce(
+    (sum, repo) => sum + repo.painInProgress,
+    0
+  );
+  const painResolved = repos.reduce((sum, repo) => sum + repo.painResolved, 0);
+  const scoreWeight = repos.reduce(
+    (sum, repo) => sum + repo.idxTotal * Math.max(repo.nTotal, 1),
+    0
+  );
+  const totalWeight = repos.reduce(
+    (sum, repo) => sum + Math.max(repo.nTotal, 1),
+    0
+  );
+  const scoresByPeriod = new Map<string, number[]>();
+  repos.forEach((repo) => {
+    (repo.idxTrendPeriods ?? []).forEach((period, index) => {
+      const score = (repo.idxTrend ?? [])[index];
+      if (!period || !Number.isFinite(score)) return;
+      scoresByPeriod.set(period, [
+        ...(scoresByPeriod.get(period) ?? []),
+        score,
+      ]);
+    });
+  });
+  const scoreTrendPeriods = Array.from(scoresByPeriod.keys()).sort((a, b) =>
+    a.localeCompare(b)
+  );
+  const scoreTrend = scoreTrendPeriods.map((period) => {
+    const values = scoresByPeriod.get(period) ?? [];
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+  });
+  return {
+    id: name,
+    name,
+    repoCount: repos.length,
+    score: totalWeight ? scoreWeight / totalWeight : 0,
+    painTotal,
+    painPending,
+    painInProgress,
+    painResolved,
+    closeRate: painTotal ? (painResolved / painTotal) * 100 : 100,
+    scoreTrend,
+    scoreTrendPeriods,
+    repos,
+  };
+};
+
 const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
   const groups = new Map<string, IssueOverviewRepo[]>();
   repos.forEach((repo) => {
@@ -107,44 +174,7 @@ const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
     groups.set(team, [...(groups.get(team) ?? []), repo]);
   });
   return Array.from(groups.entries())
-    .map(([name, teamRepos]) => {
-      const painTotal = teamRepos.reduce(
-        (sum, repo) => sum + repo.painTotal,
-        0
-      );
-      const painPending = teamRepos.reduce(
-        (sum, repo) => sum + repo.painPending,
-        0
-      );
-      const painInProgress = teamRepos.reduce(
-        (sum, repo) => sum + repo.painInProgress,
-        0
-      );
-      const painResolved = teamRepos.reduce(
-        (sum, repo) => sum + repo.painResolved,
-        0
-      );
-      const scoreWeight = teamRepos.reduce(
-        (sum, repo) => sum + repo.idxTotal * Math.max(repo.nTotal, 1),
-        0
-      );
-      const totalWeight = teamRepos.reduce(
-        (sum, repo) => sum + Math.max(repo.nTotal, 1),
-        0
-      );
-      return {
-        id: name,
-        name,
-        repoCount: teamRepos.length,
-        score: totalWeight ? scoreWeight / totalWeight : 0,
-        painTotal,
-        painPending,
-        painInProgress,
-        painResolved,
-        closeRate: painTotal ? (painResolved / painTotal) * 100 : 100,
-        repos: teamRepos,
-      };
-    })
+    .map(([name, teamRepos]) => buildAggregateRow(name, teamRepos))
     .sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
 };
 
@@ -154,9 +184,13 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   repoManagementHref,
   reportHref,
   onOpenScoreTrend,
+  onOpenAggregateScoreTrend,
 }) => {
   const [view, setView] = React.useState<ProgressView>('team');
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
+  const [collapsedCategories, setCollapsedCategories] = React.useState<
+    string[]
+  >([]);
   const [progressSortKey, setProgressSortKey] =
     React.useState<ProgressMetricSortKey>('none');
   const [progressSortOrder, setProgressSortOrder] =
@@ -197,6 +231,10 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                   .find((team) => team.name === detailTarget.name)
                   ?.repos.map((repo) => `${repo.repoShort}@${repo.period}`)
                   .join(',')
+              : detailTarget?.type === 'category'
+              ? detailTarget.repos
+                  .map((repo) => `${repo.repoShort}@${repo.period}`)
+                  .join(',')
               : detailTarget?.type === 'repo'
               ? `${detailTarget.repo.repoShort}@${detailTarget.repo.period}`
               : undefined,
@@ -228,17 +266,20 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     [progressSortKey, progressSortOrder]
   );
 
-  const progressHeader = (
-    <ProgressSortHeader
-      label="P0问题处理进展"
-      sortKey={progressSortKey}
-      sortOrder={progressSortOrder}
-      onSortKeyChange={(key) => {
-        setTeamTableSort({ order: null });
-        setProgressSortKey(key);
-      }}
-      onSortOrderChange={setProgressSortOrder}
-    />
+  const progressHeader = React.useMemo(
+    () => (
+      <ProgressSortHeader
+        label="P0问题处理进展"
+        sortKey={progressSortKey}
+        sortOrder={progressSortOrder}
+        onSortKeyChange={(key) => {
+          setTeamTableSort({ order: null });
+          setProgressSortKey(key);
+        }}
+        onSortOrderChange={setProgressSortOrder}
+      />
+    ),
+    [progressSortKey, progressSortOrder]
   );
 
   const sortByProgress = React.useCallback(
@@ -319,29 +360,63 @@ const IssueRepoProgressSection: React.FC<Props> = ({
       {rate.toFixed(0)}%
     </span>
   );
-  const repoScoreCell = (repo: IssueOverviewRepo) => (
-    <div className="overview-close-rate-cell">
-      {repo.idxTrend.length > 1 ? (
-        <button
-          type="button"
-          className="bm-trend-sparkline"
-          title="查看得分趋势"
-          onClick={(event) => {
-            event.stopPropagation();
-            onOpenScoreTrend(repo);
-          }}
-        >
-          <CloseRateSparkline
-            values={repo.idxTrend}
-            minValue={0}
-            maxValue={100}
-          />
-        </button>
-      ) : null}
-      <span className="text-sm font-semibold text-slate-700">
-        {repo.idxTotal.toFixed(1)}
-      </span>
-    </div>
+  const repoScoreCell = React.useCallback(
+    (repo: IssueOverviewRepo) => (
+      <div className="overview-close-rate-cell">
+        {repo.idxTrend.length > 1 ? (
+          <button
+            type="button"
+            className="bm-trend-sparkline"
+            title="查看得分趋势"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpenScoreTrend(repo);
+            }}
+          >
+            <CloseRateSparkline
+              values={repo.idxTrend}
+              minValue={0}
+              maxValue={100}
+            />
+          </button>
+        ) : null}
+        <span className="text-sm font-semibold text-slate-700">
+          {repo.idxTotal.toFixed(1)}
+        </span>
+      </div>
+    ),
+    [onOpenScoreTrend]
+  );
+  const aggregateScoreCell = React.useCallback(
+    (row: TeamRow) => (
+      <div className="overview-close-rate-cell">
+        {row.scoreTrend.length > 1 ? (
+          <button
+            type="button"
+            className="bm-trend-sparkline"
+            title="查看得分趋势"
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpenAggregateScoreTrend(
+                row.name,
+                row.scoreTrend,
+                row.scoreTrendPeriods
+              );
+            }}
+          >
+            <CloseRateSparkline
+              values={row.scoreTrend}
+              minValue={0}
+              maxValue={100}
+            />
+          </button>
+        ) : null}
+        <span className="text-sm font-semibold text-slate-700">
+          {row.score.toFixed(1)}
+        </span>
+      </div>
+    ),
+    [onOpenAggregateScoreTrend]
   );
 
   const repoColumns = React.useMemo<TableProps<IssueOverviewRepo>['columns']>(
@@ -440,7 +515,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
     ],
-    [onOpenScoreTrend, progressHeader, reportHref]
+    [progressHeader, repoScoreCell, reportHref]
   );
 
   const teamColumns = React.useMemo<TableProps<TeamRow>['columns']>(
@@ -490,11 +565,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         width: TEAM_COLUMN_WIDTHS[3],
         sorter: (a, b) => a.score - b.score,
         sortOrder: teamTableSort.key === 'score' ? teamTableSort.order : null,
-        render: (value: number) => (
-          <span className="text-sm font-semibold text-slate-700">
-            {value.toFixed(1)}
-          </span>
-        ),
+        render: (_value: number, record) => aggregateScoreCell(record),
       },
       {
         title: progressHeader,
@@ -553,8 +624,192 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         render: () => <span className="text-slate-300">-</span>,
       },
     ],
-    [expandedRowKeys, progressHeader, teamTableSort]
+    [aggregateScoreCell, expandedRowKeys, progressHeader, teamTableSort]
   );
+
+  const renderExpandedRepoRow = (
+    repo: IssueOverviewRepo,
+    index: number,
+    nested = false
+  ) => (
+    <tr
+      key={`${repo.community}-${repo.period}`}
+      className="overview-expanded-row"
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <td className="overview-expanded-cell overview-expanded-cell-index" />
+      <td className="overview-expanded-cell overview-expanded-cell-name">
+        <span
+          className="overview-expanded-repo-name"
+          style={nested ? { paddingLeft: 20 } : undefined}
+        >
+          {repo.repoShort}
+        </span>
+      </td>
+      <td className="overview-expanded-cell overview-expanded-cell-empty">-</td>
+      <td className="overview-expanded-cell">{repoScoreCell(repo)}</td>
+      <td className="overview-expanded-cell">
+        {progressCell(
+          repo.painPending,
+          repo.painInProgress,
+          repo.painResolved,
+          (bucket) => openPainDetails({ type: 'repo', repo, bucket })
+        )}
+      </td>
+      <td className="overview-expanded-cell">
+        <button
+          type="button"
+          className="overview-table-link overview-table-link-strong"
+          onClick={() => openPainDetails({ type: 'repo', repo })}
+        >
+          {repo.painTotal}
+        </button>
+      </td>
+      <td className="overview-expanded-cell">
+        {closeRateCell(repo.painCloseRate)}
+      </td>
+      <td className="overview-expanded-cell">
+        <Link
+          href={reportHref(repo.community, repo.period)}
+          className="overview-table-link"
+        >
+          {reportDateLabel(repo.period)}
+        </Link>
+      </td>
+    </tr>
+  );
+
+  const renderExpandedTeam = (team: TeamRow) => {
+    const grouped = team.name === '算子分队';
+    const sections = grouped
+      ? groupOperatorRepos(team.repos)
+      : [{ key: 'all', label: '', repos: team.repos }];
+    return (
+      <div className="overview-expanded-rows">
+        <table
+          className="overview-expanded-table"
+          style={{ minWidth: TEAM_TABLE_WIDTH }}
+        >
+          <colgroup>
+            {TEAM_COLUMN_WIDTHS.map((width, index) => (
+              <col key={index} style={{ width }} />
+            ))}
+          </colgroup>
+          <tbody>
+            {sections.map((section) => {
+              const aggregate = buildAggregateRow(section.label, section.repos);
+              const latestRepo = [...section.repos].sort(
+                (left, right) =>
+                  right.period.localeCompare(left.period) ||
+                  right.repoShort.localeCompare(left.repoShort, 'zh-CN')
+              )[0];
+              return (
+                <React.Fragment key={section.key}>
+                  {grouped ? (
+                    <tr className="overview-category-row">
+                      <td className="overview-expanded-cell" />
+                      <td className="overview-expanded-cell overview-expanded-cell-name">
+                        <button
+                          type="button"
+                          className="overview-expand-label w-full text-left text-sm text-slate-700"
+                          aria-expanded={
+                            !collapsedCategories.includes(section.key)
+                          }
+                          onClick={() =>
+                            setCollapsedCategories((previous) =>
+                              previous.includes(section.key)
+                                ? previous.filter((key) => key !== section.key)
+                                : [...previous, section.key]
+                            )
+                          }
+                        >
+                          <RightOutlined
+                            className={`overview-expand-icon ${
+                              collapsedCategories.includes(section.key)
+                                ? ''
+                                : 'is-expanded'
+                            }`}
+                          />
+                          {section.label}
+                        </button>
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length} 个
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length
+                          ? aggregateScoreCell(aggregate)
+                          : '-'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length
+                          ? progressCell(
+                              aggregate.painPending,
+                              aggregate.painInProgress,
+                              aggregate.painResolved,
+                              (bucket) =>
+                                openPainDetails({
+                                  type: 'category',
+                                  name: section.label,
+                                  repos: section.repos,
+                                  bucket,
+                                })
+                            )
+                          : '-'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length ? (
+                          <button
+                            type="button"
+                            className="overview-table-link overview-table-link-strong"
+                            onClick={() =>
+                              openPainDetails({
+                                type: 'category',
+                                name: section.label,
+                                repos: section.repos,
+                              })
+                            }
+                          >
+                            {aggregate.painTotal}
+                          </button>
+                        ) : (
+                          0
+                        )}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length
+                          ? closeRateCell(aggregate.closeRate)
+                          : '-'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {latestRepo ? (
+                          <Link
+                            href={reportHref(
+                              latestRepo.community,
+                              latestRepo.period
+                            )}
+                            className="overview-table-link"
+                          >
+                            {reportDateLabel(latestRepo.period)}
+                          </Link>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                    </tr>
+                  ) : null}
+                  {(!grouped || !collapsedCategories.includes(section.key)) &&
+                    section.repos.map((repo, index) =>
+                      renderExpandedRepoRow(repo, index, grouped)
+                    )}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -602,77 +857,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               expandRowByClick: true,
               showExpandColumn: false,
               onExpandedRowsChange: (keys) => setExpandedRowKeys([...keys]),
-              expandedRowRender: (team) => (
-                <div className="overview-expanded-rows">
-                  <table
-                    className="overview-expanded-table"
-                    style={{ minWidth: TEAM_TABLE_WIDTH }}
-                  >
-                    <colgroup>
-                      {TEAM_COLUMN_WIDTHS.map((width, index) => (
-                        <col key={index} style={{ width }} />
-                      ))}
-                    </colgroup>
-                    <tbody>
-                      {team.repos.map((repo, index) => (
-                        <tr
-                          key={`${repo.community}-${repo.period}`}
-                          className="overview-expanded-row"
-                          style={{ animationDelay: `${index * 50}ms` }}
-                        >
-                          <td className="overview-expanded-cell overview-expanded-cell-index" />
-                          <td className="overview-expanded-cell overview-expanded-cell-name">
-                            <span className="overview-expanded-repo-name">
-                              {repo.repoShort}
-                            </span>
-                          </td>
-                          <td className="overview-expanded-cell overview-expanded-cell-empty">
-                            -
-                          </td>
-                          <td className="overview-expanded-cell">
-                            {repoScoreCell(repo)}
-                          </td>
-                          <td className="overview-expanded-cell">
-                            {progressCell(
-                              repo.painPending,
-                              repo.painInProgress,
-                              repo.painResolved,
-                              (bucket) =>
-                                openPainDetails({
-                                  type: 'repo',
-                                  repo,
-                                  bucket,
-                                })
-                            )}
-                          </td>
-                          <td className="overview-expanded-cell">
-                            <button
-                              type="button"
-                              className="overview-table-link overview-table-link-strong"
-                              onClick={() =>
-                                openPainDetails({ type: 'repo', repo })
-                              }
-                            >
-                              {repo.painTotal}
-                            </button>
-                          </td>
-                          <td className="overview-expanded-cell">
-                            {closeRateCell(repo.painCloseRate)}
-                          </td>
-                          <td className="overview-expanded-cell">
-                            <Link
-                              href={reportHref(repo.community, repo.period)}
-                              className="overview-table-link"
-                            >
-                              {reportDateLabel(repo.period)}
-                            </Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ),
+              expandedRowRender: renderExpandedTeam,
               rowExpandable: (team) => team.repos.length > 0,
             }}
           />
@@ -701,7 +886,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         title={
           detailTarget
             ? `${
-                detailTarget.type === 'team'
+                detailTarget.type === 'team' || detailTarget.type === 'category'
                   ? detailTarget.name
                   : detailTarget.repo.repoShort
               } · ${
