@@ -3,6 +3,7 @@ import {
   getDatasetCacheValue,
   type OrganizationRow,
 } from '@modules/intelligent-analysis/server/intelligentAnalysisNewDatasetCache';
+import { isSafePathSegment } from '@modules/intelligent-analysis/server/pathSafety';
 
 function parseCsvList(value: unknown): string[] {
   if (!value) return [];
@@ -100,6 +101,11 @@ export default async function handler(
   const dataset = String(req.query.dataset || '');
   if (!dataset) {
     res.status(400).json({ message: 'Missing dataset' });
+    return;
+  }
+
+  if (!isSafePathSegment(dataset)) {
+    res.status(400).json({ message: 'Invalid dataset' });
     return;
   }
 

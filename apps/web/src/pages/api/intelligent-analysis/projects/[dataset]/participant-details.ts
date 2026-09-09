@@ -3,6 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs/promises';
 import path from 'path';
 
+import {
+  isSafePathSegment,
+  resolveFileInsideDir,
+} from '@modules/intelligent-analysis/server/pathSafety';
+
 type ParticipantTableRow = {
   key: string;
   具体人员: string;
@@ -210,8 +215,9 @@ async function loadEntry(dataset: string, organizationId: string) {
   const fileBase = normalizeUserFileBase(organizationId);
   const cacheKey = `${dataset}__${fileBase}`;
   const datasetDir = await resolveDatasetDir(dataset);
-  const filePath = path.resolve(datasetDir, `${fileBase}.json`);
-  if (!(await fileExists(filePath))) return { entry: null, filePath };
+  const filePath = resolveFileInsideDir(datasetDir, `${fileBase}.json`);
+  if (!filePath || !(await fileExists(filePath)))
+    return { entry: null, filePath: null };
 
   const stat = await fs.stat(filePath);
   const shouldCache = stat.size > CACHE_THRESHOLD_BYTES;
@@ -272,6 +278,11 @@ export default async function handler(
   const organizationId = String(req.query.organizationId || '');
   if (!organizationId) {
     res.status(400).json({ message: 'Missing organizationId' });
+    return;
+  }
+
+  if (!isSafePathSegment(dataset) || !isSafePathSegment(organizationId)) {
+    res.status(400).json({ message: 'Invalid dataset or organizationId' });
     return;
   }
 
