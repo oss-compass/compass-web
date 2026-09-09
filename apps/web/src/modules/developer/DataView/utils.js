@@ -24,7 +24,7 @@ const colorMap = {
 // 工具函数
 const calculateValues = (count, max, min, valueMax, valueMin) => {
   let diff = max - min;
-  let ratio = count / diff;
+  let ratio = (count - min) / diff;
   let valueRange = valueMax - valueMin;
   let value = valueMin + valueRange * ratio;
   return value;
