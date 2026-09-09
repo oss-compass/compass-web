@@ -48,12 +48,12 @@ const Main = () => {
   if (isLoading) {
     return (
       <>
-        <div className="mt-6 mb-2 flex justify-between">
+        <div className="mb-2 mt-6 flex justify-between">
           <div className="text-xl font-semibold text-[#000000]">
             {t('analyze:metric_detail:project_deep_dive_insight')}
           </div>
           <div
-            className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] py-1.5 px-3 text-xs text-[#3A5BEF]"
+            className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] px-3 py-1.5 text-xs text-[#3A5BEF]"
             onClick={() => {
               const query = window.location.search;
               router.push('/analyze/insight/' + slugs + query);
@@ -69,12 +69,12 @@ const Main = () => {
   }
   return (
     <div>
-      <div className="mt-6 mb-2 flex justify-between">
+      <div className="mb-2 mt-6 flex justify-between">
         <div className="text-xl font-semibold text-[#000000]">
           {t('analyze:metric_detail:project_deep_dive_insight')}
         </div>
         <div
-          className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] py-1.5 px-3 text-xs text-[#3A5BEF]"
+          className="flex cursor-pointer items-center gap-2 rounded border border-[#3A5BEF] px-3 py-1.5 text-xs text-[#3A5BEF]"
           onClick={() => {
             const query = window.location.search;
             router.push('/analyze/insight/' + slugs + query);
@@ -108,10 +108,10 @@ const MetricBoxContributors: React.FC<{
             {t('analyze:metric_detail:contributor')}
           </div>
         </div>
-        <div className="mt-4 mb-2 grid grid-cols-4 gap-4 pl-12">
+        <div className="mb-2 mt-4 grid grid-cols-4 gap-4 pl-12">
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <IoPersonCircle />
               </div>
               <div className="line-clamp-1">-</div>
@@ -122,7 +122,7 @@ const MetricBoxContributors: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <IoPersonCircle />
               </div>
               <div className="line-clamp-1">-</div>
@@ -133,7 +133,7 @@ const MetricBoxContributors: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <IoPeopleCircle />
               </div>
               <div className="line-clamp-1">-</div>
@@ -144,7 +144,7 @@ const MetricBoxContributors: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <IoPeopleCircle />
               </div>
               <div className="line-clamp-1">-</div>
@@ -165,10 +165,10 @@ const MetricBoxContributors: React.FC<{
           {t('analyze:metric_detail:contributor')}
         </div>
       </div>
-      <div className="mt-4 mb-2 grid grid-cols-4 gap-4 pl-12">
+      <div className="mb-2 mt-4 grid grid-cols-4 gap-4 pl-12">
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <IoPersonCircle />
             </div>
             <div className="line-clamp-1">{data.contributorAllCount || 0}</div>
@@ -190,7 +190,7 @@ const MetricBoxContributors: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <IoPeopleCircle />
             </div>
             <div className="line-clamp-1">{data.orgAllCount || 0}</div>
@@ -201,7 +201,7 @@ const MetricBoxContributors: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               {getIcons(data.highestContributionOrganization?.origin)}
             </div>
             <div className="line-clamp-1">
@@ -229,10 +229,10 @@ const MetricBoxIssues: React.FC<{
             {t('analyze:metric_detail:issues')}
           </div>
         </div>
-        <div className="mt-4 mb-2 grid grid-cols-2 gap-4 pl-12">
+        <div className="mb-2 mt-4 grid grid-cols-2 gap-4 pl-12">
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <GoIssueOpened />
               </div>
               <div className="line-clamp-1">-</div>
@@ -243,7 +243,7 @@ const MetricBoxIssues: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <AiOutlineIssuesClose />
               </div>
               <div className="line-clamp-1">-</div>
@@ -254,7 +254,7 @@ const MetricBoxIssues: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <AiFillClockCircle />
               </div>
               <div className="line-clamp-1">-</div>
@@ -265,7 +265,7 @@ const MetricBoxIssues: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <BiChat />
               </div>
               <div className="line-clamp-1">-</div>
@@ -286,10 +286,10 @@ const MetricBoxIssues: React.FC<{
           {t('analyze:metric_detail:issues')}
         </div>
       </div>
-      <div className="mt-4 mb-2 grid grid-cols-2 gap-4 pl-12">
+      <div className="mb-2 mt-4 grid grid-cols-2 gap-4 pl-12">
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <GoIssueOpened />
             </div>
             <div className="line-clamp-1">{data.issueCount || 0}</div>
@@ -300,11 +300,11 @@ const MetricBoxIssues: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <AiOutlineIssuesClose />
             </div>
             <div className="line-clamp-1">
-              {data.issueCompletionRatio
+              {data.issueCompletionRatio != null
                 ? toFixed(data.issueCompletionRatio * 100, 1) +
                   '% (' +
                   (data.issueCompletionCount || 0) +
@@ -318,7 +318,7 @@ const MetricBoxIssues: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <AiFillClockCircle />
             </div>
             <div className="line-clamp-1">
@@ -331,7 +331,7 @@ const MetricBoxIssues: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <BiChat />
             </div>
             <div className="line-clamp-1">
@@ -362,10 +362,10 @@ const MetricBoxPr: React.FC<{
             {t('analyze:metric_detail:pull_requests')}
           </div>
         </div>
-        <div className="mt-4 mb-2 grid grid-cols-2 gap-4 pl-12">
+        <div className="mb-2 mt-4 grid grid-cols-2 gap-4 pl-12">
           <div>
             <div className="flex text-xl font-medium">
-              <div className="line-clamp-1 mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 line-clamp-1 text-[#ccc]">
                 <BiGitPullRequest />
               </div>
               <div className="line-clamp-1">-</div>
@@ -376,7 +376,7 @@ const MetricBoxPr: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <GoGitPullRequestClosed />
               </div>
               <div className="line-clamp-1">-</div>
@@ -387,7 +387,7 @@ const MetricBoxPr: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <AiFillClockCircle />
               </div>
               <div className="line-clamp-1">-</div>
@@ -398,7 +398,7 @@ const MetricBoxPr: React.FC<{
           </div>
           <div>
             <div className="flex text-xl font-medium">
-              <div className="mt-1 mr-2 text-[#ccc]">
+              <div className="mr-2 mt-1 text-[#ccc]">
                 <BiGitCommit />
               </div>
               <div className="line-clamp-1">-</div>
@@ -419,10 +419,10 @@ const MetricBoxPr: React.FC<{
           {t('analyze:metric_detail:pull_requests')}
         </div>
       </div>
-      <div className="mt-4 mb-2 grid grid-cols-2 gap-4 pl-12">
+      <div className="mb-2 mt-4 grid grid-cols-2 gap-4 pl-12">
         <div>
           <div className="flex text-xl font-medium">
-            <div className="line-clamp-1 mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 line-clamp-1 text-[#ccc]">
               <BiGitPullRequest />
             </div>
             <div className="line-clamp-1">{data.pullCount || 0}</div>
@@ -433,11 +433,11 @@ const MetricBoxPr: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <GoGitPullRequestClosed />
             </div>
             <div className="line-clamp-1">
-              {data.pullCompletionRatio
+              {data.pullCompletionRatio != null
                 ? toFixed(data.pullCompletionRatio * 100, 1) +
                   '% (' +
                   (data.pullCompletionCount || 0) +
@@ -451,7 +451,7 @@ const MetricBoxPr: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <AiFillClockCircle />
             </div>
             <div className="line-clamp-1">
@@ -464,7 +464,7 @@ const MetricBoxPr: React.FC<{
         </div>
         <div>
           <div className="flex text-xl font-medium">
-            <div className="mt-1 mr-2 text-[#ccc]">
+            <div className="mr-2 mt-1 text-[#ccc]">
               <BiGitCommit />
             </div>
             <div className="line-clamp-1">{data.commitCount || 0}</div>
@@ -586,7 +586,7 @@ const getTopUser = (type, name) => {
 
   return (
     <>
-      <div className="mt-1 mr-2 text-[#ccc]">{userIcon}</div>
+      <div className="mr-2 mt-1 text-[#ccc]">{userIcon}</div>
       <div className="line-clamp-1">
         {url ? (
           <a
