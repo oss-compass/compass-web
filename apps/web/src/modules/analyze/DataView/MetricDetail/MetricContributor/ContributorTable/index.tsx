@@ -39,6 +39,7 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import toast from 'react-hot-toast';
 interface TableParams {
+  reportKey: string;
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
   sortOpts?: SortOptionInput;
@@ -56,7 +57,6 @@ const MetricTable: React.FC<{
   const [openConfirm, setOpenConfirm] = useState(false);
   const [currentName, setCurrentName] = useState('');
   const [currentOrgName, setCurrentOrgName] = useState('');
-  const [origin, setOrigin] = useState('');
 
   const { data } = useVerifyDetailRangeQuery();
   const { isCurrentUser } = useIsCurrentUser();
@@ -78,8 +78,16 @@ const MetricTable: React.FC<{
   const filterContributionType = useMemo(() => {
     return filterOpts.find((i) => i.type === 'contribution_type');
   }, [filterOpts]);
-  const [tableData, setData] = useState<ContributorDetail[]>();
+  // Compare report values, rather than Date/array identities recreated by parents.
+  const reportKey = JSON.stringify([
+    label,
+    level,
+    beginDate,
+    endDate,
+    commonFilterOpts,
+  ]);
   const [tableParams, setTableParams] = useState<TableParams>({
+    reportKey,
     pagination: {
       current: 1,
       pageSize: 10,
@@ -91,9 +99,19 @@ const MetricTable: React.FC<{
     },
     sortOpts: defaultSortOpts,
   });
+  const reportChanged = tableParams.reportKey !== reportKey;
+  const pagination = reportChanged
+    ? { ...tableParams.pagination, current: 1 }
+    : tableParams.pagination;
+
+  // Reset before building query/export variables, avoiding a request with the
+  // new report filters and the previous report's page number.
+  if (reportChanged) {
+    setTableParams({ ...tableParams, reportKey, pagination });
+  }
   const query = {
-    page: tableParams.pagination.current,
-    per: tableParams.pagination.pageSize,
+    page: pagination.current,
+    per: pagination.pageSize,
     filterOpts: [...filterOpts, ...commonFilterOpts],
     sortOpts: tableParams.sortOpts,
     label,
@@ -102,44 +120,28 @@ const MetricTable: React.FC<{
     endDate,
   };
 
-  const maxDomain = useMemo(() => {
-    return getMaxDomain(tableData);
-  }, [tableData]);
-  const { isLoading, isFetching } = useContributorsDetailListQuery(
-    client,
-    query,
-    {
-      onSuccess: (data) => {
-        const items = data.contributorsDetailList.items;
-        const hasTypeFilter = filterOpts.find(
-          (i) => i.type === 'contribution_type'
-        );
-        if (hasTypeFilter) {
-          let value = hasTypeFilter.values;
-          items.map((item) => {
-            let list = item.contributionTypeList;
-            item.contributionTypeList = list.filter((i) => {
-              if (value.includes(i.contributionType)) {
-                return true;
-              }
-            });
-          });
-        }
-        setTableParams({
-          ...tableParams,
-          pagination: {
-            ...tableParams.pagination,
-            total: data.contributorsDetailList.count,
-          },
-        });
-        setData(items);
-        setOrigin(data.contributorsDetailList.origin);
-      },
-      onError: (e) => {
-        toast.error(getErrorMessage(e) || 'failed');
-      },
-    }
-  );
+  const {
+    data: contributorsData,
+    isLoading,
+    isFetching,
+  } = useContributorsDetailListQuery(client, query, {
+    onError: (e) => {
+      toast.error(getErrorMessage(e) || 'failed');
+    },
+  });
+  const result = contributorsData?.contributorsDetailList;
+  const origin = result?.origin || '';
+  const tableData = useMemo(() => {
+    const items = result?.items;
+    if (!filterContributionType) return items;
+    return items?.map((item) => ({
+      ...item,
+      contributionTypeList: (item.contributionTypeList || []).filter((entry) =>
+        filterContributionType.values.includes(entry.contributionType)
+      ),
+    }));
+  }, [result?.items, filterContributionType]);
+  const maxDomain = useMemo(() => getMaxDomain(tableData), [tableData]);
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
@@ -175,13 +177,14 @@ const MetricTable: React.FC<{
       sortOpts: sortOpts && JSON.stringify(sortOpts),
     });
     setFilterOpts(filterOpts);
-    setTableParams({
+    setTableParams((previous) => ({
+      reportKey,
       pagination: {
-        showTotal: tableParams.pagination.showTotal,
+        ...previous.pagination,
         ...pagination,
       },
       sortOpts,
-    });
+    }));
   };
 
   const columns: ColumnsType<ContributorDetail> = [
@@ -359,7 +362,7 @@ const MetricTable: React.FC<{
         dataSource={tableData}
         loading={isLoading || isFetching}
         onChange={handleTableChange}
-        pagination={tableParams.pagination}
+        pagination={{ ...pagination, total: result?.count }}
         rowKey={'contributor'}
         scroll={{ x: 'max-content' }}
       />
