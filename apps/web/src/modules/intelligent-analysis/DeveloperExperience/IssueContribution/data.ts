@@ -33,7 +33,11 @@ const TOP_PAINS_API_PATH = `${API_PREFIX}/overview/top-pains`;
 const PAIN_TRACKINGS_API_PATH = `${API_PREFIX}/pain-trackings`;
 const REPO_TEAMS_API_PATH = `${API_PREFIX}/overview/repo-teams`;
 
-export type RepoTeamItem = { repoShort: string; teamName: string };
+export type RepoTeamItem = {
+  repoShort: string;
+  teamName: string;
+  repoCategory?: string;
+};
 
 export const fetchRepoTeams = async (
   signal?: AbortSignal

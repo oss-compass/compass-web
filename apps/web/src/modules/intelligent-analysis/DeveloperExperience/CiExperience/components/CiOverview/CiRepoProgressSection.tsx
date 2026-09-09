@@ -6,13 +6,18 @@ import type { TableProps } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRepoTeams } from '../../../IssueContribution/data';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
+import { groupOperatorRepos } from '../../../../UserJourney/OverviewDashboard/operatorCategories';
 import type { CiRepoSummary, CiTopIssue } from './communityMetrics';
 
 const { Title } = Typography;
 const COLUMN_WIDTHS = [64, 210, 110, 138, 230, 110, 100, 110] as const;
 const TABLE_WIDTH = COLUMN_WIDTHS.reduce((sum, width) => sum + width, 0);
 
-type RepoRow = CiRepoSummary & { teamName: string; issues: CiTopIssue[] };
+export type RepoRow = CiRepoSummary & {
+  teamName: string;
+  repoCategory?: string;
+  issues: CiTopIssue[];
+};
 type TeamSortKey =
   | 'name'
   | 'repoCount'
@@ -48,6 +53,30 @@ const statusCounts = (issues: CiTopIssue[]) => ({
 
 const reportName = (repo: RepoRow) => `${repo.slug}_${repo.latestDay}`;
 
+export const buildCiAggregateRow = (
+  name: string,
+  repos: RepoRow[]
+): TeamRow => {
+  const aggregateIssues = repos.flatMap((repo) => repo.issues);
+  const counts = statusCounts(aggregateIssues);
+  const scores = repos
+    .map((repo) => repo.scoreOverall)
+    .filter((score): score is number => score !== null);
+  const total = aggregateIssues.length;
+  return {
+    id: name,
+    name,
+    repoCount: repos.length,
+    score: scores.length
+      ? scores.reduce((sum, score) => sum + score, 0) / scores.length
+      : null,
+    ...counts,
+    total,
+    closeRate: total ? (counts.faded / total) * 100 : 100,
+    repos,
+  };
+};
+
 const CiRepoProgressSection: React.FC<Props> = ({
   repos,
   issues,
@@ -55,6 +84,9 @@ const CiRepoProgressSection: React.FC<Props> = ({
 }) => {
   const [view, setView] = React.useState<'team' | 'repo'>('team');
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
+  const [collapsedCategories, setCollapsedCategories] = React.useState<
+    string[]
+  >([]);
   const [teamSort, setTeamSort] = React.useState<{
     key?: TeamSortKey;
     order: TableSortOrder;
@@ -65,19 +97,19 @@ const CiRepoProgressSection: React.FC<Props> = ({
     teams: Record<string, string>;
   } | null>(null);
   const { data: teamResponse } = useQuery({
-    queryKey: ['overview-repo-teams'],
+    queryKey: ['overview-repo-teams', 'with-category-v1'],
     queryFn: ({ signal }) => fetchRepoTeams(signal),
     staleTime: 5 * 60 * 1000,
   });
 
-  const teamMap = React.useMemo(
+  const repoInfoMap = React.useMemo(
     () =>
       Object.fromEntries(
         (teamResponse?.items ?? []).map((item) => [
           item.repoShort.replace(/_/g, '-'),
-          item.teamName,
+          item,
         ])
-      ) as Record<string, string>,
+      ),
     [teamResponse]
   );
 
@@ -85,10 +117,11 @@ const CiRepoProgressSection: React.FC<Props> = ({
     () =>
       repos.map((repo) => ({
         ...repo,
-        teamName: teamMap[repo.slug] || '未分配团队',
+        teamName: repoInfoMap[repo.slug]?.teamName || '未分配团队',
+        repoCategory: repoInfoMap[repo.slug]?.repoCategory,
         issues: issues.filter((issue) => issue.slug === repo.slug),
       })),
-    [issues, repos, teamMap]
+    [issues, repoInfoMap, repos]
   );
 
   const teamRows = React.useMemo<TeamRow[]>(() => {
@@ -96,26 +129,9 @@ const CiRepoProgressSection: React.FC<Props> = ({
     repoRows.forEach((repo) =>
       groups.set(repo.teamName, [...(groups.get(repo.teamName) ?? []), repo])
     );
-    return Array.from(groups.entries()).map(([name, teamRepos]) => {
-      const teamIssues = teamRepos.flatMap((repo) => repo.issues);
-      const counts = statusCounts(teamIssues);
-      const scores = teamRepos
-        .map((repo) => repo.scoreOverall)
-        .filter((score): score is number => score !== null);
-      const total = teamIssues.length;
-      return {
-        id: name,
-        name,
-        repoCount: teamRepos.length,
-        score: scores.length
-          ? scores.reduce((sum, score) => sum + score, 0) / scores.length
-          : null,
-        ...counts,
-        total,
-        closeRate: total ? (counts.faded / total) * 100 : 100,
-        repos: teamRepos,
-      };
-    });
+    return Array.from(groups.entries()).map(([name, teamRepos]) =>
+      buildCiAggregateRow(name, teamRepos)
+    );
   }, [repoRows]);
 
   const progress = (active: number, backfill: number, faded: number) => (
@@ -357,6 +373,177 @@ const CiRepoProgressSection: React.FC<Props> = ({
     [expandedRowKeys, teamSort]
   );
 
+  const renderExpandedRepoRow = (
+    repo: RepoRow,
+    index: number,
+    nested = false
+  ) => {
+    const counts = statusCounts(repo.issues);
+    return (
+      <tr
+        key={repo.repo}
+        className="overview-expanded-row"
+        style={{ animationDelay: `${index * 50}ms` }}
+      >
+        <td className="overview-expanded-cell overview-expanded-cell-index" />
+        <td className="overview-expanded-cell overview-expanded-cell-name">
+          <span
+            className="overview-expanded-repo-name"
+            style={nested ? { paddingLeft: 20 } : undefined}
+          >
+            {repo.slug}
+          </span>
+        </td>
+        <td className="overview-expanded-cell">-</td>
+        <td className="overview-expanded-cell">
+          {repo.scoreOverall?.toFixed(1) ?? '—'}
+        </td>
+        <td className="overview-expanded-cell">
+          {progress(counts.active, counts.backfill, counts.faded)}
+        </td>
+        <td className="overview-expanded-cell">
+          <button
+            type="button"
+            className="overview-table-link overview-table-link-strong"
+            onClick={() => openDetails(`${repo.slug} · 总问题数`, [repo])}
+          >
+            {repo.issues.length}
+          </button>
+        </td>
+        <td className="overview-expanded-cell">
+          {rate(
+            repo.issues.length ? (counts.faded / repo.issues.length) * 100 : 100
+          )}
+        </td>
+        <td className="overview-expanded-cell">
+          <Link href={reportHref(repo.slug)} className="overview-table-link">
+            查看报告
+          </Link>
+        </td>
+      </tr>
+    );
+  };
+
+  const renderExpandedTeam = (team: TeamRow) => {
+    const grouped = team.name === '算子分队';
+    const sections = grouped
+      ? groupOperatorRepos(team.repos)
+      : [{ key: 'all', label: '', repos: team.repos }];
+    return (
+      <div className="overview-expanded-rows">
+        <table
+          className="overview-expanded-table"
+          style={{ minWidth: TABLE_WIDTH }}
+        >
+          <colgroup>
+            {COLUMN_WIDTHS.map((width, index) => (
+              <col key={index} style={{ width }} />
+            ))}
+          </colgroup>
+          <tbody>
+            {sections.map((section) => {
+              const aggregate = buildCiAggregateRow(
+                section.label,
+                section.repos
+              );
+              const latestRepo = [...section.repos].sort(
+                (left, right) =>
+                  right.latestDay.localeCompare(left.latestDay) ||
+                  right.slug.localeCompare(left.slug, 'zh-CN')
+              )[0];
+              return (
+                <React.Fragment key={section.key}>
+                  {grouped ? (
+                    <tr className="overview-category-row">
+                      <td className="overview-expanded-cell" />
+                      <td className="overview-expanded-cell overview-expanded-cell-name">
+                        <button
+                          type="button"
+                          className="overview-expand-label w-full text-left text-sm text-slate-700"
+                          aria-expanded={
+                            !collapsedCategories.includes(section.key)
+                          }
+                          onClick={() =>
+                            setCollapsedCategories((previous) =>
+                              previous.includes(section.key)
+                                ? previous.filter((key) => key !== section.key)
+                                : [...previous, section.key]
+                            )
+                          }
+                        >
+                          <RightOutlined
+                            className={`overview-expand-icon ${
+                              collapsedCategories.includes(section.key)
+                                ? ''
+                                : 'is-expanded'
+                            }`}
+                          />
+                          {section.label}
+                        </button>
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length} 个
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {aggregate.score?.toFixed(1) ?? '—'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length
+                          ? progress(
+                              aggregate.active,
+                              aggregate.backfill,
+                              aggregate.faded
+                            )
+                          : '-'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length ? (
+                          <button
+                            type="button"
+                            className="overview-table-link overview-table-link-strong"
+                            onClick={() =>
+                              openDetails(
+                                `${section.label} · 总问题数`,
+                                section.repos
+                              )
+                            }
+                          >
+                            {aggregate.total}
+                          </button>
+                        ) : (
+                          0
+                        )}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {section.repos.length ? rate(aggregate.closeRate) : '-'}
+                      </td>
+                      <td className="overview-expanded-cell">
+                        {latestRepo ? (
+                          <Link
+                            href={reportHref(latestRepo.slug)}
+                            className="overview-table-link"
+                          >
+                            查看报告
+                          </Link>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
+                    </tr>
+                  ) : null}
+                  {(!grouped || !collapsedCategories.includes(section.key)) &&
+                    section.repos.map((repo, index) =>
+                      renderExpandedRepoRow(repo, index, grouped)
+                    )}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   return (
     <>
       <Title level={4} className="oj-section-title">
@@ -395,76 +582,7 @@ const CiRepoProgressSection: React.FC<Props> = ({
               expandRowByClick: true,
               showExpandColumn: false,
               onExpandedRowsChange: (keys) => setExpandedRowKeys([...keys]),
-              expandedRowRender: (team) => (
-                <div className="overview-expanded-rows">
-                  <table
-                    className="overview-expanded-table"
-                    style={{ minWidth: TABLE_WIDTH }}
-                  >
-                    <colgroup>
-                      {COLUMN_WIDTHS.map((width, index) => (
-                        <col key={index} style={{ width }} />
-                      ))}
-                    </colgroup>
-                    <tbody>
-                      {team.repos.map((repo, index) => {
-                        const counts = statusCounts(repo.issues);
-                        return (
-                          <tr
-                            key={repo.repo}
-                            className="overview-expanded-row"
-                            style={{ animationDelay: `${index * 50}ms` }}
-                          >
-                            <td className="overview-expanded-cell overview-expanded-cell-index" />
-                            <td className="overview-expanded-cell overview-expanded-cell-name">
-                              <span className="overview-expanded-repo-name">
-                                {repo.slug}
-                              </span>
-                            </td>
-                            <td className="overview-expanded-cell">-</td>
-                            <td className="overview-expanded-cell">
-                              {repo.scoreOverall?.toFixed(1) ?? '—'}
-                            </td>
-                            <td className="overview-expanded-cell">
-                              {progress(
-                                counts.active,
-                                counts.backfill,
-                                counts.faded
-                              )}
-                            </td>
-                            <td className="overview-expanded-cell">
-                              <button
-                                type="button"
-                                className="overview-table-link overview-table-link-strong"
-                                onClick={() =>
-                                  openDetails(`${repo.slug} · 总问题数`, [repo])
-                                }
-                              >
-                                {repo.issues.length}
-                              </button>
-                            </td>
-                            <td className="overview-expanded-cell">
-                              {rate(
-                                repo.issues.length
-                                  ? (counts.faded / repo.issues.length) * 100
-                                  : 100
-                              )}
-                            </td>
-                            <td className="overview-expanded-cell">
-                              <Link
-                                href={reportHref(repo.slug)}
-                                className="overview-table-link"
-                              >
-                                查看报告
-                              </Link>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              ),
+              expandedRowRender: renderExpandedTeam,
             }}
           />
         ) : (
