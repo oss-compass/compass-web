@@ -13,10 +13,9 @@ interface LanguagesProps {
   data?: LanguageData[];
 }
 
-const Languages: React.FC<LanguagesProps> = ({ data }) => {
-  const { t } = useTranslation();
-
-  // 如果没有数据或数据为空，使用默认值
+export const processLanguages = (
+  data?: LanguageData[]
+): { name: string; percentage: number; contribution: number }[] => {
   const languages =
     data && data.length > 0
       ? data
@@ -29,21 +28,26 @@ const Languages: React.FC<LanguagesProps> = ({ data }) => {
       : [];
 
   // 如果有超过 10 种语言，将剩余的合并为"Others"
-  const processedLanguages =
-    languages.length > 6
-      ? [
-          ...languages.slice(0, 6),
-          {
-            name: 'Others',
-            percentage: languages
-              .slice(9)
-              .reduce((sum, lang) => sum + lang.percentage, 0),
-            contribution: languages
-              .slice(9)
-              .reduce((sum, lang) => sum + (lang.contribution || 0), 0),
-          },
-        ]
-      : languages;
+  return languages.length > 10
+    ? [
+        ...languages.slice(0, 10),
+        {
+          name: 'Others',
+          percentage: languages
+            .slice(10)
+            .reduce((sum, lang) => sum + lang.percentage, 0),
+          contribution: languages
+            .slice(10)
+            .reduce((sum, lang) => sum + (lang.contribution || 0), 0),
+        },
+      ]
+    : languages;
+};
+
+const Languages: React.FC<LanguagesProps> = ({ data }) => {
+  const { t } = useTranslation();
+
+  const processedLanguages = processLanguages(data);
 
   const colorList = [
     '#4791ff',
@@ -63,7 +67,7 @@ const Languages: React.FC<LanguagesProps> = ({ data }) => {
     <div className="relative flex h-full max-w-[870px] scroll-mt-[200px] flex-col items-center justify-center gap-6 p-4">
       <div
         data-html2canvas-ignore="true"
-        className="absolute  right-7 -top-9 z-50 flex items-center justify-end gap-2"
+        className="absolute  -top-9 right-7 z-50 flex items-center justify-end gap-2"
       >
         <Tooltip
           placement="top"
