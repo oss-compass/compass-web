@@ -939,7 +939,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
             <Alert
               type="info"
               showIcon
-              message="系统正在检查后续报告，无需逐项修复 Issue"
+              message="系统正在检查后续报告"
               description={`也可发起重跑检查；未主动重跑时，连续 ${tracking.passMissPeriods} 期未再出现会自动闭环。`}
             />
             <div className="rounded-xl border border-slate-200 p-4">
