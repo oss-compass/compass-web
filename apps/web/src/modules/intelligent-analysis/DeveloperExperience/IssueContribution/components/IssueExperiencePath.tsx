@@ -44,6 +44,13 @@ type IssueExperiencePathProps = {
   onTrackingAction?: (
     payload: Omit<IssuePainTrackingActionPayload, 'community'>
   ) => Promise<IssuePainTracking>;
+  reportContext: {
+    reportKey: string;
+    community: string;
+    platform: string;
+    period: string;
+  };
+  onRerunApplied?: () => void;
 };
 
 const normalizePainMetricCode = (value: string) =>
@@ -417,6 +424,8 @@ const StagePainCard: React.FC<{
   onTrackingAction?: (
     payload: Omit<IssuePainTrackingActionPayload, 'community'>
   ) => Promise<IssuePainTracking>;
+  reportContext: IssueExperiencePathProps['reportContext'];
+  onRerunApplied?: () => void;
 }> = ({
   pain,
   focused,
@@ -425,6 +434,8 @@ const StagePainCard: React.FC<{
   issuePriorityFilter,
   onIssuePriorityFilterChange,
   onTrackingAction,
+  reportContext,
+  onRerunApplied,
 }) => {
   const issues = pain.low_score_issues ?? [];
   const [open, setOpen] = useState(true);
@@ -573,6 +584,8 @@ const StagePainCard: React.FC<{
           metricLabels={painMetricLabels}
           onClose={() => setTrackingModalOpen(false)}
           onAction={onTrackingAction}
+          reportContext={reportContext}
+          onRerunApplied={onRerunApplied}
         />
       ) : null}
     </div>
@@ -590,6 +603,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
   onStageChange,
   trackingByPain,
   onTrackingAction,
+  reportContext,
+  onRerunApplied,
 }) => {
   const selectedStage = stages.find((stage) => stage.id === activeStageId);
   const activeStage = selectedStage ?? stages[0];
@@ -1145,6 +1160,8 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                               `${pain.stage_id}#${pain.id}`
                             )}
                             onTrackingAction={onTrackingAction}
+                            reportContext={reportContext}
+                            onRerunApplied={onRerunApplied}
                           />
                         ))}
                       </div>

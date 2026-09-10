@@ -16,4 +16,11 @@ export type PainTrackingModalProps = {
   metricLabels: string[];
   onClose: () => void;
   onAction: (payload: PainTrackingAction) => Promise<IssuePainTracking>;
+  reportContext: {
+    reportKey: string;
+    community: string;
+    platform: string;
+    period: string;
+  };
+  onRerunApplied?: () => void;
 };

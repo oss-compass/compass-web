@@ -141,6 +141,7 @@ export const IssueFixButton: React.FC<{
   onOperatorInvalid?: (message: string) => void;
   /** 本次完成修复会触发痛点状态流转时，由外部执行最终确认。 */
   beforeMarkFixed?: () => Promise<boolean>;
+  disabled?: boolean;
 }> = ({
   tracking,
   issue,
@@ -149,6 +150,7 @@ export const IssueFixButton: React.FC<{
   operator: sharedOperator,
   onOperatorInvalid,
   beforeMarkFixed,
+  disabled = false,
 }) => {
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
   const [open, setOpen] = useState(false);
@@ -160,6 +162,7 @@ export const IssueFixButton: React.FC<{
     ? 'undo_issue_fixed'
     : 'mark_issue_fixed';
   const canChange =
+    !disabled &&
     tracking.trackingType === 'fix' &&
     (tracking.status === IssuePainTrackingStatus.TRACKING ||
       (tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST &&

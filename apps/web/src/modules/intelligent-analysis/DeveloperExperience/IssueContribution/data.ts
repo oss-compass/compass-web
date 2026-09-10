@@ -3,6 +3,7 @@ import type {
   IssuePainTracking,
   IssuePainTrackingActionPayload,
   IssuePainTrackingResponse,
+  IssuePainRerunJob,
   IssueReportApiResponse,
   IssueReportFilters,
   IssueTopPainsApiResponse,
@@ -180,4 +181,101 @@ export const postIssuePainTrackingAction = async (
     message: string;
     data: IssuePainTracking;
   }>;
+};
+
+const parseApiError = async (response: Response) => {
+  const body = (await response.json().catch(() => null)) as {
+    detail?: { message?: string } | string;
+  } | null;
+  return typeof body?.detail === 'string'
+    ? body.detail
+    : body?.detail?.message || `请求失败（${response.status}）`;
+};
+
+export const createIssuePainRerun = async (payload: {
+  community: string;
+  trackingKey: string;
+  reportKey: string;
+  issueNumbers: string[];
+  operator: string;
+}): Promise<IssuePainRerunJob> => {
+  const response = await fetch(
+    `${getApiBase()}${PAIN_TRACKINGS_API_PATH}/reruns`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }
+  );
+  if (!response.ok) throw new Error(await parseApiError(response));
+  const body = (await response.json()) as { data: IssuePainRerunJob };
+  return body.data;
+};
+
+export type IssuePainRerunListParams = {
+  trackingKey?: string;
+  community?: string;
+  period?: string;
+  /** 按报告过滤，供报告痛点弹窗的重跑记录列表。 */
+  reportKey?: string;
+  /** 按组织过滤，供 Issue 总览页入口。 */
+  org?: string;
+  mode?: 'repair_check' | 'retest';
+  /** 组合状态：pending/running/succeeded/failed/cancelled/waiting_task/waiting_report/applying/applied/apply_failed。 */
+  status?: string;
+  operator?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+export type IssuePainRerunListResponse = {
+  items: IssuePainRerunJob[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
+
+export const fetchIssuePainReruns = async (
+  params: IssuePainRerunListParams,
+  signal?: AbortSignal
+): Promise<IssuePainRerunListResponse> => {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) search.set(key, String(value));
+  });
+  const response = await fetch(
+    `${getApiBase()}${PAIN_TRACKINGS_API_PATH}/reruns?${search.toString()}`,
+    { signal, cache: 'no-store' }
+  );
+  if (!response.ok) throw new Error(await parseApiError(response));
+  return response.json() as Promise<IssuePainRerunListResponse>;
+};
+
+export const fetchIssuePainRerun = async (
+  jobId: string,
+  signal?: AbortSignal
+): Promise<IssuePainRerunJob> => {
+  const response = await fetch(
+    `${getApiBase()}${PAIN_TRACKINGS_API_PATH}/reruns/${encodeURIComponent(
+      jobId
+    )}`,
+    { signal, cache: 'no-store' }
+  );
+  if (!response.ok) throw new Error(await parseApiError(response));
+  const body = (await response.json()) as { data: IssuePainRerunJob };
+  return body.data;
+};
+
+export const cancelIssuePainRerun = async (
+  jobId: string
+): Promise<IssuePainRerunJob> => {
+  const response = await fetch(
+    `${getApiBase()}${PAIN_TRACKINGS_API_PATH}/reruns/${encodeURIComponent(
+      jobId
+    )}/cancel`,
+    { method: 'POST' }
+  );
+  if (!response.ok) throw new Error(await parseApiError(response));
+  const body = (await response.json()) as { data: IssuePainRerunJob };
+  return body.data;
 };

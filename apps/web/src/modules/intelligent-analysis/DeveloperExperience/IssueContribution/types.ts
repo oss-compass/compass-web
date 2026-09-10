@@ -302,6 +302,12 @@ export type IssuePainTrackingIssue = {
   decision_reason?: string | null;
   decided_by?: string | null;
   decided_at?: string | null;
+  fixed_source?: 'manual' | 'rerun' | null;
+  retest_status?: 'pending' | 'passed' | 'failed' | null;
+  retested_by?: string | null;
+  retested_at?: string | null;
+  last_rerun_job_id?: string | null;
+  last_rerun_result?: 'resolved' | 'still_present' | 'excluded' | null;
 };
 
 export type IssuePainTrackingHistory = {
@@ -312,6 +318,7 @@ export type IssuePainTrackingHistory = {
   to: number;
   reason: string;
   round?: number;
+  job_id?: string;
 };
 
 export type IssuePainTracking = {
@@ -359,6 +366,75 @@ export type IssuePainTracking = {
   passMissPeriods: number;
   lastSeenPeriod: string;
   history: IssuePainTrackingHistory[];
+  repairScopePeriod?: string | null;
+  repairScopeIssueNumbers?: string[];
+  retestScopeIssueNumbers?: string[];
+};
+
+export type IssuePainRerunResult = {
+  trackingKey: string;
+  issueNumber: string;
+  stageId: string;
+  metricCodes: string[];
+  mode?: 'repair_check' | 'retest';
+  result: 'resolved' | 'still_present' | 'excluded' | 'missing_tracking_issue';
+  stateChanged?: boolean;
+  status?: IssuePainTrackingStatus;
+  beforeFinalScore?: number | null;
+  afterFinalScore?: number | null;
+  excluded?: boolean;
+  metrics?: Array<{
+    stage_id?: string;
+    stage_name?: string;
+    before_blended?: number | null;
+    after_blended?: number | null;
+    delta_blended?: number | null;
+    before_subjective?: number | null;
+    after_subjective?: number | null;
+    delta_subjective?: number | null;
+    before_objective?: number | null;
+    after_objective?: number | null;
+    delta_objective?: number | null;
+  }>;
+};
+
+export type IssuePainRerunJob = {
+  jobId: string;
+  taskId?: string | null;
+  org?: string | null;
+  community: string;
+  platform: string;
+  period: string;
+  reportKey: string;
+  reportId?: string | null;
+  version?: string | null;
+  trackingKey: string;
+  affectedTrackingKeys: string[];
+  mode: 'repair_check' | 'retest';
+  issueNumbers: string[];
+  taskStatus: 'pending' | 'running' | 'succeeded' | 'failed' | 'cancelled';
+  applyStatus:
+    | 'waiting_task'
+    | 'waiting_report'
+    | 'applying'
+    | 'applied'
+    | 'apply_failed';
+  phase?: string | null;
+  progress: number;
+  queuedPosition?: number | null;
+  operator: string;
+  createdAt: string;
+  startedAt?: string | null;
+  finishedAt?: string | null;
+  appliedAt?: string | null;
+  eta: {
+    minMinutes: number;
+    maxMinutes: number;
+    earliestAt: string;
+    latestAt: string;
+  };
+  results: IssuePainRerunResult[];
+  error?: string | null;
 };
 
 export type IssuePainTrackingResponse = {

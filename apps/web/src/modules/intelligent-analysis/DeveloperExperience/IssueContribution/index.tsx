@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Empty, Spin } from 'antd';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
@@ -62,6 +62,11 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   const [activeStageId, setActiveStageId] = useState('');
   const [painTrackings, setPainTrackings] =
     useState<IssuePainTrackingResponse | null>(null);
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const handleRerunApplied = useCallback(
+    () => setRefreshVersion((value) => value + 1),
+    []
+  );
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -104,6 +109,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
     requestedPlatform,
     requestedVersion,
     router.isReady,
+    refreshVersion,
   ]);
 
   useEffect(() => {
@@ -137,7 +143,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
         setPainTrackings(null);
       });
     return () => controller.abort();
-  }, [report?.community, report?.period]);
+  }, [report?.community, report?.period, refreshVersion]);
 
   const trackingByPain = useMemo(() => {
     const itemMap = new Map(
@@ -371,6 +377,13 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 onStageChange={setActiveStageId}
                 trackingByPain={trackingByPain}
                 onTrackingAction={handleTrackingAction}
+                reportContext={{
+                  reportKey: report.key,
+                  community: report.community,
+                  platform: report.platform,
+                  period: report.period,
+                }}
+                onRerunApplied={handleRerunApplied}
               />
               <IssueScoreOverview
                 stages={visibleStages}

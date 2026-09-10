@@ -1,17 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CheckOutlined,
   CloseOutlined,
   ExclamationCircleFilled,
+  HistoryOutlined,
   InfoCircleOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Alert, Button, Input, Modal, Progress, Steps, Tooltip } from 'antd';
 import toast from 'react-hot-toast';
-import type { IssuePainTracking } from '../../types';
+import type { IssuePainRerunJob, IssuePainTracking } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
+import {
+  cancelIssuePainRerun,
+  createIssuePainRerun,
+  fetchIssuePainRerun,
+  fetchIssuePainReruns,
+} from '../../data';
 import { resolvePainIssuePriority } from '../../issuePriority';
 import type { PainIssuePriority } from '../../issuePriority';
+import RerunJobListModal from '../RerunJobListModal';
+import {
+  RERUN_STATUS_META,
+  formatRerunEtaTime,
+  getLockedRerunIssueNumbers,
+  getMetricChangeSummary,
+  getRerunEtaRangeText,
+  getRerunModeLabel,
+  getRerunResultLabel,
+  getRerunStatusKey,
+  isRerunLocked,
+} from '../rerunJobPresentation';
 import { IssueFixButton, TrackingHistoryTable } from './components';
 import PainIssueTable, {
   InvalidDecisionReasonModal,
@@ -33,7 +52,7 @@ const getCurrentFlowStep = (
   if (status === IssuePainTrackingStatus.PENDING) return 0;
   if (status === IssuePainTrackingStatus.TRACKING) return 1;
   if (status === IssuePainTrackingStatus.FIXED_PENDING_RETEST) return 2;
-  if (status === IssuePainTrackingStatus.PASSED) return isObserve ? 2 : 3;
+  if (status === IssuePainTrackingStatus.PASSED) return 3;
   if (status === IssuePainTrackingStatus.RETEST_FAILED) return 3;
   return 1;
 };
@@ -68,6 +87,10 @@ const getFlowItems = (tracking: IssuePainTracking, isObserve: boolean) => {
     return [
       createPendingFlowItem(tracking),
       createFlowItem('已确认待修复', tracking.confirmedAt),
+      createFlowItem(
+        '已修复待复测',
+        findStatusTime(tracking, IssuePainTrackingStatus.FIXED_PENDING_RETEST)
+      ),
       createFlowItem('已闭环', tracking.retest?.at),
     ];
   }
@@ -89,10 +112,190 @@ const getFlowItems = (tracking: IssuePainTracking, isObserve: boolean) => {
   ];
 };
 
+/** 弹窗底部按钮统一风格：与其他痛点操作弹窗保持一致（36 高、圆角 10、无阴影）。 */
+const PAIN_MODAL_BUTTON_STYLE: React.CSSProperties = {
+  height: 36,
+  paddingInline: 20,
+  borderRadius: 10,
+  boxShadow: 'none',
+};
+
+type RerunConfirmDetails = {
+  count: number;
+  period: string;
+  retest: boolean;
+};
+
+const useRerunConfirm = () => {
+  const [details, setDetails] = useState<RerunConfirmDetails | null>(null);
+  const resolverRef = useRef<((confirmed: boolean) => void) | null>(null);
+  const settle = useCallback((confirmed: boolean) => {
+    resolverRef.current?.(confirmed);
+    resolverRef.current = null;
+    setDetails(null);
+  }, []);
+  useEffect(
+    () => () => {
+      resolverRef.current?.(false);
+      resolverRef.current = null;
+    },
+    []
+  );
+  const confirm = useCallback(
+    (next: RerunConfirmDetails) =>
+      new Promise<boolean>((resolve) => {
+        resolverRef.current?.(false);
+        resolverRef.current = resolve;
+        setDetails(next);
+      }),
+    []
+  );
+  const minMinutes = 4;
+  const maxMinutes = 15;
+  const modal = (
+    <Modal
+      open={Boolean(details)}
+      className="issue-pain-confirm-modal"
+      title={details?.retest ? '确认发起复测？' : '确认发起重跑检查？'}
+      centered
+      width={520}
+      okText="确认发起"
+      cancelText="取消"
+      destroyOnHidden
+      onOk={() => settle(true)}
+      onCancel={() => settle(false)}
+      okButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
+      cancelButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
+    >
+      {details ? (
+        <div className="space-y-2 py-2 text-sm leading-6 text-slate-600">
+          <div>
+            本次将重跑{' '}
+            <strong className="text-slate-800">{details.count}</strong> 个
+            Issue，报告周期为{' '}
+            <strong className="text-slate-800">{details.period}</strong>。
+          </div>
+          <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
+            预计耗时 {minMinutes}–{maxMinutes} 分钟，预计完成时间{' '}
+            {formatRerunEtaTime(minMinutes)}–{formatRerunEtaTime(maxMinutes)}。
+          </div>
+        </div>
+      ) : null}
+      <style jsx global>{`
+        .issue-pain-confirm-modal .ant-modal-content {
+          overflow: hidden;
+          border-radius: 16px !important;
+        }
+        .issue-pain-confirm-modal .ant-modal-footer .ant-btn {
+          border-radius: 10px !important;
+          box-shadow: none !important;
+        }
+      `}</style>
+    </Modal>
+  );
+  return { confirm, modal };
+};
+
+const PAIN_MODAL_RERUN_STATUS_LABELS: Record<string, string> = {
+  pending: 'Issue 重跑排队中',
+  running: 'Issue 重跑中',
+  waiting_report: 'Issue 重跑等待报告更新',
+  applying: 'Issue 重跑结果应用中',
+  applied: 'Issue 重跑已完成',
+  failed: 'Issue 重跑失败',
+  cancelled: 'Issue 重跑已取消',
+  apply_failed: 'Issue 重跑结果应用失败',
+};
+
+const getPainModalRerunStatusLabel = (job: IssuePainRerunJob) => {
+  const statusKey = getRerunStatusKey(job);
+  return (
+    PAIN_MODAL_RERUN_STATUS_LABELS[statusKey] ??
+    `Issue 重跑${RERUN_STATUS_META[statusKey]?.label ?? '状态未知'}`
+  );
+};
+
+const RerunJobPanel: React.FC<{
+  job: IssuePainRerunJob;
+  trackingKey: string;
+  cancelling: boolean;
+  onCancel: () => void;
+}> = ({ job, trackingKey, cancelling, onCancel }) => {
+  const meta =
+    RERUN_STATUS_META[getRerunStatusKey(job)] ?? RERUN_STATUS_META.pending;
+  const ownResults = job.results.filter(
+    (item) => item.trackingKey === trackingKey
+  );
+  return (
+    <div className="rounded-xl border border-sky-100 bg-sky-50/50 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className={`text-sm font-semibold ${meta.color}`}>
+            {getPainModalRerunStatusLabel(job)}
+          </div>
+          <div className="mt-0.5 text-xs text-slate-500">
+            {job.issueNumbers.length} 个 Issue · 预计 {job.eta.minMinutes}–
+            {job.eta.maxMinutes} 分钟
+            {job.queuedPosition && job.queuedPosition > 1
+              ? ` · 前方还有 ${job.queuedPosition - 1} 个任务，实际时间可能顺延`
+              : ''}
+          </div>
+          {isRerunLocked(job) ? (
+            <div className="mt-0.5 text-[11px] text-slate-400">
+              预计完成：{getRerunEtaRangeText(job)}
+            </div>
+          ) : null}
+        </div>
+        {job.taskStatus === 'pending' || job.taskStatus === 'running' ? (
+          <button
+            type="button"
+            disabled={cancelling}
+            className="inline-flex h-8 shrink-0 items-center justify-center whitespace-nowrap rounded-[10px] border border-slate-200 bg-white px-3 text-xs font-medium text-slate-600 shadow-none transition-colors hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 disabled:cursor-wait disabled:opacity-60"
+            onClick={onCancel}
+          >
+            {cancelling ? '取消中…' : '取消任务'}
+          </button>
+        ) : null}
+      </div>
+      {job.error ? (
+        <div className="mt-2 text-xs text-rose-600">{job.error}</div>
+      ) : null}
+      {job.applyStatus === 'applied' && ownResults.length ? (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {ownResults.map((item) => (
+            <div
+              key={`${item.trackingKey}-${item.issueNumber}`}
+              className={`rounded-lg border px-2.5 py-1.5 text-[11px] ${
+                item.result === 'resolved'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                  : 'border-rose-200 bg-rose-50 text-rose-600'
+              }`}
+            >
+              <div>
+                #{item.issueNumber} · {item.beforeFinalScore ?? '—'} →{' '}
+                {item.afterFinalScore ?? '—'} ·{' '}
+                {getRerunResultLabel(item, job.mode)}
+              </div>
+              {getMetricChangeSummary(item).length ? (
+                <div className="mt-0.5 text-[10px] opacity-80">
+                  指标变化：{getMetricChangeSummary(item).join('；')}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 const getFixProgressPercent = (tracking: IssuePainTracking) =>
   tracking.activeTotal
     ? Math.round((tracking.fixedCount / tracking.activeTotal) * 100)
     : 0;
+
+/** 痛点弹窗中的任务详情统一每 30 秒轮询一次。 */
+const RERUN_POLL_INTERVAL_MS = 30000;
 
 const getPassedPresentation = (
   tracking: IssuePainTracking,
@@ -114,7 +317,20 @@ const RepairIssueOperationSection: React.FC<{
   tracking: PainTrackingModalProps['tracking'];
   onAction: PainTrackingModalProps['onAction'];
   pendingRetest?: boolean;
-}> = ({ pain, tracking, onAction, pendingRetest = false }) => {
+  onRerun?: (issueNumbers: string[], operator: string) => Promise<void>;
+  rerunDisabledReason?: string | null;
+  lockedIssueNumbers?: string[];
+  onOpenRerunRecords?: () => void;
+}> = ({
+  pain,
+  tracking,
+  onAction,
+  pendingRetest = false,
+  onRerun,
+  rerunDisabledReason,
+  lockedIssueNumbers,
+  onOpenRerunRecords,
+}) => {
   const painLevelIssue = tracking.painLevelOnly
     ? tracking.activeIssues[0]
     : undefined;
@@ -125,6 +341,10 @@ const RepairIssueOperationSection: React.FC<{
         tracking={tracking}
         onTrackingAction={onAction}
         responsive
+        onRerun={onRerun}
+        rerunDisabledReason={rerunDisabledReason}
+        lockedIssueNumbers={lockedIssueNumbers}
+        onOpenRerunRecords={onOpenRerunRecords}
       />
     );
   }
@@ -332,6 +552,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   metricLabels,
   onClose,
   onAction,
+  reportContext,
+  onRerunApplied,
 }) => {
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
   const [rollbackModalOpen, setRollbackModalOpen] = useState(false);
@@ -341,6 +563,35 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const [rollbackSubmitting, setRollbackSubmitting] = useState(false);
   const [issuePriorityFilter, setIssuePriorityFilter] =
     useState<PainIssuePriority>();
+  const [rerunJob, setRerunJob] = useState<IssuePainRerunJob | null>(null);
+  const [rerunSubmitting, setRerunSubmitting] = useState(false);
+  const [rerunCancelling, setRerunCancelling] = useState(false);
+  const [rerunListOpen, setRerunListOpen] = useState(false);
+  const observedRerunRef = useRef<{
+    jobId: string;
+    applyStatus: IssuePainRerunJob['applyStatus'];
+  } | null>(null);
+  const rerunConfirm = useRerunConfirm();
+
+  const acceptRerunJob = useCallback(
+    (next: IssuePainRerunJob) => {
+      const previous = observedRerunRef.current;
+      const newlyApplied =
+        next.applyStatus === 'applied' &&
+        previous?.jobId === next.jobId &&
+        previous.applyStatus !== 'applied';
+      observedRerunRef.current = {
+        jobId: next.jobId,
+        applyStatus: next.applyStatus,
+      };
+      setRerunJob(next);
+      if (newlyApplied) {
+        toast.success('重跑报告已应用，痛点状态已自动更新');
+        onRerunApplied?.();
+      }
+    },
+    [onRerunApplied]
+  );
 
   useEffect(() => {
     if (open) {
@@ -349,14 +600,159 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
       setRollbackOperatorError('');
       setRollbackReasonError('');
       setIssuePriorityFilter(undefined);
+      const controller = new AbortController();
+      void fetchIssuePainReruns(
+        {
+          community: reportContext.community,
+          period: reportContext.period,
+        },
+        controller.signal
+      )
+        .then((response) => {
+          const active = response.items.find(isRerunLocked);
+          const ownLatest = response.items.find(
+            (item) =>
+              item.trackingKey === tracking.trackingKey ||
+              item.affectedTrackingKeys.includes(tracking.trackingKey)
+          );
+          const next = active ?? ownLatest ?? null;
+          if (next) {
+            // 初次恢复仅建立观察基线；历史已完成任务不能触发页面刷新。
+            observedRerunRef.current = {
+              jobId: next.jobId,
+              applyStatus: next.applyStatus,
+            };
+            setRerunJob(next);
+          } else {
+            observedRerunRef.current = null;
+            setRerunJob(null);
+          }
+        })
+        .catch((error: unknown) => {
+          if (error instanceof DOMException && error.name === 'AbortError')
+            return;
+          toast.error(
+            error instanceof Error ? error.message : '重跑任务状态加载失败'
+          );
+        });
+      return () => controller.abort();
     }
-  }, [open, tracking.status, tracking.trackingKey]);
+  }, [
+    open,
+    reportContext.community,
+    reportContext.period,
+    tracking.status,
+    tracking.trackingKey,
+  ]);
+
+  useEffect(() => {
+    // 重跑记录弹窗使用独立的列表轮询；打开时暂停痛点管理详情轮询，
+    // 关闭后再从完整的 30 秒周期重新开始，避免两个计时器并行或共用节奏。
+    if (!open || rerunListOpen || !rerunJob || !isRerunLocked(rerunJob)) return;
+    const controller = new AbortController();
+    const poll = () => {
+      // 页面切后台时暂停轮询，切回时立即拉一次避免最长 60 秒感知延迟。
+      if (document.hidden) return;
+      void fetchIssuePainRerun(rerunJob.jobId, controller.signal)
+        .then(acceptRerunJob)
+        .catch((error: unknown) => {
+          if (error instanceof DOMException && error.name === 'AbortError')
+            return;
+          toast.error(
+            error instanceof Error ? error.message : '重跑任务状态更新失败'
+          );
+        });
+    };
+    const onVisibilityChange = () => {
+      if (!document.hidden) poll();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    const timer = window.setInterval(poll, RERUN_POLL_INTERVAL_MS);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      controller.abort();
+      window.clearInterval(timer);
+    };
+  }, [acceptRerunJob, open, rerunJob, rerunListOpen]);
+
+  const requestRerun = useCallback(
+    async (issueNumbers: string[], operatorValue: string) => {
+      const count = issueNumbers.length;
+      const confirmed = await rerunConfirm.confirm({
+        count,
+        period: reportContext.period,
+        retest:
+          tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST,
+      });
+      if (!confirmed) return;
+      setRerunSubmitting(true);
+      try {
+        const next = await createIssuePainRerun({
+          community: reportContext.community,
+          trackingKey: tracking.trackingKey,
+          reportKey: reportContext.reportKey,
+          issueNumbers,
+          operator: operatorValue,
+        });
+        acceptRerunJob(next);
+        toast.success('重跑任务已提交');
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : '重跑任务提交失败'
+        );
+        throw error;
+      } finally {
+        setRerunSubmitting(false);
+      }
+    },
+    [
+      acceptRerunJob,
+      reportContext,
+      rerunConfirm,
+      tracking.status,
+      tracking.trackingKey,
+    ]
+  );
+
+  const cancelRerun = async () => {
+    if (!rerunJob) return;
+    setRerunCancelling(true);
+    try {
+      acceptRerunJob(await cancelIssuePainRerun(rerunJob.jobId));
+      toast.success('重跑任务已取消');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : '取消重跑失败');
+    } finally {
+      setRerunCancelling(false);
+    }
+  };
 
   const isObserve = tracking.trackingType === 'observe';
   const currentStep = getCurrentFlowStep(tracking.status, isObserve);
   const flowItems = getFlowItems(tracking, isObserve).map((item, index) =>
     index >= currentStep ? { ...item, description: null } : item
   );
+
+  // 重跑入口置灰时给出具体原因：提交中 / 当前痛点任务 / 同周期其他痛点的任务。
+  const rerunDisabledReason = React.useMemo(() => {
+    if (rerunSubmitting) return '重跑任务提交中，请稍候…';
+    if (!isRerunLocked(rerunJob)) return null;
+    if (!rerunJob) return null;
+    const own =
+      rerunJob.trackingKey === tracking.trackingKey ||
+      rerunJob.affectedTrackingKeys.includes(tracking.trackingKey);
+    return [
+      own
+        ? '当前痛点存在进行中的重跑任务'
+        : '同仓库当前周期存在其他痛点发起的重跑任务',
+      `状态：${getPainModalRerunStatusLabel(rerunJob)}`,
+      `${getRerunModeLabel(rerunJob.mode)} ${
+        rerunJob.issueNumbers.length
+      } 个 Issue`,
+      `预计完成 ${getRerunEtaRangeText(rerunJob)}`,
+      '报告应用完成前不能再次发起',
+    ].join('，');
+  }, [rerunJob, rerunSubmitting, tracking.trackingKey]);
 
   const submitRollback = async () => {
     const validation = validateOperator(operator);
@@ -401,6 +797,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const pendingDecidedCount = tracking.activeIssues.filter(
     (item) => item.valid === true || item.valid === false
   ).length;
+  const lockedIssueNumbers = getLockedRerunIssueNumbers(rerunJob);
 
   return (
     <Modal
@@ -422,10 +819,28 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           <span className="text-base font-semibold text-slate-800">
             痛点管理
           </span>
+          <Tooltip title="查看当前报告的 Issue 重跑任务记录">
+            <button
+              type="button"
+              className="inline-flex h-8 items-center gap-1.5 rounded-[10px] border border-sky-200 bg-sky-50 px-3 text-xs font-semibold text-sky-700 shadow-none transition-colors hover:border-sky-300 hover:bg-sky-100"
+              onClick={() => setRerunListOpen(true)}
+            >
+              <HistoryOutlined />
+              重跑记录
+            </button>
+          </Tooltip>
         </div>
       }
     >
       <div className="space-y-6">
+        {rerunJob ? (
+          <RerunJobPanel
+            job={rerunJob}
+            trackingKey={tracking.trackingKey}
+            cancelling={rerunCancelling}
+            onCancel={() => void cancelRerun()}
+          />
+        ) : null}
         <div className="rounded-lg bg-slate-50 p-4">
           <Steps
             current={currentStep}
@@ -525,7 +940,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               type="info"
               showIcon
               message="系统正在检查后续报告，无需逐项修复 Issue"
-              description={`连续 ${tracking.passMissPeriods} 期未再出现该痛点时，系统会自动标记为已闭环。`}
+              description={`也可发起重跑检查；未主动重跑时，连续 ${tracking.passMissPeriods} 期未再出现会自动闭环。`}
             />
             <div className="rounded-xl border border-slate-200 p-4">
               <div className="text-sm font-semibold text-slate-700">
@@ -550,6 +965,10 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               tracking={tracking}
               onTrackingAction={onAction}
               responsive
+              onRerun={requestRerun}
+              rerunDisabledReason={rerunDisabledReason}
+              lockedIssueNumbers={lockedIssueNumbers}
+              onOpenRerunRecords={() => setRerunListOpen(true)}
             />
           </div>
         ) : null}
@@ -576,6 +995,10 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               pain={pain}
               tracking={tracking}
               onAction={onAction}
+              onRerun={requestRerun}
+              rerunDisabledReason={rerunDisabledReason}
+              lockedIssueNumbers={lockedIssueNumbers}
+              onOpenRerunRecords={() => setRerunListOpen(true)}
             />
           </div>
         ) : null}
@@ -585,14 +1008,18 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
             <Alert
               type="warning"
               showIcon
-              message="已修复，等待下一期报告自动复测"
-              description="下一期报告未复现，系统将自动判定复测通过；若再次出现，会自动重置复现 Issue 的修复标记。"
+              message="已修复，可立即复测或等待自动复测"
+              description="可在下方对单个 Issue 发起重跑复测，无需等待下一期报告；若选择等待，下一期未复现将自动判定通过，再次出现则重置对应 Issue 的修复标记。"
             />
             <RepairIssueOperationSection
               pain={pain}
               tracking={tracking}
               onAction={onAction}
               pendingRetest
+              onRerun={requestRerun}
+              rerunDisabledReason={rerunDisabledReason}
+              lockedIssueNumbers={lockedIssueNumbers}
+              onOpenRerunRecords={() => setRerunListOpen(true)}
             />
           </div>
         ) : null}
@@ -669,12 +1096,26 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
             overflow: hidden;
             border-radius: 16px !important;
           }
-          .issue-pain-confirm-modal .ant-modal-confirm-btns .ant-btn {
+          .issue-pain-confirm-modal .ant-modal-confirm-btns .ant-btn,
+          .issue-pain-confirm-modal .ant-modal-footer .ant-btn {
             border-radius: 10px !important;
             box-shadow: none !important;
           }
         `}</style>
       </div>
+      {rerunConfirm.modal}
+      {open ? (
+        <RerunJobListModal
+          open={rerunListOpen}
+          onClose={() => setRerunListOpen(false)}
+          scope={{
+            type: 'report',
+            reportKey: reportContext.reportKey,
+            community: reportContext.community,
+            period: reportContext.period,
+          }}
+        />
+      ) : null}
       <Modal
         open={rollbackModalOpen}
         onCancel={() => setRollbackModalOpen(false)}
@@ -685,7 +1126,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
         okButtonProps={{
           danger: true,
           disabled: !operator.trim() || !rollbackReason.trim(),
+          style: PAIN_MODAL_BUTTON_STYLE,
         }}
+        cancelButtonProps={{ style: PAIN_MODAL_BUTTON_STYLE }}
         title="回退到待确认"
         destroyOnHidden
       >

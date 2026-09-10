@@ -4,6 +4,7 @@ import {
   CloseOutlined,
   ExclamationCircleFilled,
   LinkOutlined,
+  ReloadOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import {
@@ -212,6 +213,21 @@ export const useFinalIssueDecisionConfirm = () =>
 
 const useFinalIssueFixConfirm = () => useFinalIssueTransitionConfirm('fix');
 
+/** antd 的 disabled 按钮不触发鼠标事件，用 span 包裹让 Tooltip 正常显示置灰原因。 */
+const withDisabledTooltip = (node: React.ReactNode, reason?: string | null) =>
+  reason ? (
+    <Tooltip title={reason}>
+      <span className="inline-flex">{node}</span>
+    </Tooltip>
+  ) : (
+    node
+  );
+
+/** 单个 Issue 被重跑锁定时，行内重跑与人工修复入口的置灰原因。 */
+const LOCKED_ISSUE_RERUN_REASON = '该 Issue 正在重跑中，重跑完成后才能再次发起';
+const LOCKED_ISSUE_MANUAL_REASON =
+  '该 Issue 正在重跑中，重完成前不能人工修改修复状态';
+
 const getUndecidedIssueNumbers = (tracking?: IssuePainTracking): string[] =>
   (tracking?.activeIssues ?? [])
     .filter((issue) => issue.valid !== true && issue.valid !== false)
@@ -365,6 +381,12 @@ type PainIssueTableProps = {
   onTrackingAction?: (
     payload: Omit<IssuePainTrackingActionPayload, 'community'>
   ) => Promise<IssuePainTracking>;
+  onRerun?: (issueNumbers: string[], operator: string) => Promise<void>;
+  /** 重跑入口置灰的具体原因；为空表示可发起。悬停时通过 Tooltip 展示。 */
+  rerunDisabledReason?: string | null;
+  lockedIssueNumbers?: string[];
+  /** 点击“该 Issue 重跑中”标签时打开重跑记录弹窗。 */
+  onOpenRerunRecords?: () => void;
 };
 
 /**
@@ -986,6 +1008,25 @@ const IssueStatusCell: React.FC<{
   );
 };
 
+/**
+ * Issue 是否可发起重跑：
+ * - 状态 2（已确认待修复）：I0/I1 无人工修复入口，始终可重跑检查；
+ *   I2/I3 必须先人工点击“完成修复”（fixed=true）后才展示重跑检查。
+ * - 状态 3（已修复待复测）：复测尚未通过的 Issue 可发起复测。
+ */
+const isRerunEligible = (
+  tracking: IssuePainTracking | undefined,
+  issue: ActiveTrackingIssue
+) => {
+  if (tracking?.status === IssuePainTrackingStatus.TRACKING) {
+    return tracking.trackingType !== 'fix' || issue.fixed === true;
+  }
+  return (
+    tracking?.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST &&
+    issue.retest_status !== 'passed'
+  );
+};
+
 const IssueActionCell: React.FC<{
   show: boolean;
   activeIssue?: ActiveTrackingIssue;
@@ -995,6 +1036,10 @@ const IssueActionCell: React.FC<{
   requiresCompletionConfirm: boolean;
   onConfirmCompletion: () => Promise<boolean>;
   onOperatorInvalid: (message: string) => void;
+  onRerun?: PainIssueTableProps['onRerun'];
+  rerunDisabledReason?: string | null;
+  manualDisabledReason?: string | null;
+  onOpenRerunRecords?: () => void;
 }> = ({
   show,
   activeIssue,
@@ -1004,24 +1049,113 @@ const IssueActionCell: React.FC<{
   requiresCompletionConfirm,
   onConfirmCompletion,
   onOperatorInvalid,
+  onRerun,
+  rerunDisabledReason,
+  manualDisabledReason,
+  onOpenRerunRecords,
 }) => {
   if (!show) return null;
-  const actionable =
+  const fixActionable =
     activeIssue?.valid !== false && activeIssue && tracking && onTrackingAction;
+  const rerunEligible = Boolean(
+    activeIssue &&
+      activeIssue.valid === true &&
+      tracking &&
+      onRerun &&
+      isRerunEligible(tracking, activeIssue)
+  );
+  const hasRetestResult =
+    activeIssue?.retest_status === 'passed' ||
+    activeIssue?.retest_status === 'failed';
+  const run = () => {
+    const validation = validateOperator(operator);
+    if (validation) {
+      onOperatorInvalid(validation);
+      return;
+    }
+    if (activeIssue && onRerun) {
+      void onRerun([activeIssue.number], operator.trim()).catch(
+        () => undefined
+      );
+    }
+  };
+  const rerunButton = (
+    <button
+      type="button"
+      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-1.5 text-[11px] font-semibold text-sky-700 transition-colors hover:border-sky-300 hover:bg-sky-100 disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={Boolean(rerunDisabledReason)}
+      onClick={run}
+    >
+      <ReloadOutlined />
+      {tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST
+        ? '发起复测'
+        : '重跑检查'}
+    </button>
+  );
   return (
     <td className="border-b border-slate-100 px-3 py-2.5">
-      {actionable ? (
-        <IssueFixButton
-          tracking={tracking}
-          issue={activeIssue}
-          onAction={onTrackingAction}
-          compact
-          operator={operator}
-          onOperatorInvalid={onOperatorInvalid}
-          beforeMarkFixed={
-            requiresCompletionConfirm ? onConfirmCompletion : undefined
-          }
-        />
+      {fixActionable || rerunEligible || hasRetestResult ? (
+        <div className="flex flex-wrap items-center gap-1.5">
+          {manualDisabledReason ? (
+            <Tooltip
+              title={
+                onOpenRerunRecords
+                  ? `${manualDisabledReason}（点击查看重跑记录）`
+                  : manualDisabledReason
+              }
+            >
+              <button
+                type="button"
+                className="inline-flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap rounded-lg border border-violet-200 bg-violet-50 px-2.5 py-1.5 text-[11px] font-semibold text-violet-700 transition-colors hover:border-violet-300 hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={!onOpenRerunRecords}
+                onClick={onOpenRerunRecords}
+              >
+                <ReloadOutlined spin />该 Issue 重跑中
+              </button>
+            </Tooltip>
+          ) : null}
+          {hasRetestResult ? (
+            <Tooltip
+              title={`操作人：${
+                activeIssue?.retested_by || 'system'
+              }；时间：${formatTrackingTime(activeIssue?.retested_at)}`}
+            >
+              <span
+                className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-semibold ${
+                  activeIssue?.retest_status === 'passed'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    : 'border-rose-200 bg-rose-50 text-rose-600'
+                }`}
+              >
+                {activeIssue?.retest_status === 'passed'
+                  ? '复测通过'
+                  : '复测未通过'}
+              </span>
+            </Tooltip>
+          ) : null}
+          {fixActionable &&
+          tracking.trackingType === 'fix' &&
+          !manualDisabledReason
+            ? withDisabledTooltip(
+                <IssueFixButton
+                  tracking={tracking}
+                  issue={activeIssue}
+                  onAction={onTrackingAction}
+                  compact
+                  operator={operator}
+                  onOperatorInvalid={onOperatorInvalid}
+                  beforeMarkFixed={
+                    requiresCompletionConfirm ? onConfirmCompletion : undefined
+                  }
+                  disabled={Boolean(manualDisabledReason)}
+                />,
+                manualDisabledReason
+              )
+            : null}
+          {rerunEligible && !manualDisabledReason
+            ? withDisabledTooltip(rerunButton, rerunDisabledReason)
+            : null}
+        </div>
       ) : (
         <span className="text-[11px] text-slate-300">—</span>
       )}
@@ -1070,6 +1204,11 @@ type PainIssueTableRowProps = {
   selected: boolean;
   onOperatorInvalid: (message: string) => void;
   onSelectionChange: (number: string, checked: boolean) => void;
+  onRerun?: PainIssueTableProps['onRerun'];
+  rerunDisabledReason?: string | null;
+  selectionDisabled?: boolean;
+  manualDisabledReason?: string | null;
+  onOpenRerunRecords?: () => void;
 };
 
 const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
@@ -1109,14 +1248,16 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
         requiresCompletionConfirm={props.requiresFixCompletionConfirm}
         onConfirmCompletion={props.onConfirmFinalFix}
         onOperatorInvalid={props.onOperatorInvalid}
+        onRerun={props.onRerun}
+        rerunDisabledReason={props.rerunDisabledReason}
+        manualDisabledReason={props.manualDisabledReason}
+        onOpenRerunRecords={props.onOpenRerunRecords}
       />
       <IssueSelectionCell
         show={props.showSelection}
         disabled={
           !props.draftMode &&
-          (props.pendingDecisionMode
-            ? !actionIssue
-            : actionIssue?.valid !== true)
+          (props.pendingDecisionMode ? !actionIssue : props.selectionDisabled)
         }
         checked={props.selected}
         onChange={(checked) => props.onSelectionChange(issue.number, checked)}
@@ -1145,6 +1286,13 @@ type PainIssueTableToolbarProps = {
   submitting: boolean;
   canBatchFix: boolean;
   canBatchUndo: boolean;
+  showManualFixActions: boolean;
+  canBatchRerun: boolean;
+  rerunLabel: string;
+  /** 全局重跑置灰原因（同周期锁定/提交中）；为空表示可发起。 */
+  rerunDisabledReason?: string | null;
+  /** 当前选中的 Issue 里处于重跑锁定中的数量，用于提示自动跳过。 */
+  lockedSelectedCount: number;
   completesPendingDecision: boolean;
   onOperatorChange: (value: string) => void;
   onUpdateDecisions: (
@@ -1154,6 +1302,7 @@ type PainIssueTableToolbarProps = {
   onBatchAction: (type: 'mark_issues_fixed' | 'undo_issues_fixed') => void;
   onBatchDecision: (valid: boolean) => void;
   onRequestBatchInvalid: () => void;
+  onBatchRerun: () => void;
 };
 
 const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
@@ -1236,30 +1385,84 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
   );
 
   if (props.operationMode) {
+    const allLocked =
+      selectedCount > 0 && props.lockedSelectedCount === selectedCount;
+    const batchFixReason = props.canBatchFix
+      ? null
+      : !selectedCount
+      ? '请先勾选需要操作的 Issue'
+      : allLocked
+      ? '所选 Issue 均在重跑中，报告应用完成前不能人工修改修复状态'
+      : '所选 Issue 均已标记修复，无需再次操作';
+    const batchUndoReason = props.canBatchUndo
+      ? null
+      : !selectedCount
+      ? '请先勾选需要操作的 Issue'
+      : allLocked
+      ? '所选 Issue 均在重跑中，报告应用完成前不能人工修改修复状态'
+      : '所选 Issue 均未标记修复，无可撤销项';
+    const batchRerunReason =
+      props.rerunDisabledReason ??
+      (!props.canBatchRerun
+        ? !selectedCount
+          ? '请先勾选需要操作的 Issue'
+          : allLocked
+          ? '所选 Issue 均在重跑中，报告应用完成后才能再次发起'
+          : '所选 Issue 中没有可发起重跑的对象（I2/I3 需先完成修复；已通过复测的 Issue 不会重跑）'
+        : null);
     return (
       <div className="flex flex-wrap items-center justify-end gap-3 border-b border-slate-200 bg-slate-50/70 px-3 py-2">
         <span className="mr-auto text-xs text-slate-500">
           已选 {selectedCount} 项
+          {props.lockedSelectedCount
+            ? `（其中 ${props.lockedSelectedCount} 项重跑中，批量操作将自动跳过）`
+            : ''}
         </span>
         {operatorField}
         <div className="flex h-7 items-center gap-2">
-          <Button
-            size="small"
-            className="issue-pain-bulk-button !border-sky-200 !bg-sky-50 !text-sky-700"
-            disabled={!props.canBatchFix || props.submitting}
-            loading={props.submitting}
-            onClick={() => props.onBatchAction('mark_issues_fixed')}
-          >
-            批量完成修复
-          </Button>
-          <Button
-            size="small"
-            className="issue-pain-bulk-button !border-slate-200 !bg-white !text-slate-600"
-            disabled={!props.canBatchUndo || props.submitting}
-            onClick={() => props.onBatchAction('undo_issues_fixed')}
-          >
-            批量撤销
-          </Button>
+          {props.showManualFixActions ? (
+            <>
+              {withDisabledTooltip(
+                <Button
+                  size="small"
+                  className="issue-pain-bulk-button !border-sky-200 !bg-sky-50 !text-sky-700"
+                  disabled={!props.canBatchFix || props.submitting}
+                  loading={props.submitting}
+                  onClick={() => props.onBatchAction('mark_issues_fixed')}
+                >
+                  批量完成修复
+                </Button>,
+                batchFixReason
+              )}
+              {withDisabledTooltip(
+                <Button
+                  size="small"
+                  className="issue-pain-bulk-button !border-slate-200 !bg-white !text-slate-600"
+                  disabled={!props.canBatchUndo || props.submitting}
+                  onClick={() => props.onBatchAction('undo_issues_fixed')}
+                >
+                  批量撤销
+                </Button>,
+                batchUndoReason
+              )}
+            </>
+          ) : null}
+          {withDisabledTooltip(
+            <Button
+              size="small"
+              icon={<ReloadOutlined />}
+              className="issue-pain-bulk-button !border-violet-200 !bg-violet-50 !text-violet-700"
+              disabled={
+                !props.canBatchRerun ||
+                Boolean(props.rerunDisabledReason) ||
+                props.submitting
+              }
+              onClick={props.onBatchRerun}
+            >
+              {props.rerunLabel}
+            </Button>,
+            batchRerunReason
+          )}
         </div>
       </div>
     );
@@ -1335,6 +1538,7 @@ const PainIssueTableHead: React.FC<{
   showSelection: boolean;
   showReportLink: boolean;
   allNumbers: string[];
+  allLockedCount: number;
   allSelected: boolean;
   someSelected: boolean;
   onToggleAll: (checked: boolean) => void;
@@ -1347,6 +1551,7 @@ const PainIssueTableHead: React.FC<{
   showSelection,
   showReportLink,
   allNumbers,
+  allLockedCount,
   allSelected,
   someSelected,
   onToggleAll,
@@ -1411,7 +1616,11 @@ const PainIssueTableHead: React.FC<{
           className={`border-b border-slate-200 px-2 py-2 text-center ${layout.selection}`}
         >
           <Tooltip
-            title={`全选所有页，共 ${allNumbers.length} 项`}
+            title={`全选所有页，共 ${allNumbers.length} 项${
+              allLockedCount
+                ? `（其中 ${allLockedCount} 项重跑中，批量操作将自动跳过）`
+                : ''
+            }`}
             placement="top"
           >
             <Checkbox
@@ -1433,6 +1642,53 @@ const PainIssueTableHead: React.FC<{
   </thead>
 );
 
+const hasTrackingOperations = (
+  decisionMode: boolean,
+  tracking: IssuePainTracking | undefined,
+  onTrackingAction: PainIssueTableProps['onTrackingAction'],
+  onRerun: PainIssueTableProps['onRerun']
+) =>
+  !decisionMode &&
+  Boolean(onTrackingAction || onRerun) &&
+  Boolean(
+    tracking &&
+      (tracking.status === IssuePainTrackingStatus.TRACKING ||
+        tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST)
+  );
+
+const getRerunNumbers = (
+  tracking: IssuePainTracking | undefined,
+  issues: ActiveTrackingIssue[]
+) =>
+  issues
+    .filter((issue) => isRerunEligible(tracking, issue))
+    .map((issue) => issue.number);
+
+const canUseManualFix = (
+  tracking: IssuePainTracking | undefined,
+  issues: ActiveTrackingIssue[],
+  desired: boolean
+) =>
+  Boolean(
+    tracking?.trackingType === 'fix' &&
+      issues.some((issue) => Boolean(issue.fixed) !== desired)
+  );
+
+const getBatchRerunLabel = (tracking?: IssuePainTracking) =>
+  tracking?.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST
+    ? '批量发起复测'
+    : '批量重跑检查';
+
+// 选择框不再因重跑锁定而置灰：锁定中的 Issue 仍可勾选参与批量判定等操作，
+// 批量修复/撤销/重跑会自动跳过锁定项并在工具栏提示数量。
+const isOperationIssueSelectable = (
+  tracking: IssuePainTracking | undefined,
+  issue: ActiveTrackingIssue | undefined
+) =>
+  issue?.valid === true &&
+  (tracking?.trackingType === 'fix' ||
+    (Boolean(issue) && isRerunEligible(tracking, issue)));
+
 const PainIssueTable: React.FC<PainIssueTableProps> = ({
   issues,
   tracking,
@@ -1442,6 +1698,10 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   decisions,
   onDecisionsChange,
   onTrackingAction,
+  onRerun,
+  rerunDisabledReason = null,
+  lockedIssueNumbers = [],
+  onOpenRerunRecords,
 }) => {
   const pageSize = 10;
   const batchOperatorInputId = React.useId();
@@ -1458,7 +1718,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     (message: string) => {
       const prompt =
         message === '请填写提交人'
-          ? '请先填写提交人，再进行判定或修复操作'
+          ? '请先填写提交人，再进行判定、修复或重跑操作'
           : message;
       setBatchOperatorError(prompt);
       document.getElementById(batchOperatorInputId)?.focus();
@@ -1469,11 +1729,12 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     [batchOperatorInputId]
   );
   const issueListKey = issues.map((issue) => issue.number).join(',');
+  const lockedIssueKey = lockedIssueNumbers.join(',');
   React.useEffect(() => {
     setCurrentPage(1);
     setSelectedNumbers([]);
     setBatchInvalidReasonOpen(false);
-  }, [issueListKey]);
+  }, [issueListKey, lockedIssueKey]);
   const maxPage = Math.max(1, Math.ceil(issues.length / pageSize));
   const safeCurrentPage = Math.min(currentPage, maxPage);
   const activeIssueMap = new Map(
@@ -1486,12 +1747,11 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     ].map((issue) => [issue.number, issue])
   );
   const decisionMode = Boolean(decisions && onDecisionsChange);
-  const operationMode = Boolean(
-    !decisionMode &&
-      tracking?.trackingType === 'fix' &&
-      onTrackingAction &&
-      (tracking.status === IssuePainTrackingStatus.TRACKING ||
-        tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST)
+  const operationMode = hasTrackingOperations(
+    decisionMode,
+    tracking,
+    onTrackingAction,
+    onRerun
   );
   // 待确认阶段的即时判定模式：与修复阶段一致，逐条提交并校验共享提交人。
   const pendingDecisionMode = Boolean(
@@ -1527,10 +1787,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   ).length;
   const showSelection = decisionMode || operationMode || pendingDecisionMode;
   const showStatus = Boolean(tracking) && !decisionMode && !pendingDecisionMode;
-  const showAction =
-    Boolean(tracking && onTrackingAction) &&
-    !decisionMode &&
-    !pendingDecisionMode;
+  const showAction = operationMode;
   const tableLayout = getPainIssueTableLayout(
     responsive,
     Boolean(renderReportLink)
@@ -1554,19 +1811,26 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     unresolvedFixIssueNumbers,
     selectedSet
   );
+  // 选择框解锁后锁定 Issue 可被勾选，批量修复/撤销/重跑统一过滤并提示数量。
+  const lockedSelectedCount = selectedNumbers.filter((number) =>
+    lockedIssueNumbers.includes(number)
+  ).length;
   const selectedTrackingIssues = selectedNumbers.flatMap((number) => {
+    if (lockedIssueNumbers.includes(number)) return [];
     const issue = activeIssueMap.get(number);
     return issue ? [issue] : [];
   });
-  const canBatchFix = selectedTrackingIssues.some((issue) => !issue.fixed);
-  const canBatchUndo = selectedTrackingIssues.some((issue) => issue.fixed);
+  const canBatchFix = canUseManualFix(tracking, selectedTrackingIssues, true);
+  const canBatchUndo = canUseManualFix(tracking, selectedTrackingIssues, false);
+  const rerunIssueNumbers = getRerunNumbers(tracking, selectedTrackingIssues);
+  const canBatchRerun = Boolean(onRerun && rerunIssueNumbers.length);
   // 全选跨页生效：基于全部可选 Issue（而非当前页）计算选中状态。
   const allNumbers = sortedIssues
     .filter(
       (issue) =>
         decisionMode ||
         (pendingDecisionMode && activeIssueMap.has(issue.number)) ||
-        activeIssueMap.get(issue.number)?.valid === true
+        isOperationIssueSelectable(tracking, activeIssueMap.get(issue.number))
     )
     .map((issue) => issue.number);
   const allSelected =
@@ -1660,6 +1924,24 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     }
     setBatchInvalidReasonOpen(true);
   };
+  const applyBatchRerun = async () => {
+    if (!onRerun || !rerunIssueNumbers.length) return;
+    const validation = validateOperator(operator);
+    if (validation) {
+      notifyOperatorInvalid(validation);
+      return;
+    }
+    setBatchSubmitting(true);
+    setBatchOperatorError('');
+    try {
+      await onRerun(rerunIssueNumbers, rememberOperator(operator));
+      setSelectedNumbers([]);
+    } catch {
+      // 上层已提示失败，保留选择便于重试。
+    } finally {
+      setBatchSubmitting(false);
+    }
+  };
 
   if (!issues.length) {
     return (
@@ -1686,6 +1968,11 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         submitting={batchSubmitting}
         canBatchFix={canBatchFix}
         canBatchUndo={canBatchUndo}
+        showManualFixActions={tracking?.trackingType === 'fix'}
+        canBatchRerun={canBatchRerun}
+        rerunLabel={getBatchRerunLabel(tracking)}
+        rerunDisabledReason={rerunDisabledReason}
+        lockedSelectedCount={lockedSelectedCount}
         completesPendingDecision={completesPendingDecision}
         onOperatorChange={(value) => {
           setOperator(value);
@@ -1695,6 +1982,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         onBatchAction={(type) => void applyBatchAction(type)}
         onBatchDecision={(valid) => void applyBatchDecision(valid)}
         onRequestBatchInvalid={requestBatchInvalidDecision}
+        onBatchRerun={() => void applyBatchRerun()}
       />
       <div className="overflow-x-auto">
         <table
@@ -1709,6 +1997,10 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
             showSelection={showSelection}
             showReportLink={Boolean(renderReportLink)}
             allNumbers={allNumbers}
+            allLockedCount={
+              allNumbers.filter((number) => lockedIssueNumbers.includes(number))
+                .length
+            }
             allSelected={allSelected}
             someSelected={someSelected}
             onToggleAll={(checked) => {
@@ -1750,6 +2042,29 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
                 operator={operator}
                 selected={selectedSet.has(issue.number)}
                 onOperatorInvalid={notifyOperatorInvalid}
+                onRerun={
+                  onRerun
+                    ? (numbers, operatorValue) =>
+                        onRerun(numbers, rememberOperator(operatorValue))
+                    : undefined
+                }
+                rerunDisabledReason={
+                  lockedIssueNumbers.includes(issue.number)
+                    ? LOCKED_ISSUE_RERUN_REASON
+                    : rerunDisabledReason
+                }
+                manualDisabledReason={
+                  lockedIssueNumbers.includes(issue.number)
+                    ? LOCKED_ISSUE_MANUAL_REASON
+                    : null
+                }
+                onOpenRerunRecords={onOpenRerunRecords}
+                selectionDisabled={
+                  !isOperationIssueSelectable(
+                    tracking,
+                    activeIssueMap.get(issue.number)
+                  )
+                }
                 onSelectionChange={(number, checked) =>
                   setSelectedNumbers((current) =>
                     checked

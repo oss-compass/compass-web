@@ -1,8 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
-import { Empty, Skeleton, Typography } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
+import { Button, Empty, Skeleton, Tooltip, Typography } from 'antd';
+import { HistoryOutlined, RightOutlined } from '@ant-design/icons';
 import { buildIssueRepoManagementHref } from '../../../routes';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
@@ -11,6 +11,7 @@ import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
 import IssueMetricsAppendix from './IssueMetricsAppendix';
+import RerunJobListModal from '../RerunJobListModal';
 import {
   IssueRepoRankings,
   IssueScoreDistribution,
@@ -43,6 +44,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const [appendixOpen, setAppendixOpen] = React.useState(false);
   const [trendModal, setTrendModal] =
     React.useState<IssueTrendModalData | null>(null);
+  const [rerunListOpen, setRerunListOpen] = React.useState(false);
   const repoManagementHref = buildIssueRepoManagementHref({ org });
 
   const {
@@ -64,7 +66,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     staleTime: ISSUE_QUERY_STALE_TIME,
   });
 
-  if (overviewLoading || painsLoading) {
+  // 总览主体先使用轻量聚合接口渲染；全量痛点较慢时仅对应模块显示骨架屏，
+  // 不再阻塞评分、仓库排行和覆盖情况等首屏内容。
+  if (overviewLoading) {
     return (
       <>
         <Title level={4} className="oj-section-title">
@@ -188,9 +192,21 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
 
   return (
     <>
-      <Title level={4} className="oj-section-title">
-        总览信息
-      </Title>
+      <div className="flex items-center justify-between gap-3">
+        <Title level={4} className="oj-section-title">
+          总览信息
+        </Title>
+        <Tooltip title="查看当前组织全部仓库的 Issue 重跑任务（重跑检查/发起复测）">
+          <Button
+            size="small"
+            className="!rounded-lg"
+            icon={<HistoryOutlined />}
+            onClick={() => setRerunListOpen(true)}
+          >
+            重跑任务
+          </Button>
+        </Tooltip>
+      </div>
       <div
         className="overview-bottom-row"
         style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
@@ -322,6 +338,11 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         open={!!trendModal}
         trend={trendModal}
         onClose={() => setTrendModal(null)}
+      />
+      <RerunJobListModal
+        open={rerunListOpen}
+        onClose={() => setRerunListOpen(false)}
+        scope={{ type: 'org', org }}
       />
     </>
   );
