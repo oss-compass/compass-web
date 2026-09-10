@@ -115,7 +115,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const resolvedPains = pains.filter(isResolvedPain).length;
   const painCloseRate = pains.length ? (resolvedPains / pains.length) * 100 : 0;
   const excellentRepos = latestRepos.filter(
-    (repo) => repo.idxTotal >= 90
+    (repo) => repo.idxTotal >= 95
   ).length;
   const teamCount = new Set(
     latestRepos.map((repo) => repo.teamName).filter(Boolean)
@@ -144,7 +144,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   });
   const excellentRepoTrend = data.agg.periods.map(
     (period) =>
-      data.repos.filter((repo) => repo.period === period && repo.idxTotal >= 90)
+      data.repos.filter((repo) => repo.period === period && repo.idxTotal >= 95)
         .length
   );
   const coverageRepoTrend = data.agg.periods.map(
@@ -173,7 +173,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       trendUnit: '%',
     },
     {
-      label: '达成 90 分以上仓数',
+      label: '达成 95 分以上仓数',
       value: String(excellentRepos),
       sub: `占最新周期仓库 ${
         latestRepos.length

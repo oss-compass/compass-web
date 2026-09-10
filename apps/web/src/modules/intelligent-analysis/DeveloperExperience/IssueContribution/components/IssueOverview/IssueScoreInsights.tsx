@@ -224,7 +224,7 @@ const DistributionRows: React.FC<{
                 style={{
                   width: isTotal
                     ? '100%'
-                    : `${Math.max(20, (item.values.length / maxCount) * 100)}%`,
+                    : `${(item.values.length / maxCount) * 100}%`,
                 }}
               >
                 {counts.map(({ band, repos }) =>
@@ -501,10 +501,7 @@ const RankingColumn: React.FC<{
                 height={22}
                 maxValue={100}
               />
-              <b
-                className="tabular-nums"
-                style={{ color: scoreColor(repo.idxTotal) }}
-              >
+              <b className="tabular-nums" style={{ color: '#3d7df6' }}>
                 {repo.idxTotal.toFixed(1)}
               </b>
             </div>

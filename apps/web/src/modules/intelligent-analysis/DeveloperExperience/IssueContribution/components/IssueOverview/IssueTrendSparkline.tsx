@@ -27,6 +27,7 @@ const IssueTrendSparkline: React.FC<{
           values={trend.values}
           width={width}
           height={height}
+          stroke="#2563EB"
           minValue={0}
           maxValue={maxValue}
         />

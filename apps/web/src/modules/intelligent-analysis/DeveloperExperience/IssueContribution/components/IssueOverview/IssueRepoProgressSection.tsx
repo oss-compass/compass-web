@@ -375,6 +375,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           >
             <CloseRateSparkline
               values={repo.idxTrend}
+              stroke="#2563EB"
               minValue={0}
               maxValue={100}
             />
@@ -406,6 +407,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           >
             <CloseRateSparkline
               values={row.scoreTrend}
+              stroke="#2563EB"
               minValue={0}
               maxValue={100}
             />
