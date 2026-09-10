@@ -38,6 +38,13 @@ const compareScore = (a: number, b: number) => {
   return a - b;
 };
 
+/** 文本排序统一使用中文语义，并开启数字感知（例如 #9 排在 #10 前）。 */
+const compareText = (a?: string, b?: string) =>
+  (a ?? '').localeCompare(b ?? '', 'zh-CN', {
+    numeric: true,
+    sensitivity: 'base',
+  });
+
 /** 文本占位符：旧版报告无该字段或数据为「—」时统一显示 */
 const dash = (value?: string) => (value && value !== '—' ? value : '—');
 
@@ -155,6 +162,7 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
       dataIndex: 'title',
       width: 260,
       align: 'left',
+      sorter: (a, b) => compareText(a.number, b.number),
       render: (_value, row) => {
         const painStages = splitPainStages(row.pain_stages);
         return (
@@ -186,6 +194,7 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
       dataIndex: 'issue_type',
       width: 76,
       align: 'center',
+      sorter: (a, b) => compareText(a.issue_type, b.issue_type),
       render: (value: string | undefined) => {
         const text = dash(value);
         if (text === '—') return <span className="text-slate-400">—</span>;
@@ -205,6 +214,7 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
       dataIndex: 'scope',
       width: 76,
       align: 'center',
+      sorter: (a, b) => compareText(a.scope, b.scope),
       render: (value: string | undefined) => {
         const text = dash(value);
         if (text === '—') return <span className="text-slate-400">—</span>;
@@ -224,6 +234,7 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
       dataIndex: 'state',
       width: 84,
       align: 'center',
+      sorter: (a, b) => compareText(a.state, b.state),
       render: (value: string) => (
         <span
           className={`inline-flex rounded px-1.5 py-0.5 text-[11px] font-semibold ${

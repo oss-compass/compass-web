@@ -1009,10 +1009,10 @@ const IssueStatusCell: React.FC<{
 };
 
 /**
- * Issue 是否可发起重跑：
- * - 状态 2（已确认待修复）：I0/I1 无人工修复入口，始终可重跑检查；
- *   I2/I3 必须先人工点击“完成修复”（fixed=true）后才展示重跑检查。
- * - 状态 3（已修复待复测）：复测尚未通过的 Issue 可发起复测。
+ * Issue 是否可发起复测：
+ * - 状态 2（已确认待修复）：I0/I1 无人工修复入口，可直接发起复测；
+ *   I2/I3 必须先人工点击“完成修复”（fixed=true）后才可发起复测。
+ * - 状态 3（已修复待复测）：复测尚未通过的 Issue 可再次发起复测。
  */
 const isRerunEligible = (
   tracking: IssuePainTracking | undefined,
@@ -1087,9 +1087,7 @@ const IssueActionCell: React.FC<{
       onClick={run}
     >
       <ReloadOutlined />
-      {tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST
-        ? '发起复测'
-        : '重跑检查'}
+      发起复测
     </button>
   );
   return (
@@ -1674,10 +1672,7 @@ const canUseManualFix = (
       issues.some((issue) => Boolean(issue.fixed) !== desired)
   );
 
-const getBatchRerunLabel = (tracking?: IssuePainTracking) =>
-  tracking?.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST
-    ? '批量发起复测'
-    : '批量重跑检查';
+const getBatchRerunLabel = (_tracking?: IssuePainTracking) => '批量发起复测';
 
 // 选择框不再因重跑锁定而置灰：锁定中的 Issue 仍可勾选参与批量判定等操作，
 // 批量修复/撤销/重跑会自动跳过锁定项并在工具栏提示数量。

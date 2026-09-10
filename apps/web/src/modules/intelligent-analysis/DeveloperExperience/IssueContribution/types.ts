@@ -375,7 +375,10 @@ export type IssuePainRerunResult = {
   trackingKey: string;
   issueNumber: string;
   stageId: string;
+  stageName?: string;
+  painTitle?: string;
   metricCodes: string[];
+  metricLabels?: string[];
   mode?: 'repair_check' | 'retest';
   result: 'resolved' | 'still_present' | 'excluded' | 'missing_tracking_issue';
   stateChanged?: boolean;
@@ -439,6 +442,7 @@ export type IssuePainRerunJob = {
 
 export type IssuePainTrackingResponse = {
   items: IssuePainTracking[];
+  closedPains?: IssueReportPain[];
   reportBindings: Array<{
     painId: string;
     stageId: string;

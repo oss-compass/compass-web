@@ -369,7 +369,10 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
               <IssueExperiencePath
                 projectName={report.data.community_name}
                 stages={visibleStages}
-                pains={report.data.report_context.top_pains}
+                pains={[
+                  ...report.data.report_context.top_pains,
+                  ...(painTrackings?.closedPains ?? []),
+                ]}
                 recommendations={report.data.report_context.top_recs}
                 issueScoreRows={report.data.report_context.issue_score_rows}
                 activeStageId={activeStageId}

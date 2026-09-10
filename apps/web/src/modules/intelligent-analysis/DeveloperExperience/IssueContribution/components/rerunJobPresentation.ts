@@ -46,16 +46,15 @@ export const isRerunLocked = (job?: IssuePainRerunJob | null) =>
 export const getLockedRerunIssueNumbers = (job?: IssuePainRerunJob | null) =>
   isRerunLocked(job) ? job?.issueNumbers ?? [] : [];
 
-export const getRerunModeLabel = (mode?: string | null) =>
-  mode === 'retest' ? '发起复测' : '重跑检查';
+/** 用户侧统一称为“发起复测”，内部 mode 仅用于决定状态流转。 */
+export const getRerunModeLabel = (_mode?: string | null) => '发起复测';
 
 export const getRerunResultLabel = (
   result: Pick<IssuePainRerunResult, 'result' | 'mode'>,
-  fallbackMode?: string | null
+  _fallbackMode?: string | null
 ) => {
-  const isRetest = (result.mode ?? fallbackMode) === 'retest';
   if (result.result === 'resolved') {
-    return isRetest ? '复测通过' : '已自动标记修复';
+    return '复测通过';
   }
   return '复测未通过';
 };

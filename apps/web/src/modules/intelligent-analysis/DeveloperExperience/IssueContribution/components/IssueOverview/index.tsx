@@ -196,7 +196,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         <Title level={4} className="oj-section-title">
           总览信息
         </Title>
-        <Tooltip title="查看当前组织全部仓库的 Issue 重跑任务（重跑检查/发起复测）">
+        <Tooltip title="查看当前组织全部仓库的 Issue 复测任务">
           <Button
             size="small"
             className="!rounded-lg"

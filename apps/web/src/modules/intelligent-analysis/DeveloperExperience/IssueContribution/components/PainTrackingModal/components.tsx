@@ -408,6 +408,97 @@ export const ArchivedIssueList: React.FC<{
   );
 };
 
+/** 已复测通过的 Issue：默认折叠，兼容已退出当前报告范围的历史 Issue。 */
+export const PassedIssueTable: React.FC<{
+  tracking: IssuePainTracking;
+}> = ({ tracking }) => {
+  const [open, setOpen] = useState(false);
+  const issues = Array.from(
+    new Map(
+      [...tracking.archivedIssues, ...tracking.activeIssues]
+        .filter((issue) => !issue.synthetic && issue.retest_status === 'passed')
+        .map((issue) => [issue.number, issue])
+    ).values()
+  );
+  if (!issues.length) return null;
+  return (
+    <div className="mt-6">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/60 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-emerald-50"
+      >
+        <CheckCircleFilled className="text-emerald-500" />
+        <span>已复测通过 Issue</span>
+        <span className="font-normal text-slate-400">
+          共 {issues.length} 条
+        </span>
+        <DownOutlined
+          className={`ml-auto text-[11px] text-slate-400 transition-transform ${
+            open ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+      {open ? (
+        <div className="mt-2 overflow-hidden rounded-xl border border-slate-200">
+          <Table<IssuePainTrackingIssue>
+            size="small"
+            rowKey="number"
+            dataSource={issues}
+            pagination={
+              issues.length > 5 ? { pageSize: 5, size: 'small' } : false
+            }
+            columns={[
+              {
+                title: 'Issue',
+                dataIndex: 'number',
+                width: 100,
+                render: (_value, issue) =>
+                  issue.url ? (
+                    <a
+                      href={issue.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-blue-600 hover:underline"
+                    >
+                      <LinkOutlined /> #{issue.number}
+                    </a>
+                  ) : (
+                    <span>#{issue.number}</span>
+                  ),
+              },
+              {
+                title: '标题',
+                dataIndex: 'title',
+                ellipsis: true,
+                render: (value: string) => (
+                  <Tooltip title={value} placement="topLeft">
+                    <span>{value || '—'}</span>
+                  </Tooltip>
+                ),
+              },
+              {
+                title: '复测人',
+                dataIndex: 'retested_by',
+                width: 100,
+                render: (value?: string | null) => value || '—',
+              },
+              {
+                title: '复测时间',
+                dataIndex: 'retested_at',
+                width: 140,
+                render: (value?: string | null) =>
+                  value ? formatTrackingTime(value) : '—',
+              },
+            ]}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 export const TrackingHistoryTable: React.FC<{
   history: IssuePainTrackingHistory[];
 }> = ({ history }) => {

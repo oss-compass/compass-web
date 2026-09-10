@@ -51,7 +51,7 @@ export const ACTION_LABELS: Record<string, string> = {
   undo_issue_fixed: '撤销修复标记',
   mark_issues_fixed: '批量标记已修复',
   undo_issues_fixed: '批量撤销修复标记',
-  rerun_repair_check: '重跑检查结果',
+  rerun_repair_check: '复测结果',
   rerun_retest_passed: '重跑复测通过',
   rerun_retest_failed: '重跑复测不通过',
   retest_failed: '自动复测不通过',

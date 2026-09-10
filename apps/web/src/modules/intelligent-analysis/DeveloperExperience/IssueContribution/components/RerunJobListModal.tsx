@@ -1,9 +1,10 @@
 import React from 'react';
 import { HistoryOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Empty, Modal, Select, Table, Tooltip } from 'antd';
+import type { TableProps } from 'antd';
 import toast from 'react-hot-toast';
 import { cancelIssuePainRerun, fetchIssuePainReruns } from '../data';
-import type { IssuePainRerunJob } from '../types';
+import type { IssuePainRerunJob, IssuePainRerunResult } from '../types';
 import { shortTrackingPeriod } from './PainTrackingModal/utils';
 import {
   RERUN_STATUS_META,
@@ -31,13 +32,149 @@ type RerunJobListModalProps = {
 
 const PAGE_SIZE = 10;
 const POLL_INTERVAL_MS = 15_000;
-/** 仅剩等待报告上传等长等待任务时的降频轮询间隔。 */
-const SLOW_POLL_INTERVAL_MS = 60_000;
 
-const MODE_OPTIONS = [
-  { value: 'repair_check', label: '重跑检查' },
-  { value: 'retest', label: '发起复测' },
-] as const;
+/** 同一个任务结果的唯一粒度是痛点 + Issue，防御重复应用数据。 */
+const uniqueRerunResults = (results: IssuePainRerunResult[]) =>
+  Array.from(
+    new Map(
+      results.map((result) => [
+        `${result.trackingKey}#${result.issueNumber}`,
+        result,
+      ])
+    ).values()
+  );
+
+export const RerunResultTable: React.FC<{
+  job: IssuePainRerunJob;
+  trackingKey?: string;
+  metricLabels?: string[];
+}> = ({ job, trackingKey, metricLabels }) => {
+  const results = uniqueRerunResults(job.results).filter(
+    (result) => !trackingKey || result.trackingKey === trackingKey
+  );
+  const columns: TableProps<IssuePainRerunResult>['columns'] = [
+    {
+      title: 'Issue',
+      dataIndex: 'issueNumber',
+      width: 82,
+      render: (value: string) => (
+        <span className="font-semibold text-blue-600">#{value}</span>
+      ),
+    },
+    {
+      title: '对应痛点',
+      key: 'pain',
+      width: 270,
+      render: (_value, result) => {
+        const labels = result.metricLabels?.length
+          ? result.metricLabels
+          : trackingKey === result.trackingKey && metricLabels?.length
+          ? metricLabels
+          : result.metricCodes;
+        return (
+          <div className="min-w-0">
+            <div className="flex flex-wrap gap-1">
+              {result.stageId ? (
+                <span className="rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-600">
+                  {result.stageId}
+                </span>
+              ) : null}
+              {labels.map((label) => (
+                <span
+                  key={label}
+                  className="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600"
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+            {result.stageName ? (
+              <Tooltip
+                title={
+                  result.metricCodes.length
+                    ? result.metricCodes.join('、')
+                    : undefined
+                }
+              >
+                <div className="truncate text-[10px] text-slate-400">
+                  {result.stageName}
+                </div>
+              </Tooltip>
+            ) : null}
+          </div>
+        );
+      },
+    },
+    {
+      title: '得分变化',
+      key: 'score',
+      width: 105,
+      render: (_value, result) => (
+        <span className="whitespace-nowrap text-xs tabular-nums text-slate-600">
+          {result.beforeFinalScore ?? '—'} → {result.afterFinalScore ?? '—'}
+        </span>
+      ),
+    },
+    {
+      title: '处理结果',
+      key: 'result',
+      width: 130,
+      render: (_value, result) => (
+        <span
+          className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+            result.result === 'resolved'
+              ? 'bg-emerald-50 text-emerald-700'
+              : 'bg-rose-50 text-rose-600'
+          }`}
+        >
+          {getRerunResultLabel(result, job.mode)}
+        </span>
+      ),
+    },
+    {
+      title: '指标变化',
+      key: 'metrics',
+      render: (_value, result) => {
+        const changes = getMetricChangeSummary(result);
+        return (
+          <span className="text-xs leading-5 text-slate-500">
+            {changes.length ? changes.join('；') : '—'}
+          </span>
+        );
+      },
+    },
+  ];
+  return (
+    <>
+      <Table<IssuePainRerunResult>
+        className="issue-rerun-result-table"
+        rowKey={(result) => `${result.trackingKey}-${result.issueNumber}`}
+        columns={columns}
+        dataSource={results}
+        pagination={false}
+        size="small"
+        scroll={{ x: 760 }}
+      />
+      <style jsx global>{`
+        .issue-rerun-result-table .ant-table-container {
+          overflow: hidden;
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
+        }
+        .issue-rerun-result-table .ant-table-thead > tr > th {
+          background: #f8fafc;
+          color: #64748b;
+          font-size: 11px;
+          font-weight: 600;
+        }
+        .issue-rerun-result-table .ant-table-tbody > tr > td {
+          vertical-align: middle;
+          font-size: 12px;
+        }
+      `}</style>
+    </>
+  );
+};
 
 const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
   open,
@@ -45,7 +182,6 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
   scope,
 }) => {
   const [status, setStatus] = React.useState<string | undefined>();
-  const [mode, setMode] = React.useState<string | undefined>();
   const [page, setPage] = React.useState(1);
   const [data, setData] = React.useState<{
     items: IssuePainRerunJob[];
@@ -53,30 +189,31 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
   } | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [cancellingId, setCancellingId] = React.useState<string | null>(null);
+  const scopeType = scope.type;
+  const scopeOrg = scope.type === 'org' ? scope.org : undefined;
+  const scopeReportKey = scope.type === 'report' ? scope.reportKey : undefined;
+  const scopeIdentity = `${scopeType}:${scopeOrg ?? scopeReportKey ?? ''}`;
 
   React.useEffect(() => {
     if (open) {
       setStatus(undefined);
-      setMode(undefined);
       setPage(1);
       setData(null);
     }
-  }, [open, scope]);
+  }, [open, scopeIdentity]);
 
   const load = React.useCallback(
     async (signal?: AbortSignal) => {
       setLoading(true);
       try {
         const base =
-          scope.type === 'org'
-            ? { org: scope.org }
-            : { reportKey: scope.reportKey };
+          scopeType === 'org'
+            ? { org: scopeOrg }
+            : { reportKey: scopeReportKey };
         const response = await fetchIssuePainReruns(
           {
             ...base,
             status,
-            mode:
-              mode === 'repair_check' || mode === 'retest' ? mode : undefined,
             page,
             pageSize: PAGE_SIZE,
           },
@@ -94,7 +231,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
         setLoading(false);
       }
     },
-    [mode, page, scope, status]
+    [page, scopeOrg, scopeReportKey, scopeType, status]
   );
 
   React.useEffect(() => {
@@ -104,16 +241,8 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
     return () => controller.abort();
   }, [load, open]);
 
-  // 存在进行中的任务时轮询刷新，关闭弹窗即停止。
-  // 第三方执行中（pending/running）保持快节奏；仅剩等待报告上传等
-  // 长等待任务时降频，避免弹窗开着就持续高频打接口。
+  // 任务记录弹窗拥有独立的 15 秒轮询，打开才启动，关闭即停止。
   const hasActiveJob = (data?.items ?? []).some(isRerunLocked);
-  const hasRunningJob = (data?.items ?? []).some(
-    (job) => job.taskStatus === 'pending' || job.taskStatus === 'running'
-  );
-  const pollIntervalMs = hasRunningJob
-    ? POLL_INTERVAL_MS
-    : SLOW_POLL_INTERVAL_MS;
   React.useEffect(() => {
     if (!open || !hasActiveJob) return;
     const controller = new AbortController();
@@ -126,13 +255,13 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
       if (!document.hidden) poll();
     };
     document.addEventListener('visibilitychange', onVisibilityChange);
-    const timer = window.setInterval(poll, pollIntervalMs);
+    const timer = window.setInterval(poll, POLL_INTERVAL_MS);
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange);
       controller.abort();
       window.clearInterval(timer);
     };
-  }, [hasActiveJob, load, open, pollIntervalMs]);
+  }, [hasActiveJob, load, open]);
 
   const cancelJob = async (job: IssuePainRerunJob) => {
     setCancellingId(job.jobId);
@@ -284,20 +413,21 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
             <span className="text-xs text-slate-300">—</span>
           );
         }
-        const resolved = job.results.filter(
+        const results = uniqueRerunResults(job.results);
+        const resolved = results.filter(
           (item) => item.result === 'resolved'
         ).length;
         return (
           <span
             className={`text-xs font-semibold ${
-              resolved === job.results.length
+              resolved === results.length
                 ? 'text-emerald-600'
                 : resolved
                 ? 'text-amber-600'
                 : 'text-rose-500'
             }`}
           >
-            {resolved}/{job.results.length} 解决
+            {resolved}/{results.length} 解决
           </span>
         );
       },
@@ -357,18 +487,6 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
               setPage(1);
             }}
           />
-          <Select
-            allowClear
-            placeholder="任务类型"
-            className="issue-rerun-list-filter !w-32"
-            size="small"
-            options={[...MODE_OPTIONS]}
-            value={mode}
-            onChange={(value) => {
-              setMode(value);
-              setPage(1);
-            }}
-          />
           <Button
             size="small"
             className="issue-rerun-list-action-button"
@@ -380,11 +498,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
           </Button>
           <span className="ml-auto text-xs text-slate-400">
             {hasActiveJob
-              ? `存在进行中的任务，每 ${
-                  hasRunningJob
-                    ? POLL_INTERVAL_MS / 1000
-                    : SLOW_POLL_INTERVAL_MS / 1000
-                } 秒自动刷新`
+              ? `存在进行中的任务，每 ${POLL_INTERVAL_MS / 1000} 秒自动刷新`
               : `共 ${data?.total ?? 0} 条记录`}
           </span>
         </div>
@@ -417,31 +531,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
           expandable={{
             rowExpandable: (record) =>
               record.applyStatus === 'applied' && record.results.length > 0,
-            expandedRowRender: (record) => (
-              <div className="flex flex-wrap gap-2 py-1">
-                {record.results.map((item) => (
-                  <div
-                    key={`${item.trackingKey}-${item.issueNumber}`}
-                    className={`rounded-lg border px-2.5 py-1.5 text-[11px] ${
-                      item.result === 'resolved'
-                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                        : 'border-rose-200 bg-rose-50 text-rose-600'
-                    }`}
-                  >
-                    <div>
-                      #{item.issueNumber} · {item.beforeFinalScore ?? '—'} →{' '}
-                      {item.afterFinalScore ?? '—'} ·{' '}
-                      {getRerunResultLabel(item, record.mode)}
-                    </div>
-                    {getMetricChangeSummary(item).length ? (
-                      <div className="mt-0.5 text-[10px] opacity-80">
-                        指标变化：{getMetricChangeSummary(item).join('；')}
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            ),
+            expandedRowRender: (record) => <RerunResultTable job={record} />,
           }}
         />
         <div className="text-xs text-slate-400">
