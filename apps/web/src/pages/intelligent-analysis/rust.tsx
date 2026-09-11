@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 
 import getLocalesFile from '@common/utils/getLocalesFile';
 import IntelligentAnalysisLayout from '@modules/intelligent-analysis/components/Layout';
+import IntelligentAnalysisAccessGuard from '@modules/intelligent-analysis/components/AccessGuard';
 import RustPage from '@modules/intelligent-analysis/Rust';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
@@ -16,7 +17,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 const RustAnalysisPage: React.FC = () => {
   return (
     <IntelligentAnalysisLayout>
-      <RustPage />
+      <IntelligentAnalysisAccessGuard>
+        <RustPage />
+      </IntelligentAnalysisAccessGuard>
     </IntelligentAnalysisLayout>
   );
 };

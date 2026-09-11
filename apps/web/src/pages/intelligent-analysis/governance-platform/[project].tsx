@@ -5,6 +5,7 @@ import getLocalesFile from '@common/utils/getLocalesFile';
 import { isValidProject } from '@modules/intelligent-analysis/config/projects';
 import Header from '@common/components/Header';
 import StickyNav from '@common/components/Header/StickyNav';
+import IntelligentAnalysisAccessGuard from '@modules/intelligent-analysis/components/AccessGuard';
 
 const Main = dynamic(
   () =>
@@ -42,7 +43,9 @@ const ProjectPage: React.FC<ProjectPageProps> = ({ projectType }) => {
       <StickyNav className=">md:-top-[80px] md:-top-[48px]">
         <Header />
       </StickyNav>
-      <Main projectType={projectType} />
+      <IntelligentAnalysisAccessGuard>
+        <Main projectType={projectType} />
+      </IntelligentAnalysisAccessGuard>
     </>
   );
 };

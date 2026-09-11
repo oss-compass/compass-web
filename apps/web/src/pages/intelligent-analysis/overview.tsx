@@ -2,6 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import IntelligentAnalysisLayout from '@modules/intelligent-analysis/components/Layout';
+import IntelligentAnalysisAccessGuard from '@modules/intelligent-analysis/components/AccessGuard';
 import Overview from '@modules/intelligent-analysis/DataView/Overview';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
@@ -15,7 +16,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 const OverviewPage: React.FC = () => {
   return (
     <IntelligentAnalysisLayout>
-      <Overview />
+      <IntelligentAnalysisAccessGuard>
+        <Overview />
+      </IntelligentAnalysisAccessGuard>
     </IntelligentAnalysisLayout>
   );
 };

@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import getLocalesFile from '@common/utils/getLocalesFile';
 import IntelligentAnalysisLayout from '@modules/intelligent-analysis/components/Layout';
+import IntelligentAnalysisAccessGuard from '@modules/intelligent-analysis/components/AccessGuard';
 import { isValidProject } from '@modules/intelligent-analysis/config/projects';
 
 const Main = dynamic(
@@ -37,7 +38,9 @@ interface ProjectPageProps {
 const ProjectPage: React.FC<ProjectPageProps> = ({ projectType }) => {
   return (
     <IntelligentAnalysisLayout>
-      <Main projectType={projectType} />
+      <IntelligentAnalysisAccessGuard>
+        <Main projectType={projectType} />
+      </IntelligentAnalysisAccessGuard>
     </IntelligentAnalysisLayout>
   );
 };

@@ -5,6 +5,7 @@ import Overview from '@modules/intelligent-analysis/GovernancePlatform/index';
 import Header from '@common/components/Header';
 import { Main } from '@common/components/Layout';
 import StickyNav from '@common/components/Header/StickyNav';
+import IntelligentAnalysisAccessGuard from '@modules/intelligent-analysis/components/AccessGuard';
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return {
@@ -23,8 +24,9 @@ const GovernancePlatformPage: React.FC = () => {
       <Main>
         <div className="flex h-[calc(100vh-80px)] flex-1 overflow-auto">
           <div className="w-full overflow-y-auto">
-            {' '}
-            <Overview />
+            <IntelligentAnalysisAccessGuard>
+              <Overview />
+            </IntelligentAnalysisAccessGuard>
           </div>
         </div>
       </Main>
