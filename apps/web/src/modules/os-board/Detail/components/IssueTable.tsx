@@ -1,8 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Popover, Select, Tabs, Radio } from 'antd';
+import { Popover, Select, Tabs, Radio, Divider, Button } from 'antd';
 import { GoIssueOpened } from 'react-icons/go';
-import { AiFillClockCircle, AiOutlineIssuesClose } from 'react-icons/ai';
+import {
+  AiFillClockCircle,
+  AiOutlineFieldTime,
+  AiOutlineIssuesClose,
+} from 'react-icons/ai';
 import { BiChat } from 'react-icons/bi';
 import { SiGitee, SiGithub } from 'react-icons/si';
 import Image from 'next/image';
@@ -97,6 +101,19 @@ const getDefaultSortOption = (
   };
 };
 
+/**
+ * 社区模式联动筛选参数：组织/责任人筛选同时作用于汇总列表与概览统计，
+ * 仓库模式下均不生效
+ */
+const getCommunityFilterParams = (
+  isCommunity: boolean,
+  responsiblePerson: number | null,
+  organizations: string[]
+) =>
+  isCommunity
+    ? { responsiblePerson, organizations }
+    : { responsiblePerson: null, organizations: null };
+
 const RingChart: React.FC<{ percentage: number; size?: number }> = ({
   percentage,
   size = 24,
@@ -181,12 +198,14 @@ interface StatsCardProps {
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ icon, value, label }) => (
-  <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
+  <div className="min-w-0 rounded-lg border border-gray-100 bg-white p-3 shadow-sm">
     <div className="flex items-center text-lg font-medium">
-      <div className="mr-2 text-[#3A5BEF]">{icon}</div>
+      <div className="mr-2 shrink-0 text-[#3A5BEF]">{icon}</div>
       <div className="line-clamp-1">{value}</div>
     </div>
-    <div className="text-xs text-[#585858]">{label}</div>
+    <div className="truncate text-xs text-[#585858]" title={label}>
+      {label}
+    </div>
   </div>
 );
 
@@ -198,6 +217,7 @@ interface IssueStatsBarProps {
     issueResolutionDenominator?: number | null;
     issueUnresponsiveCount?: number | null;
     issueAverageResponseTime?: number | null;
+    issueAvgClosedLoopTime?: number | null;
   };
   dayUnitText: string;
   noResponseText: string;
@@ -221,7 +241,7 @@ const IssueStatsBar: React.FC<IssueStatsBarProps> = ({
       : '-';
 
   return (
-    <div className="mb-3 grid grid-cols-4 gap-3 md:grid-cols-2">
+    <div className="mb-3 grid grid-cols-5 gap-3 max-[640px]:grid-cols-2">
       <StatsCard
         icon={<GoIssueOpened />}
         value={statsData.issueCount ?? '-'}
@@ -246,6 +266,15 @@ const IssueStatsBar: React.FC<IssueStatsBarProps> = ({
           2
         )}
         label={t('analyze:metric_detail:average_response_time')}
+      />
+      <StatsCard
+        icon={<AiOutlineFieldTime />}
+        value={formatResponseTime(
+          statsData.issueAvgClosedLoopTime,
+          dayUnitText,
+          '-'
+        )}
+        label={t('os_board:issue_table.avg_processing_time')}
       />
     </div>
   );
@@ -293,6 +322,17 @@ const IssueTable: React.FC<IssueTableProps> = ({
     number | null
   >(null);
 
+  // 社区模式：组织独立筛选状态（空数组表示全部）
+  const [selectedOrganizations, setSelectedOrganizations] = useState<string[]>(
+    []
+  );
+
+  const communityFilterParams = getCommunityFilterParams(
+    isCommunityDashboard,
+    selectedResponsiblePerson,
+    selectedOrganizations
+  );
+
   const {
     data: issuesDetailData,
     isLoading: repoLoading,
@@ -324,7 +364,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
     sortOpts: tableParams.sortOpts || undefined,
     enabled: isCommunityDashboard && !!selectedProject,
     identifier: dashboardIdentifier,
-    responsiblePerson: isCommunityDashboard ? selectedResponsiblePerson : null,
+    responsiblePerson: communityFilterParams.responsiblePerson,
+    organization: communityFilterParams.organizations,
   });
 
   const {
@@ -340,7 +381,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
   const { data: organizationListData, refetch: refetchOrganizationList } =
     useOsBoardOrganizationList({
       project: selectedProject,
-      enabled: !isCommunityDashboard && !!selectedProject,
+      enabled: !!selectedProject,
     });
 
   const { data: issuesOverview, isLoading: statsLoading } =
@@ -349,9 +390,8 @@ const IssueTable: React.FC<IssueTableProps> = ({
       level: dashboardType,
       enabled: !!selectedProject,
       identifier: dashboardIdentifier,
-      responsiblePerson: isCommunityDashboard
-        ? selectedResponsiblePerson
-        : null,
+      responsiblePerson: communityFilterParams.responsiblePerson,
+      organization: communityFilterParams.organizations,
       priority: null,
       labelFilter: !isCommunityDashboard ? labelFilter : null,
     });
@@ -363,6 +403,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
     issueResolutionDenominator: issuesOverview?.issue_resolution_denominator,
     issueUnresponsiveCount: issuesOverview?.unresponsive_issue_count,
     issueAverageResponseTime: issuesOverview?.avg_response_time,
+    issueAvgClosedLoopTime: issuesOverview?.avg_closed_loop_time,
   };
 
   const activeTotalCount = isCommunityDashboard
@@ -417,7 +458,36 @@ const IssueTable: React.FC<IssueTableProps> = ({
     [organizationListData]
   );
 
+  // 社区模式组织筛选选项全集（用于反选计算差集）
+  const organizationList = useMemo(
+    () => organizationListData?.organizations ?? [],
+    [organizationListData]
+  );
+
+  const handleOrganizationChange = (values: string[]) => {
+    setSelectedOrganizations(values);
+    setTableParams((prev) => ({
+      ...prev,
+      pagination: { ...prev.pagination, current: 1 },
+    }));
+  };
+
+  // 全选：选中组织全集
+  const handleSelectAllOrganizations = () => {
+    handleOrganizationChange([...organizationList]);
+  };
+
+  // 反选：基于组织全集取差集（空选反选即全选）
+  const handleInvertOrganizations = () => {
+    const selectedSet = new Set(selectedOrganizations);
+    handleOrganizationChange(
+      organizationList.filter((org) => !selectedSet.has(org))
+    );
+  };
+
   React.useEffect(() => {
+    // 切换项目/模式后组织全集已变化，清空已选组织避免脏筛选
+    setSelectedOrganizations([]);
     setTableParams((prev) => {
       const removableFilterType = isCommunityDashboard
         ? 'repository'
@@ -866,7 +936,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
       />
 
       {isCommunityDashboard && (
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className="shrink-0 text-sm text-gray-500">
             {t('analyze:metric_detail:assignee')}：
           </span>
@@ -882,6 +952,50 @@ const IssueTable: React.FC<IssueTableProps> = ({
               label: user.name,
               value: user.id,
             }))}
+          />
+          <span className="shrink-0 text-sm text-gray-500">
+            {t('os_board:issue_table.organization_filter')}：
+          </span>
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            maxTagCount="responsive"
+            style={{ minWidth: 200, maxWidth: 360 }}
+            placeholder={t('common:all')}
+            value={selectedOrganizations}
+            onChange={handleOrganizationChange}
+            optionFilterProp="label"
+            options={organizationList.map((org) => ({
+              label: org,
+              value: org,
+            }))}
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                <Divider className="my-1" />
+                <div className="flex items-center gap-3 px-1 pb-1">
+                  <Button
+                    size="small"
+                    type="link"
+                    className="px-0"
+                    disabled={organizationList.length === 0}
+                    onClick={handleSelectAllOrganizations}
+                  >
+                    {t('os_board:issue_table.select_all', '全选')}
+                  </Button>
+                  <Button
+                    size="small"
+                    type="link"
+                    className="px-0"
+                    disabled={organizationList.length === 0}
+                    onClick={handleInvertOrganizations}
+                  >
+                    {t('os_board:issue_table.invert_selection', '反选')}
+                  </Button>
+                </div>
+              </>
+            )}
           />
         </div>
       )}

@@ -33,6 +33,8 @@ export interface IssuesOverviewResponse {
   unresponsive_issue_count?: number | null;
   avg_response_time?: number | null;
   avg_comments?: number | null;
+  /** 平均处理时长（天） */
+  avg_closed_loop_time?: number | null;
 }
 
 // PR 概览响应 (匹配 API 实际返回字段)
@@ -670,6 +672,24 @@ export const fetchContributorsOverview = async (params: {
 };
 
 /**
+ * 将组织筛选项合并进 filterOpts（覆盖同类型筛选，避免重复）
+ */
+export const buildOrganizationFilterOpts = (
+  filterOpts: FilterOptionInput[] | undefined,
+  organization?: string[] | null
+): FilterOptionInput[] | undefined => {
+  const base = (filterOpts || []).filter(
+    (item) => item.type !== 'organization'
+  );
+
+  if (!organization || organization.length === 0) {
+    return base.length > 0 ? base : undefined;
+  }
+
+  return [...base, { type: 'organization', values: organization }];
+};
+
+/**
  * 获取 Issue 概览统计
  */
 export const fetchIssuesOverview = async (params: {
@@ -681,12 +701,16 @@ export const fetchIssuesOverview = async (params: {
   ResponsiblePerson?: number | null;
   Priority?: IssuePriority | null;
   labelFilter?: IssueLabelFilter | null;
+  /** 组织筛选，联动 community_issue_summary_list 的组织筛选 */
+  organization?: string[] | null;
 }): Promise<IssuesOverviewResponse> => {
+  const { organization, ...rest } = params;
   const response = await axios.post<IssuesOverviewResponse>(
     '/services/dashboard/issues_overview',
     {
-      ...params,
+      ...rest,
       label: formatProjectLabel(params.label),
+      filterOpts: buildOrganizationFilterOpts([], organization),
     }
   );
   return response.data;
@@ -725,6 +749,8 @@ interface UseTableDataOptions {
   labelFilter?: IssueLabelFilter | null;
   /** 社区 issue 汇总列表：责任人筛选 user_id */
   responsiblePerson?: number | null;
+  /** 社区 issue 汇总列表：组织筛选 */
+  organization?: string[] | null;
   /** 仓库 issue 列表：优先级筛选 */
   priority?: IssuePriority | null;
 }
@@ -874,6 +900,7 @@ export const useOsBoardCommunityIssueSummaryList = ({
   enabled = true,
   identifier,
   responsiblePerson,
+  organization,
 }: UseTableDataOptions) => {
   const { timeStart, timeEnd } = useOsBoardDateRange();
 
@@ -889,6 +916,7 @@ export const useOsBoardCommunityIssueSummaryList = ({
       timeEnd,
       identifier,
       responsiblePerson,
+      organization,
     ],
     queryFn: () =>
       fetchCommunityIssueSummaryList({
@@ -896,7 +924,7 @@ export const useOsBoardCommunityIssueSummaryList = ({
         level: 'community',
         page,
         per,
-        filterOpts,
+        filterOpts: buildOrganizationFilterOpts(filterOpts, organization),
         sortOpts,
         beginDate: timeStart,
         endDate: timeEnd,
@@ -961,6 +989,8 @@ interface UseOverviewOptions {
   identifier?: string | null;
   /** 社区 Issue 概览：责任人筛选 user_id */
   responsiblePerson?: number | null;
+  /** 社区 Issue 概览：组织筛选（与汇总列表联动） */
+  organization?: string[] | null;
   /** 仓库 Issue 概览：优先级筛选 */
   priority?: IssuePriority | null;
   /** 仓库 Issue 概览：标签筛选 */
@@ -1018,6 +1048,7 @@ export const useOsBoardIssuesOverview = ({
   enabled = true,
   identifier,
   responsiblePerson,
+  organization,
   priority,
   labelFilter,
 }: UseOverviewOptions) => {
@@ -1032,6 +1063,7 @@ export const useOsBoardIssuesOverview = ({
       timeEnd,
       identifier,
       responsiblePerson,
+      organization,
       priority,
       labelFilter,
     ],
@@ -1045,6 +1077,7 @@ export const useOsBoardIssuesOverview = ({
         ResponsiblePerson: responsiblePerson ?? undefined,
         Priority: priority ?? undefined,
         labelFilter: labelFilter ?? undefined,
+        organization: organization ?? undefined,
       }),
     enabled: enabled && !!project,
     staleTime: 60 * 1000,
