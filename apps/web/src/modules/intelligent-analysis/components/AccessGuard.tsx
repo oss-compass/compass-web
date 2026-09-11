@@ -23,7 +23,7 @@ const AccessDenied: React.FC = () => {
         <p className="mx-auto mb-8 max-w-lg leading-7 text-gray-600">
           {isChinese
             ? '当前账号权限不足，请联系管理员开通权限。'
-            : 'Your account does not have sufficient permission. Level 2 or higher is required. Please contact the administrator to request access.'}
+            : 'Your account does not have sufficient permission. Please contact the administrator to request access.'}
         </p>
 
         <div className="flex items-stretch justify-center gap-8 md:flex-col md:items-center">
