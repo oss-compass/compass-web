@@ -1913,6 +1913,8 @@ const HistoryPainTable: React.FC<{
           <tbody>
             {rows.map((item, index) => {
               const severity = item.severity || 'P4_TRIVIAL';
+              const ownerText =
+                String(item.teamOwner || item.owner || '').trim() || '--';
               const severityStyle = getPainLevelStyle(severity);
               const childIds = item.childIds ?? [];
               const entries: Array<{
@@ -2015,8 +2017,12 @@ const HistoryPainTable: React.FC<{
                       )}
                     </Tooltip>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {item.teamOwner || item.owner || '--'}
+                  <td className="px-3 py-3">
+                    <Tooltip title={ownerText}>
+                      <span className="block cursor-default truncate">
+                        {ownerText}
+                      </span>
+                    </Tooltip>
                   </td>
                   <td className="px-3 py-3">
                     {entries.length ? (

@@ -15,6 +15,8 @@ type OperatorAccessModalProps = {
   title: string;
   description?: string;
   confirmText?: string;
+  /** 是否显示注册入口；报告页等场景仅允许已有账号登录时设为 false。 */
+  enableRegister?: boolean;
   operatorUser: CompassOperatorUser | null;
   authSubmitting: boolean;
   authChecking: boolean;
@@ -36,6 +38,7 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
   title,
   description = '',
   confirmText = '继续',
+  enableRegister = true,
   operatorUser,
   authSubmitting,
   authChecking,
@@ -107,14 +110,18 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
               <Button key="cancel" onClick={onCancel}>
                 取消
               </Button>,
-              <Button
-                key="mode"
-                onClick={() => {
-                  setMode(isRegisterMode ? 'login' : 'register');
-                }}
-              >
-                {isRegisterMode ? '返回登录' : '注册账号'}
-              </Button>,
+              ...(enableRegister
+                ? [
+                    <Button
+                      key="mode"
+                      onClick={() => {
+                        setMode(isRegisterMode ? 'login' : 'register');
+                      }}
+                    >
+                      {isRegisterMode ? '返回登录' : '注册账号'}
+                    </Button>,
+                  ]
+                : []),
               <Button
                 key={isRegisterMode ? 'register' : 'login'}
                 type="primary"

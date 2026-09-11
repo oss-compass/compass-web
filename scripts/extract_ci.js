@@ -27,12 +27,28 @@ const BASE = path.join(
 );
 const RAWDATA_DIR = path.join(BASE, 'rawdata');
 
-const OUT_DATA = {
-  runtime: path.join(BASE, 'ci-runtime-data.json'),
-  opsnn: path.join(BASE, 'ci-opsnn-data.json'),
-  opscv: path.join(BASE, 'ci-opscv-data.json'),
-  graphaf: path.join(BASE, 'ci-graphaf-data.json'),
-};
+// 页面消费的全部仓库（与 CiExperience/types.ts 的 CiRepoKey 保持一致）。
+// 源 DATA 中出现不在该列表的仓库时仅告警不产出，待页面接入后再加入。
+const REPOS = [
+  'runtime',
+  'opsnn',
+  'opscv',
+  'graphaf',
+  'opstransformer',
+  'hcomm',
+  'pypto',
+  'ascdevkit',
+  'hccl',
+  'hixl',
+  'ptoisa',
+  'oamtools',
+  'amct',
+  'opbase',
+  'pyasc',
+  'metadef',
+  'asctools',
+];
+const outDataPath = (r) => path.join(BASE, `ci-${r}-data.json`);
 const OUT_JOURNEY = path.join(BASE, 'components/CiReport/ci-journey.json');
 const OUT_APPENDIX = path.join(BASE, 'ci-appendix.json');
 
@@ -264,14 +280,21 @@ function main() {
   const warns = [];
 
   // 1) 逐日看板
-  for (const r of Object.keys(OUT_DATA)) {
+  for (const r of REPOS) {
     if (!DATA[r]) throw new Error('repo ' + r + ' 在 DATA 中缺失');
     const repo = transformDataRepo(DATA[r], warns, r);
-    fs.writeFileSync(OUT_DATA[r], JSON.stringify(repo, null, 1), 'utf8');
+    const outPath = outDataPath(r);
+    fs.writeFileSync(outPath, JSON.stringify(repo, null, 1), 'utf8');
     console.log(
       `[data] ${r} -> days=${repo.days.length} ${JSON.stringify(repo.days)} (${
-        fs.statSync(OUT_DATA[r]).size
+        fs.statSync(outPath).size
       } bytes)`
+    );
+  }
+  const extraRepos = Object.keys(DATA).filter((r) => !REPOS.includes(r));
+  if (extraRepos.length) {
+    warns.push(
+      `源 DATA 含未接入页面的仓库（已跳过看板产出）: ${extraRepos.join(', ')}`
     );
   }
 

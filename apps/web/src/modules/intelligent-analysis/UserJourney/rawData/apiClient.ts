@@ -44,6 +44,81 @@ export const compassApiFetch = async <T>(
   return res.json() as Promise<T>;
 };
 
+export type ContainerChannelResponse = {
+  report: string;
+  container: string;
+  container_found: boolean;
+  opened: boolean;
+  /** true = 已有通道秒回；false = 本次新开通（用时可到 90 秒） */
+  reused: boolean;
+  port: number;
+  /** 一次性链接，有效期 1 小时；新页签打开即免登录进入容器 Web VSCode */
+  enter_url: string;
+  expires_in: number;
+};
+
+/** 登录态缺失/过期（401）时抛出，调用方应引导用户重新登录。 */
+export class ContainerChannelAuthError extends Error {
+  constructor(message = '登录已过期，请重新进入') {
+    super(message);
+    this.name = 'ContainerChannelAuthError';
+  }
+}
+
+/**
+ * 进入容器复测：获取报告复现容器进入链接（需操作账号登录，携带 Bearer token）。
+ * 由后端携带 X-Api-Key 转发（Key 不暴露给浏览器）；
+ * 首次开通容器需部署环境，可能耗时长达 90 秒，请勿设置过短的超时。
+ */
+export const openContainerChannel = async (
+  fileKey: string
+): Promise<ContainerChannelResponse> => {
+  const token = getCompassOperatorToken();
+  if (!token) {
+    throw new ContainerChannelAuthError('未登录');
+  }
+  const url = compassApiUrl(
+    `/reports/${encodeURIComponent(fileKey)}/container-channel`
+  );
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    // 后端转发超时 150s，前端放宽到 180s 兜底；旧浏览器不支持时退化为无超时。
+    signal:
+      typeof AbortSignal.timeout === 'function'
+        ? AbortSignal.timeout(180_000)
+        : undefined,
+  });
+
+  if (res.status === 401) {
+    // 登录态过期：清除本地 token，由调用方引导重新登录。
+    clearCompassOperatorToken();
+    throw new ContainerChannelAuthError();
+  }
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) {
+    const detail =
+      payload && typeof payload === 'object'
+        ? (payload as { detail?: unknown; error?: unknown }).detail ??
+          (payload as { error?: unknown }).error
+        : undefined;
+    const message =
+      typeof detail === 'string' && detail.trim()
+        ? detail
+        : `[CompassAPI] ${res.status} ${res.statusText} — ${url}`;
+    throw new Error(message);
+  }
+  if (
+    !payload ||
+    typeof payload !== 'object' ||
+    typeof (payload as ContainerChannelResponse).enter_url !== 'string' ||
+    !(payload as ContainerChannelResponse).enter_url
+  ) {
+    throw new Error('容器服务未返回进入链接');
+  }
+  return payload as ContainerChannelResponse;
+};
+
 export type CompassOperatorRole = 'admin' | 'repo_owner';
 
 export type CompassOperatorUser = {
