@@ -79,14 +79,18 @@ export type IssueReportPainIssueEvidence = {
 
 export type IssueReportPainIssue = {
   number: string;
-  title: string;
-  url: string;
+  /** slim 模式（首屏全量拉取）下不下发，弹窗明细按需拉取完整数据 */
+  title?: string;
+  /** slim 模式下不下发 */
+  url?: string;
   score: number | null;
   /** 后端按低分样本均分计算；旧报告由前端根据 score 兼容回算。 */
   priority?: 'P0' | 'P1' | 'P2' | 'P3' | null;
   metric_code: string;
-  reason: string;
-  evidence: IssueReportPainIssueEvidence[];
+  /** slim 模式下不下发 */
+  reason?: string;
+  /** slim 模式下不下发 */
+  evidence?: IssueReportPainIssueEvidence[];
   /** 总览跨周期合并后，该 Issue 最后出现的报告来源。 */
   report_period?: string;
   report_version?: string;
@@ -604,6 +608,10 @@ export type IssueTopPainsQuery = {
   state?: string | number;
   /** 报告周期排序 */
   periodOrder?: 'asc' | 'desc';
+  /** 精简模式：剔除 issue 明细大字段（evidence/reason/url/title），首屏全量拉取时使用 */
+  slim?: boolean;
+  /** 按痛点 id（painId，回退 key）精确过滤，逗号分隔，返回完整字段 */
+  painIds?: string;
   page?: number;
   pageSize?: number;
 };

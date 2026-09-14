@@ -496,6 +496,7 @@ const RankingColumn: React.FC<{
                       5
                     )
                   ),
+                  periods: repo.idxTrendPeriods,
                 }}
                 width={38}
                 height={22}

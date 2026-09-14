@@ -13,12 +13,29 @@ export type IssueTrendModalData = {
   values: Array<number | null>;
   /** 与 values 对齐的 X 轴标签（已格式化短标签） */
   labels: string[];
+  /** 与 values 对齐的原始周期串（如 2026-08-25_to_2026-08-31），
+   *  用于 tooltip 展示周起止日期 */
+  periods?: string[];
 };
 
 type IssueTrendModalProps = {
   open: boolean;
   trend: IssueTrendModalData | null;
   onClose: () => void;
+};
+
+/** 从原始周期串解析周起止短日期（如 08-25 / 08-31），解析失败回退 label */
+const toWeekBounds = (
+  period: string | undefined,
+  fallback: string
+): { weekStart: string; weekEnd: string } => {
+  if (period && period.includes('_to_')) {
+    const [start, end] = period.split('_to_');
+    const shorten = (value: string) =>
+      value.length > 5 ? value.slice(5) : value;
+    return { weekStart: shorten(start), weekEnd: shorten(end) };
+  }
+  return { weekStart: fallback, weekEnd: fallback };
 };
 
 /**
@@ -31,19 +48,28 @@ const IssueTrendModal: React.FC<IssueTrendModalProps> = ({
 }) => {
   const points = React.useMemo<ScoreTrendPoint[]>(
     () =>
-      trend?.values.map((score, index) => ({
-        key: `${index}-${trend.labels[index] ?? ''}`,
-        date: trend.labels[index] ?? '',
-        label: trend.labels[index] ?? '',
-        score,
-      })) ?? [],
+      trend?.values.map((score, index) => {
+        const label = trend.labels[index] ?? '';
+        const { weekStart, weekEnd } = toWeekBounds(
+          trend.periods?.[index],
+          label
+        );
+        return {
+          key: `${index}-${label}`,
+          date: `${weekStart} ~ ${weekEnd}`,
+          label,
+          score,
+          weekStart,
+          weekEnd,
+        };
+      }) ?? [],
     [trend]
   );
   const isPercent = trend?.unit === '%';
   const axisTitle = React.useMemo(() => {
     const title = trend?.title ?? '';
     if (title.includes('Issue')) return '涉及 Issue 数';
-    if (title.includes('仓库')) return '仓库数';
+    if (title.includes('仓')) return '仓库数';
     if (isPercent) return '百分比';
     return '综合体验评分';
   }, [isPercent, trend?.title]);
@@ -73,6 +99,12 @@ const IssueTrendModal: React.FC<IssueTrendModalProps> = ({
             valueType={isPercent ? 'percent' : 'score'}
             integerScale
             fitContainerHeight
+            renderTooltipHeader={(point) => (
+              <>
+                <span>{point.weekStart}</span>
+                <span>{point.weekEnd}</span>
+              </>
+            )}
           />
           <div className="oj-trend-legend">
             <span className="oj-trend-legend-item">

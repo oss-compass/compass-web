@@ -60,7 +60,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const { data: allPainsResp, isLoading: painsLoading } = useQuery({
     queryKey: ['issue-overview-all-pains', org],
     queryFn: ({ signal }) =>
-      fetchIssueTopPains({ org, page: 1, pageSize: 5000 }, signal),
+      // slim：剔除 issue 明细大字段（evidence/reason/url/title 占响应体积
+      // 九成以上），弹窗“涉及 Issue”明细按 painIds 按需拉取。
+      fetchIssueTopPains({ org, page: 1, pageSize: 5000, slim: true }, signal),
     staleTime: ISSUE_QUERY_STALE_TIME,
   });
 
@@ -215,6 +217,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                     unit: kpi.trendUnit,
                     values: kpi.trend,
                     labels: data.agg.periods.map(shortPeriod),
+                    periods: data.agg.periods,
                   }}
                   width={52}
                   height={26}
@@ -245,6 +248,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           pains={pains}
           repos={latestRepos}
           reportHref={reportHref}
+          org={org}
         />
       )}
 
@@ -260,6 +264,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
           pains={pains}
           repos={latestRepos}
           reportHref={reportHref}
+          org={org}
         />
       )}
 
@@ -274,6 +279,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             subtitle: '该仓各周综合体验指数（时间升序）',
             values: repo.idxTrend,
             labels: repo.idxTrendPeriods.map(shortPeriod),
+            periods: repo.idxTrendPeriods,
           })
         }
         onOpenAggregateScoreTrend={(name, values, periods) =>
@@ -282,6 +288,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             subtitle: '各仓库同周期综合体验指数平均值（时间升序）',
             values,
             labels: periods.map(shortPeriod),
+            periods,
           })
         }
       />

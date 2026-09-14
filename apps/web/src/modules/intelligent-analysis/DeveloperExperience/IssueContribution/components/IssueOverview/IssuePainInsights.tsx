@@ -20,6 +20,8 @@ type ProgressBucket = 'pending' | 'inProgress' | 'resolved';
 type Props = {
   pains: IssueOverviewTopPain[];
   repos: IssueOverviewRepo[];
+  /** slim 数据下弹窗 Issue 明细按需拉取所需的组织隔离参数 */
+  org?: string;
   reportHref: (
     community: string,
     period?: string,
@@ -72,6 +74,7 @@ const progressCounts = (pains: IssueOverviewTopPain[]) => ({
 export const IssuePainProgressOverview: React.FC<Props> = ({
   pains,
   repos,
+  org,
   reportHref,
 }) => {
   const [detail, setDetail] = React.useState<{
@@ -320,6 +323,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
         onClose={() => setDetail(null)}
         loading={false}
         items={detail?.pains ?? []}
+        org={org}
         repoTeams={Object.fromEntries(
           repos.map((repo) => [repo.repoShort, repo.teamName])
         )}
@@ -576,8 +580,8 @@ const buildFrequentPains = (pains: IssueOverviewTopPain[]): FrequentPain[] => {
 };
 
 export const IssueFrequentPainSection: React.FC<
-  Pick<Props, 'pains' | 'repos' | 'reportHref'>
-> = ({ pains, repos, reportHref }) => {
+  Pick<Props, 'pains' | 'repos' | 'org' | 'reportHref'>
+> = ({ pains, repos, org, reportHref }) => {
   const [view, setView] = React.useState<'all' | 'open' | 'done'>('all');
   const [detail, setDetail] = React.useState<FrequentPain | null>(null);
   const groups = React.useMemo(() => buildFrequentPains(pains), [pains]);
@@ -730,6 +734,7 @@ export const IssueFrequentPainSection: React.FC<
                 labels: record.trendPeriods.map((period) =>
                   (period.split('_to_')[1] ?? period.split('_to_')[0]).slice(5)
                 ),
+                periods: record.trendPeriods,
               }}
               width={38}
               height={22}
@@ -774,6 +779,7 @@ export const IssueFrequentPainSection: React.FC<
         onClose={() => setDetail(null)}
         loading={false}
         items={detail?.items ?? []}
+        org={org}
         repoTeams={Object.fromEntries(
           repos.map((repo) => [repo.repoShort, repo.teamName])
         )}

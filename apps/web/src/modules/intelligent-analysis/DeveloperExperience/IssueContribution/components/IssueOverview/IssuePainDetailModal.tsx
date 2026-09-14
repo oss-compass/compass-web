@@ -2,7 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import { FilterFilled } from '@ant-design/icons';
 import { Dropdown, Modal, Pagination, Radio, Tooltip } from 'antd';
+import { useQuery } from '@tanstack/react-query';
 import type { IssueOverviewTopPain } from '../../types';
+import { fetchIssueTopPains } from '../../data';
 import { resolvePainIssuePriority } from '../../issuePriority';
 import { getTrackingStatusMeta } from '../PainTrackingModal/constants';
 import PainIssueTable from '../PainIssueTable';
@@ -40,6 +42,8 @@ type Props = {
   title: string;
   items: IssueOverviewTopPain[];
   loading: boolean;
+  /** slim 数据下 Issue 明细按需拉取所需的组织隔离参数 */
+  org?: string;
   repoTeams: Record<string, string>;
   onClose: () => void;
   reportHref: (
@@ -158,6 +162,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
   title,
   items,
   loading,
+  org,
   repoTeams,
   onClose,
   reportHref,
@@ -251,7 +256,39 @@ const IssuePainDetailModal: React.FC<Props> = ({
     (painPage - 1) * PAIN_PAGE_SIZE,
     painPage * PAIN_PAGE_SIZE
   );
-  const issueDetailItems = (issueDetailPain?.lowScoreIssues ?? []).filter(
+  const detailIssues = issueDetailPain?.lowScoreIssues ?? [];
+  // slim 数据的 issue 不含 reason 字段；需要完整明细时按 painIds 按需拉取
+  // 该条痛点（非 slim 数据直接用本地字段，不发起请求）。
+  const needsFullIssues =
+    !!issueDetailPain &&
+    detailIssues.length > 0 &&
+    !('reason' in detailIssues[0]);
+  const { data: fullPainResp, isFetching: fullIssuesLoading } = useQuery({
+    queryKey: [
+      'issue-top-pains',
+      'pain-full',
+      org ?? '',
+      issueDetailPain?.painId ?? issueDetailPain?.key ?? '',
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueTopPains(
+        {
+          org,
+          painIds: issueDetailPain?.painId || issueDetailPain?.key,
+          page: 1,
+          pageSize: 1,
+        },
+        signal
+      ),
+    enabled: needsFullIssues,
+    staleTime: 5 * 60 * 1000,
+  });
+  const fullDetailPain = needsFullIssues
+    ? fullPainResp?.items?.find((item) => item.key === issueDetailPain?.key) ??
+      null
+    : null;
+  const sourceDetailPain = fullDetailPain ?? issueDetailPain;
+  const issueDetailItems = (sourceDetailPain?.lowScoreIssues ?? []).filter(
     (issue) =>
       !issueDetailPriority ||
       resolvePainIssuePriority(issue.priority, issue.score) ===
@@ -652,30 +689,36 @@ const IssuePainDetailModal: React.FC<Props> = ({
             </div>
           </div>
           <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
-            <PainIssueTable
-              issues={pagedIssueDetailItems}
-              pagination={false}
-              responsive
-              renderReportLink={(issue) => {
-                const period = issue.report_period || issueDetailPain?.period;
-                if (!issueDetailPain || !period) {
-                  return <span className="text-slate-300">--</span>;
-                }
-                return (
-                  <Link
-                    href={reportHref(
-                      issueDetailPain.community,
-                      period,
-                      issueDetailPain.stageId,
-                      issue.report_pain_id || issueDetailPain.painId
-                    )}
-                    className="overview-table-link break-all text-blue-600 hover:text-blue-700"
-                  >
-                    {reportDateLabel(period)}
-                  </Link>
-                );
-              }}
-            />
+            {needsFullIssues && fullIssuesLoading && !fullDetailPain ? (
+              <div className="flex h-full items-center justify-center text-sm text-slate-400">
+                加载中...
+              </div>
+            ) : (
+              <PainIssueTable
+                issues={pagedIssueDetailItems}
+                pagination={false}
+                responsive
+                renderReportLink={(issue) => {
+                  const period = issue.report_period || issueDetailPain?.period;
+                  if (!issueDetailPain || !period) {
+                    return <span className="text-slate-300">--</span>;
+                  }
+                  return (
+                    <Link
+                      href={reportHref(
+                        issueDetailPain.community,
+                        period,
+                        issueDetailPain.stageId,
+                        issue.report_pain_id || issueDetailPain.painId
+                      )}
+                      className="overview-table-link break-all text-blue-600 hover:text-blue-700"
+                    >
+                      {reportDateLabel(period)}
+                    </Link>
+                  );
+                }}
+              />
+            )}
           </div>
           <div className="flex shrink-0 items-center justify-between gap-4 border-t border-slate-200 pt-3">
             <span className="text-xs text-slate-500">

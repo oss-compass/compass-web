@@ -25,17 +25,33 @@ type ScoreTrendChartProps = {
   valueType?: 'score' | 'percent';
   integerScale?: boolean;
   fitContainerHeight?: boolean;
+  /** 固定 y 轴刻度范围（如 0-100）；优先于自适应刻度，避免最低刻度随数据漂移 */
+  minScale?: number;
+  maxScale?: number;
+  /** 自定义 tooltip 头部内容（默认显示 label 与 date） */
+  renderTooltipHeader?: (point: ScoreTrendPoint) => React.ReactNode;
 };
+
+const INTEGER_NICE_STEPS = [
+  1, 2, 4, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000,
+  20000, 25000, 50000, 100000,
+];
 
 const getIntegerScaleRange = (minValue: number, maxValue: number) => {
   const span = Math.max(1, Math.ceil(maxValue) - Math.floor(minValue));
-  const step = Math.max(1, Math.ceil(span / 4));
-  let lower = Math.max(0, Math.floor(minValue / step) * step);
-  let upper = lower + step * 4;
-  if (upper < maxValue) {
+  // 优先取“好看”的步长（1/2/4/5/10…），刻度显示更整
+  let step = INTEGER_NICE_STEPS.find((candidate) => candidate >= span / 4);
+  if (step == null) step = Math.max(1, Math.ceil(span / 4));
+  let upper = Math.ceil(maxValue / step) * step;
+  // 步长取整后 4 档可能盖不住数据跨度，导致下界（upper - 4*step）
+  // 高于数据最小值、折线画到坐标区外；逐步放大步长直至下界
+  // 不高于数据最小值（迭代次数通常 ≤ 2 次）。
+  while (upper - step * 4 > minValue) {
+    const nextStep = INTEGER_NICE_STEPS.find((candidate) => candidate > step);
+    step = nextStep ?? step + 1;
     upper = Math.ceil(maxValue / step) * step;
-    lower = Math.max(0, upper - step * 4);
   }
+  const lower = Math.max(0, upper - step * 4);
   return { lower, upper, usingFiveScale: false };
 };
 
@@ -89,6 +105,9 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   valueType = 'score',
   integerScale = false,
   fitContainerHeight = false,
+  minScale,
+  maxScale,
+  renderTooltipHeader,
 }) => {
   const chartId = React.useId();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -124,7 +143,15 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
   const plotH = plotBottom - SCORE_PLOT_TOP;
   const plotW = SCORE_PLOT_RIGHT - SCORE_PLOT_LEFT;
   const step = n > 1 ? plotW / (n - 1) : 0;
-  const { lower, upper, usingFiveScale } = integerScale
+  const hasFixedScale =
+    minScale != null && maxScale != null && maxScale > minScale;
+  const { lower, upper, usingFiveScale } = hasFixedScale
+    ? {
+        lower: minScale as number,
+        upper: maxScale as number,
+        usingFiveScale: false,
+      }
+    : integerScale
     ? getIntegerScaleRange(Math.min(...validScores), Math.max(...validScores))
     : getScoreRange(validScores);
   const formatValue = valueType === 'percent' ? formatPercent : formatScore;
@@ -401,8 +428,14 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
           style={{ left: tooltipPos.left, top: tooltipPos.top }}
         >
           <div className="oj-trend-tooltip-header">
-            <span>{activePoint.label}</span>
-            <span>{activePoint.date}</span>
+            {renderTooltipHeader ? (
+              renderTooltipHeader(activePoint)
+            ) : (
+              <>
+                <span>{activePoint.label}</span>
+                <span>{activePoint.date}</span>
+              </>
+            )}
           </div>
           <div className="oj-trend-tooltip-list">
             <div className="oj-trend-tooltip-item">
