@@ -8,12 +8,18 @@ export const getTrackingStatusMeta = (
   trackingType: 'fix' | 'observe',
   label?: string
 ) => {
+  if (trackingType === 'observe') {
+    return {
+      label: '无需跟踪修复',
+      className: 'border-slate-200 bg-slate-50 text-slate-500',
+      automatic: false,
+    };
+  }
   const labels: Record<number, string> = {
     [IssuePainTrackingStatus.PENDING]: '待确认',
     [IssuePainTrackingStatus.TRACKING]: '已确认待修复',
     [IssuePainTrackingStatus.FIXED_PENDING_RETEST]: '已修复待复测',
-    [IssuePainTrackingStatus.PASSED]:
-      trackingType === 'observe' ? '已闭环' : '已复测通过',
+    [IssuePainTrackingStatus.PASSED]: '已复测通过',
     [IssuePainTrackingStatus.INVALID]: '非有效问题',
     [IssuePainTrackingStatus.RETEST_FAILED]: '复测不通过',
   };

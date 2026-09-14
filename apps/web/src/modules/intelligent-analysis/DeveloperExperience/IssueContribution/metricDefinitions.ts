@@ -786,4 +786,6 @@ const EFFICIENCY_METRIC_CODES = new Set([
 ]);
 
 export const getMetricCategory = (code: string): MetricCategory =>
-  EFFICIENCY_METRIC_CODES.has(code.toUpperCase()) ? 'efficiency' : 'quality';
+  EFFICIENCY_METRIC_CODES.has(code.trim().replace(/-/g, '_').toUpperCase())
+    ? 'efficiency'
+    : 'quality';

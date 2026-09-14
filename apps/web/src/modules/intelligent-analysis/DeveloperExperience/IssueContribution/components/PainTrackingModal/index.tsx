@@ -48,10 +48,7 @@ import {
   validateOperator,
 } from './utils';
 
-const getCurrentFlowStep = (
-  status: IssuePainTrackingStatus,
-  isObserve: boolean
-) => {
+const getCurrentFlowStep = (status: IssuePainTrackingStatus) => {
   if (status === IssuePainTrackingStatus.PENDING) return 0;
   if (status === IssuePainTrackingStatus.TRACKING) return 1;
   if (status === IssuePainTrackingStatus.FIXED_PENDING_RETEST) return 2;
@@ -78,23 +75,12 @@ const createPendingFlowItem = (tracking: IssuePainTracking) => {
   return createFlowItem('待确认', tracking.confirmedAt);
 };
 
-const getFlowItems = (tracking: IssuePainTracking, isObserve: boolean) => {
+const getFlowItems = (tracking: IssuePainTracking) => {
   if (tracking.status === IssuePainTrackingStatus.INVALID) {
     const invalidAt = findStatusTime(tracking, IssuePainTrackingStatus.INVALID);
     return [
       createPendingFlowItem(tracking),
       createFlowItem('非有效问题', invalidAt),
-    ];
-  }
-  if (isObserve) {
-    return [
-      createPendingFlowItem(tracking),
-      createFlowItem('已确认待修复', tracking.confirmedAt),
-      createFlowItem(
-        '已修复待复测',
-        findStatusTime(tracking, IssuePainTrackingStatus.FIXED_PENDING_RETEST)
-      ),
-      createFlowItem('已闭环', tracking.retest?.at),
     ];
   }
   const retestFailed =
@@ -309,13 +295,10 @@ const getFixProgressPercent = (tracking: IssuePainTracking) =>
 /** 痛点弹窗中的任务详情统一每 30 秒轮询一次。 */
 const RERUN_POLL_INTERVAL_MS = 30000;
 
-const getPassedPresentation = (
-  tracking: IssuePainTracking,
-  isObserve: boolean
-) => {
+const getPassedPresentation = (tracking: IssuePainTracking) => {
   const passedPeriods = tracking.retest?.based_periods ?? [];
   return {
-    message: isObserve ? '痛点已自动闭环' : '痛点已自动复测通过',
+    message: '痛点已自动复测通过',
     description: passedPeriods.length
       ? `判定依据：${passedPeriods
           .map(shortTrackingPeriod)
@@ -731,9 +714,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
     }
   };
 
-  const isObserve = tracking.trackingType === 'observe';
-  const currentStep = getCurrentFlowStep(tracking.status, isObserve);
-  const flowItems = getFlowItems(tracking, isObserve).map((item, index) =>
+  const currentStep = getCurrentFlowStep(tracking.status);
+  const flowItems = getFlowItems(tracking).map((item, index) =>
     index >= currentStep ? { ...item, description: null } : item
   );
 
@@ -786,9 +768,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
     }
   };
 
-  const trend = tracking.issueCountTrend.slice(-4);
   const percent = getFixProgressPercent(tracking);
-  const passedPresentation = getPassedPresentation(tracking, isObserve);
+  const passedPresentation = getPassedPresentation(tracking);
   const pendingPainIssues = pain.low_score_issues ?? [];
   const filteredPendingPainIssues = issuePriorityFilter
     ? pendingPainIssues.filter(
@@ -893,9 +874,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 </div>
                 <Tooltip
                   title={
-                    isObserve
-                      ? `创建、首响与分配阶段关注 Issue 是否被顺利接收和响应，不要求逐个标记修复。确认后系统会检查后续报告；连续 ${tracking.passMissPeriods} 期未再出现时自动标记为已闭环。`
-                      : '确认后可逐个完成 Issue 修复；所有有效 Issue 完成修复后，痛点将自动进入待复测状态。'
+                    '质量类痛点确认后需逐个完成 Issue 修复；所有有效 Issue 完成修复后，痛点将自动进入待复测状态。'
                   }
                 >
                   <span className="ml-2 inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full bg-slate-100 text-[13px] font-normal leading-none text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-600">
@@ -949,46 +928,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           </div>
         ) : null}
 
-        {tracking.status === IssuePainTrackingStatus.TRACKING && isObserve ? (
-          <div className="space-y-4">
-            <Alert
-              type="info"
-              showIcon
-              message="系统正在检查后续报告"
-              description={`也可主动发起复测；未主动复测时，连续 ${tracking.passMissPeriods} 期未再出现会自动闭环。`}
-            />
-            <div className="rounded-xl border border-slate-200 p-4">
-              <div className="text-sm font-semibold text-slate-700">
-                最近 {trend.length} 期涉及 Issue 数
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-                {trend.map((item, index) => (
-                  <React.Fragment key={item.period}>
-                    {index ? <span className="text-slate-300">→</span> : null}
-                    <span className="rounded-lg bg-sky-50 px-3 py-2 text-sky-700">
-                      <span className="block text-[10px] text-slate-400">
-                        {shortTrackingPeriod(item.period)}
-                      </span>
-                      <strong>{item.count}</strong>
-                    </span>
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-            <PainIssueTable
-              issues={pain.low_score_issues ?? []}
-              tracking={tracking}
-              onTrackingAction={onAction}
-              responsive
-              onRerun={requestRerun}
-              rerunDisabledReason={rerunDisabledReason}
-              lockedIssueNumbers={lockedIssueNumbers}
-              onOpenRerunRecords={() => setRerunListOpen(true)}
-            />
-          </div>
-        ) : null}
-
-        {tracking.status === IssuePainTrackingStatus.TRACKING && !isObserve ? (
+        {tracking.status === IssuePainTrackingStatus.TRACKING ? (
           <div className="space-y-4">
             <div className="rounded-xl border border-sky-100 bg-sky-50/60 p-4">
               <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">

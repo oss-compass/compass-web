@@ -484,6 +484,10 @@ const StagePainCard: React.FC<{
       })
     )
   );
+  // 当前报告一痛点一指标；历史记录以接口兼容后的分类为准。
+  const efficiencyOnly = tracking
+    ? tracking.trackingType === 'observe'
+    : getMetricCategory(painMetricCodes[0] ?? '') === 'efficiency';
 
   return (
     <div
@@ -494,24 +498,36 @@ const StagePainCard: React.FC<{
         focused ? 'ring-2 ring-blue-300' : ''
       }`}
     >
-      <div className="flex w-full items-start justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-rose-50/40">
+      <div className="flex w-full flex-wrap items-start justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-rose-50/40">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           className="min-w-0 flex-1 text-left"
         >
-          <span className="block text-sm font-semibold leading-6 text-slate-900">
-            {painMetricLabels.length
-              ? painMetricLabels.join(' · ')
-              : pain.title}
+          <span className="flex flex-wrap items-center gap-2 text-sm font-semibold leading-6 text-slate-900">
+            <span>
+              {painMetricLabels.length
+                ? painMetricLabels.join(' · ')
+                : pain.title}
+            </span>
+            <span
+              className={`inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold leading-4 ${
+                efficiencyOnly
+                  ? 'border-sky-200 bg-sky-50 text-sky-700'
+                  : 'border-violet-200 bg-violet-50 text-violet-700'
+              }`}
+            >
+              {efficiencyOnly ? '效率' : '质量'}
+            </span>
           </span>
           {painMetricLabels.length ? (
             <span className="mt-0.5 block text-xs leading-5 text-slate-500">
               {pain.title}
             </span>
           ) : null}
-          {tracking?.trackingType === 'fix' &&
+          {!efficiencyOnly &&
+          tracking?.trackingType === 'fix' &&
           tracking.status === IssuePainTrackingStatus.TRACKING &&
           tracking.activeTotal > 0 ? (
             <span className="mt-3 block max-w-[320px]">
@@ -519,8 +535,22 @@ const StagePainCard: React.FC<{
             </span>
           ) : null}
         </button>
-        <div className="flex shrink-0 items-center gap-2 pt-0.5">
-          {tracking && onTrackingAction ? (
+        <div className="flex max-w-full items-start gap-2 pt-0.5">
+          {efficiencyOnly ? (
+            <div className="flex min-w-0 flex-col items-end">
+              <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-dashed border-cyan-400 bg-cyan-50 px-3 py-1.5 text-[11px] font-semibold text-cyan-700">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-cyan-500" />
+                无需跟踪修复
+              </span>
+              <p
+                className="mt-1 max-w-full truncate text-right text-[11px] leading-[14px] text-slate-500"
+                title="效率类痛点无需修复，仅记录涉及 Issue 数量，请持续减少后续同类问题。"
+              >
+                效率类痛点无需修复，仅记录涉及 Issue
+                数量，请持续减少后续同类问题。
+              </p>
+            </div>
+          ) : tracking && onTrackingAction ? (
             <TrackingActionButton
               tracking={tracking}
               onClick={() => setTrackingModalOpen(true)}
@@ -571,12 +601,15 @@ const StagePainCard: React.FC<{
                   onChange={onIssuePriorityFilterChange}
                 />
               </div>
-              <PainIssueTable issues={filteredIssues} tracking={tracking} />
+              <PainIssueTable
+                issues={filteredIssues}
+                tracking={efficiencyOnly ? undefined : tracking}
+              />
             </div>
           ) : null}
         </div>
       ) : null}
-      {tracking && onTrackingAction ? (
+      {!efficiencyOnly && tracking && onTrackingAction ? (
         <PainTrackingModal
           open={trackingModalOpen}
           pain={pain}

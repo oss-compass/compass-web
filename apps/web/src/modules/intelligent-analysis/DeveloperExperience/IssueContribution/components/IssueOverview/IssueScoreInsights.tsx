@@ -447,7 +447,8 @@ const RankingColumn: React.FC<{
             <div className="min-w-0">
               <Link
                 href={reportHref(repo.community, repo.period)}
-                className="overview-table-link overview-table-link-strong block truncate"
+                className="overview-table-link overview-table-link-strong block truncate decoration-blue-400 underline-offset-2 transition-colors hover:!text-blue-600 hover:underline"
+                title={`查看 ${repo.repoShort} 最新报告`}
               >
                 {repo.repoShort}
               </Link>
@@ -502,9 +503,13 @@ const RankingColumn: React.FC<{
                 height={22}
                 maxValue={100}
               />
-              <b className="tabular-nums" style={{ color: '#3d7df6' }}>
+              <Link
+                href={reportHref(repo.community, repo.period)}
+                className="font-bold tabular-nums text-[#3d7df6] underline decoration-[#3d7df6] underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-[#3d7df6]"
+                title={`查看 ${repo.repoShort} 最新报告`}
+              >
                 {repo.idxTotal.toFixed(1)}
-              </b>
+              </Link>
             </div>
           </div>
         );

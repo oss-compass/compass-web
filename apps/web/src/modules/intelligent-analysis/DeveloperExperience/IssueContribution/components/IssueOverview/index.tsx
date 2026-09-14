@@ -111,6 +111,10 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   }
 
   const latestRepos = latestReposByPeriod(data.repos);
+  const latestAverageScore = latestRepos.length
+    ? latestRepos.reduce((total, repo) => total + repo.idxTotal, 0) /
+      latestRepos.length
+    : 0;
   const pains = allPainsResp?.items ?? [];
   const resolvedPains = pains.filter(isResolvedPain).length;
   const painCloseRate = pains.length ? (resolvedPains / pains.length) * 100 : 0;
@@ -159,8 +163,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const kpis = [
     {
       label: '综合体验评分',
-      value: model.idxWeighted.toFixed(1),
-      sub: '最新周期按 Issue 数加权',
+      value: latestAverageScore.toFixed(1),
+      sub: '最新周期仓库平均分',
       trend: data.agg.idx,
       trendMax: 100,
     },

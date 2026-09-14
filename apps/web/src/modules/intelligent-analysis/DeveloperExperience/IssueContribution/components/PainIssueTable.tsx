@@ -1010,16 +1010,16 @@ const IssueStatusCell: React.FC<{
 
 /**
  * Issue 是否可发起复测：
- * - 状态 2（已确认待修复）：I0/I1 无人工修复入口，可直接发起复测；
- *   I2/I3 必须先人工点击“完成修复”（fixed=true）后才可发起复测。
+ * - 质量类痛点完成修复后可发起复测；效率类无管理操作。
  * - 状态 3（已修复待复测）：复测尚未通过的 Issue 可再次发起复测。
  */
 const isRerunEligible = (
   tracking: IssuePainTracking | undefined,
   issue: ActiveTrackingIssue
 ) => {
+  if (tracking?.trackingType !== 'fix') return false;
   if (tracking?.status === IssuePainTrackingStatus.TRACKING) {
-    return tracking.trackingType !== 'fix' || issue.fixed === true;
+    return issue.fixed === true;
   }
   return (
     tracking?.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST &&
