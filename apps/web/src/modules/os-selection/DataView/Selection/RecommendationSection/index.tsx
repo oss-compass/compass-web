@@ -60,12 +60,6 @@ const RecommendationSection = () => {
       }
     });
   };
-  const handleGetRecommendations = () => {
-    setErrorMessage('');
-    setSelectedSoftware([]);
-    refetch();
-  };
-
   // 表单校验函数
   const validateForm = () => {
     setErrorMessage('');
@@ -78,6 +72,16 @@ const RecommendationSection = () => {
       return false;
     }
     return true;
+  };
+
+  const handleGetRecommendations = () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    setErrorMessage('');
+    setSelectedSoftware([]);
+    refetch();
   };
 
   // 校验失败时的处理
