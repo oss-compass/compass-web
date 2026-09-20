@@ -600,10 +600,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     () => summaryResp?.summarySuccessRate ?? null,
     [summaryResp]
   );
-  const summaryAvgExecutionTime = useMemo(
-    () => summaryResp?.summaryAvgExecutionTime ?? null,
-    [summaryResp]
-  );
   const summaryRepoCount = useMemo(
     () => summaryResp?.repoCount ?? 0,
     [summaryResp]
@@ -840,7 +836,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
                 summarySuccessRate={summarySuccessRate}
                 summaryScoreTrend={summaryScoreTrend}
                 summarySuccessRateTrend={summarySuccessRateTrend}
-                summaryAvgExecutionTime={summaryAvgExecutionTime}
                 repoCount={summaryRepoCount}
                 score95PlusRepoCount={score95PlusRepoCount}
                 issueSourceMode={issueSourceMode}

@@ -34,6 +34,9 @@ export const OVERVIEW_COLORS = {
   progressResolved: '#2eb78a',
   priorityBlocker: '#d14343',
   priorityTrivial: '#16a34a',
+  benchmarkTag: '#9333ea',
+  benchmarkTagText: '#7e22ce',
+  benchmarkTagHoverText: '#6b21a8',
 } as const;
 
 const tone = (name: 'blue' | 'green' | 'orange' | 'red' | 'slate') => ({

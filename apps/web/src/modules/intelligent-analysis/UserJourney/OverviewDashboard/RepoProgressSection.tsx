@@ -1747,7 +1747,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     if (!record.benchmark?.repoName) return null;
     return (
       <Tag
-        color="var(--overview-slate)"
         className="overview-benchmark-tag"
         onClick={(event) => {
           event.stopPropagation();

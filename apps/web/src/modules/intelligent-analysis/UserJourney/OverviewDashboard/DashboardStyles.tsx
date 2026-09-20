@@ -2001,16 +2001,16 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         border-radius: 999px;
         padding: 0 8px;
         line-height: 20px;
-        border-color: rgba(var(--overview-slate-rgb), 0.22);
-        background: rgba(var(--overview-slate-rgb), 0.08);
-        color: var(--overview-slate);
+        border-color: rgba(var(--overview-benchmarkTag-rgb), 0.22);
+        background: rgba(var(--overview-benchmarkTag-rgb), 0.08);
+        color: var(--overview-benchmarkTagText);
         transition: all 0.18s ease;
       }
 
       .overview-benchmark-tag.ant-tag:hover {
-        background: rgba(var(--overview-slate-rgb), 0.14);
-        border-color: rgba(var(--overview-slate-rgb), 0.32);
-        color: var(--overview-slate);
+        background: rgba(var(--overview-benchmarkTag-rgb), 0.14);
+        border-color: rgba(var(--overview-benchmarkTag-rgb), 0.32);
+        color: var(--overview-benchmarkTagHoverText);
       }
 
       .overview-repo-name-cell {

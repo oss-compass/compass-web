@@ -21,12 +21,6 @@ const { Title } = Typography;
 
 const SUMMARY_TOGGLE_H = 34;
 
-const formatExecutionTime = (seconds: number | null): string => {
-  if (seconds == null) return '--';
-  const minutes = seconds / 60;
-  return `${minutes.toFixed(1)}`;
-};
-
 type OverviewSummarySectionProps = {
   overviewSummary: MetricSummary;
   overviewTrend: WeeklyCloseRateTrendPoint[];
@@ -35,7 +29,6 @@ type OverviewSummarySectionProps = {
   summarySuccessRate: number | null;
   summaryScoreTrend: ScoreTrendPoint[];
   summarySuccessRateTrend: ScoreTrendPoint[];
-  summaryAvgExecutionTime: number | null;
   repoCount: number;
   score95PlusRepoCount: number;
   titleExtra?: React.ReactNode;
@@ -64,7 +57,6 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summarySuccessRate,
   summaryScoreTrend,
   summarySuccessRateTrend,
-  summaryAvgExecutionTime,
   repoCount,
   score95PlusRepoCount,
   titleExtra,
@@ -183,7 +175,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
       <div className="overview-summary-stack">
         <div
           className="overview-bottom-row"
-          style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
+          style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
         >
           <div className="bottom-metric">
             <div className="bm-label inline-flex items-center justify-center gap-1">
@@ -234,24 +226,15 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
             </div>
           </div>
           <div className="bottom-metric">
-            <div className="bm-label">开发者旅程耗时</div>
+            <div className="bm-label">达成 95 分以上仓数</div>
             <div className="bm-value">
-              <span className="bm-value-main">
-                {formatExecutionTime(summaryAvgExecutionTime)}
-              </span>
-              <span className="bm-value-suffix">分钟</span>
+              <span className="bm-value-main">{score95PlusRepoCount}</span>
             </div>
           </div>
           <div className="bottom-metric">
             <div className="bm-label">扫描仓数</div>
             <div className="bm-value">
               <span className="bm-value-main">{repoCount}</span>
-            </div>
-          </div>
-          <div className="bottom-metric">
-            <div className="bm-label">达成 95 分以上仓数</div>
-            <div className="bm-value">
-              <span className="bm-value-main">{score95PlusRepoCount}</span>
             </div>
           </div>
         </div>
