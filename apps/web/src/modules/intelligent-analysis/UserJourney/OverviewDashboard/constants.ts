@@ -3,6 +3,7 @@ import {
   OVERVIEW_TONES,
   OVERVIEW_STATUS_COLORS,
   OVERVIEW_CATEGORY_COLORS,
+  OVERVIEW_PAIN_STATUS_COLORS,
 } from './theme';
 import type { IssueBucket, Severity } from './types';
 
@@ -166,31 +167,31 @@ export const PAIN_STATUS_CFG: Record<
 > = {
   '1': {
     label: '待确认',
-    ...OVERVIEW_TONES.warning,
+    ...OVERVIEW_PAIN_STATUS_COLORS['1'],
   },
   '2': {
     label: '已确认待修复',
-    ...OVERVIEW_TONES.primary,
+    ...OVERVIEW_PAIN_STATUS_COLORS['2'],
   },
   '3': {
     label: '已修复待复测',
-    ...OVERVIEW_TONES.primary,
+    ...OVERVIEW_PAIN_STATUS_COLORS['3'],
   },
   '4': {
     label: '已复测待确认',
-    ...OVERVIEW_TONES.primary,
+    ...OVERVIEW_PAIN_STATUS_COLORS['4'],
   },
   '5': {
     label: '已复测通过',
-    ...OVERVIEW_TONES.success,
+    ...OVERVIEW_PAIN_STATUS_COLORS['5'],
   },
   '6': {
     label: '不需要修复',
-    ...OVERVIEW_TONES.neutral,
+    ...OVERVIEW_PAIN_STATUS_COLORS['6'],
   },
   '7': {
     label: '复测不通过',
-    ...OVERVIEW_TONES.danger,
+    ...OVERVIEW_PAIN_STATUS_COLORS['7'],
   },
 };
 

@@ -46,6 +46,17 @@ const tone = (name: 'blue' | 'green' | 'orange' | 'red' | 'slate') => ({
   solidBg: OVERVIEW_COLORS[name],
 });
 
+/** 明细工作流状态必须可区分，不能合并为汇总的“进行中”颜色。 */
+export const OVERVIEW_PAIN_STATUS_COLORS = {
+  '1': { tagBg: '#fff7e8', tagColor: '#d46b08', tagBorder: '#ffd591' },
+  '2': { tagBg: '#fffbe6', tagColor: '#d4b106', tagBorder: '#ffe58f' },
+  '3': { tagBg: '#e6f4ff', tagColor: '#1677ff', tagBorder: '#91caff' },
+  '4': { tagBg: '#f5f0ff', tagColor: '#722ed1', tagBorder: '#d3adf7' },
+  '5': { tagBg: '#e6fffb', tagColor: '#08979c', tagBorder: '#87e8de' },
+  '6': { tagBg: '#f6ffed', tagColor: '#389e0d', tagBorder: '#b7eb8f' },
+  '7': { tagBg: '#fff1f0', tagColor: '#e11d48', tagBorder: '#fda4af' },
+} as const;
+
 export const OVERVIEW_TONES = {
   primary: tone('blue'),
   success: tone('green'),
