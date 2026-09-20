@@ -86,7 +86,17 @@ const PainIssuePriorityDistribution: React.FC<{
   );
 
   if (!issues.length)
-    return <span className="text-[var(--overview-slateLight)]">0</span>;
+    return item.resolvedIssues?.length ? (
+      <button
+        type="button"
+        className="text-xs font-semibold text-emerald-700 hover:underline"
+        onClick={() => onOpen()}
+      >
+        当前 0 · 已修复 {item.resolvedIssues.length}
+      </button>
+    ) : (
+      <span className="text-[var(--overview-slateLight)]">0</span>
+    );
 
   return (
     <div className="overview-progress-cell !gap-1.5">
@@ -257,7 +267,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
     (painPage - 1) * PAIN_PAGE_SIZE,
     painPage * PAIN_PAGE_SIZE
   );
-  const detailIssues = issueDetailPain?.lowScoreIssues ?? [];
+  const detailIssues = issueDetailPain?.lowScoreIssues?.length
+    ? issueDetailPain.lowScoreIssues
+    : issueDetailPain?.resolvedIssues ?? [];
   // slim 数据的 issue 不含 reason 字段；需要完整明细时按 painIds 按需拉取
   // 该条痛点（非 slim 数据直接用本地字段，不发起请求）。
   const needsFullIssues =
@@ -289,7 +301,14 @@ const IssuePainDetailModal: React.FC<Props> = ({
       null
     : null;
   const sourceDetailPain = fullDetailPain ?? issueDetailPain;
-  const issueDetailItems = (sourceDetailPain?.lowScoreIssues ?? []).filter(
+  const resolvedOnly =
+    !sourceDetailPain?.lowScoreIssues?.length &&
+    Boolean(sourceDetailPain?.resolvedIssues?.length);
+  const issueDetailItems = (
+    resolvedOnly
+      ? sourceDetailPain?.resolvedIssues ?? []
+      : sourceDetailPain?.lowScoreIssues ?? []
+  ).filter(
     (issue) =>
       !issueDetailPriority ||
       resolvePainIssuePriority(issue.priority, issue.score) ===
@@ -672,7 +691,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
         title={
           <div className="flex items-center justify-between gap-3 pr-8">
             <span className="text-base font-semibold text-[var(--overview-textSecondary)]">
-              涉及 Issue{issueDetailPriority ? ` · ${issueDetailPriority}` : ''}
+              {resolvedOnly ? '已修复 Issue' : '涉及 Issue'}
+              {issueDetailPriority ? ` · ${issueDetailPriority}` : ''}
             </span>
             <button
               type="button"

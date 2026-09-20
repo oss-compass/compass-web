@@ -561,6 +561,8 @@ export type IssueOverviewTopPain = {
   action: string;
   state: string;
   lowScoreIssues?: IssueReportPainIssue[];
+  /** 当前报告已清零、但跟踪记录中保留的已修复 Issue。 */
+  resolvedIssues?: IssueReportPainIssue[];
   trackingKey?: string;
   trackingStatus?: number;
   trackingStatusLabel?: string;
