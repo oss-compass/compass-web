@@ -32,7 +32,8 @@ export const getIssuePriorityLabel = (value: unknown): string => {
 
 const IssuePriorityTag: React.FC<{ priority: unknown }> = ({ priority }) => {
   const normalized = normalizeIssuePriority(priority);
-  if (!normalized) return <span className="text-slate-300">--</span>;
+  if (!normalized)
+    return <span className="text-[var(--overview-slateLight)]">--</span>;
 
   const meta = ISSUE_PRIORITY_META[normalized];
   return (

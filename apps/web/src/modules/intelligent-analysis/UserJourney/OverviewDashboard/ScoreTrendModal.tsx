@@ -51,7 +51,8 @@ const ScoreTrendModal: React.FC<ScoreTrendModalProps> = ({
           <span
             className="oj-trend-line"
             style={{
-              background: 'linear-gradient(90deg, #60a5fa 0%, #2563eb 100%)',
+              background:
+                'linear-gradient(90deg, var(--overview-blueLight) 0%, var(--overview-blue) 100%)',
             }}
           />
           {legendLabel}

@@ -14,6 +14,11 @@ import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
 import IssuePainDetailModal from './IssuePainDetailModal';
 import IssuePriorityTag, { getIssuePriorityLabel } from './IssuePriorityTag';
 import IssueTrendSparkline from './IssueTrendSparkline';
+import { SEVERITY_CFG } from '../../../../UserJourney/OverviewDashboard/constants';
+import {
+  OVERVIEW_COLORS,
+  OVERVIEW_STATUS_COLORS,
+} from '../../../../UserJourney/OverviewDashboard/theme';
 
 type ProgressBucket = 'pending' | 'inProgress' | 'resolved';
 
@@ -33,26 +38,41 @@ type Props = {
 const PRIORITIES = [
   {
     key: 'P0',
-    color: '#d14343',
+    color: SEVERITY_CFG.P0_BLOCKER.tagColor,
   },
   {
     key: 'P1',
-    color: '#f4840c',
+    color: SEVERITY_CFG.P1_CRITICAL.tagColor,
   },
   {
     key: 'P2',
-    color: '#4791ff',
+    color: SEVERITY_CFG.P2_MAJOR.tagColor,
   },
   {
     key: 'P3',
-    color: '#94a3b8',
+    color: SEVERITY_CFG.P3_MINOR.tagColor,
   },
 ] as const;
 
 const PROGRESS_STATES = [
-  { key: 'pending', label: '待处理', fill: '#f4840c', color: '#ffffff' },
-  { key: 'inProgress', label: '进行中', fill: '#4791ff', color: '#ffffff' },
-  { key: 'resolved', label: '已闭环', fill: '#2eb78a', color: '#ffffff' },
+  {
+    key: 'pending',
+    label: '待处理',
+    fill: OVERVIEW_STATUS_COLORS.pending.solidBg,
+    color: OVERVIEW_COLORS.white,
+  },
+  {
+    key: 'inProgress',
+    label: '进行中',
+    fill: OVERVIEW_STATUS_COLORS.inProgress.solidBg,
+    color: OVERVIEW_COLORS.white,
+  },
+  {
+    key: 'resolved',
+    label: '已闭环',
+    fill: OVERVIEW_STATUS_COLORS.resolved.solidBg,
+    color: OVERVIEW_COLORS.white,
+  },
 ] as const;
 
 const progressBucket = (pain: IssueOverviewTopPain): ProgressBucket => {
@@ -167,7 +187,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
 
   return (
     <div className="section-card pain-progress-reference">
-      <div className="mb-3 text-[16px] font-extrabold leading-6 text-slate-900">
+      <div className="mb-3 text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
         痛点问题进展及趋势
       </div>
       <div className="ov-row">
@@ -222,6 +242,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                   <button
                     type="button"
                     className="pain-priority-label"
+                    style={{ color: priority.color }}
                     title={`查看 ${getIssuePriorityLabel(priority.key)} 痛点`}
                     onClick={() =>
                       setDetail({
@@ -267,7 +288,9 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                   <span
                     className="pain-priority-rate"
                     style={{
-                      color: priorityCounts.resolved ? '#12a57b' : '#98a2b3',
+                      color: priorityCounts.resolved
+                        ? 'var(--overview-greenDark)'
+                        : 'var(--overview-slateLight)',
                     }}
                   >
                     {priorityRate.toFixed(1)}%
@@ -344,17 +367,17 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
         .pain-panel {
           min-width: 0;
           padding: 18px 18px 16px;
-          border: 1px solid rgba(226, 232, 240, 0.92);
+          border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
           border-radius: 18px;
-          background: rgba(255, 255, 255, 0.9);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+          background: rgba(var(--overview-white-rgb), 0.9);
+          box-shadow: inset 0 1px 0 rgba(var(--overview-white-rgb), 0.7);
         }
         .pain-mini {
           font-size: 15px;
           line-height: 22px;
           font-weight: 700;
           margin: 0 0 12px;
-          color: #0f172a;
+          color: var(--overview-text);
         }
         .pain-priorities {
           /* 整体高度基准：约 330px，行高以此为锚点，右侧图表同步撑满 */
@@ -378,7 +401,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           display: flex;
           align-items: center;
           gap: 7px;
-          color: #64748b;
+          color: var(--overview-slate);
           font-size: 12.5px;
           font-weight: 600;
           text-align: left;
@@ -397,10 +420,10 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           /* 宽度略收窄并居中，与两侧留出呼吸空间 */
           width: 96%;
           justify-self: center;
-          border: 1px solid #e2e8f0;
+          border: 1px solid var(--overview-slateBorder);
           border-radius: 9px;
           overflow: hidden;
-          background: #f8fafc;
+          background: var(--overview-slateSoft);
         }
         .pain-status-bar button {
           display: flex;
@@ -408,7 +431,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           justify-content: center;
           min-width: 0;
           overflow: hidden;
-          border-right: 1px solid rgba(255, 255, 255, 0.6);
+          border-right: 1px solid rgba(var(--overview-white-rgb), 0.6);
           font-size: 12px;
           font-weight: 800;
           line-height: 24px;
@@ -435,7 +458,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           gap: 16px;
           margin-top: 10px;
           font-size: 12px;
-          color: #64748b;
+          color: var(--overview-slate);
         }
         .pain-legend span {
           display: flex;
@@ -464,7 +487,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #94a3b8;
+          color: var(--overview-slateLight);
           font-size: 13px;
         }
         @container (max-width: 800px) {
@@ -620,7 +643,9 @@ export const IssueFrequentPainSection: React.FC<
       ellipsis: true,
       render: (value: string) => (
         <Tooltip title={value} placement="topLeft">
-          <span className="font-semibold text-slate-700">{value}</span>
+          <span className="font-semibold text-[var(--overview-slateDark)]">
+            {value}
+          </span>
         </Tooltip>
       ),
     },
@@ -639,15 +664,15 @@ export const IssueFrequentPainSection: React.FC<
                 className="inline-flex min-w-0 items-center gap-1.5"
               >
                 <Tooltip title={metric.label}>
-                  <span className="max-w-[132px] truncate text-slate-700">
+                  <span className="max-w-[132px] truncate text-[var(--overview-slateDark)]">
                     {metric.label}
                   </span>
                 </Tooltip>
                 <span
                   className={`inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
                     metric.category === 'efficiency'
-                      ? 'bg-sky-50 text-sky-600'
-                      : 'bg-emerald-50 text-emerald-600'
+                      ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)]'
+                      : 'bg-[var(--overview-greenSoft)] text-[var(--overview-green)]'
                   }`}
                 >
                   {metric.category === 'efficiency' ? '效率' : '质量'}
@@ -750,7 +775,7 @@ export const IssueFrequentPainSection: React.FC<
     <>
       <div className="section-card">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="text-[16px] font-extrabold leading-6 text-slate-900">
+          <div className="text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
             高频问题 TOP5
           </div>
           <Segmented

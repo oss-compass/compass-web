@@ -987,12 +987,14 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               message={passedPresentation.message}
               description={passedPresentation.description}
             />
-            <PainIssueTable
-              issues={pain.low_score_issues ?? []}
-              tracking={tracking}
-              onTrackingAction={onAction}
-              responsive
-            />
+            {pain.low_score_issues?.length ? (
+              <PainIssueTable
+                issues={pain.low_score_issues}
+                tracking={tracking}
+                onTrackingAction={onAction}
+                responsive
+              />
+            ) : null}
           </div>
         ) : null}
 
@@ -1034,7 +1036,13 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           </div>
         ) : null}
 
-        <PassedIssueTable tracking={tracking} />
+        <PassedIssueTable
+          tracking={tracking}
+          defaultOpen={
+            tracking.status === IssuePainTrackingStatus.PASSED &&
+            !pain.low_score_issues?.length
+          }
+        />
         <TrackingHistoryTable history={tracking.history} />
         <style jsx global>{`
           .issue-pain-form-input.ant-input {

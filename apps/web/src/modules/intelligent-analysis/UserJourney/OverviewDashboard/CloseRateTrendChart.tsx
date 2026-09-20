@@ -134,7 +134,7 @@ export const ScoreSparkline: React.FC<ScoreSparklineProps> = ({
       values={values}
       width={width}
       height={height}
-      stroke="#2563EB"
+      stroke={OJ_TREND_COLORS.scoreLine}
       minValue={minValue}
       maxValue={maxValue}
     />
@@ -288,8 +288,11 @@ export const CloseRateTrendChart: React.FC<CloseRateTrendChartProps> = ({
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor="rgba(25, 167, 150, 0.22)" />
-            <stop offset="100%" stopColor="rgba(25, 167, 150, 0.02)" />
+            <stop offset="0%" stopColor="rgba(var(--overview-blue-rgb),0.22)" />
+            <stop
+              offset="100%"
+              stopColor="rgba(var(--overview-blue-rgb),0.02)"
+            />
           </linearGradient>
         </defs>
 

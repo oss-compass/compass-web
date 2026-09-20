@@ -6,20 +6,16 @@ import type { TableProps } from 'antd';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import { getMetricCategory } from '../../metricDefinitions';
 import type { IssueOverviewRepo } from '../../types';
+import {
+  getOverviewScoreColor,
+  OVERVIEW_SCORE_BANDS,
+  type OverviewScoreBand,
+} from '../../../../UserJourney/OverviewDashboard/scoreVisuals';
 
 type Props = {
   repos: IssueOverviewRepo[];
   reportHref: (community: string, period?: string) => string;
   overallScore?: number;
-};
-
-type ScoreBand = {
-  key: string;
-  label: string;
-  color: string;
-  fill: string;
-  textColor: string;
-  matches: (score: number) => boolean;
 };
 
 type DistributionItem = {
@@ -33,51 +29,9 @@ type DistributionItem = {
   values: Array<{ repo: IssueOverviewRepo; score: number }>;
 };
 
-const SCORE_BANDS: ScoreBand[] = [
-  {
-    key: 'excellent',
-    label: '90–100',
-    color: '#12a57b',
-    fill: '#67cda0',
-    textColor: '#0f6f4e',
-    matches: (v) => v >= 90,
-  },
-  {
-    key: 'good',
-    label: '80–89',
-    color: '#3d7df6',
-    fill: '#79a9f5',
-    textColor: '#195fcf',
-    matches: (v) => v >= 80 && v < 90,
-  },
-  {
-    key: 'fair',
-    label: '70–79',
-    color: '#7c91c9',
-    fill: '#a5b3cf',
-    textColor: '#52647d',
-    matches: (v) => v >= 70 && v < 80,
-  },
-  {
-    key: 'risk',
-    label: '60–69',
-    color: '#f0912b',
-    fill: '#efad55',
-    textColor: '#9a5b0b',
-    matches: (v) => v >= 60 && v < 70,
-  },
-  {
-    key: 'critical',
-    label: '0–59',
-    color: '#e5453a',
-    fill: '#e97d73',
-    textColor: '#ad302b',
-    matches: (v) => v < 60,
-  },
-];
+const SCORE_BANDS = OVERVIEW_SCORE_BANDS;
 
-const scoreColor = (score: number) =>
-  SCORE_BANDS.find((band) => band.matches(score))?.color ?? '#64748b';
+const scoreColor = getOverviewScoreColor;
 
 const average = (values: number[]) =>
   values.length
@@ -168,7 +122,7 @@ const buildMetricDistribution = (
 
 const DistributionRows: React.FC<{
   items: DistributionItem[];
-  onOpen: (item: DistributionItem, band: ScoreBand) => void;
+  onOpen: (item: DistributionItem, band: OverviewScoreBand) => void;
 }> = ({ items, onOpen }) => {
   const detailItems = items.filter((item) => item.key !== '__all_teams__');
   // 汇总行始终占满；具体团队柱长只按团队内的最大仓库数计算。
@@ -189,29 +143,29 @@ const DistributionRows: React.FC<{
         return (
           <React.Fragment key={item.key}>
             {showGroup ? (
-              <div className="flex items-baseline gap-2 px-2 pb-1 pt-3 text-[13px] font-semibold text-slate-800 first:pt-0">
+              <div className="flex items-baseline gap-2 px-2 pb-1 pt-3 text-[13px] font-semibold text-[var(--overview-textSecondary)] first:pt-0">
                 {item.groupLabel}
-                <span className="text-[11px] font-normal text-slate-400">
+                <span className="text-[11px] font-normal text-[var(--overview-slateLight)]">
                   按平均得分降序
                 </span>
               </div>
             ) : null}
             <div
-              className={`group grid grid-cols-[minmax(150px,220px)_minmax(260px,1fr)_58px_58px] items-center gap-3 px-2 transition-colors hover:bg-slate-50/80 ${
+              className={`group grid grid-cols-[minmax(150px,220px)_minmax(260px,1fr)_58px_58px] items-center gap-3 px-2 transition-colors hover:bg-[rgba(var(--overview-slateSoft-rgb),0.8)] ${
                 isTotal
-                  ? 'mb-2 border-b border-slate-200 pb-2 pt-0.5 font-semibold'
+                  ? 'mb-2 border-b border-[var(--overview-slateBorder)] pb-2 pt-0.5 font-semibold'
                   : 'rounded-lg py-1'
               }`}
             >
               <Tooltip title={item.hint || item.label}>
-                <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-slate-700">
+                <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-[var(--overview-slateDark)]">
                   <span className="truncate">{item.label}</span>
                   {item.metricCategory ? (
                     <span
                       className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
                         item.metricCategory === 'efficiency'
-                          ? 'bg-sky-50 text-sky-600'
-                          : 'bg-emerald-50 text-emerald-600'
+                          ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)]'
+                          : 'bg-[var(--overview-greenSoft)] text-[var(--overview-green)]'
                       }`}
                     >
                       {item.metricCategory === 'efficiency' ? '效率' : '质量'}
@@ -220,7 +174,7 @@ const DistributionRows: React.FC<{
                 </span>
               </Tooltip>
               <div
-                className="flex h-[22px] overflow-hidden rounded-[7px] border border-slate-200 bg-slate-50"
+                className="flex h-[22px] overflow-hidden rounded-[7px] border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)]"
                 style={{
                   width: isTotal
                     ? '100%'
@@ -233,12 +187,11 @@ const DistributionRows: React.FC<{
                       type="button"
                       key={band.key}
                       title={`${item.label} · ${band.label}：${repos.length} 个仓库`}
-                      className="relative flex min-w-0 items-center justify-center overflow-hidden border-r border-white/60 text-xs font-extrabold tabular-nums leading-5 transition-[filter,width] last:border-r-0 hover:z-10 hover:brightness-95 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-300"
+                      className="relative flex min-w-0 items-center justify-center overflow-hidden border-r border-[rgba(var(--overview-white-rgb),0.6)] text-xs font-extrabold tabular-nums leading-5 transition-[filter,width] last:border-r-0 hover:z-10 hover:brightness-95 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--overview-blueLight)]"
                       style={{
                         width: `${(repos.length / item.values.length) * 100}%`,
-                        color: '#ffffff',
+                        color: band.textColor,
                         background: band.fill,
-                        textShadow: '0 1px 2px rgba(15, 23, 42, 0.35)',
                       }}
                       onClick={() => onOpen(item, band)}
                     >
@@ -247,7 +200,7 @@ const DistributionRows: React.FC<{
                   ) : null
                 )}
               </div>
-              <span className="text-right text-xs text-slate-400">
+              <span className="text-right text-xs text-[var(--overview-slateLight)]">
                 {item.values.length} 个
               </span>
               <span
@@ -272,7 +225,7 @@ export const IssueScoreDistribution: React.FC<Props> = ({
   const [dimension, setDimension] = React.useState<'team' | 'metric'>('team');
   const [detail, setDetail] = React.useState<{
     item: DistributionItem;
-    band: ScoreBand;
+    band: OverviewScoreBand;
   } | null>(null);
   const items = React.useMemo(
     () =>
@@ -318,24 +271,24 @@ export const IssueScoreDistribution: React.FC<Props> = ({
     <div className="section-card">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[16px] font-extrabold leading-6 text-slate-900">
+          <div className="text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
             综合体验评分分布
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-4">
-          <div className="flex flex-wrap gap-3 text-xs text-slate-500">
+          <div className="flex flex-wrap gap-3 text-xs text-[var(--overview-slate)]">
             {SCORE_BANDS.map((band) => (
               <span key={band.key} className="inline-flex items-center gap-1.5">
                 <i
                   className="h-2 w-2 rounded-sm"
-                  style={{ background: band.color }}
+                  style={{ background: band.fill }}
                 />
                 {band.label}
               </span>
             ))}
           </div>
           <div
-            className="inline-flex rounded-[10px] border border-slate-200 bg-white/70 p-[3px]"
+            className="inline-flex rounded-[10px] border border-[var(--overview-slateBorder)] bg-[rgba(var(--overview-white-rgb),0.7)] p-[3px]"
             role="tablist"
             aria-label="评分分布维度"
           >
@@ -354,8 +307,8 @@ export const IssueScoreDistribution: React.FC<Props> = ({
                   aria-selected={selected}
                   className={`min-h-[30px] rounded-lg px-4 text-xs font-semibold transition-colors ${
                     selected
-                      ? 'bg-white text-blue-600 shadow-[0_1px_3px_rgba(15,23,42,0.08)]'
-                      : 'text-slate-500 hover:text-slate-700'
+                      ? 'bg-[var(--overview-white)] text-[var(--overview-blue)] shadow-[0_1px_3px_rgba(var(--overview-text-rgb),0.08)]'
+                      : 'text-[var(--overview-slate)] hover:text-[var(--overview-slateDark)]'
                   }`}
                   onClick={() => setDimension(value)}
                 >
@@ -411,9 +364,11 @@ const RankingColumn: React.FC<{
 }> = ({ title, repos, direction, reportHref, onOpenMetrics }) => (
   <section className="min-w-0 flex-1">
     <div className="mb-3 flex flex-wrap items-baseline gap-2">
-      <h3 className="text-[15px] font-bold text-slate-900">{title}</h3>
+      <h3 className="text-[15px] font-bold text-[var(--overview-text)]">
+        {title}
+      </h3>
     </div>
-    <div className="grid grid-cols-[28px_minmax(120px,1fr)_minmax(180px,2fr)_96px] items-center gap-2 border-b border-slate-200 px-1 pb-2 text-xs text-slate-500">
+    <div className="grid grid-cols-[28px_minmax(120px,1fr)_minmax(180px,2fr)_96px] items-center gap-2 border-b border-[var(--overview-slateBorder)] px-1 pb-2 text-xs text-[var(--overview-slate)]">
       <span aria-hidden="true" />
       <span>仓库 / 责任团队</span>
       <span className="flex items-center justify-center pr-7 text-center">
@@ -433,13 +388,13 @@ const RankingColumn: React.FC<{
         return (
           <div
             key={repo.community}
-            className="grid grid-cols-[28px_minmax(120px,1fr)_minmax(180px,2fr)_96px] items-center gap-2 border-t border-slate-100 px-1 py-2 first:border-t-0"
+            className="grid grid-cols-[28px_minmax(120px,1fr)_minmax(180px,2fr)_96px] items-center gap-2 border-t border-[var(--overview-slateSoft)] px-1 py-2 first:border-t-0"
           >
             <span
               className={`grid h-5 w-5 place-items-center rounded-md text-xs font-semibold ${
                 direction === 'top'
-                  ? 'bg-emerald-50 text-emerald-600'
-                  : 'bg-rose-50 text-rose-600'
+                  ? 'bg-[var(--overview-greenSoft)] text-[var(--overview-green)]'
+                  : 'bg-[var(--overview-redSoft)] text-[var(--overview-red)]'
               }`}
             >
               {index + 1}
@@ -447,12 +402,12 @@ const RankingColumn: React.FC<{
             <div className="min-w-0">
               <Link
                 href={reportHref(repo.community, repo.period)}
-                className="overview-table-link overview-table-link-strong block truncate decoration-blue-400 underline-offset-2 transition-colors hover:!text-blue-600 hover:underline"
+                className="overview-table-link overview-table-link-strong block truncate decoration-[var(--overview-blue)] underline-offset-2 transition-colors hover:!text-[var(--overview-blue)] hover:underline"
                 title={`查看 ${repo.repoShort} 最新报告`}
               >
                 {repo.repoShort}
               </Link>
-              <span className="block truncate text-xs text-slate-400">
+              <span className="block truncate text-xs text-[var(--overview-slateLight)]">
                 {repo.teamName}
               </span>
             </div>
@@ -462,8 +417,8 @@ const RankingColumn: React.FC<{
                   key={`${metric.stageId}-${metric.code}`}
                   title={`${metric.stageName} · ${metric.name}`}
                 >
-                  <span className="min-w-0 flex-1 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-1 text-center">
-                    <span className="block truncate text-[10px] text-slate-400">
+                  <span className="min-w-0 flex-1 rounded-md border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)] px-1.5 py-1 text-center">
+                    <span className="block truncate text-[10px] text-[var(--overview-slateLight)]">
                       {metric.name}
                     </span>
                     <b
@@ -479,7 +434,7 @@ const RankingColumn: React.FC<{
                 <button
                   type="button"
                   aria-label={`查看 ${repo.repoShort} 全部指标得分`}
-                  className="flex h-7 w-[22px] shrink-0 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-blue-50 hover:text-blue-600 focus-visible:outline-blue-500"
+                  className="flex h-7 w-[22px] shrink-0 items-center justify-center rounded-md text-[var(--overview-slateLight)] transition-colors hover:bg-[var(--overview-blueSoft)] hover:text-[var(--overview-blue)] focus-visible:outline-[var(--overview-blue)]"
                   onClick={() => onOpenMetrics(repo)}
                 >
                   <DownOutlined className="text-[11px]" />
@@ -505,7 +460,7 @@ const RankingColumn: React.FC<{
               />
               <Link
                 href={reportHref(repo.community, repo.period)}
-                className="font-bold tabular-nums text-[#3d7df6] underline decoration-[#3d7df6] underline-offset-2 transition-colors hover:text-blue-700 hover:decoration-[#3d7df6]"
+                className="font-bold tabular-nums text-[var(--overview-blue)] underline decoration-[var(--overview-blue)] underline-offset-2 transition-colors hover:text-[var(--overview-blueDark)] hover:decoration-[var(--overview-blue)]"
                 title={`查看 ${repo.repoShort} 最新报告`}
               >
                 {repo.idxTotal.toFixed(1)}
@@ -608,7 +563,7 @@ export const IssueRepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
         destroyOnHidden
         onCancel={() => setMetricRepo(null)}
       >
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--overview-slate)]">
           <span>
             {metricRepo?.teamName} · 共 {metricRepo?.metrics?.length ?? 0}{' '}
             项指标
@@ -648,7 +603,7 @@ export const IssueRepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
           left: 0;
           right: 0;
           height: 1px;
-          background: #e2e8f0;
+          background: var(--overview-slateBorder);
           pointer-events: none;
         }
         @container (min-width: 984px) {

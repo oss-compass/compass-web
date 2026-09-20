@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Typography } from 'antd';
 import { ScoreTrendChart } from '../../../../UserJourney/OverviewDashboard/ScoreTrendChart';
 import type { ScoreTrendPoint } from '../../../../UserJourney/OverviewDashboard/scoreTrend';
+import { OJ_TREND_COLORS } from '../../../../UserJourney/OverviewDashboard/constants';
 
 const { Title } = Typography;
 
@@ -111,8 +112,7 @@ const IssueTrendModal: React.FC<IssueTrendModalProps> = ({
               <span
                 className="oj-trend-line"
                 style={{
-                  background:
-                    'linear-gradient(90deg, #60a5fa 0%, #2563eb 100%)',
+                  background: `linear-gradient(90deg, ${OJ_TREND_COLORS.scoreGradientStart} 0%, ${OJ_TREND_COLORS.scoreLine} 100%)`,
                 }}
               />
               {axisTitle}

@@ -323,7 +323,7 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
           ) {
             return `第${rank}位`;
           }
-          return <span className="text-slate-400">--</span>;
+          return <span className="text-[var(--overview-slateLight)]">--</span>;
         },
       },
       {
@@ -349,7 +349,9 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
           const href = getRerunDetailReportHref(record);
           const displayText = getReportDisplayText(reportId);
           if (!reportId) {
-            return <span className="text-slate-400">--</span>;
+            return (
+              <span className="text-[var(--overview-slateLight)]">--</span>
+            );
           }
           return href ? (
             <Link href={href} className="overview-table-link">
@@ -381,7 +383,7 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
                     撤销
                   </Button>
                 ) : (
-                  <span className="text-slate-400">-</span>
+                  <span className="text-[var(--overview-slateLight)]">-</span>
                 ),
             } as NonNullable<TableProps<RepoRerunJob>['columns']>[number],
           ]
@@ -456,43 +458,59 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
     : [];
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <div className="rounded-xl border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)] p-4">
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <div className="mb-3 text-sm font-medium text-slate-900">
+        <div className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-4">
+          <div className="mb-3 text-sm font-medium text-[var(--overview-text)]">
             仓库信息
           </div>
           <div className="space-y-3 text-sm">
             <div className="flex items-start gap-3">
-              <div className="w-16 shrink-0 text-slate-500">仓库</div>
-              <div className="min-w-0 flex-1 font-medium text-slate-900">
+              <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                仓库
+              </div>
+              <div className="min-w-0 flex-1 font-medium text-[var(--overview-text)]">
                 {repo.name}
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-16 shrink-0 text-slate-500">责任团队</div>
-              <div className="min-w-0 flex-1 text-slate-700">
+              <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                责任团队
+              </div>
+              <div className="min-w-0 flex-1 text-[var(--overview-slateDark)]">
                 {repo.team || '未分配团队'}
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-16 shrink-0 text-slate-500">硬件环境</div>
-              <div className="min-w-0 flex-1 text-slate-700">
+              <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                硬件环境
+              </div>
+              <div className="min-w-0 flex-1 text-[var(--overview-slateDark)]">
                 {hardware || '--'}
               </div>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-4">
           {operatorUser ? (
             <div className="space-y-3">
-              <div className="text-sm font-medium text-slate-900">账户信息</div>
+              <div className="text-sm font-medium text-[var(--overview-text)]">
+                账户信息
+              </div>
               <div className="flex items-start gap-3 text-sm">
-                <div className="w-16 shrink-0 text-slate-500">当前账号</div>
+                <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                  当前账号
+                </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2 font-medium text-slate-900">
+                  <div className="flex flex-wrap items-center gap-2 font-medium text-[var(--overview-text)]">
                     <span>{operatorUser.username}</span>
-                    <Tag color={operatorUser.role === 'admin' ? 'red' : 'blue'}>
+                    <Tag
+                      style={{
+                        color: 'var(--overview-blueDark)',
+                        background: 'var(--overview-blueSoft)',
+                        borderColor: 'var(--overview-blueBorder)',
+                      }}
+                    >
                       {operatorUser.role === 'admin' ? '管理员' : '仓库负责人'}
                     </Tag>
                     {onOpenChangePassword ? (
@@ -509,8 +527,10 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                 </div>
               </div>
               <div className="flex items-start gap-3 text-sm">
-                <div className="w-16 shrink-0 text-slate-500">负责仓库</div>
-                <div className="min-w-0 flex-1 text-slate-700">
+                <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                  负责仓库
+                </div>
+                <div className="min-w-0 flex-1 text-[var(--overview-slateDark)]">
                   {repoNames.length
                     ? repoNames.join('、')
                     : repoKeys.length
@@ -521,8 +541,8 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
               <div
                 className={`flex items-center rounded-md border px-3 py-1.5 text-xs leading-5 ${
                   canOperate
-                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                    : 'border-rose-200 bg-rose-50 text-rose-700'
+                    ? 'border-[var(--overview-greenBorder)] bg-[var(--overview-greenSoft)] text-[var(--overview-greenDark)]'
+                    : 'border-[var(--overview-redBorder)] bg-[var(--overview-redSoft)] text-[var(--overview-redDark)]'
                 }`}
               >
                 <span className="truncate">
@@ -534,19 +554,27 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="text-sm font-medium text-slate-900">账户信息</div>
+              <div className="text-sm font-medium text-[var(--overview-text)]">
+                账户信息
+              </div>
               <div className="space-y-3 text-sm">
                 <div className="flex items-start gap-3">
-                  <div className="w-16 shrink-0 text-slate-500">当前账号</div>
-                  <div className="min-w-0 flex-1 text-slate-400">未登录</div>
+                  <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                    当前账号
+                  </div>
+                  <div className="min-w-0 flex-1 text-[var(--overview-slateLight)]">
+                    未登录
+                  </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-16 shrink-0 text-slate-500">负责仓库</div>
-                  <div className="min-w-0 flex-1 text-slate-400">
+                  <div className="w-16 shrink-0 text-[var(--overview-slate)]">
+                    负责仓库
+                  </div>
+                  <div className="min-w-0 flex-1 text-[var(--overview-slateLight)]">
                     登录后可查看
                   </div>
                 </div>
-                <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+                <div className="rounded-md border border-[var(--overview-orangeBorder)] bg-[var(--overview-orangeSoft)] px-3 py-2 text-xs leading-5 text-[var(--overview-orangeDark)]">
                   {loginHint || '请先登录操作账号'}
                 </div>
               </div>
@@ -555,23 +583,25 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
         </div>
       </div>
       {operatorUser ? (
-        <div className="mt-3 border-t border-slate-200 pt-3">
+        <div className="mt-3 border-t border-[var(--overview-slateBorder)] pt-3">
           <div className="mb-3 flex items-center justify-between">
-            <div className="text-sm font-medium text-slate-900">
+            <div className="text-sm font-medium text-[var(--overview-text)]">
               {nodeSectionTitle}
             </div>
             {!nodeStatusesLoading &&
             !nodeStatusesError &&
             nodeStatuses.length ? (
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-[var(--overview-slate)]">
                 在线节点 {nodeStatuses.length} 个
               </div>
             ) : null}
           </div>
           {nodeStatusesLoading ? (
-            <div className="text-sm text-slate-500">正在加载节点状态...</div>
+            <div className="text-sm text-[var(--overview-slate)]">
+              正在加载节点状态...
+            </div>
           ) : nodeStatusesError ? (
-            <div className="rounded-md bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            <div className="rounded-md bg-[var(--overview-redSoft)] px-3 py-2 text-sm text-[var(--overview-redDark)]">
               {nodeStatusesError}
             </div>
           ) : nodeStatuses.length ? (
@@ -601,13 +631,13 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                 return (
                   <div
                     key={nodeKey}
-                    className={`rounded-lg border bg-white px-3 py-3 text-sm text-slate-700 shadow-sm transition-all ${
+                    className={`rounded-lg border bg-[var(--overview-white)] px-3 py-3 text-sm text-[var(--overview-slateDark)] shadow-sm transition-all ${
                       selected
-                        ? 'border-emerald-400 ring-2 ring-emerald-100'
-                        : 'border-slate-200'
+                        ? 'border-[var(--overview-greenLight)] ring-2 ring-[var(--overview-greenSoft)]'
+                        : 'border-[var(--overview-slateBorder)]'
                     } ${
                       nodeSelectable
-                        ? 'cursor-pointer hover:border-emerald-300 hover:shadow'
+                        ? 'cursor-pointer hover:border-[var(--overview-greenLight)] hover:shadow'
                         : ''
                     }`}
                     onClick={() => {
@@ -619,58 +649,58 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <div className="truncate font-medium text-slate-900">
+                          <div className="truncate font-medium text-[var(--overview-text)]">
                             {name}
                           </div>
                           {selected ? (
-                            <span className="inline-flex items-center text-emerald-600">
+                            <span className="inline-flex items-center text-[var(--overview-green)]">
                               <CheckOutlined />
                             </span>
                           ) : null}
                         </div>
                         <div className="mt-2 flex items-center gap-2 text-sm">
-                          <span className="shrink-0 text-xs text-slate-500">
+                          <span className="shrink-0 text-xs text-[var(--overview-slate)]">
                             硬件环境:
                           </span>
-                          <span className="truncate text-slate-700">
+                          <span className="truncate text-[var(--overview-slateDark)]">
                             {hardwareText}
                           </span>
                         </div>
                       </div>
-                      <div className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                      <div className="shrink-0 rounded-full bg-[var(--overview-slateSoft)] px-2.5 py-1 text-xs font-medium text-[var(--overview-slate)]">
                         使用率 {usagePercent}%
                       </div>
                     </div>
                     <div className="mt-3 flex items-center gap-2 text-sm">
-                      <span className="shrink-0 text-xs text-slate-500">
+                      <span className="shrink-0 text-xs text-[var(--overview-slate)]">
                         资源占用:
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-2 overflow-hidden rounded-full bg-[var(--overview-slateSoft)]">
                           <div
-                            className="h-full rounded-full bg-emerald-500 transition-all"
+                            className="h-full rounded-full bg-[var(--overview-green)] transition-all"
                             style={{ width: `${usagePercent}%` }}
                           />
                         </div>
                       </div>
-                      <span className="shrink-0 text-xs text-slate-600">
+                      <span className="shrink-0 text-xs text-[var(--overview-slate)]">
                         {used} / {total || 0}
                       </span>
                     </div>
                     {selected ? (
                       <div
-                        className="mt-3 border-t border-slate-100 pt-3"
+                        className="mt-3 border-t border-[var(--overview-slateSoft)] pt-3"
                         onClick={(event) => event.stopPropagation()}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="shrink-0 text-xs text-slate-500">
+                          <span className="shrink-0 text-xs text-[var(--overview-slate)]">
                             操作系统:
                           </span>
                           <Select
-                            className="min-w-0 flex-1 [&_.ant-select-selector]:!rounded-md [&_.ant-select-selector]:!border-slate-300 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!shadow-sm hover:[&_.ant-select-selector]:!border-emerald-400"
+                            className="min-w-0 flex-1 [&_.ant-select-selector]:!rounded-md [&_.ant-select-selector]:!border-[var(--overview-slateLight)] [&_.ant-select-selector]:!bg-[var(--overview-white)] [&_.ant-select-selector]:!shadow-sm hover:[&_.ant-select-selector]:!border-[var(--overview-greenLight)]"
                             size="small"
                             suffixIcon={
-                              <DownOutlined className="text-slate-500" />
+                              <DownOutlined className="text-[var(--overview-slate)]" />
                             }
                             value={selectedOs || undefined}
                             placeholder={
@@ -689,7 +719,7 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                             onChange={onSelectOs}
                           />
                         </div>
-                        <div className="mt-2 text-xs leading-5 text-amber-700">
+                        <div className="mt-2 text-xs leading-5 text-[var(--overview-orangeDark)]">
                           默认选择 debian-13，历史报告同样基于 debian-13
                           生成。如需复现历史报告中的痛点，请保持该选项。
                         </div>
@@ -700,7 +730,9 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
               })}
             </div>
           ) : (
-            <div className="text-sm text-slate-500">暂无在线节点信息</div>
+            <div className="text-sm text-[var(--overview-slate)]">
+              暂无在线节点信息
+            </div>
           )}
         </div>
       ) : null}
@@ -874,16 +906,16 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
         />
 
         {operatorUser && shouldShowRerunRecordsTable ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="rounded-xl border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-4">
             <button
               type="button"
               className="flex w-full items-center justify-between text-left"
               onClick={onToggleRerunRecords}
             >
-              <span className="text-sm font-medium text-slate-900">
+              <span className="text-sm font-medium text-[var(--overview-text)]">
                 重跑记录
               </span>
-              <span className="inline-flex items-center gap-2 text-xs text-slate-500">
+              <span className="inline-flex items-center gap-2 text-xs text-[var(--overview-slate)]">
                 {rerunRecordsLoading ? '加载中' : `${rerunRecords.length} 条`}
                 {rerunRecordsExpanded ? <DownOutlined /> : <RightOutlined />}
               </span>
@@ -1050,7 +1082,9 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
       ) : null}
 
       {authChecking ? (
-        <div className="text-sm text-slate-500">正在校验当前登录状态...</div>
+        <div className="text-sm text-[var(--overview-slate)]">
+          正在校验当前登录状态...
+        </div>
       ) : null}
 
       {loginError ? <Alert type="error" showIcon message={loginError} /> : null}
@@ -1059,14 +1093,16 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
         <Alert type="error" showIcon message={rerunRecordsError} />
       ) : null}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-4">
         <button
           type="button"
           className="flex w-full items-center justify-between text-left"
           onClick={onToggleRerunRecords}
         >
-          <span className="text-sm font-medium text-slate-900">重跑记录</span>
-          <span className="inline-flex items-center gap-2 text-xs text-slate-500">
+          <span className="text-sm font-medium text-[var(--overview-text)]">
+            重跑记录
+          </span>
+          <span className="inline-flex items-center gap-2 text-xs text-[var(--overview-slate)]">
             {rerunRecordsLoading ? '加载中' : `${rerunRecords.length} 条`}
             {rerunRecordsExpanded ? <DownOutlined /> : <RightOutlined />}
           </span>

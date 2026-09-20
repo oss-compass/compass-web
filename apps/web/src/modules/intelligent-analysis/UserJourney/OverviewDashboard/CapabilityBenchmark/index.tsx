@@ -179,8 +179,8 @@ const TeamFilterHeader: React.FC<{
         title={`当前：${currentLabel}`}
         className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
           value
-            ? 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-            : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+            ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
+            : 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
         }`}
         onClick={(event) => {
           event.stopPropagation();
@@ -193,12 +193,12 @@ const TeamFilterHeader: React.FC<{
         ? createPortal(
             <div
               ref={popupRef}
-              className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+              className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-3 shadow-lg"
               style={popupStyle}
               onClick={(event) => event.stopPropagation()}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              <div className="mb-2 text-xs font-semibold text-slate-500">
+              <div className="mb-2 text-xs font-semibold text-[var(--overview-slate)]">
                 责任团队
               </div>
               <div className="flex max-h-72 flex-col gap-1 overflow-auto">
@@ -210,8 +210,8 @@ const TeamFilterHeader: React.FC<{
                       type="button"
                       className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
                         active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                          ? 'border-[var(--overview-blueBorder)] bg-[var(--overview-blueSoft)] text-[var(--overview-blueDark)]'
+                          : 'border-transparent text-[var(--overview-slate)] hover:border-[var(--overview-slateBorder)] hover:bg-[var(--overview-slateSoft)]'
                       }`}
                       onClick={(event) => {
                         event.stopPropagation();

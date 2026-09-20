@@ -1,3 +1,5 @@
+import { OVERVIEW_PRIORITY_CLASSES } from '../../UserJourney/OverviewDashboard/theme';
+
 export const getScoreTone = (score: number) => {
   if (score >= 80) {
     return {
@@ -28,22 +30,11 @@ export const getScoreTone = (score: number) => {
 };
 
 export const getPriorityTone = (priority: string) => {
-  if (priority === 'P0') {
-    return {
-      badge: 'border-rose-200 bg-rose-50 text-rose-700',
-      edge: 'border-l-rose-400',
-    };
-  }
-  if (priority === 'P1') {
-    return {
-      badge: 'border-amber-200 bg-amber-50 text-amber-700',
-      edge: 'border-l-amber-400',
-    };
-  }
-  return {
-    badge: 'border-sky-200 bg-sky-50 text-sky-700',
-    edge: 'border-l-sky-400',
-  };
+  const key = priority.toUpperCase();
+  return (
+    OVERVIEW_PRIORITY_CLASSES[key as keyof typeof OVERVIEW_PRIORITY_CLASSES] ??
+    OVERVIEW_PRIORITY_CLASSES.P3
+  );
 };
 
 export const getPriorityLabel = (priority: string) => {

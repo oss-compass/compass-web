@@ -1,9 +1,10 @@
 import React from 'react';
 import type { IssueBucket } from './types';
+import { OVERVIEW_STATUS_COLORS } from './theme';
 
-const PENDING_COLOR = '#f4840c';
-const IN_PROGRESS_COLOR = '#4791ff';
-const RESOLVED_COLOR = '#2eb78a';
+const PENDING_COLOR = OVERVIEW_STATUS_COLORS.pending.solidBg;
+const IN_PROGRESS_COLOR = OVERVIEW_STATUS_COLORS.inProgress.solidBg;
+const RESOLVED_COLOR = OVERVIEW_STATUS_COLORS.resolved.solidBg;
 
 export const CircularProgress: React.FC<{ value: number | null }> = ({
   value,
@@ -11,7 +12,11 @@ export const CircularProgress: React.FC<{ value: number | null }> = ({
   const safeValue =
     value == null ? 0 : Math.max(0, Math.min(Number(value.toFixed(1)), 100));
   const ringColor =
-    safeValue < 50 ? '#ef4444' : safeValue > 80 ? '#10b981' : '#f59e0b';
+    safeValue < 50
+      ? 'var(--overview-red)'
+      : safeValue > 80
+      ? 'var(--overview-green)'
+      : 'var(--overview-orange)';
   const size = 24;
   const radius = (size - 4) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -31,7 +36,7 @@ export const CircularProgress: React.FC<{ value: number | null }> = ({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#f0f0f0"
+          stroke="var(--overview-slateSoft)"
           strokeWidth="3"
         />
         <circle
@@ -48,7 +53,9 @@ export const CircularProgress: React.FC<{ value: number | null }> = ({
       </svg>
       <span
         className="overview-ring-label"
-        style={{ color: value == null ? '#94a3b8' : ringColor }}
+        style={{
+          color: value == null ? 'var(--overview-slateLight)' : ringColor,
+        }}
       >
         {label}
       </span>

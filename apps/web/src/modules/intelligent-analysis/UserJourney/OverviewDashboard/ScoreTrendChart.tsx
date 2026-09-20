@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ScoreTrendPoint } from './scoreTrend';
 import { formatPercent, formatScore } from './utils';
+import { OJ_TREND_COLORS } from './constants';
 
 const SCORE_VIEWBOX_W = 600;
 const SCORE_VIEWBOX_H = 196;
@@ -11,11 +12,11 @@ const SCORE_PLOT_BOTTOM = 156;
 const SCORE_LABEL_SAFE_TOP = 18;
 const SCORE_AXIS_X = SCORE_PLOT_LEFT - 8;
 const SCORE_TOOLTIP_HALF_WIDTH = 92;
-const SCORE_BLUE_START = '#60A5FA';
-const SCORE_BLUE_END = '#2563EB';
-const SCORE_BLUE_SOFT = 'rgba(37, 99, 235, 0.14)';
-const SCORE_BLUE_GUIDE = 'rgba(37, 99, 235, 0.28)';
-const SCORE_BLUE_SHADOW = 'rgba(37, 99, 235, 0.18)';
+const SCORE_BLUE_START = OJ_TREND_COLORS.scoreGradientStart;
+const SCORE_BLUE_END = OJ_TREND_COLORS.scoreLine;
+const SCORE_BLUE_SOFT = 'rgba(var(--overview-blue-rgb),0.14)';
+const SCORE_BLUE_GUIDE = 'rgba(var(--overview-blue-rgb),0.28)';
+const SCORE_BLUE_SHADOW = 'rgba(var(--overview-blue-rgb),0.18)';
 
 type ScoreTrendChartProps = {
   points: ScoreTrendPoint[];
@@ -246,8 +247,11 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor="rgba(37, 99, 235, 0.2)" />
-            <stop offset="100%" stopColor="rgba(37, 99, 235, 0.02)" />
+            <stop offset="0%" stopColor="rgba(var(--overview-blue-rgb),0.2)" />
+            <stop
+              offset="100%"
+              stopColor="rgba(var(--overview-blue-rgb),0.02)"
+            />
           </linearGradient>
         </defs>
 
@@ -373,7 +377,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
                 cx={x}
                 cy={y}
                 r={isActive ? 4.5 : 2.5}
-                fill="#fff"
+                fill="var(--overview-white)"
                 stroke={SCORE_BLUE_END}
                 strokeWidth={2}
               />
@@ -385,7 +389,7 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
                 fill={SCORE_BLUE_END}
                 style={{
                   paintOrder: 'stroke',
-                  stroke: 'rgba(255,255,255,0.94)',
+                  stroke: 'rgba(var(--overview-white-rgb),0.94)',
                   strokeWidth: 1.2,
                   strokeLinejoin: 'round',
                 }}

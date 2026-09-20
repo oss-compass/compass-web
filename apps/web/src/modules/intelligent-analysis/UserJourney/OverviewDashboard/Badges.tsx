@@ -9,7 +9,7 @@ export const SeverityBadge: React.FC<{ severity: Severity }> = ({
 }) => {
   const normalizedSeverity = normalizeSeverity(severity);
   if (!normalizedSeverity) {
-    return <span className="text-slate-300">--</span>;
+    return <span className="text-[var(--overview-slateLight)]">--</span>;
   }
   const cfg = SEVERITY_CFG[normalizedSeverity];
   return (

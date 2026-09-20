@@ -1,5 +1,6 @@
 import React from 'react';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
+import { OJ_TREND_COLORS } from '../../../../UserJourney/OverviewDashboard/constants';
 import IssueTrendModal, { IssueTrendModalData } from './IssueTrendModal';
 
 /** 小趋势图统一入口：缩略图与弹窗共用同一份数据。 */
@@ -15,7 +16,7 @@ const IssueTrendSparkline: React.FC<{
     <>
       <button
         type="button"
-        className={`inline-flex shrink-0 cursor-pointer items-center justify-center rounded transition-colors hover:bg-teal-50 focus-visible:outline-teal-500 ${className}`}
+        className={`inline-flex shrink-0 cursor-pointer items-center justify-center rounded transition-colors hover:bg-[var(--overview-blueSoft)] focus-visible:outline-[var(--overview-blue)] ${className}`}
         title="点击查看趋势大图"
         aria-label={`查看${trend.title}`}
         onClick={(event) => {
@@ -27,7 +28,7 @@ const IssueTrendSparkline: React.FC<{
           values={trend.values}
           width={width}
           height={height}
-          stroke="#2563EB"
+          stroke={OJ_TREND_COLORS.scoreLine}
           minValue={0}
           maxValue={maxValue}
         />

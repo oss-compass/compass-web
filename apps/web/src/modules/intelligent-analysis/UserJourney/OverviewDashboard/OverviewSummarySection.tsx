@@ -37,7 +37,9 @@ type OverviewSummarySectionProps = {
   summarySuccessRateTrend: ScoreTrendPoint[];
   summaryAvgExecutionTime: number | null;
   repoCount: number;
+  score95PlusRepoCount: number;
   titleExtra?: React.ReactNode;
+  scoreInsightsSlot?: React.ReactNode;
   benchmarkSlot?: React.ReactNode;
   issueSourceMode: IssueSourceMode;
   includeCommonIssues: boolean;
@@ -64,7 +66,9 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summarySuccessRateTrend,
   summaryAvgExecutionTime,
   repoCount,
+  score95PlusRepoCount,
   titleExtra,
+  scoreInsightsSlot,
   benchmarkSlot,
   issueSourceMode,
   includeCommonIssues,
@@ -177,7 +181,10 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
         ) : null}
       </div>
       <div className="overview-summary-stack">
-        <div className="overview-bottom-row">
+        <div
+          className="overview-bottom-row"
+          style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}
+        >
           <div className="bottom-metric">
             <div className="bm-label inline-flex items-center justify-center gap-1">
               综合体验评分
@@ -241,7 +248,18 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
               <span className="bm-value-main">{repoCount}</span>
             </div>
           </div>
+          <div className="bottom-metric">
+            <div className="bm-label">达成 95 分以上仓数</div>
+            <div className="bm-value">
+              <span className="bm-value-main">{score95PlusRepoCount}</span>
+            </div>
+          </div>
         </div>
+        {scoreInsightsSlot ? (
+          <div className="overview-summary-score-insights-slot">
+            {scoreInsightsSlot}
+          </div>
+        ) : null}
         {benchmarkSlot ? (
           <div className="overview-summary-benchmark-slot">{benchmarkSlot}</div>
         ) : null}
@@ -266,7 +284,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
                   onChange={(event) =>
                     onIncludeCommonIssuesChange(event.target.checked)
                   }
-                  className="ml-1 text-xs font-medium text-slate-600"
+                  className="ml-1 text-xs font-medium text-[var(--overview-slate)]"
                 >
                   包含共性问题
                 </Checkbox>

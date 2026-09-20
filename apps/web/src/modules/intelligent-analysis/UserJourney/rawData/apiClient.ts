@@ -1176,12 +1176,32 @@ export type OverviewSummary = {
   summarySuccessRate: number | null;
   summaryAvgExecutionTime: number | null;
   repoCount: number;
+  score95PlusRepoCount: number;
   sigCount: number;
   reportCount: number;
   totalPainPoints: number;
   pendingPainPoints: number;
   closedPainPoints: number;
   closureRate: number;
+};
+
+export type OverviewScoreInsightRepo = {
+  id: string;
+  name: string;
+  team: string;
+  latestReportId: string;
+  latestScore: number;
+  scoreHistory: Array<{ reportId: string; date: string; score: number }>;
+  stageScores: Array<{
+    key: string;
+    label: string;
+    score: number | null;
+  }>;
+};
+
+export type OverviewScoreInsights = {
+  overallScore: number | null;
+  repos: OverviewScoreInsightRepo[];
 };
 
 export type OverviewCapabilityBenchmark = {
@@ -1331,6 +1351,17 @@ export const fetchOverviewSummary = async (params: {
   const query = search.toString();
   return compassApiFetch<OverviewSummary>(
     `/overview/summary${query ? `?${query}` : ''}`
+  );
+};
+
+export const fetchOverviewScoreInsights = async (params: {
+  org?: string;
+}): Promise<OverviewScoreInsights> => {
+  const search = new URLSearchParams();
+  if (params.org) search.set('org', params.org);
+  const query = search.toString();
+  return compassApiFetch<OverviewScoreInsights>(
+    `/overview/score-insights${query ? `?${query}` : ''}`
   );
 };
 

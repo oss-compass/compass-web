@@ -1,3 +1,9 @@
+import {
+  OVERVIEW_COLORS,
+  OVERVIEW_TONES,
+  OVERVIEW_STATUS_COLORS,
+  OVERVIEW_CATEGORY_COLORS,
+} from './theme';
 import type { IssueBucket, Severity } from './types';
 
 type KnownSeverity = Exclude<Severity, ''>;
@@ -16,54 +22,51 @@ export const SEVERITY_CFG: Record<
 > = {
   P0_BLOCKER: {
     label: 'P0完全阻塞',
-    bg: 'bg-red-50',
-    text: 'text-red-700',
-    border: 'border-red-200',
-    tagBg: '#fff1f0',
-    tagColor: '#d14343',
-    tagBorder: '#ffccc7',
+    bg: 'bg-[var(--overview-redSoft)]',
+    text: 'text-[var(--overview-redDark)]',
+    border: 'border-[var(--overview-redBorder)]',
+    ...OVERVIEW_TONES.danger,
+    tagColor: OVERVIEW_COLORS.priorityBlocker,
   },
   P1_CRITICAL: {
     label: 'P1关键卡点',
-    bg: 'bg-orange-50',
-    text: 'text-orange-700',
-    border: 'border-orange-200',
-    tagBg: '#fff7e8',
-    tagColor: '#f4840c',
-    tagBorder: '#ffd8a8',
+    bg: 'bg-[var(--overview-orangeSoft)]',
+    text: 'text-[var(--overview-orangeDark)]',
+    border: 'border-[var(--overview-orangeBorder)]',
+    ...OVERVIEW_TONES.warning,
+    tagColor: OVERVIEW_COLORS.progressPending,
   },
   P2_MAJOR: {
     label: 'P2显著影响',
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
-    border: 'border-blue-200',
-    tagBg: '#edf4ff',
-    tagColor: '#4791ff',
-    tagBorder: '#bfd7ff',
+    bg: 'bg-[var(--overview-blueSoft)]',
+    text: 'text-[var(--overview-blueDark)]',
+    border: 'border-[var(--overview-blueBorder)]',
+    ...OVERVIEW_TONES.primary,
+    tagColor: OVERVIEW_COLORS.progressInProgress,
   },
   P3_MINOR: {
     label: 'P3轻微影响',
-    bg: 'bg-slate-50',
-    text: 'text-slate-600',
-    border: 'border-slate-200',
-    tagBg: '#f8fafc',
-    tagColor: '#94a3b8',
-    tagBorder: '#dbe3ee',
+    bg: 'bg-[var(--overview-slateSoft)]',
+    text: 'text-[var(--overview-slate)]',
+    border: 'border-[var(--overview-slateBorder)]',
+    ...OVERVIEW_TONES.neutral,
+    tagColor: OVERVIEW_COLORS.slateLight,
   },
   P4_TRIVIAL: {
     label: 'P4极致体验',
-    bg: 'bg-slate-50',
-    text: 'text-emerald-700',
-    border: 'border-emerald-200',
-    tagBg: '#f0fdf4',
-    tagColor: '#16a34a',
-    tagBorder: '#86efac',
+    bg: 'bg-[var(--overview-slateSoft)]',
+    text: 'text-[var(--overview-slate)]',
+    border: 'border-[var(--overview-slateBorder)]',
+    ...OVERVIEW_TONES.neutral,
+    tagColor: OVERVIEW_COLORS.priorityTrivial,
   },
 };
 
 export const OJ_TREND_COLORS = {
-  line: '#19A796',
-  lineGradientStart: '#34D399',
+  line: OVERVIEW_COLORS.blue,
+  lineGradientStart: OVERVIEW_COLORS.blueLight,
+  scoreGradientStart: OVERVIEW_COLORS.blueLight,
+  scoreLine: OVERVIEW_COLORS.blue,
 } as const;
 
 export const OJ_TREND_SEVERITY_SEGMENTS = [
@@ -102,35 +105,31 @@ export const STATUS_CFG: Record<
 > = {
   pending: {
     label: '待处理',
-    badge: 'border-orange-200 bg-orange-50 text-orange-700',
-    dot: 'bg-orange-400',
-    tagBg: '#fff7e8',
-    tagColor: '#d46b08',
-    tagBorder: '#ffd591',
+    badge:
+      'border-[var(--overview-orangeBorder)] bg-[var(--overview-orangeSoft)] text-[var(--overview-orangeDark)]',
+    dot: 'bg-[var(--overview-orangeLight)]',
+    ...OVERVIEW_STATUS_COLORS.pending,
   },
   inProgress: {
     label: '进行中',
-    badge: 'border-amber-200 bg-amber-50 text-amber-700',
-    dot: 'bg-amber-400',
-    tagBg: '#fffbe6',
-    tagColor: '#d4b106',
-    tagBorder: '#ffe58f',
+    badge:
+      'border-[var(--overview-blueBorder)] bg-[var(--overview-blueSoft)] text-[var(--overview-blueDark)]',
+    dot: 'bg-[var(--overview-blue)]',
+    ...OVERVIEW_STATUS_COLORS.inProgress,
   },
   resolved: {
     label: '已闭环',
-    badge: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    dot: 'bg-emerald-500',
-    tagBg: '#e6fffb',
-    tagColor: '#08979c',
-    tagBorder: '#87e8de',
+    badge:
+      'border-[var(--overview-greenBorder)] bg-[var(--overview-greenSoft)] text-[var(--overview-greenDark)]',
+    dot: 'bg-[var(--overview-green)]',
+    ...OVERVIEW_STATUS_COLORS.resolved,
   },
   na: {
     label: '不需要修复',
-    badge: 'border-slate-200 bg-slate-100 text-slate-500',
-    dot: 'bg-slate-400',
-    tagBg: '#f6ffed',
-    tagColor: '#389e0d',
-    tagBorder: '#b7eb8f',
+    badge:
+      'border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)] text-[var(--overview-slate)]',
+    dot: 'bg-[var(--overview-slateLight)]',
+    ...OVERVIEW_STATUS_COLORS.na,
   },
 };
 
@@ -167,128 +166,40 @@ export const PAIN_STATUS_CFG: Record<
 > = {
   '1': {
     label: '待确认',
-    tagBg: '#fff7e8',
-    tagColor: '#d46b08',
-    tagBorder: '#ffd591',
+    ...OVERVIEW_TONES.warning,
   },
   '2': {
     label: '已确认待修复',
-    tagBg: '#fffbe6',
-    tagColor: '#d4b106',
-    tagBorder: '#ffe58f',
+    ...OVERVIEW_TONES.primary,
   },
   '3': {
     label: '已修复待复测',
-    tagBg: '#e6f4ff',
-    tagColor: '#1677ff',
-    tagBorder: '#91caff',
+    ...OVERVIEW_TONES.primary,
   },
   '4': {
     label: '已复测待确认',
-    tagBg: '#f5f0ff',
-    tagColor: '#722ed1',
-    tagBorder: '#d3adf7',
+    ...OVERVIEW_TONES.primary,
   },
   '5': {
     label: '已复测通过',
-    tagBg: '#e6fffb',
-    tagColor: '#08979c',
-    tagBorder: '#87e8de',
+    ...OVERVIEW_TONES.success,
   },
   '6': {
     label: '不需要修复',
-    tagBg: '#f6ffed',
-    tagColor: '#389e0d',
-    tagBorder: '#b7eb8f',
+    ...OVERVIEW_TONES.neutral,
   },
   '7': {
     label: '复测不通过',
-    tagBg: '#fff1f0',
-    tagColor: '#e11d48',
-    tagBorder: '#fda4af',
+    ...OVERVIEW_TONES.danger,
   },
 };
 
-export const ISSUE_TYPE_CFG = {
-  tagBg: '#f5f0ff',
-  tagColor: '#722ed1',
-  tagBorder: '#d3adf7',
-  solidBg: '#722ed1',
-};
-
-export const ISSUE_TYPE_PALETTE = [
-  {
-    tagBg: '#fff0f6',
-    tagColor: '#c41d7f',
-    tagBorder: '#ffadd2',
-    solidBg: '#eb2f96',
-  },
-  {
-    tagBg: '#f5f0ff',
-    tagColor: '#722ed1',
-    tagBorder: '#d3adf7',
-    solidBg: '#722ed1',
-  },
-  {
-    tagBg: '#f0f5ff',
-    tagColor: '#2f54eb',
-    tagBorder: '#adc6ff',
-    solidBg: '#2f54eb',
-  },
-  {
-    tagBg: '#feffe6',
-    tagColor: '#ad8b00',
-    tagBorder: '#fffb8f',
-    solidBg: '#d4b106',
-  },
-  {
-    tagBg: '#fff7e6',
-    tagColor: '#d46b08',
-    tagBorder: '#ffd591',
-    solidBg: '#fa8c16',
-  },
-  {
-    tagBg: '#e6f4ff',
-    tagColor: '#1677ff',
-    tagBorder: '#91caff',
-    solidBg: '#1677ff',
-  },
-  {
-    tagBg: '#f9f0ff',
-    tagColor: '#7c3aed',
-    tagBorder: '#c4b5fd',
-    solidBg: '#7c3aed',
-  },
-  {
-    tagBg: '#fff1f0',
-    tagColor: '#cf1322',
-    tagBorder: '#ffa39e',
-    solidBg: '#f5222d',
-  },
-];
-
-const ISSUE_TYPE_OVERRIDES: Record<
-  string,
-  {
-    tagBg: string;
-    tagColor: string;
-    tagBorder: string;
-    solidBg: string;
-  }
-> = {
-  SoC代号映射: {
-    tagBg: '#fff0f6',
-    tagColor: '#c41d7f',
-    tagBorder: '#ffadd2',
-    solidBg: '#f759ab',
-  },
-  百度SEO搜索: {
-    tagBg: '#f5f0ff',
-    tagColor: '#722ed1',
-    tagBorder: '#d3adf7',
-    solidBg: '#9254de',
-  },
-};
+// 问题类别不代表风险等级，使用同一中性色，避免分类数量增加彩虹色。
+export const ISSUE_TYPE_CFG = OVERVIEW_TONES.neutral;
+export const ISSUE_TYPE_PALETTE = OVERVIEW_CATEGORY_COLORS.map((solidBg) => ({
+  ...OVERVIEW_TONES.neutral,
+  solidBg,
+}));
 
 const getIssueTypeIndex = (issueType: string): number => {
   const hash = issueType.split('').reduce((acc, char) => {
@@ -298,10 +209,7 @@ const getIssueTypeIndex = (issueType: string): number => {
 };
 
 const getIssueTypePalette = (issueType: string) => {
-  return (
-    ISSUE_TYPE_OVERRIDES[issueType] ??
-    ISSUE_TYPE_PALETTE[getIssueTypeIndex(issueType)]
-  );
+  return ISSUE_TYPE_PALETTE[getIssueTypeIndex(issueType)];
 };
 
 export const getIssueTypeMarkerColor = (issueType: string): string => {
@@ -311,8 +219,8 @@ export const getIssueTypeMarkerColor = (issueType: string): string => {
 export const getIssueTypeTagStyle = (issueType: string) => {
   const palette = getIssueTypePalette(issueType);
   return {
-    background: palette.solidBg,
-    color: '#ffffff',
-    borderColor: 'transparent',
+    background: palette.tagBg,
+    color: palette.tagColor,
+    borderColor: palette.tagBorder,
   };
 };

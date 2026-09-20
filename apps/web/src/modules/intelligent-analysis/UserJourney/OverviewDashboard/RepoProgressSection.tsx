@@ -285,8 +285,8 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
         title={titleSuffix}
         className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
           sortKey !== 'none'
-            ? 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-            : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+            ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
+            : 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
         }`}
         onClick={(event) => {
           event.stopPropagation();
@@ -299,12 +299,12 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
         ? createPortal(
             <div
               ref={popupRef}
-              className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+              className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-3 shadow-lg"
               style={popupStyle}
               onClick={(event) => event.stopPropagation()}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              <div className="mb-2 text-xs font-semibold text-slate-500">
+              <div className="mb-2 text-xs font-semibold text-[var(--overview-slate)]">
                 排序指标
               </div>
               <div className="flex flex-col gap-1">
@@ -316,8 +316,8 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
                       type="button"
                       className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
                         active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                          ? 'border-[var(--overview-blueBorder)] bg-[var(--overview-blueSoft)] text-[var(--overview-blueDark)]'
+                          : 'border-transparent text-[var(--overview-slate)] hover:border-[var(--overview-slateBorder)] hover:bg-[var(--overview-slateSoft)]'
                       }`}
                       onClick={(event) => {
                         event.stopPropagation();
@@ -330,7 +330,7 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
                   );
                 })}
               </div>
-              <div className="mb-2 mt-3 text-xs font-semibold text-slate-500">
+              <div className="mb-2 mt-3 text-xs font-semibold text-[var(--overview-slate)]">
                 排序方向
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -342,8 +342,8 @@ export const ProgressSortHeader: React.FC<ProgressSortHeaderProps> = ({
                       type="button"
                       className={`flex items-center justify-center rounded-md border px-3 py-2 text-sm transition-colors ${
                         active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-[var(--overview-blueBorder)] bg-[var(--overview-blueSoft)] text-[var(--overview-blueDark)]'
+                          : 'border-[var(--overview-slateBorder)] text-[var(--overview-slate)] hover:bg-[var(--overview-slateSoft)]'
                       }`}
                       onClick={(event) => {
                         event.stopPropagation();
@@ -459,8 +459,8 @@ const ColumnValueFilterHeader: React.FC<ColumnValueFilterHeaderProps> = ({
         title={titleSuffix}
         className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
           value
-            ? 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-            : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+            ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
+            : 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
         }`}
         onClick={(event) => {
           event.stopPropagation();
@@ -473,12 +473,12 @@ const ColumnValueFilterHeader: React.FC<ColumnValueFilterHeaderProps> = ({
         ? createPortal(
             <div
               ref={popupRef}
-              className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+              className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-3 shadow-lg"
               style={popupStyle}
               onClick={(event) => event.stopPropagation()}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              <div className="mb-2 text-xs font-semibold text-slate-500">
+              <div className="mb-2 text-xs font-semibold text-[var(--overview-slate)]">
                 {label}
               </div>
               <div className="flex max-h-64 flex-col gap-1 overflow-y-auto">
@@ -490,8 +490,8 @@ const ColumnValueFilterHeader: React.FC<ColumnValueFilterHeaderProps> = ({
                       type="button"
                       className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
                         active
-                          ? 'border-blue-200 bg-blue-50 text-blue-700'
-                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'
+                          ? 'border-[var(--overview-blueBorder)] bg-[var(--overview-blueSoft)] text-[var(--overview-blueDark)]'
+                          : 'border-transparent text-[var(--overview-slate)] hover:border-[var(--overview-slateBorder)] hover:bg-[var(--overview-slateSoft)]'
                       }`}
                       onClick={(event) => {
                         event.stopPropagation();
@@ -1660,7 +1660,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         <div className="overview-close-rate-cell">
           <button
             type="button"
-            className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+            className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-[var(--overview-slateSoft)]"
             title={modalTitle}
             disabled={!trendPoints.length}
             onClick={(event) => {
@@ -1679,7 +1679,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           >
             <ScoreSparkline values={sparkValues} />
           </button>
-          <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+          <span className="overview-close-rate-value text-sm font-semibold text-[var(--overview-slateDark)]">
             {valueFormatter(value)}
           </span>
         </div>
@@ -1739,7 +1739,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         {displayText}
       </Link>
     ) : (
-      <span className="text-slate-300">--</span>
+      <span className="text-[var(--overview-slateLight)]">--</span>
     );
   };
 
@@ -1747,7 +1747,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     if (!record.benchmark?.repoName) return null;
     return (
       <Tag
-        color="purple"
+        color="var(--overview-slate)"
         className="overview-benchmark-tag"
         onClick={(event) => {
           event.stopPropagation();
@@ -1776,7 +1776,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               }}
             />
           ) : (
-            <span className="text-slate-400">-</span>
+            <span className="text-[var(--overview-slateLight)]">-</span>
           )}
         </div>
       );
@@ -1849,7 +1849,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             <span>{value}</span>
             {renderBenchmarkTag(record)}
             {isBeatRepo(record.id) ? (
-              <span className="text-slate-400">(仅支持950，内测中)</span>
+              <span className="text-[var(--overview-slateLight)]">
+                (仅支持950，内测中)
+              </span>
             ) : null}
           </span>
         ),
@@ -1876,7 +1878,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[3],
         render: (_value, record) => {
           if (isBeatRepo(record.id)) {
-            return <span className="text-slate-400">-</span>;
+            return <span className="text-[var(--overview-slateLight)]">-</span>;
           }
           const scoreTrend = repoDerived.get(record.id)?.scoreTrend;
           return renderScoreTrendCell(record.name, record.score, scoreTrend);
@@ -1892,7 +1894,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[4],
         render: (_value, record) => {
           if (isBeatRepo(record.id)) {
-            return <span className="text-slate-400">-</span>;
+            return <span className="text-[var(--overview-slateLight)]">-</span>;
           }
           const successRateTrend = repoDerived.get(record.id)?.successRateTrend;
           return renderSuccessRateTrendCell(
@@ -1913,7 +1915,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[5],
         render: (_value, record) =>
           isBeatRepo(record.id) ? (
-            <span className="text-slate-400">-</span>
+            <span className="text-[var(--overview-slateLight)]">-</span>
           ) : (
             formatExecutionTime(record.executionTime)
           ),
@@ -1928,7 +1930,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[6],
         render: (_value, record) => {
           if (isBeatRepo(record.id)) {
-            return <span className="text-slate-400">-</span>;
+            return <span className="text-[var(--overview-slateLight)]">-</span>;
           }
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
@@ -1951,7 +1953,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[7],
         render: (_value, record) => {
           if (isBeatRepo(record.id)) {
-            return <span className="text-slate-400">-</span>;
+            return <span className="text-[var(--overview-slateLight)]">-</span>;
           }
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
@@ -1979,7 +1981,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         width: repoColumnWidths[8],
         render: (_value, record) => {
           if (isBeatRepo(record.id)) {
-            return <span className="text-slate-400">-</span>;
+            return <span className="text-[var(--overview-slateLight)]">-</span>;
           }
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
@@ -1994,7 +1996,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             <div className="overview-close-rate-cell">
               <button
                 type="button"
-                className="inline-flex items-center rounded-md transition-colors hover:bg-slate-50"
+                className="inline-flex items-center rounded-md transition-colors hover:bg-[var(--overview-slateSoft)]"
                 title="查看闭环率趋势"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -2014,7 +2016,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               >
                 <CloseRateSparkline values={sparkValues} />
               </button>
-              <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+              <span className="overview-close-rate-value text-sm font-semibold text-[var(--overview-slateDark)]">
                 {formatPercent(displayRate)}
               </span>
             </div>
@@ -2033,7 +2035,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         ellipsis: true,
         render: (value, record) =>
           isBeatRepo(record.id) ? (
-            <span className="text-slate-400">-</span>
+            <span className="text-[var(--overview-slateLight)]">-</span>
           ) : (
             value || '-'
           ),
@@ -2046,7 +2048,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         ellipsis: true,
         render: (value, record) =>
           isBeatRepo(record.id) ? (
-            <span className="text-slate-400">-</span>
+            <span className="text-[var(--overview-slateLight)]">-</span>
           ) : (
             value || 'debian-13'
           ),
@@ -2253,7 +2255,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             <div className="overview-close-rate-cell">
               <button
                 type="button"
-                className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-[var(--overview-slateSoft)]"
                 title="查看闭环率趋势"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -2273,7 +2275,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               >
                 <CloseRateSparkline values={sparkValues} />
               </button>
-              <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+              <span className="overview-close-rate-value text-sm font-semibold text-[var(--overview-slateDark)]">
                 {formatPercent(displayRate)}
               </span>
             </div>
@@ -2307,7 +2309,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           return hardwareEnvs.length ? (
             hardwareEnvs.join('、')
           ) : (
-            <span className="text-slate-400">-</span>
+            <span className="text-[var(--overview-slateLight)]">-</span>
           );
         },
       },
@@ -2330,7 +2332,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         title: '最新报告',
         key: 'detail',
         width: teamColumnWidths[11],
-        render: () => <span className="text-slate-400">-</span>,
+        render: () => (
+          <span className="text-[var(--overview-slateLight)]">-</span>
+        ),
       },
       ...(captureMode
         ? []
@@ -2339,7 +2343,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               title: '操作',
               key: 'actions',
               width: teamColumnWidths[12],
-              render: () => <span className="text-slate-400">-</span>,
+              render: () => (
+                <span className="text-[var(--overview-slateLight)]">-</span>
+              ),
             },
           ]),
     ],
@@ -2666,7 +2672,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                       <td className="overview-expanded-cell overview-expanded-cell-name">
                         <button
                           type="button"
-                          className="overview-expand-label w-full text-left text-sm text-slate-700"
+                          className="overview-expand-label w-full text-left text-sm text-[var(--overview-slateDark)]"
                           aria-expanded={
                             !collapsedCategories.includes(section.key)
                           }
@@ -2747,7 +2753,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                         <div className="overview-close-rate-cell">
                           <button
                             type="button"
-                            className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                            className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-[var(--overview-slateSoft)]"
                             title="查看闭环率趋势"
                             disabled={!section.closeRateTrend.length}
                             onClick={(event) => {
@@ -2766,7 +2772,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                                 .map((point) => point.closeRate)}
                             />
                           </button>
-                          <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+                          <span className="overview-close-rate-value text-sm font-semibold text-[var(--overview-slateDark)]">
                             {formatPercent(section.summary.closeRate)}
                           </span>
                         </div>
@@ -2803,7 +2809,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                         <tr>
                           <td
                             colSpan={columnCount}
-                            className="px-12 py-3 text-sm text-slate-400"
+                            className="px-12 py-3 text-sm text-[var(--overview-slateLight)]"
                           >
                             暂无已上线仓库匹配当前筛选条件
                           </td>
@@ -2825,7 +2831,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                                 <span>{repo.name}</span>
                                 {renderBenchmarkTag(repo)}
                                 {isBeatRepo(repo.id) ? (
-                                  <span className="text-slate-400">
+                                  <span className="text-[var(--overview-slateLight)]">
                                     （仅支持950，内测中）
                                   </span>
                                 ) : null}
@@ -2837,7 +2843,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                           </td>
                           <td className="overview-expanded-cell">
                             {isBeatRepo(repo.id) ? (
-                              <span className="text-slate-400">-</span>
+                              <span className="text-[var(--overview-slateLight)]">
+                                -
+                              </span>
                             ) : (
                               renderScoreTrendCell(
                                 repo.name,
@@ -2848,7 +2856,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                           </td>
                           <td className="overview-expanded-cell">
                             {isBeatRepo(repo.id) ? (
-                              <span className="text-slate-400">-</span>
+                              <span className="text-[var(--overview-slateLight)]">
+                                -
+                              </span>
                             ) : (
                               renderSuccessRateTrendCell(
                                 repo.name,
@@ -2860,7 +2870,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                           </td>
                           <td className="overview-expanded-cell">
                             {isBeatRepo(repo.id) ? (
-                              <span className="text-slate-400">-</span>
+                              <span className="text-[var(--overview-slateLight)]">
+                                -
+                              </span>
                             ) : (
                               formatExecutionTime(repo.executionTime)
                             )}
@@ -2869,7 +2881,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                             {(() => {
                               if (isBeatRepo(repo.id)) {
                                 return (
-                                  <span className="text-slate-400">-</span>
+                                  <span className="text-[var(--overview-slateLight)]">
+                                    -
+                                  </span>
                                 );
                               }
                               const derived = repoDerived.get(repo.id);
@@ -2896,7 +2910,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                             {(() => {
                               if (isBeatRepo(repo.id)) {
                                 return (
-                                  <span className="text-slate-400">-</span>
+                                  <span className="text-[var(--overview-slateLight)]">
+                                    -
+                                  </span>
                                 );
                               }
                               const derived = repoDerived.get(repo.id);
@@ -2924,7 +2940,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                             {(() => {
                               if (isBeatRepo(repo.id)) {
                                 return (
-                                  <span className="text-slate-400">-</span>
+                                  <span className="text-[var(--overview-slateLight)]">
+                                    -
+                                  </span>
                                 );
                               }
                               const derived = repoDerived.get(repo.id);
@@ -2944,7 +2962,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                                 <div className="overview-close-rate-cell">
                                   <button
                                     type="button"
-                                    className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-slate-50"
+                                    className="inline-flex items-center rounded-md p-1 transition-colors hover:bg-[var(--overview-slateSoft)]"
                                     title="查看闭环率趋势"
                                     onClick={(event) => {
                                       event.stopPropagation();
@@ -2967,7 +2985,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                                   >
                                     <CloseRateSparkline values={sparkValues} />
                                   </button>
-                                  <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+                                  <span className="overview-close-rate-value text-sm font-semibold text-[var(--overview-slateDark)]">
                                     {formatPercent(displayRate)}
                                   </span>
                                 </div>
@@ -2976,16 +2994,22 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                           </td>
                           <td className="overview-expanded-cell">
                             {isBeatRepo(repo.id) ? (
-                              <span className="text-slate-400">-</span>
+                              <span className="text-[var(--overview-slateLight)]">
+                                -
+                              </span>
                             ) : (
                               repo.hardwareEnv || (
-                                <span className="text-slate-400">-</span>
+                                <span className="text-[var(--overview-slateLight)]">
+                                  -
+                                </span>
                               )
                             )}
                           </td>
                           <td className="overview-expanded-cell">
                             {isBeatRepo(repo.id) ? (
-                              <span className="text-slate-400">-</span>
+                              <span className="text-[var(--overview-slateLight)]">
+                                -
+                              </span>
                             ) : (
                               repo.operatingSystem || 'debian-13'
                             )}
@@ -3010,7 +3034,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                                   }}
                                 />
                               ) : (
-                                <span className="text-slate-400">-</span>
+                                <span className="text-[var(--overview-slateLight)]">
+                                  -
+                                </span>
                               )}
                             </td>
                           ) : null}
@@ -3077,11 +3103,11 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
 
   const SUMMARY_SELECT_H = 32;
   const filterSelectCls =
-    '[&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!text-slate-900 [&_.ant-select-selector]:!rounded-r-2xl [&_.ant-select-selector]:!rounded-l-none [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-l-0 [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center';
+    '[&_.ant-select-arrow]:text-[var(--overview-slate)] [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-item]:!font-semibold [&_.ant-select-selection-item]:!text-[var(--overview-text)] [&_.ant-select-selector]:!rounded-r-2xl [&_.ant-select-selector]:!rounded-l-none [&_.ant-select-selector]:!border [&_.ant-select-selector]:!border-l-0 [&_.ant-select-selector]:!border-[rgba(var(--overview-slateBorder-rgb),0.8)] [&_.ant-select-selector]:!bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center';
   const FilterLabelTag: React.FC<{ text: string }> = ({ text }) => (
     <span
       style={{ height: SUMMARY_SELECT_H, lineHeight: `${SUMMARY_SELECT_H}px` }}
-      className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-slate-200/80 bg-slate-50 px-2.5 text-xs font-medium text-slate-500 shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
+      className="inline-flex items-center whitespace-nowrap rounded-l-2xl border border-r-0 border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[var(--overview-slateSoft)] px-2.5 text-xs font-medium text-[var(--overview-slate)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)]"
     >
       {text}
     </span>
@@ -3256,7 +3282,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             </div>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50"
+              className="inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
               onClick={() => {
                 void openRepoManagementAccess(null);
               }}
@@ -3265,7 +3291,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             </button>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50"
+              className="inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
               onClick={() => {
                 void openTaskManagementAccess(null);
               }}
@@ -3275,7 +3301,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             <button
               type="button"
               disabled={exportingCsv}
-              className="inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)] disabled:cursor-not-allowed disabled:opacity-60"
               onClick={handleExportCsv}
             >
               {exportingCsv ? '导出中...' : '导出'}
@@ -3623,7 +3649,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             }}
           />
           {changePasswordError ? (
-            <div className="text-sm text-rose-600">{changePasswordError}</div>
+            <div className="text-sm text-[var(--overview-red)]">
+              {changePasswordError}
+            </div>
           ) : null}
         </div>
       </Modal>

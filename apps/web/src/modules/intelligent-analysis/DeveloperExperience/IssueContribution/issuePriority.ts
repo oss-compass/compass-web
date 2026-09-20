@@ -1,3 +1,5 @@
+import { OVERVIEW_PRIORITY_CLASSES } from '../../UserJourney/OverviewDashboard/theme';
+
 export type PainIssuePriority = 'P0' | 'P1' | 'P2' | 'P3';
 
 export type PainIssuePriorityMeta = {
@@ -21,8 +23,8 @@ export const PAIN_ISSUE_PRIORITY_LEVELS: readonly PainIssuePriorityMeta[] = [
     description: '完全阻塞，需立即治理',
     minScore: 0,
     maxScore: 40,
-    badgeClass: 'border-rose-200 bg-rose-50 text-rose-700',
-    activeClass: 'border-rose-400 bg-rose-100 text-rose-800 ring-rose-200',
+    badgeClass: OVERVIEW_PRIORITY_CLASSES.P0.badge,
+    activeClass: `${OVERVIEW_PRIORITY_CLASSES.P0.badge} ${OVERVIEW_PRIORITY_CLASSES.P0.ring}`,
   },
   {
     priority: 'P1',
@@ -30,8 +32,8 @@ export const PAIN_ISSUE_PRIORITY_LEVELS: readonly PainIssuePriorityMeta[] = [
     description: '显著影响，需尽快修复',
     minScore: 41,
     maxScore: 59,
-    badgeClass: 'border-amber-200 bg-amber-50 text-amber-700',
-    activeClass: 'border-amber-400 bg-amber-100 text-amber-800 ring-amber-200',
+    badgeClass: OVERVIEW_PRIORITY_CLASSES.P1.badge,
+    activeClass: `${OVERVIEW_PRIORITY_CLASSES.P1.badge} ${OVERVIEW_PRIORITY_CLASSES.P1.ring}`,
   },
   {
     priority: 'P2',
@@ -39,8 +41,8 @@ export const PAIN_ISSUE_PRIORITY_LEVELS: readonly PainIssuePriorityMeta[] = [
     description: '明显影响，应纳入优化计划',
     minScore: 60,
     maxScore: 69,
-    badgeClass: 'border-sky-200 bg-sky-50 text-sky-700',
-    activeClass: 'border-sky-400 bg-sky-100 text-sky-800 ring-sky-200',
+    badgeClass: OVERVIEW_PRIORITY_CLASSES.P2.badge,
+    activeClass: `${OVERVIEW_PRIORITY_CLASSES.P2.badge} ${OVERVIEW_PRIORITY_CLASSES.P2.ring}`,
   },
   {
     priority: 'P3',
@@ -48,8 +50,8 @@ export const PAIN_ISSUE_PRIORITY_LEVELS: readonly PainIssuePriorityMeta[] = [
     description: '轻微影响，可顺手改进',
     minScore: 70,
     maxScore: 79,
-    badgeClass: 'border-slate-200 bg-slate-50 text-slate-600',
-    activeClass: 'border-slate-400 bg-slate-100 text-slate-800 ring-slate-200',
+    badgeClass: OVERVIEW_PRIORITY_CLASSES.P3.badge,
+    activeClass: `${OVERVIEW_PRIORITY_CLASSES.P3.badge} ${OVERVIEW_PRIORITY_CLASSES.P3.ring}`,
   },
 ] as const;
 

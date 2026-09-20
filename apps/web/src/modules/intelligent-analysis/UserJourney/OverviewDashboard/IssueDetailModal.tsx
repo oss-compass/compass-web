@@ -436,7 +436,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   ) => (
     <button
       type="button"
-      className={`inline-flex items-center gap-1 font-semibold text-slate-500 hover:text-slate-700 ${
+      className={`inline-flex items-center gap-1 font-semibold text-[var(--overview-slate)] hover:text-[var(--overview-slateDark)] ${
         align === 'left'
           ? 'justify-start text-left'
           : 'justify-center text-center'
@@ -528,7 +528,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           <span>{modalTitle}</span>
           <button
             type="button"
-            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+            className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)]"
             onClick={() =>
               downloadTextFile(
                 buildIssuesCsv(displayedIssues),
@@ -545,9 +545,9 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
       }
       destroyOnHidden
     >
-      <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
-        <table className="w-full table-fixed border-collapse text-center text-[12px] text-slate-700 md:text-[13px]">
-          <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
+      <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-[var(--overview-slateBorder)]">
+        <table className="w-full table-fixed border-collapse text-center text-[12px] text-[var(--overview-slateDark)] md:text-[13px]">
+          <thead className="sticky top-0 z-10 bg-[var(--overview-slateSoft)] text-[10px] uppercase tracking-wide text-[var(--overview-slate)] md:text-[11px]">
             <tr>
               <th className="w-[56px] px-2 py-2 text-center md:w-[64px] md:px-2 md:py-3">
                 序号
@@ -563,10 +563,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     placement="bottomLeft"
                     popupRender={() => (
                       <div
-                        className="w-[200px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                        className="w-[200px] rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-2 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           责任团队筛选
                         </div>
                         <Radio.Group
@@ -594,8 +594,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       title="筛选责任团队"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
                         teamFilter === TEAM_FILTER_ALL
-                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
+                          : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -612,10 +612,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     placement="bottomLeft"
                     popupRender={() => (
                       <div
-                        className="w-[200px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                        className="w-[200px] rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-2 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           阶段筛选
                         </div>
                         <Radio.Group
@@ -643,8 +643,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       title="筛选阶段"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
                         stageFilter === STAGE_FILTER_ALL
-                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
+                          : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -667,10 +667,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     placement="bottomLeft"
                     popupRender={() => (
                       <div
-                        className="w-[220px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                        className="w-[220px] rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-2 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           严重程度筛选
                         </div>
                         <Radio.Group
@@ -700,8 +700,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       title="筛选严重程度"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
                         severityFilter === SEVERITY_FILTER_ALL
-                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
+                          : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -718,10 +718,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     placement="bottomLeft"
                     popupRender={() => (
                       <div
-                        className="w-[220px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                        className="w-[220px] rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-2 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           状态筛选
                         </div>
                         <Radio.Group
@@ -765,8 +765,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       title="筛选状态"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
                         statusFilter === STATUS_FILTER_ALL
-                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
+                          : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -786,10 +786,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     placement="bottomLeft"
                     popupRender={() => (
                       <div
-                        className="w-[220px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+                        className="w-[220px] rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-2 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-slate-400">
+                        <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           责任人筛选
                         </div>
                         <Radio.Group
@@ -817,8 +817,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       title="筛选责任人"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
                         ownerFilter === OWNER_FILTER_ALL
-                          ? 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
+                          : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -840,12 +840,12 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                 return (
                   <tr
                     key={`${issue.id}-${index}`}
-                    className="border-t border-slate-100 align-top transition-colors hover:bg-slate-50"
+                    className="border-t border-[var(--overview-slateSoft)] align-top transition-colors hover:bg-[var(--overview-slateSoft)]"
                   >
-                    <td className="px-2 py-2 text-center font-medium text-slate-500 md:px-2 md:py-3">
+                    <td className="px-2 py-2 text-center font-medium text-[var(--overview-slate)] md:px-2 md:py-3">
                       {index + 1}
                     </td>
-                    <td className="break-all px-2 py-2 text-center font-medium text-slate-900 md:px-3 md:py-3">
+                    <td className="break-all px-2 py-2 text-center font-medium text-[var(--overview-text)] md:px-3 md:py-3">
                       {getRepoName(issue)}
                     </td>
                     <td className="break-all px-2 py-2 text-left md:px-2 md:py-3">
@@ -875,7 +875,11 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       {(() => {
                         const cfg = PAIN_STATUS_CFG[String(issue.status || '')];
                         if (!cfg)
-                          return <span className="text-slate-300">--</span>;
+                          return (
+                            <span className="text-[var(--overview-slateLight)]">
+                              --
+                            </span>
+                          );
                         const status = String(issue.status || '').trim();
                         const confirmedAt = String(
                           issue.confirmedAt || ''
@@ -920,7 +924,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                                 <Tooltip title={retestReportId}>
                                   <a
                                     href={retestHref}
-                                    className="overview-table-link text-blue-600"
+                                    className="overview-table-link text-[var(--overview-blue)]"
                                   >
                                     复测报告
                                   </a>
@@ -931,7 +935,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         );
                       })()}
                     </td>
-                    <td className="whitespace-nowrap px-2 py-2 text-center text-slate-600 md:px-3 md:py-3">
+                    <td className="whitespace-nowrap px-2 py-2 text-center text-[var(--overview-slate)] md:px-3 md:py-3">
                       {(() => {
                         const createdText = getIssueFoundAt(issue);
                         const displayTime = formatDateTime(createdText);
@@ -966,7 +970,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                             >
                               <a
                                 href={href}
-                                className="overview-table-link text-blue-600"
+                                className="overview-table-link text-[var(--overview-blue)]"
                               >
                                 {getReportDisplayText(fileKey)}
                               </a>
@@ -974,7 +978,9 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                           );
                         })
                       ) : (
-                        <span className="text-slate-300">--</span>
+                        <span className="text-[var(--overview-slateLight)]">
+                          --
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -984,7 +990,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
               <tr>
                 <td
                   colSpan={11}
-                  className="px-3 py-12 text-center text-sm text-slate-400"
+                  className="px-3 py-12 text-center text-sm text-[var(--overview-slateLight)]"
                 >
                   暂无数据
                 </td>

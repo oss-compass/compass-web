@@ -5,6 +5,7 @@ import { Segmented, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
+import { OJ_TREND_COLORS } from '../../../../UserJourney/OverviewDashboard/constants';
 import { groupOperatorRepos } from '../../../../UserJourney/OverviewDashboard/operatorCategories';
 import {
   ProgressSortHeader,
@@ -356,7 +357,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     </div>
   );
   const closeRateCell = (rate: number) => (
-    <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
+    <span className="overview-close-rate-value text-sm font-semibold text-[var(--overview-slateDark)]">
       {rate.toFixed(0)}%
     </span>
   );
@@ -375,13 +376,13 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           >
             <CloseRateSparkline
               values={repo.idxTrend}
-              stroke="#2563EB"
+              stroke={OJ_TREND_COLORS.scoreLine}
               minValue={0}
               maxValue={100}
             />
           </button>
         ) : null}
-        <span className="text-sm font-semibold text-slate-700">
+        <span className="text-sm font-semibold text-[var(--overview-slateDark)]">
           {repo.idxTotal.toFixed(1)}
         </span>
       </div>
@@ -407,13 +408,13 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           >
             <CloseRateSparkline
               values={row.scoreTrend}
-              stroke="#2563EB"
+              stroke={OJ_TREND_COLORS.scoreLine}
               minValue={0}
               maxValue={100}
             />
           </button>
         ) : null}
-        <span className="text-sm font-semibold text-slate-700">
+        <span className="text-sm font-semibold text-[var(--overview-slateDark)]">
           {row.score.toFixed(1)}
         </span>
       </div>
@@ -439,7 +440,9 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         width: 170,
         sorter: (a, b) => a.repoShort.localeCompare(b.repoShort),
         render: (value) => (
-          <span className="font-semibold text-slate-700">{value}</span>
+          <span className="font-semibold text-[var(--overview-slateDark)]">
+            {value}
+          </span>
         ),
       },
       {
@@ -623,7 +626,9 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         sorter: (a, b) =>
           teamReportSortName(a).localeCompare(teamReportSortName(b), 'zh-CN'),
         sortOrder: teamTableSort.key === 'report' ? teamTableSort.order : null,
-        render: () => <span className="text-slate-300">-</span>,
+        render: () => (
+          <span className="text-[var(--overview-slateLight)]">-</span>
+        ),
       },
     ],
     [aggregateScoreCell, expandedRowKeys, progressHeader, teamTableSort]
@@ -713,7 +718,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
                       <td className="overview-expanded-cell overview-expanded-cell-name">
                         <button
                           type="button"
-                          className="overview-expand-label w-full text-left text-sm text-slate-700"
+                          className="overview-expand-label w-full text-left text-sm text-[var(--overview-slateDark)]"
                           aria-expanded={
                             !collapsedCategories.includes(section.key)
                           }
@@ -831,7 +836,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           />
           <Link
             href={repoManagementHref}
-            className="ml-auto inline-flex items-center rounded-full border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-[0_2px_6px_rgba(15,23,42,0.06)] transition-colors hover:bg-slate-50"
+            className="ml-auto inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
           >
             仓库管理
           </Link>

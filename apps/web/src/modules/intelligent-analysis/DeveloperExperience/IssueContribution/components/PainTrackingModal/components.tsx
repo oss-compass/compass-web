@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   CheckCircleFilled,
   DownOutlined,
@@ -411,8 +411,12 @@ export const ArchivedIssueList: React.FC<{
 /** 已复测通过的 Issue：默认折叠，兼容已退出当前报告范围的历史 Issue。 */
 export const PassedIssueTable: React.FC<{
   tracking: IssuePainTracking;
-}> = ({ tracking }) => {
-  const [open, setOpen] = useState(false);
+  defaultOpen?: boolean;
+}> = ({ tracking, defaultOpen = false }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  useEffect(() => {
+    if (defaultOpen) setOpen(true);
+  }, [defaultOpen]);
   const issues = Array.from(
     new Map(
       [...tracking.archivedIssues, ...tracking.activeIssues]

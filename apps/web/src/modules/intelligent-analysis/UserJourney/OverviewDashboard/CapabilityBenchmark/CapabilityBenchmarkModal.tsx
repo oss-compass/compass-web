@@ -131,7 +131,10 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
         render: (_value, record) => {
           const href = buildReportUrl(record.latestReportId);
           const displayText = getReportDisplayText(record.latestReportId);
-          if (!href) return <span className="text-slate-300">--</span>;
+          if (!href)
+            return (
+              <span className="text-[var(--overview-slateLight)]">--</span>
+            );
           return (
             <Link href={href} className="overview-table-link">
               {displayText || '查看报告'}

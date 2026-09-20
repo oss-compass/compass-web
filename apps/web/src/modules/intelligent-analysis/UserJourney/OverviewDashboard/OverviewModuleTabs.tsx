@@ -24,7 +24,7 @@ const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
 }) => (
   <nav
     aria-label="总览模块"
-    className="flex min-w-max items-center gap-1 rounded-[30px] bg-[#e4e7eb] px-1.5 py-[3px] shadow-[inset_0_1px_3px_rgba(0,0,0,0.06)]"
+    className="flex min-w-max items-center gap-1 rounded-[30px] bg-[var(--overview-slateBorder)] px-1.5 py-[3px] shadow-[inset_0_1px_3px_rgba(var(--overview-text-rgb),0.06)]"
   >
     {MODULES.map((item) => {
       const isActive = item.key === active;
@@ -36,8 +36,8 @@ const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
           onClick={() => onChange(item.key)}
           className={
             isActive
-              ? 'inline-flex items-center rounded-3xl bg-white px-5 py-1 text-sm font-semibold text-black shadow-[0_1px_4px_rgba(0,0,0,0.08)]'
-              : 'inline-flex items-center rounded-3xl px-5 py-1 text-sm font-semibold text-black transition-colors hover:bg-[#d0d5dc]'
+              ? 'inline-flex items-center rounded-3xl bg-[var(--overview-white)] px-5 py-1 text-sm font-semibold text-[var(--overview-text)] shadow-[0_1px_4px_rgba(var(--overview-text-rgb),0.08)]'
+              : 'inline-flex items-center rounded-3xl px-5 py-1 text-sm font-semibold text-[var(--overview-text)] transition-colors hover:bg-[var(--overview-slateBorder)]'
           }
         >
           {item.label}

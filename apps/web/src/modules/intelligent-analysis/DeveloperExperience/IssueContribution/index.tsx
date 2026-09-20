@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Empty, Spin } from 'antd';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import { OVERVIEW_COLOR_VARIABLES } from '../../UserJourney/OverviewDashboard/theme';
 import {
   fetchIssuePainTrackings,
   fetchIssueReportData,
@@ -343,6 +344,11 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
 
   return (
     <div className="min-h-full bg-[radial-gradient(circle_at_top_left,_rgba(37,99,235,0.08),_transparent_24%),linear-gradient(180deg,#f6f8fc_0%,#eef3fb_100%)]">
+      <style jsx global>{`
+        :root {
+          ${OVERVIEW_COLOR_VARIABLES}
+        }
+      `}</style>
       <div className="flex min-h-full w-full min-w-0 flex-col gap-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <ExperienceBackLink org={org} module="issue" />

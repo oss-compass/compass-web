@@ -96,10 +96,10 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const model = data ? computeIssueOverview(data) : null;
   if (!data || !model || !model.hasData) {
     return (
-      <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+      <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
         <Empty
           description={
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-[var(--overview-slate)]">
               {loadError
                 ? 'Issue 总览数据加载失败，请稍后重试'
                 : '当前组织下暂无 Issue 贡献报告数据'}
@@ -117,13 +117,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     : 0;
   const pains = allPainsResp?.items ?? [];
   const resolvedPains = pains.filter(isResolvedPain).length;
-  const painCloseRate = pains.length ? (resolvedPains / pains.length) * 100 : 0;
-  const excellentRepos = latestRepos.filter(
-    (repo) => repo.idxTotal >= 95
+  const score90PlusRepos = latestRepos.filter(
+    (repo) => repo.idxTotal >= 90
   ).length;
-  const teamCount = new Set(
-    latestRepos.map((repo) => repo.teamName).filter(Boolean)
-  ).size;
   const orgSeg =
     typeof router.query.org === 'string' ? `/${router.query.org}` : '';
   const reportHref = (
@@ -146,9 +142,9 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         ).toFixed(1)
       : 0;
   });
-  const excellentRepoTrend = data.agg.periods.map(
+  const score90PlusRepoTrend = data.agg.periods.map(
     (period) =>
-      data.repos.filter((repo) => repo.period === period && repo.idxTotal >= 95)
+      data.repos.filter((repo) => repo.period === period && repo.idxTotal >= 90)
         .length
   );
   const coverageRepoTrend = data.agg.periods.map(
@@ -164,32 +160,24 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     {
       label: '综合体验评分',
       value: latestAverageScore.toFixed(1),
-      sub: '最新周期仓库平均分',
       trend: data.agg.idx,
       trendMax: 100,
     },
     {
       label: '闭环情况',
       value: `${resolvedPains} / ${pains.length}`,
-      sub: `痛点闭环率 ${painCloseRate.toFixed(1)}%`,
       trend: painCloseTrend,
       trendMax: 100,
       trendUnit: '%',
     },
     {
-      label: '达成 95 分以上仓数',
-      value: String(excellentRepos),
-      sub: `占最新周期仓库 ${
-        latestRepos.length
-          ? ((excellentRepos / latestRepos.length) * 100).toFixed(1)
-          : '0.0'
-      }%`,
-      trend: excellentRepoTrend,
+      label: '达成 90 分以上仓数',
+      value: String(score90PlusRepos),
+      trend: score90PlusRepoTrend,
     },
     {
       label: '覆盖仓库数',
       value: String(latestRepos.length),
-      sub: `覆盖 ${teamCount} 个责任团队`,
       trend: coverageRepoTrend,
     },
   ];
@@ -228,9 +216,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                   maxValue={kpi.trendMax ?? Math.max(1, ...kpi.trend)}
                 />
               ) : null}
-            </div>
-            <div className="mt-1 truncate text-center text-[11px] leading-4 text-slate-400">
-              {kpi.sub}
             </div>
           </div>
         ))}

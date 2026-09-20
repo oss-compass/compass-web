@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Input, Modal, Select, Tag } from 'antd';
 import type { CompassOperatorUser } from '../rawData/apiClient';
+import { OVERVIEW_COLOR_VARIABLES } from './theme';
 
 export type OperatorRegisterValues = {
   username: string;
@@ -134,35 +135,48 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
       }
     >
       <div className="flex flex-col gap-4">
+        <style jsx global>{`
+          :root {
+            ${OVERVIEW_COLOR_VARIABLES}
+          }
+        `}</style>
         {description ? (
-          <div className="text-sm leading-6 text-slate-600">{description}</div>
+          <div className="text-sm leading-6 text-[var(--overview-slate)]">
+            {description}
+          </div>
         ) : null}
 
         {operatorUser ? (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="rounded-xl border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)] p-4">
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="rounded-lg border border-slate-200 bg-white p-4">
-                <div className="mb-2 text-sm font-medium text-slate-900">
+              <div className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-4">
+                <div className="mb-2 text-sm font-medium text-[var(--overview-text)]">
                   当前账号
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-slate-900">
+                  <span className="font-medium text-[var(--overview-text)]">
                     {operatorUser.display_name || operatorUser.username}
                   </span>
-                  <Tag color={operatorUser.role === 'admin' ? 'red' : 'blue'}>
+                  <Tag
+                    style={{
+                      color: 'var(--overview-blueDark)',
+                      background: 'var(--overview-blueSoft)',
+                      borderColor: 'var(--overview-blueBorder)',
+                    }}
+                  >
                     {operatorUser.role === 'admin' ? '管理员' : '仓库负责人'}
                   </Tag>
                 </div>
-                <div className="mt-2 text-sm text-slate-500">
+                <div className="mt-2 text-sm text-[var(--overview-slate)]">
                   用户名：{operatorUser.username}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-slate-200 bg-white p-4">
-                <div className="mb-2 text-sm font-medium text-slate-900">
+              <div className="rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-4">
+                <div className="mb-2 text-sm font-medium text-[var(--overview-text)]">
                   权限范围
                 </div>
-                <div className="text-sm text-slate-600">
+                <div className="text-sm text-[var(--overview-slate)]">
                   {repoLabels.length
                     ? repoLabels.join('、')
                     : repoKeys.length
@@ -195,7 +209,7 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
                   status={registerEmailError ? 'error' : undefined}
                 />
                 {registerEmailError ? (
-                  <div className="-mt-3 text-xs text-red-500">
+                  <div className="-mt-3 text-xs text-[var(--overview-red)]">
                     {registerEmailError}
                   </div>
                 ) : null}
@@ -249,7 +263,9 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
         )}
 
         {authChecking ? (
-          <div className="text-sm text-slate-500">正在校验当前登录状态...</div>
+          <div className="text-sm text-[var(--overview-slate)]">
+            正在校验当前登录状态...
+          </div>
         ) : null}
 
         {loginError ? (

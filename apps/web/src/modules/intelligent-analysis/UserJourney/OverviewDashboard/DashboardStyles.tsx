@@ -1,3 +1,4 @@
+import { OVERVIEW_COLOR_VARIABLES } from './theme';
 import React, { useEffect } from 'react';
 
 type DashboardStylesProps = {
@@ -36,6 +37,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
   return (
     <style jsx global>{`
+      :root {
+        ${OVERVIEW_COLOR_VARIABLES}
+      }
       ${captureMode
         ? `
     .oj-page *,
@@ -46,7 +50,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
     }
 
     .oj-page {
-      background: #ffffff !important;
+      background: var(--overview-white) !important;
       zoom: 1.35;
     }
 
@@ -76,8 +80,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       padding: 16px !important;
       border-radius: 22px !important;
       box-shadow: none !important;
-      border-color: #dbe4f0 !important;
-      background: #ffffff !important;
+      border-color: var(--overview-slateBorder) !important;
+      background: var(--overview-white) !important;
     }
 
     .overview-bottom-row {
@@ -365,11 +369,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .oj-page {
         // background: radial-gradient(
         //     circle at top left,
-        //     rgba(37, 99, 235, 0.08),
+        //     rgba(var(--overview-blue-rgb),0.08),
         //     transparent 24%
         //   ),
-        //   linear-gradient(180deg, #f6f8fc 0%, #eef3fb 100%);
-        background: #eef3fb;
+        //   linear-gradient(180deg, var(--overview-blueSoft) 0%, var(--overview-blueSoft) 100%);
+        background: var(--overview-blueSoft);
         min-height: 100%;
       }
 
@@ -416,7 +420,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-qa-question-row:hover {
-        background: rgba(248, 250, 252, 0.9);
+        background: rgba(var(--overview-slateSoft-rgb), 0.9);
       }
 
       .oj-qa-q-label {
@@ -424,39 +428,43 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         width: 26px;
         height: 26px;
         border-radius: 8px;
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: #fff;
+        background: linear-gradient(
+          135deg,
+          var(--overview-blue) 0%,
+          var(--overview-blue) 100%
+        );
+        color: var(--overview-white);
         font-size: 13px;
         font-weight: 800;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         letter-spacing: 0.02em;
-        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 4px 10px rgba(var(--overview-blue-rgb), 0.25);
       }
 
       .oj-qa-question {
         flex: 1 1 0;
         font-size: 14px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--overview-text);
         line-height: 22px;
       }
 
       .oj-qa-expand-icon {
         flex: 0 0 auto;
         font-size: 12px;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         transition: transform 0.22s ease, color 0.18s ease;
       }
 
       .oj-qa-expand-icon.is-expanded {
         transform: rotate(90deg);
-        color: #3b82f6;
+        color: var(--overview-blue);
       }
 
       .oj-qa-answer {
-        border-top: 1px solid rgba(226, 232, 240, 0.9);
+        border-top: 1px solid rgba(var(--overview-slateBorder-rgb), 0.9);
         padding: 16px 20px 20px;
         animation: qaAnswerFadeIn 0.22s ease both;
       }
@@ -474,15 +482,19 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         width: 26px;
         height: 26px;
         border-radius: 8px;
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: #fff;
+        background: linear-gradient(
+          135deg,
+          var(--overview-green) 0%,
+          var(--overview-greenDark) 100%
+        );
+        color: var(--overview-white);
         font-size: 13px;
         font-weight: 800;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         letter-spacing: 0.02em;
-        box-shadow: 0 4px 10px rgba(5, 150, 105, 0.22);
+        box-shadow: 0 4px 10px rgba(var(--overview-greenDark-rgb), 0.22);
       }
 
       .oj-qa-answer-body {
@@ -505,15 +517,15 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         font-size: 18px;
         line-height: 28px;
         font-weight: 800;
-        color: #0f172a;
+        color: var(--overview-text);
       }
 
       .section-card {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(var(--overview-white-rgb), 0.9);
         border-radius: 24px;
         padding: 16px;
-        box-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 20px 48px rgba(var(--overview-text-rgb), 0.08);
+        border: 1px solid rgba(var(--overview-white-rgb), 0.8);
       }
 
       .overview-summary-title-row {
@@ -528,30 +540,34 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 34px;
         padding: 2px;
         border-radius: 16px;
-        border: 1px solid rgba(226, 232, 240, 0.9);
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.9);
+        background: linear-gradient(
+          180deg,
+          var(--overview-white) 0%,
+          var(--overview-blueSoft) 100%
+        );
+        box-shadow: 0 2px 6px rgba(var(--overview-text-rgb), 0.06);
       }
 
       .oj-summary-mode-toggle .ant-segmented-item {
         padding: 0 12px;
         font-size: 12px;
         font-weight: 700;
-        color: #64748b;
+        color: var(--overview-slate);
       }
 
       .oj-summary-mode-toggle .ant-segmented-item-selected {
-        color: #0f172a;
-        background: rgba(255, 255, 255, 0.98);
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+        color: var(--overview-text);
+        background: rgba(var(--overview-white-rgb), 0.98);
+        box-shadow: 0 6px 16px rgba(var(--overview-text-rgb), 0.12);
         border-radius: 12px;
         position: relative;
         z-index: 1;
       }
 
       .oj-summary-mode-toggle .ant-segmented-thumb {
-        background: #ffffff !important;
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+        background: var(--overview-white) !important;
+        box-shadow: 0 6px 16px rgba(var(--overview-text-rgb), 0.12);
         border-radius: 12px;
       }
 
@@ -586,13 +602,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 100%;
         background: linear-gradient(
           180deg,
-          rgba(255, 255, 255, 0.96) 0%,
-          rgba(248, 251, 255, 0.96) 100%
+          rgba(var(--overview-white-rgb), 0.96) 0%,
+          rgba(var(--overview-blueSoft-rgb), 0.96) 100%
         );
         border-radius: 20px;
         padding: 18px;
-        border: 1px solid rgba(226, 232, 240, 0.95);
-        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.95);
+        box-shadow: 0 16px 40px rgba(var(--overview-text-rgb), 0.07);
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -603,7 +619,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .ov-title {
         font-size: 14px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--overview-text);
         letter-spacing: 0.01em;
       }
 
@@ -624,9 +640,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .ov-panel {
         border-radius: 18px;
-        border: 1px solid rgba(226, 232, 240, 0.92);
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
+        background: rgba(var(--overview-white-rgb), 0.9);
+        box-shadow: inset 0 1px 0 rgba(var(--overview-white-rgb), 0.7);
         padding: 14px 14px 12px;
         min-width: 0;
         display: flex;
@@ -635,11 +651,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .ov-priority-panel {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(var(--overview-white-rgb), 0.9);
       }
 
       .ov-trend-panel {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(var(--overview-white-rgb), 0.9);
       }
 
       .oj-trend-skeleton {
@@ -670,7 +686,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         font-size: 15px;
         line-height: 22px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--overview-text);
       }
 
       .oj-trend-range-trigger {
@@ -680,12 +696,16 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         gap: 8px;
         padding: 0 10px;
         border-radius: 14px;
-        border: 1px solid rgba(226, 232, 240, 0.95);
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.95);
+        background: linear-gradient(
+          180deg,
+          var(--overview-white) 0%,
+          var(--overview-blueSoft) 100%
+        );
+        box-shadow: 0 2px 8px rgba(var(--overview-text-rgb), 0.08);
         font-size: 12px;
         font-weight: 700;
-        color: #334155;
+        color: var(--overview-textSecondary);
         cursor: pointer;
         user-select: none;
         transition: background 0.18s ease, border-color 0.18s ease,
@@ -693,12 +713,12 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-trend-range-trigger:hover {
-        border-color: rgba(148, 163, 184, 0.9);
-        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+        border-color: rgba(var(--overview-slateLight-rgb), 0.9);
+        box-shadow: 0 10px 22px rgba(var(--overview-text-rgb), 0.12);
       }
 
       .oj-trend-range-icon {
-        color: #3b82f6;
+        color: var(--overview-blue);
         font-size: 14px;
       }
 
@@ -712,16 +732,16 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .oj-trend-range-caret {
         font-size: 10px;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         margin-left: 2px;
       }
 
       .oj-trend-range-popover .ant-popover-inner {
         border-radius: 18px;
         overflow: hidden;
-        border: 1px solid rgba(226, 232, 240, 0.9);
-        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
-        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.9);
+        box-shadow: 0 24px 60px rgba(var(--overview-text-rgb), 0.18);
+        background: rgba(var(--overview-white-rgb), 0.96);
       }
 
       .oj-trend-range-panel {
@@ -741,8 +761,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .oj-trend-range-option {
         height: 32px;
         border-radius: 12px;
-        border: 1px solid rgba(226, 232, 240, 0.92);
-        background: rgba(248, 250, 252, 0.9);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
+        background: rgba(var(--overview-slateSoft-rgb), 0.9);
         padding: 0 10px;
         display: inline-flex;
         align-items: center;
@@ -750,26 +770,26 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         gap: 10px;
         font-size: 12px;
         font-weight: 800;
-        color: #475569;
+        color: var(--overview-slateDark);
         cursor: pointer;
         transition: border-color 0.18s ease, background 0.18s ease,
           box-shadow 0.18s ease;
       }
 
       .oj-trend-range-option:hover {
-        border-color: rgba(148, 163, 184, 0.9);
-        background: rgba(241, 245, 249, 0.96);
+        border-color: rgba(var(--overview-slateLight-rgb), 0.9);
+        background: rgba(var(--overview-slateSoft-rgb), 0.96);
       }
 
       .oj-trend-range-option.is-active {
-        border-color: rgba(59, 130, 246, 0.55);
-        background: rgba(59, 130, 246, 0.12);
-        color: #0f172a;
-        box-shadow: 0 10px 18px rgba(59, 130, 246, 0.14);
+        border-color: rgba(var(--overview-blue-rgb), 0.55);
+        background: rgba(var(--overview-blue-rgb), 0.12);
+        color: var(--overview-text);
+        box-shadow: 0 10px 18px rgba(var(--overview-blue-rgb), 0.14);
       }
 
       .oj-trend-range-check {
-        color: #2563eb;
+        color: var(--overview-blue);
         font-size: 12px;
       }
 
@@ -791,9 +811,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 28px;
         padding: 0 10px;
         border-radius: 10px;
-        border: 1px solid rgba(59, 130, 246, 0.5);
-        background: rgba(59, 130, 246, 0.1);
-        color: #1d4ed8;
+        border: 1px solid rgba(var(--overview-blue-rgb), 0.5);
+        background: rgba(var(--overview-blue-rgb), 0.1);
+        color: var(--overview-blue);
         font-size: 12px;
         font-weight: 900;
         cursor: pointer;
@@ -803,9 +823,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-trend-range-confirm:hover {
-        border-color: rgba(37, 99, 235, 0.75);
-        background: rgba(37, 99, 235, 0.14);
-        box-shadow: 0 10px 22px rgba(37, 99, 235, 0.16);
+        border-color: rgba(var(--overview-blue-rgb), 0.75);
+        background: rgba(var(--overview-blue-rgb), 0.14);
+        box-shadow: 0 10px 22px rgba(var(--overview-blue-rgb), 0.16);
       }
 
       .ov-priority-list {
@@ -830,9 +850,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         justify-content: space-between;
         padding: 16px 14px;
         border-radius: 14px;
-        border: 1px solid rgba(226, 232, 240, 0.92);
-        background: rgba(255, 255, 255, 0.82);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
+        background: rgba(var(--overview-white-rgb), 0.82);
+        box-shadow: inset 0 1px 0 rgba(var(--overview-white-rgb), 0.6);
         min-width: 0;
       }
 
@@ -858,7 +878,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .ov-ci-desc {
         font-size: 13.5px;
-        color: #0f172a;
+        color: var(--overview-text);
         font-weight: 600;
         line-height: 1.4;
         overflow: hidden;
@@ -871,7 +891,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         text-align: right;
         font-size: 12px;
         font-weight: 800;
-        color: #475569;
+        color: var(--overview-slateDark);
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
       }
@@ -881,7 +901,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         gap: 10px;
         padding-left: 108px;
         font-size: 12px;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         align-items: center;
         flex-wrap: wrap;
       }
@@ -891,7 +911,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .ov-ci-meta-key {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         flex: 0 0 auto;
         font-weight: 700;
       }
@@ -905,8 +925,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .ov-ci-stage-tag {
         font-size: 10.5px;
-        background: rgba(240, 242, 246, 0.9);
-        color: #475569;
+        background: rgba(var(--overview-slateSoft-rgb), 0.9);
+        color: var(--overview-slateDark);
         padding: 2.5px 8px;
         border-radius: 7px;
         font-weight: 600;
@@ -948,8 +968,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         align-items: center;
         padding: 0 14px;
         border-radius: 14px;
-        border: 1px solid rgba(226, 232, 240, 0.92);
-        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
+        background: rgba(var(--overview-white-rgb), 0.82);
         height: 64px;
         min-height: 64px;
         max-height: 64px;
@@ -978,7 +998,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .ov-priority-header {
         font-size: 11px;
         font-weight: 500;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         line-height: 2;
         overflow: hidden;
         white-space: normal;
@@ -1045,7 +1065,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         align-items: center;
         gap: 12px;
         padding-left: 12px;
-        border-left: 1px solid #e2e8f0;
+        border-left: 1px solid var(--overview-slateBorder);
         flex: 0 0 auto;
       }
 
@@ -1053,7 +1073,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         font-size: 12px;
         line-height: 18px;
         font-weight: 600;
-        color: #64748b;
+        color: var(--overview-slate);
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
       }
@@ -1062,7 +1082,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         font-size: 12px;
         line-height: 18px;
         font-weight: 400;
-        color: #64748b;
+        color: var(--overview-slate);
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
       }
@@ -1073,7 +1093,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .ov-priority-clickable:hover {
-        color: #3b82f6;
+        color: var(--overview-blue);
         text-decoration: underline;
       }
 
@@ -1082,14 +1102,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 10px;
         overflow: hidden;
         border-radius: 999px;
-        background: rgba(226, 232, 240, 0.92);
+        background: rgba(var(--overview-slateBorder-rgb), 0.92);
       }
 
       .ov-priority-progress-fill {
         display: block;
         height: 100%;
         border-radius: inherit;
-        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 4px 10px rgba(var(--overview-text-rgb), 0.08);
       }
 
       .oj-trend-chart {
@@ -1107,33 +1127,33 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-trend-plot-bg {
-        fill: rgba(248, 250, 252, 0.92);
-        stroke: rgba(226, 232, 240, 0.9);
+        fill: rgba(var(--overview-slateSoft-rgb), 0.92);
+        stroke: rgba(var(--overview-slateBorder-rgb), 0.9);
         stroke-width: 1;
       }
 
       .oj-trend-band {
-        fill: rgba(255, 255, 255, 0.16);
+        fill: rgba(var(--overview-white-rgb), 0.16);
       }
 
       .oj-trend-band-strong {
-        fill: rgba(255, 255, 255, 0.3);
+        fill: rgba(var(--overview-white-rgb), 0.3);
       }
 
       .oj-trend-grid {
-        stroke: rgba(203, 213, 225, 0.72);
+        stroke: rgba(var(--overview-slateBorder-rgb), 0.72);
         stroke-width: 1;
         stroke-dasharray: 3 4;
       }
 
       .oj-trend-axis-line {
-        stroke: rgba(203, 213, 225, 0.88);
+        stroke: rgba(var(--overview-slateBorder-rgb), 0.88);
         stroke-width: 1;
       }
 
       .oj-trend-axis {
         font-size: 10.5px;
-        fill: #8a98ab;
+        fill: var(--overview-slateLight);
         font-variant-numeric: tabular-nums;
       }
 
@@ -1143,7 +1163,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .oj-trend-axis-title {
         font-size: 10px;
-        fill: #55657b;
+        fill: var(--overview-slateDark);
         font-weight: 700;
         letter-spacing: 0.04em;
         font-variant-numeric: tabular-nums;
@@ -1155,23 +1175,23 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .oj-trend-val {
         font-size: 9.5px;
-        fill: #334155;
+        fill: var(--overview-textSecondary);
         font-weight: 700;
         font-variant-numeric: tabular-nums;
       }
 
       .oj-trend-val-green {
-        fill: #19a796;
+        fill: var(--overview-blue);
         paint-order: stroke;
-        stroke: rgba(255, 255, 255, 0.94);
+        stroke: rgba(var(--overview-white-rgb), 0.94);
         stroke-width: 1.2px;
         stroke-linejoin: round;
       }
 
       .oj-trend-val-muted {
-        fill: #94a3b8;
+        fill: var(--overview-slateLight);
         paint-order: stroke;
-        stroke: rgba(255, 255, 255, 0.94);
+        stroke: rgba(var(--overview-white-rgb), 0.94);
         stroke-width: 1.2px;
         stroke-linejoin: round;
       }
@@ -1181,17 +1201,17 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-trend-bar {
-        stroke: rgba(255, 255, 255, 0.92);
+        stroke: rgba(var(--overview-white-rgb), 0.92);
         stroke-width: 1;
         shape-rendering: geometricPrecision;
       }
 
       .oj-trend-line-path {
-        filter: drop-shadow(0 4px 8px rgba(25, 167, 150, 0.16));
+        filter: drop-shadow(0 4px 8px rgba(var(--overview-blue-rgb), 0.16));
       }
 
       .oj-trend-active-guide {
-        stroke: rgba(25, 167, 150, 0.32);
+        stroke: rgba(var(--overview-blue-rgb), 0.32);
         stroke-width: 1;
         stroke-dasharray: 4 4;
         pointer-events: none;
@@ -1207,14 +1227,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-trend-point-core {
-        fill: #fff;
-        stroke: #19a796;
+        fill: var(--overview-white);
+        stroke: var(--overview-blue);
         stroke-width: 2;
         transition: r 0.16s ease, filter 0.16s ease;
       }
 
       .oj-trend-point-active-halo {
-        fill: rgba(25, 167, 150, 0.14);
+        fill: rgba(var(--overview-blue-rgb), 0.14);
         pointer-events: none;
       }
 
@@ -1223,11 +1243,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         z-index: 2;
         min-width: 168px;
         padding: 10px 12px;
-        border: 1px solid rgba(226, 232, 240, 0.96);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.96);
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.98);
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14),
-          0 2px 10px rgba(15, 23, 42, 0.08);
+        background: rgba(var(--overview-white-rgb), 0.98);
+        box-shadow: 0 14px 30px rgba(var(--overview-text-rgb), 0.14),
+          0 2px 10px rgba(var(--overview-text-rgb), 0.08);
         transform: translate(-50%, calc(-100% - 10px));
         pointer-events: none;
         backdrop-filter: blur(8px);
@@ -1240,8 +1260,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         gap: 12px;
         margin-bottom: 8px;
         padding-bottom: 8px;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.92);
-        color: #0f172a;
+        border-bottom: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
+        color: var(--overview-text);
         font-size: 12px;
         font-weight: 700;
         line-height: 18px;
@@ -1257,7 +1277,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        color: #475569;
+        color: var(--overview-slateDark);
         font-size: 12px;
         line-height: 18px;
       }
@@ -1265,8 +1285,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .oj-trend-tooltip-item-total {
         margin-top: 2px;
         padding-top: 6px;
-        border-top: 1px dashed rgba(226, 232, 240, 0.92);
-        color: #0f172a;
+        border-top: 1px dashed rgba(var(--overview-slateBorder-rgb), 0.92);
+        color: var(--overview-text);
         font-weight: 600;
       }
 
@@ -1278,7 +1298,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .oj-trend-tooltip-value {
-        color: #0f172a;
+        color: var(--overview-text);
         font-weight: 600;
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
@@ -1289,7 +1309,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 8px;
         border-radius: 2px;
         display: inline-block;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44);
+        box-shadow: inset 0 0 0 1px rgba(var(--overview-white-rgb), 0.44);
       }
 
       .oj-trend-tooltip-line-marker {
@@ -1297,7 +1317,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 3px;
         border-radius: 999px;
         display: inline-block;
-        background: linear-gradient(90deg, #34d399 0%, #19a796 100%);
+        background: linear-gradient(
+          90deg,
+          var(--overview-green) 0%,
+          var(--overview-blue) 100%
+        );
       }
 
       .oj-trend-legend {
@@ -1305,7 +1329,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         gap: 10px;
         flex-wrap: wrap;
         font-size: 11.5px;
-        color: #475569;
+        color: var(--overview-slateDark);
         margin-top: 10px;
         align-items: center;
       }
@@ -1317,8 +1341,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         min-height: 24px;
         padding: 0 10px;
         border-radius: 999px;
-        background: rgba(248, 250, 252, 0.95);
-        border: 1px solid rgba(226, 232, 240, 0.95);
+        background: rgba(var(--overview-slateSoft-rgb), 0.95);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.95);
       }
 
       .oj-trend-dot {
@@ -1326,13 +1350,17 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 9px;
         border-radius: 3px;
         display: inline-block;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+        box-shadow: inset 0 0 0 1px rgba(var(--overview-white-rgb), 0.45);
       }
 
       .oj-trend-line {
         width: 18px;
         height: 3px;
-        background: linear-gradient(90deg, #34d399 0%, #19a796 100%);
+        background: linear-gradient(
+          90deg,
+          var(--overview-blueLight) 0%,
+          var(--overview-blue) 100%
+        );
         display: inline-block;
         border-radius: 999px;
       }
@@ -1340,11 +1368,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .ov-item {
         width: 100%;
         text-align: left;
-        border: 1px solid rgba(226, 232, 240, 0.92);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
         background: linear-gradient(
           180deg,
-          rgba(255, 255, 255, 0.96) 0%,
-          rgba(248, 250, 252, 0.96) 100%
+          rgba(var(--overview-white-rgb), 0.96) 0%,
+          rgba(var(--overview-slateSoft-rgb), 0.96) 100%
         );
         padding: 14px 14px 12px;
         border-radius: 16px;
@@ -1353,13 +1381,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         justify-content: center;
         gap: 10px;
         min-height: 88px;
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 6px 16px rgba(var(--overview-text-rgb), 0.04);
       }
 
       .ov-label {
         font-size: 12px;
         font-weight: 600;
-        color: #64748b;
+        color: var(--overview-slate);
         line-height: 16px;
         display: inline-flex;
         align-items: center;
@@ -1370,7 +1398,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .ov-value {
         font-size: 28px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--overview-text);
         line-height: 34px;
         font-variant-numeric: tabular-nums;
       }
@@ -1385,26 +1413,26 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .ov-value-blue {
-        color: #4791ff;
+        color: var(--overview-blue);
       }
 
       .ov-value-pending {
-        color: #f4840c;
+        color: var(--overview-orange);
       }
 
       .ov-value-green {
-        color: #2eb78a;
+        color: var(--overview-green);
       }
 
       .overview-bottom-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(var(--overview-white-rgb), 0.9);
         border-radius: 16px;
         padding: 0;
-        border: 1px solid rgba(226, 232, 240, 0.9);
-        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.9);
+        box-shadow: 0 12px 32px rgba(var(--overview-text-rgb), 0.05);
         min-height: 120px;
       }
 
@@ -1428,13 +1456,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         top: 16px;
         bottom: 16px;
         width: 1px;
-        background: rgba(226, 232, 240, 0.9);
+        background: rgba(var(--overview-slateBorder-rgb), 0.9);
       }
 
       .bm-label {
         font-size: 12px;
         font-weight: 500;
-        color: #64748b;
+        color: var(--overview-slate);
         line-height: 18px;
       }
 
@@ -1448,15 +1476,15 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         border: 0;
         border-radius: 8px;
         background: transparent;
-        color: #2563eb;
+        color: var(--overview-blue);
         box-shadow: none;
         transition: all 0.18s ease;
         cursor: pointer;
       }
 
       .bm-trend-sparkline:hover {
-        background: #f8fafc;
-        color: #1d4ed8;
+        background: var(--overview-slateSoft);
+        color: var(--overview-blue);
       }
 
       .bm-trend-sparkline:disabled {
@@ -1476,7 +1504,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         margin-top: 10px;
         font-size: 36px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--overview-text);
         font-variant-numeric: tabular-nums;
         line-height: 44px;
         flex-wrap: wrap;
@@ -1489,7 +1517,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .bm-value-suffix {
         font-size: 14px;
         font-weight: 600;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         line-height: 20px;
         align-self: flex-end;
         padding-bottom: 5px;
@@ -1504,8 +1532,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-segmented {
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(var(--overview-white-rgb), 0.7);
+        border: 1px solid rgba(var(--overview-slateLight-rgb), 0.35);
         padding: 3px;
         border-radius: 10px;
       }
@@ -1513,15 +1541,15 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .overview-segmented .ant-segmented-item {
         min-height: 30px;
         border-radius: 8px;
-        color: #5a6872;
+        color: var(--overview-slateDark);
         font-size: 12px;
         font-weight: 600;
       }
 
       .overview-segmented .ant-segmented-item-selected {
-        background: #ffffff;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-        color: #1677ff;
+        background: var(--overview-white);
+        box-shadow: 0 1px 3px rgba(var(--overview-text-rgb), 0.08);
+        color: var(--overview-blue);
       }
 
       .team-filter {
@@ -1548,7 +1576,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .overview-select .ant-select-selector {
         border-radius: 10px !important;
-        border-color: #d9e0ea !important;
+        border-color: var(--overview-slateBorder) !important;
         box-shadow: none !important;
         min-height: 34px;
         font-size: 12px;
@@ -1556,14 +1584,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .overview-select.ant-select-focused .ant-select-selector,
       .overview-select:hover .ant-select-selector {
-        border-color: #91caff !important;
+        border-color: var(--overview-blueLight) !important;
       }
 
       .overview-select-dropdown.ant-select-dropdown {
         border-radius: 12px;
         overflow: hidden;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+        border: 1px solid rgba(var(--overview-slateLight-rgb), 0.35);
+        box-shadow: 0 12px 28px rgba(var(--overview-text-rgb), 0.14);
       }
 
       .overview-ant-table {
@@ -1571,10 +1599,10 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-ant-table .ant-table-container {
-        border: 1px solid rgba(148, 163, 184, 0.35);
+        border: 1px solid rgba(var(--overview-slateLight-rgb), 0.35);
         border-radius: 12px;
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(var(--overview-white-rgb), 0.9);
       }
 
       .overview-ant-table .ant-table {
@@ -1582,8 +1610,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-ant-table .ant-table-thead > tr > th {
-        background: rgba(241, 245, 249, 0.8);
-        color: #475569;
+        background: rgba(var(--overview-slateSoft-rgb), 0.8);
+        color: var(--overview-slateDark);
         font-size: 12px;
         font-weight: 600;
         padding: 10px 12px;
@@ -1594,13 +1622,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .overview-ant-table .ant-table-tbody > tr > td {
         padding: 10px 12px;
         font-size: 13px;
-        color: #0f172a;
+        color: var(--overview-text);
         text-align: center;
       }
 
       .overview-ant-table .ant-table-summary td {
-        background: rgba(241, 245, 249, 0.7);
-        border-top: 1px solid rgba(148, 163, 184, 0.25);
+        background: rgba(var(--overview-slateSoft-rgb), 0.7);
+        border-top: 1px solid rgba(var(--overview-slateLight-rgb), 0.25);
         font-weight: 600;
         text-align: center;
       }
@@ -1624,7 +1652,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-ant-table .sortable-col:hover {
-        background: #eef1f6;
+        background: var(--overview-slateSoft);
       }
 
       .sortable-col-title {
@@ -1640,19 +1668,19 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-info-icon {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-size: 12px;
         cursor: help;
         transition: color 0.2s ease;
       }
 
       .overview-info-icon:hover {
-        color: #64748b;
+        color: var(--overview-slate);
       }
 
       .sort-arrow {
         font-size: 11px;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
       }
 
       .overview-bar-cell {
@@ -1666,7 +1694,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .overview-bar-value {
         min-width: 24px;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--overview-text);
         font-variant-numeric: tabular-nums;
       }
 
@@ -1674,7 +1702,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         flex: 1;
         height: 6px;
         border-radius: 999px;
-        background: #e2e8f0;
+        background: var(--overview-slateBorder);
         overflow: hidden;
       }
 
@@ -1685,11 +1713,19 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-bar-blue {
-        background: linear-gradient(90deg, #60a5fa 0%, #2563eb 100%);
+        background: linear-gradient(
+          90deg,
+          var(--overview-blueLight) 0%,
+          var(--overview-blue) 100%
+        );
       }
 
       .overview-bar-green {
-        background: linear-gradient(90deg, #5eead4 0%, #16a34a 100%);
+        background: linear-gradient(
+          90deg,
+          var(--overview-blueLight) 0%,
+          var(--overview-green) 100%
+        );
       }
 
       .overview-ring-progress {
@@ -1732,7 +1768,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         min-width: 190px;
         overflow: hidden;
         border-radius: 999px;
-        background: #e2e8f0;
+        background: var(--overview-slateBorder);
       }
 
       .overview-progress-segment {
@@ -1740,15 +1776,15 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-progress-pending {
-        background: #e0962b;
+        background: var(--overview-progressPending);
       }
 
       .overview-progress-inProgress {
-        background: #4f98ff;
+        background: var(--overview-progressInProgress);
       }
 
       .overview-progress-resolved {
-        background: #33c998;
+        background: var(--overview-progressResolved);
       }
 
       .overview-progress-meta {
@@ -1761,7 +1797,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-progress-text {
-        color: #475569;
+        color: var(--overview-slateDark);
         font-weight: 400;
         white-space: nowrap;
       }
@@ -1802,7 +1838,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .overview-ant-table .overview-table-link {
         padding: 0;
         height: auto;
-        color: #1677ff;
+        color: var(--overview-blue);
         font-weight: 600;
         text-decoration: underline;
         text-underline-offset: 3px;
@@ -1812,23 +1848,23 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-ant-table .overview-table-link:hover {
-        color: #0958d9;
+        color: var(--overview-blue);
         text-decoration: underline;
       }
 
       .overview-ant-table .overview-table-link:active {
-        color: #003eb3;
+        color: var(--overview-blueDark);
       }
 
       .overview-ant-table .overview-table-link-muted {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-weight: 600;
         text-decoration: underline;
         text-underline-offset: 3px;
       }
 
       .overview-ant-table .overview-table-link-muted:hover {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
       }
 
       .overview-ant-table .overview-table-link-strong {
@@ -1836,7 +1872,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .row-num {
-        color: #8899a6;
+        color: var(--overview-slateLight);
         font-weight: 500;
       }
 
@@ -1850,7 +1886,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .overview-expand-icon {
         font-size: 12px;
-        color: #64748b;
+        color: var(--overview-slate);
         transition: transform 0.2s ease;
       }
 
@@ -1859,7 +1895,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .overview-ant-table .ant-table-expanded-row > td {
-        background: rgba(248, 250, 252, 0.85);
+        background: rgba(var(--overview-slateSoft-rgb), 0.85);
         padding: 0 !important;
       }
 
@@ -1882,33 +1918,33 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .overview-expanded-cell {
         padding: 10px 12px;
-        background: #fbfcfe;
+        background: var(--overview-blueSoft);
         vertical-align: middle;
-        color: #5b6168;
+        color: var(--overview-slateDark);
         font-size: 13px;
         text-align: center;
         border: none;
       }
 
       .overview-category-row > .overview-expanded-cell {
-        background: #f1f5f9;
+        background: var(--overview-slateSoft);
         font-weight: 600;
       }
 
       .overview-expanded-table tbody tr:first-child td {
-        border-top: 1px solid #eef2f6;
+        border-top: 1px solid var(--overview-slateSoft);
       }
 
       .overview-expanded-table tbody tr + tr td {
-        border-top: 1px solid #eef2f6;
+        border-top: 1px solid var(--overview-slateSoft);
       }
 
       .overview-expanded-cell-empty {
-        background: #fbfcfe;
+        background: var(--overview-blueSoft);
       }
 
       .overview-expanded-cell-index {
-        box-shadow: inset 3px 0 0 #eaf1fc;
+        box-shadow: inset 3px 0 0 var(--overview-blueSoft);
       }
 
       .overview-expanded-repo-name {
@@ -1917,7 +1953,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         justify-content: flex-start;
         width: 100%;
         padding-left: 12px;
-        color: #1e5fbf;
+        color: var(--overview-blue);
         font-size: 13px;
         font-weight: 400;
         position: relative;
@@ -1935,7 +1971,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         top: 8px;
         bottom: 8px;
         width: 1px;
-        background: #eaf1fc;
+        background: var(--overview-blueSoft);
       }
 
       @keyframes overviewExpandedFadeIn {
@@ -1965,16 +2001,16 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         border-radius: 999px;
         padding: 0 8px;
         line-height: 20px;
-        border-color: rgba(147, 51, 234, 0.22);
-        background: rgba(147, 51, 234, 0.08);
-        color: #7e22ce;
+        border-color: rgba(var(--overview-slate-rgb), 0.22);
+        background: rgba(var(--overview-slate-rgb), 0.08);
+        color: var(--overview-slate);
         transition: all 0.18s ease;
       }
 
       .overview-benchmark-tag.ant-tag:hover {
-        background: rgba(147, 51, 234, 0.14);
-        border-color: rgba(147, 51, 234, 0.32);
-        color: #6b21a8;
+        background: rgba(var(--overview-slate-rgb), 0.14);
+        border-color: rgba(var(--overview-slate-rgb), 0.32);
+        color: var(--overview-slate);
       }
 
       .overview-repo-name-cell {
@@ -2030,23 +2066,23 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 14px;
         line-height: 22px;
       }
 
       .benchmark-modal-subtitle strong {
-        color: #0f172a;
+        color: var(--overview-text);
         font-weight: 700;
       }
 
       .benchmark-modal-subtitle-vs {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-weight: 500;
       }
 
       .benchmark-subtitle-link {
-        color: #1677ff;
+        color: var(--overview-blue);
         font-size: 13px;
         line-height: 20px;
         font-weight: 600;
@@ -2056,7 +2092,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-subtitle-link:hover {
-        color: #0958d9;
+        color: var(--overview-blue);
       }
 
       .benchmark-modal-body {
@@ -2066,9 +2102,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-summary-shell {
-        border: 1px solid rgba(226, 232, 240, 0.92);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
         border-radius: 16px;
-        background: #ffffff;
+        background: var(--overview-white);
         overflow: hidden;
       }
 
@@ -2083,9 +2119,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-card {
-        border: 1px solid rgba(226, 232, 240, 0.92);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
         border-radius: 16px;
-        background: #ffffff;
+        background: var(--overview-white);
         padding: 20px 22px 18px;
         overflow: hidden;
       }
@@ -2101,7 +2137,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .benchmark-chart-title {
         min-width: 0;
-        color: #0f172a;
+        color: var(--overview-text);
         font-size: 16px;
         line-height: 24px;
         font-weight: 700;
@@ -2123,13 +2159,13 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         padding: 0;
         border: none;
         background: transparent;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         cursor: help;
         transition: color 0.2s ease;
       }
 
       .benchmark-chart-title-info-trigger:hover {
-        color: #64748b;
+        color: var(--overview-slate);
       }
 
       .benchmark-chart-title-info-trigger .anticon {
@@ -2137,7 +2173,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-title-subtle {
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 13px;
         line-height: 20px;
         font-weight: 500;
@@ -2150,7 +2186,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-title-popover-heading {
-        color: #0f172a;
+        color: var(--overview-text);
         font-size: 13px;
         line-height: 20px;
         font-weight: 600;
@@ -2170,18 +2206,18 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         justify-content: space-between;
         gap: 12px;
         min-width: 0;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--overview-slateBorder);
         border-radius: 8px;
-        background: #f8fafc;
+        background: var(--overview-slateSoft);
         padding: 8px 10px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 12px;
         line-height: 18px;
         font-weight: 500;
       }
 
       .benchmark-chart-title-popover-summary strong {
-        color: #0f172a;
+        color: var(--overview-text);
         font-size: 14px;
         line-height: 20px;
         font-weight: 700;
@@ -2196,11 +2232,11 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .benchmark-chart-title-popover-pair-table {
         min-width: 640px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--overview-slateBorder);
         border-radius: 8px;
         overflow: hidden;
-        background: #ffffff;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        background: var(--overview-white);
+        box-shadow: 0 1px 2px rgba(var(--overview-text-rgb), 0.04);
       }
 
       .benchmark-chart-title-popover-table-head,
@@ -2213,8 +2249,8 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-title-popover-table-head {
-        background: #f8fafc;
-        color: #334155;
+        background: var(--overview-slateSoft);
+        color: var(--overview-textSecondary);
         font-size: 12px;
         line-height: 18px;
         font-weight: 600;
@@ -2225,18 +2261,18 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         top: 0;
         z-index: 1;
         min-width: 640px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--overview-slateBorder);
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+        box-shadow: 0 1px 0 rgba(var(--overview-text-rgb), 0.04);
       }
 
       .benchmark-chart-title-popover-row {
         position: relative;
-        color: #475569;
+        color: var(--overview-slateDark);
         font-size: 12px;
         line-height: 18px;
-        background: #ffffff;
+        background: var(--overview-white);
       }
 
       .benchmark-chart-title-popover-row::before {
@@ -2249,20 +2285,20 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-title-popover-row-cann {
-        background: #f3f7ff;
+        background: var(--overview-benchmark-cann-bg);
       }
 
       .benchmark-chart-title-popover-row-cann::before {
-        background: #2070f3;
+        background: var(--overview-benchmark-cann-bg);
       }
 
       .benchmark-chart-title-popover-row-benchmark {
-        background: #fbf5ff;
-        border-top: 1px solid #ead5ff;
+        background: var(--overview-benchmark-benchmark-bg);
+        border-top: 1px solid var(--overview-benchmark-benchmark-border);
       }
 
       .benchmark-chart-title-popover-row-benchmark::before {
-        background: #bf68fa;
+        background: var(--overview-benchmark-benchmark-bg);
       }
 
       .benchmark-chart-title-popover-cell,
@@ -2274,7 +2310,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .benchmark-chart-title-popover-cell + .benchmark-chart-title-popover-cell,
       .benchmark-chart-title-popover-table-head span + span {
-        border-left: 1px solid #f1f5f9;
+        border-left: 1px solid var(--overview-slateSoft);
       }
 
       .benchmark-chart-title-popover-score {
@@ -2310,14 +2346,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         display: inline-flex;
         align-items: baseline;
         gap: 8px;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-size: 13px;
         line-height: 20px;
         font-weight: 500;
       }
 
       .benchmark-chart-score-hint strong {
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 15px;
         line-height: 22px;
         font-weight: 700;
@@ -2329,7 +2365,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         align-items: center;
         justify-content: center;
         text-align: center;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-size: 14px;
         line-height: 22px;
         font-weight: 500;
@@ -2342,7 +2378,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         gap: 20px;
         flex-wrap: wrap;
         margin-top: 12px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 13px;
         line-height: 20px;
         font-weight: 600;
@@ -2359,15 +2395,15 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 12px;
         border-radius: 999px;
         display: inline-block;
-        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 0 4px rgba(var(--overview-white-rgb), 0.9);
       }
 
       .benchmark-chart-dot-cann {
-        background: #2070f3;
+        background: var(--overview-benchmark-cann);
       }
 
       .benchmark-chart-dot-benchmark {
-        background: #bf68fa;
+        background: var(--overview-benchmark-benchmark);
       }
 
       .benchmark-chart {
@@ -2402,7 +2438,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .benchmark-chart-y-label {
         font-size: 13px;
         line-height: 18px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-variant-numeric: tabular-nums;
         transform: translateY(-50%);
       }
@@ -2419,7 +2455,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         left: 0;
         right: 0;
         bottom: var(--benchmark-label-height);
-        border-top: 2px solid rgba(148, 163, 184, 0.46);
+        border-top: 2px solid rgba(var(--overview-slateLight-rgb), 0.46);
         z-index: 1;
       }
 
@@ -2436,7 +2472,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         position: absolute;
         left: 0;
         right: 0;
-        border-top: 1px solid rgba(226, 232, 240, 0.72);
+        border-top: 1px solid rgba(var(--overview-slateBorder-rgb), 0.72);
         transform: translateY(-50%);
       }
 
@@ -2510,19 +2546,19 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-bar-cann {
-        background: #d6e4fd;
+        background: var(--overview-benchmark-cann-border);
       }
 
       .benchmark-chart-bar-cann::before {
-        background: #2070f3;
+        background: var(--overview-benchmark-cann);
       }
 
       .benchmark-chart-bar-benchmark {
-        background: #efd8ff;
+        background: var(--overview-benchmark-benchmark-border);
       }
 
       .benchmark-chart-bar-benchmark::before {
-        background: #bf68fa;
+        background: var(--overview-benchmark-benchmark);
       }
 
       .benchmark-chart-bar-value {
@@ -2530,7 +2566,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         align-items: center;
         justify-content: center;
         padding-top: 8px;
-        color: #2070f3;
+        color: var(--overview-blue);
         font-size: 14px;
         line-height: 20px;
         font-weight: 600;
@@ -2538,12 +2574,12 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .benchmark-chart-bar-benchmark .benchmark-chart-bar-value {
-        color: #715afb;
+        color: var(--overview-benchmark-benchmark-text);
       }
 
       .benchmark-chart-label {
         text-align: center;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 15px;
         line-height: 22px;
         font-weight: 600;
@@ -2558,14 +2594,14 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .capability-card {
         min-width: 0;
-        border: 1px solid rgba(226, 232, 240, 0.95);
+        border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.95);
         border-radius: 20px;
         background: linear-gradient(
           180deg,
-          rgba(255, 255, 255, 0.96) 0%,
-          rgba(248, 251, 255, 0.96) 100%
+          rgba(var(--overview-white-rgb), 0.96) 0%,
+          rgba(var(--overview-blueSoft-rgb), 0.96) 100%
         );
-        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+        box-shadow: 0 16px 40px rgba(var(--overview-text-rgb), 0.07);
         padding: 18px;
       }
 
@@ -2579,7 +2615,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-card-title {
-        color: #0f172a;
+        color: var(--overview-text);
         font-size: 16px;
         line-height: 24px;
         font-weight: 800;
@@ -2590,7 +2626,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 12px;
         line-height: 18px;
         font-weight: 700;
@@ -2617,18 +2653,18 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-dot-lead {
-        background: #dff4eb;
-        border-color: #b7e2d0;
+        background: var(--overview-benchmark-lead-bg);
+        border-color: var(--overview-benchmark-lead-border);
       }
 
       .capability-dot-tie {
-        background: #e8edf4;
-        border-color: #cbd5e1;
+        background: var(--overview-benchmark-tie-bg);
+        border-color: var(--overview-benchmark-tie-border);
       }
 
       .capability-dot-lag {
-        background: #fce4e2;
-        border-color: #f3b9b5;
+        background: var(--overview-benchmark-lag-bg);
+        border-color: var(--overview-benchmark-lag-border);
       }
 
       .capability-stat-grid {
@@ -2639,9 +2675,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
 
       .capability-stat-card {
         min-width: 0;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--overview-slateBorder);
         border-radius: 14px;
-        background: #ffffff;
+        background: var(--overview-white);
         padding: 14px 10px;
         text-align: center;
       }
@@ -2657,46 +2693,46 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .capability-stat-label {
         display: block;
         margin-top: 3px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 12px;
         line-height: 18px;
         font-weight: 700;
       }
 
       .capability-stat-lead .capability-stat-value {
-        color: #16835e;
+        color: var(--overview-benchmark-lead-text);
       }
 
       .capability-stat-lead {
-        background: #e8f7f1;
-        border-color: #c9eadc;
+        background: var(--overview-benchmark-lead-card);
+        border-color: var(--overview-benchmark-lead-card-border);
       }
 
       .capability-stat-tie .capability-stat-value {
-        color: #607086;
+        color: var(--overview-benchmark-tie-text);
       }
 
       .capability-stat-tie {
-        background: #f4f7fb;
-        border-color: #d7dee8;
+        background: var(--overview-benchmark-tie-card);
+        border-color: var(--overview-benchmark-tie-card-border);
       }
 
       .capability-stat-lag .capability-stat-value {
-        color: #c2413b;
+        color: var(--overview-benchmark-lag-text);
       }
 
       .capability-stat-lag {
-        background: #fff0ee;
-        border-color: #f5c7c3;
+        background: var(--overview-benchmark-lag-card);
+        border-color: var(--overview-benchmark-lag-card-border);
       }
 
       .capability-summary-box {
         margin-top: 12px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--overview-slateBorder);
         border-radius: 12px;
-        background: rgba(248, 250, 252, 0.92);
+        background: rgba(var(--overview-slateSoft-rgb), 0.92);
         padding: 10px 12px;
-        color: #334155;
+        color: var(--overview-textSecondary);
         font-size: 13px;
         line-height: 22px;
         font-weight: 600;
@@ -2719,17 +2755,17 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-repo-tag.lead {
-        color: #16835e;
-        background: #dff4eb;
+        color: var(--overview-benchmark-lead-text);
+        background: var(--overview-benchmark-lead-bg);
       }
 
       .capability-repo-tag.lag {
-        color: #c2413b;
-        background: #fce4e2;
+        color: var(--overview-benchmark-lag-text);
+        background: var(--overview-benchmark-lag-bg);
       }
 
       .capability-muted {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
       }
 
       .capability-stage-list {
@@ -2750,7 +2786,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         display: flex;
         align-items: baseline;
         gap: 6px;
-        color: #334155;
+        color: var(--overview-textSecondary);
         font-size: 13px;
         line-height: 20px;
         font-weight: 700;
@@ -2781,9 +2817,9 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         height: 26px;
         display: flex;
         overflow: hidden;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--overview-slateBorder);
         border-radius: 9px;
-        background: #f8fafc;
+        background: var(--overview-slateSoft);
       }
 
       .capability-stage-segment {
@@ -2791,7 +2827,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #334155;
+        color: var(--overview-textSecondary);
         font-size: 12px;
         line-height: 24px;
         font-weight: 800;
@@ -2800,18 +2836,18 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-stage-segment.lead {
-        color: #16835e;
-        background: #cdebdd;
+        color: var(--overview-benchmark-lead-text);
+        background: var(--overview-benchmark-lead-stage);
       }
 
       .capability-stage-segment.tie {
-        color: #607086;
-        background: #e8edf4;
+        color: var(--overview-benchmark-tie-text);
+        background: var(--overview-benchmark-tie-stage);
       }
 
       .capability-stage-segment.lag {
-        color: #c2413b;
-        background: #f6d4d0;
+        color: var(--overview-benchmark-lag-text);
+        background: var(--overview-benchmark-lag-stage);
       }
 
       .capability-empty {
@@ -2819,7 +2855,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-size: 14px;
         line-height: 22px;
         font-weight: 600;
@@ -2868,7 +2904,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-stage-head span {
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 11px;
         font-weight: 600;
         white-space: normal;
@@ -2883,7 +2919,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-stage-result-title span:last-child {
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 11px;
         font-weight: 600;
         white-space: nowrap;
@@ -2901,23 +2937,23 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: #0f172a;
+        color: var(--overview-text);
         font-size: 12px;
         line-height: 18px;
         font-weight: 700;
       }
 
       .capability-repo-name.muted {
-        color: #64748b;
+        color: var(--overview-slate);
         font-weight: 600;
       }
 
       .capability-vs {
         flex: 0 0 auto;
         border-radius: 6px;
-        background: #f1f5f9;
+        background: var(--overview-slateSoft);
         padding: 0 6px;
-        color: #64748b;
+        color: var(--overview-slate);
         font-size: 11px;
         line-height: 18px;
         font-weight: 800;
@@ -2926,7 +2962,7 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       .capability-team-text {
         display: inline-block;
         max-width: 100%;
-        color: #475569;
+        color: var(--overview-slateDark);
         font-size: 12px;
         line-height: 20px;
         font-weight: 600;
@@ -2954,39 +2990,39 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
         .ant-table-tbody
         > tr
         > td.capability-status-lead {
-        color: #16835e;
-        background: #dff4eb;
+        color: var(--overview-benchmark-lead-text);
+        background: var(--overview-benchmark-lead-bg);
       }
 
       .capability-detail-table
         .ant-table-tbody
         > tr
         > td.capability-status-tie {
-        color: #607086;
-        background: #eef2f7;
+        color: var(--overview-benchmark-tie-text);
+        background: var(--overview-benchmark-tie-detail);
       }
 
       .capability-detail-table
         .ant-table-tbody
         > tr
         > td.capability-status-lag {
-        color: #c2413b;
-        background: #fce4e2;
+        color: var(--overview-benchmark-lag-text);
+        background: var(--overview-benchmark-lag-bg);
       }
 
       .capability-detail-table
         .ant-table-tbody
         > tr
         > td.capability-status-unknown {
-        color: #94a3b8;
-        background: #f8fafc;
+        color: var(--overview-slateLight);
+        background: var(--overview-slateSoft);
       }
 
       .capability-record {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        color: #475569;
+        color: var(--overview-slateDark);
         font-size: 13px;
         line-height: 18px;
         font-weight: 600;
@@ -2995,19 +3031,19 @@ const DashboardStyles: React.FC<DashboardStylesProps> = ({
       }
 
       .capability-record .lead {
-        color: #16835e;
+        color: var(--overview-benchmark-lead-text);
       }
 
       .capability-record .tie {
-        color: #607086;
+        color: var(--overview-benchmark-tie-text);
       }
 
       .capability-record .lag {
-        color: #c2413b;
+        color: var(--overview-benchmark-lag-text);
       }
 
       .capability-record .slash {
-        color: #94a3b8;
+        color: var(--overview-slateLight);
         font-size: 13px;
         font-weight: 600;
       }

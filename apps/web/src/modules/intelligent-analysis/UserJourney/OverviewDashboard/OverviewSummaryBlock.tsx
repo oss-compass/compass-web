@@ -453,8 +453,11 @@ export const TrendChart: React.FC<{
             x2="0%"
             y2="100%"
           >
-            <stop offset="0%" stopColor="rgba(25, 167, 150, 0.22)" />
-            <stop offset="100%" stopColor="rgba(25, 167, 150, 0.02)" />
+            <stop offset="0%" stopColor="rgba(var(--overview-blue-rgb),0.22)" />
+            <stop
+              offset="100%"
+              stopColor="rgba(var(--overview-blue-rgb),0.02)"
+            />
           </linearGradient>
         </defs>
         <rect
@@ -832,9 +835,9 @@ const getSeverityTagStyle = (severity: string) => {
     };
   }
   return {
-    color: '#475569',
-    background: '#f8fafc',
-    borderColor: '#e2e8f0',
+    color: 'var(--overview-slateDark)',
+    background: 'var(--overview-slateSoft)',
+    borderColor: 'var(--overview-slateBorder)',
   };
 };
 

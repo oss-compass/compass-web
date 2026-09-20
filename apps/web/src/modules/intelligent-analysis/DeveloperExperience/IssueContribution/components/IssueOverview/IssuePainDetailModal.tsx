@@ -85,7 +85,8 @@ const PainIssuePriorityDistribution: React.FC<{
     { P0: 0, P1: 0, P2: 0, P3: 0 }
   );
 
-  if (!issues.length) return <span className="text-slate-400">0</span>;
+  if (!issues.length)
+    return <span className="text-[var(--overview-slateLight)]">0</span>;
 
   return (
     <div className="overview-progress-cell !gap-1.5">
@@ -106,7 +107,7 @@ const PainIssuePriorityDistribution: React.FC<{
       <div className="overview-progress-meta !gap-x-1.5 !gap-y-0 text-[10px]">
         <button
           type="button"
-          className="whitespace-nowrap text-xs font-semibold tabular-nums leading-[18px] text-[#64748b] hover:underline"
+          className="whitespace-nowrap text-xs font-semibold tabular-nums leading-[18px] text-[var(--overview-slate)] hover:underline"
           onClick={() => onOpen()}
         >
           总 {issues.length}
@@ -115,7 +116,7 @@ const PainIssuePriorityDistribution: React.FC<{
           (level) => counts[level.priority] > 0
         ).map((level) => (
           <React.Fragment key={level.priority}>
-            <span className="text-slate-300">|</span>
+            <span className="text-[var(--overview-slateLight)]">|</span>
             <button
               type="button"
               className="overview-progress-text hover:underline"
@@ -380,7 +381,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
   const sortableHeader = (label: string, key: SortKey) => (
     <button
       type="button"
-      className="inline-flex items-center justify-center gap-1 font-semibold text-slate-500 hover:text-slate-700"
+      className="inline-flex items-center justify-center gap-1 font-semibold text-[var(--overview-slate)] hover:text-[var(--overview-slateDark)]"
       onClick={() => {
         if (sortKey === key) setSortAsc((value) => !value);
         else {
@@ -410,7 +411,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
         placement="bottomLeft"
         popupRender={() => (
           <div
-            className="w-[200px] rounded-lg border border-slate-200 bg-white p-2 shadow-lg"
+            className="w-[200px] rounded-lg border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] p-2 shadow-lg"
             onClick={(event) => event.stopPropagation()}
           >
             <Radio.Group
@@ -431,7 +432,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
         <button
           type="button"
           className={`inline-flex h-5 w-5 items-center justify-center rounded ${
-            value === ALL ? 'text-slate-400' : 'bg-blue-50 text-blue-600'
+            value === ALL
+              ? 'text-[var(--overview-slateLight)]'
+              : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)]'
           }`}
           onClick={(event) => event.stopPropagation()}
         >
@@ -471,7 +474,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
             <span>{`${title}（共${displayedItems.length}条）`}</span>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!displayedItems.length}
               onClick={exportPainRows}
             >
@@ -483,12 +486,12 @@ const IssuePainDetailModal: React.FC<Props> = ({
       >
         <div className="flex h-full min-h-0 w-full max-w-full flex-col gap-3 overflow-hidden">
           <div
-            className={`min-h-0 min-w-0 flex-1 overflow-x-hidden rounded-xl border border-slate-200 ${
+            className={`min-h-0 min-w-0 flex-1 overflow-x-hidden rounded-xl border border-[var(--overview-slateBorder)] ${
               issueDetailPain ? 'overflow-y-hidden' : 'overflow-y-auto'
             }`}
           >
-            <table className="w-full min-w-0 table-fixed border-collapse text-center text-[12px] text-slate-700 md:text-[13px] [&_td]:whitespace-normal [&_td]:break-words [&_th]:whitespace-normal [&_th]:break-words">
-              <thead className="sticky top-0 z-10 bg-slate-50 text-[10px] uppercase tracking-wide text-slate-500 md:text-[11px]">
+            <table className="w-full min-w-0 table-fixed border-collapse text-center text-[12px] text-[var(--overview-slateDark)] md:text-[13px] [&_td]:whitespace-normal [&_td]:break-words [&_th]:whitespace-normal [&_th]:break-words">
+              <thead className="sticky top-0 z-10 bg-[var(--overview-slateSoft)] text-[10px] uppercase tracking-wide text-[var(--overview-slate)] md:text-[11px]">
                 <tr>
                   <th className="w-[4%] px-1.5 py-3">序号</th>
                   <th className="w-[10%] px-1.5 py-3">
@@ -534,10 +537,13 @@ const IssuePainDetailModal: React.FC<Props> = ({
                   <th className="w-[6%] px-1.5 py-3">相关报告</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-[var(--overview-white)]">
                 {loading ? (
                   <tr>
-                    <td colSpan={10} className="px-4 py-12 text-slate-400">
+                    <td
+                      colSpan={10}
+                      className="px-4 py-12 text-[var(--overview-slateLight)]"
+                    >
                       加载中...
                     </td>
                   </tr>
@@ -545,9 +551,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
                   pagedDisplayedItems.map((item, index) => (
                     <tr
                       key={item.key}
-                      className="align-top hover:bg-slate-50/80"
+                      className="align-top hover:bg-[rgba(var(--overview-slateSoft-rgb),0.8)]"
                     >
-                      <td className="px-2 py-3 text-slate-400">
+                      <td className="px-2 py-3 text-[var(--overview-slateLight)]">
                         {(painPage - 1) * PAIN_PAGE_SIZE + index + 1}
                       </td>
                       <td className="px-1.5 py-3 font-medium">
@@ -601,7 +607,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                             item.stageId,
                             item.painId
                           )}
-                          className="overview-table-link text-blue-600 hover:text-blue-700"
+                          className="overview-table-link text-[var(--overview-blue)] hover:text-[var(--overview-blueDark)]"
                         >
                           {reportDateLabel(item.period)}
                         </Link>
@@ -610,7 +616,10 @@ const IssuePainDetailModal: React.FC<Props> = ({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={10} className="px-4 py-12 text-slate-400">
+                    <td
+                      colSpan={10}
+                      className="px-4 py-12 text-[var(--overview-slateLight)]"
+                    >
                       暂无匹配问题
                     </td>
                   </tr>
@@ -619,7 +628,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
             </table>
           </div>
           <div className="flex shrink-0 items-center justify-between gap-4 px-1">
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-[var(--overview-slate)]">
               共 {displayedItems.length} 条
             </span>
             <Pagination
@@ -662,12 +671,12 @@ const IssuePainDetailModal: React.FC<Props> = ({
         }}
         title={
           <div className="flex items-center justify-between gap-3 pr-8">
-            <span className="text-base font-semibold text-slate-800">
+            <span className="text-base font-semibold text-[var(--overview-textSecondary)]">
               涉及 Issue{issueDetailPriority ? ` · ${issueDetailPriority}` : ''}
             </span>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!issueDetailItems.length}
               onClick={exportIssueRows}
             >
@@ -678,19 +687,19 @@ const IssuePainDetailModal: React.FC<Props> = ({
         destroyOnHidden
       >
         <div className="flex h-full min-h-0 max-w-full flex-col gap-4 overflow-hidden">
-          <div className="shrink-0 rounded-lg border border-rose-100 bg-rose-50/80 px-3.5 py-3">
+          <div className="shrink-0 rounded-lg border border-[var(--overview-redSoft)] bg-[rgba(var(--overview-redSoft-rgb),0.8)] px-3.5 py-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-semibold text-slate-800">
+              <span className="text-sm font-semibold text-[var(--overview-textSecondary)]">
                 {issueDetailPain?.title || '—'}
               </span>
-              <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-600">
+              <span className="inline-flex rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)] px-2 py-0.5 text-[10px] font-medium text-[var(--overview-slate)]">
                 {issueDetailItems.length} 个 Issue
               </span>
             </div>
           </div>
           <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
             {needsFullIssues && fullIssuesLoading && !fullDetailPain ? (
-              <div className="flex h-full items-center justify-center text-sm text-slate-400">
+              <div className="flex h-full items-center justify-center text-sm text-[var(--overview-slateLight)]">
                 加载中...
               </div>
             ) : (
@@ -701,7 +710,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
                 renderReportLink={(issue) => {
                   const period = issue.report_period || issueDetailPain?.period;
                   if (!issueDetailPain || !period) {
-                    return <span className="text-slate-300">--</span>;
+                    return (
+                      <span className="text-[var(--overview-slateLight)]">
+                        --
+                      </span>
+                    );
                   }
                   return (
                     <Link
@@ -711,7 +724,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                         issueDetailPain.stageId,
                         issue.report_pain_id || issueDetailPain.painId
                       )}
-                      className="overview-table-link break-all text-blue-600 hover:text-blue-700"
+                      className="overview-table-link break-all text-[var(--overview-blue)] hover:text-[var(--overview-blueDark)]"
                     >
                       {reportDateLabel(period)}
                     </Link>
@@ -720,8 +733,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
               />
             )}
           </div>
-          <div className="flex shrink-0 items-center justify-between gap-4 border-t border-slate-200 pt-3">
-            <span className="text-xs text-slate-500">
+          <div className="flex shrink-0 items-center justify-between gap-4 border-t border-[var(--overview-slateBorder)] pt-3">
+            <span className="text-xs text-[var(--overview-slate)]">
               共 {issueDetailItems.length} 条
             </span>
             <Pagination
