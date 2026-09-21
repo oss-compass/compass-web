@@ -15,8 +15,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 const OrgCommunityExperienceTaskManagement: React.FC = () => {
   return (
     <NoSsr>
-      <div className="flex h-screen flex-1 overflow-auto bg-[#eef2fa]">
-        <div className="w-full overflow-y-auto">
+      <div className="flex h-screen flex-1 bg-[#eef2fa]">
+        <div className="w-full">
           <TaskManagementPage />
         </div>
       </div>

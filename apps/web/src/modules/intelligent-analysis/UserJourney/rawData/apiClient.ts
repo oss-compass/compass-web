@@ -57,6 +57,16 @@ export type ContainerChannelResponse = {
   expires_in: number;
 };
 
+export const fetchContainerReportIds = async (): Promise<string[]> => {
+  const result = await compassApiFetch<{ count: number; ids: string[] }>(
+    '/container-reports/ids'
+  );
+  if (!Array.isArray(result.ids)) {
+    throw new Error('容器服务返回了无效的报告列表');
+  }
+  return result.ids;
+};
+
 /** 登录态缺失/过期（401）时抛出，调用方应引导用户重新登录。 */
 export class ContainerChannelAuthError extends Error {
   constructor(message = '登录已过期，请重新进入') {
@@ -1457,6 +1467,7 @@ export const fetchOverviewCards = async (params: {
   repo?: string;
   hardwareEnv?: string;
   operatingSystem?: string;
+  slimPains?: boolean;
   sig?: string;
   keyword?: string;
   page?: number;
@@ -1476,6 +1487,7 @@ export const fetchOverviewCards = async (params: {
   if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
   if (params.operatingSystem)
     search.set('operating_system', params.operatingSystem);
+  if (params.slimPains) search.set('slim_pains', 'true');
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   search.set('page', String(params.page ?? 1));
@@ -1484,6 +1496,27 @@ export const fetchOverviewCards = async (params: {
     `/overview/cards?${search.toString()}`
   );
 };
+
+/** 总览 Issue 弹窗：传入当前筛选、排序后的 ID，只返回当前页明细。 */
+export const fetchOverviewIssuePage = async (
+  params: { issueIds: string[]; page: number; size: number },
+  signal?: AbortSignal
+): Promise<{
+  items: OverviewPainPointRow[];
+  total: number;
+  page: number;
+  size: number;
+}> =>
+  compassApiFetch('/overview/issues/page', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      issue_ids: params.issueIds,
+      page: params.page,
+      size: params.size,
+    }),
+    signal,
+  });
 
 export const fetchOverviewParentChildren = async (
   parentId: string,

@@ -237,7 +237,7 @@ export const RerunActionButton: React.FC<RerunActionButtonProps> = ({
     <Button
       type="link"
       size="small"
-      className="!px-0"
+      className="!px-0 !text-xs"
       loading={loading}
       onClick={() => {
         if (active || reviewPending) {

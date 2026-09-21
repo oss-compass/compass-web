@@ -55,6 +55,7 @@ import type {
 import WeeklyReportManagementSection from './WeeklyReportManagementSection';
 import ScheduledRerunConfigSection from './ScheduledRerunConfigSection';
 import DashboardStyles from '../OverviewDashboard/DashboardStyles';
+import ManagementModuleNav from '../OverviewDashboard/ManagementModuleNav';
 import OperatorAccessModal, {
   type OperatorRegisterValues,
 } from '../OverviewDashboard/OperatorAccessModal';
@@ -1379,10 +1380,11 @@ const TaskManagementPage: React.FC = () => {
     rerunRecordsLoading || !!rerunRecordsError || rerunRecords.length > 0;
 
   return (
-    <div className="oj-page min-h-full bg-[#eef2fa] px-7 py-4 md:px-6">
+    <div className="oj-page min-h-full bg-[#eef2fa]">
       {contextHolder}
       <DashboardStyles />
-      <div className="flex w-full flex-col gap-4">
+      <ManagementModuleNav active="community-onboarding" />
+      <div className="flex w-full flex-col gap-4 px-7 py-4 md:px-6">
         {!authInitialized ? (
           <Card className="w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
             <div className="flex items-center gap-3 py-6 text-sm text-slate-500">

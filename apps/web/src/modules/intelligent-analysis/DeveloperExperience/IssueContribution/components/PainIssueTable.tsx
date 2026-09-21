@@ -60,7 +60,7 @@ const formatEvidenceTime = (value: string, compact = false) => {
 };
 
 const sortEvidenceByTime = (evidence: IssueReportPainIssue['evidence']) =>
-  [...evidence].sort((left, right) => {
+  [...(evidence ?? [])].sort((left, right) => {
     if (!left.time) return 1;
     if (!right.time) return -1;
     return left.time.localeCompare(right.time);

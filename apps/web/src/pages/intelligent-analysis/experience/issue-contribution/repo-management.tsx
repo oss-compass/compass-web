@@ -12,8 +12,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => ({
 
 const IssueRepoManagementPage: React.FC = () => (
   <NoSsr>
-    <div className="flex h-screen flex-1 overflow-auto bg-[#eef2fa]">
-      <div className="w-full overflow-y-auto">
+    <div className="flex h-screen flex-1 bg-[#eef2fa]">
+      <div className="w-full">
         <RepoManagementPage reportType="issue" />
       </div>
     </div>

@@ -5,7 +5,7 @@ import {
 } from './theme';
 
 export type OverviewScoreBand = {
-  key: 'excellent' | 'good' | 'fair' | 'risk' | 'critical';
+  key: 'outstanding' | 'excellent' | 'good' | 'fair' | 'risk' | 'critical';
   label: string;
   color: string;
   fill: string;
@@ -56,6 +56,28 @@ export const OVERVIEW_SCORE_BANDS: OverviewScoreBand[] = [
     matches: (score) => score < 60,
   },
 ];
+
+/** 社区入门专用：95 分及以上单独用深绿色标识。 */
+export const ONBOARDING_SCORE_BANDS: OverviewScoreBand[] = [
+  {
+    key: 'outstanding',
+    label: '95–100',
+    color: OVERVIEW_COLORS.greenDark,
+    fill: OVERVIEW_COLORS.greenDark,
+    textColor: OVERVIEW_COLORS.white,
+    matches: (score) => score >= 95,
+  },
+  {
+    ...OVERVIEW_SCORE_BANDS[0],
+    label: '90–<95',
+    matches: (score) => score >= 90 && score < 95,
+  },
+  ...OVERVIEW_SCORE_BANDS.slice(1),
+];
+
+export const getOnboardingScoreColor = (score: number) =>
+  ONBOARDING_SCORE_BANDS.find((band) => band.matches(score))?.color ??
+  OVERVIEW_COLORS.slate;
 
 export const getOverviewScoreColor = (score: number) =>
   OVERVIEW_SCORE_BANDS.find((band) => band.matches(score))?.color ??

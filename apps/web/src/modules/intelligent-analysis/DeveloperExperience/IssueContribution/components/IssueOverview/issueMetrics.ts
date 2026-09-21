@@ -42,7 +42,7 @@ export type IssuePainSummary = {
 
 export type IssueOverviewModel = {
   hasData: boolean;
-  idxWeighted: number;
+  idxAverage: number;
   idxGrade: string;
   kpis: IssueKpi[];
   painSummary: IssuePainSummary;
@@ -85,7 +85,6 @@ export const computeIssueOverview = (
   const repoCount = new Set(repos.map((repo) => repo.community)).size;
   // 得分类指标只看各仓最新一周报告（与 CI 总览页“最新日期”口径对齐）
   const latestRepos = latestReposByPeriod(repos);
-  const latestIssues = sum(latestRepos.map((r) => r.nTotal));
 
   const totalIssues = sum(repos.map((r) => r.nTotal));
   const closedIssues = sum(repos.map((r) => r.nClosed));
@@ -94,15 +93,11 @@ export const computeIssueOverview = (
     ? Math.round((closedIssues / totalIssues) * 100)
     : 0;
 
-  // 综合体验评分：只取各仓最新一周报告，按问题数加权；问题数为 0 时退化为简单平均
-  const idxWeighted = latestIssues
-    ? +(
-        sum(latestRepos.map((r) => r.idxTotal * r.nTotal)) / latestIssues
-      ).toFixed(1)
-    : latestRepos.length
+  // 综合体验评分：每仓最新报告的综合分等权平均，与顶部 KPI 一致。
+  const idxAverage = latestRepos.length
     ? +(sum(latestRepos.map((r) => r.idxTotal)) / latestRepos.length).toFixed(1)
     : 0;
-  const idxGrade = gradeFromScore(idxWeighted);
+  const idxGrade = gradeFromScore(idxAverage);
 
   const topPainCount =
     data.topPainPriorityCounts.p0 + data.topPainPriorityCounts.p1;
@@ -145,8 +140,8 @@ export const computeIssueOverview = (
   const kpis: IssueKpi[] = [
     {
       label: '综合体验评分',
-      value: idxWeighted.toFixed(1),
-      sub: '最新一周加权',
+      value: idxAverage.toFixed(1),
+      sub: '各仓最新报告平均',
       grade: idxGrade,
       trend: data.agg.idx,
       trendMax: 100,
@@ -174,7 +169,7 @@ export const computeIssueOverview = (
 
   return {
     hasData,
-    idxWeighted,
+    idxAverage,
     idxGrade,
     kpis,
     painSummary: {

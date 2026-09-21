@@ -160,6 +160,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const { data: cardsResp, isLoading } = useQuery({
     queryKey: [
       'overview-cards-page',
+      'slim-pains-v1',
       org,
       currentTab,
       repoFilter,
@@ -187,6 +188,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         repo: repoFilter || undefined,
         hardwareEnv: hardwareEnvFilter || undefined,
         operatingSystem: operatingSystemFilter || undefined,
+        slimPains: true,
         page: 1,
         size: 200,
       }),
@@ -196,6 +198,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
   const { data: cardsOverallResp } = useQuery({
     queryKey: [
       'overview-cards-page',
+      'slim-pains-v1',
       org,
       'overall',
       repoFilter,
@@ -223,6 +226,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         repo: repoFilter || undefined,
         hardwareEnv: hardwareEnvFilter || undefined,
         operatingSystem: operatingSystemFilter || undefined,
+        slimPains: true,
         page: 1,
         size: 200,
       }),

@@ -6,8 +6,8 @@ import Link from 'next/link';
 import type { OverviewScoreInsightRepo } from '../rawData/apiClient';
 import { ScoreSparkline } from './CloseRateTrendChart';
 import {
-  getOverviewScoreColor,
-  OVERVIEW_SCORE_BANDS,
+  getOnboardingScoreColor,
+  ONBOARDING_SCORE_BANDS,
   type OverviewScoreBand,
 } from './scoreVisuals';
 
@@ -24,14 +24,14 @@ type DistributionItem = {
   values: Array<{ repo: OverviewScoreInsightRepo; score: number }>;
 };
 
-const SCORE_BANDS = OVERVIEW_SCORE_BANDS;
+const SCORE_BANDS = ONBOARDING_SCORE_BANDS;
 
 const average = (values: number[]) =>
   values.length
     ? values.reduce((total, value) => total + value, 0) / values.length
     : 0;
 
-const scoreColor = getOverviewScoreColor;
+const scoreColor = getOnboardingScoreColor;
 
 const reportHref = (repo: OverviewScoreInsightRepo) =>
   `/intelligent-analysis/community-experience?project=${encodeURIComponent(

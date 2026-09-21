@@ -281,12 +281,14 @@ const IssuePainDetailModal: React.FC<Props> = ({
       'issue-top-pains',
       'pain-full',
       org ?? '',
-      issueDetailPain?.painId ?? issueDetailPain?.key ?? '',
+      issueDetailPain?.key ?? '',
     ],
     queryFn: ({ signal }) =>
       fetchIssueTopPains(
         {
           org,
+          repo: issueDetailPain?.repoShort,
+          period: issueDetailPain?.period,
           painIds: issueDetailPain?.painId || issueDetailPain?.key,
           page: 1,
           pageSize: 1,

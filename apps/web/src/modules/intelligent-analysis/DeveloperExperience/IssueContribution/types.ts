@@ -572,7 +572,7 @@ export type IssueOverviewTopPain = {
 /** 跨仓逐周聚合序列（用于顶部 KPI 缩略图） */
 export type IssueOverviewAggSeries = {
   periods: string[];
-  idx: number[]; // 各周综合指数（按问题数加权）
+  idx: number[]; // 截至各周，每仓最新报告综合分的简单平均
   nTotal: number[]; // 各周问题总数
   closeRate: number[]; // 各周关闭率
 };

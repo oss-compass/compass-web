@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useQuery } from '@tanstack/react-query';
 import { buildOperatorCategoryTrends } from './operatorCategoryTrends';
 import {
   groupOperatorRepos,
@@ -21,6 +22,7 @@ import {
   Select,
   Table,
   Tag,
+  Tooltip,
   Typography,
   message,
 } from 'antd';
@@ -71,12 +73,15 @@ import {
   clearCompassOperatorToken,
   compassApiUrl,
   fetchCompassOperatorMe,
+  fetchContainerReportIds,
   fetchOverviewRepoRerunRecords,
   fetchOverviewRerunNodes,
   fetchOverviewRepoRerunStatuses,
   fetchRepoManagementRegisterOptions,
   getCompassOperatorToken,
   loginCompassOperator,
+  openContainerChannel,
+  ContainerChannelAuthError,
   registerCompassOperator,
   setCompassOperatorToken,
   triggerOverviewRepoRerun,
@@ -622,7 +627,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(78, 70),
             rw(78, 70),
             rw(62, 54),
-            rw(50, 44),
+            rw(155, 135),
           ]
         : [
             rw(40, 30),
@@ -637,7 +642,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             rw(86, 76),
             rw(86, 76),
             rw(74, 64),
-            rw(58, 50),
+            rw(155, 135),
           ],
     [isCompactTable, repoWidthScale]
   );
@@ -723,6 +728,24 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [cancelingRerunJobId, setCancelingRerunJobId] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+  const [containerAccessRepo, setContainerAccessRepo] =
+    useState<RepoProgressRow | null>(null);
+  const [enteringContainerKey, setEnteringContainerKey] = useState('');
+  const {
+    data: containerReportIds,
+    isLoading: containerIdsLoading,
+    isError: containerIdsError,
+  } = useQuery({
+    queryKey: ['container-report-ids'],
+    queryFn: fetchContainerReportIds,
+    enabled: progressView === 'repo' && !captureMode,
+    staleTime: Infinity,
+    retry: false,
+  });
+  const containerReportIdSet = useMemo(
+    () => new Set(containerReportIds ?? []),
+    [containerReportIds]
+  );
   const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
   const [changePasswordSubmitting, setChangePasswordSubmitting] =
     useState(false);
@@ -1137,6 +1160,68 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     prepareRerunModal,
     rerunAccessModal.repo,
   ]);
+
+  const enterContainer = useCallback(
+    async (row: RepoProgressRow) => {
+      const reportId = row.latestReportId;
+      if (!reportId) {
+        return;
+      }
+      setEnteringContainerKey(reportId);
+      try {
+        const result = await openContainerChannel(reportId);
+        const opened = window.open(result.enter_url, '_blank');
+        if (!opened) {
+          messageApi.warning('浏览器拦截了新窗口，已在当前页打开容器链接');
+          window.location.href = result.enter_url;
+        }
+      } catch (error) {
+        if (error instanceof ContainerChannelAuthError) {
+          setOperatorUser(null);
+          setContainerAccessRepo(row);
+        } else {
+          messageApi.error(
+            error instanceof Error ? error.message : '进入容器失败，请稍后重试'
+          );
+        }
+      } finally {
+        setEnteringContainerKey('');
+      }
+    },
+    [messageApi]
+  );
+
+  const openContainerAccess = useCallback(
+    async (row: RepoProgressRow) => {
+      if (!row.latestReportId || enteringContainerKey) return;
+      if (!operatorUser && !getCompassOperatorToken()) {
+        setLoginError('');
+        setContainerAccessRepo(row);
+        return;
+      }
+      if (!operatorUser) {
+        const user = await loadOperatorUser();
+        if (!user) {
+          setLoginError('');
+          setContainerAccessRepo(row);
+          return;
+        }
+      }
+      await enterContainer(row);
+    },
+    [enterContainer, enteringContainerKey, loadOperatorUser, operatorUser]
+  );
+
+  const confirmContainerAccess = useCallback(async () => {
+    const row = containerAccessRepo;
+    if (!row) return;
+    const user = operatorUser ?? (await handleOperatorLogin());
+    if (!user) {
+      return;
+    }
+    setContainerAccessRepo(null);
+    await enterContainer(row);
+  }, [containerAccessRepo, enterContainer, handleOperatorLogin, operatorUser]);
 
   const handleOperatorRegister = useCallback(
     async (values: OperatorRegisterValues) => {
@@ -1761,6 +1846,17 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const renderRerunAction = useCallback(
     (record: RepoProgressRow) => {
       const job = rerunStatusMap[record.id];
+      const hasContainer =
+        !!record.latestReportId &&
+        containerReportIdSet.has(record.latestReportId);
+      const entering = enteringContainerKey === record.latestReportId;
+      const containerHint = containerIdsLoading
+        ? '正在查询复现容器'
+        : containerIdsError
+        ? '复现容器列表获取失败，请刷新页面重试'
+        : hasContainer
+        ? '首次开通需部署环境，最长约 90 秒'
+        : '该仓库最新报告暂无复现容器';
       return (
         <div className="flex flex-col gap-1">
           {supportsRepoRerun(record.id) ? (
@@ -1777,10 +1873,34 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           ) : (
             <span className="text-[var(--overview-slateLight)]">-</span>
           )}
+          <Tooltip title={containerHint}>
+            <span>
+              <button
+                type="button"
+                disabled={!hasContainer || !!enteringContainerKey}
+                className="text-left text-xs font-medium text-[var(--overview-blue)] hover:underline disabled:cursor-not-allowed disabled:text-[var(--overview-slateLight)] disabled:no-underline"
+                onClick={() => {
+                  void openContainerAccess(record);
+                }}
+              >
+                {entering ? '开通中…' : '容器复现'}
+              </button>
+            </span>
+          </Tooltip>
         </div>
       );
     },
-    [openRerunModal, openRerunRecordsModal, rerunStatusLoading, rerunStatusMap]
+    [
+      containerIdsError,
+      containerIdsLoading,
+      containerReportIdSet,
+      enteringContainerKey,
+      openContainerAccess,
+      openRerunModal,
+      openRerunRecordsModal,
+      rerunStatusLoading,
+      rerunStatusMap,
+    ]
   );
 
   const sortableTitle = (
@@ -3458,6 +3578,37 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         }}
         onConfirm={() => {
           void handleEnterRerun();
+        }}
+      />
+      <OperatorAccessModal
+        open={!!containerAccessRepo}
+        title="进入容器复测登录校验"
+        description="进入容器复测需要先登录操作账号，登录成功后将自动进入容器。"
+        confirmText="进入容器"
+        enableRegister={false}
+        operatorUser={operatorUser}
+        authSubmitting={authSubmitting}
+        authChecking={authChecking}
+        loginError={loginError}
+        loginUsername={loginForm.username}
+        loginPassword={loginForm.password}
+        onLoginUsernameChange={(value) =>
+          setLoginForm((prev) => ({ ...prev, username: value }))
+        }
+        onLoginPasswordChange={(value) =>
+          setLoginForm((prev) => ({ ...prev, password: value }))
+        }
+        onCancel={() => {
+          setContainerAccessRepo(null);
+          setLoginError('');
+          setLoginForm((prev) => ({ ...prev, password: '' }));
+        }}
+        onLogout={handleOperatorLogout}
+        onLogin={() => {
+          void confirmContainerAccess();
+        }}
+        onConfirm={() => {
+          void confirmContainerAccess();
         }}
       />
       <RepoRerunRecordsModal

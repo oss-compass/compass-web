@@ -1,10 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FilterFilled } from '@ant-design/icons';
-import { Dropdown, Modal, Radio, Tag, Tooltip } from 'antd';
+import { Dropdown, Modal, Pagination, Radio, Tag, Tooltip } from 'antd';
+import { useQuery } from '@tanstack/react-query';
 import { SeverityBadge } from './Badges';
 import { PAIN_STATUS_CFG, SEVERITY_RANK } from './constants';
 import type { DashboardIssue, IssueModalState, Severity } from './types';
 import { formatLocalDateTime } from '../time';
+import { fetchOverviewIssuePage } from '../rawData/apiClient';
 import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
@@ -13,6 +15,7 @@ const SEVERITY_FILTER_ALL = TEAM_FILTER_ALL;
 const STATUS_FILTER_ALL = TEAM_FILTER_ALL;
 const OWNER_FILTER_ALL = TEAM_FILTER_ALL;
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
+const PAGE_SIZE = 10;
 
 type TaskDefinition = {
   task_id: string;
@@ -204,7 +207,12 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     useState<string>(SEVERITY_FILTER_ALL);
   const [statusFilter, setStatusFilter] = useState<string>(STATUS_FILTER_ALL);
   const [ownerFilter, setOwnerFilter] = useState<string>(OWNER_FILTER_ALL);
+  const [page, setPage] = useState(1);
   const issues = state.issues;
+
+  useEffect(() => {
+    if (state.open) setPage(1);
+  }, [state.open, state.issues]);
 
   const resetFilters = () => {
     setTeamFilter(TEAM_FILTER_ALL);
@@ -212,6 +220,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     setSeverityFilter(SEVERITY_FILTER_ALL);
     setStatusFilter(STATUS_FILTER_ALL);
     setOwnerFilter(OWNER_FILTER_ALL);
+    setPage(1);
   };
 
   const teamOptions = useMemo(() => {
@@ -424,6 +433,46 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     setSortOrder('asc');
   };
 
+  const changeFilter = (setter: (value: string) => void, value: string) => {
+    setter(value);
+    setPage(1);
+  };
+  const pagedIssues = displayedIssues.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
+  const orderedIssueIds = useMemo(
+    () => displayedIssues.map((issue) => issue.id),
+    [displayedIssues]
+  );
+  const { data: issuePage } = useQuery({
+    queryKey: ['overview-issue-modal-page', orderedIssueIds, page],
+    queryFn: ({ signal }) =>
+      fetchOverviewIssuePage(
+        { issueIds: orderedIssueIds, page, size: PAGE_SIZE },
+        signal
+      ),
+    enabled: state.open && orderedIssueIds.length > 0,
+    staleTime: 60 * 1000,
+  });
+  // 旧后端尚未部署或报告正在更新时，保留看板已有数据，避免弹窗空白。
+  const pageDetails = new Map(
+    (issuePage?.items ?? []).map((issue) => [issue.id, issue])
+  );
+  const visibleIssues = pagedIssues.map((issue) => {
+    const detail = pageDetails.get(issue.id);
+    return detail
+      ? {
+          ...issue,
+          ...detail,
+          repoName: issue.repoName,
+          team: issue.team,
+          teamOwner: issue.teamOwner,
+          normalizedStatus: issue.normalizedStatus,
+        }
+      : issue;
+  });
+
   const sortArrow = (key: IssueSortKey) => {
     if (sortKey !== key) return '↕';
     return sortOrder === 'asc' ? '↑' : '↓';
@@ -572,7 +621,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <Radio.Group
                           value={teamFilter}
                           onChange={(e) =>
-                            setTeamFilter(
+                            changeFilter(
+                              setTeamFilter,
                               String(e.target.value || TEAM_FILTER_ALL)
                             )
                           }
@@ -621,7 +671,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <Radio.Group
                           value={stageFilter}
                           onChange={(e) =>
-                            setStageFilter(
+                            changeFilter(
+                              setStageFilter,
                               String(e.target.value || STAGE_FILTER_ALL)
                             )
                           }
@@ -676,7 +727,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <Radio.Group
                           value={severityFilter}
                           onChange={(e) =>
-                            setSeverityFilter(
+                            changeFilter(
+                              setSeverityFilter,
                               String(e.target.value || SEVERITY_FILTER_ALL)
                             )
                           }
@@ -727,7 +779,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <Radio.Group
                           value={statusFilter}
                           onChange={(e) =>
-                            setStatusFilter(
+                            changeFilter(
+                              setStatusFilter,
                               String(e.target.value || STATUS_FILTER_ALL)
                             )
                           }
@@ -795,7 +848,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <Radio.Group
                           value={ownerFilter}
                           onChange={(e) =>
-                            setOwnerFilter(
+                            changeFilter(
+                              setOwnerFilter,
                               String(e.target.value || OWNER_FILTER_ALL)
                             )
                           }
@@ -834,7 +888,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           </thead>
           <tbody>
             {displayedIssues.length > 0 ? (
-              displayedIssues.map((issue, index) => {
+              visibleIssues.map((issue, index) => {
                 const taskLabel = getIssueTaskLabel(issue);
                 const reportEntries = getReportEntries(issue);
                 return (
@@ -843,7 +897,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                     className="border-t border-[var(--overview-slateSoft)] align-top transition-colors hover:bg-[var(--overview-slateSoft)]"
                   >
                     <td className="px-2 py-2 text-center font-medium text-[var(--overview-slate)] md:px-2 md:py-3">
-                      {index + 1}
+                      {(page - 1) * PAGE_SIZE + index + 1}
                     </td>
                     <td className="break-all px-2 py-2 text-center font-medium text-[var(--overview-text)] md:px-3 md:py-3">
                       {getRepoName(issue)}
@@ -998,6 +1052,16 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
             )}
           </tbody>
         </table>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--overview-slate)]">
+        <span>共 {displayedIssues.length} 条</span>
+        <Pagination
+          current={page}
+          pageSize={PAGE_SIZE}
+          total={displayedIssues.length}
+          showSizeChanger={false}
+          onChange={setPage}
+        />
       </div>
     </Modal>
   );

@@ -224,7 +224,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       <IssueScoreDistribution
         repos={latestRepos}
         reportHref={reportHref}
-        overallScore={model.idxWeighted}
+        overallScore={model.idxAverage}
       />
       <IssueRepoRankings repos={latestRepos} reportHref={reportHref} />
 
