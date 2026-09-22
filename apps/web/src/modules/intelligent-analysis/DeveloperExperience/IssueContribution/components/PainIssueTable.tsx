@@ -29,6 +29,7 @@ import type {
 } from '../types';
 import { IssuePainTrackingStatus } from '../types';
 import { IssueFixButton } from './PainTrackingModal/components';
+import IssueValidityButton from './IssueValidityButton';
 import { useTrackingOperator } from './PainTrackingModal/hooks';
 import {
   formatTrackingTime,
@@ -1027,6 +1028,38 @@ const isRerunEligible = (
   );
 };
 
+/** 复测结果的轻量状态标识（状态点 + 文字），与操作按钮保持视觉层级差异。 */
+const RetestStatusBadge: React.FC<{ issue?: ActiveTrackingIssue }> = ({
+  issue,
+}) => {
+  if (
+    !issue ||
+    (issue.retest_status !== 'passed' && issue.retest_status !== 'failed')
+  )
+    return null;
+  const passed = issue.retest_status === 'passed';
+  return (
+    <Tooltip
+      title={`操作人：${
+        issue.retested_by || 'system'
+      }；时间：${formatTrackingTime(issue.retested_at)}`}
+    >
+      <span
+        className={`inline-flex shrink-0 cursor-default items-center gap-1 whitespace-nowrap py-1.5 text-[11px] font-medium ${
+          passed ? 'text-emerald-600' : 'text-rose-500'
+        }`}
+      >
+        <span
+          className={`h-1.5 w-1.5 rounded-full ${
+            passed ? 'bg-emerald-500' : 'bg-rose-500'
+          }`}
+        />
+        {passed ? '复测通过' : '复测未通过'}
+      </span>
+    </Tooltip>
+  );
+};
+
 const IssueActionCell: React.FC<{
   show: boolean;
   activeIssue?: ActiveTrackingIssue;
@@ -1055,8 +1088,30 @@ const IssueActionCell: React.FC<{
   onOpenRerunRecords,
 }) => {
   if (!show) return null;
+  // 已复测通过的 Issue 流程已闭环，不再提供有效性改判入口。
+  const validityAction =
+    activeIssue &&
+    activeIssue.retest_status !== 'passed' &&
+    tracking &&
+    onTrackingAction ? (
+      <IssueValidityButton
+        tracking={tracking}
+        issueNumbers={[activeIssue.number]}
+        valid={activeIssue.valid === false}
+        operator={operator}
+        onAction={onTrackingAction}
+        disabled={Boolean(manualDisabledReason)}
+      />
+    ) : null;
   const fixActionable =
-    activeIssue?.valid !== false && activeIssue && tracking && onTrackingAction;
+    activeIssue?.valid !== false &&
+    activeIssue &&
+    tracking &&
+    onTrackingAction &&
+    [
+      IssuePainTrackingStatus.TRACKING,
+      IssuePainTrackingStatus.FIXED_PENDING_RETEST,
+    ].includes(tracking.status);
   const rerunEligible = Boolean(
     activeIssue &&
       activeIssue.valid === true &&
@@ -1112,25 +1167,7 @@ const IssueActionCell: React.FC<{
               </button>
             </Tooltip>
           ) : null}
-          {hasRetestResult ? (
-            <Tooltip
-              title={`操作人：${
-                activeIssue?.retested_by || 'system'
-              }；时间：${formatTrackingTime(activeIssue?.retested_at)}`}
-            >
-              <span
-                className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-semibold ${
-                  activeIssue?.retest_status === 'passed'
-                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                    : 'border-rose-200 bg-rose-50 text-rose-600'
-                }`}
-              >
-                {activeIssue?.retest_status === 'passed'
-                  ? '复测通过'
-                  : '复测未通过'}
-              </span>
-            </Tooltip>
-          ) : null}
+          <RetestStatusBadge issue={activeIssue} />
           {fixActionable &&
           tracking.trackingType === 'fix' &&
           !manualDisabledReason
@@ -1154,9 +1191,10 @@ const IssueActionCell: React.FC<{
             ? withDisabledTooltip(rerunButton, rerunDisabledReason)
             : null}
         </div>
-      ) : (
+      ) : validityAction ? null : (
         <span className="text-[11px] text-slate-300">—</span>
       )}
+      {validityAction}
     </td>
   );
 };
@@ -1650,8 +1688,13 @@ const hasTrackingOperations = (
   Boolean(onTrackingAction || onRerun) &&
   Boolean(
     tracking &&
-      (tracking.status === IssuePainTrackingStatus.TRACKING ||
-        tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST)
+      tracking.trackingType === 'fix' &&
+      [
+        IssuePainTrackingStatus.TRACKING,
+        IssuePainTrackingStatus.FIXED_PENDING_RETEST,
+        IssuePainTrackingStatus.PASSED,
+        IssuePainTrackingStatus.INVALID,
+      ].includes(tracking.status)
   );
 
 const getRerunNumbers = (
@@ -1659,7 +1702,7 @@ const getRerunNumbers = (
   issues: ActiveTrackingIssue[]
 ) =>
   issues
-    .filter((issue) => isRerunEligible(tracking, issue))
+    .filter((issue) => issue.valid === true && isRerunEligible(tracking, issue))
     .map((issue) => issue.number);
 
 const canUseManualFix = (
@@ -1669,7 +1712,13 @@ const canUseManualFix = (
 ) =>
   Boolean(
     tracking?.trackingType === 'fix' &&
-      issues.some((issue) => Boolean(issue.fixed) !== desired)
+      [
+        IssuePainTrackingStatus.TRACKING,
+        IssuePainTrackingStatus.FIXED_PENDING_RETEST,
+      ].includes(tracking.status) &&
+      issues.some(
+        (issue) => issue.valid === true && Boolean(issue.fixed) !== desired
+      )
   );
 
 const getBatchRerunLabel = (_tracking?: IssuePainTracking) => '批量发起复测';
@@ -1680,7 +1729,7 @@ const isOperationIssueSelectable = (
   tracking: IssuePainTracking | undefined,
   issue: ActiveTrackingIssue | undefined
 ) =>
-  issue?.valid === true &&
+  typeof issue?.valid === 'boolean' &&
   (tracking?.trackingType === 'fix' ||
     (Boolean(issue) && isRerunEligible(tracking, issue)));
 
@@ -1868,7 +1917,9 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         trackingKey: tracking.trackingKey,
         type,
         operator: normalizedOperator,
-        issueNumbers: selectedNumbers,
+        issueNumbers: selectedTrackingIssues
+          .filter((issue) => issue.valid === true)
+          .map((issue) => issue.number),
       });
       setSelectedNumbers([]);
     } catch {
@@ -1946,6 +1997,8 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     );
   }
 
+  // 批量判定有效性属于低频操作，入口暂时隐藏；如需恢复，可在此重新渲染
+  // 一组 batch 形态的 IssueValidityButton（valid 分别为 false/true）。
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200">
       <PainIssueTableToolbar

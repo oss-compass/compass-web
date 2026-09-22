@@ -29,6 +29,8 @@ type OverviewSummarySectionProps = {
   summarySuccessRate: number | null;
   summaryScoreTrend: ScoreTrendPoint[];
   summarySuccessRateTrend: ScoreTrendPoint[];
+  score95PlusRepoCountTrend: ScoreTrendPoint[];
+  repoCountTrend: ScoreTrendPoint[];
   repoCount: number;
   score95PlusRepoCount: number;
   titleExtra?: React.ReactNode;
@@ -57,6 +59,8 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   summarySuccessRate,
   summaryScoreTrend,
   summarySuccessRateTrend,
+  score95PlusRepoCountTrend,
+  repoCountTrend,
   repoCount,
   score95PlusRepoCount,
   titleExtra,
@@ -85,7 +89,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
     legendLabel: string;
     axisTitle: string;
     tooltipLabel: string;
-    valueType: 'score' | 'percent';
+    valueType: 'score' | 'percent' | 'count';
   }>({
     open: false,
     title: '',
@@ -134,7 +138,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
     legendLabel: string,
     axisTitle: string,
     tooltipLabel: string,
-    valueType: 'score' | 'percent'
+    valueType: 'score' | 'percent' | 'count'
   ) => {
     const alignedPoints = getAlignedTrendPoints(points, currentValue);
     return (
@@ -229,12 +233,30 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
             <div className="bm-label">达成 95 分以上仓数</div>
             <div className="bm-value">
               <span className="bm-value-main">{score95PlusRepoCount}</span>
+              {renderTrendTrigger(
+                '总览 · 达成 95 分以上仓数趋势',
+                score95PlusRepoCountTrend,
+                score95PlusRepoCount,
+                '达成 95 分以上仓数',
+                '仓库数',
+                '95 分以上仓数',
+                'count'
+              )}
             </div>
           </div>
           <div className="bottom-metric">
             <div className="bm-label">扫描仓数</div>
             <div className="bm-value">
               <span className="bm-value-main">{repoCount}</span>
+              {renderTrendTrigger(
+                '总览 · 扫描仓数趋势',
+                repoCountTrend,
+                repoCount,
+                '扫描仓数',
+                '仓库数',
+                '扫描仓数',
+                'count'
+              )}
             </div>
           </div>
         </div>

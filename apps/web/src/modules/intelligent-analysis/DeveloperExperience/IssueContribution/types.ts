@@ -455,6 +455,7 @@ export type IssuePainTrackingResponse = {
 };
 
 export type IssuePainTrackingActionType =
+  | 'revise_issue_validity'
   | 'confirm_issues'
   | 'decide_issue'
   | 'decide_issues'

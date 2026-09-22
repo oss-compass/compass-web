@@ -23,7 +23,7 @@ type ScoreTrendChartProps = {
   height?: number;
   axisTitle?: string;
   tooltipLabel?: string;
-  valueType?: 'score' | 'percent';
+  valueType?: 'score' | 'percent' | 'count';
   integerScale?: boolean;
   fitContainerHeight?: boolean;
   /** 固定 y 轴刻度范围（如 0-100）；优先于自适应刻度，避免最低刻度随数据漂移 */
@@ -152,10 +152,16 @@ export const ScoreTrendChart: React.FC<ScoreTrendChartProps> = ({
         upper: maxScale as number,
         usingFiveScale: false,
       }
-    : integerScale
+    : integerScale || valueType === 'count'
     ? getIntegerScaleRange(Math.min(...validScores), Math.max(...validScores))
     : getScoreRange(validScores);
-  const formatValue = valueType === 'percent' ? formatPercent : formatScore;
+  const formatValue =
+    valueType === 'percent'
+      ? formatPercent
+      : valueType === 'count'
+      ? (value: number | null) =>
+          value == null ? '--' : `${Math.round(value)}`
+      : formatScore;
   const range = Math.max(upper - lower, 1);
   const yForScore = (value: number) =>
     plotBottom - ((value - lower) / range) * plotH;

@@ -51,7 +51,12 @@ import {
   isKeyIssue,
   toDashboardIssue,
 } from './utils';
-import { buildTeamScoreTrend, buildTeamSuccessRateTrend } from './scoreTrend';
+import {
+  buildTeamScannedRepoCountTrend,
+  buildTeamScore95PlusRepoCountTrend,
+  buildTeamScoreTrend,
+  buildTeamSuccessRateTrend,
+} from './scoreTrend';
 import OverviewModuleTabs, { type OverviewModule } from './OverviewModuleTabs';
 import CiOverviewPanel from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverviewPanel';
 import IssueOverview from '@modules/intelligent-analysis/DeveloperExperience/IssueContribution/components/IssueOverview';
@@ -625,6 +630,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     () => buildTeamSuccessRateTrend(repoRows, 7),
     [repoRows]
   );
+  const score95PlusRepoCountTrend = useMemo(
+    () => buildTeamScore95PlusRepoCountTrend(repoRows, 7),
+    [repoRows]
+  );
+  const repoCountTrend = useMemo(
+    () => buildTeamScannedRepoCountTrend(repoRows, 7),
+    [repoRows]
+  );
   const keyIssueTrend = useMemo(
     () => closeRateTrendsResp?.key ?? [],
     [closeRateTrendsResp]
@@ -840,6 +853,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
                 summarySuccessRate={summarySuccessRate}
                 summaryScoreTrend={summaryScoreTrend}
                 summarySuccessRateTrend={summarySuccessRateTrend}
+                score95PlusRepoCountTrend={score95PlusRepoCountTrend}
+                repoCountTrend={repoCountTrend}
                 repoCount={summaryRepoCount}
                 score95PlusRepoCount={score95PlusRepoCount}
                 issueSourceMode={issueSourceMode}

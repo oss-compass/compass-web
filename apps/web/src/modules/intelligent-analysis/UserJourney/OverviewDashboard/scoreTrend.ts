@@ -162,3 +162,75 @@ export const buildTeamSuccessRateTrend = (
     limit,
     toSuccessRate
   );
+
+const buildTeamRepoCountTrend = (
+  repos: RepoProgressRow[],
+  limit: number,
+  matches: (score: number) => boolean,
+  includeSampleCount = false,
+  carryReposForward = false
+): ScoreTrendPoint[] => {
+  const byWeek = new Map<
+    string,
+    {
+      weekStart: string;
+      weekEnd: string;
+      label: string;
+      repos: Map<string, ScoreHistoryEntry>;
+    }
+  >();
+
+  repos.forEach((repo) => {
+    toSortedHistory(repo.scoreHistory || []).forEach((entry) => {
+      const score = normalizeScore(entry.score);
+      if (score == null) return;
+      const range = getWeekRange(entry.date);
+      const week = byWeek.get(range.weekStart) ?? {
+        ...range,
+        repos: new Map<string, ScoreHistoryEntry>(),
+      };
+      // 同仓同周若有多份报告，按已排序的顺序保留最后一份。
+      week.repos.set(repo.id, entry);
+      byWeek.set(range.weekStart, week);
+    });
+  });
+
+  const latestEntriesByRepo = new Map<string, ScoreHistoryEntry>();
+  return Array.from(byWeek.values())
+    .sort(
+      (left, right) =>
+        getTimeValue(left.weekStart) - getTimeValue(right.weekStart)
+    )
+    .map((week) => {
+      if (carryReposForward) {
+        week.repos.forEach((entry, repoId) => {
+          latestEntriesByRepo.set(repoId, entry);
+        });
+      }
+      const entries = Array.from(
+        carryReposForward ? latestEntriesByRepo.values() : week.repos.values()
+      );
+      return {
+        key: week.weekStart,
+        date: `${week.weekStart} - ${week.weekEnd}`,
+        label: week.label,
+        score: entries.filter((entry) => matches(Number(entry.score))).length,
+        sampleCount: includeSampleCount ? entries.length : undefined,
+        weekStart: week.weekStart,
+        weekEnd: week.weekEnd,
+      };
+    })
+    .slice(-limit);
+};
+
+export const buildTeamScore95PlusRepoCountTrend = (
+  repos: RepoProgressRow[],
+  limit = 7
+): ScoreTrendPoint[] =>
+  buildTeamRepoCountTrend(repos, limit, (score) => score >= 95, true);
+
+export const buildTeamScannedRepoCountTrend = (
+  repos: RepoProgressRow[],
+  limit = 7
+): ScoreTrendPoint[] =>
+  buildTeamRepoCountTrend(repos, limit, () => true, false, true);

@@ -12,7 +12,7 @@ type ScoreTrendModalProps = {
   legendLabel?: string;
   axisTitle?: string;
   tooltipLabel?: string;
-  valueType?: 'score' | 'percent';
+  valueType?: 'score' | 'percent' | 'count';
   onClose: () => void;
 };
 
