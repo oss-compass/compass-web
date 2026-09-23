@@ -71,7 +71,7 @@ export type IssueReportStage = {
 
 export type IssueReportPainIssueEvidence = {
   type: string;
-  actor: string;
+  actor: string | { login?: string; name?: string } | null;
   text: string;
   url: string;
   time: string;

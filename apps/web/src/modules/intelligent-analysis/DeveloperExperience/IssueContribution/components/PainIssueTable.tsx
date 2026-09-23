@@ -1,3 +1,4 @@
+import { getEvidenceActorName } from '../evidenceActor';
 import React from 'react';
 import {
   CheckOutlined,
@@ -731,7 +732,9 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
                         {meta.label}
                       </span>
                       <span className="min-w-0 truncate whitespace-nowrap text-[12px] font-semibold leading-5 text-slate-500">
-                        {ev.actor ? `${ev.actor}：` : '—'}
+                        {getEvidenceActorName(ev.actor)
+                          ? `${getEvidenceActorName(ev.actor)}：`
+                          : '—'}
                       </span>
                       <div className="min-w-0 break-words text-[12px] leading-5 text-slate-700">
                         {ev.text}
@@ -764,9 +767,9 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
                         {meta.label}
                       </span>
                       <span className="min-w-0 flex-1 truncate leading-5 text-slate-600">
-                        {ev.actor ? (
+                        {getEvidenceActorName(ev.actor) ? (
                           <span className="font-medium text-slate-500">
-                            {ev.actor}：
+                            {getEvidenceActorName(ev.actor)}：
                           </span>
                         ) : null}
                         {ev.url ? (

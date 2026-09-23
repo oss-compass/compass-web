@@ -1,3 +1,4 @@
+import { getEvidenceActorName } from '../../evidenceActor';
 import React from 'react';
 import Link from 'next/link';
 import { FilterFilled } from '@ant-design/icons';
@@ -380,9 +381,13 @@ const IssuePainDetailModal: React.FC<Props> = ({
                 (evidence) =>
                   `[${evidence.type || '记录'}] ${
                     evidence.time ? `${evidence.time.replace('T', ' ')} ` : ''
-                  }${evidence.actor ? `${evidence.actor}：` : ''}${
-                    evidence.text || ''
-                  }${evidence.url ? `（${evidence.url}）` : ''}`
+                  }${
+                    getEvidenceActorName(evidence.actor)
+                      ? `${getEvidenceActorName(evidence.actor)}：`
+                      : ''
+                  }${evidence.text || ''}${
+                    evidence.url ? `（${evidence.url}）` : ''
+                  }`
               )
               .join(' | ')
           : '--',

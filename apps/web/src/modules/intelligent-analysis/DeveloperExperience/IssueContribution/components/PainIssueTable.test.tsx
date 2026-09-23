@@ -14,3 +14,38 @@ describe('PainIssueTable with overview slim Issue data', () => {
     expect(screen.getByText('#202')).toBeInTheDocument();
   });
 });
+
+describe('PainIssueTable evidence actors', () => {
+  it.each([
+    { actor: 'maintainer', expected: 'maintainer' },
+    { actor: { login: 'octocat', id: 1 }, expected: 'octocat' },
+    { actor: { name: 'Maintainer' }, expected: 'Maintainer' },
+    { actor: null, expected: '' },
+    { actor: {}, expected: '' },
+  ])('renders actor $actor safely', ({ actor, expected }) => {
+    render(
+      <PainIssueTable
+        issues={[
+          {
+            number: '203',
+            score: 40,
+            metric_code: '',
+            evidence: [
+              {
+                type: 'comment',
+                actor,
+                text: 'Evidence text',
+                url: '',
+                time: '',
+              },
+            ],
+          },
+        ]}
+        pagination={false}
+      />
+    );
+    expect(screen.getByText('Evidence text')).toBeInTheDocument();
+    if (expected) expect(screen.getByText(`${expected}：`)).toBeInTheDocument();
+    expect(screen.queryByText(/\[object Object\]/)).not.toBeInTheDocument();
+  });
+});
