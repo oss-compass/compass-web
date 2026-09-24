@@ -5,13 +5,11 @@ import PageInfoInit from '@modules/analyze/components/PageInfoInit';
 import NoSsr from '@common/components/NoSsr';
 
 const AnalyzeContainer: React.FC<PropsWithChildren> = ({ children }) => {
-  const { status, isLoading, notFound, verifiedItems } = useLabelStatus();
+  const status = useLabelStatus();
 
   return (
     <NoSsr>
-      <StatusContextProvider
-        value={{ status, notFound, verifiedItems, isLoading }}
-      >
+      <StatusContextProvider value={status}>
         <PageInfoInit>{children}</PageInfoInit>
       </StatusContextProvider>
     </NoSsr>
