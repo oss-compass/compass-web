@@ -74,3 +74,12 @@ export const formatGeneratedAt = (value: string) => {
     timeZone: 'Asia/Shanghai',
   }).format(date);
 };
+
+/** Display numeric scores to one decimal, omitting a trailing zero. */
+export const formatScore = (value: number | string | null | undefined) => {
+  if (value == null) return 'N/A';
+  const score = typeof value === 'number' ? value : Number(value);
+  return String(value).trim() !== '' && Number.isFinite(score)
+    ? String(Number(score.toFixed(1)))
+    : String(value);
+};

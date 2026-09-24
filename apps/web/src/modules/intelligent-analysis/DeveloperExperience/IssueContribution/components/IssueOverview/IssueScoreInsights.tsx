@@ -1,3 +1,4 @@
+import { formatScore } from '../../presentation';
 import React from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import Link from 'next/link';
@@ -49,6 +50,8 @@ const buildTeamDistribution = (
   repos: IssueOverviewRepo[],
   overallScore?: number
 ): DistributionItem[] => {
+  repos = repos.filter((repo) => repo.idxTotal != null);
+  if (!repos.length) return [];
   const grouped = new Map<string, IssueOverviewRepo[]>();
   repos.forEach((repo) => {
     const team = repo.teamName || '未分配团队';
@@ -207,7 +210,7 @@ const DistributionRows: React.FC<{
                 className="text-right text-sm font-semibold tabular-nums"
                 style={{ color: scoreColor(item.score) }}
               >
-                {item.score.toFixed(1)}
+                {formatScore(item.score)}
               </span>
             </div>
           </React.Fragment>
@@ -261,7 +264,7 @@ export const IssueScoreDistribution: React.FC<Props> = ({
           className="font-semibold"
           style={{ color: scoreColor(record.score) }}
         >
-          {record.score.toFixed(1)}
+          {formatScore(record.score)}
         </span>
       ),
     },
@@ -425,7 +428,7 @@ const RankingColumn: React.FC<{
                       className="block text-xs"
                       style={{ color: scoreColor(metric.score) }}
                     >
-                      {metric.score.toFixed(1)}
+                      {formatScore(metric.score)}
                     </b>
                   </span>
                 </Tooltip>
@@ -463,7 +466,7 @@ const RankingColumn: React.FC<{
                 className="font-bold tabular-nums text-[var(--overview-blue)] underline decoration-[var(--overview-blue)] underline-offset-2 transition-colors hover:text-[var(--overview-blueDark)] hover:decoration-[var(--overview-blue)]"
                 title={`查看 ${repo.repoShort} 最新报告`}
               >
-                {repo.idxTotal.toFixed(1)}
+                {formatScore(repo.idxTotal)}
               </Link>
             </div>
           </div>
@@ -519,14 +522,14 @@ export const IssueRepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
           className="font-semibold tabular-nums"
           style={{ color: scoreColor(score) }}
         >
-          {score.toFixed(1)}
+          {formatScore(score)}
         </span>
       ),
     },
   ];
-  const sorted = [...repos].sort(
-    (left, right) => right.idxTotal - left.idxTotal
-  );
+  const sorted = repos
+    .filter((repo) => repo.idxTotal != null)
+    .sort((left, right) => right.idxTotal - left.idxTotal);
   return (
     <div
       className="section-card grid gap-6"

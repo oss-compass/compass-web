@@ -2,7 +2,7 @@ import React from 'react';
 import { LinkOutlined } from '@ant-design/icons';
 import { Popover, Table } from 'antd';
 import type { TableProps } from 'antd';
-import { getScoreTone } from '../presentation';
+import { formatScore, getScoreTone } from '../presentation';
 import type {
   IssueReportStage,
   IssueScoreRow,
@@ -75,7 +75,7 @@ const StageCellContent: React.FC<{
 }> = ({ stageLabel, stageScore, metrics }) => (
   <div className="max-h-[70vh] w-[340px] max-w-[86vw] overflow-y-auto overscroll-contain">
     <div className="text-[12px] font-semibold text-slate-900">
-      {stageLabel} · {stageScore} 分
+      {stageLabel} · {formatScore(stageScore)} 分
     </div>
     <ul className="mt-2 space-y-2">
       {metrics.map((metric) => {
@@ -93,7 +93,7 @@ const StageCellContent: React.FC<{
                   : 'border-slate-200 bg-slate-50 text-slate-400'
               }`}
             >
-              {metric.score}
+              {formatScore(metric.score)}
             </span>
             <div className="min-w-0">
               <div className="text-[12px] font-medium leading-4 text-slate-700">
@@ -126,7 +126,7 @@ const ScoreBadge: React.FC<{ scoreText: string; score: number }> = ({
           : 'border-dashed border-slate-200 bg-slate-50 text-slate-400'
       }`}
     >
-      {scoreText}
+      {formatScore(scoreText)}
     </span>
   );
 };
@@ -290,7 +290,9 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
                   : 'border-dashed border-slate-200 bg-slate-50 text-slate-400'
               }`}
             >
-              {row.overall}
+              {Number.isFinite(overallScore)
+                ? Number(overallScore.toFixed(1))
+                : row.overall}
             </span>
           </div>
         );

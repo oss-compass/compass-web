@@ -7,7 +7,7 @@ import {
   ProfileOutlined,
 } from '@ant-design/icons';
 import { Pagination, Popover, Tooltip } from 'antd';
-import { getScoreTone, stripMetricCode } from '../presentation';
+import { formatScore, getScoreTone, stripMetricCode } from '../presentation';
 import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
 import type { MetricDefinition } from '../metricDefinitions';
 import { resolvePainIssuePriority } from '../issuePriority';
@@ -309,7 +309,7 @@ const StageIssueScoreSection: React.FC<{
                         <span
                           className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-bold tabular-nums ${stageTone.badge}`}
                         >
-                          {detail.stage_score}
+                          {formatScore(detail.stage_score)}
                         </span>
                       </td>
                       <td className="border-b border-slate-100 px-3 py-2.5 text-center">
@@ -320,7 +320,7 @@ const StageIssueScoreSection: React.FC<{
                               : 'border-dashed border-slate-200 bg-slate-50 text-slate-400'
                           }`}
                         >
-                          {row.overall}
+                          {formatScore(row.overall)}
                         </span>
                       </td>
                       <td className="border-b border-slate-100 px-3 py-2.5">
@@ -350,7 +350,7 @@ const StageIssueScoreSection: React.FC<{
                                       : 'border-slate-200 bg-slate-50 text-slate-400'
                                   }`}
                                 >
-                                  {metric.score}
+                                  {formatScore(metric.score)}
                                 </span>
                               </span>
                             );
@@ -370,7 +370,8 @@ const StageIssueScoreSection: React.FC<{
                                 content={
                                   <div className="max-h-[60vh] w-[320px] max-w-[80vw] overflow-y-auto overscroll-contain">
                                     <div className="text-[12px] font-semibold text-slate-900">
-                                      {metric.name_cn} · {metric.score} 分
+                                      {metric.name_cn} ·{' '}
+                                      {formatScore(metric.score)} 分
                                     </div>
                                     <p className="mt-1 text-[12px] leading-5 text-slate-600">
                                       {metric.reason}
@@ -869,7 +870,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                           evaluated ? 'text-slate-900' : 'text-slate-300'
                         }`}
                       >
-                        {evaluated ? stage.mixed : '—'}
+                        {evaluated ? Number(stage.mixed.toFixed(1)) : 'N/A'}
                       </span>
                       {evaluated ? (
                         <span className="ml-1 text-xs font-medium text-slate-500">
@@ -1011,7 +1012,9 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     >
                       <span>阶段得分</span>
                       <span className="text-base leading-none">
-                        {stageEvaluated ? activeStage.mixed : '本次未评估'}
+                        {stageEvaluated
+                          ? Number(activeStage.mixed.toFixed(1))
+                          : '本次未评估'}
                       </span>
                     </span>
                     {[
@@ -1020,7 +1023,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         value: `${
                           activeStage.metrics_obj.length &&
                           activeStage.obj != null
-                            ? activeStage.obj.toFixed(1)
+                            ? Number(activeStage.obj.toFixed(1))
                             : '—'
                         }`,
                         badgeClass: 'bg-sky-50 text-sky-700',
@@ -1030,7 +1033,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                         value: `${
                           activeStage.metrics_sub.length &&
                           activeStage.subj != null
-                            ? activeStage.subj.toFixed(1)
+                            ? Number(activeStage.subj.toFixed(1))
                             : '—'
                         }`,
                         badgeClass: 'bg-emerald-50 text-emerald-700',
@@ -1092,7 +1095,10 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                     ) : metricsOpen ? (
                       <div className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3">
                         {stageMetrics.map((metric) => {
-                          const metricTone = getScoreTone(metric.score);
+                          const metricTone =
+                            metric.score == null
+                              ? NOT_EVALUATED_TONE
+                              : getScoreTone(metric.score);
                           const metricDef = getMetricDefinition(metric.code);
                           const metricCategory = getMetricCategory(metric.code);
                           const card = (
@@ -1124,7 +1130,9 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                                 <span
                                   className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[12px] font-bold leading-none ${metricTone.badge}`}
                                 >
-                                  {metric.score}分
+                                  {metric.score == null
+                                    ? 'N/A'
+                                    : `${Number(metric.score.toFixed(1))}分`}
                                 </span>
                               </div>
                               {metricDef?.meaning || metric.reason ? (

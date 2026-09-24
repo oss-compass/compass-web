@@ -116,8 +116,8 @@ const IssueValidityButton: React.FC<Props> = ({
           </p>
           <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
             {valid
-              ? '恢复后按未修复处理，需重新完成修复和复测，痛点状态会相应更新。'
-              : '判定后将不再计入修复进度和复测范围，痛点状态会相应更新。后续可恢复为有效问题。'}
+              ? '恢复后按未修复处理，需重新完成修复和复测。v4 报告会重新纳入对应指标评分并更新各级得分。'
+              : '判定后将不再计入修复进度和复测范围。v4 报告会排除对应指标评分并更新各级得分，其他指标继续参与。后续可恢复为有效问题。'}
           </p>
           <label className="block text-sm text-slate-600">
             提交人 <span className="text-rose-500">*</span>

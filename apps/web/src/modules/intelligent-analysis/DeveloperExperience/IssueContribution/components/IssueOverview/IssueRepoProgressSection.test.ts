@@ -78,12 +78,25 @@ describe('community contribution category aggregation', () => {
   it('keeps an empty category visible with neutral aggregate values', () => {
     expect(buildAggregateRow('render（可微渲染）', [])).toMatchObject({
       repoCount: 0,
-      score: 0,
+      score: null,
       painTotal: 0,
       closeRate: 100,
       scoreTrend: [],
       scoreTrendPeriods: [],
       repos: [],
     });
+  });
+
+  it('excludes unscored repositories from the denominator but keeps their issues', () => {
+    const result = buildAggregateRow('team', [
+      repo('valid', { idxTotal: 80, nTotal: 1 }),
+      repo('excluded', { idxTotal: null, nTotal: 100, painTotal: 2 }),
+    ]);
+    expect(result.score).toBe(80);
+    expect(result.repoCount).toBe(2);
+    expect(result.painTotal).toBe(2);
+    expect(
+      buildAggregateRow('empty', [repo('excluded', { idxTotal: null })]).score
+    ).toBeNull();
   });
 });

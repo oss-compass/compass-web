@@ -111,7 +111,13 @@ export const RerunResultTable: React.FC<{
       width: 105,
       render: (_value, result) => (
         <span className="whitespace-nowrap text-xs tabular-nums text-slate-600">
-          {result.beforeFinalScore ?? '—'} → {result.afterFinalScore ?? '—'}
+          {result.beforeFinalScore == null
+            ? 'N/A'
+            : Number(result.beforeFinalScore.toFixed(1))}
+          {' → '}
+          {result.afterFinalScore == null
+            ? 'N/A'
+            : Number(result.afterFinalScore.toFixed(1))}
         </span>
       ),
     },

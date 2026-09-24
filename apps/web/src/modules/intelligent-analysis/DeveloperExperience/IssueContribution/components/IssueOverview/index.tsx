@@ -1,3 +1,4 @@
+import { formatScore } from '../../presentation';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
@@ -111,10 +112,11 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   }
 
   const latestRepos = latestReposByPeriod(data.repos);
-  const latestAverageScore = latestRepos.length
-    ? latestRepos.reduce((total, repo) => total + repo.idxTotal, 0) /
-      latestRepos.length
-    : 0;
+  const scoredRepos = latestRepos.filter((repo) => repo.idxTotal != null);
+  const latestAverageScore = scoredRepos.length
+    ? scoredRepos.reduce((total, repo) => total + repo.idxTotal, 0) /
+      scoredRepos.length
+    : null;
   const pains = allPainsResp?.items ?? [];
   const resolvedPains = pains.filter(isResolvedPain).length;
   const score90PlusRepos = latestRepos.filter(
@@ -159,7 +161,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const kpis = [
     {
       label: '综合体验评分',
-      value: latestAverageScore.toFixed(1),
+      value: formatScore(latestAverageScore),
       trend: data.agg.idx,
       trendMax: 100,
     },

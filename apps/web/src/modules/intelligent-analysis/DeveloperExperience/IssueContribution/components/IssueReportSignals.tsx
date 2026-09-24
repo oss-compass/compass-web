@@ -49,7 +49,9 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
             {currentTrend ? (
               <div className="flex items-baseline gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-white shadow-[0_12px_24px_rgba(15,23,42,0.14)]">
                 <span className="text-2xl font-bold tabular-nums leading-none">
-                  {currentTrend.idx}
+                  {currentTrend.idx == null
+                    ? 'N/A'
+                    : Number(currentTrend.idx.toFixed(1))}
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.12em] text-slate-400">
                   总体分
@@ -74,7 +76,7 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
                   </div>
                   <div className="mt-1 flex items-end justify-between gap-2">
                     <span className="text-lg font-bold tabular-nums">
-                      {trend.idx}
+                      {trend.idx == null ? 'N/A' : Number(trend.idx.toFixed(1))}
                     </span>
                     <span className="text-[10px] opacity-70">
                       {trend.delta}
@@ -120,7 +122,7 @@ const IssueReportSignals: React.FC<IssueReportSignalsProps> = ({ context }) => {
                             tone ? tone.text : 'text-slate-400'
                           }`}
                         >
-                          {score}
+                          {Number(score.toFixed(1))}
                         </span>
                       </>
                     ) : (

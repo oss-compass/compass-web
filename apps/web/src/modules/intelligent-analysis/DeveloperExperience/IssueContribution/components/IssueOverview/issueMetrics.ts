@@ -1,3 +1,4 @@
+import { formatScore } from '../../presentation';
 import type { IssueOverviewData, IssueOverviewRepo } from '../../types';
 
 /**
@@ -13,7 +14,7 @@ export type IssueKpi = {
   /** 评分等级；存在时由总览卡片展示等级口径提示 */
   grade?: string;
   /** 关联的跨仓逐周趋势序列（有时序的指标才有），用于卡内缩略图 */
-  trend?: number[];
+  trend?: Array<number | null>;
   /** 缩略图纵轴上界（百分比类固定 100，计数类取序列最大值） */
   trendMax?: number;
   /** 趋势数值单位（如 % ），用于弹窗大图展示 */
@@ -24,7 +25,7 @@ export type IssueStageAgg = {
   id: string;
   name: string;
   icon: string;
-  score: number;
+  score: number | null;
   grade: string;
   painCount: number;
   painPriorityCounts: { p0: number; p1: number; p2: number; p3: number };
@@ -42,7 +43,7 @@ export type IssuePainSummary = {
 
 export type IssueOverviewModel = {
   hasData: boolean;
-  idxAverage: number;
+  idxAverage: number | null;
   idxGrade: string;
   kpis: IssueKpi[];
   painSummary: IssuePainSummary;
@@ -51,6 +52,7 @@ export type IssueOverviewModel = {
 
 /** 综合分 → 等级（用于阶段聚合的展示等级） */
 export const gradeFromScore = (score: number): string => {
+  if (score == null || !Number.isFinite(score)) return 'N/A';
   if (score >= 85) return 'A';
   if (score >= 75) return 'B';
   if (score >= 65) return 'C';
@@ -94,9 +96,10 @@ export const computeIssueOverview = (
     : 0;
 
   // 综合体验评分：每仓最新报告的综合分等权平均，与顶部 KPI 一致。
-  const idxAverage = latestRepos.length
-    ? +(sum(latestRepos.map((r) => r.idxTotal)) / latestRepos.length).toFixed(1)
-    : 0;
+  const scoredRepos = latestRepos.filter((repo) => repo.idxTotal != null);
+  const idxAverage = scoredRepos.length
+    ? +(sum(scoredRepos.map((r) => r.idxTotal)) / scoredRepos.length).toFixed(1)
+    : null;
   const idxGrade = gradeFromScore(idxAverage);
 
   const topPainCount =
@@ -109,7 +112,7 @@ export const computeIssueOverview = (
     let nSum = 0;
     latestRepos.forEach((r) => {
       const st = r.stages.find((x) => x.id === s.id);
-      if (!st) return;
+      if (!st || st.score == null) return;
       const w = r.nTotal || 1;
       wSum += st.score * w;
       nSum += w;
@@ -125,7 +128,7 @@ export const computeIssueOverview = (
       painPriorityCounts.p2 += st.painPriorityCounts.p2;
       painPriorityCounts.p3 += st.painPriorityCounts.p3;
     });
-    const score = nSum ? +(wSum / nSum).toFixed(1) : 0;
+    const score = nSum ? +(wSum / nSum).toFixed(1) : null;
     return {
       id: s.id,
       name: s.name,
@@ -140,7 +143,7 @@ export const computeIssueOverview = (
   const kpis: IssueKpi[] = [
     {
       label: '综合体验评分',
-      value: idxAverage.toFixed(1),
+      value: formatScore(idxAverage),
       sub: '各仓最新报告平均',
       grade: idxGrade,
       trend: data.agg.idx,

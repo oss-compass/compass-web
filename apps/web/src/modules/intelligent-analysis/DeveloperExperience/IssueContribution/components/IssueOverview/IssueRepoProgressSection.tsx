@@ -1,3 +1,4 @@
+import { formatScore } from '../../presentation';
 import React from 'react';
 import Link from 'next/link';
 import { RightOutlined } from '@ant-design/icons';
@@ -56,7 +57,7 @@ type TeamRow = {
   id: string;
   name: string;
   repoCount: number;
-  score: number;
+  score: number | null;
   painTotal: number;
   painPending: number;
   painInProgress: number;
@@ -126,11 +127,12 @@ export const buildAggregateRow = (
     0
   );
   const painResolved = repos.reduce((sum, repo) => sum + repo.painResolved, 0);
-  const scoreWeight = repos.reduce(
+  const scoredRepos = repos.filter((repo) => repo.idxTotal != null);
+  const scoreWeight = scoredRepos.reduce(
     (sum, repo) => sum + repo.idxTotal * Math.max(repo.nTotal, 1),
     0
   );
-  const totalWeight = repos.reduce(
+  const totalWeight = scoredRepos.reduce(
     (sum, repo) => sum + Math.max(repo.nTotal, 1),
     0
   );
@@ -156,7 +158,7 @@ export const buildAggregateRow = (
     id: name,
     name,
     repoCount: repos.length,
-    score: totalWeight ? scoreWeight / totalWeight : 0,
+    score: totalWeight ? scoreWeight / totalWeight : null,
     painTotal,
     painPending,
     painInProgress,
@@ -297,7 +299,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
       const value = (repo: IssueOverviewRepo): string | number => {
         switch (teamTableSort.key) {
           case 'score':
-            return repo.idxTotal;
+            return repo.idxTotal ?? -1;
           case 'painTotal':
             return repo.painTotal;
           case 'closeRate':
@@ -383,7 +385,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           </button>
         ) : null}
         <span className="text-sm font-semibold text-[var(--overview-slateDark)]">
-          {repo.idxTotal.toFixed(1)}
+          {formatScore(repo.idxTotal)}
         </span>
       </div>
     ),
@@ -415,7 +417,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           </button>
         ) : null}
         <span className="text-sm font-semibold text-[var(--overview-slateDark)]">
-          {row.score.toFixed(1)}
+          {formatScore(row.score)}
         </span>
       </div>
     ),
@@ -458,7 +460,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         dataIndex: 'idxTotal',
         key: 'idxTotal',
         width: 138,
-        sorter: (a, b) => a.idxTotal - b.idxTotal,
+        sorter: (a, b) => (a.idxTotal ?? -1) - (b.idxTotal ?? -1),
         render: (_value: number, record) => repoScoreCell(record),
       },
       {
@@ -568,7 +570,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         dataIndex: 'score',
         key: 'score',
         width: TEAM_COLUMN_WIDTHS[3],
-        sorter: (a, b) => a.score - b.score,
+        sorter: (a, b) => (a.score ?? -1) - (b.score ?? -1),
         sortOrder: teamTableSort.key === 'score' ? teamTableSort.order : null,
         render: (_value: number, record) => aggregateScoreCell(record),
       },

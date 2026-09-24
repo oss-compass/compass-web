@@ -121,12 +121,25 @@ const IssueReportOverview: React.FC<IssueReportOverviewProps> = ({
           <div className="mb-2 text-base font-semibold text-slate-800">
             报告概览
           </div>
+          {context.scoring?.unresolved_decisions.length ? (
+            <p className="mb-3 text-xs leading-5 text-slate-500">
+              部分非问题判定缺少指标关联，尚未应用到评分。
+            </p>
+          ) : null}
           <div className="grid flex-1 grid-cols-2 gap-4">
             <OverviewMetricCard
               label="综合体验评分"
-              value={context.idx_total}
+              value={
+                context.idx_total == null
+                  ? 'N/A'
+                  : Number(context.idx_total.toFixed(1))
+              }
               suffix="/ 100"
-              description={context.delta_total}
+              description={
+                context.scoring
+                  ? `有效评分 ${context.scoring.n_scored} 条 · 已排除 ${context.scoring.excluded_observations} 项指标评分`
+                  : context.delta_total
+              }
               accent
               hint={
                 <IssueScoreRulePopoverTrigger

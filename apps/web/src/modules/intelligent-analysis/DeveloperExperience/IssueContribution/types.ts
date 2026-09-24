@@ -2,8 +2,8 @@ export type IssueReportMetric = {
   code: string;
   name_cn: string;
   display_name: string;
-  mean: number;
-  median: number;
+  mean: number | null;
+  median: number | null;
   cover: number;
   evidence?: string;
   main_reason?: string;
@@ -12,7 +12,7 @@ export type IssueReportMetric = {
 export type IssueReportBriefMetric = {
   code: string;
   display_name: string;
-  score: number;
+  score: number | null;
   reason: string;
   expected: string;
 };
@@ -182,10 +182,10 @@ export type IssueReportRecommendation = {
 export type IssueReportTrend = {
   period: string;
   n: number;
-  idx: number;
+  idx: number | null;
   period_label: string;
   delta: string;
-  stage_scores: number[];
+  stage_scores: Array<number | null>;
   incomparable: boolean;
 };
 
@@ -216,7 +216,16 @@ export type IssueExperienceReportData = {
     n_closed: number;
     close_rate: number;
     confidence: string;
-    idx_total: number;
+    idx_total: number | null;
+    scoring?: {
+      algorithm_version: string;
+      source_revision: string;
+      decision_revision: string;
+      excluded_observations: number;
+      n_scored: number;
+      narrative_notice: string;
+      unresolved_decisions: Array<{ tracking_key: string; number: string }>;
+    };
     grade: string;
     delta_total: string;
     cadence: string;
@@ -486,14 +495,14 @@ export type IssuePainTrackingActionPayload = {
 // 原始报告体量巨大且仅存于服务端，不进入浏览器包。
 // ─────────────────────────────────────────────────────────────
 
-export type IssueOverviewLevel = 'crit' | 'warn' | 'good';
+export type IssueOverviewLevel = 'crit' | 'warn' | 'good' | 'unscored';
 
 /** 单仓单周期的阶段概览 */
 export type IssueOverviewStage = {
   id: string;
   name: string;
   icon: string;
-  score: number;
+  score: number | null;
   grade: string;
   painCount: number;
   painPriorityCounts: { p0: number; p1: number; p2: number; p3: number };
@@ -508,7 +517,7 @@ export type IssueOverviewRepo = {
   repoCategory?: string; // 算子分队二次分类
   period: string;
   periodLabel: string;
-  idxTotal: number;
+  idxTotal: number | null;
   grade: string;
   deltaTotal: string;
   nTotal: number;
@@ -539,7 +548,7 @@ export type IssueOverviewRepo = {
     axis: 'objective' | 'subjective';
     score: number;
   }>;
-  idxTrend: number[]; // 该仓综合指数按周（时间升序）
+  idxTrend: Array<number | null>; // 无有效样本的周期保留空值
   idxTrendPeriods: string[]; // 与 idxTrend 对齐的周期标签（时间升序）
 };
 
@@ -573,7 +582,7 @@ export type IssueOverviewTopPain = {
 /** 跨仓逐周聚合序列（用于顶部 KPI 缩略图） */
 export type IssueOverviewAggSeries = {
   periods: string[];
-  idx: number[]; // 截至各周，每仓最新报告综合分的简单平均
+  idx: Array<number | null>; // 每仓最新报告中有效综合分的简单平均
   nTotal: number[]; // 各周问题总数
   closeRate: number[]; // 各周关闭率
 };

@@ -121,7 +121,11 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
       (stage) => stage.id === requestedStage
     );
     setActiveStageId(
-      requestedVisibleStage?.id ?? nextVisibleStages?.[0]?.id ?? ''
+      (current) =>
+        requestedVisibleStage?.id ??
+        nextVisibleStages?.find((stage) => stage.id === current)?.id ??
+        nextVisibleStages?.[0]?.id ??
+        ''
     );
   }, [report, requestedStage]);
 
@@ -248,6 +252,17 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
             }
           : current
       );
+      if (
+        [
+          'confirm_issues',
+          'decide_issue',
+          'decide_issues',
+          'revise_issue_validity',
+          'rollback_to_pending',
+        ].includes(payload.type)
+      ) {
+        setRefreshVersion((current) => current + 1);
+      }
       return response.data;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '痛点跟踪操作失败');
