@@ -7,6 +7,7 @@ import type {
   CiJourneyScores,
 } from '../../types';
 import {
+  CI_REPOS,
   daySeries,
   delta,
   firstNZ,
@@ -15,6 +16,7 @@ import {
   metaNum,
   num,
   pick,
+  repoSlug,
   sum,
   type CiDaySeries,
   type CiDelta,
@@ -47,42 +49,12 @@ const PRI_DESC: Record<CiPri, string> = {
   P2: '局部退化或待观察项，暂不阻塞主干，持续跟踪或待人工判读。',
 };
 
-/** 仓库顺序（runtime 优先，与详细看板一致） */
-const REPO_ORDER: CiRepoKey[] = [
-  'runtime',
-  'opsnn',
-  'opscv',
-  'graphaf',
-  'opstransformer',
-  'hcomm',
-  'pypto',
-  'ascdevkit',
-  'hccl',
-  'hixl',
-  'ptoisa',
-  'oamtools',
-  'amct',
-  'opbase',
-  'pyasc',
-  'metadef',
-  'asctools',
-];
-const repoSlug = (repo: CiRepoKey) =>
-  repo === 'opsnn'
-    ? 'ops-nn'
-    : repo === 'opscv'
-    ? 'ops-cv'
-    : repo === 'graphaf'
-    ? 'graph-autofusion'
-    : repo === 'opstransformer'
-    ? 'ops-transformer'
-    : repo === 'ascdevkit'
-    ? 'asc-devkit'
-    : repo === 'oamtools'
-    ? 'oam-tools'
-    : repo === 'asctools'
-    ? 'asc-tools'
-    : repo;
+/**
+ * 仓库顺序（runtime 优先，与详细看板一致）。
+ * 直接取自共享注册表 CI_REPOS：仓库键与顺序只维护一份，
+ * 避免这里再出现第三份仓库清单/别名表，而与 URL slug、query 归一化各自漂移。
+ */
+const REPO_ORDER: CiRepoKey[] = CI_REPOS.map((r) => r.key);
 
 const isActive = (p: { status: string }) => /^仍活跃/.test(p.status);
 const isFaded = (p: { status: string }) => /已消退/.test(p.status);
