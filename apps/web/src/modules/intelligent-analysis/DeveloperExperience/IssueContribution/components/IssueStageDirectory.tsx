@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card } from 'antd';
+import { formatScore } from '../presentation';
 import type { IssueReportStage } from '../types';
 
 type IssueStageDirectoryProps = {
@@ -89,7 +90,9 @@ const IssueStageDirectory: React.FC<IssueStageDirectoryProps> = ({
                     }`}
                   >
                     {stage.is_lens ? '参考镜头' : stage.id} ·{' '}
-                    {stage.mixed != null ? `${stage.mixed} 分` : '本次未评估'}
+                    {stage.mixed != null
+                      ? `${formatScore(stage.mixed)} 分`
+                      : '本次未评估'}
                   </span>
                 </span>
               </span>

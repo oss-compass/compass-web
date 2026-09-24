@@ -1066,6 +1066,7 @@ const RetestStatusBadge: React.FC<{ issue?: ActiveTrackingIssue }> = ({
 const IssueActionCell: React.FC<{
   show: boolean;
   activeIssue?: ActiveTrackingIssue;
+  displayIssue?: ActiveTrackingIssue;
   tracking?: IssuePainTracking;
   onTrackingAction?: TrackingActionHandler;
   operator: string;
@@ -1079,6 +1080,7 @@ const IssueActionCell: React.FC<{
 }> = ({
   show,
   activeIssue,
+  displayIssue,
   tracking,
   onTrackingAction,
   operator,
@@ -1123,8 +1125,8 @@ const IssueActionCell: React.FC<{
       isRerunEligible(tracking, activeIssue)
   );
   const hasRetestResult =
-    activeIssue?.retest_status === 'passed' ||
-    activeIssue?.retest_status === 'failed';
+    displayIssue?.retest_status === 'passed' ||
+    displayIssue?.retest_status === 'failed';
   const run = () => {
     const validation = validateOperator(operator);
     if (validation) {
@@ -1170,7 +1172,7 @@ const IssueActionCell: React.FC<{
               </button>
             </Tooltip>
           ) : null}
-          <RetestStatusBadge issue={activeIssue} />
+          <RetestStatusBadge issue={displayIssue} />
           {fixActionable &&
           tracking.trackingType === 'fix' &&
           !manualDisabledReason
@@ -1281,6 +1283,7 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
       <IssueActionCell
         show={props.showAction}
         activeIssue={actionIssue}
+        displayIssue={activeIssue}
         tracking={props.tracking}
         onTrackingAction={props.onTrackingAction}
         operator={props.operator}

@@ -542,7 +542,7 @@ const PainOverallDecision: React.FC<{
 
 const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   open,
-  pain: reportPain,
+  pain,
   tracking,
   metricLabels,
   onClose,
@@ -550,30 +550,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   reportContext,
   onRerunApplied,
 }) => {
-  // 重跑后报告可能不再列出 Issue，但仍需提供当前跟踪范围的改判/恢复入口。
-  const reportIssues = reportPain.low_score_issues ?? [];
-  const reportNumbers = new Set(reportIssues.map((issue) => issue.number));
-  const pain: PainTrackingModalProps['pain'] = {
-    ...reportPain,
-    low_score_issues: [
-      ...reportIssues,
-      ...(tracking.status === IssuePainTrackingStatus.PENDING
-        ? []
-        : tracking.activeIssues
-            .filter(
-              (issue) => !issue.synthetic && !reportNumbers.has(issue.number)
-            )
-            .map((issue) => ({
-              number: issue.number,
-              title: issue.title,
-              url: issue.url,
-              score: issue.score,
-              metric_code: issue.metric_code ?? '',
-              reason: '',
-              evidence: [],
-            }))),
-    ],
-  };
+  // 表格使用当前报告传入的 Issue，不从跟踪记录补入历史未判定项。
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
   const [rollbackModalOpen, setRollbackModalOpen] = useState(false);
   const [rollbackReason, setRollbackReason] = useState('');
