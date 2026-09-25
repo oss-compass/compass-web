@@ -39,6 +39,8 @@ import IssuePriorityCell from './IssuePriorityCell';
 import IssueResponsibleCell from './IssueResponsibleCell';
 import { useDashboardContext } from '../../context';
 import { useAuthorizedUsers } from '../../api/dashboard';
+import { resetTablePagination } from './tablePagination';
+import type { TableParams } from './tablePagination';
 
 interface IssueTableProps {
   dashboardId: string;
@@ -46,12 +48,6 @@ interface IssueTableProps {
   origin?: string | null;
   projects: readonly string[];
   competitorProjects?: readonly string[];
-}
-
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  filterOpts?: FilterOptionInput[];
-  sortOpts?: SortOptionInput | null;
 }
 
 type IssueTableRecord = IssueDetail | CommunityIssueSummaryItem;
@@ -466,10 +462,12 @@ const IssueTable: React.FC<IssueTableProps> = ({
 
   const handleOrganizationChange = (values: string[]) => {
     setSelectedOrganizations(values);
-    setTableParams((prev) => ({
-      ...prev,
-      pagination: { ...prev.pagination, current: 1 },
-    }));
+    setTableParams(resetTablePagination);
+  };
+
+  const handleResponsiblePersonChange = (value?: number) => {
+    setSelectedResponsiblePerson(value ?? null);
+    setTableParams(resetTablePagination);
   };
 
   // 全选：选中组织全集
@@ -945,9 +943,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
             style={{ minWidth: 160 }}
             placeholder={t('common:all')}
             value={selectedResponsiblePerson ?? undefined}
-            onChange={(val: number | undefined) =>
-              setSelectedResponsiblePerson(val ?? null)
-            }
+            onChange={handleResponsiblePersonChange}
             options={(authorizedUsersData?.data ?? []).map((user) => ({
               label: user.name,
               value: user.id,
