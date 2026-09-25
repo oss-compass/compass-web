@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
 import { useCountDown } from 'ahooks';
 import { useTranslation } from 'next-i18next';
 import { GrClose } from 'react-icons/gr';
-import classnames from 'classnames';
 import Dialog from '@mui/material/Dialog';
 import { BiCopy } from 'react-icons/bi';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { toast } from 'react-hot-toast';
 import { Transition } from '@common/components/Dialog';
-import Tooltip from '@common//components/Tooltip';
+import Tooltip from '@common/components/Tooltip';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 
 const queryMap = {
@@ -53,6 +51,8 @@ const Badge = () => {
   };
 
   const [open, setOpen] = useState(false);
+  const dialogId = useId();
+  const titleId = useId();
 
   const [badgeSrc, setBadgeSrc] = useState(badgeLinks.logo);
 
@@ -61,20 +61,24 @@ const Badge = () => {
       <div className="border-b py-2 pl-3.5 font-bold text-gray-900">
         {t('analyze:function_menu')}
       </div>
-      <div
-        className={classnames(
-          'group flex cursor-pointer py-2 pl-3.5 transition'
-        )}
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls={open ? dialogId : undefined}
+        className="focus-visible:outline-primary group flex w-full cursor-pointer py-2 pl-3.5 text-left transition focus-visible:outline focus-visible:outline-2"
         onClick={() => {
           setOpen(true);
         }}
       >
         {t('analyze:badge.title')}
-      </div>
+      </button>
 
       <Dialog
         TransitionComponent={Transition}
         open={open}
+        aria-labelledby={titleId}
+        PaperProps={{ id: dialogId }}
         classes={{
           paper: cn(
             'border-2 border-black w-[640px] !rounded-none',
@@ -86,23 +90,33 @@ const Badge = () => {
         }}
       >
         <div className="relative px-10 py-8">
-          <p className="mb-8 text-3xl font-bold">{t('analyze:badge.title')}</p>
-          <div
-            className="absolute right-10 top-8 cursor-pointer p-2"
+          <h2 id={titleId} className="mb-8 text-3xl font-bold">
+            {t('analyze:badge.title')}
+          </h2>
+          <button
+            type="button"
+            autoFocus
+            aria-label={t('common:btn.close')}
+            className="focus-visible:outline-primary absolute right-10 top-8 cursor-pointer p-2 focus-visible:outline focus-visible:outline-2"
             onClick={() => {
               setOpen(false);
             }}
           >
-            <GrClose className="text-base" />
-          </div>
+            <GrClose className="text-base" aria-hidden="true" />
+          </button>
           <RadioGroup.Root
+            aria-labelledby={titleId}
             value={badgeSrc}
             onValueChange={(v) => {
               setBadgeSrc(v);
             }}
           >
             <div className="mb-6 grid grid-cols-2 gap-4">
-              <BadgeItem activeSrc={badgeSrc} src={badgeLinks.logo} />
+              <BadgeItem
+                activeSrc={badgeSrc}
+                src={badgeLinks.logo}
+                label={t('common:oss_compass')}
+              />
             </div>
 
             <div className="mb-2 font-medium">
@@ -112,15 +126,24 @@ const Badge = () => {
               <BadgeItem
                 activeSrc={badgeSrc}
                 src={badgeLinks.collab_dev_index}
+                label={t('analyze:all_model.collaboration_development_index')}
               />
-              <BadgeItem activeSrc={badgeSrc} src={badgeLinks.community} />
+              <BadgeItem
+                activeSrc={badgeSrc}
+                src={badgeLinks.community}
+                label={t('analyze:all_model.community_service_and_support')}
+              />
             </div>
 
             <div className="mb-2 font-medium">
               {t('analyze:topic.robustness')}
             </div>
             <div className="mb-6 grid grid-cols-2 gap-4">
-              <BadgeItem activeSrc={badgeSrc} src={badgeLinks.activity} />
+              <BadgeItem
+                activeSrc={badgeSrc}
+                src={badgeLinks.activity}
+                label={t('analyze:all_model.community_activity')}
+              />
             </div>
 
             <div className="mb-2 font-medium">
@@ -130,6 +153,7 @@ const Badge = () => {
               <BadgeItem
                 activeSrc={badgeSrc}
                 src={badgeLinks.organizations_activity}
+                label={t('analyze:all_model.organization_activity')}
               />
             </div>
           </RadioGroup.Root>
@@ -140,15 +164,24 @@ const Badge = () => {
   );
 };
 
-const BadgeItem = ({ activeSrc, src }: { activeSrc: string; src: string }) => {
+const BadgeItem = ({
+  activeSrc,
+  src,
+  label,
+}: {
+  activeSrc: string;
+  src: string;
+  label: string;
+}) => {
+  const id = useId();
   const isChecked = activeSrc === src;
   return (
     <div className="flex cursor-pointer items-center ">
       <RadioGroup.Item
         value={src}
-        id={src}
+        id={id}
         className={cn(
-          'h-[20px] w-[20px]  rounded-full border-2 bg-white outline-none ',
+          'focus-visible:ring-primary h-[20px] w-[20px] shrink-0 rounded-full border-2 bg-white outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
           [isChecked ? 'border-primary' : 'border-secondary']
         )}
       >
@@ -156,8 +189,9 @@ const BadgeItem = ({ activeSrc, src }: { activeSrc: string; src: string }) => {
       </RadioGroup.Item>
       <label
         className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black"
-        htmlFor={src}
+        htmlFor={id}
       >
+        <span className="sr-only">{label}</span>
         <img src={src} alt="" />
       </label>
     </div>
@@ -176,6 +210,11 @@ const getMarkdownAnchorLink = (badgeSrc: string) => {
 const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
   const { t } = useTranslation();
   const [tab, setTab] = React.useState('Markdown');
+  const tabsId = useId();
+  const [copyResult, setCopyResult] = useState<{
+    source: string;
+    status: 'success' | 'error';
+  }>();
   const [targetDate, setTargetDate] = useState<number>();
   const [countdown] = useCountDown({ targetDate });
   const badgeLink = window.origin + badgeSrc;
@@ -201,6 +240,19 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
     }
   }
 
+  const copyStatus =
+    copyResult?.source === source ? copyResult.status : undefined;
+  const copySource = async () => {
+    setCopyResult(undefined);
+    try {
+      await navigator.clipboard.writeText(source);
+      setCopyResult({ source, status: 'success' });
+      setTargetDate(Date.now() + 800);
+    } catch {
+      setCopyResult({ source, status: 'error' });
+    }
+  };
+
   return (
     <>
       <Tabs
@@ -209,7 +261,13 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
         onChange={(e, v) => {
           setTab(v);
         }}
-        aria-label="Tabs where selection follows focus"
+        aria-label={t('analyze:badge.text')}
+        sx={{
+          '& .MuiTab-root.Mui-focusVisible': {
+            outline: '2px solid currentColor',
+            outlineOffset: '-2px',
+          },
+        }}
         selectionFollowsFocus
       >
         <Tab
@@ -217,6 +275,8 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
           classes={{ root: '!normal-case', selected: '!text-black ' }}
           label="Markdown"
           value="Markdown"
+          id={`${tabsId}-Markdown`}
+          aria-controls={`${tabsId}-panel`}
         />
         <Tab
           disableRipple
@@ -226,6 +286,8 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
           }}
           label="HTML"
           value="HTML"
+          id={`${tabsId}-HTML`}
+          aria-controls={`${tabsId}-panel`}
         />
         <Tab
           disableRipple
@@ -235,39 +297,50 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
           }}
           label="Link"
           value="Link"
+          id={`${tabsId}-Link`}
+          aria-controls={`${tabsId}-panel`}
         />
       </Tabs>
-      <div className="mt-4 flex  h-[60px] items-center justify-between rounded border bg-[#fafafa] px-3">
-        <div className="break-all text-xs">{source}</div>
-        <Tooltip
-          title={
-            countdown === 0
-              ? t('common:copy.click_to_copy')
-              : t('common:copy.copy_successfully')
-          }
-          arrow
-          placement="top"
-        >
-          <div
-            className="ml-4 cursor-pointer rounded border bg-white p-1.5 hover:bg-gray-200"
-            onClick={() => {
-              if (navigator.clipboard?.writeText) {
-                navigator.clipboard
-                  .writeText(source)
-                  .then((value) => {
-                    setTargetDate(Date.now() + 800);
-                  })
-                  .catch((err) => {
-                    toast.error('Failed！No copy permission');
-                  });
-              } else {
-                toast.error('Failed！ Not Supported clipboard');
-              }
-            }}
+      <div
+        role="tabpanel"
+        id={`${tabsId}-panel`}
+        aria-labelledby={`${tabsId}-${tab}`}
+      >
+        <div className="mt-4 flex min-h-[60px] items-center justify-between rounded border bg-[#fafafa] px-3 py-2">
+          <code className="min-w-0 break-all text-xs">{source}</code>
+          <Tooltip
+            title={
+              copyStatus !== 'success' || countdown === 0
+                ? t('common:copy.click_to_copy')
+                : t('common:copy.copy_successfully')
+            }
+            arrow
+            placement="top"
+            describeChild
           >
-            <BiCopy />
-          </div>
-        </Tooltip>
+            <button
+              type="button"
+              aria-label={t('common:copy.click_to_copy')}
+              className="focus-visible:outline-primary ml-4 shrink-0 cursor-pointer rounded border bg-white p-1.5 hover:bg-gray-200 focus-visible:outline focus-visible:outline-2"
+              onClick={copySource}
+            >
+              <BiCopy aria-hidden="true" />
+            </button>
+          </Tooltip>
+        </div>
+        <p role="status" className="sr-only">
+          {copyStatus === 'success' ? t('common:copy.copy_successfully') : ''}
+        </p>
+        <p role="alert" className="mt-2 text-sm text-red-700">
+          {copyStatus === 'error' ? (
+            <>
+              {t('common:error.something_went_wrong')}{' '}
+              {t('common:error.try_again')}
+            </>
+          ) : (
+            ''
+          )}
+        </p>
       </div>
     </>
   );
