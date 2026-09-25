@@ -12,6 +12,9 @@
     "build": "yarn workspace @oss-compass/web build",
     "test": "yarn workspace @oss-compass/web test",
     "test:ci": "yarn workspace @oss-compass/web test:ci",
+    "fixtures:generate": "node scripts/fixtures/generate.js",
+    "fixtures:check": "node scripts/fixtures/check.js",
+    "fixtures:test": "node --test scripts/fixtures/check.test.js",
     "docker:web": "./.github/deployment/web/local_build.sh"
   },
   "devDependencies": {
