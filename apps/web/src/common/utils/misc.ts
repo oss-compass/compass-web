@@ -17,3 +17,19 @@ export const getBodyScrollTop = () => {
     document.body.scrollTop
   );
 };
+
+/**
+ * Parse a JSON string without throwing on malformed input.
+ * Useful for values coming from URL query parameters, which are
+ * user-controlled and may be truncated or hand-edited.
+ */
+export const safeJsonParse = <T>(raw: unknown, fallback: T): T => {
+  if (typeof raw !== 'string') {
+    return fallback;
+  }
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+};
