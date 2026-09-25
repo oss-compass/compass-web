@@ -20,15 +20,12 @@ export async function fetchProjectData(
 ): Promise<any[]> {
   try {
     const fileName = PROJECT_NAME_MAP[projectSlug];
-    console.log(fileName);
     if (!fileName) {
       throw new Error(`Unknown project: ${projectSlug}`);
     }
 
     const suffix = useDetail ? '_detail.json' : '_backup.json';
     const url = `/test/intelligent-analysis-new/${fileName}${suffix}`;
-
-    console.log(`Fetching data from: ${url}`);
 
     const response = await fetch(url);
     if (!response.ok) {
