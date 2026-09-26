@@ -178,6 +178,7 @@ const MainContent = ({
           keyword={keyword}
           setKeyword={(v) => {
             setKeyword(v);
+            setPage(1);
           }}
           setSort={(v) => {
             setSort(v);
