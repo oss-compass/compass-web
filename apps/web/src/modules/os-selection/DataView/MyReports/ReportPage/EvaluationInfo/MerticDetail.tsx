@@ -10,6 +10,38 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 
+// 计算单个报告四个维度得分和总分
+export const buildEvaluationDetail = (row, metricList, allMetricData) => {
+  const evaluationDetail = metricList.map((item) => {
+    //计算每个维度的总分
+    const d = allMetricData.filter((i) => {
+      let hasScore =
+        row?.tpcSoftwareReportMetric?.[i.key] !== null &&
+        row?.tpcSoftwareReportMetric?.[i.key] >= 0;
+      return i.维度 === item && hasScore;
+    });
+    let scoreTotal = 0;
+    d.forEach((i) => {
+      scoreTotal += row?.tpcSoftwareReportMetric?.[i.key] || 0;
+    });
+    // 维度下没有已评分的指标时按 0 分计，避免 0/0 得到 NaN 污染总分
+    const score: number = toFixed(
+      d.length === 0 ? 0 : (scoreTotal / d.length) * 10,
+      0
+    );
+    return {
+      name: item,
+      score,
+    };
+  });
+  //计算总分
+  const scoreTotal = evaluationDetail.reduce((acc, cur) => {
+    return cur.score + acc;
+  }, 0);
+  const score: number = toFixed(scoreTotal / metricList.length, 0);
+  return { ...row, evaluationDetail, score };
+};
+
 export const useMerticDetailData = () => {
   const { t } = useTranslation('os-selection');
   const { allMetricData, getRishContent } = useAllMetricData();
@@ -23,30 +55,7 @@ export const useMerticDetailData = () => {
 
   // 计算单个报告四个维度得分和总分
   const getEvaluationDetail = (row) => {
-    const evaluationDetail = metricList.map((item) => {
-      //计算每个维度的总分
-      const d = allMetricData.filter((i) => {
-        let hasScore =
-          row?.tpcSoftwareReportMetric?.[i.key] !== null &&
-          row?.tpcSoftwareReportMetric?.[i.key] >= 0;
-        return i.维度 === item && hasScore;
-      });
-      let scoreTotal = 0;
-      d.forEach((i) => {
-        scoreTotal += row?.tpcSoftwareReportMetric?.[i.key] || 0;
-      });
-      const score: number = toFixed((scoreTotal / d.length) * 10, 0);
-      return {
-        name: item,
-        score,
-      };
-    });
-    //计算总分
-    const scoreTotal = evaluationDetail.reduce((acc, cur) => {
-      return cur.score + acc;
-    }, 0);
-    const score: number = toFixed(scoreTotal / metricList.length, 0);
-    return { ...row, evaluationDetail, score };
+    return buildEvaluationDetail(row, metricList, allMetricData);
   };
 
   // 获取多个报告的四个维度得分和总分
