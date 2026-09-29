@@ -64,6 +64,7 @@ export const Button = forwardRef<
     <button
       ref={ref}
       type={type}
+      disabled={disabled || loading}
       className={twMerge(cls)}
       onClick={(e) => {
         if (disabled || loading) {
