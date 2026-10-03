@@ -1,12 +1,19 @@
 export function safeJsonParse<T>(
-  value: string | undefined | null,
-  fallback: T
-): T {
-  if (!value) {
+  value: string | string[] | undefined | null,
+  fallback: T,
+  validator?: (parsed: unknown) => parsed is T
+): T;
+export function safeJsonParse(
+  value: string | string[] | undefined | null,
+  fallback: unknown,
+  validator?: (parsed: unknown) => boolean
+): unknown {
+  if (typeof value !== 'string' || !value) {
     return fallback;
   }
   try {
-    return JSON.parse(value) as T;
+    const parsed: unknown = JSON.parse(value);
+    return !validator || validator(parsed) ? parsed : fallback;
   } catch {
     return fallback;
   }

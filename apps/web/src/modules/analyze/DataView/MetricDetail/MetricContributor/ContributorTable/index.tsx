@@ -35,14 +35,14 @@ import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { AiOutlineSearch, AiFillFilter } from 'react-icons/ai';
 import getErrorMessage from '@common/utils/getErrorMessage';
-import { safeJsonParse } from '@common/utils/json';
+import { parseFilterOpts, parseSortOpts } from '../queryParams';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import toast from 'react-hot-toast';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
-  sortOpts?: SortOptionInput;
+  sortOpts?: SortOptionInput | null;
   filters?: Record<string, FilterValue>;
 }
 
@@ -70,16 +70,9 @@ const MetricTable: React.FC<{
   const router = useRouter();
   const { handleQueryParams } = useHandleQueryParams();
 
-  const queryFilterOpts = router.query?.filterOpts as string;
-  const defaultFilterOpts = safeJsonParse<FilterOptionInput[]>(
-    queryFilterOpts,
-    []
-  );
-  const defaultSortOpts = safeJsonParse<any>(
-    router.query?.sortOpts as string,
-    null
-  );
-  const [filterOpts, setFilterOpts] = useState(defaultFilterOpts || []);
+  const defaultFilterOpts = parseFilterOpts(router.query?.filterOpts);
+  const defaultSortOpts = parseSortOpts(router.query?.sortOpts);
+  const [filterOpts, setFilterOpts] = useState(defaultFilterOpts);
   const filterContributionType = useMemo(() => {
     return filterOpts.find((i) => i.type === 'contribution_type');
   }, [filterOpts]);
