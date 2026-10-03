@@ -8,7 +8,19 @@ import {
   resolveFileInsideDir,
 } from '@modules/intelligent-analysis/server/pathSafety';
 
-const backupCache = new Map<string, unknown[]>();
+type BackupCacheEntry = {
+  size: number;
+  mtimeMs: number;
+  rows: unknown[];
+};
+
+// The parsed backup payloads are large (several of the shipped
+// <dataset>_backup.json files are >10 MB), so the cache has to stay bounded.
+// Without a cap every dataset that is looked up is retained for the lifetime
+// of the process.
+export const BACKUP_CACHE_MAX_ENTRIES = 4;
+
+const backupCache = new Map<string, BackupCacheEntry>();
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -79,16 +91,35 @@ async function resolveBackupFilePath(dataset: string): Promise<string> {
 }
 
 async function findUserFromBackup(dataset: string, userId: string) {
-  if (!backupCache.has(dataset)) {
-    const filePath = await resolveBackupFilePath(dataset);
-    if (!(await fileExists(filePath))) return null;
+  const filePath = await resolveBackupFilePath(dataset);
+  if (!(await fileExists(filePath))) return null;
+
+  // Only reuse the cached copy while the file on disk is unchanged, otherwise a
+  // regenerated backup file would keep serving stale data until the process
+  // restarts.
+  const stat = await fs.stat(filePath);
+  const cached = backupCache.get(dataset);
+
+  let rows: unknown[];
+  if (cached && cached.size === stat.size && cached.mtimeMs === stat.mtimeMs) {
+    rows = cached.rows;
+    // Refresh recency so the eviction below drops the coldest entry.
+    backupCache.delete(dataset);
+  } else {
     const raw = await fs.readFile(filePath, 'utf8');
     const parsed = JSON.parse(raw);
-    const rows: unknown[] = Array.isArray(parsed) ? parsed : [];
-    backupCache.set(dataset, rows);
+    rows = Array.isArray(parsed) ? parsed : [];
   }
 
-  const rows = backupCache.get(dataset) || [];
+  if (
+    !backupCache.has(dataset) &&
+    backupCache.size >= BACKUP_CACHE_MAX_ENTRIES
+  ) {
+    const coldest = backupCache.keys().next().value;
+    if (coldest !== undefined) backupCache.delete(coldest);
+  }
+  backupCache.set(dataset, { size: stat.size, mtimeMs: stat.mtimeMs, rows });
+
   for (const row of rows) {
     if (!row || typeof row !== 'object') continue;
     const candidate = (row as any)['用户ID'];
@@ -140,14 +171,27 @@ export default async function handler(
       : null);
 
   if (!filePath) {
+    let row: Record<string, unknown> | null = null;
     try {
-      const row = await findUserFromBackup(dataset, userId);
-      if (row) {
-        res.setHeader('Cache-Control', 'public, max-age=300');
-        res.status(200).json({ [userId]: row });
-        return;
-      }
-    } catch { }
+      row = await findUserFromBackup(dataset, userId);
+    } catch (e) {
+      // The backup file exists but could not be read or parsed. Report that as a
+      // server error rather than claiming the user does not exist.
+      console.error(
+        `[user-detail] failed to read backup for dataset=${dataset}`,
+        e
+      );
+      res
+        .status(500)
+        .json({ message: 'Failed to load user detail', dataset, userId });
+      return;
+    }
+
+    if (row) {
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      res.status(200).json({ [userId]: row });
+      return;
+    }
 
     res.status(404).json({
       message: 'User detail not found',
