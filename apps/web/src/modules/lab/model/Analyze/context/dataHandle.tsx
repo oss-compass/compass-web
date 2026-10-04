@@ -68,16 +68,14 @@ export function alignValuesWithDates(data: DataResults) {
   });
 
   return data.map(({ dates, values, ...rest }) => {
-    alignDates.forEach((date, index) => {
-      if (dates?.indexOf(date) === -1) {
-        dates?.splice(index, 0, date);
-        values.splice(index, 0, null);
-      }
+    const alignedValues = alignDates.map((date) => {
+      const index = dates.indexOf(date);
+      return index === -1 ? null : values[index];
     });
     return {
       ...rest,
-      dates,
-      values,
+      dates: [...alignDates],
+      values: alignedValues,
     };
   });
 }
