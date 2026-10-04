@@ -1,3 +1,4 @@
+import isMatch from 'date-fns/isMatch';
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
@@ -15,17 +16,20 @@ const contributorDefaultVal = {
   timeEnd: timeRange['6M'].end,
 };
 export const isDateRange = (range: string) => {
-  if (range.includes(' ~ ')) {
-    const start = range.split(' ~ ')[0];
-    const end = range.split(' ~ ')[1];
-    const re = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
-    const r = start.match(re) && end.match(re);
-    if (r) {
-      return { start: new Date(start), end: new Date(end) };
-    }
-    return false;
-  }
-  return false;
+  if (typeof range !== 'string') return false;
+  const parts = range.split(' ~ ');
+  if (parts.length !== 2) return false;
+
+  const re = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
+  const valid = parts.every(
+    (value) =>
+      re.test(value) &&
+      isMatch(value, value.includes('/') ? 'yyyy/M/d' : 'yyyy-M-d')
+  );
+  if (!valid) return false;
+
+  const [start, end] = parts.map((value) => new Date(value));
+  return start <= end ? { start, end } : false;
 };
 const useQueryDateRange = () => {
   const router = useRouter();
