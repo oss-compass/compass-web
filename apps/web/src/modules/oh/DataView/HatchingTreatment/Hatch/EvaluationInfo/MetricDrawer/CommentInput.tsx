@@ -125,7 +125,12 @@ const CommentInput = forwardRef<InputRefProps, Props>(
             className="w-full resize-none pl-2 pt-1 outline-0"
             placeholder={placeholder ? placeholder : t('lab:commit_enter')}
             onKeyDown={(event) => {
-              if (loading) return;
+              if (
+                loading ||
+                event.nativeEvent.isComposing ||
+                event.nativeEvent.keyCode === 229
+              )
+                return;
               if (event.key == 'Enter' || event.code == 'Enter') {
                 if (event.shiftKey || event.ctrlKey) {
                   setValue((p) => p + '\n');
