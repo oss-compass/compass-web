@@ -117,14 +117,14 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
         <div className="pt-14">
           <div
             className="absolute right-2 top-2 cursor-pointer p-2"
-            onClick={() => toggle()}
+            onClick={() => toggle(false)}
           >
             <AiOutlineClose />
           </div>
           <div
             className=""
             onClick={() => {
-              toggle();
+              toggle(false);
             }}
           >
             {headLinks.map((item) => {
@@ -134,7 +134,7 @@ const MobileHeader: React.FC<PropsWithChildren> = ({ children }) => {
                   title={item.title}
                   href={item.href}
                   onClick={() => {
-                    toggle();
+                    toggle(false);
                   }}
                 >
                   {item.icon}
