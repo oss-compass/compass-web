@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { Button } from '@oss-compass/ui';
@@ -16,6 +16,7 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, onClose }) => {
   const router = useRouter();
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const feedbackInputId = useId();
 
   // 根据当前路径自动识别模块
   const currentModule: FeedbackModule = getModuleFromPath(router.pathname);
@@ -67,10 +68,14 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, onClose }) => {
       dialogContent={
         <div className="w-96 space-y-4">
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label
+              htmlFor={feedbackInputId}
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
               {t('common:feedback_content')}
             </label>
             <textarea
+              id={feedbackInputId}
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder={t('common:feedback_placeholder')}
