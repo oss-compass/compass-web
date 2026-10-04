@@ -9,6 +9,12 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
+    // @oss-compass/ui installs its own nested react@18 copy; map react
+    // imports to the workspace root copy so component tests render with a
+    // single React instance
+    '^react$': '<rootDir>/../../node_modules/react',
+    '^react-dom$': '<rootDir>/../../node_modules/react-dom',
+    '^react/jsx-runtime$': '<rootDir>/../../node_modules/react/jsx-runtime',
     '^@oss-compass/graphql$': '<rootDir>/../../packages/graphql/src/index.ts',
     '^@oss-compass/ui$': '<rootDir>/../../packages/ui/src/index.tsx',
     '^@common/(.*)$': '<rootDir>/src/common/$1',
