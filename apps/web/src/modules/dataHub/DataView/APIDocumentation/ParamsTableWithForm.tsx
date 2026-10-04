@@ -21,10 +21,12 @@ const ParamsTableWithForm = ({
   method,
   path,
   params,
+  baseUrl = '',
 }: {
   method: string;
   path: string;
   params: ApiParameter[];
+  baseUrl?: string;
 }) => {
   const { t, i18n } = useTranslation();
   const [form] = Form.useForm();
@@ -167,7 +169,7 @@ const ParamsTableWithForm = ({
     try {
       const config = {
         method: method.toLowerCase(),
-        url: constructUrl(path, processedValues), // 使用处理过的 processedValues
+        url: `${baseUrl}${constructUrl(path, processedValues)}`, // 使用处理过的 processedValues
         data: method === 'POST' ? processedValues : null, // 使用处理过的 processedValues
         params: method === 'GET' ? processedValues : null, // 使用处理过的 processedValues
       };
