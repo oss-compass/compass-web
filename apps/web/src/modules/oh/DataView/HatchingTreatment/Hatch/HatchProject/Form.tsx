@@ -13,6 +13,25 @@ import {
 import { incubationTimeList } from '@modules/oh/constant';
 import { getPathname } from '@common/utils';
 import { MinusOutlined, PlusOutlined, DownOutlined } from '@ant-design/icons';
+
+type SelectionReport = {
+  id?: string | number;
+  codeUrl: string;
+  tpcSoftwareSig?: {
+    sigCommitter?: { giteeAccount?: string }[];
+  };
+};
+
+export const findReportCommitters = (
+  report: SelectionReport[],
+  selectedPathname: string
+): string | undefined => {
+  return report
+    .find((item) => getPathname(item.codeUrl) === selectedPathname)
+    ?.tpcSoftwareSig?.sigCommitter?.map((i) => i.giteeAccount)
+    .join(', ');
+};
+
 const SelectionForm = ({ form, report, setOpenConfirm }) => {
   const [sameCheck, setSameCheck] = useState(false);
 
@@ -79,12 +98,7 @@ const SelectionForm = ({ form, report, setOpenConfirm }) => {
                     <Select
                       onChange={(value) => {
                         form.setFieldsValue({
-                          committers: report
-                            .find((item) => item.codeUrl.includes(value))
-                            ?.tpcSoftwareSig?.sigCommitter?.map(
-                              (i) => i.giteeAccount
-                            )
-                            .join(', '),
+                          committers: findReportCommitters(report, value),
                         });
                       }}
                       disabled={false}
