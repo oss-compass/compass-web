@@ -158,16 +158,16 @@ def render_ts(entries: list[dict]) -> str:
     entry_blocks = []
     for e in entries:
         block = [
-            f"{e['entry_key']}: {{",
-            f"  projectKey: '{e['projectKey']}',",
-            f"  label: '{e['label']}',",
+            f"{json.dumps(str(e['entry_key']))}: {{",
+            f"  projectKey: {json.dumps(str(e['projectKey']))},",
+            f"  label: {json.dumps(str(e['label']))},",
             f"  reportPath:",
-            f"    '{e['reportPath']}',",
-            f"  version: '{e['version']}',",
-            f"  org: '{e['org']}',",
-            f"  sig: '{e['sig']}',",
-            f"  projectName: '{e['projectName']}',",
-            f"  hardware_access: '{e['hardware_access']}',",
+            f"    {json.dumps(str(e['reportPath']))},",
+            f"  version: {json.dumps(str(e['version']))},",
+            f"  org: {json.dumps(str(e['org']))},",
+            f"  sig: {json.dumps(str(e['sig']))},",
+            f"  projectName: {json.dumps(str(e['projectName']))},",
+            f"  hardware_access: {json.dumps(str(e['hardware_access']))},",
             f"}},",
         ]
         entry_blocks.append(indent(block, 2))
