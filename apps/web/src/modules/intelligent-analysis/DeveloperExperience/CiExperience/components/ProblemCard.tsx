@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DownOutlined } from '@ant-design/icons';
 import type { CiProblem, CiRepoKey } from '../types';
 import {
   prURL,
@@ -7,6 +8,7 @@ import {
   runURL,
 } from '../helpers';
 import { Badge, DimTag, PriBadge } from './shared';
+import { CiPainTrackingButton } from './PainTracking';
 
 type ProblemCardProps = {
   problem: CiProblem;
@@ -15,6 +17,7 @@ type ProblemCardProps = {
 
 const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
   const [open, setOpen] = useState(problem.pri === 'P0');
+  const [runsOpen, setRunsOpen] = useState(true);
   const im = problem.impact;
   const rt = problem.root;
 
@@ -39,25 +42,36 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-50"
-      >
-        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[13px] font-semibold text-slate-800">
-          <PriBadge p={problem.pri} />
-          <DimTag>{problem.dim}</DimTag>
-          {/* 旅程段徽章：这条问题卡在流水线哪一步（对齐设计稿 segtag；seg 为空 = 跨段/未映射） */}
-          <span className="inline-block rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-600">
-            {problem.seg || '跨段/未映射'}
+      <div className="flex w-full items-start justify-between gap-3 px-4 py-3 transition-colors hover:bg-slate-50">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="min-w-0 flex-1 text-left"
+        >
+          <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[13px] font-semibold text-slate-800">
+            <PriBadge p={problem.pri} />
+            <DimTag>{problem.dim}</DimTag>
+            {/* 旅程段徽章：这条问题卡在流水线哪一步（对齐设计稿 segtag；seg 为空 = 跨段/未映射） */}
+            <span className="inline-block rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-600">
+              {problem.seg || '跨段/未映射'}
+            </span>
+            <span className="text-slate-800">{problem.title}</span>
           </span>
-          <span className="text-slate-800">{problem.title}</span>
-        </span>
-        <span className="shrink-0 pt-0.5 text-slate-400">
-          {open ? '▾' : '▸'}
-        </span>
-      </button>
+        </button>
+        <div className="flex shrink-0 items-start gap-2 pt-0.5">
+          <CiPainTrackingButton problem={problem} />
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            aria-label={open ? '收起痛点详情' : '展开痛点详情'}
+            aria-expanded={open}
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-slate-600"
+          >
+            {open ? '▾' : '▸'}
+          </button>
+        </div>
+      </div>
 
       {open ? (
         <div className="border-t border-slate-100 px-4 py-3">
@@ -113,82 +127,104 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
           </div>
 
           {/* run × PR 全量映射表 */}
-          <div className="mt-3 max-h-[300px] overflow-auto rounded-xl border border-slate-200">
-            <table className="w-full border-collapse text-[12px]">
-              <thead className="sticky top-0 z-[1] bg-white">
-                <tr>
-                  <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                    run
-                  </th>
-                  <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                    PR
-                  </th>
-                  <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-right text-[11px] font-semibold text-slate-500">
-                    触发
-                  </th>
-                  <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                    失败位置
-                  </th>
-                  <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
-                    失败信息 / 说明
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {problem.runs.map((r, i) => {
-                  const dup = Boolean(r.pr && prCount[r.pr] > 1);
-                  return (
-                    <tr
-                      key={`${r.id}-${i}`}
-                      className={dup ? 'bg-amber-50/60' : undefined}
-                    >
-                      <td className="border-b border-slate-100 px-3 py-2 align-top">
-                        <a
-                          href={runURL(repo, r.id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          #{r.n}
-                        </a>
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2 align-top">
-                        {r.pr ? (
-                          <>
-                            <a
-                              href={prURL(repo, r.pr)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:underline"
-                            >
-                              {r.pr}
-                            </a>
-                            {dup ? (
-                              <span className="ml-1 text-[11px] text-slate-400">
-                                ×{prCount[r.pr]}
-                              </span>
-                            ) : null}
-                          </>
-                        ) : (
-                          '—'
-                        )}
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2 text-right align-top tabular-nums text-slate-600">
-                        {r.t || '—'}
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2 align-top text-slate-700">
-                        {r.stage || '—'}
-                        {r.job ? ` / ${r.job}` : ''}
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2 align-top text-[11px] text-slate-400">
-                        {r.msg || ''}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          {problem.runs.length ? (
+            <div className="mt-3">
+              <button
+                type="button"
+                aria-expanded={runsOpen}
+                onClick={() => setRunsOpen((value) => !value)}
+                className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+              >
+                <span>关联执行记录</span>
+                <span className="font-normal text-slate-400">
+                  共 {problem.runs.length} 条
+                </span>
+                <DownOutlined
+                  className={`ml-auto text-[11px] text-slate-400 transition-transform ${
+                    runsOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+              {runsOpen ? (
+                <div className="mt-2 max-h-[300px] overflow-auto rounded-xl border border-slate-200">
+                  <table className="w-full border-collapse text-[12px]">
+                    <thead className="sticky top-0 z-[1] bg-white">
+                      <tr>
+                        <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                          run
+                        </th>
+                        <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                          PR
+                        </th>
+                        <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-right text-[11px] font-semibold text-slate-500">
+                          触发
+                        </th>
+                        <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                          失败位置
+                        </th>
+                        <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
+                          失败信息 / 说明
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {problem.runs.map((r, i) => {
+                        const dup = Boolean(r.pr && prCount[r.pr] > 1);
+                        return (
+                          <tr
+                            key={`${r.id}-${i}`}
+                            className={dup ? 'bg-amber-50/60' : undefined}
+                          >
+                            <td className="border-b border-slate-100 px-3 py-2 align-top">
+                              <a
+                                href={runURL(repo, r.id)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:underline"
+                              >
+                                #{r.n}
+                              </a>
+                            </td>
+                            <td className="border-b border-slate-100 px-3 py-2 align-top">
+                              {r.pr ? (
+                                <>
+                                  <a
+                                    href={prURL(repo, r.pr)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline"
+                                  >
+                                    {r.pr}
+                                  </a>
+                                  {dup ? (
+                                    <span className="ml-1 text-[11px] text-slate-400">
+                                      ×{prCount[r.pr]}
+                                    </span>
+                                  ) : null}
+                                </>
+                              ) : (
+                                '—'
+                              )}
+                            </td>
+                            <td className="border-b border-slate-100 px-3 py-2 text-right align-top tabular-nums text-slate-600">
+                              {r.t || '—'}
+                            </td>
+                            <td className="border-b border-slate-100 px-3 py-2 align-top text-slate-700">
+                              {r.stage || '—'}
+                              {r.job ? ` / ${r.job}` : ''}
+                            </td>
+                            <td className="border-b border-slate-100 px-3 py-2 align-top text-[11px] text-slate-400">
+                              {r.msg || ''}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

@@ -116,13 +116,10 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
   onProblemJump,
 }) => {
   const journey = CI_JOURNEY[repo];
-  const board =
-    journey.boards[day] ??
-    journey.boards[journey.days[journey.days.length - 1]];
+  const board = journey.boards[day];
   const scores = board?.scores ?? null;
   // 详情面板数据走逐日看板（board.problems / board.metrics），与旅程 scores 并行两套数据源
-  const dayBoard =
-    data.boards[day] ?? data.boards[data.days[data.days.length - 1]];
+  const dayBoard = data.boards[day];
 
   // 选中卡片：四维卡展开「当日问题清单与结果指标」，综合卡展开「本页怎么读」，再次点击收起
   const [activePanel, setActivePanel] = useState<PanelKey | null>(null);

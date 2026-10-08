@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CiPainTrackingButton } from '../PainTracking';
 import {
   AppstoreOutlined,
   ArrowRightOutlined,
@@ -479,6 +480,7 @@ const StageProblem: React.FC<{
 }> = ({ problem, repo, highlighted }) => {
   const { root, impact } = problem;
   const [open, setOpen] = useState(true);
+  const [runsOpen, setRunsOpen] = useState(true);
   const metaLines: string[] = [];
   if (impact) {
     const parts = [
@@ -502,38 +504,48 @@ const StageProblem: React.FC<{
         highlighted ? 'ring-2 ring-violet-400' : ''
       }`}
     >
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition-colors hover:bg-rose-50/40"
-      >
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-2">
-            <span
-              className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${
-                priBadgeClass[problem.pri]
+      <div className="flex w-full items-start justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-rose-50/40">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="min-w-0 flex-1 text-left"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${
+                  priBadgeClass[problem.pri]
+                }`}
+              >
+                {problem.pri}
+              </span>
+              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                {problem.dim}
+              </span>
+            </span>
+            <span className="mt-2 block text-sm font-semibold leading-6 text-slate-900">
+              {problem.title}
+            </span>
+          </span>
+        </button>
+        <div className="flex shrink-0 items-start gap-2 pt-0.5">
+          <CiPainTrackingButton problem={problem} />
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            aria-label={open ? '收起痛点详情' : '展开痛点详情'}
+            aria-expanded={open}
+            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-slate-600"
+          >
+            <DownOutlined
+              className={`text-[11px] transition-transform ${
+                open ? 'rotate-180' : ''
               }`}
-            >
-              {problem.pri}
-            </span>
-            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-500">
-              {problem.dim}
-            </span>
-          </span>
-          <span className="mt-2 block text-sm font-semibold leading-6 text-slate-900">
-            {problem.title}
-          </span>
-        </span>
-        <span className="shrink-0 pt-1 text-slate-400">
-          <DownOutlined
-            className={`text-[11px] transition-transform ${
-              open ? 'rotate-180' : ''
-            }`}
-          />
-        </span>
-      </button>
-
+            />
+          </button>
+        </div>
+      </div>
       {open ? (
         <div className="border-t border-rose-100 px-4 py-4">
           {metaLines.map((m, i) => (
@@ -592,63 +604,83 @@ const StageProblem: React.FC<{
           </div>
 
           {problem.runs.length ? (
-            <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200">
-              <table className="w-full min-w-[640px] border-collapse text-[11.5px]">
-                <thead className="bg-slate-50/80">
-                  <tr className="text-slate-500">
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
-                      run
-                    </th>
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
-                      PR
-                    </th>
-                    <th className="border-b border-slate-200 px-3 py-2 text-right font-semibold">
-                      触发
-                    </th>
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
-                      失败位置
-                    </th>
-                    <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
-                      失败信息 / 说明
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {problem.runs.map((r) => (
-                    <tr key={r.id} className="align-top text-slate-600">
-                      <td className="border-b border-slate-100 px-3 py-2">
-                        <a
-                          href={runURL(repo, r.id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          #{r.n}
-                        </a>
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2">
-                        <a
-                          href={prURL(repo, r.pr)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {r.pr}
-                        </a>
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2 text-right tabular-nums">
-                        {r.t}
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2">
-                        {r.stage} / {r.job}
-                      </td>
-                      <td className="border-b border-slate-100 px-3 py-2 text-slate-400">
-                        {r.msg}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mt-3">
+              <button
+                type="button"
+                aria-expanded={runsOpen}
+                onClick={() => setRunsOpen((value) => !value)}
+                className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+              >
+                <span>关联执行记录</span>
+                <span className="font-normal text-slate-400">
+                  共 {problem.runs.length} 条
+                </span>
+                <DownOutlined
+                  className={`ml-auto text-[11px] text-slate-400 transition-transform ${
+                    runsOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+              {runsOpen ? (
+                <div className="mt-2 overflow-x-auto rounded-xl border border-slate-200">
+                  <table className="w-full min-w-[640px] border-collapse text-[11.5px]">
+                    <thead className="bg-slate-50/80">
+                      <tr className="text-slate-500">
+                        <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
+                          run
+                        </th>
+                        <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
+                          PR
+                        </th>
+                        <th className="border-b border-slate-200 px-3 py-2 text-right font-semibold">
+                          触发
+                        </th>
+                        <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
+                          失败位置
+                        </th>
+                        <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
+                          失败信息 / 说明
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {problem.runs.map((r) => (
+                        <tr key={r.id} className="align-top text-slate-600">
+                          <td className="border-b border-slate-100 px-3 py-2">
+                            <a
+                              href={runURL(repo, r.id)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline"
+                            >
+                              #{r.n}
+                            </a>
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2">
+                            <a
+                              href={prURL(repo, r.pr)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline"
+                            >
+                              {r.pr}
+                            </a>
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2 text-right tabular-nums">
+                            {r.t}
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2">
+                            {r.stage} / {r.job}
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2 text-slate-400">
+                            {r.msg}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -969,9 +1001,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
   focus,
 }) => {
   const journey = CI_JOURNEY[repo];
-  const board =
-    journey.boards[day] ??
-    journey.boards[journey.days[journey.days.length - 1]];
+  const board = journey.boards[day];
   const stages = board?.stages ?? [];
   // 默认选中首个「有问题」段，其次首个「需处理」段（对齐设计稿默认落在系统测试）
   const defaultKey =

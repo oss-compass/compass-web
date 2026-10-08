@@ -12,11 +12,15 @@ import CiReportOverview from './CiReportOverview';
 import CiJourneyPanorama from './CiJourneyPanorama';
 import DailyDrilldown from './DailyDrilldown';
 import DeepAnalysis from './DeepAnalysis';
+import { CI_JOURNEY } from './journeyData';
+import { CiPainTrackingProvider } from '../PainTracking';
+import { uniqueProblems } from '../PainTracking/model';
 
 type CiReportProps = {
   data: CiRepoData;
   repo: CiRepoKey;
   day: string;
+  org?: string;
 };
 
 /**
@@ -24,7 +28,14 @@ type CiReportProps = {
  * 体验得分区已重构为开发者旅程全景图（样式借鉴社区入门体验旅程全景图）；
  * 日观测板 / 周复盘切换已隐藏，默认只展示日观测板 → 深度分析 → 附录。
  */
-const CiReport: React.FC<CiReportProps> = ({ data, repo, day }) => {
+const CiReport: React.FC<CiReportProps> = ({ data, repo, day, org }) => {
+  const scope = { org: org || 'cann', repo, workflow: data.workflow, day };
+  const journeyBoard = CI_JOURNEY[repo]?.boards[day];
+  const problems = uniqueProblems([
+    ...(data.boards[day]?.problems ?? []),
+    ...(journeyBoard?.stages.flatMap((stage) => stage.problems) ?? []),
+    ...(journeyBoard?.unsegProblems ?? []),
+  ]).sort((a, b) => a.pri.localeCompare(b.pri) || b.impact.prs - a.impact.prs);
   // 报告概览展开面板问题行点击 → 全景图切段并定位同一问题
   const [journeyFocus, setJourneyFocus] = useState<CiJourneyFocus | null>(null);
   const handleProblemJump = (p: CiProblem) => {
@@ -46,25 +57,31 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo, day }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-        <CiReportOverview
-          data={data}
-          repo={repo}
-          day={day}
-          onProblemJump={handleProblemJump}
-        />
-
-        {/* 体验得分（重构为开发者旅程全景图，含段详情：四维度 / 段中位耗时 / 段内问题） */}
-        <div className="mt-2 border-slate-100 pt-5">
-          <CiJourneyPanorama
+      <CiPainTrackingProvider
+        key={JSON.stringify(scope)}
+        scope={scope}
+        repo={repo}
+        problems={problems}
+      >
+        <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+          <CiReportOverview
+            data={data}
             repo={repo}
-            workflow={data.workflow}
             day={day}
-            focus={journeyFocus}
+            onProblemJump={handleProblemJump}
           />
-        </div>
-      </div>
 
+          {/* 体验得分（重构为开发者旅程全景图，含段详情：四维度 / 段中位耗时 / 段内问题） */}
+          <div className="mt-2 border-slate-100 pt-5">
+            <CiJourneyPanorama
+              repo={repo}
+              workflow={data.workflow}
+              day={day}
+              focus={journeyFocus}
+            />
+          </div>
+        </div>
+      </CiPainTrackingProvider>
       <DailyDrilldown data={data} day={day} />
 
       {/* 深度分析（默认折叠） */}

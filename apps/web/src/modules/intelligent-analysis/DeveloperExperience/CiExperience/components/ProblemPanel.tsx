@@ -12,6 +12,7 @@ import { ScrollX, Table, Td, Th } from './Table';
 import { Collapsible, DimTag, EmptyState, PriBadge, ValText } from './shared';
 import ProblemCard from './ProblemCard';
 import DiagBlock from './DiagBlock';
+import { CiPainTrackingButton } from './PainTracking';
 
 type DimSelection = CiDimKey | 'all';
 
@@ -31,24 +32,34 @@ const ProblemJumpRow: React.FC<{
   problem: CiProblem;
   onJump: (problem: CiProblem) => void;
 }> = ({ problem, onJump }) => (
-  <button
-    type="button"
-    onClick={() => onJump(problem)}
-    title="点击定位到开发者旅程全景图中的同一问题"
-    className="group flex w-full items-start justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition-all hover:border-violet-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
-  >
-    <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[13px] font-semibold text-slate-800">
-      <PriBadge p={problem.pri} />
-      <DimTag>{problem.dim}</DimTag>
-      <span className="inline-block rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-600">
-        {problem.seg || '跨段/未映射'}
+  <div className="group flex w-full items-start justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition-all hover:border-violet-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+    <button
+      type="button"
+      onClick={() => onJump(problem)}
+      title="点击定位到开发者旅程全景图中的同一问题"
+      className="min-w-0 flex-1 text-left"
+    >
+      <span className="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-[13px] font-semibold text-slate-800">
+        <PriBadge p={problem.pri} />
+        <DimTag>{problem.dim}</DimTag>
+        <span className="inline-block rounded border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[11px] font-semibold text-indigo-600">
+          {problem.seg || '跨段/未映射'}
+        </span>
+        <span className="text-slate-800">{problem.title}</span>
       </span>
-      <span className="text-slate-800">{problem.title}</span>
-    </span>
-    <span className="flex shrink-0 items-center gap-1 pt-0.5 text-[11.5px] font-medium text-blue-600 opacity-0 transition-opacity group-hover:opacity-100">
-      查看详情 <ArrowRightOutlined className="text-[10px]" />
-    </span>
-  </button>
+    </button>
+    <div className="flex shrink-0 items-center gap-2 pt-0.5">
+      <CiPainTrackingButton problem={problem} />
+      <button
+        type="button"
+        onClick={() => onJump(problem)}
+        aria-label="查看痛点详情"
+        className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-50 hover:text-blue-600"
+      >
+        <ArrowRightOutlined className="text-[10px]" />
+      </button>
+    </div>
+  </div>
 );
 
 const ProblemPanel: React.FC<ProblemPanelProps> = ({
@@ -89,13 +100,13 @@ const ProblemPanel: React.FC<ProblemPanelProps> = ({
   return (
     <div className="flex flex-col gap-3">
       <p className="text-[11.5px] leading-relaxed text-slate-400">
-        问题 = 现象 + 影响面 + 可能根因 + 全量 run×PR 映射（不省略）+
-        建议动作。<b className="font-semibold text-slate-600">
+        问题 = 现象 + 影响面 + 可能根因 + 全量 run×PR 映射（不省略）+ 建议动作。
+        <b className="font-semibold text-slate-600">
           根因只来自机理知识库（人工审定）
         </b>
         ；分类器遇到新机理只给现象与日志证据，标「待人工判读」，不即兴生成根因。优先级：P0
-        = 平台失败聚集 ≥5 run；P1 = 平台零散 / 系统性同挂 / 超基线 2 倍；P2 = 待定聚集 /
-        观察项。
+        = 平台失败聚集 ≥5 run；P1 = 平台零散 / 系统性同挂 / 超基线 2 倍；P2 =
+        待定聚集 / 观察项。
       </p>
 
       {/* 问题卡列表：有 onProblemJump 时渲染紧凑跳转行（tag+标题，点击定位全景图），否则保持可展开卡 */}
@@ -171,10 +182,7 @@ const ProblemPanel: React.FC<ProblemPanelProps> = ({
       {/* 维度细分（诊断指标）折叠块 */}
       <div className="flex flex-col gap-2">
         {diagKeys.map((k) => (
-          <Collapsible
-            key={k}
-            summary={`${DIM_NAME[k]} · 细分（诊断指标）`}
-          >
+          <Collapsible key={k} summary={`${DIM_NAME[k]} · 细分（诊断指标）`}>
             <DiagBlock dimKey={k} diag={board.diag} />
           </Collapsible>
         ))}

@@ -1,3 +1,4 @@
+import PainTrackingStatusButton from '../../../components/PainTrackingStatusButton';
 import React, { useEffect, useState } from 'react';
 import {
   CheckCircleFilled,
@@ -74,27 +75,13 @@ export const TrackingActionButton: React.FC<{
       : '查看详情';
 
   return (
-    <button
-      type="button"
+    <PainTrackingStatusButton
+      label={meta.label}
+      className={meta.className}
+      pending={pending}
+      actionLabel={actionLabel}
       onClick={onClick}
-      title={pending ? '点击确认该痛点' : '查看痛点跟踪详情'}
-      className={`inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-all hover:shadow-sm ${
-        pending
-          ? 'border-dashed border-amber-400 bg-amber-50 text-amber-700 hover:border-amber-500 hover:bg-amber-100'
-          : `${meta.className} hover:brightness-95`
-      }`}
-    >
-      {pending ? (
-        <span className="relative flex h-2 w-2 shrink-0">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-50" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
-        </span>
-      ) : null}
-      <span>{meta.label}</span>
-      {!pending && actionLabel ? (
-        <span className="opacity-70">· {actionLabel}</span>
-      ) : null}
-    </button>
+    />
   );
 };
 
