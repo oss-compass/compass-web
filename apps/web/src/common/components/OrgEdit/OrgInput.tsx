@@ -28,11 +28,6 @@ const Select: React.FC<
     },
     {
       enabled: Boolean(throttledKeyword),
-      onSuccess(res) {
-        if (res?.orgFuzzySearch?.length === 0) {
-          onChange(throttledKeyword);
-        }
-      },
     }
   );
   const showLoading = isLoading && fetchStatus === 'fetching';
@@ -43,6 +38,7 @@ const Select: React.FC<
         value={keyword}
         onChange={(e) => {
           setKeyword(e.target.value);
+          onChange?.(e.target.value);
         }}
         onFocus={() => {
           setShowlist(true);
