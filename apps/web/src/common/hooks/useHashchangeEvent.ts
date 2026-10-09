@@ -6,12 +6,16 @@ const useHashchangeEvent = (
     cardClassName: 'base-card',
   }
 ) => {
-  let initialHash = window.location.hash ? window.location.hash.slice(1) : '';
-  if (initialHash.includes('?')) {
-    let parts = initialHash.split('?');
-    initialHash = parts[0];
-  }
-  const [activeId, setActiveId] = useState(initialHash);
+  const [activeId, setActiveId] = useState(() => {
+    // Guard against SSR: `window` is undefined during server-side rendering.
+    // All current callers render this hook inside <NoSsr>, so this only hardens
+    // the hook itself against future usage without such a boundary.
+    if (typeof window === 'undefined') return '';
+
+    let hash = window.location.hash ? window.location.hash.slice(1) : '';
+    const questionIndex = hash.indexOf('?');
+    return questionIndex >= 0 ? hash.slice(0, questionIndex) : hash;
+  });
 
   useEffect(() => {
     const hashChangeHandle = (e: HashChangeEvent) => {
