@@ -20,7 +20,10 @@ import {
   IssueFrequentPainSection,
   IssuePainProgressOverview,
 } from './IssuePainInsights';
-import type { IssueTrendModalData } from './IssueTrendModal';
+import type {
+  IssueTrendGranularity,
+  IssueTrendModalData,
+} from './IssueTrendModal';
 
 const { Title } = Typography;
 
@@ -31,6 +34,34 @@ const ISSUE_QUERY_STALE_TIME = 5 * 60 * 1000;
 const shortPeriod = (period: string): string => {
   const [start, end = start] = period.split('_to_');
   return end.length > 5 ? end.slice(5) : end;
+};
+
+const buildMonthlyTrend = (
+  values: Array<number | null>,
+  periods: string[],
+  mode: 'average' | 'last'
+) => {
+  const grouped = new Map<string, Array<number | null>>();
+  periods.forEach((period, index) => {
+    const [start, end = start] = period.split('_to_');
+    const month = end.slice(0, 7);
+    grouped.set(month, [...(grouped.get(month) ?? []), values[index] ?? null]);
+  });
+  const labels = Array.from(grouped.keys()).sort();
+  return {
+    labels,
+    values: labels.map((month) => {
+      const validValues = (grouped.get(month) ?? []).filter(
+        (value): value is number => value != null && Number.isFinite(value)
+      );
+      if (!validValues.length) return null;
+      if (mode === 'last') return validValues[validValues.length - 1];
+      return +(
+        validValues.reduce((total, value) => total + value, 0) /
+        validValues.length
+      ).toFixed(1);
+    }),
+  };
 };
 
 const isResolvedPain = (pain: IssueOverviewTopPain) => {
@@ -44,6 +75,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const [appendixOpen, setAppendixOpen] = React.useState(false);
   const [trendModal, setTrendModal] =
     React.useState<IssueTrendModalData | null>(null);
+  const [trendGranularity, setTrendGranularity] =
+    React.useState<IssueTrendGranularity>('month');
   const repoManagementHref = buildIssueRepoManagementHref({ org });
 
   const {
@@ -164,6 +197,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       value: formatScore(latestAverageScore),
       trend: data.agg.idx,
       trendMax: 100,
+      monthlyMode: 'average' as const,
     },
     {
       label: '闭环情况',
@@ -171,16 +205,19 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       trend: painCloseTrend,
       trendMax: 100,
       trendUnit: '%',
+      monthlyMode: 'last' as const,
     },
     {
       label: '达成 90 分以上仓数',
       value: String(score90PlusRepos),
       trend: score90PlusRepoTrend,
+      monthlyMode: 'last' as const,
     },
     {
       label: '覆盖仓库数',
       value: String(latestRepos.length),
       trend: coverageRepoTrend,
+      monthlyMode: 'last' as const,
     },
   ];
 
@@ -193,34 +230,44 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         className="overview-bottom-row"
         style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
       >
-        {kpis.map((kpi) => (
-          <div key={kpi.label} className="bottom-metric">
-            <div className="bm-label">{kpi.label}</div>
-            <div className="bm-value">
-              <span className="bm-value-main">{kpi.value}</span>
-              {kpi.trend && kpi.trend.length > 1 ? (
-                <IssueTrendSparkline
-                  className="bm-trend-sparkline"
-                  trend={{
-                    title: `${kpi.label} · 逐周趋势`,
-                    subtitle:
-                      kpi.label === '综合体验评分'
-                        ? undefined
-                        : '跨仓聚合 · 时间升序',
-                    height: kpi.label === '综合体验评分' ? 340 : undefined,
-                    unit: kpi.trendUnit,
-                    values: kpi.trend,
-                    labels: data.agg.periods.map(shortPeriod),
-                    periods: data.agg.periods,
-                  }}
-                  width={52}
-                  height={26}
-                  maxValue={kpi.trendMax ?? Math.max(1, ...kpi.trend)}
-                />
-              ) : null}
+        {kpis.map((kpi) => {
+          const monthlyTrend = buildMonthlyTrend(
+            kpi.trend,
+            data.agg.periods,
+            kpi.monthlyMode
+          );
+          return (
+            <div key={kpi.label} className="bottom-metric">
+              <div className="bm-label">{kpi.label}</div>
+              <div className="bm-value">
+                <span className="bm-value-main">{kpi.value}</span>
+                {kpi.trend && kpi.trend.length > 1 ? (
+                  <IssueTrendSparkline
+                    className="bm-trend-sparkline"
+                    trend={{
+                      title: `${kpi.label} · 趋势`,
+                      subtitle:
+                        kpi.label === '综合体验评分'
+                          ? undefined
+                          : '跨仓聚合 · 时间升序',
+                      height: kpi.label === '综合体验评分' ? 340 : undefined,
+                      unit: kpi.trendUnit,
+                      values: kpi.trend,
+                      labels: data.agg.periods.map(shortPeriod),
+                      periods: data.agg.periods,
+                      monthly: monthlyTrend,
+                    }}
+                    width={52}
+                    height={26}
+                    maxValue={kpi.trendMax ?? Math.max(1, ...kpi.trend)}
+                    granularity={trendGranularity}
+                    onGranularityChange={setTrendGranularity}
+                  />
+                ) : null}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <IssueScoreDistribution

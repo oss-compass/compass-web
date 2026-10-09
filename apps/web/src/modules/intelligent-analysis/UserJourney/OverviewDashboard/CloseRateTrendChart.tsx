@@ -10,6 +10,8 @@ type CloseRateSparklineProps = {
   stroke?: string;
   minValue?: number;
   maxValue?: number;
+  /** 是否跨过空值连接相邻有效点。 */
+  connectNulls?: boolean;
 };
 
 const buildLinePath = (
@@ -30,6 +32,7 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
   stroke = OJ_TREND_COLORS.line,
   minValue = 0,
   maxValue = 100,
+  connectNulls = false,
 }) => {
   const validValues = values.filter(
     (value): value is number => value != null && Number.isFinite(value)
@@ -54,8 +57,10 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
   values.forEach((value, idx) => {
     const x = padding + step * idx;
     if (value == null || !Number.isFinite(value)) {
-      if (current.length) segments.push(current);
-      current = [];
+      if (!connectNulls) {
+        if (current.length) segments.push(current);
+        current = [];
+      }
       return;
     }
     const clamped = Math.max(lower, Math.min(upper, value));
@@ -71,10 +76,16 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
       return {
         path,
         firstX: segment[0].x,
+        firstY: segment[0].y,
         lastX: segment[segment.length - 1].x,
       };
     })
-    .filter(Boolean) as Array<{ path: string; firstX: number; lastX: number }>;
+    .filter(Boolean) as Array<{
+    path: string;
+    firstX: number;
+    firstY: number;
+    lastX: number;
+  }>;
 
   return (
     <svg
@@ -103,6 +114,14 @@ export const CloseRateSparkline: React.FC<CloseRateSparklineProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
             />
+            {segment.firstX === segment.lastX ? (
+              <circle
+                cx={segment.firstX}
+                cy={segment.firstY}
+                r="2"
+                fill={stroke}
+              />
+            ) : null}
           </g>
         );
       })}

@@ -1647,3 +1647,21 @@ export const updateOverviewParentPain = async (
   }
   return res.json();
 };
+
+export const setRepoManagementOverviewEnabled = async (
+  repo_name: string,
+  report_type: 'community' | 'issue',
+  enabled: boolean
+): Promise<{ message: string; notification_status: string }> => {
+  const token = getCompassOperatorToken();
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch(
+    `/repo-management/${enabled ? 'online' : 'offline'}`,
+    token,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repo_name, report_type }),
+    }
+  );
+};

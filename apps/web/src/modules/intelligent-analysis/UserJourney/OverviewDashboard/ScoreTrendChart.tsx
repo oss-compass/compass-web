@@ -38,7 +38,7 @@ const INTEGER_NICE_STEPS = [
   20000, 25000, 50000, 100000,
 ];
 
-const getIntegerScaleRange = (minValue: number, maxValue: number) => {
+export const getIntegerScaleRange = (minValue: number, maxValue: number) => {
   const span = Math.max(1, Math.ceil(maxValue) - Math.floor(minValue));
   // 优先取“好看”的步长（1/2/4/5/10…），刻度显示更整
   let step = INTEGER_NICE_STEPS.find((candidate) => candidate >= span / 4);

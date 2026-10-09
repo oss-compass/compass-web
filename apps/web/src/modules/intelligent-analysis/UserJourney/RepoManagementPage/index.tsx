@@ -53,6 +53,7 @@ import {
   setCompassOperatorToken,
   triggerOverviewRepoRerun,
   upsertRepoManagementRepo,
+  setRepoManagementOverviewEnabled,
 } from '../rawData/apiClient';
 import type {
   CompassOperatorUser,
@@ -1368,23 +1369,21 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
 
   const handleToggleOverviewEnabled = useCallback(
     async (record: RepoManagementItem, checked: boolean) => {
-      if (!isAdmin) return;
       setOverviewUpdatingRepo(record.repo_name);
       try {
-        await upsertRepoManagementRepo({
-          repo_name: record.repo_name,
-          community_name: record.community_name,
-          owner: parseTextListInput(record.owner),
-          owner_email: parseTextListInput(record.owner_email),
-          team_no: record.team_no,
-          team_name: record.team_name,
-          hardware_env: record.hardware_env,
-          hardware_envs: getRecordHardwareEnvs(record),
-          benchmark_repo_name: record.benchmark_repo_name,
-          overview_enabled: checked,
-          remark: record.remark,
-          report_type: reportType,
-        });
+        const result = await setRepoManagementOverviewEnabled(
+          record.repo_name,
+          reportType,
+          checked
+        );
+        if (
+          checked &&
+          !['sent', 'not_needed'].includes(result.notification_status)
+        ) {
+          messageApi.warning(
+            '仓库已上线，但邮件通知未发送成功，请联系管理员检查通知记录。'
+          );
+        }
         messageApi.success(
           checked
             ? isIssueManagement
@@ -1406,14 +1405,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         setOverviewUpdatingRepo('');
       }
     },
-    [
-      isAdmin,
-      isIssueManagement,
-      messageApi,
-      queryClient,
-      refetchRepoList,
-      reportType,
-    ]
+    [isIssueManagement, messageApi, queryClient, refetchRepoList, reportType]
   );
 
   const handleAddOwnerContact = async () => {
@@ -1689,23 +1681,17 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
               checked={checked}
               checkedChildren="上线"
               unCheckedChildren="下线"
-              disabled={!isAdmin}
               loading={overviewUpdatingRepo === record.repo_name}
             />
           );
-          if (!isAdmin) {
-            return (
-              <Tooltip title="需要管理员权限操作">
-                <span className="inline-flex">{switchNode}</span>
-              </Tooltip>
-            );
-          }
           return (
             <Popconfirm
               title={checked ? '确认下线总览看板吗？' : '确认上线总览看板吗？'}
               description={`${getRepoDisplayName(record)} 将${
                 checked ? '不再纳入' : '纳入'
-              }总览看板统计。`}
+              }总览看板统计。${
+                checked ? '' : '上线后将发送邮件通知该仓库负责人和所有管理员。'
+              }`}
               okText="确认"
               cancelText="取消"
               onConfirm={() => {
