@@ -14,18 +14,20 @@ const AvgItem = () => {
   const snap = useSnapshot(chartUserSettingState);
 
   return (
-    <div
+    <button
+      type="button"
+      aria-pressed={snap.showAvg}
       className={classnames(
-        'group flex cursor-pointer border-b py-2 pl-3.5 transition',
+        'focus-visible:outline-primary group flex w-full cursor-pointer border-b py-2 pl-3.5 text-left transition focus-visible:outline focus-visible:outline-2',
         [snap.showAvg ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.showAvg = !snap.showAvg;
       }}
     >
-      <Average className="mr-2" />
+      <Average className="mr-2" aria-hidden="true" />
       {t('analyze:avg_line.show')}
-    </div>
+    </button>
   );
 };
 
@@ -34,18 +36,20 @@ const MedianItem = () => {
   const snap = useSnapshot(chartUserSettingState);
 
   return (
-    <div
+    <button
+      type="button"
+      aria-pressed={snap.showMedian}
       className={classnames(
-        'group flex cursor-pointer border-b py-2 pl-3.5 transition',
+        'focus-visible:outline-primary group flex w-full cursor-pointer border-b py-2 pl-3.5 text-left transition focus-visible:outline focus-visible:outline-2',
         [snap.showMedian ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.showMedian = !snap.showMedian;
       }}
     >
-      <Median className="mr-2" />
+      <Median className="mr-2" aria-hidden="true" />
       {t('analyze:median_line.show')}
-    </div>
+    </button>
   );
 };
 
@@ -54,18 +58,20 @@ const OnePointItem = () => {
   const snap = useSnapshot(chartUserSettingState);
 
   return (
-    <div
+    <button
+      type="button"
+      aria-pressed={!snap.onePointSys}
       className={classnames(
-        'group flex cursor-pointer border-b py-2 pl-3.5 transition',
+        'focus-visible:outline-primary group flex w-full cursor-pointer border-b py-2 pl-3.5 text-left transition focus-visible:outline focus-visible:outline-2',
         [!snap.onePointSys ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.onePointSys = !snap.onePointSys;
       }}
     >
-      <Svg100 className="mr-2" />
+      <Svg100 className="mr-2" aria-hidden="true" />
       <span>{t('analyze:mark.percentage')}</span>
-    </div>
+    </button>
   );
 };
 
@@ -74,18 +80,20 @@ const YScaleItem = () => {
   const snap = useSnapshot(chartUserSettingState);
 
   return (
-    <div
+    <button
+      type="button"
+      aria-pressed={snap.yAxisScale}
       className={classnames(
-        'group flex cursor-pointer  py-2 pl-3.5 transition',
+        'focus-visible:outline-primary group flex w-full cursor-pointer py-2 pl-3.5 text-left transition focus-visible:outline focus-visible:outline-2',
         [snap.yAxisScale ? 'text-primary' : 'text-[#585858]']
       )}
       onClick={() => {
         chartUserSettingState.yAxisScale = !snap.yAxisScale;
       }}
     >
-      <YScale className="mr-2" />
+      <YScale className="mr-2" aria-hidden="true" />
       <span>{t('analyze:y_axis_scale')}</span>
-    </div>
+    </button>
   );
 };
 
