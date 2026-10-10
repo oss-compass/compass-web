@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
 import { useCountDown } from 'ahooks';
@@ -13,48 +13,30 @@ import { toast } from 'react-hot-toast';
 import { Transition } from '@common/components/Dialog';
 import Tooltip from '@common//components/Tooltip';
 import * as RadioGroup from '@radix-ui/react-radio-group';
-
-const queryMap = {
-  COLLAB_DEV_INDEX: 'collab_dev_index',
-  COMMUNITY: 'community',
-  ACTIVITY: 'activity',
-  ORGANIZATIONS_ACTIVITY: 'organizations_activity',
-};
-
-const anchorList = [
-  {
-    badgeUrlQuery: queryMap.COLLAB_DEV_INDEX,
-    anchor: 'collaboration_development_index',
-  },
-  {
-    badgeUrlQuery: queryMap.COMMUNITY,
-    anchor: 'community_service_support',
-  },
-  {
-    badgeUrlQuery: queryMap.ACTIVITY,
-    anchor: 'community_activity',
-  },
-  {
-    badgeUrlQuery: queryMap.ORGANIZATIONS_ACTIVITY,
-    anchor: 'organizations_activity',
-  },
-];
+import {
+  BADGE_LOGO,
+  BADGE_SNIPPET_FORMATS,
+  BADGE_TOPICS,
+  BadgeSelection,
+  BadgeSnippetFormat,
+  buildBadgeSnippet,
+  buildBadgeSrc,
+} from './badgeConfig';
 
 const Badge = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const slug = router.query.slugs as string;
-  const badgeLinks = {
-    logo: `/badge/${slug}.svg`,
-    collab_dev_index: `/badge/${slug}.svg?metric=${queryMap.COLLAB_DEV_INDEX}`,
-    community: `/badge/${slug}.svg?metric=${queryMap.COMMUNITY}`,
-    activity: `/badge/${slug}.svg?metric=${queryMap.ACTIVITY}`,
-    organizations_activity: `/badge/${slug}.svg?metric=${queryMap.ORGANIZATIONS_ACTIVITY}`,
-  };
 
   const [open, setOpen] = useState(false);
-
-  const [badgeSrc, setBadgeSrc] = useState(badgeLinks.logo);
+  // The selection is stored as a metric id instead of the badge url so the
+  // preview still resolves when `router.query.slugs` becomes available after
+  // the first client render.
+  const [selection, setSelection] = useState<BadgeSelection>(BADGE_LOGO);
+  const badgeSrc = useMemo(
+    () => buildBadgeSrc(slug, selection),
+    [slug, selection]
+  );
 
   return (
     <>
@@ -96,42 +78,34 @@ const Badge = () => {
             <GrClose className="text-base" />
           </div>
           <RadioGroup.Root
-            value={badgeSrc}
+            value={selection}
             onValueChange={(v) => {
-              setBadgeSrc(v);
+              setSelection(v as BadgeSelection);
             }}
           >
             <div className="mb-6 grid grid-cols-2 gap-4">
-              <BadgeItem activeSrc={badgeSrc} src={badgeLinks.logo} />
-            </div>
-
-            <div className="mb-2 font-medium">
-              {t('analyze:topic.productivity')}
-            </div>
-            <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-1">
               <BadgeItem
-                activeSrc={badgeSrc}
-                src={badgeLinks.collab_dev_index}
-              />
-              <BadgeItem activeSrc={badgeSrc} src={badgeLinks.community} />
-            </div>
-
-            <div className="mb-2 font-medium">
-              {t('analyze:topic.robustness')}
-            </div>
-            <div className="mb-6 grid grid-cols-2 gap-4">
-              <BadgeItem activeSrc={badgeSrc} src={badgeLinks.activity} />
-            </div>
-
-            <div className="mb-2 font-medium">
-              {t('analyze:topic.niche_creation')}
-            </div>
-            <div className="mb-6 grid grid-cols-2 gap-4">
-              <BadgeItem
-                activeSrc={badgeSrc}
-                src={badgeLinks.organizations_activity}
+                activeSelection={selection}
+                selection={BADGE_LOGO}
+                src={buildBadgeSrc(slug, BADGE_LOGO)}
               />
             </div>
+
+            {BADGE_TOPICS.map((topic) => (
+              <React.Fragment key={topic.topicKey}>
+                <div className="mb-2 font-medium">{t(topic.topicKey)}</div>
+                <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-1">
+                  {topic.metrics.map((metric) => (
+                    <BadgeItem
+                      key={metric}
+                      activeSelection={selection}
+                      selection={metric}
+                      src={buildBadgeSrc(slug, metric)}
+                    />
+                  ))}
+                </div>
+              </React.Fragment>
+            ))}
           </RadioGroup.Root>
           <TabPanel badgeSrc={badgeSrc} />
         </div>
@@ -140,13 +114,24 @@ const Badge = () => {
   );
 };
 
-const BadgeItem = ({ activeSrc, src }: { activeSrc: string; src: string }) => {
-  const isChecked = activeSrc === src;
+const BadgeItem = ({
+  activeSelection,
+  selection,
+  src,
+}: {
+  activeSelection: BadgeSelection;
+  selection: BadgeSelection;
+  src: string;
+}) => {
+  const isChecked = activeSelection === selection;
+  // The radio id is derived from the metric id, which is always a valid html
+  // id fragment, instead of the badge url that contains slashes and queries.
+  const id = `badge-option-${selection}`;
   return (
     <div className="flex cursor-pointer items-center ">
       <RadioGroup.Item
-        value={src}
-        id={src}
+        value={selection}
+        id={id}
         className={cn(
           'h-[20px] w-[20px]  rounded-full border-2 bg-white outline-none ',
           [isChecked ? 'border-primary' : 'border-secondary']
@@ -156,7 +141,7 @@ const BadgeItem = ({ activeSrc, src }: { activeSrc: string; src: string }) => {
       </RadioGroup.Item>
       <label
         className="flex cursor-pointer pl-[15px] text-[15px] leading-none text-black"
-        htmlFor={src}
+        htmlFor={id}
       >
         <img src={src} alt="" />
       </label>
@@ -164,42 +149,19 @@ const BadgeItem = ({ activeSrc, src }: { activeSrc: string; src: string }) => {
   );
 };
 
-const getMarkdownAnchorLink = (badgeSrc: string) => {
-  const url = window.origin + window.location.pathname;
-  const item = anchorList.find((i) => badgeSrc.endsWith(i.badgeUrlQuery));
-  if (!item) {
-    return url;
-  }
-  return `${url}#${item.anchor}`;
-};
-
 const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
   const { t } = useTranslation();
-  const [tab, setTab] = React.useState('Markdown');
+  const [tab, setTab] = useState<BadgeSnippetFormat>('Markdown');
   const [targetDate, setTargetDate] = useState<number>();
   const [countdown] = useCountDown({ targetDate });
-  const badgeLink = window.origin + badgeSrc;
 
-  let source = '';
-  switch (tab) {
-    case 'Markdown': {
-      source = `[![OSS Compass Analyze](${badgeLink})](${getMarkdownAnchorLink(
-        badgeSrc
-      )})`;
-      break;
-    }
-    case 'HTML': {
-      source = `<img src="${badgeLink}" alt="OSS Compass Analyze" />`;
-      break;
-    }
-    case 'Link': {
-      source = badgeLink;
-      break;
-    }
-    default: {
-      break;
-    }
-  }
+  // The dialog is only rendered after a user click, so `window` is safe to
+  // read here. The snippet helpers stay pure and receive the location
+  // explicitly, which keeps them unit testable.
+  const source = buildBadgeSnippet(badgeSrc, tab, {
+    origin: window.origin,
+    pathname: window.location.pathname,
+  });
 
   return (
     <>
@@ -212,30 +174,18 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
         aria-label="Tabs where selection follows focus"
         selectionFollowsFocus
       >
-        <Tab
-          disableRipple
-          classes={{ root: '!normal-case', selected: '!text-black ' }}
-          label="Markdown"
-          value="Markdown"
-        />
-        <Tab
-          disableRipple
-          classes={{
-            root: '!normal-case',
-            selected: '!text-black !normal-case',
-          }}
-          label="HTML"
-          value="HTML"
-        />
-        <Tab
-          disableRipple
-          classes={{
-            root: '!normal-case',
-            selected: '!text-black !normal-case',
-          }}
-          label="Link"
-          value="Link"
-        />
+        {BADGE_SNIPPET_FORMATS.map((format) => (
+          <Tab
+            key={format}
+            disableRipple
+            classes={{
+              root: '!normal-case',
+              selected: '!text-black !normal-case',
+            }}
+            label={format}
+            value={format}
+          />
+        ))}
       </Tabs>
       <div className="mt-4 flex  h-[60px] items-center justify-between rounded border bg-[#fafafa] px-3">
         <div className="break-all text-xs">{source}</div>
@@ -258,10 +208,10 @@ const TabPanel = ({ badgeSrc }: { badgeSrc: string }) => {
                     setTargetDate(Date.now() + 800);
                   })
                   .catch((err) => {
-                    toast.error('Failed！No copy permission');
+                    toast.error('Failed: no clipboard permission');
                   });
               } else {
-                toast.error('Failed！ Not Supported clipboard');
+                toast.error('Failed: clipboard is not supported');
               }
             }}
           >
