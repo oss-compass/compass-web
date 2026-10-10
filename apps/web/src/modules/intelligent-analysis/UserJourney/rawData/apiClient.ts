@@ -1013,22 +1013,18 @@ export const fetchPainConfirmations = async (
  */
 export const upsertPainConfirmation = async (
   fileKey: string,
-  payload: UpsertPainConfirmationPayload
+  payload: UpsertPainConfirmationPayload,
+  token = getCompassOperatorToken()
 ): Promise<{ message: string; data: PainConfirmationRecord }> => {
-  const url = compassApiUrl(`/reports/${fileKey}/pain-confirmations`);
-  const res = await fetch(url, {
+  if (!token) throw new Error('未登录');
+  return compassApiAuthedFetch<{
+    message: string;
+    data: PainConfirmationRecord;
+  }>(`/reports/${fileKey}/pain-confirmations`, token, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(
-      (errBody as { detail?: string }).detail ||
-        `[CompassAPI] ${res.status} ${res.statusText}`
-    );
-  }
-  return res.json();
 };
 
 // ---------- Overview Dashboard ----------
