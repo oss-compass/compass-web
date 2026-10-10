@@ -1,6 +1,6 @@
 import {
+  getCanonicalRepoPath,
   getNameSpace,
-  getPathname,
   getProvider,
   getRepoName,
   toFixed,
@@ -9,21 +9,47 @@ import capitalize from 'lodash/capitalize';
 import { OptionDataValue } from 'echarts/types/src/util/types';
 
 /**
- * check is need show provider in legend
+ * Whether the provider should be appended to the legend/tooltip of `label`.
+ *
  * eg:
  * https://github.com/cli/cli
  * https://gitee.com/cli/cli
  *
- * need show gitee or github
+ * need show gitee or github, because the two entries would otherwise render the
+ * exact same `name` / `namespace` and be indistinguishable.
+ *
+ * The comparison is done on the canonical `namespace/repo` path (see
+ * `getCanonicalRepoPath`) instead of on a substring of the URL. A substring
+ * test is wrong in both directions:
+ * - false positive: `apache/dubbo` is a substring of `apache/dubbo-go`, so two
+ *   unrelated repos were treated as the same one;
+ * - false negative: a trailing slash or a different letter case made the very
+ *   same repo (`github.com/oss-compass/compass-web/` vs
+ *   `gitee.com/oss-compass/compass-web`) look like two different ones.
+ *
+ * The provider is only useful when the same canonical path really is present
+ * under two different hosts, so the result requires at least two distinct
+ * providers; a path repeated on a single provider has nothing to disambiguate.
  */
 export const checkHasSameRepoPath = (label: string, labels: string[]) => {
-  const pathname = getPathname(label);
+  const canonicalPath = getCanonicalRepoPath(label);
+  // Non-URL labels (or URLs without a full namespace/repo pair) cannot be
+  // compared reliably, so never append a provider for them.
+  if (!canonicalPath) return false;
 
-  let count = 0;
-  return labels.some((item) => {
-    if (item.indexOf(pathname) > -1) count++;
-    return count >= 2;
+  const providers = new Set<string>();
+  let matches = 0;
+
+  // Fold the label in as well so that a single duplicate inside `labels` cannot
+  // satisfy the `matches >= 2` condition on its own.
+  [label, ...(labels || [])].forEach((item) => {
+    if (getCanonicalRepoPath(item) !== canonicalPath) return;
+    matches += 1;
+    // Hosts are case-insensitive, so compare them lowercased as well.
+    providers.add(getProvider(item).toLowerCase());
   });
+
+  return matches >= 2 && providers.size >= 2;
 };
 
 export const formatLabel = (
