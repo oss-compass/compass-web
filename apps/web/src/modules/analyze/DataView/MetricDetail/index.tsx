@@ -6,32 +6,38 @@ import MetricIssue from './MetricIssue';
 import MetricPr from './MetricPr';
 import { AiOutlineLeftCircle } from 'react-icons/ai';
 import MerticDatePicker from '@modules/analyze/components/NavBar/MerticDatePicker';
-import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
+import { useStatusContext } from '@modules/analyze/context';
 import { withErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '@common/components/ErrorFallback';
 import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
-import LoadingAnalysis from '@modules/analyze/DataView/Status/LoadingAnalysis';
+import AnalysisStatus, { AnalysisFeedback } from '../Status/AnalysisStatus';
 import LabelItems from '@modules/analyze/components/NavBar/LabelItems';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import { Select } from 'antd';
 
 const VerifyMetricDetail = () => {
-  const { isLoading } = useVerifyDetailRangeQuery();
+  const { isLoading, isError, refetch } = useVerifyDetailRangeQuery();
   if (isLoading) {
-    return <LoadingAnalysis />;
+    return <AnalysisFeedback state="loading" />;
   }
+  if (isError) return <AnalysisFeedback state="error" onRetry={refetch} />;
   return <MetricDetail />;
 };
+const MetricDetailStatus = () => (
+  <AnalysisStatus>
+    <VerifyMetricDetail />
+  </AnalysisStatus>
+);
 const MetricDetail = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { handleQueryParams } = useHandleQueryParams();
   const slugs = router.query.slugs;
   const queryTab = router.query?.tab as string;
-  const { isLoading, verifiedItems } = useLabelStatus();
+  const { verifiedItems } = useStatusContext();
   const [tab, setTab] = useState<string>(queryTab || 'contributor');
-  if (isLoading || verifiedItems.length > 1) {
+  if (verifiedItems.length !== 1) {
     return null;
   }
 
@@ -112,7 +118,7 @@ const MetricDetail = () => {
   );
 };
 
-export default withErrorBoundary(VerifyMetricDetail, {
+export default withErrorBoundary(MetricDetailStatus, {
   FallbackComponent: ErrorFallback,
   onError(error, info) {
     console.log(error, info);

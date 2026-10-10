@@ -8,7 +8,7 @@ const useVerifyDetailRangeQuery = () => {
   const beginDate = timeRange['1Y'].start;
   const endDate = timeRange['1Y'].end;
 
-  const { data, isLoading } = useVerifyDetailDataRangeQuery(
+  const { data, isLoading, isError, refetch } = useVerifyDetailDataRangeQuery(
     client,
     {
       shortCode: shortIds[0],
@@ -17,10 +17,11 @@ const useVerifyDetailRangeQuery = () => {
     },
     {
       staleTime: 300000, // 5 minutes
+      keepPreviousData: false,
     }
   );
 
-  return { isLoading, data };
+  return { isLoading, isError, refetch, data };
 };
 
 export default useVerifyDetailRangeQuery;
