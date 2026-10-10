@@ -1,6 +1,10 @@
 import React from 'react';
+import { CI_REPOS } from '../helpers';
 import type { CiRepoData, CiRepoKey } from '../types';
 import LabeledReportSelect from '../../components/LabeledReportSelect';
+
+/** 仓库选择项与 CI_REPOS 同源：键、展示名与 URL slug 只有一份，避免任一处漂移 */
+const REPO_OPTIONS = CI_REPOS.map(({ key, label }) => ({ value: key, label }));
 
 type CiControlsProps = {
   repo: CiRepoKey;
@@ -30,25 +34,7 @@ const CiControls: React.FC<CiControlsProps> = ({
       label="仓库"
       value={repo}
       onChange={(value) => onRepoChange(value as CiRepoKey)}
-      options={[
-        { value: 'runtime', label: 'runtime' },
-        { value: 'opsnn', label: 'ops-nn' },
-        { value: 'opscv', label: 'ops-cv' },
-        { value: 'graphaf', label: 'graph-autofusion' },
-        { value: 'opstransformer', label: 'ops-transformer' },
-        { value: 'hcomm', label: 'hcomm' },
-        { value: 'pypto', label: 'pypto' },
-        { value: 'ascdevkit', label: 'asc-devkit' },
-        { value: 'hccl', label: 'hccl' },
-        { value: 'hixl', label: 'hixl' },
-        { value: 'ptoisa', label: 'ptoisa' },
-        { value: 'oamtools', label: 'oam-tools' },
-        { value: 'amct', label: 'amct' },
-        { value: 'opbase', label: 'opbase' },
-        { value: 'pyasc', label: 'pyasc' },
-        { value: 'metadef', label: 'metadef' },
-        { value: 'asctools', label: 'asc-tools' },
-      ]}
+      options={REPO_OPTIONS}
       minWidth={130}
     />
     <LabeledReportSelect

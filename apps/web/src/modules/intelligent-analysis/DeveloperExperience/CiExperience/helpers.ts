@@ -9,14 +9,47 @@ import type {
   CiVal,
 } from './types';
 
-const repoSlug = (repo: CiRepoKey) =>
-  repo === 'opsnn'
-    ? 'ops-nn'
-    : repo === 'opscv'
-    ? 'ops-cv'
-    : repo === 'graphaf'
-    ? 'graph-autofusion'
-    : repo;
+/**
+ * CANN 仓库注册表 · 单一事实来源（顺序与仓库选择器、总览看板一致，runtime 优先）。
+ *
+ * `key` 是页面状态与 query 内部使用的仓库键；`slug` 是 GitCode 项目名，即
+ * https://gitcode.com/cann/<slug> —— 二者并不总是相同（如 ascdevkit → asc-devkit）；
+ * `label` 是选择器/看板对外展示名。
+ *
+ * runURL / prURL / normalizeRepoKey / repoKeyToQuery 全部由本表派生：这套映射曾散落在
+ * 多个文件里各自维护，漏改的仓库会把 run/PR 外链指向不存在的项目（404），也会让
+ * `?repo=<slug>` 静默回退成 runtime，因此这里收敛为唯一事实来源。
+ */
+export const CI_REPOS: ReadonlyArray<{
+  key: CiRepoKey;
+  slug: string;
+  label: string;
+}> = [
+  { key: 'runtime', slug: 'runtime', label: 'runtime' },
+  { key: 'opsnn', slug: 'ops-nn', label: 'ops-nn' },
+  { key: 'opscv', slug: 'ops-cv', label: 'ops-cv' },
+  { key: 'graphaf', slug: 'graph-autofusion', label: 'graph-autofusion' },
+  { key: 'opstransformer', slug: 'ops-transformer', label: 'ops-transformer' },
+  { key: 'hcomm', slug: 'hcomm', label: 'hcomm' },
+  { key: 'pypto', slug: 'pypto', label: 'pypto' },
+  { key: 'ascdevkit', slug: 'asc-devkit', label: 'asc-devkit' },
+  { key: 'hccl', slug: 'hccl', label: 'hccl' },
+  { key: 'hixl', slug: 'hixl', label: 'hixl' },
+  { key: 'ptoisa', slug: 'ptoisa', label: 'ptoisa' },
+  { key: 'oamtools', slug: 'oam-tools', label: 'oam-tools' },
+  { key: 'amct', slug: 'amct', label: 'amct' },
+  { key: 'opbase', slug: 'opbase', label: 'opbase' },
+  { key: 'pyasc', slug: 'pyasc', label: 'pyasc' },
+  { key: 'metadef', slug: 'metadef', label: 'metadef' },
+  { key: 'asctools', slug: 'asc-tools', label: 'asc-tools' },
+];
+
+/**
+ * repo key → GitCode 项目名（拼接 /cann/<slug>/... 外链用）。
+ * 命中注册表返回 slug；未登记的 key 原样返回，保证 URL 可读且不会抛错。
+ */
+export const repoSlug = (repo: CiRepoKey): string =>
+  CI_REPOS.find((r) => r.key === repo)?.slug ?? repo;
 
 export const runURL = (repo: CiRepoKey, id: string) =>
   `https://gitcode.com/cann/${repoSlug(repo)}/actions/runs/${id}`;
@@ -24,54 +57,29 @@ export const runURL = (repo: CiRepoKey, id: string) =>
 export const prURL = (repo: CiRepoKey, n: string | number) =>
   `https://gitcode.com/cann/${repoSlug(repo)}/merge_requests/${n}`;
 
-/** 归一化 query 中的 repo 值（兼容 ops-nn / opsnn / ops-cv / opscv） */
+/**
+ * 归一化 query 中的 repo 值：仓库键与 GitCode slug 均可（大小写不敏感），
+ * 如 opsnn / ops-nn、ascdevkit / asc-devkit、opstransformer / ops-transformer。
+ * 未知值回退 runtime，与详细看板默认仓一致。
+ */
 export const normalizeRepoKey = (
   value: string | string[] | undefined
 ): CiRepoKey => {
   const raw = (Array.isArray(value) ? value[0] : value)?.trim().toLowerCase();
-  if (raw === 'opsnn' || raw === 'ops-nn') {
-    return 'opsnn';
+  if (!raw) {
+    return 'runtime';
   }
-  if (raw === 'opscv' || raw === 'ops-cv') {
-    return 'opscv';
-  }
-  if (raw === 'graphaf' || raw === 'graph-autofusion') {
-    return 'graphaf';
-  }
-  const allRepos: CiRepoKey[] = [
-    'runtime',
-    'opsnn',
-    'opscv',
-    'graphaf',
-    'opstransformer',
-    'hcomm',
-    'pypto',
-    'ascdevkit',
-    'hccl',
-    'hixl',
-    'ptoisa',
-    'oamtools',
-    'amct',
-    'opbase',
-    'pyasc',
-    'metadef',
-    'asctools',
-  ];
-  if (raw && allRepos.includes(raw as CiRepoKey)) {
-    return raw as CiRepoKey;
-  }
-  return 'runtime';
+  const hit = CI_REPOS.find(
+    (r) => r.key.toLowerCase() === raw || r.slug.toLowerCase() === raw
+  );
+  return hit ? hit.key : 'runtime';
 };
 
-/** repo key -> query 参数值（对外用 ops-nn / ops-cv / graph-autofusion，其余用原名） */
-export const repoKeyToQuery = (repo: CiRepoKey) =>
-  repo === 'opsnn'
-    ? 'ops-nn'
-    : repo === 'opscv'
-    ? 'ops-cv'
-    : repo === 'graphaf'
-    ? 'graph-autofusion'
-    : repo;
+/**
+ * repo key → query 参数值（GitCode 项目名，形如 ops-nn / asc-devkit）。
+ * 与 normalizeRepoKey 互逆，保证 key → query → key 往返一致。
+ */
+export const repoKeyToQuery = (repo: CiRepoKey): string => repoSlug(repo);
 
 /** 维度中文名 */
 export const DIM_NAME: Record<CiDimKey, string> = {
