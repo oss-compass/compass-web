@@ -127,6 +127,7 @@ export const buildAggregateRow = (
     0
   );
   const painResolved = repos.reduce((sum, repo) => sum + repo.painResolved, 0);
+  const trackableTotal = painPending + painInProgress + painResolved;
   const scoredRepos = repos.filter((repo) => repo.idxTotal != null);
   const scoreWeight = scoredRepos.reduce(
     (sum, repo) => sum + repo.idxTotal * Math.max(repo.nTotal, 1),
@@ -163,7 +164,7 @@ export const buildAggregateRow = (
     painPending,
     painInProgress,
     painResolved,
-    closeRate: painTotal ? (painResolved / painTotal) * 100 : 100,
+    closeRate: trackableTotal ? (painResolved / trackableTotal) * 100 : 100,
     scoreTrend,
     scoreTrendPeriods,
     repos,
@@ -213,6 +214,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         painPending: repo.p0PainPending,
         painInProgress: repo.p0PainInProgress,
         painResolved: repo.p0PainResolved,
+        painHistorical: repo.p0PainHistorical,
         painCloseRate: repo.p0PainCloseRate,
       })),
     [repos]

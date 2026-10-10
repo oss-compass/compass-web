@@ -19,6 +19,18 @@ const repo = (
   } as IssueOverviewRepo);
 
 describe('community contribution category aggregation', () => {
+  it('keeps historical pains in totals but excludes them from closure rates', () => {
+    const result = buildAggregateRow('team', [
+      repo('a', {
+        painTotal: 5,
+        painHistorical: 3,
+        painPending: 1,
+        painResolved: 1,
+      }),
+    ]);
+    expect(result.painTotal).toBe(5);
+    expect(result.closeRate).toBe(50);
+  });
   it('uses the existing weighted score and sums P0 progress fields', () => {
     const result = buildAggregateRow('aal（领域加速库）', [
       repo('a', {

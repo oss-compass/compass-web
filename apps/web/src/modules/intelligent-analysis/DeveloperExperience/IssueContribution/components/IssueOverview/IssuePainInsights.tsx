@@ -14,13 +14,12 @@ import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
 import IssuePainDetailModal from './IssuePainDetailModal';
 import IssuePriorityTag, { getIssuePriorityLabel } from './IssuePriorityTag';
 import IssueTrendSparkline from './IssueTrendSparkline';
+import { isHistoricalPain, isOpenPain, progressBucket } from './painProgress';
 import { SEVERITY_CFG } from '../../../../UserJourney/OverviewDashboard/constants';
 import {
   OVERVIEW_COLORS,
   OVERVIEW_STATUS_COLORS,
 } from '../../../../UserJourney/OverviewDashboard/theme';
-
-type ProgressBucket = 'pending' | 'inProgress' | 'resolved';
 
 type Props = {
   pains: IssueOverviewTopPain[];
@@ -75,16 +74,8 @@ const PROGRESS_STATES = [
   },
 ] as const;
 
-const progressBucket = (pain: IssueOverviewTopPain): ProgressBucket => {
-  if (pain.trackingStatus === 5) return 'resolved';
-  if ([2, 3, 7].includes(Number(pain.trackingStatus))) return 'inProgress';
-  const state = String(pain.state || '').toLowerCase();
-  if (/已闭环|已完成|已解决|closed|resolved/.test(state)) return 'resolved';
-  if (/进行中|处理中|修复中|in progress/.test(state)) return 'inProgress';
-  return 'pending';
-};
-
 const progressCounts = (pains: IssueOverviewTopPain[]) => ({
+  historical: pains.filter(isHistoricalPain).length,
   pending: pains.filter((pain) => progressBucket(pain) === 'pending').length,
   inProgress: pains.filter((pain) => progressBucket(pain) === 'inProgress')
     .length,
@@ -107,7 +98,10 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
   });
   const counts = progressCounts(pains);
   const total = pains.length;
-  const closeRate = total ? (counts.resolved / total) * 100 : 0;
+  const trackableTotal = total - counts.historical;
+  const closeRate = trackableTotal
+    ? (counts.resolved / trackableTotal) * 100
+    : 0;
   const allPeriods = React.useMemo(
     () => Array.from(new Set(pains.map((pain) => pain.period))).sort(),
     [pains]
@@ -125,6 +119,9 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
     () =>
       periods.map((period) => {
         const periodPains = pains.filter((pain) => pain.period === period);
+        const trackableCount = periodPains.filter(
+          (pain) => !isHistoricalPain(pain)
+        ).length;
         const priorityCount = (priority: string) =>
           periodPains.filter((pain) => pain.prio === priority).length;
         const resolved = periodPains.filter(
@@ -140,9 +137,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           p1: priorityCount('P1'),
           p2: priorityCount('P2'),
           p3: priorityCount('P3'),
-          closeRate: periodPains.length
-            ? (resolved / periodPains.length) * 100
-            : 0,
+          closeRate: trackableCount ? (resolved / trackableCount) * 100 : 0,
         };
       }),
     [pains, periods]
@@ -174,6 +169,13 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
       value: counts.resolved,
       bucket: 'resolved' as const,
       valueClassName: 'ov-value-green',
+      clickable: true,
+    },
+    {
+      label: '历史感知痛点（需关注）',
+      value: counts.historical,
+      bucket: 'historical' as const,
+      valueClassName: '',
       clickable: true,
     },
     {
@@ -234,9 +236,11 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                 (pain) => pain.prio === priority.key
               );
               const priorityCounts = progressCounts(priorityPains);
-              const priorityRate = priorityPains.length
-                ? (priorityCounts.resolved / priorityPains.length) * 100
-                : 0;
+              const priorityTrackable =
+                priorityPains.length - priorityCounts.historical;
+              const priorityRate = priorityTrackable
+                ? (priorityCounts.resolved / priorityTrackable) * 100
+                : 100;
               return (
                 <div key={priority.key} className="pain-priority-row">
                   <button
@@ -255,6 +259,18 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                     {getIssuePriorityLabel(priority.key)}
                   </button>
                   <div className="pain-status-bar">
+                    {priorityTrackable === 0 ? (
+                      <span
+                        className="pain-status-no-tracking"
+                        title="需跟踪问题为 0，闭环率按 100% 展示，不代表存在已闭环问题"
+                        style={{
+                          background: 'var(--overview-slateBorder)',
+                          color: 'var(--overview-slate)',
+                        }}
+                      >
+                        0
+                      </span>
+                    ) : null}
                     {PROGRESS_STATES.map((state) => {
                       const value = priorityCounts[state.key];
                       return value > 0 ? (
@@ -265,7 +281,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                             state.label
                           }：${value} 个`}
                           style={{
-                            width: `${(value / priorityPains.length) * 100}%`,
+                            width: `${(value / priorityTrackable) * 100}%`,
                             background: state.fill,
                             color: state.color,
                           }}
@@ -288,9 +304,12 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                   <span
                     className="pain-priority-rate"
                     style={{
-                      color: priorityCounts.resolved
-                        ? 'var(--overview-greenDark)'
-                        : 'var(--overview-slateLight)',
+                      color:
+                        priorityTrackable === 0
+                          ? 'var(--overview-slate)'
+                          : priorityRate > 0
+                          ? 'var(--overview-greenDark)'
+                          : 'var(--overview-slateLight)',
                     }}
                   >
                     {priorityRate.toFixed(1)}%
@@ -356,6 +375,19 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
       <style jsx>{`
         .pain-progress-reference {
           container-type: inline-size;
+        }
+        .ov-row {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+        @container (max-width: 1000px) {
+          .ov-row {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+        @container (max-width: 540px) {
+          .ov-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
         }
         .pain-duo {
           display: grid;
@@ -442,6 +474,13 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
         }
         .pain-status-bar button:hover {
           filter: brightness(0.95);
+        }
+        .pain-status-no-tracking {
+          width: 100%;
+          text-align: center;
+          font-size: 12px;
+          font-weight: 800;
+          line-height: 24px;
         }
         .pain-priority-rate {
           text-align: right;
@@ -547,7 +586,7 @@ const buildFrequentPains = (pains: IssueOverviewTopPain[]): FrequentPain[] => {
       .filter((item) => progressBucket(item) === 'resolved')
       .reduce((sum, item) => sum + issueCount(item), 0);
     const open = items
-      .filter((item) => progressBucket(item) !== 'resolved')
+      .filter(isOpenPain)
       .reduce((sum, item) => sum + issueCount(item), 0);
     return {
       key,
@@ -582,10 +621,7 @@ const buildFrequentPains = (pains: IssueOverviewTopPain[]): FrequentPain[] => {
       ),
       openTrend: periods.map((period) =>
         items
-          .filter(
-            (item) =>
-              item.period === period && progressBucket(item) !== 'resolved'
-          )
+          .filter((item) => item.period === period && isOpenPain(item))
           .reduce((sum, item) => sum + issueCount(item), 0)
       ),
       doneTrend: periods.map((period) =>
@@ -744,7 +780,7 @@ export const IssueFrequentPainSection: React.FC<
                       : record.items.filter((item) =>
                           view === 'done'
                             ? progressBucket(item) === 'resolved'
-                            : progressBucket(item) !== 'resolved'
+                            : isOpenPain(item)
                         ),
                 })
               }

@@ -7,7 +7,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { buildIssueRepoManagementHref } from '../../../routes';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
-import type { IssueOverviewTopPain } from '../../types';
+import { isHistoricalPain, isResolvedPain } from './painProgress';
 import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
@@ -62,11 +62,6 @@ const buildMonthlyTrend = (
       ).toFixed(1);
     }),
   };
-};
-
-const isResolvedPain = (pain: IssueOverviewTopPain) => {
-  if (pain.trackingStatus === 5) return true;
-  return /已闭环|已完成|已解决|closed|resolved/i.test(String(pain.state || ''));
 };
 
 /** Issue 贡献总览：参考 Compass 体验总览的信息架构，并复用当前页面视觉与交互。 */
@@ -151,6 +146,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       scoredRepos.length
     : null;
   const pains = allPainsResp?.items ?? [];
+  const trackablePains = pains.filter((pain) => !isHistoricalPain(pain));
   const resolvedPains = pains.filter(isResolvedPain).length;
   const score90PlusRepos = latestRepos.filter(
     (repo) => repo.idxTotal >= 90
@@ -169,7 +165,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       stageId ? `&stage=${encodeURIComponent(stageId)}` : ''
     }${painId ? `&pain=${encodeURIComponent(painId)}` : ''}`;
   const painCloseTrend = data.agg.periods.map((period) => {
-    const appeared = pains.filter((pain) => pain.period <= period);
+    const appeared = trackablePains.filter((pain) => pain.period <= period);
     return appeared.length
       ? +(
           (appeared.filter(isResolvedPain).length / appeared.length) *
@@ -201,7 +197,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     },
     {
       label: '闭环情况',
-      value: `${resolvedPains} / ${pains.length}`,
+      value: `${resolvedPains} / ${trackablePains.length}`,
       trend: painCloseTrend,
       trendMax: 100,
       trendUnit: '%',
