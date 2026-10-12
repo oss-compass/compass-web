@@ -313,6 +313,16 @@ export type IssuePainTrackingIssue = {
   synthetic?: boolean;
   valid?: boolean | null;
   decision_reason?: string | null;
+  invalid_review?: {
+    id: string;
+    status: 'pending' | 'approved' | 'rejected';
+    reason: string;
+    submitted_by: string;
+    submitted_at: string;
+    reviewed_by?: string;
+    reviewed_at?: string;
+    review_reason?: string | null;
+  };
   decided_by?: string | null;
   decided_at?: string | null;
   fixed_source?: 'manual' | 'rerun' | null;

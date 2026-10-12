@@ -54,7 +54,7 @@ const IssueValidityButton: React.FC<Props> = ({
       setOpen(false);
       onDone?.();
       toast.success(
-        valid ? '已恢复为有效问题，需重新修复' : '已判定为非有效问题'
+        valid ? '已恢复为有效问题，需重新修复' : '已提交非有效问题审核'
       );
     } catch {
       // 页面 action handler 展示服务端错误；保留表单便于重试。
@@ -106,7 +106,7 @@ const IssueValidityButton: React.FC<Props> = ({
             style={{ borderRadius: 10 }}
             onClick={() => void submit()}
           >
-            确认修改
+            {valid ? '确认修改' : '提交审核'}
           </Button>,
         ]}
       >
@@ -117,7 +117,7 @@ const IssueValidityButton: React.FC<Props> = ({
           <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
             {valid
               ? '恢复后按未修复处理，需重新完成修复和复测。v4 报告会重新纳入对应指标评分并更新各级得分。'
-              : '判定后将不再计入修复进度和复测范围。v4 报告会排除对应指标评分并更新各级得分，其他指标继续参与。后续可恢复为有效问题。'}
+              : '提交后进入待审核，审核通过才正式判定为非有效问题，并从修复、复测范围及对应指标评分中剔除；审核未通过时需根据审核意见重新判定。'}
           </p>
           <label className="block text-sm text-slate-600">
             提交人 <span className="text-rose-500">*</span>

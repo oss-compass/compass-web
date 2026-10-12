@@ -180,7 +180,7 @@ const useFinalIssueTransitionConfirm = (type: FinalIssueConfirmType) => {
               ? `最后 ${remainingIssueCount} 个 Issue`
               : '最后一个 Issue'}
             的判定。提交后，本痛点将结束待确认阶段：存在有效 Issue
-            时进入“已确认待修复”，全部判定为否时进入“非有效问题”。请确认已核对全部
+            且无待审核项时进入“已确认待修复”；判定为否需经审核通过后生效。请确认已核对全部
             Issue。
           </>
         ) : (
@@ -299,7 +299,7 @@ export const InvalidDecisionReasonModal: React.FC<{
       width={480}
       centered
       destroyOnClose
-      okText={completesDecision ? '确认并完成判定' : '确认判定'}
+      okText="提交审核"
       cancelText="取消"
       confirmLoading={submitting}
       styles={{
@@ -314,7 +314,7 @@ export const InvalidDecisionReasonModal: React.FC<{
         <div className="text-sm text-slate-600">{subject}</div>
         {completesDecision ? (
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
-            本次提交将完成全部 Issue 判定，痛点会立即根据判定结果进入下一状态。
+            非有效判定需审核通过后生效，审核期间痛点保留在待确认状态。
           </div>
         ) : null}
         <div>
@@ -631,6 +631,34 @@ const PostDecisionReasonInput: React.FC<{
 };
 
 type ActiveTrackingIssue = IssuePainTracking['activeIssues'][number];
+
+const InvalidReviewInfo: React.FC<{ issue: ActiveTrackingIssue }> = ({
+  issue,
+}) => {
+  const review = issue.invalid_review;
+  if (!review) return null;
+  return (
+    <Tooltip
+      title={
+        <div>
+          判断理由：{review.reason}
+          <br />
+          审核人：{review.reviewed_by || '—'}
+          <br />
+          审核意见：{review.review_reason || '—'}
+        </div>
+      }
+    >
+      <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[11px] text-amber-700">
+        {review.status === 'pending'
+          ? '非有效判定待审核'
+          : review.status === 'rejected'
+          ? '审核未通过，请重新判定'
+          : '审核通过'}
+      </span>
+    </Tooltip>
+  );
+};
 type TrackingActionHandler = NonNullable<
   PainIssueTableProps['onTrackingAction']
 >;
@@ -812,6 +840,18 @@ const DecisionTooltipContent: React.FC<{ issue: ActiveTrackingIssue }> = ({
         {formatTrackingTime(issue.decided_at)}
       </span>
     </div>
+    {issue.valid === false && issue.invalid_review?.status === 'approved' && (
+      <>
+        <div className="text-emerald-600">审核通过</div>
+        <div>审核人：{issue.invalid_review.reviewed_by || '—'}</div>
+        <div>
+          审核时间：{formatTrackingTime(issue.invalid_review.reviewed_at)}
+        </div>
+        {issue.invalid_review.review_reason && (
+          <div>审核意见：{issue.invalid_review.review_reason}</div>
+        )}
+      </>
+    )}
   </div>
 );
 
@@ -845,6 +885,13 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
   onOperatorInvalid,
 }) => {
   if (!show) return null;
+  if (activeIssue?.invalid_review?.status === 'pending') {
+    return (
+      <td className="border-b border-slate-100 px-3 py-2.5">
+        <InvalidReviewInfo issue={activeIssue} />
+      </td>
+    );
+  }
   if (!draftMode && tracking && onTrackingAction) {
     return (
       <td className="border-b border-slate-100 px-3 py-2.5">
@@ -874,6 +921,12 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
         ) : (
           <span className="text-[11px] text-slate-300">—</span>
         )}
+        {activeIssue?.valid == null &&
+          activeIssue?.invalid_review?.status === 'rejected' && (
+            <div className="mt-2 leading-4">
+              <InvalidReviewInfo issue={activeIssue} />
+            </div>
+          )}
       </td>
     );
   }
@@ -951,6 +1004,13 @@ const IssueStatusCell: React.FC<{
       </td>
     );
   }
+  if (activeIssue.invalid_review?.status === 'pending') {
+    return (
+      <td className="border-b border-slate-100 px-3 py-2.5">
+        <InvalidReviewInfo issue={activeIssue} />
+      </td>
+    );
+  }
   if (activeIssue.valid === false) {
     return (
       <td className="border-b border-slate-100 px-3 py-2.5">
@@ -961,7 +1021,7 @@ const IssueStatusCell: React.FC<{
             color="#ffffff"
             overlayInnerStyle={{ padding: 10 }}
           >
-            <span className="inline-flex cursor-help rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 font-semibold text-rose-600">
+            <span className="inline-flex shrink-0 cursor-help items-center whitespace-nowrap rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 font-semibold leading-4 text-rose-600">
               非有效问题
             </span>
           </Tooltip>
@@ -1298,8 +1358,11 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
       <IssueSelectionCell
         show={props.showSelection}
         disabled={
-          !props.draftMode &&
-          (props.pendingDecisionMode ? !actionIssue : props.selectionDisabled)
+          activeIssue?.invalid_review?.status === 'pending' ||
+          (!props.draftMode &&
+            (props.pendingDecisionMode
+              ? !actionIssue
+              : props.selectionDisabled))
         }
         checked={props.selected}
         onChange={(checked) => props.onSelectionChange(issue.number, checked)}
@@ -1878,6 +1941,10 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   const allNumbers = sortedIssues
     .filter(
       (issue) =>
+        activeIssueMap.get(issue.number)?.invalid_review?.status !== 'pending'
+    )
+    .filter(
+      (issue) =>
         decisionMode ||
         (pendingDecisionMode && activeIssueMap.has(issue.number)) ||
         isOperationIssueSelectable(tracking, activeIssueMap.get(issue.number))
@@ -2114,6 +2181,8 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
                 }
                 onOpenRerunRecords={onOpenRerunRecords}
                 selectionDisabled={
+                  activeIssueMap.get(issue.number)?.invalid_review?.status ===
+                    'pending' ||
                   !isOperationIssueSelectable(
                     tracking,
                     activeIssueMap.get(issue.number)

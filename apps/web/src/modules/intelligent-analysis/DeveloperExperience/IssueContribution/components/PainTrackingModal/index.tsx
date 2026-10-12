@@ -860,6 +860,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
 
         {tracking.status === IssuePainTrackingStatus.PENDING ? (
           <div className="space-y-4">
+            <p className="text-xs leading-5 text-slate-500">
+              判定为非有效问题需填写理由并提交审核，通过后生效；审核未通过时，请根据审核意见重新判定。
+            </p>
             <div>
               <div className="mb-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-700">
                 <span>涉及 Issue</span>

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Empty, Spin } from 'antd';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
@@ -64,6 +70,9 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
   const [painTrackings, setPainTrackings] =
     useState<IssuePainTrackingResponse | null>(null);
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const loadedReportKey = useRef<string | null>(null);
+  const loadedTrackingKey = useRef<string | null>(null);
+  const stageSelectionKey = useRef<string | null>(null);
   const handleRerunApplied = useCallback(
     () => setRefreshVersion((value) => value + 1),
     []
@@ -73,9 +82,20 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
     if (!router.isReady) return;
 
     const controller = new AbortController();
-    setLoading(true);
+    const requestKey = JSON.stringify([
+      org,
+      requestedPlatform,
+      requestedCommunity,
+      requestedPeriod,
+      requestedVersion,
+    ]);
+    const backgroundRefresh = loadedReportKey.current === requestKey;
+    if (!backgroundRefresh) {
+      loadedReportKey.current = null;
+      setLoading(true);
+      setReport(null);
+    }
     setLoadError(false);
-    setReport(null);
 
     void fetchIssueReportData(
       {
@@ -88,12 +108,19 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
       controller.signal
     )
       .then((response) => {
+        if (controller.signal.aborted) return;
+        loadedReportKey.current = requestKey;
         setCatalog(response.catalog);
         setReport(response.report);
       })
       .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
+        if (backgroundRefresh) {
+          toast.error('操作已保存，但报告数据刷新失败，请稍后重试');
+          return;
+        }
         setCatalog([]);
         setReport(null);
         setLoadError(true);
@@ -120,8 +147,14 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
     const requestedVisibleStage = nextVisibleStages?.find(
       (stage) => stage.id === requestedStage
     );
+    const selectionKey = JSON.stringify([report?.key, requestedStage]);
+    const preserveStage = stageSelectionKey.current === selectionKey;
+    stageSelectionKey.current = selectionKey;
     setActiveStageId(
       (current) =>
+        (preserveStage
+          ? nextVisibleStages?.find((stage) => stage.id === current)?.id
+          : undefined) ??
         requestedVisibleStage?.id ??
         nextVisibleStages?.find((stage) => stage.id === current)?.id ??
         nextVisibleStages?.[0]?.id ??
@@ -131,21 +164,32 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
 
   useEffect(() => {
     if (!report?.community || !report.period) {
+      loadedTrackingKey.current = null;
       setPainTrackings(null);
       return;
     }
     const controller = new AbortController();
-    setPainTrackings(null);
+    const requestKey = `${report.community}#${report.period}`;
+    const backgroundRefresh = loadedTrackingKey.current === requestKey;
+    if (!backgroundRefresh) {
+      loadedTrackingKey.current = null;
+      setPainTrackings(null);
+    }
     void fetchIssuePainTrackings(
       report.community,
       report.period,
       controller.signal
     )
-      .then(setPainTrackings)
+      .then((response) => {
+        if (controller.signal.aborted) return;
+        loadedTrackingKey.current = requestKey;
+        setPainTrackings(response);
+      })
       .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
-        setPainTrackings(null);
+        if (!backgroundRefresh) setPainTrackings(null);
       });
     return () => controller.abort();
   }, [report?.community, report?.period, refreshVersion]);
