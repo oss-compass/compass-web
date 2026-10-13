@@ -114,11 +114,19 @@ const IssueValidityButton: React.FC<Props> = ({
           <p className="max-h-24 overflow-y-auto text-xs leading-5 text-slate-500">
             {targetNumbers.map((number) => '#' + number).join('、')}
           </p>
-          <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
-            {valid
-              ? '恢复后按未修复处理，需重新完成修复和复测。v4 报告会重新纳入对应指标评分并更新各级得分。'
-              : '提交后进入待审核，审核通过才正式判定为非有效问题，并从修复、复测范围及对应指标评分中剔除；审核未通过时需根据审核意见重新判定。'}
-          </p>
+          <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
+            {valid ? (
+              '恢复后按未修复处理，需重新完成修复和复测。v4 报告会重新纳入对应指标评分并更新各级得分。'
+            ) : (
+              <>
+                提交后进入待审核，由
+                <strong className="mx-0.5 font-semibold text-slate-700">
+                  开源能力组
+                </strong>
+                负责审核；审核通过后才正式判定为非有效问题，并从修复、复测范围及对应指标评分中剔除。审核未通过时，需根据审核意见重新判定。
+              </>
+            )}
+          </div>
           <label className="block text-sm text-slate-600">
             提交人 <span className="text-rose-500">*</span>
             <Input

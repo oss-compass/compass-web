@@ -180,8 +180,9 @@ const useFinalIssueTransitionConfirm = (type: FinalIssueConfirmType) => {
               ? `最后 ${remainingIssueCount} 个 Issue`
               : '最后一个 Issue'}
             的判定。提交后，本痛点将结束待确认阶段：存在有效 Issue
-            且无待审核项时进入“已确认待修复”；判定为否需经审核通过后生效。请确认已核对全部
-            Issue。
+            且无待审核项时进入“已确认待修复”；判定为否需由
+            <strong className="mx-0.5 font-semibold">开源能力组</strong>
+            审核通过后生效。请确认已核对全部 Issue。
           </>
         ) : (
           <>
@@ -312,11 +313,12 @@ export const InvalidDecisionReasonModal: React.FC<{
     >
       <div className="space-y-3 pt-2">
         <div className="text-sm text-slate-600">{subject}</div>
-        {completesDecision ? (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
-            非有效判定需审核通过后生效，审核期间痛点保留在待确认状态。
-          </div>
-        ) : null}
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-700">
+          {completesDecision ? '本次提交将完成当前痛点的 Issue 判定。' : ''}
+          非有效判定需由
+          <strong className="mx-0.5 font-semibold">开源能力组</strong>
+          审核通过后生效，审核期间痛点保留在待确认状态。
+        </div>
         <div>
           <div className="mb-2 text-sm font-medium text-slate-700">
             判断原因 <span className="text-rose-500">*</span>
