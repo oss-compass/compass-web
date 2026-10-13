@@ -157,6 +157,7 @@ export type CompassOperatorChangePasswordResponse = {
 };
 
 export type RepoManagementItem = {
+  issue_online_pending?: boolean;
   id: string;
   seq_no: number;
   repo_name: string;
@@ -1652,7 +1653,12 @@ export const setRepoManagementOverviewEnabled = async (
   repo_name: string,
   report_type: 'community' | 'issue',
   enabled: boolean
-): Promise<{ message: string; notification_status: string }> => {
+): Promise<{
+  message: string;
+  notification_status: string;
+  status?: 'pending' | 'online' | 'not_qualified' | 'failed' | 'cancelled';
+  task_id?: string;
+}> => {
   const token = getCompassOperatorToken();
   if (!token) throw new Error('未登录');
   return compassApiAuthedFetch(

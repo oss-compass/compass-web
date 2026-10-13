@@ -649,6 +649,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         size: pageSize,
       }),
     enabled: !!operatorUser,
+    refetchInterval: () => (isIssueManagement ? 30000 : false),
   });
   const registry = useRegistryData();
   const { data: registerRepoOptionsResp } = useQuery({
@@ -1376,6 +1377,15 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
           reportType,
           checked
         );
+        if (result.status && !['online'].includes(result.status)) {
+          if (result.status === 'pending') messageApi.info(result.message);
+          else messageApi.warning(result.message);
+          await refetchRepoList();
+          await queryClient.invalidateQueries({
+            queryKey: ['repo-management-list'],
+          });
+          return;
+        }
         if (
           checked &&
           !['sent', 'not_needed'].includes(result.notification_status)
@@ -1675,6 +1685,24 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         sortDirections: ['ascend', 'descend'],
         render: (value: boolean | undefined, record) => {
           const checked = !!value;
+          if (isIssueManagement && record.issue_online_pending) {
+            return (
+              <Popconfirm
+                title="取消等待报告生成后的自动上线？"
+                onConfirm={() => handleToggleOverviewEnabled(record, false)}
+                okText="确认取消"
+                cancelText="继续等待"
+              >
+                <Button
+                  type="link"
+                  size="small"
+                  loading={overviewUpdatingRepo === record.repo_name}
+                >
+                  报告生成中 · 取消上线
+                </Button>
+              </Popconfirm>
+            );
+          }
           const switchNode = (
             <Switch
               size="small"
@@ -1690,7 +1718,13 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
               description={`${getRepoDisplayName(record)} 将${
                 checked ? '不再纳入' : '纳入'
               }总览看板统计。${
-                checked ? '' : '上线后将发送邮件通知该仓库负责人和所有管理员。'
+                checked
+                  ? ''
+                  : `${
+                      isIssueManagement
+                        ? '如无报告，将先检查上线标准，达标后生成报告，入库后再上线。'
+                        : ''
+                    }上线后将发送邮件通知该仓库负责人和所有管理员。`
               }`}
               okText="确认"
               cancelText="取消"
