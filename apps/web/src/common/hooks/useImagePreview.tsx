@@ -5,23 +5,34 @@ import 'viewerjs/dist/viewer.css';
 
 const useImagePreview = () => {
   const galleryRef = useRef<Viewer>(null);
-  const [element, ref] = useState<HTMLElement>(null);
+  const [element, ref] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (element) {
-      galleryRef.current = new Viewer(element);
-      return () => {
-        galleryRef.current?.destroy();
-      };
-    }
+    if (!element || galleryRef.current) return;
+    const viewer = new Viewer(element);
+    galleryRef.current = viewer;
+    return () => {
+      // close() can destroy the viewer before React unmounts the element.
+      // Only the active instance should be destroyed by effect cleanup.
+      if (galleryRef.current === viewer) {
+        viewer.destroy();
+        galleryRef.current = null;
+      }
+    };
   }, [element]);
 
   const open = () => {
+    if (!galleryRef.current && element) {
+      galleryRef.current = new Viewer(element);
+    }
     galleryRef.current?.show();
   };
 
   const close = () => {
-    galleryRef.current?.destroy();
+    const viewer = galleryRef.current;
+    if (!viewer) return;
+    viewer.destroy();
+    galleryRef.current = null;
   };
 
   return { ref, open, close };
