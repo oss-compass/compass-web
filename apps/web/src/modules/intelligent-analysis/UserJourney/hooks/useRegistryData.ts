@@ -135,10 +135,16 @@ export const resolveFileKeyFromRegistry = (
   const normalized = resolved.replace(/\.json$/i, '');
   if (!/^[A-Za-z0-9_-]+$/.test(normalized)) return null;
 
-  if (normalized in registry.entries) return normalized;
+  if (Object.prototype.hasOwnProperty.call(registry.entries, normalized)) {
+    return normalized;
+  }
 
-  const defaultKey = registry.defaultFileMap[normalized];
-  if (defaultKey) return defaultKey;
+  if (
+    Object.prototype.hasOwnProperty.call(registry.defaultFileMap, normalized)
+  ) {
+    const defaultKey = registry.defaultFileMap[normalized];
+    if (defaultKey) return defaultKey;
+  }
 
   return null;
 };
