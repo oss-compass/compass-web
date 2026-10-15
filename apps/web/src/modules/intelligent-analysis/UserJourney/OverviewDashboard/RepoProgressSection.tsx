@@ -1245,6 +1245,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       setLoginError('');
       try {
         const result = await registerCompassOperator({
+          display_name: values.displayName.trim(),
           username,
           password,
           repo_keys: repoKeys,

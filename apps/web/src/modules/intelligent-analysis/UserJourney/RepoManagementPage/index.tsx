@@ -105,6 +105,7 @@ type NativeInputProps = {
   onChange?: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  maxLength?: number;
 };
 
 const NativeInput: React.FC<NativeInputProps> = ({
@@ -112,12 +113,14 @@ const NativeInput: React.FC<NativeInputProps> = ({
   onChange,
   placeholder,
   disabled,
+  maxLength,
 }) => (
   <input
     value={value ?? ''}
     onChange={(event) => onChange?.(event.target.value)}
     placeholder={placeholder}
     disabled={disabled}
+    maxLength={maxLength}
     className={nativeInputClassName}
   />
 );
@@ -353,8 +356,12 @@ const buildOwnerContacts = (
   ownerValue: string | string[] | undefined,
   emailValue: string | string[] | undefined
 ): OwnerContact[] => {
-  const owners = parseTextListInput(ownerValue);
-  const emails = parseTextListInput(emailValue);
+  const owners = Array.isArray(ownerValue)
+    ? ownerValue
+    : parseTextListInput(ownerValue);
+  const emails = Array.isArray(emailValue)
+    ? emailValue
+    : parseTextListInput(emailValue);
   return owners.map((owner, index) => ({
     name: owner,
     email: emails[index] || '',
@@ -590,20 +597,13 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
       const username = String(user.username || '')
         .trim()
         .toLowerCase();
-      const displayName = String(user.display_name || '')
-        .trim()
-        .toLowerCase();
-      const ownerNames = new Set(
-        parseTextListInput(record.owner).map((item) => item.toLowerCase())
-      );
       const ownerEmails = new Set(
         parseTextListInput(record.owner_email).map((item) => item.toLowerCase())
       );
-      if (username && (ownerNames.has(username) || ownerEmails.has(username))) {
+      if (username && ownerEmails.has(username)) {
         return true;
       }
-      if (displayName && ownerNames.has(displayName)) return true;
-      return ownerNames.size === 0;
+      return false;
     },
     []
   );
@@ -739,22 +739,28 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
     (repoListResp?.all_owner_options ?? []).forEach((item) => {
       const name = String(item.name || '').trim();
       if (!name) return;
-      optionMap.set(name, {
-        name,
-        email: String(item.email || '').trim(),
-      });
+      optionMap.set(
+        String(item.email || '')
+          .trim()
+          .toLowerCase() || name,
+        {
+          name,
+          email: String(item.email || '').trim(),
+        }
+      );
     });
     editorOwnerContacts.forEach((contact) => {
       const name = contact.name.trim();
-      if (!name || optionMap.has(name)) return;
-      optionMap.set(name, {
+      const key = contact.email.trim().toLowerCase() || name;
+      if (!name) return;
+      optionMap.set(key, {
         name,
         email: contact.email.trim(),
       });
     });
     return Array.from(optionMap.values())
       .map((contact) => ({
-        value: contact.name,
+        value: contact.email.trim().toLowerCase() || contact.name,
         label: contact.email
           ? `${contact.name}（${contact.email}）`
           : contact.name,
@@ -1108,6 +1114,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
       setLoginError('');
       try {
         const result = await registerCompassOperator({
+          display_name: values.displayName.trim(),
           username,
           password,
           repo_keys: repoKeys,
@@ -1352,6 +1359,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         report_type: reportType,
       };
       await upsertRepoManagementRepo(payload);
+      await loadOperatorUser();
       messageApi.success(editingRecord ? '仓库信息已更新' : '仓库已创建');
       setEditorModalOpen(false);
       setEditingRecord(null);
@@ -1424,9 +1432,11 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
   const handleAddOwnerContact = async () => {
     const values = await ownerCreateForm.validateFields();
     const name = values.name.trim();
-    const email = values.email.trim();
+    const email = values.email.trim().toLowerCase();
     setEditorOwnerContacts((prev) => {
-      const next = prev.filter((item) => item.name !== name);
+      const next = prev.filter(
+        (item) => item.email.trim().toLowerCase() !== email
+      );
       return [...next, { name, email }];
     });
     ownerCreateForm.resetFields();
@@ -2134,7 +2144,10 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                 <div className="flex min-h-8 items-start gap-2">
                   <Select
                     mode="multiple"
-                    value={editorOwnerContacts.map((contact) => contact.name)}
+                    value={editorOwnerContacts.map(
+                      (contact) =>
+                        contact.email.trim().toLowerCase() || contact.name
+                    )}
                     placeholder="请选择仓库负责人"
                     className={`${filterSelectClassName} min-w-0 flex-1`}
                     popupMatchSelectWidth={false}
@@ -2152,7 +2165,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                           .map((name) => {
                             const contact = editorOwnerOptionMap.get(name);
                             return {
-                              name,
+                              name: contact?.name || name,
                               email: contact?.email || '',
                             };
                           })
@@ -2276,11 +2289,13 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
           colon={false}
         >
           <Form.Item
-            label="名称"
+            label="用户名"
             name="name"
-            rules={[{ required: true, message: '请输入负责人名称' }]}
+            rules={[
+              { required: true, whitespace: true, message: '请输入用户名' },
+            ]}
           >
-            <NativeInput placeholder="请输入负责人名称" />
+            <NativeInput maxLength={100} placeholder="请输入用户名" />
           </Form.Item>
           <Form.Item
             label="邮箱"

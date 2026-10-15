@@ -486,6 +486,7 @@ export const loginCompassOperator = async (payload: {
 };
 
 export const registerCompassOperator = async (payload: {
+  display_name: string;
   username: string;
   password: string;
   repo_keys: string[];

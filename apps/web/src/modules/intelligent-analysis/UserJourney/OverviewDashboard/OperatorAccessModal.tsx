@@ -4,6 +4,7 @@ import type { CompassOperatorUser } from '../rawData/apiClient';
 import { OVERVIEW_COLOR_VARIABLES } from './theme';
 
 export type OperatorRegisterValues = {
+  displayName: string;
   username: string;
   password: string;
   repoKeys: string[];
@@ -57,10 +58,12 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
 }) => {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [registerForm, setRegisterForm] = useState({
+    displayName: '',
     username: '',
     password: '',
     repoKeys: [] as string[],
   });
+  const [registerNameError, setRegisterNameError] = useState('');
   const [registerEmailError, setRegisterEmailError] = useState('');
   const repoLabels = Array.isArray(operatorUser?.repo_names)
     ? operatorUser?.repo_names
@@ -73,19 +76,33 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
   useEffect(() => {
     if (!open) {
       setMode('login');
-      setRegisterForm({ username: '', password: '', repoKeys: [] });
+      setRegisterForm({
+        displayName: '',
+        username: '',
+        password: '',
+        repoKeys: [],
+      });
+      setRegisterNameError('');
       setRegisterEmailError('');
     }
   }, [open]);
 
   const handleRegister = () => {
     const username = registerForm.username.trim();
-    if (!emailPattern.test(username)) {
-      setRegisterEmailError('请输入有效的邮箱地址');
-      return;
-    }
-    setRegisterEmailError('');
-    onRegister?.({ ...registerForm, username });
+    const nameError = registerForm.displayName.trim()
+      ? ''
+      : '请输入用户名，用于展示仓库负责人';
+    const emailError = emailPattern.test(username)
+      ? ''
+      : '请输入有效的邮箱地址';
+    setRegisterNameError(nameError);
+    setRegisterEmailError(emailError);
+    if (nameError || emailError) return;
+    onRegister?.({
+      ...registerForm,
+      username,
+      displayName: registerForm.displayName.trim(),
+    });
   };
 
   return (
@@ -195,6 +212,24 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
             />
             {isRegisterMode ? (
               <>
+                <Input
+                  value={registerForm.displayName}
+                  maxLength={100}
+                  placeholder="请输入用户名，用于展示仓库负责人"
+                  onChange={(event) => {
+                    setRegisterForm((prev) => ({
+                      ...prev,
+                      displayName: event.target.value,
+                    }));
+                    setRegisterNameError('');
+                  }}
+                  status={registerNameError ? 'error' : undefined}
+                />
+                {registerNameError ? (
+                  <div className="-mt-3 text-xs text-[var(--overview-red)]">
+                    {registerNameError}
+                  </div>
+                ) : null}
                 <Input
                   type="email"
                   value={registerForm.username}
