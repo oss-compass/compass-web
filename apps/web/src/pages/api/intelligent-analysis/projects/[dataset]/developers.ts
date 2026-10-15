@@ -46,7 +46,7 @@ function buildIndexSetFromMap(
 }
 
 function buildIndexSetFromIndices(indices: number[]) {
-  if (!Array.isArray(indices) || indices.length === 0) return null;
+  if (!Array.isArray(indices)) return null;
   const set = new Set<number>();
   for (const idx of indices) set.add(idx);
   return set;
