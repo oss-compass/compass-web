@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { escapeCsvCell } from '@common/utils/csv';
 import { FilterFilled } from '@ant-design/icons';
 import { Dropdown, Modal, Pagination, Radio, Tag, Tooltip } from 'antd';
 import { useQuery } from '@tanstack/react-query';
@@ -509,14 +510,6 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     a.click();
     a.remove();
     URL.revokeObjectURL(href);
-  };
-
-  const escapeCsvCell = (value: string) => {
-    const text = String(value ?? '');
-    if (/[",\n]/.test(text)) {
-      return `"${text.replace(/"/g, '""')}"`;
-    }
-    return text;
   };
 
   const buildIssuesCsv = (rows: DashboardIssue[]) => {

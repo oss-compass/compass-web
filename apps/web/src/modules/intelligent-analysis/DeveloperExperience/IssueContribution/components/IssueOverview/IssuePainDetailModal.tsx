@@ -1,4 +1,5 @@
 import { getEvidenceActorName } from '../../evidenceActor';
+import { escapeCsvCell } from '@common/utils/csv';
 import React from 'react';
 import Link from 'next/link';
 import { FilterFilled } from '@ant-design/icons';
@@ -141,11 +142,6 @@ const PainIssuePriorityDistribution: React.FC<{
       </div>
     </div>
   );
-};
-
-const escapeCsvCell = (value: unknown) => {
-  const text = String(value ?? '');
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 };
 
 const downloadCsv = (
