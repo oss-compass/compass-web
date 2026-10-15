@@ -8,7 +8,7 @@ import {
   resolveFileInsideDir,
 } from '@modules/intelligent-analysis/server/pathSafety';
 
-const backupCache = new Map<string, unknown[]>();
+const backupCache = new Map<string, Map<string, Record<string, unknown>>>();
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -85,17 +85,18 @@ async function findUserFromBackup(dataset: string, userId: string) {
     const raw = await fs.readFile(filePath, 'utf8');
     const parsed = JSON.parse(raw);
     const rows: unknown[] = Array.isArray(parsed) ? parsed : [];
-    backupCache.set(dataset, rows);
+    const byUserId = new Map<string, Record<string, unknown>>();
+    for (const row of rows) {
+      if (!row || typeof row !== 'object') continue;
+      const candidate = (row as Record<string, unknown>)['用户ID'];
+      if (typeof candidate === 'string' && !byUserId.has(candidate)) {
+        byUserId.set(candidate, row as Record<string, unknown>);
+      }
+    }
+    backupCache.set(dataset, byUserId);
   }
 
-  const rows = backupCache.get(dataset) || [];
-  for (const row of rows) {
-    if (!row || typeof row !== 'object') continue;
-    const candidate = (row as any)['用户ID'];
-    if (candidate === userId) return row as Record<string, unknown>;
-  }
-
-  return null;
+  return backupCache.get(dataset)?.get(userId) || null;
 }
 
 export default async function handler(
@@ -147,7 +148,7 @@ export default async function handler(
         res.status(200).json({ [userId]: row });
         return;
       }
-    } catch { }
+    } catch {}
 
     res.status(404).json({
       message: 'User detail not found',
