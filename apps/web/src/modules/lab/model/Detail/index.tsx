@@ -43,7 +43,7 @@ const ModelDetail = () => {
       );
     }
     if (!modelDetail) {
-      return <>{t('lab:lab_models.forbidden')}</>;
+      return <>{t('lab_models:forbidden')}</>;
     }
     return (
       <>
