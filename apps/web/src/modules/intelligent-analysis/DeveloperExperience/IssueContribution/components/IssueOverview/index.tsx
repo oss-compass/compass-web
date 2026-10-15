@@ -219,6 +219,12 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
 
   return (
     <>
+      <span
+        hidden
+        data-issue-weekly-ready={Boolean(
+          allPainsResp && !painsLoading && !loadError
+        )}
+      />
       <Title level={4} className="oj-section-title">
         总览信息
       </Title>
@@ -303,6 +309,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       )}
 
       <IssueRepoProgressSection
+        expandAllTeams={router.query.expandAllTeams === '1'}
         org={org}
         repos={latestRepos}
         reportHref={reportHref}

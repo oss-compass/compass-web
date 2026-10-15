@@ -175,3 +175,7 @@ export const getExperienceModuleSwitchQuery = ({
 
   return targetQuery;
 };
+
+export const buildIssueTaskManagementHref = (
+  scope: ExperienceRouteScope = {}
+) => `${getExperienceBasePath(scope)}/issue-contribution/task-management`;

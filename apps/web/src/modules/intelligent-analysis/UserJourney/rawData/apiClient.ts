@@ -857,11 +857,16 @@ export const updateRepoRerunScheduleConfig = async (
 };
 
 export const fetchWeeklyReportPreviewConfig = async (
-  token = getCompassOperatorToken()
+  token = getCompassOperatorToken(),
+  reportType: 'community' | 'issue' = 'community'
 ): Promise<WeeklyReportPreviewConfig> => {
   if (!token) throw new Error('未登录');
   return compassApiAuthedFetch<WeeklyReportPreviewConfig>(
-    '/weekly-report-management/preview-config',
+    `${
+      reportType === 'issue'
+        ? '/issue-weekly-report-management'
+        : '/weekly-report-management'
+    }/preview-config`,
     token
   );
 };
@@ -872,39 +877,62 @@ export const updateWeeklyReportPreviewConfig = async (
     preview_recipients?: string[];
     formal_auto_enabled?: boolean;
   },
-  token = getCompassOperatorToken()
+  token = getCompassOperatorToken(),
+  reportType: 'community' | 'issue' = 'community'
 ): Promise<{ message: string; data: WeeklyReportPreviewConfig }> => {
   if (!token) throw new Error('未登录');
   return compassApiAuthedFetch<{
     message: string;
     data: WeeklyReportPreviewConfig;
-  }>('/weekly-report-management/preview-config', token, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  }>(
+    `${
+      reportType === 'issue'
+        ? '/issue-weekly-report-management'
+        : '/weekly-report-management'
+    }/preview-config`,
+    token,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }
+  );
 };
 
 export const sendFormalWeeklyReport = async (
-  token = getCompassOperatorToken()
+  token = getCompassOperatorToken(),
+  reportType: 'community' | 'issue' = 'community'
 ): Promise<{ message: string; data: WeeklyReportFormalRecord }> => {
   if (!token) throw new Error('未登录');
   return compassApiAuthedFetch<{
     message: string;
     data: WeeklyReportFormalRecord;
-  }>('/weekly-report-management/send-formal', token, { method: 'POST' });
+  }>(
+    `${
+      reportType === 'issue'
+        ? '/issue-weekly-report-management'
+        : '/weekly-report-management'
+    }/send-formal`,
+    token,
+    { method: 'POST' }
+  );
 };
 
 export const fetchFormalWeeklyReportRecords = async (
   params: { page?: number; size?: number },
-  token = getCompassOperatorToken()
+  token = getCompassOperatorToken(),
+  reportType: 'community' | 'issue' = 'community'
 ): Promise<WeeklyReportFormalRecordListResponse> => {
   if (!token) throw new Error('未登录');
   const search = new URLSearchParams();
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiAuthedFetch<WeeklyReportFormalRecordListResponse>(
-    `/weekly-report-management/formal-records?${search.toString()}`,
+    `${
+      reportType === 'issue'
+        ? '/issue-weekly-report-management'
+        : '/weekly-report-management'
+    }/formal-records?${search.toString()}`,
     token
   );
 };

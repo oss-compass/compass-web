@@ -1,3 +1,4 @@
+import { buildIssueTaskManagementHref } from '../../DeveloperExperience/routes';
 import React, {
   useCallback,
   useEffect,
@@ -441,8 +442,8 @@ type RepoManagementPageProps = {
 };
 
 const REPO_MANAGEMENT_PAGE_META = {
-  community: { title: '仓库管理', communityOnlyClassName: '' },
-  issue: { title: 'Issue 仓库管理', communityOnlyClassName: 'hidden' },
+  community: { title: '社区入门 > 仓库管理', communityOnlyClassName: '' },
+  issue: { title: '社区贡献 > 仓库管理', communityOnlyClassName: 'hidden' },
 } as const;
 const REPO_MANAGEMENT_MODULE = {
   community: 'community-onboarding',
@@ -794,12 +795,14 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
   const taskManagementHref = useMemo(() => {
     const org = router.query.org;
     const orgValue = typeof org === 'string' ? org.trim() : '';
+    if (isIssueManagement)
+      return buildIssueTaskManagementHref({ org: orgValue });
     return orgValue
       ? `/intelligent-analysis/${encodeURIComponent(
           orgValue
         )}/community-experience/task-management`
       : '/intelligent-analysis/community-experience/task-management';
-  }, [router.query.org]);
+  }, [router.query.org, isIssueManagement]);
 
   useEffect(() => {
     if (isIssueManagement) {
@@ -1953,7 +1956,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                 />
                 <Space wrap className="ml-auto justify-end">
                   <Button
-                    className={`${controlClassName} ${pageMeta.communityOnlyClassName} px-3 font-semibold text-slate-700`}
+                    className={`${controlClassName} px-3 font-semibold text-slate-700`}
                     onClick={() => {
                       void router.push(taskManagementHref);
                     }}

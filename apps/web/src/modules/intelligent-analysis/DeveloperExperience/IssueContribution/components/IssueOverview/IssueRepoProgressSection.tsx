@@ -1,3 +1,4 @@
+import { buildIssueTaskManagementHref } from '../../../routes';
 import { formatScore } from '../../presentation';
 import React from 'react';
 import Link from 'next/link';
@@ -69,6 +70,7 @@ type TeamRow = {
 };
 
 type Props = {
+  expandAllTeams?: boolean;
   org?: string;
   repos: IssueOverviewRepo[];
   repoManagementHref: string;
@@ -183,6 +185,7 @@ const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
 };
 
 const IssueRepoProgressSection: React.FC<Props> = ({
+  expandAllTeams = false,
   org,
   repos,
   repoManagementHref,
@@ -844,6 +847,12 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           >
             仓库管理
           </Link>
+          <Link
+            href={buildIssueTaskManagementHref({ org })}
+            className="inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
+          >
+            任务管理
+          </Link>
         </div>
         {view === 'team' ? (
           <Table<TeamRow>
@@ -864,7 +873,9 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               });
             }}
             expandable={{
-              expandedRowKeys,
+              expandedRowKeys: expandAllTeams
+                ? teamRows.map((team) => team.id)
+                : expandedRowKeys,
               expandRowByClick: true,
               showExpandColumn: false,
               onExpandedRowsChange: (keys) => setExpandedRowKeys([...keys]),

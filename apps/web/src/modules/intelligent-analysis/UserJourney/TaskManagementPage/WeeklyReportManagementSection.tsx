@@ -38,7 +38,9 @@ const formatDateTime = (value: unknown) => {
 const normalizeRecipients = (recipients: string[]) =>
   Array.from(new Set(recipients.map((item) => item.trim()).filter(Boolean)));
 
-const WeeklyReportManagementSection: React.FC = () => {
+const WeeklyReportManagementSection: React.FC<{
+  reportType?: 'community' | 'issue';
+}> = ({ reportType = 'community' }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [savingPreview, setSavingPreview] = useState(false);
   const [savingFormalAuto, setSavingFormalAuto] = useState(false);
@@ -51,17 +53,21 @@ const WeeklyReportManagementSection: React.FC = () => {
     isLoading: previewConfigLoading,
     refetch: refetchPreviewConfig,
   } = useQuery({
-    queryKey: ['weekly-report-preview-config'],
-    queryFn: () => fetchWeeklyReportPreviewConfig(),
+    queryKey: ['weekly-report-preview-config', reportType],
+    queryFn: () => fetchWeeklyReportPreviewConfig(undefined, reportType),
   });
   const {
     data: formalRecords,
     isLoading: formalRecordsLoading,
     refetch: refetchFormalRecords,
   } = useQuery({
-    queryKey: ['weekly-report-formal-records', recordPage],
+    queryKey: ['weekly-report-formal-records', reportType, recordPage],
     queryFn: () =>
-      fetchFormalWeeklyReportRecords({ page: recordPage, size: 10 }),
+      fetchFormalWeeklyReportRecords(
+        { page: recordPage, size: 10 },
+        undefined,
+        reportType
+      ),
   });
 
   useEffect(() => {
@@ -72,10 +78,14 @@ const WeeklyReportManagementSection: React.FC = () => {
     async (previewEnabled?: boolean) => {
       setSavingPreview(true);
       try {
-        const result = await updateWeeklyReportPreviewConfig({
-          preview_enabled: previewEnabled,
-          preview_recipients: normalizeRecipients(previewRecipients),
-        });
+        const result = await updateWeeklyReportPreviewConfig(
+          {
+            preview_enabled: previewEnabled,
+            preview_recipients: normalizeRecipients(previewRecipients),
+          },
+          undefined,
+          reportType
+        );
         messageApi.success(result.message);
         await refetchPreviewConfig();
       } catch (error) {
@@ -86,13 +96,13 @@ const WeeklyReportManagementSection: React.FC = () => {
         setSavingPreview(false);
       }
     },
-    [messageApi, previewRecipients, refetchPreviewConfig]
+    [messageApi, previewRecipients, refetchPreviewConfig, reportType]
   );
 
   const sendFormalReport = useCallback(async () => {
     setSendingFormal(true);
     try {
-      const result = await sendFormalWeeklyReport();
+      const result = await sendFormalWeeklyReport(undefined, reportType);
       const content =
         result.data.message || result.message || '正式周报发送失败';
       result.data.status === 'sent'
@@ -106,15 +116,19 @@ const WeeklyReportManagementSection: React.FC = () => {
     } finally {
       setSendingFormal(false);
     }
-  }, [messageApi, refetchFormalRecords]);
+  }, [messageApi, refetchFormalRecords, reportType]);
 
   const saveFormalAutoConfig = useCallback(
     async (formalAutoEnabled: boolean) => {
       setSavingFormalAuto(true);
       try {
-        const result = await updateWeeklyReportPreviewConfig({
-          formal_auto_enabled: formalAutoEnabled,
-        });
+        const result = await updateWeeklyReportPreviewConfig(
+          {
+            formal_auto_enabled: formalAutoEnabled,
+          },
+          undefined,
+          reportType
+        );
         messageApi.success(result.message);
         await refetchPreviewConfig();
       } catch (error) {
@@ -125,7 +139,7 @@ const WeeklyReportManagementSection: React.FC = () => {
         setSavingFormalAuto(false);
       }
     },
-    [messageApi, refetchPreviewConfig]
+    [messageApi, refetchPreviewConfig, reportType]
   );
 
   const columns = useMemo<ColumnsType<WeeklyReportFormalRecord>>(
