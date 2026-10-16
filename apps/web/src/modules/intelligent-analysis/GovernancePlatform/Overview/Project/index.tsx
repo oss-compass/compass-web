@@ -129,12 +129,14 @@ const Main: React.FC<MainProps> = ({ projectType = 'flutter' }) => {
           overflow: 'auto',
         }}
       >
-        <DetailPage
-          data={selectedUser}
-          onBack={handleCloseModal}
-          projectType={projectType}
-          isModal={true}
-        />
+        {selectedUser && (
+          <DetailPage
+            data={selectedUser}
+            onBack={handleCloseModal}
+            projectType={projectType}
+            isModal={true}
+          />
+        )}
       </Modal>
     </>
   );
