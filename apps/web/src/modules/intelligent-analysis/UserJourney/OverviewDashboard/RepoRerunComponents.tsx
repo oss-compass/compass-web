@@ -1065,7 +1065,7 @@ export const RepoRerunRecordsModal: React.FC<RepoRerunRecordsModalProps> = ({
           <Alert type="warning" showIcon message="请先登录操作账号" />
           <Input
             value={loginUsername}
-            placeholder="请输入账号"
+            placeholder="请输入账户邮箱如：zhangsan@huawei.com"
             onChange={(event) => {
               onLoginUsernameChange(event.target.value);
             }}

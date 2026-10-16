@@ -1389,7 +1389,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
           checked
         );
         if (result.status && !['online'].includes(result.status)) {
-          if (result.status === 'pending') messageApi.info(result.message);
+          if (result.status === 'pending') messageApi.info(result.message, 12);
           else messageApi.warning(result.message);
           await refetchRepoList();
           await queryClient.invalidateQueries({
@@ -1698,10 +1698,13 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         sortDirections: ['ascend', 'descend'],
         render: (value: boolean | undefined, record) => {
           const checked = !!value;
-          if (isIssueManagement && record.issue_online_pending) {
+          if (
+            record.community_online_pending ||
+            (isIssueManagement && record.issue_online_pending)
+          ) {
             return (
               <Popconfirm
-                title="取消等待报告生成后的自动上线？"
+                title="确认取消该仓库的待处理上线流程？"
                 onConfirm={() => handleToggleOverviewEnabled(record, false)}
                 okText="确认取消"
                 cancelText="继续等待"
@@ -1711,7 +1714,9 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                   size="small"
                   loading={overviewUpdatingRepo === record.repo_name}
                 >
-                  报告生成中 · 取消上线
+                  {isIssueManagement
+                    ? '报告生成中 · 取消上线'
+                    : '上线流程中 · 取消申请'}
                 </Button>
               </Popconfirm>
             );
@@ -1736,7 +1741,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                   : `${
                       isIssueManagement
                         ? '如无报告，将先检查上线标准，达标后生成报告，入库后再上线。'
-                        : ''
+                        : '如无可上线报告，将先生成报告或等待现有报告审核；审核通过并入库后邮件提醒上线，7 天后再次提醒，再过 7 天仍未上线或备案则自动上线。'
                     }上线后将发送邮件通知该仓库负责人和所有管理员。`
               }`}
               okText="确认"

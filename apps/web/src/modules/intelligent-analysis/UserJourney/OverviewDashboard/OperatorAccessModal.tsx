@@ -279,7 +279,7 @@ const OperatorAccessModal: React.FC<OperatorAccessModalProps> = ({
               <>
                 <Input
                   value={loginUsername}
-                  placeholder="请输入账号"
+                  placeholder="请输入账户邮箱如：zhangsan@huawei.com"
                   onChange={(event) => {
                     onLoginUsernameChange(event.target.value);
                   }}
