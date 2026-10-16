@@ -62,7 +62,7 @@ const Download = ({
         throw new Error('Download Error');
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
       downloadFinish();
     }
   };
