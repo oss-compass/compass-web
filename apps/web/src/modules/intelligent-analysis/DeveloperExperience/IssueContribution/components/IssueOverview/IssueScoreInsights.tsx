@@ -1,11 +1,15 @@
 import { formatScore } from '../../presentation';
 import React from 'react';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { Empty, Modal, Table, Tooltip } from 'antd';
+import { Empty, Modal, Popover, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import IssueTrendSparkline from './IssueTrendSparkline';
-import { getMetricCategory } from '../../metricDefinitions';
+import MetricDefinitionContent from '../MetricDefinitionContent';
+import {
+  getMetricCategory,
+  getMetricDefinition,
+} from '../../metricDefinitions';
 import type { IssueOverviewRepo } from '../../types';
 import {
   getOverviewScoreColor,
@@ -143,6 +147,37 @@ const DistributionRows: React.FC<{
           band,
           repos: item.values.filter((value) => band.matches(value.score)),
         }));
+        // 指标 tab 行取 code（形如 I1#obj-response-speed）查定义，展示 hover 详情浮窗
+        const metricCode = item.key.includes('#') ? item.key.split('#')[1] : '';
+        const metricDef = metricCode
+          ? getMetricDefinition(metricCode)
+          : undefined;
+        const labelSpan = (
+          <span
+            className={`flex min-w-0 items-center gap-1.5 text-sm font-medium text-[var(--overview-slateDark)] ${
+              metricDef ? 'cursor-help' : ''
+            }`}
+          >
+            <span className="truncate">{item.label}</span>
+            {metricDef ? (
+              <QuestionCircleOutlined
+                className="shrink-0 text-[12px] text-[var(--overview-slateLight)]"
+                title="鼠标悬停查看指标含义与评分细则"
+              />
+            ) : null}
+            {item.metricCategory ? (
+              <span
+                className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                  item.metricCategory === 'efficiency'
+                    ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)]'
+                    : 'bg-[var(--overview-greenSoft)] text-[var(--overview-green)]'
+                }`}
+              >
+                {item.metricCategory === 'efficiency' ? '效率' : '质量'}
+              </span>
+            ) : null}
+          </span>
+        );
         return (
           <React.Fragment key={item.key}>
             {showGroup ? (
@@ -160,22 +195,23 @@ const DistributionRows: React.FC<{
                   : 'rounded-lg py-1'
               }`}
             >
-              <Tooltip title={item.hint || item.label}>
-                <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-[var(--overview-slateDark)]">
-                  <span className="truncate">{item.label}</span>
-                  {item.metricCategory ? (
-                    <span
-                      className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                        item.metricCategory === 'efficiency'
-                          ? 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)]'
-                          : 'bg-[var(--overview-greenSoft)] text-[var(--overview-green)]'
-                      }`}
-                    >
-                      {item.metricCategory === 'efficiency' ? '效率' : '质量'}
-                    </span>
-                  ) : null}
-                </span>
-              </Tooltip>
+              {metricDef ? (
+                <Popover
+                  trigger="hover"
+                  placement="top"
+                  mouseEnterDelay={0.15}
+                  content={
+                    <MetricDefinitionContent
+                      name={item.label}
+                      definition={metricDef}
+                    />
+                  }
+                >
+                  {labelSpan}
+                </Popover>
+              ) : (
+                <Tooltip title={item.hint || item.label}>{labelSpan}</Tooltip>
+              )}
               <div
                 className="flex h-[22px] overflow-hidden rounded-[7px] border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)]"
                 style={{
@@ -444,7 +480,7 @@ const RankingColumn: React.FC<{
                 </button>
               </Tooltip>
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="grid grid-cols-[38px_50px] items-center gap-2">
               <IssueTrendSparkline
                 trend={{
                   title: `${repo.repoShort} · 综合体验评分趋势`,
@@ -463,7 +499,7 @@ const RankingColumn: React.FC<{
               />
               <Link
                 href={reportHref(repo.community, repo.period)}
-                className="font-bold tabular-nums text-[var(--overview-blue)] underline decoration-[var(--overview-blue)] underline-offset-2 transition-colors hover:text-[var(--overview-blueDark)] hover:decoration-[var(--overview-blue)]"
+                className="text-right font-bold tabular-nums text-[var(--overview-blue)] underline decoration-[var(--overview-blue)] underline-offset-2 transition-colors hover:text-[var(--overview-blueDark)] hover:decoration-[var(--overview-blue)]"
                 title={`查看 ${repo.repoShort} 最新报告`}
               >
                 {formatScore(repo.idxTotal)}
@@ -500,9 +536,28 @@ export const IssueRepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
       title: '指标',
       dataIndex: 'name',
       ellipsis: true,
-      render: (name: string, metric) => (
-        <Tooltip title={`${name} · ${metric.code}`}>{name}</Tooltip>
-      ),
+      // 与评分分布指标 tab 一致：命中定义时 hover 展示「指标含义 + 算分算法」浮窗
+      render: (name: string, metric) => {
+        const definition = getMetricDefinition(metric.code);
+        if (!definition) {
+          return <Tooltip title={`${name} · ${metric.code}`}>{name}</Tooltip>;
+        }
+        return (
+          <Popover
+            trigger="hover"
+            placement="top"
+            mouseEnterDelay={0.15}
+            content={
+              <MetricDefinitionContent name={name} definition={definition} />
+            }
+          >
+            <span className="flex min-w-0 cursor-help items-center gap-1.5">
+              <span className="truncate">{name}</span>
+              <QuestionCircleOutlined className="shrink-0 text-[12px] text-[var(--overview-slateLight)]" />
+            </span>
+          </Popover>
+        );
+      },
     },
     {
       title: '类型',

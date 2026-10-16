@@ -759,9 +759,12 @@ export const METRIC_DEFINITIONS: Record<string, MetricDefinition> = {
   ...V4_METRIC_DEFINITIONS,
 };
 
+// 报告数据中的指标 code 存在两种格式：UPPER_SNAKE（OBJ_RESPONSE_SPEED）与
+// 后端 v4.2 重新计分输出的 kebab-case（obj-response-speed），查表前统一归一化。
 export const getMetricDefinition = (
   code: string
-): MetricDefinition | undefined => METRIC_DEFINITIONS[code];
+): MetricDefinition | undefined =>
+  METRIC_DEFINITIONS[code.trim().replace(/-/g, '_').toUpperCase()];
 
 // ─────────────────────────────────────────────────────────────
 // 指标双轴分类：效率 / 质量（用于报告页关键指标卡片上的 tag）。

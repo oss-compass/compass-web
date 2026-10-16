@@ -374,15 +374,15 @@ const RankingColumn: React.FC<{
                 </button>
               </Tooltip>
             </div>
-            <div className="flex items-center justify-end gap-2">
+            <div className="grid grid-cols-[38px_50px] items-center gap-2">
               <ScoreSparkline
                 values={repo.scoreHistory.slice(-7).map((point) => point.score)}
               />
               <Link
                 href={reportHref(repo)}
-                className="font-bold tabular-nums text-[var(--overview-blue)] underline underline-offset-2 hover:text-[var(--overview-blueDark)]"
+                className="text-right font-bold tabular-nums text-[var(--overview-blue)] underline underline-offset-2 hover:text-[var(--overview-blueDark)]"
               >
-                {repo.latestScore.toFixed(1)}
+                {Number(repo.latestScore.toFixed(1))}
               </Link>
             </div>
           </div>

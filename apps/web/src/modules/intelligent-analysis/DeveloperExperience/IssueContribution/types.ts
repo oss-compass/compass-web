@@ -540,7 +540,7 @@ export type IssueOverviewRepo = {
   painResolved: number;
   painHistorical?: number;
   painCloseRate: number;
-  /** 各仓库对比的问题处理进展仅使用 P0 痛点口径。 */
+  /** 后端提供的 P0 子集统计；各仓库对比使用上方全优先级 pain 字段。 */
   p0PainTotal: number;
   p0PainPending: number;
   p0PainInProgress: number;

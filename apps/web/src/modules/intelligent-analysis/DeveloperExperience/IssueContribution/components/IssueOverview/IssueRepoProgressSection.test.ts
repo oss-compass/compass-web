@@ -31,7 +31,7 @@ describe('community contribution category aggregation', () => {
     expect(result.painTotal).toBe(5);
     expect(result.closeRate).toBe(50);
   });
-  it('uses the existing weighted score and sums P0 progress fields', () => {
+  it('uses the existing weighted score and sums all-priority progress fields', () => {
     const result = buildAggregateRow('aal（领域加速库）', [
       repo('a', {
         idxTotal: 60,

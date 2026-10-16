@@ -209,26 +209,10 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   const [detailTarget, setDetailTarget] = React.useState<DetailTarget | null>(
     null
   );
-  const p0ProgressRepos = React.useMemo(
-    () =>
-      repos.map((repo) => ({
-        ...repo,
-        painTotal: repo.p0PainTotal,
-        painPending: repo.p0PainPending,
-        painInProgress: repo.p0PainInProgress,
-        painResolved: repo.p0PainResolved,
-        painHistorical: repo.p0PainHistorical,
-        painCloseRate: repo.p0PainCloseRate,
-      })),
-    [repos]
-  );
-  const teamRows = React.useMemo(
-    () => buildTeamRows(p0ProgressRepos),
-    [p0ProgressRepos]
-  );
+  const teamRows = React.useMemo(() => buildTeamRows(repos), [repos]);
 
   const { data: detailData, isFetching: detailLoading } = useQuery({
-    queryKey: ['issue-progress-pains', org, detailTarget],
+    queryKey: ['issue-progress-pains', 'all-priorities', org, detailTarget],
     queryFn: ({ signal }) =>
       fetchIssueTopPains(
         {
@@ -247,7 +231,6 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               ? `${detailTarget.repo.repoShort}@${detailTarget.repo.period}`
               : undefined,
           state: detailTarget?.bucket,
-          prio: 'P0',
           page: 1,
           pageSize: 5000,
         },
@@ -277,7 +260,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   const progressHeader = React.useMemo(
     () => (
       <ProgressSortHeader
-        label="P0问题处理进展"
+        label="问题处理进展"
         sortKey={progressSortKey}
         sortOrder={progressSortOrder}
         onSortKeyChange={(key) => {
@@ -481,7 +464,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           ),
       },
       {
-        title: 'P0问题数',
+        title: '问题数',
         key: 'painTotal',
         width: 105,
         sorter: (a, b) => a.painTotal - b.painTotal,
@@ -496,7 +479,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
       {
-        title: 'P0闭环率',
+        title: '闭环率',
         dataIndex: 'painCloseRate',
         key: 'closeRate',
         width: 95,
@@ -597,7 +580,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           ),
       },
       {
-        title: 'P0问题数',
+        title: '问题数',
         key: 'painTotal',
         width: TEAM_COLUMN_WIDTHS[5],
         sorter: (a, b) => a.painTotal - b.painTotal,
@@ -617,7 +600,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
       {
-        title: 'P0闭环率',
+        title: '闭环率',
         dataIndex: 'closeRate',
         key: 'closeRate',
         width: TEAM_COLUMN_WIDTHS[6],
@@ -886,7 +869,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ) : (
           <Table<IssueOverviewRepo>
             className="overview-ant-table"
-            dataSource={sortByProgress(p0ProgressRepos)}
+            dataSource={sortByProgress(repos)}
             columns={repoColumns}
             rowKey={(repo) => `${repo.community}-${repo.period}`}
             pagination={false}
@@ -902,7 +885,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         loading={detailLoading}
         items={detailData?.items ?? []}
         repoTeams={Object.fromEntries(
-          p0ProgressRepos.map((repo) => [repo.repoShort, repo.teamName])
+          repos.map((repo) => [repo.repoShort, repo.teamName])
         )}
         reportHref={reportHref}
         title={
@@ -914,7 +897,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               } · ${
                 detailTarget.bucket
                   ? PROGRESS_BUCKET_LABELS[detailTarget.bucket]
-                  : 'P0问题数'
+                  : '问题数'
               }`
             : '问题详情'
         }
