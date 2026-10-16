@@ -11,6 +11,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useTranslation, Trans } from 'next-i18next';
 import { toast } from 'react-hot-toast';
 import CheckTerms from '@modules/lab/model/components/CheckTerms';
+import { resolveAcceptUrl } from '@modules/lab/model/invite/acceptUrl';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { req } = context;
@@ -24,7 +25,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const Content = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const acceptUrl = router.query.accept_url as string;
   const invitee = router.query.invitee as string;
   const modelName = router.query.model as string;
 
@@ -69,7 +69,10 @@ const Content = () => {
           size="lg"
           onClick={() => {
             if (select) {
-              window.location.href = acceptUrl;
+              window.location.href = resolveAcceptUrl(
+                router.query.accept_url,
+                window.location.origin
+              );
             } else {
               toast.error(t('lab:please_check_the_terms'));
             }
