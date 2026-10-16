@@ -12,9 +12,11 @@ export async function getRepos({
   username,
   sort = 'updated',
   q,
+  page,
+  per_page = defaultPageSize,
 }: ReposParams): Promise<AxiosResponse<Repos[]>> {
   return await axios.get(`https://gitee.com/api/v5/users/${username}/repos`, {
-    params: { sort, q, type: 'all' },
+    params: { sort, q, page, per_page, type: 'all' },
     headers: {
       accept: 'application/json',
     },
