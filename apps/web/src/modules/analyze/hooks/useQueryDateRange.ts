@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
 import useVerifyDetailRangeQuery from '@modules/analyze/hooks/useVerifyDetailRangeQuery';
 import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
+import { isDateRange } from '@common/utils/dateRange';
 
 const defaultVal = {
   range: '6M' as RangeTag,
@@ -14,19 +15,7 @@ const contributorDefaultVal = {
   timeStart: timeRange['6M'].start,
   timeEnd: timeRange['6M'].end,
 };
-export const isDateRange = (range: string) => {
-  if (range.includes(' ~ ')) {
-    const start = range.split(' ~ ')[0];
-    const end = range.split(' ~ ')[1];
-    const re = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
-    const r = start.match(re) && end.match(re);
-    if (r) {
-      return { start: new Date(start), end: new Date(end) };
-    }
-    return false;
-  }
-  return false;
-};
+export { isDateRange };
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
