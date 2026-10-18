@@ -400,16 +400,12 @@ function getLeaderboardRowValue(
   return (row as RustRegionRow).数量;
 }
 
-function parseSharePercent(share: string): number {
-  return parseFloat(share.replace('%', '').trim()) || 0;
-}
-
 function isUnknownName(name: string): boolean {
   const n = name.toLowerCase().trim();
   return !n || n === 'unknown' || n === '未知' || n === '未知组织';
 }
 
-function buildLeaderboardChartItems(
+export function buildLeaderboardChartItems(
   type: RustLeaderboardType,
   rows: Array<RustRegionRow | RustOrganizationRow>
 ): RustLeaderboardChartItem[] {
@@ -426,27 +422,26 @@ function buildLeaderboardChartItems(
     (sum, row) => sum + getLeaderboardRowValue(type, row),
     0
   );
-  // Other 的占比：直接累加 11 名之后各行的原始占比（不含 unknown）
-  const otherShare = otherRows.reduce(
-    (sum, row) => sum + parseSharePercent(row.占比),
-    0
-  );
 
-  const chartItems = topRows.map((row, index) => ({
-    key: `${type}-${index + 1}`,
-    name: getLeaderboardRowName(type, row),
-    value: getLeaderboardRowValue(type, row),
-    share: parseSharePercent(row.占比),
+  const items = [
+    ...topRows.map((row, index) => ({
+      key: `${type}-${index + 1}`,
+      name: getLeaderboardRowName(type, row),
+      value: getLeaderboardRowValue(type, row),
+    })),
+    { key: `${type}-other`, name: 'Other', value: otherValue },
+  ];
+
+  // 饼图的扇形按 value 归一化，占比必须用同一分母（Top10 + Other 的合计），
+  // 否则 tooltip 里印出来的百分比与扇形面积对不上：数据源的「占比」是按各自
+  // 全量样本计算的（组织榜还排除了 unknown 组织），逐行累加后常常远小于 100%。
+  const totalValue = items.reduce((sum, item) => sum + item.value, 0);
+  return items.map((item) => ({
+    ...item,
+    share: totalValue
+      ? Number(((item.value / totalValue) * 100).toFixed(2))
+      : 0,
   }));
-
-  chartItems.push({
-    key: `${type}-other`,
-    name: 'Other',
-    value: otherValue,
-    share: otherShare,
-  });
-
-  return chartItems;
 }
 
 export async function getRustOverviewData(
