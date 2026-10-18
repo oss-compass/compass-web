@@ -1,7 +1,6 @@
 import react, { useState } from 'react'; // 引入 useState
 import { BiGitPullRequest, BiGitCommit } from 'react-icons/bi';
 import { GoIssueOpened } from 'react-icons/go';
-import useContributorInfo from '@modules/developer/hooks/useContributorInfo';
 import { useContributorApi } from '@modules/developer/hooks/useContributorApi';
 import { Select, Tooltip } from 'antd'; // 假设使用 Ant Design 的 Select 组件，请根据实际情况调整引入
 import { GoQuestion } from 'react-icons/go';
@@ -25,7 +24,6 @@ interface ContributionCardProps {
   title: string;
   value: number | string;
   rank: string;
-  country: string;
   isLoading: boolean;
 }
 
@@ -36,7 +34,6 @@ const ContributionCard: React.FC<ContributionCardProps> = ({
   title,
   value,
   rank,
-  country,
   isLoading,
 }) => (
   <div className="flex flex-1 items-center justify-between rounded-lg border-2 border-transparent bg-white p-6 drop-shadow-sm">
@@ -57,14 +54,13 @@ const ContributionCard: React.FC<ContributionCardProps> = ({
         <span className="text-xl font-bold text-[#ff2366]">
           {isLoading ? '...' : rank}
         </span>{' '}
-        in {country}
+        in Worldwide
       </div>
     </div>
   </div>
 );
 
 const RightPan = () => {
-  const { contributorInfo } = useContributorInfo();
   // 新增 selectedYear 状态，并初始化为 2024
   const [selectedYear, setSelectedYear] = useState<number>(2025);
 
@@ -74,13 +70,6 @@ const RightPan = () => {
     {},
     selectedYear // 将 selectedYear 传递给 useContributorApi
   );
-
-  // 根据当前语言获取对应的国家字段
-  const getCurrentCountry = () => {
-    return contributorInfo?.country_raw || 'Worldwide';
-  };
-
-  const country = getCurrentCountry();
 
   // 处理年份选择变化的函数
   const handleYearChange = (year: number) => {
@@ -124,7 +113,6 @@ const RightPan = () => {
         title="Commits"
         value={data?.push_contribution || 0}
         rank={data?.push_contribution_rank || '0%'}
-        country={country}
         isLoading={isLoading}
       />
 
@@ -135,7 +123,6 @@ const RightPan = () => {
         title="PRs"
         value={data?.pull_request_contribution || 0}
         rank={data?.pull_request_contribution_rank || '0%'}
-        country={country}
         isLoading={isLoading}
       />
 
@@ -146,7 +133,6 @@ const RightPan = () => {
         title="Issues"
         value={data?.issue_contribution || 0}
         rank={data?.issue_contribution_rank || '0%'}
-        country={country}
         isLoading={isLoading}
       />
     </div>
