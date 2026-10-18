@@ -4,6 +4,7 @@ import LabelItems from './LabelItems';
 import NavDatePicker from './NavDatePicker';
 import SubscribeButton from './SubscribeButton';
 import NavbarSetting from './NavbarSetting';
+import CategorySelector from './CategorySelector';
 
 const NavBar = () => {
   return (
@@ -15,6 +16,7 @@ const NavBar = () => {
     >
       <LabelItems />
       <div className="flex items-center text-[#585858]">
+        <CategorySelector />
         <NavDatePicker />
         <SubscribeButton />
         <NavbarSetting />

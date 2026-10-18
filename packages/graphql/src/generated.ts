@@ -11733,6 +11733,7 @@ export type MetricQuery = {
 export type SummaryQueryVariables = Exact<{
   start?: InputMaybe<Scalars['ISO8601DateTime']>;
   end?: InputMaybe<Scalars['ISO8601DateTime']>;
+  category?: InputMaybe<Scalars['String']>;
 }>;
 
 export type SummaryQuery = {
@@ -20502,8 +20503,8 @@ useMetricQuery.fetcher = (
     headers
   );
 export const SummaryDocument = /*#__PURE__*/ `
-    query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
-  summaryActivity(beginDate: $start, endDate: $end) {
+    query summary($start: ISO8601DateTime, $end: ISO8601DateTime, $category: String) {
+  summaryActivity(beginDate: $start, endDate: $end, category: $category) {
     activeC1IssueCommentsContributorCount {
       ...metricStat
     }
@@ -20551,7 +20552,7 @@ export const SummaryDocument = /*#__PURE__*/ `
       ...metricStat
     }
   }
-  summaryCodequality(beginDate: $start, endDate: $end) {
+  summaryCodequality(beginDate: $start, endDate: $end, category: $category) {
     activeC1PrCommentsContributorCount {
       ...metricStat
     }
@@ -20617,7 +20618,7 @@ export const SummaryDocument = /*#__PURE__*/ `
       ...metricStat
     }
   }
-  summaryCommunity(beginDate: $start, endDate: $end) {
+  summaryCommunity(beginDate: $start, endDate: $end, category: $category) {
     bugIssueOpenTimeAvg {
       ...metricStat
     }
@@ -20659,7 +20660,7 @@ export const SummaryDocument = /*#__PURE__*/ `
       ...metricStat
     }
   }
-  summaryGroupActivity(beginDate: $start, endDate: $end) {
+  summaryGroupActivity(beginDate: $start, endDate: $end, category: $category) {
     commitFrequency {
       ...metricStat
     }
