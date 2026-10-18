@@ -11,21 +11,29 @@ const FORMAT_YMD = 'yyyy-MM-dd';
 const local = getLocale();
 const languages = { en: enGB, zh: zhCN };
 
+const parseDate = (s: string): Date | null => {
+  if (!s) return null;
+  const parsed = parseJSON(s);
+  // `format()` throws `RangeError: Invalid time value` for an unparsable value and
+  // `formatDistanceToNow` returns the string "Invalid Date", so filter it out here.
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 export const formatISO = (s: string, layout?: string) => {
-  if (!s) return '';
-  const p = parseJSON(s);
+  const p = parseDate(s);
+  if (!p) return '';
   return format(p, layout || FORMAT_YMD);
 };
 
 export const formatToNow = (s: string) => {
-  if (!s) return '';
-  const p = parseJSON(s);
+  const p = parseDate(s);
+  if (!p) return '';
   return formatDistanceToNow(p, { locale: languages[local] });
 };
 
 export const formatToNowStrict = (s: string) => {
-  if (!s) return '';
-  const p = parseJSON(s);
+  const p = parseDate(s);
+  if (!p) return '';
   return formatDistanceToNowStrict(p, { locale: languages[local] });
 };
 
