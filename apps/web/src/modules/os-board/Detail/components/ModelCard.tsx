@@ -8,6 +8,7 @@ import { toFixed } from '@common/utils';
 import type { ModelScoreData } from '../../api/dashboard';
 import ScoreConversion from '@modules/analyze/components/ScoreConversion';
 import transHundredMarkSystem from '@common/transform/transHundredMarkSystem';
+import { formatChartTooltipValue } from './chartTooltipValue';
 
 interface ModelCardProps {
   modelId: string;
@@ -88,12 +89,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
             items[0]?.axisValueLabel ?? items[0]?.axisValue ?? '';
           const rows = items.map((p: any) => {
             const raw = Array.isArray(p?.value) ? p.value[1] : p?.value;
-            const v = typeof raw === 'number' ? raw : Number(raw);
-            const display = (() => {
-              if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
-              if (Number.isInteger(v)) return String(v);
-              return String(toFixed(v, 3));
-            })();
+            const display = formatChartTooltipValue(raw);
             return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
           });
           return [axisValue, ...rows].join('<br/>');
