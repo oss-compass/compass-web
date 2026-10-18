@@ -85,18 +85,20 @@ const OrgEdit = ({
       if (res.modifyUserOrgs?.status === 'true') {
         setShowEdit(false);
         toast.success(
-          res.modifyUserOrgs?.message || type === 'add'
-            ? t('common:toast.add_successful')
-            : t('common:toast.modification_successful')
+          res.modifyUserOrgs?.message ||
+            (type === 'add'
+              ? t('common:toast.add_successful')
+              : t('common:toast.modification_successful'))
         );
         onSuccess();
       }
 
       if (res.modifyUserOrgs?.status === 'false') {
         toast.error(
-          res.modifyUserOrgs?.message || type === 'add'
-            ? t('common:toast.add_failed')
-            : t('common:toast.modification_failed')
+          res.modifyUserOrgs?.message ||
+            (type === 'add'
+              ? t('common:toast.add_failed')
+              : t('common:toast.modification_failed'))
         );
       }
     },
@@ -118,7 +120,7 @@ const OrgEdit = ({
         <Form form={form} className="flex">
           <Form.Item
             name="orgName"
-            className="mr-2 !mb-0 h-6 w-[160px]"
+            className="!mb-0 mr-2 h-6 w-[160px]"
             rules={[
               { required: true, message: '' },
               { validator: checkData, message: t('common:not_in_chinese') },
