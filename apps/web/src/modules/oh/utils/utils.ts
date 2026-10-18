@@ -1,4 +1,9 @@
 import { getPathname } from '@common/utils';
+export const buildDocsIssueUrl = (title: string, body: string): string =>
+  `https://gitee.com/openharmony-tpc/docs/issues/new?title=${encodeURIComponent(
+    title
+  )}&description=${encodeURIComponent(body)}`;
+
 
 export const getRiskFillScore = (
   score: number | null,
@@ -122,9 +127,7 @@ export const openGiteeIssue = (report, values, id) => {
 
   try {
     window.open(
-      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
-        body
-      )}`
+buildDocsIssueUrl(title, body)
     );
   } catch (error) {
     console.error(error);
@@ -173,9 +176,7 @@ export const openGraduationIssue = (report, values, id) => {
 
   try {
     window.open(
-      `https://gitee.com/openharmony-tpc/docs/issues/new?title=${title}&description=${encodeURIComponent(
-        body
-      )}`
+buildDocsIssueUrl(title, body)
     );
   } catch (error) {
     console.error(error);
