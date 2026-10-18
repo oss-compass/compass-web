@@ -40,6 +40,14 @@ interface BehaviorProfileProps {
   }[];
 }
 
+/**
+ * Share of the widest segment. `maxValue` is 0 when every bucket is empty (a user with no
+ * activity yet), and dividing by it produced `width: NaN%` - an invalid value the browser
+ * drops, so every segment collapsed onto the full container width.
+ */
+export const getSegmentWidth = (value: number, maxValue: number): number =>
+  maxValue > 0 ? (value / maxValue) * 100 : 0;
+
 const BehaviorProfile: React.FC<BehaviorProfileProps> = ({ data }) => {
   const [hoveredType, setHoveredType] = useState<string>('');
   const maxValue = Math.max(...data.map((item) => item.value));
@@ -48,7 +56,7 @@ const BehaviorProfile: React.FC<BehaviorProfileProps> = ({ data }) => {
     <div className="w-full">
       <div className="flex h-2.5 items-center  overflow-hidden">
         {data.map(({ name, value, color }) => {
-          const width = (value / maxValue) * 100;
+          const width = getSegmentWidth(value, maxValue);
           return (
             <Tooltip key={name} title={`${name}: ${value}`}>
               <div
