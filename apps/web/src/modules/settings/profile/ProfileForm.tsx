@@ -61,14 +61,14 @@ const ProfileForm = () => {
   const changedLanguage = inputLang !== language;
 
   const mutation = useModifyUserMutation(client, {
-    onSuccess(res) {
+    onSuccess(res, variables) {
       if (res.modifyUser?.status === 'true') {
         toast.success(
           res.modifyUser?.message || t('common:toast.modification_successful')
         );
 
         // After changing the email, the server will send an email to verify the new email address.
-        if (changedEmail) {
+        if (variables.email !== email) {
           storageSaveResendEmailTime(String(Date.now() + 1000 * 60));
         }
         userInfoStore.event$?.emit(userEvent.REFRESH);
@@ -239,7 +239,7 @@ const ProfileForm = () => {
           </Button>
         </div>
 
-        <div className="ml-10 mb-10 lg:ml-0 lg:w-full">
+        <div className="mb-10 ml-10 lg:ml-0 lg:w-full">
           <div className="mb-4 font-medium">{t('setting:profile.avatar')}</div>
           <div className="relative h-[156px] w-[156px] border">
             {providerUser?.avatarUrl ? (
