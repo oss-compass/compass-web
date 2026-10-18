@@ -9,6 +9,27 @@ interface ResponsesViewerProps {
   responses: Record<string, any>;
 }
 
+/**
+ * Children of a schema node of the api response example.
+ *
+ * Array nodes describe them under `items`, object nodes under `properties`; the recursive
+ * renderer already handled both, but the "has children" check only looked at `items`, so an
+ * object node was rendered as a leaf and its properties were never displayed.
+ */
+export const getSchemaChildren = (value: unknown): Record<string, unknown> | null => {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+  const node = value as { items?: Record<string, unknown>; properties?: Record<string, unknown> };
+  if (node.items && Object.keys(node.items).length > 0) {
+    return node.items;
+  }
+  if (node.properties && Object.keys(node.properties).length > 0) {
+    return node.properties;
+  }
+  return null;
+};
+
 const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
   const { i18n } = useTranslation();
 
@@ -20,16 +41,12 @@ const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
       <ul className="pl-4">
         {Object.entries(data).map(([key, rowValue]) => {
           const value: any = rowValue;
-          const hasChildren =
-            typeof value === 'object' &&
-            value !== null &&
-            value.items &&
-            Object.keys(value.items).length > 0;
+          const children = getSchemaChildren(value);
 
           return (
             <li key={`${parentKey}.${key}`} className="mb-2">
               <div className="flex items-center">
-                {hasChildren ? (
+                {children ? (
                   <Collapse className="responses" ghost>
                     <Panel
                       header={
@@ -38,16 +55,13 @@ const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
                             {key}:
                           </span>
                           <span className="ml-2 font-normal text-gray-700">
-                            {Object.keys(value.items).length} properties
+                            {Object.keys(children).length} properties
                           </span>
                         </>
                       }
                       key={key}
                     >
-                      {renderResponse(
-                        value.items || value.properties || value,
-                        key
-                      )}
+                      {renderResponse(children, key)}
                     </Panel>
                   </Collapse>
                 ) : (
