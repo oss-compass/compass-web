@@ -98,25 +98,35 @@ const ArchiveDownload = ({ category = 'insight' }) => {
                   {item.description}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <TrackingWrapper
-                    module="dataHub"
-                    type="archive_download"
-                    content={{
-                      dataset_name: item.name,
-                      download_link: item.link,
-                      selected_date: selectedDate,
-                      category: category,
-                    }}
-                  >
-                    <a
-                      href={item.link}
-                      className="text-blue-500 hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                  {selectedDate ? (
+                    <TrackingWrapper
+                      module="dataHub"
+                      type="archive_download"
+                      content={{
+                        dataset_name: item.name,
+                        download_link: item.link,
+                        selected_date: selectedDate,
+                        category: category,
+                      }}
+                    >
+                      <a
+                        href={item.link}
+                        className="text-blue-500 hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('open_api:download')}
+                      </a>
+                    </TrackingWrapper>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="cursor-not-allowed text-gray-400"
                     >
                       {t('open_api:download')}
-                    </a>
-                  </TrackingWrapper>
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
