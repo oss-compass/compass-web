@@ -4,17 +4,15 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
 import { useControllableValue } from 'ahooks';
 
-interface InputProps {
+export interface InputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'size' | 'value' | 'defaultValue' | 'onChange' | 'children'
+  > {
   defaultValue?: string;
-  name?: string;
   value?: string;
-  style?: React.CSSProperties;
   onChange?: (value: string) => void;
-  onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
-  className?: string;
-  placeholder?: string;
   error?: boolean;
-  disabled?: boolean;
 }
 
 const inputVariants = cva(' w-full text-base outline-none', {
@@ -48,6 +46,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps & InputVariants>(
       placeholder,
       disabled = false,
       error = false,
+      // consumed by useControllableValue below; excluded so they are not
+      // forwarded to the native input twice
+      value,
+      defaultValue,
+      onChange,
+      ...restProps
     } = props;
 
     const [state, setState] = useControllableValue<string>(props, {
@@ -68,6 +72,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps & InputVariants>(
         ref={ref}
         name={name}
         type="text"
+        {...restProps}
         value={state}
         style={style}
         onChange={(e) => setState(e.target.value)}
