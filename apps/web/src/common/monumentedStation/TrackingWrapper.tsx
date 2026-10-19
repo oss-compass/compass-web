@@ -34,34 +34,33 @@ const TrackingWrapper: React.FC<TrackingWrapperProps> = ({
 
   const handleClick = (originalOnClick?: (event: any) => void) => {
     return async (event: any) => {
-      // 先执行原有的点击事件
+      // 如果有校验函数，先执行校验；校验失败时不执行原有事件，也不上报埋点
+      if (validate) {
+        try {
+          const isValid = await validate();
+          if (!isValid) {
+            // 校验失败，执行失败回调
+            if (onValidationFailed) {
+              onValidationFailed();
+            }
+            return;
+          }
+        } catch (error) {
+          console.error('埋点校验失败:', error);
+          if (onValidationFailed) {
+            onValidationFailed();
+          }
+          return;
+        }
+      }
+
+      // 校验通过或无需校验，执行原有的点击事件
       if (originalOnClick) {
         originalOnClick(event);
       }
 
       // 如果没有禁用埋点，则上报事件
       if (!disabled) {
-        // 如果有校验函数，先执行校验
-        if (validate) {
-          try {
-            const isValid = await validate();
-            if (!isValid) {
-              // 校验失败，执行失败回调
-              if (onValidationFailed) {
-                onValidationFailed();
-              }
-              return; // 不上报埋点
-            }
-          } catch (error) {
-            console.error('埋点校验失败:', error);
-            if (onValidationFailed) {
-              onValidationFailed();
-            }
-            return; // 不上报埋点
-          }
-        }
-
-        // 校验通过或无需校验，上报埋点
         const config: ModuleActionConfig = {
           module,
           type,
