@@ -10,7 +10,7 @@ const getApiJson = async () => {
 };
 
 const useApiData = () => {
-  const { isLoading, data, isError } = useQuery(
+  const { isLoading, data, isError, error, refetch } = useQuery(
     ['apiData'],
     () => {
       return getApiJson();
@@ -20,7 +20,7 @@ const useApiData = () => {
       retryDelay: 3000, // 设置重试延迟为0
     }
   );
-  return { isLoading, isError, data: data?.data || null };
+  return { isLoading, isError, error, refetch, data: data?.data || null };
 };
 
 export default useApiData;
