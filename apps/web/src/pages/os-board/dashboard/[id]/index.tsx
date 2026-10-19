@@ -15,6 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         'lab',
         'analyze',
         'metrics_models_v2',
+        'os-selection',
       ])),
     },
   };

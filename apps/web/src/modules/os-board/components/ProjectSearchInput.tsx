@@ -196,7 +196,7 @@ const ProjectSearchInput = ({
                     </div>
                     {isSelected && (
                       <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-500">
-                        {t('os_selection:software_card.selected')}
+                        {t('os-selection:software_card.selected')}
                       </span>
                     )}
                   </div>
