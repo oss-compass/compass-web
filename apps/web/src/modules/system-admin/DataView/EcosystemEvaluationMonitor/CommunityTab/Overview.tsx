@@ -9,6 +9,8 @@ import {
 const CommunityOverview: React.FC = () => {
   const platformChartRef = useRef<HTMLDivElement>(null);
   const updateChartRef = useRef<HTMLDivElement>(null);
+  const platformChartCleanupRef = useRef<(() => void) | null>(null);
+  const updateChartCleanupRef = useRef<(() => void) | null>(null);
 
   // 使用 API hooks 获取数据
   const {
@@ -145,35 +147,31 @@ const CommunityOverview: React.FC = () => {
 
         chart.setOption(option);
 
-        // 保存清理函数
-        (platformChartRef.current as any)._chartCleanup = () => {
-          chart.dispose();
-        };
-
         // 窗口大小变化时重新调整图表
         const resizeHandler = () => {
           chart.resize();
         };
         window.addEventListener('resize', resizeHandler);
 
-        return () => {
+        // 完整清理函数：同时移除监听并销毁实例
+        const cleanup = () => {
           window.removeEventListener('resize', resizeHandler);
           chart.dispose();
         };
+        (platformChartRef.current as any)._chartCleanup = cleanup;
+        return cleanup;
       }
     };
 
-    // 延迟初始化以确保 DOM 已渲染
-    const timer = setTimeout(initPlatformChart, 50);
+    // 延迟初始化以确保 DOM 已渲染；保存初始化返回的完整清理函数
+    const timer = setTimeout(() => {
+      platformChartCleanupRef.current = initPlatformChart();
+    }, 50);
 
     return () => {
       clearTimeout(timer);
-      if (
-        platformChartRef.current &&
-        (platformChartRef.current as any)._chartCleanup
-      ) {
-        (platformChartRef.current as any)._chartCleanup();
-      }
+      platformChartCleanupRef.current?.();
+      platformChartCleanupRef.current = null;
     };
   }, [platformData]);
 
@@ -229,35 +227,31 @@ const CommunityOverview: React.FC = () => {
 
         chart.setOption(option);
 
-        // 保存清理函数
-        (updateChartRef.current as any)._chartCleanup = () => {
-          chart.dispose();
-        };
-
         // 窗口大小变化时重新调整图表
         const resizeHandler = () => {
           chart.resize();
         };
         window.addEventListener('resize', resizeHandler);
 
-        return () => {
+        // 完整清理函数：同时移除监听并销毁实例
+        const cleanup = () => {
           window.removeEventListener('resize', resizeHandler);
           chart.dispose();
         };
+        (updateChartRef.current as any)._chartCleanup = cleanup;
+        return cleanup;
       }
     };
 
-    // 延迟初始化以确保 DOM 已渲染
-    const timer = setTimeout(initUpdateChart, 50);
+    // 延迟初始化以确保 DOM 已渲染；保存初始化返回的完整清理函数
+    const timer = setTimeout(() => {
+      updateChartCleanupRef.current = initUpdateChart();
+    }, 50);
 
     return () => {
       clearTimeout(timer);
-      if (
-        updateChartRef.current &&
-        (updateChartRef.current as any)._chartCleanup
-      ) {
-        (updateChartRef.current as any)._chartCleanup();
-      }
+      updateChartCleanupRef.current?.();
+      updateChartCleanupRef.current = null;
     };
   }, [updateData]);
 
