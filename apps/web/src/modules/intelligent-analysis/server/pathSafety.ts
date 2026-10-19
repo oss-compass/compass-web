@@ -18,6 +18,10 @@ export function resolveFileInsideDir(
   fileName: string
 ): string | null {
   const resolved = path.resolve(dir, fileName);
-  const dirWithSep = dir.endsWith(path.sep) ? dir : dir + path.sep;
-  return resolved.startsWith(dirWithSep) ? resolved : null;
+  // dir may be written with POSIX separators or without a drive letter, while
+  // path.resolve() returns a normalised, platform-native path, so the prefix
+  // has to be resolved too instead of compared as the raw argument.
+  const base = path.resolve(dir);
+  const baseWithSep = base.endsWith(path.sep) ? base : base + path.sep;
+  return resolved.startsWith(baseWithSep) ? resolved : null;
 }
