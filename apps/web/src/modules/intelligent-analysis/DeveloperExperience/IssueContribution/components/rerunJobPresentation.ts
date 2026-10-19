@@ -39,6 +39,9 @@ export const isRerunLocked = (job?: IssuePainRerunJob | null) =>
   Boolean(
     job &&
       job.applyStatus !== 'applied' &&
+      // apply_failed 是应用阶段的终态：任务不会再前进，
+      // 继续锁定会让这些 Issue 永远无法再次发起复测。
+      job.applyStatus !== 'apply_failed' &&
       job.taskStatus !== 'failed' &&
       job.taskStatus !== 'cancelled'
   );
