@@ -31,9 +31,9 @@ type Story = StoryObj<typeof Button>;
 export const Default: Story = {
   args: { children: 'Button' },
   render: (args) => {
-    const { loading, intent, disabled, children } = args;
+    const { loading, intent, disabled, size, children } = args;
     return (
-      <Button loading={loading} disabled={disabled} intent={intent}>
+      <Button loading={loading} disabled={disabled} intent={intent} size={size}>
         {children}
       </Button>
     );
