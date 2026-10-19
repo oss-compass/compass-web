@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { EChartsOption, init } from 'echarts';
+import { EChartsOption, init, getInstanceByDom } from 'echarts';
 
 const Pie = ({ score, rank }) => {
   const colorList = ['#826af9', '#edf0f4'];
@@ -61,9 +61,17 @@ const Pie = ({ score, rank }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let chart = init(cardRef.current);
-    chart.setOption(option);
-  }, [option, cardRef.current]);
+    // init() throws when the DOM node still carries an instance from a previous
+    // mount, so dispose on cleanup exactly like EchartCommon does: the canvas,
+    // listeners and the ECharts registry entry are released instead of leaked,
+    // and a remount can initialize cleanly again.
+    const existing = getInstanceByDom(cardRef.current);
+    const chart = existing ?? init(cardRef.current);
+    chart.setOption(option, true);
+    return () => {
+      chart.dispose();
+    };
+  }, [option]);
 
   return <div className="h-32 w-full" ref={cardRef}></div>;
 };
