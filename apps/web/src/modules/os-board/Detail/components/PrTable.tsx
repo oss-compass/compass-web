@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Popover, Tabs } from 'antd';
+import { Button, Popover, Tabs } from 'antd';
+import { toast } from 'react-hot-toast';
 import { GoGitPullRequest, GoGitPullRequestClosed } from 'react-icons/go';
 import { AiFillClockCircle } from 'react-icons/ai';
 import { BiGitCommit } from 'react-icons/bi';
 import { SiGitee, SiGithub } from 'react-icons/si';
+import { FiDownload } from 'react-icons/fi';
 import Image from 'next/image';
 import BaseCard from '@common/components/BaseCard';
 import MyTable from '@common/components/Table';
@@ -17,6 +19,7 @@ import {
   useOsBoardPullsDetailList,
   useOsBoardPullsOverview,
   useOsBoardRepositoryList,
+  exportPullsDetailList,
   CommunityPullSummaryItem,
   PullDetail,
   FilterOptionInput,
@@ -30,6 +33,7 @@ import {
 } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
 import ContributorOrganizationCell from './ContributorOrganizationCell';
+import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 
 interface PrTableProps {
   dashboardId: string;
@@ -160,6 +164,7 @@ const PrTable: React.FC<PrTableProps> = ({
   competitorProjects = [],
 }) => {
   const { t } = useTranslation();
+  const { timeStart, timeEnd } = useOsBoardDateRange();
   const noResponseText = t('analyze:metric_detail:no_response');
   const dayUnitText = t('analyze:unit_day');
   const [selectedProject, setSelectedProject] = useState<string>(
@@ -177,6 +182,29 @@ const PrTable: React.FC<PrTableProps> = ({
     filterOpts: [],
     sortOpts: getDefaultSortOption(dashboardType),
   });
+  const [exporting, setExporting] = useState(false);
+
+  // 导出当前筛选条件下的 PR 列表（全量，不含分页）
+  const handleExport = async () => {
+    if (exporting || !selectedProject) return;
+    setExporting(true);
+    try {
+      await exportPullsDetailList({
+        label: selectedProject,
+        level: isCommunityDashboard ? 'community' : 'repo',
+        filterOpts: tableParams.filterOpts,
+        sortOpts: tableParams.sortOpts || undefined,
+        beginDate: timeStart,
+        endDate: timeEnd,
+      });
+      toast.success(t('os_board:list_export.success'));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '';
+      toast.error(message || t('os_board:list_export.failed'));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const {
     data: pullsDetailData,
@@ -695,6 +723,17 @@ const PrTable: React.FC<PrTableProps> = ({
       title={String(t('metrics_models_v2:model_999.metrics.metric_064.title'))}
       bodyClass={TABLE_CARD_BODY_CLASS}
       className={TABLE_CARD_CLASS}
+      headerExtra={
+        <Button
+          size="small"
+          type="text"
+          icon={<FiDownload />}
+          loading={exporting}
+          onClick={handleExport}
+        >
+          {t('os_board:list_export.download')}
+        </Button>
+      }
     >
       <Tabs
         activeKey={selectedProject}

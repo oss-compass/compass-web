@@ -47,6 +47,8 @@ interface BaseCardProps {
         setFullScreen: React.Dispatch<React.SetStateAction<boolean>>
       ) => ReactNode)
     | ReactNode;
+  /** 标题行右侧操作区（桌面端可见，用于放置下载等按钮） */
+  headerExtra?: ReactNode;
   bodyClass?: string;
   bodyRender?:
     | ((containerRef: RefObject<HTMLElement>, fullScreen: boolean) => ReactNode)
@@ -72,6 +74,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   detail = '',
   notes = '',
   headRight = null,
+  headerExtra = null,
   bodyClass = 'h-[350px]',
   bodyRender,
   children,
@@ -108,17 +111,24 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   return (
     <div className={classnames(cls)} ref={cardRef} id={id}>
-      <h3
-        className="group mb-2 text-lg font-semibold text-[#000000]"
-        ref={titleRef}
-      >
-        {title}
-        <a href={`#${id}`}>
-          <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
-            #
-          </span>
-        </a>
-      </h3>
+      <div className="flex items-start justify-between gap-2">
+        <h3
+          className="group mb-2 min-w-0 text-lg font-semibold text-[#000000]"
+          ref={titleRef}
+        >
+          {title}
+          <a href={`#${id}`}>
+            <span className="group-hover:text-primary invisible ml-2 cursor-pointer group-hover:visible">
+              #
+            </span>
+          </a>
+        </h3>
+        {headerExtra != null && (
+          <div className="flex shrink-0 items-center gap-1 pt-0.5">
+            {headerExtra}
+          </div>
+        )}
+      </div>
       {description && (
         <div className="relative mb-4 text-xs text-[#585858] ">
           <DocPopper

@@ -9,6 +9,8 @@ import {
 } from 'react-icons/ai';
 import { BiChat } from 'react-icons/bi';
 import { SiGitee, SiGithub } from 'react-icons/si';
+import { FiDownload } from 'react-icons/fi';
+import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import BaseCard from '@common/components/BaseCard';
 import MyTable from '@common/components/Table';
@@ -21,6 +23,8 @@ import {
   useOsBoardIssuesOverview,
   useOsBoardOrganizationList,
   useOsBoardRepositoryList,
+  buildOrganizationFilterOpts,
+  exportIssuesDetailList,
   CommunityIssueSummaryItem,
   IssueDetail,
   FilterOptionInput,
@@ -39,6 +43,7 @@ import IssuePriorityCell from './IssuePriorityCell';
 import IssueResponsibleCell from './IssueResponsibleCell';
 import { useDashboardContext } from '../../context';
 import { useAuthorizedUsers } from '../../api/dashboard';
+import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 
 interface IssueTableProps {
   dashboardId: string;
@@ -288,6 +293,7 @@ const IssueTable: React.FC<IssueTableProps> = ({
 }) => {
   const { t } = useTranslation();
   const { dashboard: dashboardCtx } = useDashboardContext();
+  const { timeStart, timeEnd } = useOsBoardDateRange();
   const userRole = dashboardCtx?.current_user_role?.role;
   const canManage = userRole === 'editor' || userRole === 'admin';
   // 看板标识符，如 DASH-FE3323，用于修改优先级接口的 identifier 参数
@@ -483,6 +489,40 @@ const IssueTable: React.FC<IssueTableProps> = ({
     handleOrganizationChange(
       organizationList.filter((org) => !selectedSet.has(org))
     );
+  };
+
+  const [exporting, setExporting] = useState(false);
+
+  // 导出当前筛选条件下的 Issue 列表（全量，不含分页）
+  const handleExport = async () => {
+    if (exporting || !selectedProject) return;
+    setExporting(true);
+    try {
+      await exportIssuesDetailList({
+        label: selectedProject,
+        level: isCommunityDashboard ? 'community' : 'repo',
+        filterOpts: buildOrganizationFilterOpts(
+          tableParams.filterOpts,
+          communityFilterParams.organizations
+        ),
+        sortOpts: tableParams.sortOpts || undefined,
+        beginDate: timeStart,
+        endDate: timeEnd,
+        identifier: dashboardIdentifier,
+        ...(isCommunityDashboard
+          ? {
+              ResponsiblePerson:
+                communityFilterParams.responsiblePerson ?? undefined,
+            }
+          : { labelFilter }),
+      });
+      toast.success(t('os_board:list_export.success'));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '';
+      toast.error(message || t('os_board:list_export.failed'));
+    } finally {
+      setExporting(false);
+    }
   };
 
   React.useEffect(() => {
@@ -924,6 +964,17 @@ const IssueTable: React.FC<IssueTableProps> = ({
       title={String(t('metrics_models_v2:model_999.metrics.metric_063.title'))}
       bodyClass={TABLE_CARD_BODY_CLASS}
       className={TABLE_CARD_CLASS}
+      headerExtra={
+        <Button
+          size="small"
+          type="text"
+          icon={<FiDownload />}
+          loading={exporting}
+          onClick={handleExport}
+        >
+          {t('os_board:list_export.download')}
+        </Button>
+      }
     >
       <Tabs
         activeKey={selectedProject}

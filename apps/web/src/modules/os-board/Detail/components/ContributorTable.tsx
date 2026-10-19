@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tabs } from 'antd';
+import { Button, Tabs } from 'antd';
+import { toast } from 'react-hot-toast';
 import { IoPeopleCircle, IoPersonCircle } from 'react-icons/io5';
 import { SiGitee, SiGithub } from 'react-icons/si';
+import { FiDownload } from 'react-icons/fi';
 import Image from 'next/image';
 import BaseCard from '@common/components/BaseCard';
 import MyTable from '@common/components/Table';
@@ -13,6 +15,7 @@ import {
   useOsBoardContributorsDetailList,
   useOsBoardContributorsOverview,
   useOsBoardOrganizationList,
+  exportContributorsDetailList,
   ContributorDetail,
   FilterOptionInput,
   SortOptionInput,
@@ -264,6 +267,30 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       direction: 'desc',
     },
   });
+
+  const [exporting, setExporting] = useState(false);
+
+  // 导出当前筛选条件下的贡献者列表（全量，不含分页）
+  const handleExport = async () => {
+    if (exporting || !selectedProject) return;
+    setExporting(true);
+    try {
+      await exportContributorsDetailList({
+        label: selectedProject,
+        level: dashboardType === 'community' ? 'community' : 'repo',
+        filterOpts: tableParams.filterOpts,
+        sortOpts: tableParams.sortOpts,
+        beginDate: timeStart,
+        endDate: timeEnd,
+      });
+      toast.success(t('os_board:list_export.success'));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : '';
+      toast.error(message || t('os_board:list_export.failed'));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   // 调用贡献者列表 API (使用 REST API)
   const {
@@ -580,6 +607,17 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       title={String(t('metrics_models_v2:model_999.metrics.metric_062.title'))}
       bodyClass={TABLE_CARD_BODY_CLASS}
       className={TABLE_CARD_CLASS}
+      headerExtra={
+        <Button
+          size="small"
+          type="text"
+          icon={<FiDownload />}
+          loading={exporting}
+          onClick={handleExport}
+        >
+          {t('os_board:list_export.download')}
+        </Button>
+      }
     >
       {/* 项目切换 Tabs */}
       <Tabs

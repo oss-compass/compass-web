@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
+import { format } from 'date-fns';
 import useOsBoardDateRange from '../hooks/useOsBoardDateRange';
 
 // ========== 类型定义 ==========
@@ -672,21 +674,21 @@ export const fetchContributorsOverview = async (params: {
 };
 
 /**
- * 将组织筛选项合并进 filterOpts（覆盖同类型筛选，避免重复）
+ * 将组织筛选项合并进 filterOpts：仅当显式传入组织筛选时覆盖同类型项，
+ * 避免误删列筛选中已有的 organization 项
  */
 export const buildOrganizationFilterOpts = (
   filterOpts: FilterOptionInput[] | undefined,
   organization?: string[] | null
 ): FilterOptionInput[] | undefined => {
-  const base = (filterOpts || []).filter(
-    (item) => item.type !== 'organization'
-  );
-
   if (!organization || organization.length === 0) {
-    return base.length > 0 ? base : undefined;
+    return filterOpts && filterOpts.length > 0 ? filterOpts : undefined;
   }
 
-  return [...base, { type: 'organization', values: organization }];
+  return [
+    ...(filterOpts || []).filter((item) => item.type !== 'organization'),
+    { type: 'organization', values: organization },
+  ];
 };
 
 /**
@@ -1200,3 +1202,95 @@ export const setResponsiblePerson = async (
   );
   return response.data;
 };
+
+// ========== 列表导出 API ==========
+
+/** 从响应头 Content-Disposition 解析导出文件名，失败时返回兜底文件名 */
+const resolveExportFilename = (
+  dispositionHeader: unknown,
+  fallback: string
+): string => {
+  if (typeof dispositionHeader !== 'string') {
+    return fallback;
+  }
+
+  const utf8Match = dispositionHeader.match(/filename\*=UTF-8''([^;]+)/i);
+  if (utf8Match?.[1]) {
+    try {
+      return decodeURIComponent(utf8Match[1].trim());
+    } catch {
+      // 解码失败时继续尝试普通匹配
+    }
+  }
+
+  const plainMatch = dispositionHeader.match(/filename="?([^";]+)"?/i);
+  return plainMatch?.[1]?.trim() || fallback;
+};
+
+const parseJsonBlobMessage = async (blob: Blob): Promise<string> => {
+  try {
+    const text = await blob.text();
+    const parsed = JSON.parse(text) as { message?: string };
+    return parsed?.message || '';
+  } catch {
+    return '';
+  }
+};
+
+const downloadExportFile = async (
+  url: string,
+  params: Record<string, unknown>,
+  fallbackFilename: string
+): Promise<void> => {
+  const response = await axios.post(url, params, { responseType: 'blob' });
+  const blob = new Blob([response.data]);
+
+  // 后端返回 JSON（如错误信息）时不应保存为文件
+  if (blob.type.includes('application/json')) {
+    throw new Error(await parseJsonBlobMessage(blob));
+  }
+
+  saveAs(
+    blob,
+    resolveExportFilename(
+      response.headers?.['content-disposition'],
+      fallbackFilename
+    )
+  );
+};
+
+const buildExportFallbackFilename = (prefix: string) =>
+  `${prefix}_${format(new Date(), 'yyyyMMdd_HHmmss')}.csv`;
+
+/** 贡献者列表导出（参数与列表接口一致，不含分页） */
+export const exportContributorsDetailList = (
+  params: Omit<ContributorsDetailListRequest, 'page' | 'per'>
+) =>
+  downloadExportFile(
+    '/services/dashboard/contributors_detail_list_export',
+    { ...params, label: formatProjectLabel(params.label) },
+    buildExportFallbackFilename('contributors')
+  );
+
+/** Issue 列表导出，社区模式可携带责任人/组织筛选 */
+export interface IssuesDetailListExportRequest
+  extends Omit<IssuesDetailListRequest, 'page' | 'per'> {
+  ResponsiblePerson?: number | null;
+}
+
+export const exportIssuesDetailList = (params: IssuesDetailListExportRequest) =>
+  downloadExportFile(
+    '/services/dashboard/issues_detail_list_export',
+    { ...params, label: formatProjectLabel(params.label) },
+    buildExportFallbackFilename('issues')
+  );
+
+/** PR 列表导出（参数与列表接口一致，不含分页） */
+export const exportPullsDetailList = (
+  params: Omit<PullsDetailListRequest, 'page' | 'per'>
+) =>
+  downloadExportFile(
+    '/services/dashboard/pulls_detail_list_export',
+    { ...params, label: formatProjectLabel(params.label) },
+    buildExportFallbackFilename('pulls')
+  );
