@@ -10,6 +10,7 @@ import {
 } from '@common/utils/storage';
 import { useSendEmailVerifyMutation } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
+import getErrorMessage from '@common/utils/getErrorMessage';
 
 const SendVerificationEmail = ({ email }: { email?: string }) => {
   const { t } = useTranslation();
@@ -34,6 +35,12 @@ const SendVerificationEmail = ({ email }: { email?: string }) => {
           position: 'top-center',
         });
       }
+    },
+    onError: (error) => {
+      toast.error(
+        getErrorMessage(error) || t('common:error.something_went_wrong'),
+        { position: 'top-center' }
+      );
     },
   });
 
