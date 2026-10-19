@@ -23,6 +23,7 @@ import {
 import DomainPersona from '@modules/analyze/DataView/MetricDetail/MetricContributor/ContributorTable/DomainPersona';
 import { getRepoOrigin, getRepoPath } from '@common/utils';
 import ContributorOrganizationCell from './ContributorOrganizationCell';
+import OrganizationFilterDropdown from './OrganizationFilterDropdown';
 
 interface ContributorTableProps {
   dashboardId: string;
@@ -573,7 +574,20 @@ const ContributorTable: React.FC<ContributorTableProps> = ({
       align: 'left',
       width: 220,
       filters: organizationFilters,
-      filterSearch: true,
+      filterDropdown: ({
+        selectedKeys,
+        setSelectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <OrganizationFilterDropdown
+          selectedKeys={selectedKeys}
+          setSelectedKeys={setSelectedKeys}
+          confirm={confirm}
+          clearFilters={clearFilters}
+          filters={organizationFilters}
+        />
+      ),
       filteredValue: getFilteredValues(tableParams.filterOpts, 'organization'),
       render: (val: string, record) => (
         <ContributorOrganizationCell

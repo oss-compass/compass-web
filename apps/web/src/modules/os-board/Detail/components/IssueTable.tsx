@@ -41,6 +41,7 @@ import { toUnderline } from '@common/utils/format';
 import ContributorOrganizationCell from './ContributorOrganizationCell';
 import IssuePriorityCell from './IssuePriorityCell';
 import IssueResponsibleCell from './IssueResponsibleCell';
+import OrganizationFilterDropdown from './OrganizationFilterDropdown';
 import { useDashboardContext } from '../../context';
 import { useAuthorizedUsers } from '../../api/dashboard';
 import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
@@ -750,7 +751,20 @@ const IssueTable: React.FC<IssueTableProps> = ({
         align: 'left',
         width: 120,
         filters: organizationFilters,
-        filterSearch: true,
+        filterDropdown: ({
+          selectedKeys,
+          setSelectedKeys,
+          confirm,
+          clearFilters,
+        }) => (
+          <OrganizationFilterDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            filters={organizationFilters}
+          />
+        ),
         filteredValue: getFilteredValues(
           tableParams.filterOpts,
           'organization'

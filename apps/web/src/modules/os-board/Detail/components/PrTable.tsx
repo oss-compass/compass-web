@@ -33,6 +33,7 @@ import {
 } from '@common/utils';
 import { toUnderline } from '@common/utils/format';
 import ContributorOrganizationCell from './ContributorOrganizationCell';
+import OrganizationFilterDropdown from './OrganizationFilterDropdown';
 import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
 
 interface PrTableProps {
@@ -520,7 +521,20 @@ const PrTable: React.FC<PrTableProps> = ({
         align: 'left',
         width: 220,
         filters: organizationFilters,
-        filterSearch: true,
+        filterDropdown: ({
+          selectedKeys,
+          setSelectedKeys,
+          confirm,
+          clearFilters,
+        }) => (
+          <OrganizationFilterDropdown
+            selectedKeys={selectedKeys}
+            setSelectedKeys={setSelectedKeys}
+            confirm={confirm}
+            clearFilters={clearFilters}
+            filters={organizationFilters}
+          />
+        ),
         filteredValue: getFilteredValues(
           tableParams.filterOpts,
           'organization'
