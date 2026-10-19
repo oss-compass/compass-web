@@ -23,3 +23,7 @@ describe('chart user setting storage', () => {
     });
   });
 });
+
+// The file uses `require` inside `jest.isolateModules`, so it needs to be a module for
+// `isolatedModules`.
+export {};
