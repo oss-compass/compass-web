@@ -8,7 +8,11 @@ import { buildIssueRepoManagementHref } from '../../../routes';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
 import { isHistoricalPain, isResolvedPain } from './painProgress';
-import { computeIssueOverview, latestReposByPeriod } from './issueMetrics';
+import {
+  buildRepoCountTrends,
+  computeIssueOverview,
+  latestReposByPeriod,
+} from './issueMetrics';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
 import IssueMetricsAppendix from './IssueMetricsAppendix';
@@ -173,19 +177,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         ).toFixed(1)
       : 0;
   });
-  const score90PlusRepoTrend = data.agg.periods.map(
-    (period) =>
-      data.repos.filter((repo) => repo.period === period && repo.idxTotal >= 90)
-        .length
-  );
-  const coverageRepoTrend = data.agg.periods.map(
-    (period) =>
-      new Set(
-        data.repos
-          .filter((repo) => repo.period === period)
-          .map((repo) => repo.community)
-      ).size
-  );
+  const { score90Plus: score90PlusRepoTrend, coverage: coverageRepoTrend } =
+    buildRepoCountTrends(data.repos, data.agg.periods);
 
   const kpis = [
     {

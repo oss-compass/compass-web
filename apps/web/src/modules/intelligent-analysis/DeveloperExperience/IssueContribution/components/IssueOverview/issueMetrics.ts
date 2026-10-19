@@ -78,6 +78,24 @@ export const latestReposByPeriod = (
   return Array.from(byCommunity.values());
 };
 
+/** 截至各周期的仓库快照；未更新报告的仓库沿用其最近一期评分。 */
+export const buildRepoCountTrends = (
+  repos: IssueOverviewRepo[],
+  periods: string[]
+) => {
+  const snapshots = periods.map((period) =>
+    latestReposByPeriod(repos.filter((repo) => repo.period <= period))
+  );
+  return {
+    score90Plus: snapshots.map(
+      (snapshot) =>
+        snapshot.filter((repo) => repo.idxTotal != null && repo.idxTotal >= 90)
+          .length
+    ),
+    coverage: snapshots.map((snapshot) => snapshot.length),
+  };
+};
+
 /** 计算 Issue 贡献总览全部模块所需派生数据（跨仓聚合）。 */
 export const computeIssueOverview = (
   data: IssueOverviewData

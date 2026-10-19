@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FilterFilled } from '@ant-design/icons';
-import { Dropdown, Modal, Pagination, Radio, Tag, Tooltip } from 'antd';
+import {
+  Checkbox,
+  Dropdown,
+  Modal,
+  Pagination,
+  Radio,
+  Tag,
+  Tooltip,
+} from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { SeverityBadge } from './Badges';
 import { PAIN_STATUS_CFG, SEVERITY_RANK } from './constants';
@@ -11,8 +19,6 @@ import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
 const STAGE_FILTER_ALL = TEAM_FILTER_ALL;
-const SEVERITY_FILTER_ALL = TEAM_FILTER_ALL;
-const STATUS_FILTER_ALL = TEAM_FILTER_ALL;
 const OWNER_FILTER_ALL = TEAM_FILTER_ALL;
 const OTHER_TEAM_LABELS = new Set(['其他', '其它', '其他团队', '其它团队']);
 const PAGE_SIZE = 10;
@@ -203,9 +209,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [teamFilter, setTeamFilter] = useState<string>(TEAM_FILTER_ALL);
   const [stageFilter, setStageFilter] = useState<string>(STAGE_FILTER_ALL);
-  const [severityFilter, setSeverityFilter] =
-    useState<string>(SEVERITY_FILTER_ALL);
-  const [statusFilter, setStatusFilter] = useState<string>(STATUS_FILTER_ALL);
+  const [severityFilter, setSeverityFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [ownerFilter, setOwnerFilter] = useState<string>(OWNER_FILTER_ALL);
   const [page, setPage] = useState(1);
   const issues = state.issues;
@@ -217,8 +222,8 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const resetFilters = () => {
     setTeamFilter(TEAM_FILTER_ALL);
     setStageFilter(STAGE_FILTER_ALL);
-    setSeverityFilter(SEVERITY_FILTER_ALL);
-    setStatusFilter(STATUS_FILTER_ALL);
+    setSeverityFilter([]);
+    setStatusFilter([]);
     setOwnerFilter(OWNER_FILTER_ALL);
     setPage(1);
   };
@@ -302,14 +307,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         return false;
       }
       if (
-        severityFilter !== SEVERITY_FILTER_ALL &&
-        String(issue.severity || '').trim() !== severityFilter
+        severityFilter.length > 0 &&
+        !severityFilter.includes(String(issue.severity || '').trim())
       ) {
         return false;
       }
       if (
-        statusFilter !== STATUS_FILTER_ALL &&
-        String(issue.status || '').trim() !== statusFilter
+        statusFilter.length > 0 &&
+        !statusFilter.includes(String(issue.status || '').trim())
       ) {
         return false;
       }
@@ -433,7 +438,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     setSortOrder('asc');
   };
 
-  const changeFilter = (setter: (value: string) => void, value: string) => {
+  const changeFilter = <T,>(setter: (value: T) => void, value: T) => {
     setter(value);
     setPage(1);
   };
@@ -724,25 +729,28 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           严重程度筛选
                         </div>
-                        <Radio.Group
+                        <Checkbox
+                          checked={severityFilter.length === 0}
+                          onChange={() => changeFilter(setSeverityFilter, [])}
+                          className="mb-1 px-1"
+                        >
+                          全部
+                        </Checkbox>
+                        <Checkbox.Group
                           value={severityFilter}
-                          onChange={(e) =>
-                            changeFilter(
-                              setSeverityFilter,
-                              String(e.target.value || SEVERITY_FILTER_ALL)
-                            )
+                          onChange={(values) =>
+                            changeFilter(setSeverityFilter, values.map(String))
                           }
                           className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
                         >
-                          <Radio value={SEVERITY_FILTER_ALL}>全部</Radio>
                           {severityOptions.map((severity) => (
-                            <Radio key={severity} value={severity}>
+                            <Checkbox key={severity} value={severity}>
                               <SeverityBadge
                                 severity={severity as unknown as Severity}
                               />
-                            </Radio>
+                            </Checkbox>
                           ))}
-                        </Radio.Group>
+                        </Checkbox.Group>
                       </div>
                     )}
                   >
@@ -751,7 +759,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       aria-label="筛选严重程度"
                       title="筛选严重程度"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
-                        severityFilter === SEVERITY_FILTER_ALL
+                        severityFilter.length === 0
                           ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
                           : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
@@ -776,21 +784,24 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                         <div className="px-2 pb-2 text-[11px] font-medium tracking-wide text-[var(--overview-slateLight)]">
                           状态筛选
                         </div>
-                        <Radio.Group
+                        <Checkbox
+                          checked={statusFilter.length === 0}
+                          onChange={() => changeFilter(setStatusFilter, [])}
+                          className="mb-1 px-1"
+                        >
+                          全部
+                        </Checkbox>
+                        <Checkbox.Group
                           value={statusFilter}
-                          onChange={(e) =>
-                            changeFilter(
-                              setStatusFilter,
-                              String(e.target.value || STATUS_FILTER_ALL)
-                            )
+                          onChange={(values) =>
+                            changeFilter(setStatusFilter, values.map(String))
                           }
                           className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1 pb-1"
                         >
-                          <Radio value={STATUS_FILTER_ALL}>全部</Radio>
                           {statusOptions.map((status) => {
                             const cfg = PAIN_STATUS_CFG[status];
                             return (
-                              <Radio key={status} value={status}>
+                              <Checkbox key={status} value={status}>
                                 {cfg ? (
                                   <Tag
                                     className="overview-ant-tag"
@@ -805,10 +816,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                                 ) : (
                                   <span>{status}</span>
                                 )}
-                              </Radio>
+                              </Checkbox>
                             );
                           })}
-                        </Radio.Group>
+                        </Checkbox.Group>
                       </div>
                     )}
                   >
@@ -817,7 +828,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
                       aria-label="筛选状态"
                       title="筛选状态"
                       className={`inline-flex h-5 w-5 items-center justify-center rounded transition-colors ${
-                        statusFilter === STATUS_FILTER_ALL
+                        statusFilter.length === 0
                           ? 'text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] hover:text-[var(--overview-slate)]'
                           : 'bg-[var(--overview-blueSoft)] text-[var(--overview-blue)] hover:bg-[var(--overview-blueSoft)]'
                       }`}
