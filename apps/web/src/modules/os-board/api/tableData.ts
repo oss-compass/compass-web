@@ -1237,13 +1237,28 @@ const parseJsonBlobMessage = async (blob: Blob): Promise<string> => {
   }
 };
 
+/**
+ * Blob of an export response that keeps the response content type.
+ *
+ * `new Blob([response.data])` builds a Blob with an empty `type`, so the
+ * `application/json` guard below could never match: a failed export (the backend answers with
+ * a JSON error) was saved as a `.csv` file and the caller reported success.
+ */
+export const buildExportBlob = (data: unknown, contentType?: unknown): Blob =>
+  new Blob([data as BlobPart], {
+    type: typeof contentType === 'string' ? contentType : '',
+  });
+
 const downloadExportFile = async (
   url: string,
   params: Record<string, unknown>,
   fallbackFilename: string
 ): Promise<void> => {
   const response = await axios.post(url, params, { responseType: 'blob' });
-  const blob = new Blob([response.data]);
+  const blob = buildExportBlob(
+    response.data,
+    response.headers?.['content-type']
+  );
 
   // 后端返回 JSON（如错误信息）时不应保存为文件
   if (blob.type.includes('application/json')) {
