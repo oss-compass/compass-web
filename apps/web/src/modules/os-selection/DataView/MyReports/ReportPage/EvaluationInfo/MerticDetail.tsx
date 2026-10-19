@@ -274,6 +274,13 @@ export const useMerticDetailData = () => {
       t('mertic_detail.download_report.header.risk_importance'),
       t('mertic_detail.download_report.header.metric_significance'),
     ];
+    const metricDataKeys = {
+      [t('mertic_detail.download_report.header.metric_name')]: '指标名称',
+      [t('mertic_detail.download_report.header.dimension')]: '维度',
+      [t('mertic_detail.download_report.header.risk_importance')]: '风险重要性',
+      [t('mertic_detail.download_report.header.metric_significance')]:
+        '指标意义',
+    };
     let tableData = metricScore.map((item) => {
       const row = head.map((z) => {
         if (z == t('mertic_detail.download_report.header.score')) {
@@ -293,7 +300,7 @@ export const useMerticDetailData = () => {
         ) {
           return getDeitalRow(item, tpcSoftwareReportMetricRaw);
         } else {
-          return item[z];
+          return item[metricDataKeys[z]];
         }
       });
       return row;
