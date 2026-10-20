@@ -60,10 +60,12 @@ const EvaluationMerticItem = ({
                   <RiskTag item={item} />
                 </div>
                 <div
-                  title={(t(item.指标意义) || item.指标意义).split('\n\n')}
-                  className="line-clamp-2 mt-1 text-xs"
+                  title={String(t(item.指标意义) || item.指标意义).split(
+                    '\n\n'
+                  )}
+                  className="mt-1 line-clamp-2 text-xs"
                 >
-                  {(t(item.指标意义) || item.指标意义)
+                  {String(t(item.指标意义) || item.指标意义)
                     .split('\n\n')
                     .map((line, index) => (
                       <React.Fragment key={index}>
@@ -109,10 +111,10 @@ const EvaluationMerticList = ({ canClarify, allData, metricItemScoreList }) => {
     <div className="mt-6">
       {metricList.map((mertic) => {
         const items = metricItemScoreList.filter(
-          (item) => (t(item.维度) || item.维度) === (t(mertic) || mertic)
+          (item) => String(t(item.维度) || item.维度) === (t(mertic) || mertic)
         );
         const score = allData.evaluationDetail.find(
-          (item) => (t(item.name) || item.name) === (t(mertic) || mertic)
+          (item) => String(t(item.name) || item.name) === (t(mertic) || mertic)
         ).score;
         return (
           <EvaluationMerticItem

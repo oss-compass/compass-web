@@ -42,9 +42,11 @@ const IssueFirstResponse = () => {
 
   const indicators = t('analyze:negative_indicators') as string;
   const unitDay = t('analyze:unit_day') as string;
-  const unit = t('analyze:unit_label', {
-    unit: unitDay,
-  } as any) as string;
+  const unit = String(
+    t('analyze:unit_label', {
+      unit: unitDay,
+    } as any)
+  );
 
   const {
     getOptions,
