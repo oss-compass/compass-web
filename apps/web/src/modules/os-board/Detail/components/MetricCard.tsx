@@ -10,6 +10,7 @@ import { toFixed } from '@common/utils';
 import type { OsBoardMetric, OsBoardDerivedMetric } from '../../types';
 import { MetricData } from '../../api/dashboard';
 import AlertManageDialog from './AlertManageDialog';
+import { formatChartTooltipValue } from './chartTooltipValue';
 
 interface MetricCardProps {
   metric: OsBoardMetric | OsBoardDerivedMetric;
@@ -105,12 +106,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
             items[0]?.axisValueLabel ?? items[0]?.axisValue ?? '';
           const rows = items.map((p: any) => {
             const raw = Array.isArray(p?.value) ? p.value[1] : p?.value;
-            const v = typeof raw === 'number' ? raw : Number(raw);
-            const display = (() => {
-              if (typeof v !== 'number' || !Number.isFinite(v)) return '-';
-              if (Number.isInteger(v)) return String(v);
-              return String(toFixed(v, 3));
-            })();
+            const display = formatChartTooltipValue(raw);
             return `${p?.marker ?? ''}${p?.seriesName ?? ''}: ${display}`;
           });
           return [axisValue, ...rows].join('<br/>');
