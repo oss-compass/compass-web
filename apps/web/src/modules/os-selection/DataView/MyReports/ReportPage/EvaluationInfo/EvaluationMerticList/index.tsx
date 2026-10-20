@@ -60,9 +60,7 @@ const EvaluationMerticItem = ({
                   <RiskTag item={item} />
                 </div>
                 <div
-                  title={String(t(item.指标意义) || item.指标意义).split(
-                    '\n\n'
-                  )}
+                  title={String(t(item.指标意义) || item.指标意义)}
                   className="mt-1 line-clamp-2 text-xs"
                 >
                   {String(t(item.指标意义) || item.指标意义)
