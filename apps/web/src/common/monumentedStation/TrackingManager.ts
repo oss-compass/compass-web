@@ -16,6 +16,8 @@ class TrackingManager {
   private isReporting: boolean = false;
   private reportTimer?: NodeJS.Timeout;
   private lastModuleStayReportTime: number = 0;
+  private beforeUnloadHandler?: () => void;
+  private visibilityChangeHandler?: () => void;
 
   private constructor() {
     this.sessionStartTime = Date.now();
@@ -115,6 +117,9 @@ class TrackingManager {
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener('pagehide', handleBeforeUnload);
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    // 保存引用，destroy() 时才能摘掉监听器
+    this.beforeUnloadHandler = handleBeforeUnload;
+    this.visibilityChangeHandler = handleVisibilityChange;
 
     // 定期上报数据（每 30 秒）
     this.reportTimer = setInterval(() => {
@@ -445,6 +450,18 @@ class TrackingManager {
     if (this.reportTimer) {
       clearInterval(this.reportTimer);
     }
+    if (typeof window !== 'undefined' && this.beforeUnloadHandler) {
+      window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+      window.removeEventListener('pagehide', this.beforeUnloadHandler);
+    }
+    if (typeof document !== 'undefined' && this.visibilityChangeHandler) {
+      document.removeEventListener(
+        'visibilitychange',
+        this.visibilityChangeHandler
+      );
+    }
+    this.beforeUnloadHandler = undefined;
+    this.visibilityChangeHandler = undefined;
     this.flushReports();
   }
 }
