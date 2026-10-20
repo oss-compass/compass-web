@@ -98,7 +98,8 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
   });
   const counts = progressCounts(pains);
   const total = pains.length;
-  const trackableTotal = total - counts.historical;
+  // Historical observations and invalid issues are outside the tracked buckets.
+  const trackableTotal = counts.pending + counts.inProgress + counts.resolved;
   const closeRate = trackableTotal
     ? (counts.resolved / trackableTotal) * 100
     : 0;
@@ -119,14 +120,14 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
     () =>
       periods.map((period) => {
         const periodPains = pains.filter((pain) => pain.period === period);
-        const trackableCount = periodPains.filter(
-          (pain) => !isHistoricalPain(pain)
-        ).length;
+        const periodCounts = progressCounts(periodPains);
+        const trackableCount =
+          periodCounts.pending +
+          periodCounts.inProgress +
+          periodCounts.resolved;
         const priorityCount = (priority: string) =>
           periodPains.filter((pain) => pain.prio === priority).length;
-        const resolved = periodPains.filter(
-          (pain) => progressBucket(pain) === 'resolved'
-        ).length;
+        const resolved = periodCounts.resolved;
         const [weekStart, weekEnd = weekStart] = period.split('_to_');
         return {
           weekStart,
@@ -237,7 +238,9 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
               );
               const priorityCounts = progressCounts(priorityPains);
               const priorityTrackable =
-                priorityPains.length - priorityCounts.historical;
+                priorityCounts.pending +
+                priorityCounts.inProgress +
+                priorityCounts.resolved;
               const priorityRate = priorityTrackable
                 ? (priorityCounts.resolved / priorityTrackable) * 100
                 : 100;
