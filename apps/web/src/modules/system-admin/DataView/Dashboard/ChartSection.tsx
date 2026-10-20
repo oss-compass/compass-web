@@ -3,6 +3,7 @@ import { Card, message, Skeleton } from 'antd';
 import * as echarts from 'echarts';
 import { useVisitData, useUserData, useDurationData } from '../../hooks';
 import { symbol } from 'joi';
+import { formatRetentionTooltipValue } from './retentionTooltip';
 
 // 类型定义
 interface ChartData {
@@ -322,14 +323,9 @@ const ChartSection: React.FC = () => {
             activeTab === 'retention'
               ? (params: any) => {
                   const param = Array.isArray(params) ? params[0] : params;
-                  const rawValue =
-                    Array.isArray(param?.value) && param.value.length > 1
-                      ? Number(param.value[1])
-                      : Number(param?.value);
-                  const formatted = isNaN(rawValue)
-                    ? param?.value
-                    : rawValue.toFixed(2);
-                  return `${param.axisValue}<br/>${param.seriesName}: ${formatted}%`;
+                  return `${param.axisValue}<br/>${
+                    param.seriesName
+                  }: ${formatRetentionTooltipValue(param?.value)}`;
                 }
               : undefined,
         },
