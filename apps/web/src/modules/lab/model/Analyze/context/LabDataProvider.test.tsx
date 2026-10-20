@@ -55,8 +55,8 @@ const report = (value: number): LabModelVersionReportDetailQuery => ({
   },
 });
 
-// Exercise the same last-report panel selection used by LayoutMetricCards,
-// then call the actual hook used by each CardMetric.
+// ChartPanel gates card content while loading. Mirror that guard before
+// selecting the last report's panels and calling the actual metric hook.
 const Consumer = () => {
   const context = useContext(ChartsDataContext);
   const { data, loading, pickDataByMetric } = useLabDataMetric();
@@ -64,7 +64,7 @@ const Consumer = () => {
   let selected = [];
   let error = null;
   try {
-    selected = ident ? pickDataByMetric(ident) : [];
+    selected = !loading && ident ? pickDataByMetric(ident) : [];
   } catch (caught) {
     error = `${caught.name}: ${caught.message}`;
   }
@@ -186,14 +186,14 @@ describe('LabDataProvider report availability', () => {
     expect(request).toHaveBeenCalledTimes(2);
   });
 
-  it('renders ready metric panels when an earlier report is still pending', async () => {
+  it('keeps the ready report available while an earlier report is pending', async () => {
     cache.setQueryData(queryKey('second'), report(2));
     await mount(['first', 'second']);
     expect(snapshot()).toMatchObject({
       loading: true,
       labels: ['second'],
-      selectedLabels: ['second'],
-      selectedValues: [[2]],
+      selectedLabels: [],
+      selectedValues: [],
       error: null,
     });
   });
@@ -204,8 +204,8 @@ describe('LabDataProvider report availability', () => {
     expect(snapshot()).toMatchObject({
       loading: true,
       labels: ['first'],
-      selectedLabels: ['first'],
-      selectedValues: [[1]],
+      selectedLabels: [],
+      selectedValues: [],
       error: null,
     });
   });
