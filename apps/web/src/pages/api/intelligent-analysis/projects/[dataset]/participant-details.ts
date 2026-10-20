@@ -7,6 +7,7 @@ import {
   isSafePathSegment,
   resolveFileInsideDir,
 } from '@modules/intelligent-analysis/server/pathSafety';
+import { parsePage, parsePageSize } from '@modules/intelligent-analysis/server/pagination';
 
 type ParticipantTableRow = {
   key: string;
@@ -88,18 +89,6 @@ async function resolveDatasetDir(dataset: string): Promise<string> {
   }
 
   return candidates[0];
-}
-
-function parsePage(value: unknown) {
-  const num = Number(value);
-  if (!Number.isFinite(num) || num <= 0) return 1;
-  return Math.floor(num);
-}
-
-function parsePageSize(value: unknown) {
-  const num = Number(value);
-  if (!Number.isFinite(num) || num <= 0) return 10;
-  return Math.min(100, Math.floor(num));
 }
 
 function buildMetaByEcosystem(organizationData: Record<string, any>) {
