@@ -45,6 +45,17 @@ interface TableParams {
   filters?: Record<string, FilterValue>;
 }
 
+// A query parameter is user input: a malformed value must not throw while the
+// page renders, it should fall back to the default.
+const parseQueryJson = <T,>(raw: unknown, fallback: T): T => {
+  if (typeof raw !== 'string' || raw === '') return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+};
+
 const MetricTable: React.FC<{
   label: string;
   level: string;
@@ -69,11 +80,9 @@ const MetricTable: React.FC<{
   const router = useRouter();
   const { handleQueryParams } = useHandleQueryParams();
 
-  const queryFilterOpts = router.query?.filterOpts as string;
-  const defaultFilterOpts = queryFilterOpts ? JSON.parse(queryFilterOpts) : [];
-  const defaultSortOpts = router.query?.sortOpts
-    ? JSON.parse(router.query?.sortOpts as string)
-    : null;
+  const queryFilterOpts = router.query?.filterOpts;
+  const defaultFilterOpts = parseQueryJson<any[]>(queryFilterOpts, []);
+  const defaultSortOpts = parseQueryJson<any>(router.query?.sortOpts, null);
   const [filterOpts, setFilterOpts] = useState(defaultFilterOpts || []);
   const filterContributionType = useMemo(() => {
     return filterOpts.find((i) => i.type === 'contribution_type');
