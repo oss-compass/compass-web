@@ -82,6 +82,10 @@ export const formatRepoName = ({
 };
 
 export const percentageValueFormat = (value: string | number) => {
+  // Number('') and Number(null) are 0, so an empty cell used to be printed as 0%.
+  if (value === '' || value === null || value === undefined) {
+    return value;
+  }
   if (!isNaN(Number(value))) {
     return toFixed(+value * 100, 3);
   }
@@ -101,6 +105,7 @@ export const formatNegativeNumber = (
 ) => {
   return condition
     ? data.map((v) => {
+        if (v === '' || v === null || v === undefined) return v;
         if (!isNaN(Number(v))) return -v;
         return v;
       })

@@ -1,4 +1,10 @@
-import { formatRepoName, shortenAxisLabel, roundedNum } from './format';
+import {
+  formatNegativeNumber,
+  formatRepoName,
+  percentageValueFormat,
+  shortenAxisLabel,
+  roundedNum,
+} from './format';
 
 describe('format', () => {
   it('formatRepoName', function () {
@@ -31,5 +37,20 @@ describe('format', () => {
     expect(roundedNum(1.2345)).toEqual(1.23);
     expect(roundedNum(1.2345, 3)).toEqual(1.235);
     expect(roundedNum(100000)).toEqual(100000);
+  });
+
+  it('leaves empty values alone when negating', function () {
+    expect(formatNegativeNumber(true, ['', null as any, '-', '5'])).toEqual([
+      '',
+      null,
+      '-',
+      -5,
+    ]);
+  });
+
+  it('leaves empty values alone when formatting percentages', function () {
+    expect(percentageValueFormat('')).toBe('');
+    expect(percentageValueFormat(null as any)).toBe(null);
+    expect(percentageValueFormat('0.5')).toBe(50);
   });
 });
