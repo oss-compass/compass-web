@@ -13,8 +13,13 @@ export interface ApiParameter {
   example?: any;
 }
 
-const constructUrl = (path: string, values: any) => {
-  return path.replace(/\{([^}]+)\}/g, (_, key) => values[key] || `:${key}`);
+export const constructUrl = (path: string, values: any) => {
+  return path.replace(/\{([^}]+)\}/g, (_, key) => {
+    const value = values[key];
+    return value === undefined || value === null || value === ''
+      ? `:${key}`
+      : String(value);
+  });
 };
 
 const ParamsTableWithForm = ({
