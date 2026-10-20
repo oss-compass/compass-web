@@ -42,7 +42,12 @@ export const adjustmentArray = (
   index: number,
   value: number
 ): number[] => {
+  if (arr.length === 1) return [100];
+
   const isLast = index === arr.length - 1;
+  if (!isLast) {
+    value = Math.min(value, minus(100, sumPre(index, arr)));
+  }
   let diff = new Big(value).minus(arr[index]).toNumber();
 
   if (isLast) {
