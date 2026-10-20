@@ -7,10 +7,17 @@ export const validateCommitSHA = (_, value) => {
 };
 export const validateCoderUrl = (_, value) => {
   const validHosts = ['github.com', 'gitee.com', 'gitcode.com'];
-  for (let host of validHosts) {
-    if (value?.includes(host)) {
+  try {
+    const url = new URL(value);
+    if (
+      ['http:', 'https:'].includes(url.protocol) &&
+      validHosts.includes(url.hostname) &&
+      url.pathname.split('/').filter(Boolean).length >= 2
+    ) {
       return Promise.resolve();
     }
+  } catch {
+    // Malformed or relative URLs cannot identify a supported source repository.
   }
   return Promise.reject(new Error('请输入正确的Github、Gitee、Gitcode仓库'));
 };
