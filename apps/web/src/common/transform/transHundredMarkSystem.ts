@@ -29,7 +29,9 @@ const transHundredMarkSystem = (oneMark: number | string): number | string => {
     return '-';
   }
   oneMark = Number(oneMark);
-  if (oneMark < 0 || oneMark > 1) {
+  // Number('abc') and Number(undefined) are NaN, which slips past both bounds
+  // below and then makes findIndex return -1 (oneMarkList[-1] is undefined).
+  if (Number.isNaN(oneMark) || oneMark < 0 || oneMark > 1) {
     return '-';
   }
   let index = 0;
