@@ -31,7 +31,9 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
   let xAxisData = processedData.map((item) => item.name);
   let seriesData = processedData.map((item) => item.value);
   let maxSeriesData = [];
-  const MAX = Math.max(...seriesData);
+  // An empty series would make Math.max() return -Infinity and every bar value
+  // would be drawn at -Infinity.
+  const MAX = seriesData.length ? Math.max(...seriesData) : 0;
   for (let i = 0; i < seriesData.length; i++) {
     maxSeriesData.push(MAX);
   }
