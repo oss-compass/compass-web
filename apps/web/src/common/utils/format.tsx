@@ -124,7 +124,9 @@ export const fmtEmptyDataValue = (value: any): any => {
 };
 
 export const roundedNum = (num: number, decimalPoint?: number) => {
-  const base = Math.pow(10, decimalPoint || 2);
+  // `|| 2` turned an explicit 0 into two decimals, so rounding to whole
+  // numbers was impossible.
+  const base = Math.pow(10, decimalPoint ?? 2);
   return Math.round(num * base) / base;
 };
 
