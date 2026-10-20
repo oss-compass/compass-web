@@ -64,7 +64,9 @@ export function getProvider(url: string) {
 export function fillHttps(url?: string): string {
   if (!url) return '';
   const trimmedUrl = url.endsWith('/') ? url.slice(0, -1) : url;
-  if (trimmedUrl.indexOf('https') === -1) {
+  // `indexOf('https') === -1` treated an existing "http://" as "no scheme" and
+  // produced "https://http://...".  Only add the scheme when there is none.
+  if (!/^https?:\/\//i.test(trimmedUrl)) {
     return `https://${trimmedUrl}`;
   }
   return trimmedUrl;
