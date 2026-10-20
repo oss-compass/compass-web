@@ -577,7 +577,7 @@ export const TrendChart: React.FC<{
         {points.map((p, index) => {
           const x = xCenter(index);
           const x0 = x - barW / 2;
-          let currentY = TREND_PLOT_BOTTOM;
+          let currentY = plotBottom;
           const rects =
             mode === 'common'
               ? (p.issueTypeCounts || []).map((item) => {
