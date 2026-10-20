@@ -15,6 +15,8 @@ import ImageItem from './ImageItem';
 import { convertBase64 } from '@common/utils/file';
 import { randomFromInterval } from '@common/utils/number';
 
+const MAX_IMAGES = 5;
+
 interface Image {
   id: number;
   name: string;
@@ -81,8 +83,8 @@ const CommentInput = forwardRef<InputRefProps, Props>(
         const handlePaste = (e: ClipboardEvent) => {
           const len = e.clipboardData.files.length;
           if (len === 0) return;
-          if (imagesLength + len > 6) {
-            toast.error('up to six pictures');
+          if (imagesLength + len > MAX_IMAGES) {
+            toast.error('up to five pictures');
             return;
           }
 
@@ -144,8 +146,8 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               onChange={(e) => {
                 const files = e.target.files;
                 const len = files.length;
-                if (imagesLength + len > 6) {
-                  toast.error('up to six pictures');
+                if (imagesLength + len > MAX_IMAGES) {
+                  toast.error('up to five pictures');
                   return;
                 }
 
