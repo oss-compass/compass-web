@@ -50,7 +50,8 @@ const ProfileForm = () => {
   useEffect(() => {
     if (name) setValue('name', name);
     if (email) setValue('email', email);
-  }, [name, email, setValue]);
+    if (language) setValue('language', language);
+  }, [name, email, language, setValue]);
 
   const inputEmail = watch('email');
   const inputName = watch('name');
@@ -182,7 +183,7 @@ const ProfileForm = () => {
                 return (
                   <RadioGroup.Root
                     className="flex"
-                    defaultValue={language}
+                    value={field.value || ''}
                     onValueChange={(v) => {
                       field.onChange(v);
                     }}
@@ -239,7 +240,7 @@ const ProfileForm = () => {
           </Button>
         </div>
 
-        <div className="ml-10 mb-10 lg:ml-0 lg:w-full">
+        <div className="mb-10 ml-10 lg:ml-0 lg:w-full">
           <div className="mb-4 font-medium">{t('setting:profile.avatar')}</div>
           <div className="relative h-[156px] w-[156px] border">
             {providerUser?.avatarUrl ? (
