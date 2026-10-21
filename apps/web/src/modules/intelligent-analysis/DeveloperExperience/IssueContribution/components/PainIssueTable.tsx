@@ -1804,6 +1804,16 @@ const isOperationIssueSelectable = (
   (tracking?.trackingType === 'fix' ||
     (Boolean(issue) && isRerunEligible(tracking, issue)));
 
+// 优先展示需要处理的记录，同状态内再按 Issue 编号排序。
+const getIssueStatusSortRank = (issue: ActiveTrackingIssue | undefined) => {
+  if (issue?.valid === false) return 6;
+  if (issue?.retest_status === 'failed') return 0;
+  if (issue?.invalid_review?.status === 'pending') return 4;
+  if (issue?.valid !== true) return 1;
+  if (issue.retest_status === 'passed') return 5;
+  return issue.fixed ? 3 : 2;
+};
+
 const PainIssueTable: React.FC<PainIssueTableProps> = ({
   issues,
   tracking,
@@ -1875,17 +1885,32 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
       tracking.status === IssuePainTrackingStatus.PENDING &&
       onTrackingAction
   );
-  // 流转后（如已确认待修复）把非有效问题排到最后，其余保持原有顺序；
-  // 待确认阶段不排序，避免判定后行位置跳动。排序需在分页前完成。
-  const sortedIssues =
-    decisionMode || pendingDecisionMode
-      ? issues
-      : [...issues].sort((a, b) => {
-          const aInvalid = trackingIssueMap.get(a.number)?.valid === false;
-          const bInvalid = trackingIssueMap.get(b.number)?.valid === false;
-          if (aInvalid !== bInvalid) return aInvalid ? 1 : -1;
-          return 0;
-        });
+  // 弹窗按状态和编号排序，排序在分页前完成。
+  const sortedIssues = [...issues].sort((a, b) => {
+    if (decisionMode || pendingDecisionMode || operationMode) {
+      const aTracking = trackingIssueMap.get(a.number);
+      const bTracking = trackingIssueMap.get(b.number);
+      const rankDifference =
+        getIssueStatusSortRank(aTracking) - getIssueStatusSortRank(bTracking);
+      const retestTimeDifference =
+        aTracking?.retest_status === 'passed' &&
+        bTracking?.retest_status === 'passed'
+          ? (Date.parse(bTracking.retested_at || '') || 0) -
+            (Date.parse(aTracking.retested_at || '') || 0)
+          : 0;
+      return (
+        rankDifference ||
+        retestTimeDifference ||
+        String(a.number).localeCompare(String(b.number), 'en', {
+          numeric: true,
+        })
+      );
+    }
+    const aInvalid = trackingIssueMap.get(a.number)?.valid === false;
+    const bInvalid = trackingIssueMap.get(b.number)?.valid === false;
+    if (aInvalid !== bInvalid) return aInvalid ? 1 : -1;
+    return 0;
+  });
   const pagedIssues = pagination
     ? sortedIssues.slice(
         (safeCurrentPage - 1) * pageSize,

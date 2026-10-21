@@ -287,10 +287,15 @@ const RerunJobPanel: React.FC<{
   );
 };
 
-const getFixProgressPercent = (tracking: IssuePainTracking) =>
-  tracking.activeTotal
-    ? Math.round((tracking.fixedCount / tracking.activeTotal) * 100)
-    : 0;
+const getCurrentFixProgress = (tracking: IssuePainTracking) => {
+  const issues = tracking.activeIssues.filter((issue) => issue.valid === true);
+  const fixed = issues.filter((issue) => issue.fixed).length;
+  return {
+    total: issues.length,
+    fixed,
+    percent: issues.length ? Math.round((fixed / issues.length) * 100) : 0,
+  };
+};
 
 /** 痛点弹窗中的任务详情统一每 30 秒轮询一次。 */
 const RERUN_POLL_INTERVAL_MS = 30000;
@@ -769,7 +774,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
     }
   };
 
-  const percent = getFixProgressPercent(tracking);
+  const currentProgress = getCurrentFixProgress(tracking);
+  const percent = currentProgress.percent;
   const passedPresentation = getPassedPresentation(tracking);
   const pendingPainIssues = pain.low_score_issues ?? [];
   const filteredPendingPainIssues = issuePriorityFilter
@@ -940,9 +946,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           <div className="space-y-4">
             <div className="rounded-xl border border-sky-100 bg-sky-50/60 p-4">
               <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
-                <span>Issue 修复进度</span>
+                <span>当前报告有效 Issue 修复进度</span>
                 <span>
-                  {tracking.fixedCount}/{tracking.activeTotal}
+                  {currentProgress.fixed}/{currentProgress.total}
                 </span>
               </div>
               <Progress
@@ -951,7 +957,10 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 className="!mb-0 mt-2"
               />
               <div className="mt-1 text-xs text-slate-500">
-                全部 Issue 修复后自动进入“已修复待复测”。
+                仅统计当前报告中已确认有效的 Issue，未判定和非有效问题不计入。
+                <div className="mt-1">
+                  全部 Issue 修复后自动进入“已修复待复测”。
+                </div>
               </div>
             </div>
             <RepairIssueOperationSection

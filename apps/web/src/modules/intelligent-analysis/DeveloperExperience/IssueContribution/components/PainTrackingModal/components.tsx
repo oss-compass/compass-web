@@ -94,15 +94,17 @@ export const TrackingProgress: React.FC<{ tracking: IssuePainTracking }> = ({
     !tracking.activeTotal
   )
     return null;
-  const percent = Math.round(
-    (tracking.fixedCount / tracking.activeTotal) * 100
-  );
+  const issues = tracking.activeIssues.filter((issue) => issue.valid === true);
+  const fixedCount = issues.filter((issue) => issue.fixed).length;
+  const percent = issues.length
+    ? Math.round((fixedCount / issues.length) * 100)
+    : 0;
   return (
     <div className="w-full min-w-[220px] max-w-[320px]">
       <div className="mb-1 flex items-center justify-between gap-3 text-[11px] font-medium text-slate-500">
-        <span>Issue 修复进度</span>
+        <span>当前报告有效 Issue 修复进度</span>
         <span className="whitespace-nowrap tabular-nums">
-          已修复 {tracking.fixedCount}/{tracking.activeTotal}
+          已修复 {fixedCount}/{issues.length}
         </span>
       </div>
       <Progress
@@ -410,6 +412,11 @@ export const PassedIssueTable: React.FC<{
         .filter((issue) => !issue.synthetic && issue.retest_status === 'passed')
         .map((issue) => [issue.number, issue])
     ).values()
+  ).sort(
+    (a, b) =>
+      (Date.parse(b.retested_at || '') || 0) -
+        (Date.parse(a.retested_at || '') || 0) ||
+      String(a.number).localeCompare(String(b.number), 'en', { numeric: true })
   );
   if (!issues.length) return null;
   return (
@@ -421,7 +428,7 @@ export const PassedIssueTable: React.FC<{
         className="flex w-full items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/60 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-emerald-50"
       >
         <CheckCircleFilled className="text-emerald-500" />
-        <span>已复测通过 Issue</span>
+        <span>历史复测通过 Issue</span>
         <span className="font-normal text-slate-400">
           共 {issues.length} 条
         </span>
@@ -431,6 +438,10 @@ export const PassedIssueTable: React.FC<{
           }`}
         />
       </button>
+      <p className="mb-0 mt-1.5 px-1 text-xs leading-5 text-slate-400">
+        汇总当前及历史复测通过记录；其中已退出当前报告的 Issue
+        不计入当前修复进度。
+      </p>
       {open ? (
         <div className="mt-2 overflow-hidden rounded-xl border border-slate-200">
           <Table<IssuePainTrackingIssue>
