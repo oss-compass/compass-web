@@ -34,10 +34,18 @@ import { useIsCurrentUser } from '@modules/analyze/hooks/useIsCurrentUser';
 import { FiEdit } from 'react-icons/fi';
 import { GrClose } from 'react-icons/gr';
 import { AiOutlineSearch, AiFillFilter } from 'react-icons/ai';
+import { RiRobot2Line } from 'react-icons/ri';
 import getErrorMessage from '@common/utils/getErrorMessage';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import toast from 'react-hot-toast';
+import { Button } from '@oss-compass/ui';
+import { useMutation } from '@tanstack/react-query';
+import {
+  isManageableBotOrigin,
+  manageContributorBot,
+} from './manageContributorBot';
+import type { ManageContributorBotVariables } from './manageContributorBot';
 interface TableParams {
   pagination?: TablePaginationConfig;
   filterOpts?: FilterOptionInput[];
@@ -57,6 +65,10 @@ const MetricTable: React.FC<{
   const [currentName, setCurrentName] = useState('');
   const [currentOrgName, setCurrentOrgName] = useState('');
   const [origin, setOrigin] = useState('');
+  const [botAction, setBotAction] = useState<{
+    contributor: string;
+    isBot: boolean;
+  }>();
 
   const { data } = useVerifyDetailRangeQuery();
   const { isCurrentUser } = useIsCurrentUser();
@@ -105,7 +117,7 @@ const MetricTable: React.FC<{
   const maxDomain = useMemo(() => {
     return getMaxDomain(tableData);
   }, [tableData]);
-  const { isLoading, isFetching } = useContributorsDetailListQuery(
+  const { isLoading, isFetching, refetch } = useContributorsDetailListQuery(
     client,
     query,
     {
@@ -137,6 +149,23 @@ const MetricTable: React.FC<{
       },
       onError: (e) => {
         toast.error(getErrorMessage(e) || 'failed');
+      },
+    }
+  );
+  const botMutation = useMutation(
+    (variables: ManageContributorBotVariables) =>
+      manageContributorBot(client, variables),
+    {
+      onSuccess: (result) => {
+        if (result.manageContributorBot?.status === 'true') {
+          setBotAction(undefined);
+          refetch();
+          return;
+        }
+        toast.error(result.manageContributorBot?.message || 'failed');
+      },
+      onError: (error) => {
+        toast.error(getErrorMessage(error) || 'failed');
       },
     }
   );
@@ -191,8 +220,32 @@ const MetricTable: React.FC<{
       align: 'left',
       width: '200px',
       fixed: 'left',
-      render: (name) => {
-        return <ContributorName name={name} origin={origin} />;
+      render: (name, record) => {
+        const actionLabel = t(
+          record.isBot
+            ? 'analyze:metric_detail:include_robot'
+            : 'analyze:metric_detail:exclude_robot'
+        );
+        return (
+          <div className="flex items-center gap-2">
+            <ContributorName name={name} origin={origin} />
+            {data?.verifyDetailDataRange?.labelAdmin &&
+            isManageableBotOrigin(origin) ? (
+              <Tooltip title={actionLabel} placement="top">
+                <button
+                  type="button"
+                  aria-label={actionLabel}
+                  className="hover:text-primary focus-visible:ring-primary rounded p-1 focus-visible:outline-none focus-visible:ring-2"
+                  onClick={() => {
+                    setBotAction({ contributor: name, isBot: !!record.isBot });
+                  }}
+                >
+                  <RiRobot2Line aria-hidden="true" />
+                </button>
+              </Tooltip>
+            ) : null}
+          </div>
+        );
       },
       filterIcon: (filtered: boolean) => (
         <AiFillFilter
@@ -362,6 +415,49 @@ const MetricTable: React.FC<{
         pagination={tableParams.pagination}
         rowKey={'contributor'}
         scroll={{ x: 'max-content' }}
+      />
+      <Dialog
+        open={!!botAction}
+        dialogTitle={
+          botAction
+            ? t(
+                botAction.isBot
+                  ? 'analyze:metric_detail:include_robot'
+                  : 'analyze:metric_detail:exclude_robot'
+              )
+            : null
+        }
+        dialogContent={<div>{botAction?.contributor}</div>}
+        dialogActions={
+          <div className="flex">
+            <Button
+              intent="text"
+              size="sm"
+              onClick={() => setBotAction(undefined)}
+            >
+              {t('common:btn.cancel')}
+            </Button>
+            <Button
+              intent="primary"
+              size="sm"
+              className="ml-4"
+              loading={botMutation.isLoading}
+              onClick={() => {
+                if (!botAction) return;
+                botMutation.mutate({
+                  label,
+                  level,
+                  platform: origin,
+                  contributor: botAction.contributor,
+                  isBot: !botAction.isBot,
+                });
+              }}
+            >
+              {t('common:btn.confirm')}
+            </Button>
+          </div>
+        }
+        handleClose={() => setBotAction(undefined)}
       />
       <Dialog
         open={openConfirm}
