@@ -279,7 +279,7 @@ const MetricTable: React.FC<{
               className="cursor-pointer"
               onClick={() => {
                 setCurrentName(col.contributor);
-                col.organization && setCurrentOrgName(col.organization);
+                setCurrentOrgName(col.organization || '');
                 setOpenConfirm(true);
               }}
             />
