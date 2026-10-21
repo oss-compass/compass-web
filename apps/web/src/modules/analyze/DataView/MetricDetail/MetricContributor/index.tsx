@@ -15,6 +15,17 @@ import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import DetailHeaderFilter from '@modules/analyze/components/MetricDetail/DetailHeaderFilter';
 
+// A query parameter is user input: a malformed value must not throw while the
+// page renders, it should fall back to the default.
+const parseQueryJson = <T,>(raw: unknown, fallback: T): T => {
+  if (typeof raw !== 'string' || raw === '') return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+};
+
 const MetricContributor = () => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -26,9 +37,10 @@ const MetricContributor = () => {
   const { timeStart, timeEnd } = useVerifyDateRange();
   const options = useMileageOptions();
   const queryMileage = router.query?.mileage as string;
-  const defaultMileage = queryMileage
-    ? JSON.parse(queryMileage)
-    : ['core', 'regular'];
+  const defaultMileage = parseQueryJson<string[]>(queryMileage, [
+    'core',
+    'regular',
+  ]);
   const [mileage, setMileage] = useState<string[]>(defaultMileage);
   const [isBot, setIsBot] = useState(false);
   const [repoList, setRepoList] = useState([]);
