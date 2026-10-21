@@ -145,7 +145,12 @@ const TrendsList: React.FC = () => {
       scope: 'contributor',
     },
   ];
-  const [onePointSys, setOnePointSys] = useState(false);
+  // 初值来自持久化的用户设置（导航栏可切换并写入 localStorage）：与
+  // OverviewSummary/LineChart 的 useState(chartUserSettingState.onePointSys)
+  // 一致，避免表格以百分制渲染而上方图表以 1 分制渲染的不一致。
+  const [onePointSys, setOnePointSys] = useState(
+    chartUserSettingState.onePointSys
+  );
 
   const { compareItems } = useCompareItems();
   const snap = useSnapshot(chartUserSettingState);
