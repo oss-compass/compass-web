@@ -28,13 +28,17 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // The interval lives outside the timeout: a function returned from a
+    // setTimeout callback is discarded, so the previous code never cleared it
+    // and kept calling setDisplayValue after unmount.
+    let interval: ReturnType<typeof setInterval> | undefined;
     const timer = setTimeout(() => {
       setIsVisible(true);
       // 数字动画效果
       const numericValue = parseFloat(value.replace(/[^\d]/g, ''));
       let current = 0;
       const increment = numericValue / 30;
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         current += increment;
         if (current >= numericValue) {
           setDisplayValue(value);
@@ -43,11 +47,12 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
           setDisplayValue(Math.floor(current).toString());
         }
       }, 50);
-
-      return () => clearInterval(interval);
     }, delay);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (interval) clearInterval(interval);
+    };
   }, [value, delay]);
 
   return (
