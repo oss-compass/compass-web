@@ -15,6 +15,9 @@ describe('utils number ', () => {
 
   it('toFixed', () => {
     expect(toFixed(0.1, 3)).toEqual(0.1);
+    expect(toFixed(1.234e-7, 8)).toEqual(1.2e-7);
+    expect(toFixed(1.234e-7, 6)).toEqual(0);
+    expect(toFixed(1000, 2)).toEqual(1000);
   });
 
   it('percentRound', () => {
