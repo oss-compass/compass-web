@@ -1,6 +1,7 @@
 import { SearchQuery } from '@oss-compass/graphql';
 import uniq from 'lodash/uniq';
 import { Level } from '@modules/analyze/constant';
+import { parseUrl } from '@common/utils/url';
 
 export const getShortAnalyzeLink = (
   item: SearchQuery['fuzzySearch'][number] | string | undefined | null
@@ -60,16 +61,17 @@ export const getAnalyzeLink = (item: SearchQuery['fuzzySearch'][number]) => {
     item.level
   }`;
 };
-function getName(url: string) {
-  const urlObj = new URL(url);
+function getName(url: string): string {
+  const urlObj = parseUrl(url);
+  if (!urlObj) return '';
   const pathSegments = urlObj.pathname
     .split('/')
     .filter((segment) => segment !== '');
-  return pathSegments[0];
+  return pathSegments[0] || '';
 }
 export const getDeveloperLink = (url: string) => {
   const user = getName(url);
-  const hostname = new URL(url).hostname.toLowerCase();
+  const hostname = parseUrl(url)?.hostname.toLowerCase() ?? '';
   const platform = hostname.includes('gitee.com')
     ? 'gitee'
     : hostname.includes('github.com')
