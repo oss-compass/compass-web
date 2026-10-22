@@ -14,6 +14,20 @@ import { DataContainerResult } from '@modules/analyze/type';
 import CardDropDownMenu from '@modules/analyze/components/CardDropDownMenu';
 import { toTransString } from '@common/utils';
 
+export const getChartTabs = (t: (key: string) => string) => ({
+  '1': {
+    legendName: t('analyze:average'),
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.bugIssueOpenTimeAvg',
+    summaryKey: 'summaryCommunity.bugIssueOpenTimeAvg',
+  },
+  '2': {
+    legendName: t('analyze:median'),
+    xKey: 'grimoireCreationDate',
+    yKey: 'metricCommunity.bugIssueOpenTimeMid',
+    summaryKey: 'summaryCommunity.bugIssueOpenTimeMid',
+  },
+});
 const BugIssueOpenTime = () => {
   const { t, i18n } = useTranslation();
 
@@ -22,20 +36,7 @@ const BugIssueOpenTime = () => {
     { label: t('analyze:median'), value: '2' },
   ];
 
-  const chartTabs = {
-    '1': {
-      legendName: t('analyze:average'),
-      xKey: 'grimoireCreationDate',
-      yKey: 'metricCommunity.issueOpenTimeAvg',
-      summaryKey: 'summaryCommunity.issueOpenTimeAvg',
-    },
-    '2': {
-      legendName: t('analyze:median'),
-      xKey: 'grimoireCreationDate',
-      yKey: 'metricCommunity.issueOpenTimeMid',
-      summaryKey: 'summaryCommunity.issueOpenTimeMid',
-    },
-  };
+  const chartTabs = getChartTabs(t);
 
   const [tab, setTab] = useState<TabValue>('1');
   type TabValue = keyof typeof chartTabs;
