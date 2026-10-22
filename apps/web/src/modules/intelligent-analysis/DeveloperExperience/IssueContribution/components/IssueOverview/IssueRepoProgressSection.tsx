@@ -130,15 +130,9 @@ export const buildAggregateRow = (
   );
   const painResolved = repos.reduce((sum, repo) => sum + repo.painResolved, 0);
   const trackableTotal = painPending + painInProgress + painResolved;
+  // 分队评分按仓库等权平均，与顶部 KPI、综合体验评分分布卡片保持同一口径；
+  // 不用仓内 Issue 数加权，避免问题量大的仓库单方面左右分队整体体验分。
   const scoredRepos = repos.filter((repo) => repo.idxTotal != null);
-  const scoreWeight = scoredRepos.reduce(
-    (sum, repo) => sum + repo.idxTotal * Math.max(repo.nTotal, 1),
-    0
-  );
-  const totalWeight = scoredRepos.reduce(
-    (sum, repo) => sum + Math.max(repo.nTotal, 1),
-    0
-  );
   const scoresByPeriod = new Map<string, number[]>();
   repos.forEach((repo) => {
     (repo.idxTrendPeriods ?? []).forEach((period, index) => {
@@ -161,7 +155,10 @@ export const buildAggregateRow = (
     id: name,
     name,
     repoCount: repos.length,
-    score: totalWeight ? scoreWeight / totalWeight : null,
+    score: scoredRepos.length
+      ? scoredRepos.reduce((sum, repo) => sum + repo.idxTotal, 0) /
+        scoredRepos.length
+      : null,
     painTotal,
     painPending,
     painInProgress,

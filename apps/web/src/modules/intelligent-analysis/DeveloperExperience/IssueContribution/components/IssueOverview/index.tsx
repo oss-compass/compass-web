@@ -87,6 +87,8 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     queryKey: ['issue-overview', 'with-repo-category-v2', org],
     queryFn: ({ signal }) => fetchIssueOverview(org, signal),
     staleTime: ISSUE_QUERY_STALE_TIME,
+    // 返回总览时检查新报告，同时保留上次结果，避免慢请求导致整页加载。
+    refetchOnMount: 'always',
   });
   const data = overviewResp?.overview ?? null;
 

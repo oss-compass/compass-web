@@ -31,7 +31,7 @@ describe('community contribution category aggregation', () => {
     expect(result.painTotal).toBe(5);
     expect(result.closeRate).toBe(50);
   });
-  it('uses the existing weighted score and sums all-priority progress fields', () => {
+  it('averages repository scores equally and sums all-priority progress fields', () => {
     const result = buildAggregateRow('aal（领域加速库）', [
       repo('a', {
         idxTotal: 60,
@@ -52,7 +52,7 @@ describe('community contribution category aggregation', () => {
     expect(result).toMatchObject({
       name: 'aal（领域加速库）',
       repoCount: 2,
-      score: 82.5,
+      score: 75,
       painTotal: 5,
       painPending: 1,
       painInProgress: 1,

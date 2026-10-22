@@ -10,6 +10,7 @@ import type {
   IssueTopPainsQuery,
 } from './types';
 import { getHighestPainIssuePriority } from './issuePriority';
+import { resolveIssueUrl } from './issueUrl';
 
 /**
  * 报告数据已入库 cogito-backend（ES），此处直连后端 API。
@@ -70,7 +71,21 @@ export const fetchIssueReportData = async (
     throw new Error(`Issue report request failed: ${response.status}`);
   }
 
-  return response.json() as Promise<IssueReportApiResponse>;
+  const result = (await response.json()) as IssueReportApiResponse;
+  const report = result.report;
+  if (report) {
+    report.data.report_context.top_pains.forEach((pain) => {
+      pain.low_score_issues?.forEach((issue) => {
+        issue.url = resolveIssueUrl(
+          issue.url,
+          report.platform,
+          report.community,
+          issue.number
+        );
+      });
+    });
+  }
+  return result;
 };
 
 export const fetchIssueOverview = async (

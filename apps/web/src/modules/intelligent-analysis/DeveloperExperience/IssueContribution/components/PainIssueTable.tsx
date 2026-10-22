@@ -1,4 +1,5 @@
 import { getEvidenceActorName } from '../evidenceActor';
+import { resolveIssueUrl } from '../issueUrl';
 import React from 'react';
 import {
   CheckOutlined,
@@ -682,10 +683,14 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
     <>
       <td className="border-b border-slate-100 px-3 py-2.5">
         <a
-          href={issue.url}
+          href={resolveIssueUrl(issue.url)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline"
+          className={`inline-flex items-center gap-1 font-semibold ${
+            resolveIssueUrl(issue.url)
+              ? 'text-blue-600 hover:underline'
+              : 'text-slate-600'
+          }`}
         >
           <LinkOutlined className="text-[11px]" />#{issue.number}
         </a>

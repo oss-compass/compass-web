@@ -1,5 +1,9 @@
 import React from 'react';
-import { HistoryOutlined, ReloadOutlined } from '@ant-design/icons';
+import {
+  HistoryOutlined,
+  QuestionCircleOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import { Button, Empty, Modal, Select, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import toast from 'react-hot-toast';
@@ -106,9 +110,16 @@ export const RerunResultTable: React.FC<{
       },
     },
     {
-      title: '得分变化',
+      title: (
+        <Tooltip title="I0~I3 加权总分，与痛点指标分口径不同">
+          <span className="inline-flex cursor-help items-center gap-1">
+            Issue 总分变化
+            <QuestionCircleOutlined className="text-[10px] text-slate-300" />
+          </span>
+        </Tooltip>
+      ),
       key: 'score',
-      width: 105,
+      width: 130,
       render: (_value, result) => (
         <span className="whitespace-nowrap text-xs tabular-nums text-slate-600">
           {result.beforeFinalScore == null
