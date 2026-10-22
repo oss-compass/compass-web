@@ -6,13 +6,13 @@ import { Empty, Skeleton, Typography } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { buildIssueRepoManagementHref } from '../../../routes';
 import IssueTrendSparkline from './IssueTrendSparkline';
-import { fetchIssueOverview, fetchIssueTopPains } from '../../data';
-import { isHistoricalPain, isResolvedPain } from './painProgress';
 import {
-  buildRepoCountTrends,
-  computeIssueOverview,
-  latestReposByPeriod,
-} from './issueMetrics';
+  fetchIssueOverviewFrequentPains,
+  fetchIssueOverviewPainSummary,
+  fetchIssueOverviewScoreInsights,
+  fetchIssueOverviewSummary,
+  fetchIssueOverviewTrends,
+} from '../../data';
 import IssueTrendModal from './IssueTrendModal';
 import IssueRepoProgressSection from './IssueRepoProgressSection';
 import IssueMetricsAppendix from './IssueMetricsAppendix';
@@ -25,6 +25,11 @@ import {
   IssuePainProgressOverview,
 } from './IssuePainInsights';
 import type {
+  IssueOverviewV2PainSummary,
+  IssueOverviewV2Summary,
+  IssueOverviewV2Trend,
+} from '../../types';
+import type {
   IssueTrendGranularity,
   IssueTrendModalData,
 } from './IssueTrendModal';
@@ -32,8 +37,6 @@ import type {
 const { Title } = Typography;
 
 type IssueOverviewProps = { org?: string };
-
-const ISSUE_QUERY_STALE_TIME = 5 * 60 * 1000;
 
 const shortPeriod = (period: string): string => {
   const [start, end = start] = period.split('_to_');
@@ -68,76 +71,205 @@ const buildMonthlyTrend = (
   };
 };
 
-/** Issue 贡献总览：参考 Compass 体验总览的信息架构，并复用当前页面视觉与交互。 */
+const buildReportHref =
+  (orgSeg: string) =>
+  (community: string, period?: string, stageId?: string, painId?: string) =>
+    `/intelligent-analysis${orgSeg}/experience/issue-contribution?repo=${encodeURIComponent(
+      community
+    )}${period ? `&period=${encodeURIComponent(period)}` : ''}${
+      stageId ? `&stage=${encodeURIComponent(stageId)}` : ''
+    }${painId ? `&pain=${encodeURIComponent(painId)}` : ''}`;
+
+type Kpi = {
+  label: string;
+  value: string;
+  trend?: IssueOverviewV2Trend;
+  trendMax?: number;
+  trendUnit?: string;
+  monthlyMode: 'average' | 'last';
+};
+
+const buildKpis = ({
+  summary,
+  painSummary,
+  scoreTrend,
+  closeTrend,
+  score90Trend,
+  coverageTrend,
+}: {
+  summary?: IssueOverviewV2Summary;
+  painSummary?: IssueOverviewV2PainSummary;
+  scoreTrend?: IssueOverviewV2Trend;
+  closeTrend?: IssueOverviewV2Trend;
+  score90Trend?: IssueOverviewV2Trend;
+  coverageTrend?: IssueOverviewV2Trend;
+}): Kpi[] => {
+  const trackablePains = painSummary
+    ? painSummary.total - (painSummary.counts.historical ?? 0)
+    : 0;
+  const resolvedPains = painSummary?.counts.resolved ?? 0;
+  return [
+    {
+      label: '综合体验评分',
+      value: formatScore(summary?.score ?? null),
+      trend: scoreTrend,
+      trendMax: 100,
+      monthlyMode: 'average',
+    },
+    {
+      label: '闭环情况',
+      value: painSummary ? `${resolvedPains} / ${trackablePains}` : '-',
+      trend: closeTrend,
+      trendMax: 100,
+      trendUnit: '%',
+      monthlyMode: 'last',
+    },
+    {
+      label: '达成 90 分以上仓数',
+      value: summary ? String(summary.score90PlusRepoCount) : '-',
+      trend: score90Trend,
+      monthlyMode: 'last',
+    },
+    {
+      label: '覆盖仓库数',
+      value: summary ? String(summary.repoCount) : '-',
+      trend: coverageTrend,
+      monthlyMode: 'last',
+    },
+  ];
+};
+
+/** 按模块独立取数：首屏得分不再等待痛点索引，任一模块慢只影响自身。 */
 const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const router = useRouter();
   const [appendixOpen, setAppendixOpen] = React.useState(false);
+  const [repoReady, setRepoReady] = React.useState(false);
   const [trendModal, setTrendModal] =
     React.useState<IssueTrendModalData | null>(null);
   const [trendGranularity, setTrendGranularity] =
     React.useState<IssueTrendGranularity>('month');
   const repoManagementHref = buildIssueRepoManagementHref({ org });
 
-  const {
-    data: overviewResp,
-    isLoading: overviewLoading,
-    isError: loadError,
-  } = useQuery({
-    // 查询键带数据模型版本，避免旧的无 metrics 响应命中五分钟客户端缓存。
-    queryKey: ['issue-overview', 'with-repo-category-v2', org],
-    queryFn: ({ signal }) => fetchIssueOverview(org, signal),
-    staleTime: ISSUE_QUERY_STALE_TIME,
-    // 返回总览时检查新报告，同时保留上次结果，避免慢请求导致整页加载。
+  const summaryQuery = useQuery({
+    queryKey: ['issue-overview-v2-summary', org],
+    queryFn: ({ signal }) => fetchIssueOverviewSummary(org, signal),
+    staleTime: 0,
     refetchOnMount: 'always',
   });
-  const data = overviewResp?.overview ?? null;
-
-  const { data: allPainsResp, isLoading: painsLoading } = useQuery({
-    queryKey: ['issue-overview-all-pains', org],
-    queryFn: ({ signal }) =>
-      // slim：剔除 issue 明细大字段（evidence/reason/url/title 占响应体积
-      // 九成以上），弹窗“涉及 Issue”明细按 painIds 按需拉取。
-      fetchIssueTopPains({ org, page: 1, pageSize: 5000, slim: true }, signal),
-    staleTime: ISSUE_QUERY_STALE_TIME,
+  const insightsQuery = useQuery({
+    queryKey: ['issue-overview-v2-score-insights', org],
+    queryFn: ({ signal }) => fetchIssueOverviewScoreInsights(org, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const painSummaryQuery = useQuery({
+    queryKey: ['issue-overview-v2-pain-summary', org],
+    queryFn: ({ signal }) => fetchIssueOverviewPainSummary(org, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const frequentQuery = useQuery({
+    queryKey: ['issue-overview-v2-frequent-pains', org],
+    queryFn: ({ signal }) => fetchIssueOverviewFrequentPains(org, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
-  // 总览主体先使用轻量聚合接口渲染；全量痛点较慢时仅对应模块显示骨架屏，
-  // 不再阻塞评分、仓库排行和覆盖情况等首屏内容。
-  if (overviewLoading) {
-    return (
-      <>
-        <Title level={4} className="oj-section-title">
-          总览信息
-        </Title>
-        <div
-          className="overview-bottom-row"
-          style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
-        >
-          {[0, 1, 2, 3].map((index) => (
-            <div key={index} className="bottom-metric">
-              <Skeleton active title={false} paragraph={{ rows: 3 }} />
-            </div>
-          ))}
-        </div>
-        {[0, 1, 2].map((index) => (
-          <div key={index} className="section-card">
-            <Skeleton active title paragraph={{ rows: 6 }} />
-          </div>
-        ))}
-      </>
-    );
-  }
+  const scoreTrendQuery = useQuery({
+    queryKey: ['issue-overview-v2-trend', org, 'score'],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTrends({ org, weeks: 104, metric: 'score' }, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const closeTrendQuery = useQuery({
+    queryKey: ['issue-overview-v2-trend', org, 'closeRate'],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTrends(
+        { org, weeks: 104, metric: 'closeRate' },
+        signal
+      ),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const score90TrendQuery = useQuery({
+    queryKey: ['issue-overview-v2-trend', org, 'score90'],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTrends({ org, weeks: 104, metric: 'score90' }, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const coverageTrendQuery = useQuery({
+    queryKey: ['issue-overview-v2-trend', org, 'coverage'],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTrends({ org, weeks: 104, metric: 'coverage' }, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
 
-  const model = data ? computeIssueOverview(data) : null;
-  if (!data || !model || !model.hasData) {
+  const summary = summaryQuery.data;
+  const latestRepos = React.useMemo(
+    () => insightsQuery.data?.repos ?? [],
+    [insightsQuery.data]
+  );
+
+  // 排行榜行内趋势只批量查询上榜仓库，避免给全部仓库下发历史。
+  const rankingCommunities = React.useMemo(() => {
+    const scored = [...latestRepos]
+      .filter((repo) => repo.idxTotal != null)
+      .sort((left, right) => right.idxTotal - left.idxTotal);
+    return Array.from(
+      new Set(
+        [...scored.slice(0, 5), ...scored.slice(-5)].map(
+          (repo) => repo.community
+        )
+      )
+    );
+  }, [latestRepos]);
+  const rankingTrendQuery = useQuery({
+    queryKey: [
+      'issue-overview-v2-trend',
+      org,
+      'ranking',
+      rankingCommunities.join(','),
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTrends(
+        { org, weeks: 104, repos: rankingCommunities },
+        signal
+      ),
+    enabled: rankingCommunities.length > 0,
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+
+  const reposWithTrends = React.useMemo(() => {
+    const trend = rankingTrendQuery.data;
+    if (!trend?.repos) return latestRepos;
+    return latestRepos.map((repo) => {
+      const values = trend.repos?.[repo.community];
+      if (!values?.length) return repo;
+      const valid = values
+        .map((value, index) => ({ value, period: trend.periods[index] }))
+        .filter(
+          (item): item is { value: number; period: string } =>
+            item.value != null && Number.isFinite(item.value)
+        );
+      return {
+        ...repo,
+        idxTrend: valid.map((item) => item.value),
+        idxTrendPeriods: valid.map((item) => item.period),
+      };
+    });
+  }, [latestRepos, rankingTrendQuery.data]);
+
+  if (summaryQuery.isError) {
     return (
       <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
         <Empty
           description={
             <span className="text-sm text-[var(--overview-slate)]">
-              {loadError
-                ? 'Issue 总览数据加载失败，请稍后重试'
-                : '当前组织下暂无 Issue 贡献报告数据'}
+              Issue 总览数据加载失败，请稍后重试
             </span>
           }
         />
@@ -145,81 +277,51 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     );
   }
 
-  const latestRepos = latestReposByPeriod(data.repos);
-  const scoredRepos = latestRepos.filter((repo) => repo.idxTotal != null);
-  const latestAverageScore = scoredRepos.length
-    ? scoredRepos.reduce((total, repo) => total + repo.idxTotal, 0) /
-      scoredRepos.length
-    : null;
-  const pains = allPainsResp?.items ?? [];
-  const trackablePains = pains.filter((pain) => !isHistoricalPain(pain));
-  const resolvedPains = pains.filter(isResolvedPain).length;
-  const score90PlusRepos = latestRepos.filter(
-    (repo) => repo.idxTotal >= 90
-  ).length;
+  if (summary && summary.repoCount === 0) {
+    return (
+      <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
+        <Empty
+          description={
+            <span className="text-sm text-[var(--overview-slate)]">
+              当前组织下暂无 Issue 贡献报告数据
+            </span>
+          }
+        />
+      </section>
+    );
+  }
+
+  const painSummary = painSummaryQuery.data;
   const orgSeg =
     typeof router.query.org === 'string' ? `/${router.query.org}` : '';
-  const reportHref = (
-    community: string,
-    period?: string,
-    stageId?: string,
-    painId?: string
-  ) =>
-    `/intelligent-analysis${orgSeg}/experience/issue-contribution?repo=${encodeURIComponent(
-      community
-    )}${period ? `&period=${encodeURIComponent(period)}` : ''}${
-      stageId ? `&stage=${encodeURIComponent(stageId)}` : ''
-    }${painId ? `&pain=${encodeURIComponent(painId)}` : ''}`;
-  const painCloseTrend = data.agg.periods.map((period) => {
-    const appeared = trackablePains.filter((pain) => pain.period <= period);
-    return appeared.length
-      ? +(
-          (appeared.filter(isResolvedPain).length / appeared.length) *
-          100
-        ).toFixed(1)
-      : 0;
+  const reportHref = buildReportHref(orgSeg);
+  const kpis = buildKpis({
+    summary,
+    painSummary,
+    scoreTrend: scoreTrendQuery.data,
+    closeTrend: closeTrendQuery.data,
+    score90Trend: score90TrendQuery.data,
+    coverageTrend: coverageTrendQuery.data,
   });
-  const { score90Plus: score90PlusRepoTrend, coverage: coverageRepoTrend } =
-    buildRepoCountTrends(data.repos, data.agg.periods);
 
-  const kpis = [
-    {
-      label: '综合体验评分',
-      value: formatScore(latestAverageScore),
-      trend: data.agg.idx,
-      trendMax: 100,
-      monthlyMode: 'average' as const,
-    },
-    {
-      label: '闭环情况',
-      value: `${resolvedPains} / ${trackablePains.length}`,
-      trend: painCloseTrend,
-      trendMax: 100,
-      trendUnit: '%',
-      monthlyMode: 'last' as const,
-    },
-    {
-      label: '达成 90 分以上仓数',
-      value: String(score90PlusRepos),
-      trend: score90PlusRepoTrend,
-      monthlyMode: 'last' as const,
-    },
-    {
-      label: '覆盖仓库数',
-      value: String(latestRepos.length),
-      trend: coverageRepoTrend,
-      monthlyMode: 'last' as const,
-    },
-  ];
+  const allReady =
+    !summaryQuery.isLoading &&
+    !insightsQuery.isLoading &&
+    !painSummaryQuery.isLoading &&
+    !frequentQuery.isLoading &&
+    !scoreTrendQuery.isLoading &&
+    !closeTrendQuery.isLoading &&
+    !score90TrendQuery.isLoading &&
+    !coverageTrendQuery.isLoading &&
+    !summaryQuery.isError &&
+    !insightsQuery.isError &&
+    !painSummaryQuery.isError &&
+    !frequentQuery.isError &&
+    repoReady;
 
   return (
     <>
-      <span
-        hidden
-        data-issue-weekly-ready={Boolean(
-          allPainsResp && !painsLoading && !loadError
-        )}
-      />
+      <span hidden data-issue-weekly-ready={allReady} />
       <Title level={4} className="oj-section-title">
         总览信息
       </Title>
@@ -228,17 +330,27 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
       >
         {kpis.map((kpi) => {
+          const values = kpi.trend?.values ?? [];
+          const periods = kpi.trend?.periods ?? [];
           const monthlyTrend = buildMonthlyTrend(
-            kpi.trend,
-            data.agg.periods,
+            values,
+            periods,
             kpi.monthlyMode
           );
           return (
             <div key={kpi.label} className="bottom-metric">
               <div className="bm-label">{kpi.label}</div>
               <div className="bm-value">
-                <span className="bm-value-main">{kpi.value}</span>
-                {kpi.trend && kpi.trend.length > 1 ? (
+                {summaryQuery.isLoading && kpi.label !== '闭环情况' ? (
+                  <Skeleton
+                    active
+                    title={false}
+                    paragraph={{ rows: 1, width: 80 }}
+                  />
+                ) : (
+                  <span className="bm-value-main">{kpi.value}</span>
+                )}
+                {values.length > 1 ? (
                   <IssueTrendSparkline
                     className="bm-trend-sparkline"
                     trend={{
@@ -249,14 +361,14 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                           : '跨仓聚合 · 时间升序',
                       height: kpi.label === '综合体验评分' ? 340 : undefined,
                       unit: kpi.trendUnit,
-                      values: kpi.trend,
-                      labels: data.agg.periods.map(shortPeriod),
-                      periods: data.agg.periods,
+                      values,
+                      labels: periods.map(shortPeriod),
+                      periods,
                       monthly: monthlyTrend,
                     }}
                     width={52}
                     height={26}
-                    maxValue={kpi.trendMax ?? Math.max(1, ...kpi.trend)}
+                    maxValue={kpi.trendMax ?? Math.max(1, ...values)}
                     granularity={trendGranularity}
                     onGranularityChange={setTrendGranularity}
                   />
@@ -267,37 +379,48 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         })}
       </div>
 
-      <IssueScoreDistribution
-        repos={latestRepos}
-        reportHref={reportHref}
-        overallScore={model.idxAverage}
-      />
-      <IssueRepoRankings repos={latestRepos} reportHref={reportHref} />
+      {insightsQuery.isLoading ? (
+        <div className="section-card">
+          <Skeleton active title paragraph={{ rows: 8 }} />
+        </div>
+      ) : (
+        <>
+          <IssueScoreDistribution
+            repos={latestRepos}
+            reportHref={reportHref}
+            overallScore={summary?.score ?? null}
+          />
+          <IssueRepoRankings repos={reposWithTrends} reportHref={reportHref} />
+        </>
+      )}
 
-      {painsLoading ? (
+      {painSummaryQuery.isLoading ? (
         <div className="section-card">
           <Skeleton active title paragraph={{ rows: 6 }} />
         </div>
-      ) : (
+      ) : painSummary ? (
         <IssuePainProgressOverview
-          pains={pains}
-          repos={latestRepos}
+          summary={painSummary}
           reportHref={reportHref}
           org={org}
         />
+      ) : (
+        <div className="section-card">
+          <Empty description="痛点数据加载失败，请稍后重试" />
+        </div>
       )}
 
       <Title level={4} className="oj-section-title">
         TOP 问题
       </Title>
-      {painsLoading ? (
+      {frequentQuery.isLoading ? (
         <div className="section-card">
           <Skeleton active title={false} paragraph={{ rows: 6 }} />
         </div>
       ) : (
         <IssueFrequentPainSection
-          pains={pains}
-          repos={latestRepos}
+          groups={frequentQuery.data?.items ?? []}
+          stageOptions={painSummary?.stageOptions ?? []}
           reportHref={reportHref}
           org={org}
         />
@@ -306,9 +429,10 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       <IssueRepoProgressSection
         expandAllTeams={router.query.expandAllTeams === '1'}
         org={org}
-        repos={latestRepos}
+        stageOptions={painSummary?.stageOptions ?? []}
         reportHref={reportHref}
         repoManagementHref={repoManagementHref}
+        onReadyChange={setRepoReady}
         onOpenScoreTrend={(repo) =>
           setTrendModal({
             title: `${repo.repoShort} · 得分趋势`,

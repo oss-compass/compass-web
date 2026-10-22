@@ -3,9 +3,10 @@ import { formatScore } from '../../presentation';
 import React from 'react';
 import Link from 'next/link';
 import { RightOutlined } from '@ant-design/icons';
-import { Segmented, Table, Typography } from 'antd';
+import { Pagination, Segmented, Skeleton, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
 import { OJ_TREND_COLORS } from '../../../../UserJourney/OverviewDashboard/constants';
 import { groupOperatorRepos } from '../../../../UserJourney/OverviewDashboard/operatorCategories';
@@ -15,11 +16,16 @@ import {
   type ProgressMetricSortOrder,
 } from '../../../../UserJourney/OverviewDashboard/RepoProgressSection';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
-import { fetchIssueTopPains } from '../../data';
+import {
+  fetchIssueOverviewRepos,
+  fetchIssueOverviewTeams,
+  fetchIssueOverviewTrends,
+} from '../../data';
 import type { IssueOverviewRepo } from '../../types';
 import IssuePainDetailModal from './IssuePainDetailModal';
 
 const { Title } = Typography;
+const REPO_PAGE_SIZE = 20;
 
 type ProgressView = 'team' | 'repo';
 type ProgressBucket = 'pending' | 'inProgress' | 'resolved';
@@ -72,7 +78,8 @@ type TeamRow = {
 type Props = {
   expandAllTeams?: boolean;
   org?: string;
-  repos: IssueOverviewRepo[];
+  /** 痛点弹窗阶段筛选项，来自 pain-summary。 */
+  stageOptions?: string[];
   repoManagementHref: string;
   reportHref: (
     community: string,
@@ -86,6 +93,7 @@ type Props = {
     values: number[],
     periods: string[]
   ) => void;
+  onReadyChange?: (ready: boolean) => void;
 };
 
 const TEAM_COLUMN_WIDTHS = [64, 210, 110, 138, 230, 110, 100, 110] as const;
@@ -100,7 +108,8 @@ const reportDateLabel = (period: string) => {
 };
 
 const painCount = (repo: IssueOverviewRepo) =>
-  repo.stages.reduce((total, stage) => total + stage.painCount, 0);
+  repo.painCount ??
+  (repo.stages ?? []).reduce((total, stage) => total + stage.painCount, 0);
 
 const reportSortName = (repo: IssueOverviewRepo) =>
   `${repo.repoShort}_${repo.period}`;
@@ -170,25 +179,15 @@ export const buildAggregateRow = (
   };
 };
 
-const buildTeamRows = (repos: IssueOverviewRepo[]): TeamRow[] => {
-  const groups = new Map<string, IssueOverviewRepo[]>();
-  repos.forEach((repo) => {
-    const team = repo.teamName || '未分配团队';
-    groups.set(team, [...(groups.get(team) ?? []), repo]);
-  });
-  return Array.from(groups.entries())
-    .map(([name, teamRepos]) => buildAggregateRow(name, teamRepos))
-    .sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
-};
-
 const IssueRepoProgressSection: React.FC<Props> = ({
   expandAllTeams = false,
   org,
-  repos,
+  stageOptions = [],
   repoManagementHref,
   reportHref,
   onOpenScoreTrend,
   onOpenAggregateScoreTrend,
+  onReadyChange,
 }) => {
   const [view, setView] = React.useState<ProgressView>('team');
   const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
@@ -203,39 +202,209 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     key?: TeamTableSortKey;
     order: TableSortOrder;
   }>({ order: null });
+  const [repoPage, setRepoPage] = React.useState(1);
   const [detailTarget, setDetailTarget] = React.useState<DetailTarget | null>(
     null
   );
-  const teamRows = React.useMemo(() => buildTeamRows(repos), [repos]);
 
-  const { data: detailData, isFetching: detailLoading } = useQuery({
-    queryKey: ['issue-progress-pains', 'all-priorities', org, detailTarget],
+  const teamsQuery = useQuery({
+    queryKey: ['issue-overview-v2-teams', org],
+    queryFn: ({ signal }) => fetchIssueOverviewTeams(org, signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const teamItems = React.useMemo(
+    () => teamsQuery.data?.items ?? [],
+    [teamsQuery.data]
+  );
+  const teamRepoQueries = useQueries({
+    queries: teamItems.map<UseQueryOptions<IssueOverviewRepo[]>>((team) => ({
+      queryKey: ['issue-overview-v2-team-repos', org, team.name],
+      queryFn: async ({ signal }): Promise<IssueOverviewRepo[]> => {
+        const page = await fetchIssueOverviewRepos(
+          {
+            org,
+            team: team.name,
+            page: 1,
+            pageSize: 100,
+            sort: 'repo',
+            order: 'asc',
+          },
+          signal
+        );
+        if (!page.items.length) return [];
+        const trend = await fetchIssueOverviewTrends(
+          { org, weeks: 104, repos: page.items.map((repo) => repo.repoShort) },
+          signal
+        );
+        return page.items.map((repo) => {
+          const values = trend.repos?.[repo.community];
+          if (!values?.length) return repo;
+          const valid = values
+            .map((value, index) => ({ value, period: trend.periods[index] }))
+            .filter(
+              (item): item is { value: number; period: string } =>
+                item.value != null && Number.isFinite(item.value)
+            );
+          return {
+            ...repo,
+            idxTrend: valid.map((item) => item.value),
+            idxTrendPeriods: valid.map((item) => item.period),
+          };
+        });
+      },
+      enabled:
+        !!team.name && (expandAllTeams || expandedRowKeys.includes(team.name)),
+      staleTime: 0,
+    })),
+  });
+  const teamReposByName = React.useMemo(() => {
+    const map = new Map<string, IssueOverviewRepo[]>();
+    teamRepoQueries.forEach((query, index) => {
+      if (query.data) map.set(teamItems[index]?.name, query.data);
+    });
+    return map;
+  }, [teamItems, teamRepoQueries]);
+  const teamLoadingByName = React.useMemo(() => {
+    const map = new Map<string, boolean>();
+    teamRepoQueries.forEach((query, index) => {
+      if (teamItems[index]?.name) {
+        map.set(teamItems[index].name, query.isLoading);
+      }
+    });
+    return map;
+  }, [teamItems, teamRepoQueries]);
+
+  const repoQuery = useQuery({
+    queryKey: ['issue-overview-v2-repos', org, repoPage],
     queryFn: ({ signal }) =>
-      fetchIssueTopPains(
+      fetchIssueOverviewRepos(
         {
           org,
-          repoPeriods:
-            detailTarget?.type === 'team'
-              ? teamRows
-                  .find((team) => team.name === detailTarget.name)
-                  ?.repos.map((repo) => `${repo.repoShort}@${repo.period}`)
-                  .join(',')
-              : detailTarget?.type === 'category'
-              ? detailTarget.repos
-                  .map((repo) => `${repo.repoShort}@${repo.period}`)
-                  .join(',')
-              : detailTarget?.type === 'repo'
-              ? `${detailTarget.repo.repoShort}@${detailTarget.repo.period}`
-              : undefined,
-          state: detailTarget?.bucket,
-          page: 1,
-          pageSize: 5000,
+          page: repoPage,
+          pageSize: REPO_PAGE_SIZE,
+          sort: 'score',
+          order: 'desc',
         },
         signal
       ),
-    enabled: detailTarget !== null,
-    keepPreviousData: true,
+    enabled: view === 'repo',
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
+  const repoPageItems = React.useMemo(
+    () => repoQuery.data?.items ?? [],
+    [repoQuery.data]
+  );
+  const repoTrendQuery = useQuery({
+    queryKey: [
+      'issue-overview-v2-repo-trends',
+      org,
+      repoPageItems.map((repo) => repo.repoShort).join(','),
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTrends(
+        {
+          org,
+          weeks: 104,
+          repos: repoPageItems.map((repo) => repo.repoShort),
+        },
+        signal
+      ),
+    enabled: view === 'repo' && repoPageItems.length > 0,
+    staleTime: 0,
+  });
+  const repoRows = React.useMemo(() => {
+    const trend = repoTrendQuery.data;
+    if (!trend?.repos) return repoPageItems;
+    return repoPageItems.map((repo) => {
+      const values = trend.repos?.[repo.community];
+      if (!values?.length) return repo;
+      const valid = values
+        .map((value, index) => ({ value, period: trend.periods[index] }))
+        .filter(
+          (item): item is { value: number; period: string } =>
+            item.value != null && Number.isFinite(item.value)
+        );
+      return {
+        ...repo,
+        idxTrend: valid.map((item) => item.value),
+        idxTrendPeriods: valid.map((item) => item.period),
+      };
+    });
+  }, [repoPageItems, repoTrendQuery.data]);
+
+  const teamRows = React.useMemo<TeamRow[]>(
+    () =>
+      teamItems.map((team) => {
+        const periods = team.scoreTrendPeriods ?? [];
+        const valid = (team.scoreTrend ?? [])
+          .map((value, index) => ({ value, period: periods[index] }))
+          .filter(
+            (item): item is { value: number; period: string } =>
+              item.value != null && Number.isFinite(item.value) && !!item.period
+          );
+        return {
+          id: team.name,
+          name: team.name,
+          repoCount: team.repoCount,
+          score: team.score,
+          painTotal: team.painTotal,
+          painPending: team.painPending,
+          painInProgress: team.painInProgress,
+          painResolved: team.painResolved,
+          closeRate: team.closeRate,
+          scoreTrend: valid.map((item) => item.value),
+          scoreTrendPeriods: valid.map((item) => item.period),
+          repos: teamReposByName.get(team.name) ?? [],
+        };
+      }),
+    [teamItems, teamReposByName]
+  );
+
+  // 详情弹窗的基础筛选条件：团队/分组/仓库 + 进展阶段，列表与 Issue 均由服务端分页。
+  const detailQuery = React.useMemo(() => {
+    if (!detailTarget) return { org };
+    const state = detailTarget.bucket;
+    if (detailTarget.type === 'team') {
+      return { org, team: detailTarget.name, state };
+    }
+    if (detailTarget.type === 'category') {
+      return {
+        org,
+        repos: Array.from(
+          new Set(detailTarget.repos.map((repo) => repo.repoShort))
+        ),
+        state,
+      };
+    }
+    return { org, repo: detailTarget.repo.repoShort, state };
+  }, [detailTarget, org]);
+
+  const teamReposFetching = teamRepoQueries.some(
+    (query) => query.isLoading || query.isFetching
+  );
+  React.useEffect(() => {
+    const teamReady =
+      !teamsQuery.isLoading &&
+      !teamsQuery.isFetching &&
+      (!expandAllTeams || !teamReposFetching);
+    const repoReady =
+      view !== 'repo' ||
+      (!repoQuery.isFetching &&
+        (repoPageItems.length === 0 || !repoTrendQuery.isFetching));
+    onReadyChange?.(teamReady && repoReady);
+  }, [
+    expandAllTeams,
+    onReadyChange,
+    repoPageItems.length,
+    repoQuery.isFetching,
+    repoTrendQuery.isFetching,
+    teamReposFetching,
+    teamsQuery.isFetching,
+    teamsQuery.isLoading,
+    view,
+  ]);
 
   const openPainDetails = (target: DetailTarget) => {
     setDetailTarget(target);
@@ -417,7 +586,9 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         width: TEAM_COLUMN_WIDTHS[0],
         align: 'center',
         render: (_value, _record, index) => (
-          <span className="row-num">{index + 1}</span>
+          <span className="row-num">
+            {(repoPage - 1) * REPO_PAGE_SIZE + index + 1}
+          </span>
         ),
       },
       {
@@ -507,7 +678,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
     ],
-    [progressHeader, repoScoreCell, reportHref]
+    [progressHeader, repoPage, repoScoreCell, reportHref]
   );
 
   const teamColumns = React.useMemo<TableProps<TeamRow>['columns']>(
@@ -674,6 +845,20 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   );
 
   const renderExpandedTeam = (team: TeamRow) => {
+    if (teamLoadingByName.get(team.name)) {
+      return (
+        <div className="overview-expanded-rows px-4 py-3">
+          <Skeleton active title={false} paragraph={{ rows: 3 }} />
+        </div>
+      );
+    }
+    if (!team.repos.length) {
+      return (
+        <div className="overview-expanded-rows px-4 py-3 text-sm text-[var(--overview-slateLight)]">
+          暂无仓库数据
+        </div>
+      );
+    }
     const grouped = team.name === '算子分队';
     const sections = grouped
       ? groupOperatorRepos(team.repos)
@@ -860,30 +1045,44 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               showExpandColumn: false,
               onExpandedRowsChange: (keys) => setExpandedRowKeys([...keys]),
               expandedRowRender: renderExpandedTeam,
-              rowExpandable: (team) => team.repos.length > 0,
+              rowExpandable: (team) => team.repoCount > 0,
             }}
           />
         ) : (
-          <Table<IssueOverviewRepo>
-            className="overview-ant-table"
-            dataSource={sortByProgress(repos)}
-            columns={repoColumns}
-            rowKey={(repo) => `${repo.community}-${repo.period}`}
-            pagination={false}
-            tableLayout="fixed"
-            scroll={{ x: 1252 }}
-            locale={{ emptyText: '暂无仓库数据' }}
-          />
+          <>
+            <Table<IssueOverviewRepo>
+              className="overview-ant-table"
+              dataSource={sortByProgress(repoRows)}
+              columns={repoColumns}
+              rowKey={(repo) => `${repo.community}-${repo.period}`}
+              loading={repoQuery.isLoading || repoTrendQuery.isLoading}
+              pagination={false}
+              tableLayout="fixed"
+              scroll={{ x: 1252 }}
+              locale={{ emptyText: '暂无仓库数据' }}
+            />
+            <div className="mt-3 flex items-center justify-end gap-3">
+              <span className="text-xs text-[var(--overview-slate)]">
+                共 {repoQuery.data?.total ?? 0} 个仓库
+              </span>
+              <Pagination
+                current={repoPage}
+                pageSize={REPO_PAGE_SIZE}
+                total={repoQuery.data?.total ?? 0}
+                showSizeChanger={false}
+                size="small"
+                onChange={setRepoPage}
+              />
+            </div>
+          </>
         )}
       </div>
       <IssuePainDetailModal
         open={detailTarget !== null}
         onClose={() => setDetailTarget(null)}
-        loading={detailLoading}
-        items={detailData?.items ?? []}
-        repoTeams={Object.fromEntries(
-          repos.map((repo) => [repo.repoShort, repo.teamName])
-        )}
+        query={detailQuery}
+        stageOptions={stageOptions}
+        org={org}
         reportHref={reportHref}
         title={
           detailTarget

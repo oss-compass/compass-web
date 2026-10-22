@@ -1,5 +1,14 @@
 import type {
   IssueOverviewApiResponse,
+  IssueOverviewV2FrequentPain,
+  IssueOverviewV2PainDetail,
+  IssueOverviewV2PainSummary,
+  IssueOverviewV2ReposResponse,
+  IssueOverviewV2Summary,
+  IssueOverviewV2Team,
+  IssueOverviewV2Trend,
+  IssueOverviewRepo,
+  IssueOverviewTopPain,
   IssuePainTracking,
   IssuePainTrackingActionPayload,
   IssuePainTrackingResponse,
@@ -31,6 +40,7 @@ const API_PREFIX = `${USER_JOURNEY_PREFIX}/issue-experience`;
 
 const REPORT_API_PATH = `${API_PREFIX}/reports`;
 const OVERVIEW_API_PATH = `${API_PREFIX}/overview`;
+const OVERVIEW_V2_API_PATH = `${OVERVIEW_API_PATH}/v2`;
 const TOP_PAINS_API_PATH = `${API_PREFIX}/overview/top-pains`;
 const PAIN_TRACKINGS_API_PATH = `${API_PREFIX}/pain-trackings`;
 const REPO_TEAMS_API_PATH = `${API_PREFIX}/overview/repo-teams`;
@@ -104,6 +114,181 @@ export const fetchIssueOverview = async (
 
   return response.json() as Promise<IssueOverviewApiResponse>;
 };
+
+const fetchOverviewV2 = async <T>(
+  path: string,
+  params: Record<string, string | number | undefined> = {},
+  signal?: AbortSignal
+): Promise<T> => {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') search.set(key, String(value));
+  });
+  const query = search.toString();
+  const base = `${getApiBase()}${OVERVIEW_V2_API_PATH}${path}`;
+  const response = await fetch(query ? `${base}?${query}` : base, {
+    signal,
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    throw new Error(`Issue overview v2 request failed: ${response.status}`);
+  }
+  return response.json() as Promise<T>;
+};
+
+export const fetchIssueOverviewSummary = async (
+  org?: string,
+  signal?: AbortSignal
+): Promise<IssueOverviewV2Summary> =>
+  fetchOverviewV2<IssueOverviewV2Summary>('/summary', { org }, signal);
+
+export const fetchIssueOverviewScoreInsights = async (
+  org?: string,
+  signal?: AbortSignal
+): Promise<{ repos: IssueOverviewRepo[] }> =>
+  fetchOverviewV2<{ repos: IssueOverviewRepo[] }>(
+    '/score-insights',
+    { org },
+    signal
+  );
+
+export type IssueOverviewV2ReposQuery = {
+  org?: string;
+  page?: number;
+  pageSize?: number;
+  team?: string;
+  keyword?: string;
+  sort?: string;
+  order?: 'asc' | 'desc';
+};
+
+export const fetchIssueOverviewRepos = async (
+  params: IssueOverviewV2ReposQuery,
+  signal?: AbortSignal
+): Promise<IssueOverviewV2ReposResponse> =>
+  fetchOverviewV2<IssueOverviewV2ReposResponse>(
+    '/repos',
+    { ...params },
+    signal
+  );
+
+export const fetchIssueOverviewPainSummary = async (
+  org?: string,
+  signal?: AbortSignal
+): Promise<IssueOverviewV2PainSummary> =>
+  fetchOverviewV2<IssueOverviewV2PainSummary>('/pain-summary', { org }, signal);
+
+export const fetchIssueOverviewFrequentPains = async (
+  org?: string,
+  signal?: AbortSignal
+): Promise<{ items: IssueOverviewV2FrequentPain[] }> =>
+  fetchOverviewV2<{ items: IssueOverviewV2FrequentPain[] }>(
+    '/frequent-pains',
+    { org },
+    signal
+  );
+
+export const fetchIssueOverviewTeams = async (
+  org?: string,
+  signal?: AbortSignal
+): Promise<{ items: IssueOverviewV2Team[] }> =>
+  fetchOverviewV2<{ items: IssueOverviewV2Team[] }>('/teams', { org }, signal);
+
+export type IssueOverviewV2TrendQuery = {
+  org?: string;
+  repo?: string;
+  repos?: string[];
+  team?: string;
+  weeks?: number;
+  metric?: 'score' | 'score90' | 'coverage' | 'closeRate';
+};
+
+export const fetchIssueOverviewTrends = async (
+  params: IssueOverviewV2TrendQuery,
+  signal?: AbortSignal
+): Promise<IssueOverviewV2Trend> =>
+  fetchOverviewV2<IssueOverviewV2Trend>(
+    '/trends',
+    {
+      ...params,
+      repos: params.repos?.length ? params.repos.join(',') : undefined,
+    },
+    signal
+  );
+
+export type IssueOverviewV2TopPainsQuery = {
+  org?: string;
+  page?: number;
+  pageSize?: number;
+  repo?: string;
+  repos?: string[];
+  team?: string;
+  group?: string;
+  stage?: string;
+  prio?: string;
+  state?: string;
+  states?: string[];
+};
+
+const priorityFromCounts = (
+  counts?: IssueOverviewTopPain['issuePriorityCounts']
+): string | undefined => {
+  if (!counts) return undefined;
+  return (['P0', 'P1', 'P2', 'P3'] as const).find(
+    (priority) => (counts[priority] ?? 0) > 0
+  );
+};
+
+export const fetchIssueOverviewTopPainsV2 = async (
+  params: IssueOverviewV2TopPainsQuery,
+  signal?: AbortSignal
+): Promise<{
+  items: IssueOverviewTopPain[];
+  total: number;
+  page: number;
+  pageSize: number;
+}> => {
+  const data = await fetchOverviewV2<{
+    items: IssueOverviewTopPain[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }>(
+    '/top-pains',
+    {
+      ...params,
+      repos: params.repos?.length ? params.repos.join(',') : undefined,
+      states: params.states?.length ? params.states.join(',') : undefined,
+    },
+    signal
+  );
+  return {
+    ...data,
+    items: data.items.map((pain) => ({
+      ...pain,
+      prio: pain.prio || priorityFromCounts(pain.issuePriorityCounts) || 'P3',
+      metricLabels: pain.metricLabels?.length
+        ? pain.metricLabels
+        : pain.metricCodes ?? [],
+    })),
+  };
+};
+
+export const fetchIssueOverviewPainDetail = async (
+  painId: string,
+  params: {
+    org?: string;
+    page?: number;
+    pageSize?: number;
+    priority?: 'P0' | 'P1' | 'P2' | 'P3';
+  },
+  signal?: AbortSignal
+): Promise<IssueOverviewV2PainDetail> =>
+  fetchOverviewV2<IssueOverviewV2PainDetail>(
+    `/pains/${encodeURIComponent(painId)}/issues`,
+    { ...params },
+    signal
+  );
 
 /** 重点待办痛点：服务端分页 + 仓库/优先级过滤，按页拉取。 */
 export const fetchIssueTopPains = async (

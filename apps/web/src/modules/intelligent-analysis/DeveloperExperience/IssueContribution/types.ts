@@ -540,6 +540,7 @@ export type IssueOverviewRepo = {
   painResolved: number;
   painHistorical?: number;
   painCloseRate: number;
+  painCount?: number;
   /** 后端提供的 P0 子集统计；各仓库对比使用上方全优先级 pain 字段。 */
   p0PainTotal: number;
   p0PainPending: number;
@@ -571,6 +572,8 @@ export type IssueOverviewTopPain = {
   stageId?: string;
   community: string;
   repoShort: string;
+  /** 责任团队，由 v2 读模型按仓库补齐。 */
+  teamName?: string;
   period: string;
   periodLabel: string;
   prio: string;
@@ -585,10 +588,93 @@ export type IssueOverviewTopPain = {
   lowScoreIssues?: IssueReportPainIssue[];
   /** 当前报告已清零、但跟踪记录中保留的已修复 Issue。 */
   resolvedIssues?: IssueReportPainIssue[];
+  /** 新读模型只下发计数，不再随总览下发 Issue 正文。 */
+  issueCount?: number;
+  openIssueCount?: number;
+  resolvedIssueCount?: number;
+  issuePriorityCounts?: Partial<Record<'P0' | 'P1' | 'P2' | 'P3', number>>;
   trackingKey?: string;
   trackingStatus?: number;
   trackingStatusLabel?: string;
   trackingType?: IssuePainTrackingType;
+};
+
+/** v2 总览：得分首屏只依赖最新报告的聚合字段。 */
+export type IssueOverviewV2Summary = {
+  score: number | null;
+  repoCount: number;
+  scoredRepoCount: number;
+  score90PlusRepoCount: number;
+  updatedAt?: string | null;
+};
+
+export type IssueOverviewV2Trend = {
+  periods: string[];
+  values: Array<number | null>;
+  repos?: Record<string, Array<number | null>>;
+};
+
+export type IssueOverviewV2ReposResponse = {
+  items: IssueOverviewRepo[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
+
+export type IssueOverviewV2PainPeriod = {
+  period: string;
+  total: number;
+  counts: Record<string, number>;
+  closeRate: number;
+  priorities: Array<{
+    priority: string;
+    total: number;
+    counts: Record<string, number>;
+  }>;
+};
+
+export type IssueOverviewV2PainSummary = {
+  total: number;
+  counts: Record<string, number>;
+  closeRate: number;
+  priorities: IssueOverviewV2PainPeriod['priorities'];
+  periods: IssueOverviewV2PainPeriod[];
+  repoOptions: string[];
+  stageOptions: string[];
+};
+
+export type IssueOverviewV2FrequentPain = IssueOverviewTopPain & {
+  group: string;
+  total: number;
+  open: number;
+  done: number;
+  repoCount: number;
+  trend: number[];
+  openTrend: number[];
+  doneTrend: number[];
+  trendPeriods: string[];
+};
+
+export type IssueOverviewV2Team = {
+  name: string;
+  repoCount: number;
+  score: number | null;
+  painTotal: number;
+  painPending: number;
+  painInProgress: number;
+  painResolved: number;
+  painHistorical: number;
+  closeRate: number;
+  scoreTrend: Array<number | null>;
+  scoreTrendPeriods: string[];
+};
+
+export type IssueOverviewV2PainDetail = {
+  pain: IssueOverviewTopPain;
+  items: IssueReportPainIssue[];
+  total: number;
+  page: number;
+  pageSize: number;
 };
 
 /** 跨仓逐周聚合序列（用于顶部 KPI 缩略图） */

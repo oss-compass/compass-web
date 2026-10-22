@@ -10,28 +10,30 @@ import type {
   WeeklyCloseRateTrendPoint,
 } from '../../../../UserJourney/OverviewDashboard/types';
 import { getMetricCategory } from '../../metricDefinitions';
-import type { IssueOverviewRepo, IssueOverviewTopPain } from '../../types';
+import type {
+  IssueOverviewV2FrequentPain,
+  IssueOverviewV2PainSummary,
+} from '../../types';
 import IssuePainDetailModal from './IssuePainDetailModal';
 import IssuePriorityTag, { getIssuePriorityLabel } from './IssuePriorityTag';
 import IssueTrendSparkline from './IssueTrendSparkline';
-import { isHistoricalPain, isOpenPain, progressBucket } from './painProgress';
 import { SEVERITY_CFG } from '../../../../UserJourney/OverviewDashboard/constants';
 import {
   OVERVIEW_COLORS,
   OVERVIEW_STATUS_COLORS,
 } from '../../../../UserJourney/OverviewDashboard/theme';
 
-type Props = {
-  pains: IssueOverviewTopPain[];
-  repos: IssueOverviewRepo[];
-  /** slim 数据下弹窗 Issue 明细按需拉取所需的组织隔离参数 */
+type ReportHref = (
+  community: string,
+  period?: string,
+  stageId?: string,
+  painId?: string
+) => string;
+
+type ProgressProps = {
+  summary: IssueOverviewV2PainSummary;
   org?: string;
-  reportHref: (
-    community: string,
-    period?: string,
-    stageId?: string,
-    painId?: string
-  ) => string;
+  reportHref: ReportHref;
 };
 
 const PRIORITIES = [
@@ -74,37 +76,27 @@ const PROGRESS_STATES = [
   },
 ] as const;
 
-const progressCounts = (pains: IssueOverviewTopPain[]) => ({
-  historical: pains.filter(isHistoricalPain).length,
-  pending: pains.filter((pain) => progressBucket(pain) === 'pending').length,
-  inProgress: pains.filter((pain) => progressBucket(pain) === 'inProgress')
-    .length,
-  resolved: pains.filter((pain) => progressBucket(pain) === 'resolved').length,
-});
-
-export const IssuePainProgressOverview: React.FC<Props> = ({
-  pains,
-  repos,
+export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
+  summary,
   org,
   reportHref,
 }) => {
   const [detail, setDetail] = React.useState<{
     title: string;
-    pains: IssueOverviewTopPain[];
+    state?: string;
+    prio?: string;
   } | null>(null);
   const [trendWindow, setTrendWindow] = React.useState<TrendWindow>({
     kind: 'weeks',
     weeks: 7,
   });
-  const counts = progressCounts(pains);
-  const total = pains.length;
-  const trackableTotal = total - counts.historical;
-  const closeRate = trackableTotal
-    ? (counts.resolved / trackableTotal) * 100
-    : 0;
+  const counts = summary.counts;
+  const total = summary.total;
+  const trackableTotal = total - (counts.historical ?? 0);
+  const closeRate = summary.closeRate;
   const allPeriods = React.useMemo(
-    () => Array.from(new Set(pains.map((pain) => pain.period))).sort(),
-    [pains]
+    () => summary.periods.map((point) => point.period),
+    [summary.periods]
   );
   const periods = React.useMemo(() => {
     if (trendWindow.kind === 'weeks') {
@@ -115,73 +107,69 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
       return start <= trendWindow.end && end >= trendWindow.start;
     });
   }, [allPeriods, trendWindow]);
-  const trendPoints = React.useMemo<WeeklyCloseRateTrendPoint[]>(
-    () =>
-      periods.map((period) => {
-        const periodPains = pains.filter((pain) => pain.period === period);
-        const trackableCount = periodPains.filter(
-          (pain) => !isHistoricalPain(pain)
-        ).length;
-        const priorityCount = (priority: string) =>
-          periodPains.filter((pain) => pain.prio === priority).length;
-        const resolved = periodPains.filter(
-          (pain) => progressBucket(pain) === 'resolved'
-        ).length;
-        const [weekStart, weekEnd = weekStart] = period.split('_to_');
-        return {
-          weekStart,
-          weekEnd,
-          label: weekEnd?.slice(5) || period,
-          total: periodPains.length,
-          p0: priorityCount('P0'),
-          p1: priorityCount('P1'),
-          p2: priorityCount('P2'),
-          p3: priorityCount('P3'),
-          closeRate: trackableCount ? (resolved / trackableCount) * 100 : 0,
-        };
-      }),
-    [pains, periods]
-  );
+  const trendPoints = React.useMemo<WeeklyCloseRateTrendPoint[]>(() => {
+    const byPeriod = new Map(
+      summary.periods.map((point) => [point.period, point])
+    );
+    return periods.map((period) => {
+      const point = byPeriod.get(period);
+      const periodPriorities = point?.priorities ?? [];
+      const priorityCount = (priority: string) =>
+        periodPriorities.find((item) => item.priority === priority)?.total ?? 0;
+      const [weekStart, weekEnd = weekStart] = period.split('_to_');
+      return {
+        weekStart,
+        weekEnd,
+        label: weekEnd?.slice(5) || period,
+        total: point?.total ?? 0,
+        p0: priorityCount('P0'),
+        p1: priorityCount('P1'),
+        p2: priorityCount('P2'),
+        p3: priorityCount('P3'),
+        closeRate: point?.closeRate ?? 0,
+      };
+    });
+  }, [periods, summary.periods]);
   const cards = [
     {
       label: '问题总数',
       value: total,
-      bucket: undefined,
+      state: undefined,
       valueClassName: '',
       clickable: true,
     },
     {
       label: '待处理',
-      value: counts.pending,
-      bucket: 'pending' as const,
+      value: counts.pending ?? 0,
+      state: 'pending' as const,
       valueClassName: 'ov-value-pending',
       clickable: true,
     },
     {
       label: '进行中',
-      value: counts.inProgress,
-      bucket: 'inProgress' as const,
+      value: counts.inProgress ?? 0,
+      state: 'inProgress' as const,
       valueClassName: 'ov-value-blue',
       clickable: true,
     },
     {
       label: '已闭环',
-      value: counts.resolved,
-      bucket: 'resolved' as const,
+      value: counts.resolved ?? 0,
+      state: 'resolved' as const,
       valueClassName: 'ov-value-green',
       clickable: true,
     },
     {
       label: '历史感知痛点（需关注）',
-      value: counts.historical,
-      bucket: 'historical' as const,
+      value: counts.historical ?? 0,
+      state: 'historical' as const,
       valueClassName: '',
       clickable: true,
     },
     {
       label: '闭环率',
       value: `${closeRate.toFixed(1)}%`,
-      bucket: 'resolved' as const,
+      state: undefined,
       valueClassName: '',
       clickable: false,
     },
@@ -194,11 +182,8 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
       </div>
       <div className="ov-row">
         {cards.map((card) => {
-          const selected = card.bucket
-            ? pains.filter((pain) => progressBucket(pain) === card.bucket)
-            : pains;
           const openDetail = () =>
-            setDetail({ title: card.label, pains: selected });
+            setDetail({ title: card.label, state: card.state });
           return (
             <div key={card.label} className="ov-item">
               <div className="ov-label">{card.label}</div>
@@ -232,14 +217,15 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
           <h4 className="pain-mini">各优先级问题闭环进展</h4>
           <div className="pain-priority-list">
             {PRIORITIES.map((priority) => {
-              const priorityPains = pains.filter(
-                (pain) => pain.prio === priority.key
+              const prioritySummary = summary.priorities.find(
+                (item) => item.priority === priority.key
               );
-              const priorityCounts = progressCounts(priorityPains);
+              const priorityCounts = prioritySummary?.counts ?? {};
+              const priorityTotal = prioritySummary?.total ?? 0;
               const priorityTrackable =
-                priorityPains.length - priorityCounts.historical;
+                priorityTotal - (priorityCounts.historical ?? 0);
               const priorityRate = priorityTrackable
-                ? (priorityCounts.resolved / priorityTrackable) * 100
+                ? ((priorityCounts.resolved ?? 0) / priorityTrackable) * 100
                 : 100;
               return (
                 <div key={priority.key} className="pain-priority-row">
@@ -251,7 +237,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                     onClick={() =>
                       setDetail({
                         title: getIssuePriorityLabel(priority.key),
-                        pains: priorityPains,
+                        prio: priority.key,
                       })
                     }
                   >
@@ -272,7 +258,7 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                       </span>
                     ) : null}
                     {PROGRESS_STATES.map((state) => {
-                      const value = priorityCounts[state.key];
+                      const value = priorityCounts[state.key] ?? 0;
                       return value > 0 ? (
                         <button
                           key={state.key}
@@ -290,9 +276,8 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
                               title: `${getIssuePriorityLabel(
                                 priority.key
                               )} · ${state.label}`,
-                              pains: priorityPains.filter(
-                                (pain) => progressBucket(pain) === state.key
-                              ),
+                              prio: priority.key,
+                              state: state.key,
                             })
                           }
                         >
@@ -363,12 +348,13 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
       <IssuePainDetailModal
         open={!!detail}
         onClose={() => setDetail(null)}
-        loading={false}
-        items={detail?.pains ?? []}
+        query={{
+          org,
+          state: detail?.state,
+          prio: detail?.prio,
+        }}
+        stageOptions={summary.stageOptions}
         org={org}
-        repoTeams={Object.fromEntries(
-          repos.map((repo) => [repo.repoShort, repo.teamName])
-        )}
         reportHref={reportHref}
         title={detail?.title ?? '痛点详情'}
       />
@@ -545,106 +531,46 @@ export const IssuePainProgressOverview: React.FC<Props> = ({
   );
 };
 
-type FrequentPain = {
-  key: string;
-  title: string;
-  stageName: string;
+type FrequentPain = IssueOverviewV2FrequentPain & {
   metrics: Array<{
     label: string;
     category: 'efficiency' | 'quality';
   }>;
-  prio: string;
-  repoCount: number;
-  total: number;
-  open: number;
-  done: number;
-  trend: number[];
-  openTrend: number[];
-  doneTrend: number[];
-  trendPeriods: string[];
-  items: IssueOverviewTopPain[];
 };
 
-const priorityRank = (priority: string) => {
-  const rank = Number(String(priority).match(/P([0-3])/)?.[1]);
-  return Number.isFinite(rank) ? rank : 4;
+type FrequentProps = {
+  groups: IssueOverviewV2FrequentPain[];
+  stageOptions: string[];
+  org?: string;
+  reportHref: ReportHref;
 };
 
-const buildFrequentPains = (pains: IssueOverviewTopPain[]): FrequentPain[] => {
-  const periods = Array.from(new Set(pains.map((pain) => pain.period))).sort();
-  const groups = new Map<string, IssueOverviewTopPain[]>();
-  pains.forEach((pain) => {
-    const metricKey = [...(pain.metricCodes ?? [])].sort().join('+');
-    // 高频问题按“阶段 + 指标”归并，避免不同仓库的描述措辞差异拆散同类问题。
-    const key = `${pain.stageId || pain.stageName}#${metricKey}`;
-    groups.set(key, [...(groups.get(key) ?? []), pain]);
-  });
-  return Array.from(groups.entries()).map(([key, items]) => {
-    const issueCount = (item: IssueOverviewTopPain) =>
-      Math.max(item.lowScoreIssues?.length ?? 0, 1);
-    const done = items
-      .filter((item) => progressBucket(item) === 'resolved')
-      .reduce((sum, item) => sum + issueCount(item), 0);
-    const open = items
-      .filter(isOpenPain)
-      .reduce((sum, item) => sum + issueCount(item), 0);
-    return {
-      key,
-      title: items[0]?.title || '-',
-      stageName: items[0]?.stageName || '-',
-      metrics: Array.from(
-        new Map(
-          items.flatMap((item) =>
-            (item.metricLabels ?? []).map((label, index) => {
-              const category = getMetricCategory(
-                item.metricCodes?.[index] ?? ''
-              );
-              return [`${label}#${category}`, { label, category }] as const;
-            })
-          )
-        ).values()
-      ),
-      prio: [...items].sort(
-        (a, b) => priorityRank(a.prio) - priorityRank(b.prio)
-      )[0]?.prio,
-      repoCount: new Set(items.map((item) => item.community)).size,
-      total: items.reduce(
-        (sum, item) => sum + Math.max(item.lowScoreIssues?.length ?? 0, 1),
-        0
-      ),
-      open,
-      done,
-      trend: periods.map((period) =>
-        items
-          .filter((item) => item.period === period)
-          .reduce((sum, item) => sum + issueCount(item), 0)
-      ),
-      openTrend: periods.map((period) =>
-        items
-          .filter((item) => item.period === period && isOpenPain(item))
-          .reduce((sum, item) => sum + issueCount(item), 0)
-      ),
-      doneTrend: periods.map((period) =>
-        items
-          .filter(
-            (item) =>
-              item.period === period && progressBucket(item) === 'resolved'
-          )
-          .reduce((sum, item) => sum + issueCount(item), 0)
-      ),
-      trendPeriods: periods,
-      items,
-    };
-  });
-};
+const mapFrequentPain = (group: IssueOverviewV2FrequentPain): FrequentPain => ({
+  ...group,
+  metrics: Array.from(
+    new Map(
+      (group.metricLabels ?? []).map((label, index) => {
+        const category = getMetricCategory(group.metricCodes?.[index] ?? '');
+        return [`${label}#${category}`, { label, category }] as const;
+      })
+    ).values()
+  ),
+});
 
-export const IssueFrequentPainSection: React.FC<
-  Pick<Props, 'pains' | 'repos' | 'org' | 'reportHref'>
-> = ({ pains, repos, org, reportHref }) => {
+export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
+  groups,
+  stageOptions,
+  org,
+  reportHref,
+}) => {
   const [view, setView] = React.useState<'all' | 'open' | 'done'>('all');
-  const [detail, setDetail] = React.useState<FrequentPain | null>(null);
-  const groups = React.useMemo(() => buildFrequentPains(pains), [pains]);
-  const rows = [...groups]
+  const [detail, setDetail] = React.useState<{
+    title: string;
+    group: string;
+    states?: string[];
+  } | null>(null);
+  const rows = groups
+    .map(mapFrequentPain)
     .filter(
       (item) => view === 'all' || (view === 'open' ? item.open : item.done) > 0
     )
@@ -773,15 +699,14 @@ export const IssueFrequentPainSection: React.FC<
               className="overview-table-link overview-table-link-strong min-w-[24px] text-right"
               onClick={() =>
                 setDetail({
-                  ...record,
-                  items:
+                  title: record.title,
+                  group: record.group,
+                  states:
                     view === 'all'
-                      ? record.items
-                      : record.items.filter((item) =>
-                          view === 'done'
-                            ? progressBucket(item) === 'resolved'
-                            : isOpenPain(item)
-                        ),
+                      ? undefined
+                      : view === 'done'
+                      ? ['resolved']
+                      : ['pending', 'inProgress'],
                 })
               }
             >
@@ -838,12 +763,13 @@ export const IssueFrequentPainSection: React.FC<
       <IssuePainDetailModal
         open={!!detail}
         onClose={() => setDetail(null)}
-        loading={false}
-        items={detail?.items ?? []}
+        query={{
+          org,
+          group: detail?.group,
+          states: detail?.states,
+        }}
+        stageOptions={stageOptions}
         org={org}
-        repoTeams={Object.fromEntries(
-          repos.map((repo) => [repo.repoShort, repo.teamName])
-        )}
         reportHref={reportHref}
         title={detail?.title ?? '问题详情'}
       />

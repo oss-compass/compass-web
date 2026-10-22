@@ -5,7 +5,11 @@ import { FilterFilled } from '@ant-design/icons';
 import { Dropdown, Modal, Pagination, Radio, Tooltip } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import type { IssueOverviewTopPain } from '../../types';
-import { fetchIssueTopPains } from '../../data';
+import {
+  fetchIssueOverviewPainDetail,
+  fetchIssueOverviewTopPainsV2,
+} from '../../data';
+import type { IssueOverviewV2TopPainsQuery } from '../../data';
 import { resolvePainIssuePriority } from '../../issuePriority';
 import { getTrackingStatusMeta } from '../PainTrackingModal/constants';
 import PainIssueTable from '../PainIssueTable';
@@ -15,6 +19,12 @@ const ALL = '__ALL__';
 const PAIN_PAGE_SIZE = 10;
 const ISSUE_PAGE_SIZE = 10;
 const ISSUE_STAGE_ORDER = ['I0', 'I1', 'I2', 'I3', 'G'] as const;
+const PAIN_STATE_OPTIONS = [
+  { value: 'pending', label: '待处理' },
+  { value: 'inProgress', label: '进行中' },
+  { value: 'resolved', label: '已闭环' },
+  { value: 'historical', label: '历史感知痛点' },
+];
 
 const reportDateLabel = (period?: string) => {
   const value = String(period || '');
@@ -41,11 +51,11 @@ type SortKey =
 type Props = {
   open: boolean;
   title: string;
-  items: IssueOverviewTopPain[];
-  loading: boolean;
-  /** slim 数据下 Issue 明细按需拉取所需的组织隔离参数 */
+  /** 基础筛选条件；弹窗内的阶段/优先级/状态筛选会在其基础上覆盖。 */
+  query: Omit<IssueOverviewV2TopPainsQuery, 'page' | 'pageSize' | 'stage'>;
+  stageOptions: string[];
+  /** Issue 明细按需拉取所需的组织隔离参数 */
   org?: string;
-  repoTeams: Record<string, string>;
   onClose: () => void;
   reportHref: (
     community: string,
@@ -85,15 +95,32 @@ const PainIssuePriorityDistribution: React.FC<{
     },
     { P0: 0, P1: 0, P2: 0, P3: 0 }
   );
+  const countFromModel = item.issuePriorityCounts;
+  const openCount = countFromModel
+    ? (countFromModel.P0 ?? 0) +
+      (countFromModel.P1 ?? 0) +
+      (countFromModel.P2 ?? 0) +
+      (countFromModel.P3 ?? 0)
+    : issues.length;
+  const resolvedCount =
+    item.resolvedIssueCount ?? item.resolvedIssues?.length ?? 0;
+  const displayCounts = countFromModel
+    ? {
+        P0: countFromModel.P0 ?? 0,
+        P1: countFromModel.P1 ?? 0,
+        P2: countFromModel.P2 ?? 0,
+        P3: countFromModel.P3 ?? 0,
+      }
+    : counts;
 
-  if (!issues.length)
-    return item.resolvedIssues?.length ? (
+  if (!openCount)
+    return resolvedCount ? (
       <button
         type="button"
         className="text-xs font-semibold text-emerald-700 hover:underline"
         onClick={() => onOpen()}
       >
-        当前 0 · 已修复 {item.resolvedIssues.length}
+        当前 0 · 已修复 {resolvedCount}
       </button>
     ) : (
       <span className="text-[var(--overview-slateLight)]">0</span>
@@ -103,12 +130,12 @@ const PainIssuePriorityDistribution: React.FC<{
     <div className="overview-progress-cell !gap-1.5">
       <div className="overview-progress-bar">
         {ISSUE_PRIORITY_LEVELS.map((level) =>
-          counts[level.priority] > 0 ? (
+          displayCounts[level.priority] > 0 ? (
             <span
               key={level.priority}
               className="overview-progress-segment"
               style={{
-                width: `${(counts[level.priority] / issues.length) * 100}%`,
+                width: `${(displayCounts[level.priority] / openCount) * 100}%`,
                 background: level.tagColor,
               }}
             />
@@ -121,10 +148,10 @@ const PainIssuePriorityDistribution: React.FC<{
           className="whitespace-nowrap text-xs font-semibold tabular-nums leading-[18px] text-[var(--overview-slate)] hover:underline"
           onClick={() => onOpen()}
         >
-          总 {issues.length}
+          总 {openCount}
         </button>
         {ISSUE_PRIORITY_LEVELS.filter(
-          (level) => counts[level.priority] > 0
+          (level) => displayCounts[level.priority] > 0
         ).map((level) => (
           <React.Fragment key={level.priority}>
             <span className="text-[var(--overview-slateLight)]">|</span>
@@ -134,7 +161,7 @@ const PainIssuePriorityDistribution: React.FC<{
               style={{ color: level.tagColor }}
               onClick={() => onOpen(level.priority)}
             >
-              {level.priority} {counts[level.priority]}
+              {level.priority} {displayCounts[level.priority]}
             </button>
           </React.Fragment>
         ))}
@@ -172,10 +199,9 @@ const downloadCsv = (
 const IssuePainDetailModal: React.FC<Props> = ({
   open,
   title,
-  items,
-  loading,
+  query,
+  stageOptions,
   org,
-  repoTeams,
   onClose,
   reportHref,
 }) => {
@@ -202,125 +228,153 @@ const IssuePainDetailModal: React.FC<Props> = ({
     setIssuePage(1);
   };
 
+  const baseRepoKey = (query.repos ?? []).join(',');
+  const baseStateKey = (query.states ?? []).join(',');
+
+  // 入口条件（团队/仓库/分组/基础状态或优先级）变化时重置筛选与分页。
+  React.useEffect(() => {
+    setPrioFilter(query.prio ?? ALL);
+    setStateFilter(query.state ?? ALL);
+    setStageFilter(ALL);
+    setPainPage(1);
+    setIssueDetailPain(null);
+    setIssueDetailPriority(undefined);
+    setIssuePage(1);
+  }, [
+    open,
+    baseRepoKey,
+    baseStateKey,
+    query.group,
+    query.prio,
+    query.repo,
+    query.state,
+    query.team,
+  ]);
+
   React.useEffect(() => {
     setPainPage(1);
   }, [stageFilter, prioFilter, stateFilter]);
 
-  const options = React.useMemo(
-    () => ({
-      stages: Array.from(
-        items.reduce((stageOrderByName, item) => {
-          if (!item.stageName) return stageOrderByName;
-          const order = getStageOrder(item.stageId);
-          stageOrderByName.set(
-            item.stageName,
-            Math.min(stageOrderByName.get(item.stageName) ?? order, order)
-          );
-          return stageOrderByName;
-        }, new Map<string, number>())
-      )
-        .sort(
-          ([leftName, leftOrder], [rightName, rightOrder]) =>
-            leftOrder - rightOrder ||
-            leftName.localeCompare(rightName, 'zh-Hans-CN')
-        )
-        .map(([stageName]) => stageName),
-      prios: Array.from(new Set(items.map((item) => item.prio))).filter(
-        Boolean
-      ),
-      states: Array.from(new Set(items.map(getPainStateLabel))).filter(Boolean),
-    }),
-    [items]
-  );
-
-  const displayedItems = React.useMemo(() => {
-    const rows = items.filter(
-      (item) =>
-        (stageFilter === ALL || item.stageName === stageFilter) &&
-        (prioFilter === ALL || item.prio === prioFilter) &&
-        (stateFilter === ALL || getPainStateLabel(item) === stateFilter)
-    );
-    return [...rows].sort((a, b) => {
-      const sortValue = (item: IssueOverviewTopPain) => {
-        if (sortKey === 'repo') return item.repoShort;
-        if (sortKey === 'team') return repoTeams[item.repoShort] || '';
-        if (sortKey === 'metric') return getPainMetricLabel(item);
-        if (sortKey === 'state') return getPainStateLabel(item);
-        return String(item[sortKey] || '');
-      };
-      const left = sortValue(a);
-      const right = sortValue(b);
-      const result = left.localeCompare(right, 'zh-Hans-CN', {
-        sensitivity: 'base',
-      });
-      return sortAsc ? result : -result;
-    });
-  }, [
-    items,
-    prioFilter,
-    repoTeams,
-    sortAsc,
-    sortKey,
-    stageFilter,
-    stateFilter,
-  ]);
-  const pagedDisplayedItems = displayedItems.slice(
-    (painPage - 1) * PAIN_PAGE_SIZE,
-    painPage * PAIN_PAGE_SIZE
-  );
-  const detailIssues = issueDetailPain?.lowScoreIssues?.length
-    ? issueDetailPain.lowScoreIssues
-    : issueDetailPain?.resolvedIssues ?? [];
-  // slim 数据的 issue 不含 reason 字段；需要完整明细时按 painIds 按需拉取
-  // 该条痛点（非 slim 数据直接用本地字段，不发起请求）。
-  const needsFullIssues =
-    !!issueDetailPain &&
-    detailIssues.length > 0 &&
-    !('reason' in detailIssues[0]);
-  const { data: fullPainResp, isFetching: fullIssuesLoading } = useQuery({
+  const painsQuery = useQuery({
     queryKey: [
-      'issue-top-pains',
-      'pain-full',
+      'issue-overview-v2-top-pains',
       org ?? '',
-      issueDetailPain?.key ?? '',
+      query.group ?? '',
+      query.repo ?? '',
+      baseRepoKey,
+      query.team ?? '',
+      query.prio ?? '',
+      query.state ?? '',
+      baseStateKey,
+      stageFilter,
+      prioFilter,
+      stateFilter,
+      painPage,
     ],
     queryFn: ({ signal }) =>
-      fetchIssueTopPains(
+      fetchIssueOverviewTopPainsV2(
         {
-          org,
-          repo: issueDetailPain?.repoShort,
-          period: issueDetailPain?.period,
-          painIds: issueDetailPain?.painId || issueDetailPain?.key,
-          page: 1,
-          pageSize: 1,
+          ...query,
+          page: painPage,
+          pageSize: PAIN_PAGE_SIZE,
+          stage: stageFilter === ALL ? undefined : stageFilter,
+          prio: prioFilter === ALL ? undefined : prioFilter,
+          // 弹窗内状态筛选覆盖入口条件；未选时沿用入口的 state/states。
+          state: stateFilter === ALL ? undefined : stateFilter,
+          states: stateFilter === ALL ? query.states : undefined,
         },
         signal
       ),
-    enabled: needsFullIssues,
-    staleTime: 5 * 60 * 1000,
+    enabled: open,
+    staleTime: 0,
   });
-  const fullDetailPain = needsFullIssues
-    ? fullPainResp?.items?.find((item) => item.key === issueDetailPain?.key) ??
-      null
-    : null;
-  const sourceDetailPain = fullDetailPain ?? issueDetailPain;
+  const items = React.useMemo(
+    () => painsQuery.data?.items ?? [],
+    [painsQuery.data]
+  );
+  const total = painsQuery.data?.total ?? 0;
+  const loading = painsQuery.isFetching;
+
+  const options = React.useMemo(() => {
+    const stages = (
+      stageFilter === ALL && !stageOptions.length
+        ? Array.from(
+            items.reduce((stageOrderByName, item) => {
+              if (!item.stageName) return stageOrderByName;
+              const order = getStageOrder(item.stageId);
+              stageOrderByName.set(
+                item.stageName,
+                Math.min(stageOrderByName.get(item.stageName) ?? order, order)
+              );
+              return stageOrderByName;
+            }, new Map<string, number>())
+          )
+        : stageOptions.map(
+            (stageName) => [stageName, getStageOrder(stageName)] as const
+          )
+    )
+      .sort(
+        ([leftName, leftOrder], [rightName, rightOrder]) =>
+          leftOrder - rightOrder ||
+          leftName.localeCompare(rightName, 'zh-Hans-CN')
+      )
+      .map(([stageName]) => stageName);
+    return {
+      stages,
+      prios: ISSUE_PRIORITY_LEVELS.map((level) => level.priority),
+      states: PAIN_STATE_OPTIONS.map((state) => state.value),
+    };
+  }, [items, stageFilter, stageOptions]);
+
+  // 排序只作用于服务端返回的当前页，跨页顺序由 ES 默认优先级/周期排序保证。
+  const pagedDisplayedItems = React.useMemo(
+    () =>
+      [...items].sort((a, b) => {
+        const sortValue = (item: IssueOverviewTopPain) => {
+          if (sortKey === 'repo') return item.repoShort;
+          if (sortKey === 'team') return item.teamName || '';
+          if (sortKey === 'metric') return getPainMetricLabel(item);
+          if (sortKey === 'state') return getPainStateLabel(item);
+          return String(item[sortKey] || '');
+        };
+        const left = sortValue(a);
+        const right = sortValue(b);
+        const result = left.localeCompare(right, 'zh-Hans-CN', {
+          sensitivity: 'base',
+        });
+        return sortAsc ? result : -result;
+      }),
+    [items, sortAsc, sortKey]
+  );
+
+  const issueDetailQuery = useQuery({
+    queryKey: [
+      'issue-overview-v2-pain-detail',
+      org ?? '',
+      issueDetailPain?.key ?? '',
+      issueDetailPriority ?? '',
+      issuePage,
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewPainDetail(
+        issueDetailPain?.key ?? '',
+        {
+          org,
+          page: issuePage,
+          pageSize: ISSUE_PAGE_SIZE,
+          priority: issueDetailPriority,
+        },
+        signal
+      ),
+    enabled: open && !!issueDetailPain,
+    staleTime: 0,
+  });
+  const sourceDetailPain = issueDetailQuery.data?.pain ?? issueDetailPain;
   const resolvedOnly =
-    !sourceDetailPain?.lowScoreIssues?.length &&
-    Boolean(sourceDetailPain?.resolvedIssues?.length);
-  const issueDetailItems = (
-    resolvedOnly
-      ? sourceDetailPain?.resolvedIssues ?? []
-      : sourceDetailPain?.lowScoreIssues ?? []
-  ).filter(
-    (issue) =>
-      !issueDetailPriority ||
-      resolvePainIssuePriority(issue.priority, issue.score) ===
-        issueDetailPriority
-  );
-  const pagedIssueDetailItems = issueDetailItems.slice(
-    (issuePage - 1) * ISSUE_PAGE_SIZE,
-    issuePage * ISSUE_PAGE_SIZE
-  );
+    sourceDetailPain?.openIssueCount === 0 &&
+    (sourceDetailPain?.resolvedIssueCount ?? 0) > 0;
+  const issueDetailItems = issueDetailQuery.data?.items ?? [];
+  const issueDetailTotal = issueDetailQuery.data?.total ?? 0;
 
   const exportPainRows = () => {
     downloadCsv(
@@ -337,16 +391,16 @@ const IssuePainDetailModal: React.FC<Props> = ({
         '涉及 Issue 数',
         '相关报告',
       ],
-      displayedItems.map((item, index) => [
-        index + 1,
+      pagedDisplayedItems.map((item, index) => [
+        (painPage - 1) * PAIN_PAGE_SIZE + index + 1,
         item.repoShort,
-        repoTeams[item.repoShort] || '--',
+        item.teamName || '--',
         item.stageName || '--',
         getPainMetricLabel(item),
         item.title || '--',
         item.prio || '--',
         getPainStateLabel(item),
-        item.lowScoreIssues?.length ?? 0,
+        item.openIssueCount ?? 0,
         reportHref(item.community, item.period, item.stageId, item.painId),
       ])
     );
@@ -354,7 +408,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
 
   const exportIssueRows = () => {
     downloadCsv(
-      `涉及Issue_${issueDetailPain?.title || '详情'}.csv`,
+      `涉及Issue_${sourceDetailPain?.title || '详情'}.csv`,
       [
         '序号',
         'Issue',
@@ -391,13 +445,13 @@ const IssuePainDetailModal: React.FC<Props> = ({
               )
               .join(' | ')
           : '--',
-        issue.report_period || issueDetailPain?.period || '--',
-        issueDetailPain
+        issue.report_period || sourceDetailPain?.period || '--',
+        sourceDetailPain
           ? reportHref(
-              issueDetailPain.community,
-              issue.report_period || issueDetailPain.period,
-              issueDetailPain.stageId,
-              issue.report_pain_id || issueDetailPain.painId
+              sourceDetailPain.community,
+              issue.report_period || sourceDetailPain.period,
+              sourceDetailPain.stageId,
+              issue.report_pain_id || sourceDetailPain.painId
             )
           : '--',
       ])
@@ -448,7 +502,14 @@ const IssuePainDetailModal: React.FC<Props> = ({
               <Radio value={ALL}>全部</Radio>
               {values.map((item) => (
                 <Radio key={item} value={item}>
-                  {key === 'prio' ? <IssuePriorityTag priority={item} /> : item}
+                  {key === 'prio' ? (
+                    <IssuePriorityTag priority={item} />
+                  ) : key === 'state' ? (
+                    PAIN_STATE_OPTIONS.find((state) => state.value === item)
+                      ?.label ?? item
+                  ) : (
+                    item
+                  )}
                 </Radio>
               ))}
             </Radio.Group>
@@ -497,11 +558,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
         }}
         title={
           <div className="mr-6 flex items-center justify-between gap-3">
-            <span>{`${title}（共${displayedItems.length}条）`}</span>
+            <span>{`${title}（共${total}条）`}</span>
             <button
               type="button"
               className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)] disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={!displayedItems.length}
+              disabled={!total}
               onClick={exportPainRows}
             >
               导出
@@ -573,7 +634,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                       加载中...
                     </td>
                   </tr>
-                ) : displayedItems.length ? (
+                ) : items.length ? (
                   pagedDisplayedItems.map((item, index) => (
                     <tr
                       key={item.key}
@@ -586,7 +647,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                         {item.repoShort}
                       </td>
                       <td className="px-1.5 py-3 text-center">
-                        {repoTeams[item.repoShort] || '--'}
+                        {item.teamName || '--'}
                       </td>
                       <td className="px-1.5 py-3">{item.stageName || '--'}</td>
                       <td className="px-2 py-3 text-center leading-5">
@@ -655,12 +716,12 @@ const IssuePainDetailModal: React.FC<Props> = ({
           </div>
           <div className="flex shrink-0 items-center justify-between gap-4 px-1">
             <span className="text-xs text-[var(--overview-slate)]">
-              共 {displayedItems.length} 条
+              共 {total} 条
             </span>
             <Pagination
               current={painPage}
               pageSize={PAIN_PAGE_SIZE}
-              total={displayedItems.length}
+              total={total}
               showSizeChanger={false}
               size="small"
               onChange={setPainPage}
@@ -717,26 +778,27 @@ const IssuePainDetailModal: React.FC<Props> = ({
           <div className="shrink-0 rounded-lg border border-[var(--overview-redSoft)] bg-[rgba(var(--overview-redSoft-rgb),0.8)] px-3.5 py-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-[var(--overview-textSecondary)]">
-                {issueDetailPain?.title || '—'}
+                {sourceDetailPain?.title || '—'}
               </span>
               <span className="inline-flex rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)] px-2 py-0.5 text-[10px] font-medium text-[var(--overview-slate)]">
-                {issueDetailItems.length} 个 Issue
+                {issueDetailTotal} 个 Issue
               </span>
             </div>
           </div>
           <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
-            {needsFullIssues && fullIssuesLoading && !fullDetailPain ? (
+            {issueDetailQuery.isFetching && !issueDetailQuery.data ? (
               <div className="flex h-full items-center justify-center text-sm text-[var(--overview-slateLight)]">
                 加载中...
               </div>
             ) : (
               <PainIssueTable
-                issues={pagedIssueDetailItems}
+                issues={issueDetailItems}
                 pagination={false}
                 responsive
                 renderReportLink={(issue) => {
-                  const period = issue.report_period || issueDetailPain?.period;
-                  if (!issueDetailPain || !period) {
+                  const period =
+                    issue.report_period || sourceDetailPain?.period;
+                  if (!sourceDetailPain || !period) {
                     return (
                       <span className="text-[var(--overview-slateLight)]">
                         --
@@ -746,10 +808,10 @@ const IssuePainDetailModal: React.FC<Props> = ({
                   return (
                     <Link
                       href={reportHref(
-                        issueDetailPain.community,
+                        sourceDetailPain.community,
                         period,
-                        issueDetailPain.stageId,
-                        issue.report_pain_id || issueDetailPain.painId
+                        sourceDetailPain.stageId,
+                        issue.report_pain_id || sourceDetailPain.painId
                       )}
                       className="overview-table-link break-all text-[var(--overview-blue)] hover:text-[var(--overview-blueDark)]"
                     >
@@ -762,12 +824,12 @@ const IssuePainDetailModal: React.FC<Props> = ({
           </div>
           <div className="flex shrink-0 items-center justify-between gap-4 border-t border-[var(--overview-slateBorder)] pt-3">
             <span className="text-xs text-[var(--overview-slate)]">
-              共 {issueDetailItems.length} 条
+              共 {issueDetailTotal} 条
             </span>
             <Pagination
               current={issuePage}
               pageSize={ISSUE_PAGE_SIZE}
-              total={issueDetailItems.length}
+              total={issueDetailTotal}
               showSizeChanger={false}
               size="small"
               onChange={setIssuePage}
