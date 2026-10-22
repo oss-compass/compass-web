@@ -107,10 +107,6 @@ const reportDateLabel = (period: string) => {
   return endDate || period || '-';
 };
 
-const painCount = (repo: IssueOverviewRepo) =>
-  repo.painCount ??
-  (repo.stages ?? []).reduce((total, stage) => total + stage.painCount, 0);
-
 const reportSortName = (repo: IssueOverviewRepo) =>
   `${repo.repoShort}_${repo.period}`;
 
@@ -655,13 +651,6 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         render: (value: number) => closeRateCell(value),
       },
       {
-        title: '重点痛点',
-        key: 'painCount',
-        width: 100,
-        sorter: (a, b) => painCount(a) - painCount(b),
-        render: (_value, record) => painCount(record),
-      },
-      {
         title: '最新报告',
         key: 'report',
         width: 100,
@@ -1058,7 +1047,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
               loading={repoQuery.isLoading || repoTrendQuery.isLoading}
               pagination={false}
               tableLayout="fixed"
-              scroll={{ x: 1252 }}
+              scroll={{ x: 1152 }}
               locale={{ emptyText: '暂无仓库数据' }}
             />
             <div className="mt-3 flex items-center justify-end gap-3">
