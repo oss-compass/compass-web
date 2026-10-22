@@ -20,11 +20,17 @@ const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
       <ul className="pl-4">
         {Object.entries(data).map(([key, rowValue]) => {
           const value: any = rowValue;
+          // $ref 解析出的 properties 与 array 的 items 都是可展开的子结构。
+          const childData =
+            value?.items && Object.keys(value.items).length > 0
+              ? value.items
+              : value?.properties && Object.keys(value.properties).length > 0
+                ? value.properties
+                : null;
           const hasChildren =
             typeof value === 'object' &&
             value !== null &&
-            value.items &&
-            Object.keys(value.items).length > 0;
+            childData !== null;
 
           return (
             <li key={`${parentKey}.${key}`} className="mb-2">
@@ -38,16 +44,13 @@ const ResponsesViewer: React.FC<ResponsesViewerProps> = ({ responses }) => {
                             {key}:
                           </span>
                           <span className="ml-2 font-normal text-gray-700">
-                            {Object.keys(value.items).length} properties
+                            {Object.keys(childData).length} properties
                           </span>
                         </>
                       }
                       key={key}
                     >
-                      {renderResponse(
-                        value.items || value.properties || value,
-                        key
-                      )}
+                      {renderResponse(childData, key)}
                     </Panel>
                   </Collapse>
                 ) : (
