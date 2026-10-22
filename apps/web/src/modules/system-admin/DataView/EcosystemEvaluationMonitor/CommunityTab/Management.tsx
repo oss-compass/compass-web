@@ -121,8 +121,8 @@ const CommunityManagement: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handlePlatformFilterChange = (value: string) => {
-    setPlatformFilter(value);
+  const handlePlatformFilterChange = (value?: string) => {
+    setPlatformFilter(value ?? 'all');
     setCurrentPage(1);
   };
 
