@@ -228,6 +228,7 @@ export type IssueOverviewV2TopPainsQuery = {
   prio?: string;
   state?: string;
   states?: string[];
+  includeFilterOptions?: boolean;
 };
 
 const priorityFromCounts = (
@@ -247,16 +248,19 @@ export const fetchIssueOverviewTopPainsV2 = async (
   total: number;
   page: number;
   pageSize: number;
+  filterOptions: { stages: string[]; prios: string[]; states: string[] };
 }> => {
   const data = await fetchOverviewV2<{
     items: IssueOverviewTopPain[];
     total: number;
     page: number;
     pageSize: number;
+    filterOptions: { stages: string[]; prios: string[]; states: string[] };
   }>(
     '/top-pains',
     {
       ...params,
+      includeFilterOptions: params.includeFilterOptions ? 'true' : undefined,
       repos: params.repos?.length ? params.repos.join(',') : undefined,
       states: params.states?.length ? params.states.join(',') : undefined,
     },

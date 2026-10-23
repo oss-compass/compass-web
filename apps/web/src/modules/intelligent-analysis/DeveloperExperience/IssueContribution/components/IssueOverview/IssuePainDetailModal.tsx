@@ -15,10 +15,11 @@ import { getTrackingStatusMeta } from '../PainTrackingModal/constants';
 import PainIssueTable from '../PainIssueTable';
 import IssuePriorityTag, { ISSUE_PRIORITY_LEVELS } from './IssuePriorityTag';
 
+import { resolvePainFilter } from './painFilterScope';
+
 const ALL = '__ALL__';
 const PAIN_PAGE_SIZE = 10;
 const ISSUE_PAGE_SIZE = 10;
-const ISSUE_STAGE_ORDER = ['I0', 'I1', 'I2', 'I3', 'G'] as const;
 const PAIN_STATE_OPTIONS = [
   { value: 'pending', label: '待处理' },
   { value: 'inProgress', label: '进行中' },
@@ -30,13 +31,6 @@ const reportDateLabel = (period?: string) => {
   const value = String(period || '');
   const [, endDate] = value.split('_to_');
   return endDate || value || '--';
-};
-
-const getStageOrder = (stageId?: string): number => {
-  const index = ISSUE_STAGE_ORDER.indexOf(
-    String(stageId || '').toUpperCase() as (typeof ISSUE_STAGE_ORDER)[number]
-  );
-  return index === -1 ? ISSUE_STAGE_ORDER.length : index;
 };
 
 type SortKey =
@@ -52,7 +46,7 @@ type Props = {
   open: boolean;
   title: string;
   /** 基础筛选条件；弹窗内的阶段/优先级/状态筛选会在其基础上覆盖。 */
-  query: Omit<IssueOverviewV2TopPainsQuery, 'page' | 'pageSize' | 'stage'>;
+  query: Omit<IssueOverviewV2TopPainsQuery, 'page' | 'pageSize'>;
   stageOptions: string[];
   /** Issue 明细按需拉取所需的组织隔离参数 */
   org?: string;
@@ -200,7 +194,6 @@ const IssuePainDetailModal: React.FC<Props> = ({
   open,
   title,
   query,
-  stageOptions,
   org,
   onClose,
   reportHref,
@@ -228,6 +221,31 @@ const IssuePainDetailModal: React.FC<Props> = ({
     setIssuePage(1);
   };
 
+  // Aggregate options over the entry scope, independent of page/local filters.
+  const filterOptionsQuery = useQuery({
+    queryKey: ['issue-pain-filter-options', org, query],
+    queryFn: ({ signal }) =>
+      fetchIssueOverviewTopPainsV2(
+        { ...query, page: 1, pageSize: 1, includeFilterOptions: true },
+        signal
+      ),
+    enabled: open,
+    staleTime: 0,
+  });
+  const options = filterOptionsQuery.data?.filterOptions ?? {
+    stages: [],
+    prios: [],
+    states: [],
+  };
+  const stateScope = resolvePainFilter(
+    stateFilter,
+    query.state,
+    query.states,
+    options.states
+  );
+  const effectiveStateFilter = stateScope.value;
+  const effectivePrioFilter = query.prio ?? prioFilter;
+  const effectiveStageFilter = query.stage ?? stageFilter;
   const baseRepoKey = (query.repos ?? []).join(',');
   const baseStateKey = (query.states ?? []).join(',');
 
@@ -266,9 +284,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
       query.prio ?? '',
       query.state ?? '',
       baseStateKey,
-      stageFilter,
-      prioFilter,
-      stateFilter,
+      effectiveStageFilter,
+      effectivePrioFilter,
+      effectiveStateFilter,
       painPage,
     ],
     queryFn: ({ signal }) =>
@@ -277,11 +295,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
           ...query,
           page: painPage,
           pageSize: PAIN_PAGE_SIZE,
-          stage: stageFilter === ALL ? undefined : stageFilter,
-          prio: prioFilter === ALL ? undefined : prioFilter,
-          // 弹窗内状态筛选覆盖入口条件；未选时沿用入口的 state/states。
-          state: stateFilter === ALL ? undefined : stateFilter,
-          states: stateFilter === ALL ? query.states : undefined,
+          stage:
+            effectiveStageFilter === ALL ? undefined : effectiveStageFilter,
+          prio: effectivePrioFilter === ALL ? undefined : effectivePrioFilter,
+          state: stateScope.state,
+          states: stateScope.states,
         },
         signal
       ),
@@ -294,37 +312,6 @@ const IssuePainDetailModal: React.FC<Props> = ({
   );
   const total = painsQuery.data?.total ?? 0;
   const loading = painsQuery.isFetching;
-
-  const options = React.useMemo(() => {
-    const stages = (
-      stageFilter === ALL && !stageOptions.length
-        ? Array.from(
-            items.reduce((stageOrderByName, item) => {
-              if (!item.stageName) return stageOrderByName;
-              const order = getStageOrder(item.stageId);
-              stageOrderByName.set(
-                item.stageName,
-                Math.min(stageOrderByName.get(item.stageName) ?? order, order)
-              );
-              return stageOrderByName;
-            }, new Map<string, number>())
-          )
-        : stageOptions.map(
-            (stageName) => [stageName, getStageOrder(stageName)] as const
-          )
-    )
-      .sort(
-        ([leftName, leftOrder], [rightName, rightOrder]) =>
-          leftOrder - rightOrder ||
-          leftName.localeCompare(rightName, 'zh-Hans-CN')
-      )
-      .map(([stageName]) => stageName);
-    return {
-      stages,
-      prios: ISSUE_PRIORITY_LEVELS.map((level) => level.priority),
-      states: PAIN_STATE_OPTIONS.map((state) => state.value),
-    };
-  }, [items, stageFilter, stageOptions]);
 
   // 排序只作用于服务端返回的当前页，跨页顺序由 ES 默认优先级/周期排序保证。
   const pagedDisplayedItems = React.useMemo(
@@ -499,7 +486,11 @@ const IssuePainDetailModal: React.FC<Props> = ({
               onChange={(event) => onChange(String(event.target.value))}
               className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1"
             >
-              <Radio value={ALL}>全部</Radio>
+              {!(
+                (key === 'state' && stateScope.fixed) ||
+                (key === 'prio' && query.prio) ||
+                (key === 'stage' && query.stage)
+              ) && <Radio value={ALL}>全部</Radio>}
               {values.map((item) => (
                 <Radio key={item} value={item}>
                   {key === 'prio' ? (
@@ -591,7 +582,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                     {filterHeader(
                       '阶段',
                       'stage',
-                      stageFilter,
+                      effectiveStageFilter,
                       options.stages,
                       setStageFilter
                     )}
@@ -606,7 +597,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                     {filterHeader(
                       '优先级',
                       'prio',
-                      prioFilter,
+                      effectivePrioFilter,
                       options.prios,
                       setPrioFilter
                     )}
@@ -615,7 +606,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                     {filterHeader(
                       '状态',
                       'state',
-                      stateFilter,
+                      effectiveStateFilter,
                       options.states,
                       setStateFilter
                     )}
@@ -846,4 +837,12 @@ const IssuePainDetailModal: React.FC<Props> = ({
   );
 };
 
-export default IssuePainDetailModal;
+// Reset local filters and pagination synchronously when opening a different entry.
+const ScopedIssuePainDetailModal: React.FC<Props> = (props) => (
+  <IssuePainDetailModal
+    key={JSON.stringify([props.open, props.query, props.org])}
+    {...props}
+  />
+);
+
+export default ScopedIssuePainDetailModal;
