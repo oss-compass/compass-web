@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Card, Alert } from 'antd';
 import * as echarts from 'echarts';
+import { format, subMonths, subYears } from 'date-fns';
 import {
   useTpcQueueChartData,
   TpcQueueChartParams,
@@ -38,8 +39,8 @@ const QueueOverview: React.FC = () => {
   // 计算实际的日期范围
   const getActualDateRange = (): { begin_date: string; end_date: string } => {
     const now = new Date();
-    const endDate = now.toISOString().split('T')[0];
-    
+    const endDate = format(now, 'yyyy-MM-dd');
+
     if (dateRange === 'custom' && customDateRange) {
       return {
         begin_date: customDateRange.start,
@@ -50,32 +51,32 @@ const QueueOverview: React.FC = () => {
     let beginDate: Date;
     switch (dateRange) {
       case '1M':
-        beginDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        beginDate = subMonths(now, 1);
         break;
       case '3M':
-        beginDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        beginDate = subMonths(now, 3);
         break;
       case '6M':
-        beginDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+        beginDate = subMonths(now, 6);
         break;
       case '1Y':
-        beginDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        beginDate = subYears(now, 1);
         break;
       case '3Y':
-        beginDate = new Date(now.getFullYear() - 3, now.getMonth(), now.getDate());
+        beginDate = subYears(now, 3);
         break;
       case '5Y':
-        beginDate = new Date(now.getFullYear() - 5, now.getMonth(), now.getDate());
+        beginDate = subYears(now, 5);
         break;
       case 'Since 2000':
         beginDate = new Date(2000, 0, 1);
         break;
       default:
-        beginDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+        beginDate = subMonths(now, 1);
     }
 
     return {
-      begin_date: beginDate.toISOString().split('T')[0],
+      begin_date: format(beginDate, 'yyyy-MM-dd'),
       end_date: endDate,
     };
   };
@@ -243,7 +244,13 @@ const QueueOverview: React.FC = () => {
     return (
       <Card
         title={
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <span>TPC队列趋势分析</span>
             <CommonDateRangePicker
               value={dateRange}
@@ -269,7 +276,13 @@ const QueueOverview: React.FC = () => {
   return (
     <Card
       title={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <span>TPC队列趋势分析</span>
           <CommonDateRangePicker
             value={dateRange}
