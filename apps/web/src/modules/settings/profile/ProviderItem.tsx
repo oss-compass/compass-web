@@ -74,12 +74,12 @@ export const ProviderItem = ({ provider }: { provider: Provider }) => {
   const inWechatBrowser = isWechat();
 
   useEffect(() => {
-    if (inWechatBrowser && !bindInfo) {
+    if (provider.id === 'wechat' && inWechatBrowser && !bindInfo) {
       setWxPopOpen(true);
     } else {
       setWxPopOpen(false);
     }
-  }, [bindInfo, inWechatBrowser]);
+  }, [provider.id, bindInfo, inWechatBrowser]);
 
   // hidden wechat in oss-compass.org
   // if (
