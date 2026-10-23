@@ -90,13 +90,16 @@ export const openContainerChannel = async (
   const url = compassApiUrl(
     `/reports/${encodeURIComponent(fileKey)}/container-channel`
   );
+  const abortSignalWithTimeout = AbortSignal as typeof AbortSignal & {
+    timeout?: (milliseconds: number) => AbortSignal;
+  };
   const res = await fetch(url, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     // 后端转发超时 150s，前端放宽到 180s 兜底；旧浏览器不支持时退化为无超时。
     signal:
-      typeof AbortSignal.timeout === 'function'
-        ? AbortSignal.timeout(180_000)
+      typeof abortSignalWithTimeout.timeout === 'function'
+        ? abortSignalWithTimeout.timeout(180_000)
         : undefined,
   });
 
