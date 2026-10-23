@@ -1,30 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDebounce } from 'react-use';
+import { getCurrentHashId, parseHashId } from '../utils/hashId';
 
 const useHashchangeEvent = (
   { cardClassName }: { cardClassName?: string } = {
     cardClassName: 'base-card',
   }
 ) => {
-  let initialHash = window.location.hash ? window.location.hash.slice(1) : '';
-  if (initialHash.includes('?')) {
-    let parts = initialHash.split('?');
-    initialHash = parts[0];
-  }
-  const [activeId, setActiveId] = useState(initialHash);
+  // Lazy initializer with an SSR guard: the state must not be computed by
+  // reading `window.location.hash` in the hook body, because `window` does
+  // not exist while the page is server-rendered.
+  const [activeId, setActiveId] = useState<string>(getCurrentHashId);
 
   useEffect(() => {
     const hashChangeHandle = (e: HashChangeEvent) => {
-      let hash = window.location.hash;
+      const hash = window.location.hash;
       if (!hash) return;
-      if (hash.includes('?')) {
-        let parts = hash.split('?');
-        hash = parts[0];
-      }
       console.log('hashChangeHandle', hash);
 
-      const id = hash.replace('#', '');
-      setActiveId(id);
+      // Normalize the hash with the same helper as the initial value so the
+      // two code paths cannot drift apart.
+      setActiveId(parseHashId(hash));
     };
     // hashChangeHandle();
     window.addEventListener('hashchange', hashChangeHandle, false);
