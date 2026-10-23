@@ -56,6 +56,14 @@ const PersonalTokens = () => {
         );
       }
     },
+    onError(e: any) {
+      const errors = e?.response?.errors;
+      let msg = '';
+      if (Array.isArray(errors) && errors.length > 0) {
+        msg = errors[0].message;
+      }
+      toast.error(msg || t('common:toast.delete_failed'));
+    },
   });
 
   const [showAddModal, setShowAddModal] = useState(false);
