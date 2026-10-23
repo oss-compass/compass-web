@@ -6,7 +6,9 @@ import { useTranslation } from 'next-i18next';
 interface RepoData {
   repo_url: string;
   contribution: number;
-  roles?: string; // 添加 repo_roles 字段
+  // The contributor_portrait API sends the roles under repo_roles (string[]),
+  // matching the sibling consumers (RankCharts, LeftPan).
+  repo_roles?: string[];
 }
 
 interface ChartProps {
@@ -23,11 +25,10 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
     value: item.contribution,
     img: getNameSpacePng(item.repo_url),
     repo_roles:
-      item.roles && item.roles.length > 0
-        ? `${t('analyze:metric_detail:' + item.roles[0])}`
+      item.repo_roles && item.repo_roles.length > 0
+        ? `${t('analyze:metric_detail:' + item.repo_roles[0])}`
         : '', // 映射 repo_roles 字段
   }));
-  console.log(processedData);
   let xAxisData = processedData.map((item) => item.name);
   let seriesData = processedData.map((item) => item.value);
   let maxSeriesData = [];
@@ -212,5 +213,3 @@ const Pie: React.FC<ChartProps> = ({ containerRef, data }) => {
     </>
   );
 };
-
-export default React.memo(Pie);
