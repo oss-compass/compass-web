@@ -13,6 +13,13 @@ import toast from 'react-hot-toast';
 import type { IssuePainRerunJob, IssuePainTracking } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
 import {
+  getReviewablePainIssues,
+  getPendingReviewCount,
+  isIssueUndecided,
+  isIssueAwaitingReview,
+} from '../../issueTracking';
+import { ReviewPendingNotice, PendingRetestNotice } from './components';
+import {
   cancelIssuePainRerun,
   createIssuePainRerun,
   fetchIssuePainRerun,
@@ -76,6 +83,9 @@ const createPendingFlowItem = (tracking: IssuePainTracking) => {
 };
 
 const getFlowItems = (tracking: IssuePainTracking) => {
+  if (tracking.statusLabel === '待审核') {
+    return [createFlowItem('待审核'), createFlowItem('审核完成后更新状态')];
+  }
   if (tracking.status === IssuePainTrackingStatus.INVALID) {
     const invalidAt = findStatusTime(tracking, IssuePainTrackingStatus.INVALID);
     return [
@@ -89,7 +99,9 @@ const getFlowItems = (tracking: IssuePainTracking) => {
     createPendingFlowItem(tracking),
     createFlowItem('已确认待修复', tracking.confirmedAt),
     createFlowItem(
-      '已修复待复测',
+      tracking.validIssuesRetestPassed && tracking.pendingReviewCount
+        ? '有效 Issue 已复测通过'
+        : '已修复待复测',
       findStatusTime(tracking, IssuePainTrackingStatus.FIXED_PENDING_RETEST)
     ),
     createFlowItem(
@@ -287,6 +299,37 @@ const RerunJobPanel: React.FC<{
   );
 };
 
+const getConfirmationIssueLists = (
+  pain: PainTrackingModalProps['pain'],
+  tracking: IssuePainTracking,
+  reviewOnly: boolean,
+  priority?: PainIssuePriority
+) => {
+  const validNumbers = new Set(
+    tracking.activeIssues
+      .filter((issue) => issue.valid === true)
+      .map((issue) => issue.number)
+  );
+  const validPainIssues = reviewOnly
+    ? []
+    : (pain.low_score_issues ?? []).filter((issue) =>
+        validNumbers.has(issue.number)
+      );
+  const pendingPainIssues = getReviewablePainIssues(
+    pain.low_score_issues ?? [],
+    tracking,
+    reviewOnly
+  ).filter((issue) => !validNumbers.has(issue.number));
+  const filteredPendingPainIssues =
+    priority && !reviewOnly
+      ? pendingPainIssues.filter(
+          (issue) =>
+            resolvePainIssuePriority(issue.priority, issue.score) === priority
+        )
+      : pendingPainIssues;
+  return { validPainIssues, pendingPainIssues, filteredPendingPainIssues };
+};
+
 const getCurrentFixProgress = (tracking: IssuePainTracking) => {
   const issues = tracking.activeIssues.filter((issue) => issue.valid === true);
   const fixed = issues.filter((issue) => issue.fixed).length;
@@ -317,6 +360,7 @@ const RepairIssueOperationSection: React.FC<{
   tracking: PainTrackingModalProps['tracking'];
   onAction: PainTrackingModalProps['onAction'];
   pendingRetest?: boolean;
+  reviewOnly?: boolean;
   onRerun?: (issueNumbers: string[], operator: string) => Promise<void>;
   rerunDisabledReason?: string | null;
   lockedIssueNumbers?: string[];
@@ -326,6 +370,7 @@ const RepairIssueOperationSection: React.FC<{
   tracking,
   onAction,
   pendingRetest = false,
+  reviewOnly = false,
   onRerun,
   rerunDisabledReason,
   lockedIssueNumbers,
@@ -337,7 +382,11 @@ const RepairIssueOperationSection: React.FC<{
   if (!painLevelIssue) {
     return (
       <PainIssueTable
-        issues={pain.low_score_issues ?? []}
+        issues={getReviewablePainIssues(
+          pain.low_score_issues ?? [],
+          tracking,
+          reviewOnly
+        )}
         tracking={tracking}
         onTrackingAction={onAction}
         responsive
@@ -568,6 +617,14 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const [rerunSubmitting, setRerunSubmitting] = useState(false);
   const [rerunCancelling, setRerunCancelling] = useState(false);
   const [rerunListOpen, setRerunListOpen] = useState(false);
+  const [reviewOnly, setReviewOnly] = useState(false);
+  const pendingReviewCount = getPendingReviewCount(tracking);
+  useEffect(() => {
+    setReviewOnly(false);
+  }, [open, tracking.trackingKey]);
+  useEffect(() => {
+    if (!pendingReviewCount) setReviewOnly(false);
+  }, [pendingReviewCount]);
   const observedRerunRef = useRef<{
     jobId: string;
     applyStatus: IssuePainRerunJob['applyStatus'];
@@ -777,17 +834,11 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const currentProgress = getCurrentFixProgress(tracking);
   const percent = currentProgress.percent;
   const passedPresentation = getPassedPresentation(tracking);
-  const pendingPainIssues = pain.low_score_issues ?? [];
-  const filteredPendingPainIssues = issuePriorityFilter
-    ? pendingPainIssues.filter(
-        (issue) =>
-          resolvePainIssuePriority(issue.priority, issue.score) ===
-          issuePriorityFilter
-      )
-    : pendingPainIssues;
+  const { validPainIssues, pendingPainIssues, filteredPendingPainIssues } =
+    getConfirmationIssueLists(pain, tracking, reviewOnly, issuePriorityFilter);
   const pendingTotalCount = tracking.activeIssues.length;
   const pendingDecidedCount = tracking.activeIssues.filter(
-    (item) => item.valid === true || item.valid === false
+    (item) => !isIssueUndecided(item)
   ).length;
   const lockedIssueNumbers = getLockedRerunIssueNumbers(rerunJob);
 
@@ -864,6 +915,12 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           ) : null}
         </div>
 
+        <ReviewPendingNotice
+          tracking={tracking}
+          filtering={reviewOnly}
+          onToggle={() => setReviewOnly((value) => !value)}
+        />
+
         {tracking.status === IssuePainTrackingStatus.PENDING ? (
           <div className="space-y-4">
             <p className="text-xs leading-5 text-slate-500">
@@ -900,7 +957,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                     <InfoCircleOutlined className="text-amber-500" />
-                    待确认：请逐条判断“是否为有效问题”
+                    {tracking.unconfirmedIssueCount === 0
+                      ? '已提交判定，等待开源能力组审核'
+                      : '待确认：请逐条判断“是否为有效问题”'}
                   </div>
                   <span className="shrink-0 text-sm font-semibold text-amber-600">
                     {pendingDecidedCount}/{pendingTotalCount}
@@ -930,7 +989,8 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                   />
                 </div>
               ) : null}
-              {!pain.low_score_issues?.length ? (
+              {tracking.painLevelOnly &&
+              !isIssueAwaitingReview(tracking.activeIssues[0]) ? (
                 <div className="mt-4">
                   <PainOverallDecision
                     tracking={tracking}
@@ -939,6 +999,24 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 </div>
               ) : null}
             </div>
+            {validPainIssues.length > 0 ? (
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-slate-700">
+                  已确认有效的 Issue · 可继续修复、复测
+                </div>
+                <PainIssueTable
+                  issues={validPainIssues}
+                  tracking={tracking}
+                  onTrackingAction={onAction}
+                  operationsOnly
+                  responsive
+                  onRerun={requestRerun}
+                  rerunDisabledReason={rerunDisabledReason}
+                  lockedIssueNumbers={lockedIssueNumbers}
+                  onOpenRerunRecords={() => setRerunListOpen(true)}
+                />
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -959,7 +1037,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               <div className="mt-1 text-xs text-slate-500">
                 仅统计当前报告中已确认有效的 Issue，未判定和非有效问题不计入。
                 <div className="mt-1">
-                  全部 Issue 修复后自动进入“已修复待复测”。
+                  全部有效 Issue 修复后自动进入“已修复待复测”。
                 </div>
               </div>
             </div>
@@ -971,23 +1049,20 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               rerunDisabledReason={rerunDisabledReason}
               lockedIssueNumbers={lockedIssueNumbers}
               onOpenRerunRecords={() => setRerunListOpen(true)}
+              reviewOnly={reviewOnly}
             />
           </div>
         ) : null}
 
         {tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST ? (
           <div className="space-y-4">
-            <Alert
-              type="warning"
-              showIcon
-              message="已修复，可立即复测或等待自动复测"
-              description="可在下方对单个 Issue 发起重跑复测，无需等待下一期报告；若选择等待，下一期未复现将自动判定通过，再次出现则重置对应 Issue 的修复标记。"
-            />
+            <PendingRetestNotice tracking={tracking} />
             <RepairIssueOperationSection
               pain={pain}
               tracking={tracking}
               onAction={onAction}
               pendingRetest
+              reviewOnly={reviewOnly}
               onRerun={requestRerun}
               rerunDisabledReason={rerunDisabledReason}
               lockedIssueNumbers={lockedIssueNumbers}

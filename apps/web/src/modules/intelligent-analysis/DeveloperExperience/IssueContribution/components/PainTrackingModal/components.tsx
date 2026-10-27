@@ -7,7 +7,16 @@ import {
   LinkOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Modal, Popover, Progress, Table, Tooltip } from 'antd';
+import {
+  Alert,
+  Button,
+  Input,
+  Modal,
+  Popover,
+  Progress,
+  Table,
+  Tooltip,
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type {
   IssuePainTracking,
@@ -16,6 +25,11 @@ import type {
   IssuePainTrackingIssue,
 } from '../../types';
 import { IssuePainTrackingStatus } from '../../types';
+import {
+  getIssueProcessingStatus,
+  getPendingReviewCount,
+  isIssueAwaitingReview,
+} from '../../issueTracking';
 import {
   ACTION_LABELS,
   getTrackingStatusMeta,
@@ -75,13 +89,24 @@ export const TrackingActionButton: React.FC<{
       : '查看详情';
 
   return (
-    <PainTrackingStatusButton
-      label={meta.label}
-      className={meta.className}
-      pending={pending}
-      actionLabel={actionLabel}
-      onClick={onClick}
-    />
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <PainTrackingStatusButton
+        label={meta.label}
+        className={meta.className}
+        pending={pending}
+        actionLabel={actionLabel}
+        onClick={onClick}
+      />
+      {getPendingReviewCount(tracking) > 0 ? (
+        <button
+          type="button"
+          onClick={onClick}
+          className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700"
+        >
+          待审核 {getPendingReviewCount(tracking)} 项
+        </button>
+      ) : null}
+    </span>
   );
 };
 
@@ -119,6 +144,52 @@ export const TrackingProgress: React.FC<{ tracking: IssuePainTracking }> = ({
   );
 };
 
+export const ReviewPendingNotice: React.FC<{
+  tracking: IssuePainTracking;
+  filtering: boolean;
+  onToggle: () => void;
+}> = ({ tracking, filtering, onToggle }) => {
+  const count = getPendingReviewCount(tracking);
+  if (!count) return null;
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-amber-100 bg-amber-50/60 px-3 py-2 text-xs leading-5 text-slate-600">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={filtering}
+        className="shrink-0 rounded-full border border-amber-200 bg-white px-2 py-0.5 font-semibold text-amber-700 hover:bg-amber-50"
+      >
+        待审核 {count} 项{filtering ? ' · 显示全部' : ' · 查看'}
+      </button>
+      <span>
+        {tracking.validIssuesRetestPassed
+          ? '有效 Issue 已复测通过，审核完成后才能最终闭环。'
+          : '待审核 Issue 暂不参与修复进度，其他有效 Issue 可继续修复、复测。'}
+        审核通过后才排除评分。
+      </span>
+    </div>
+  );
+};
+
+export const PendingRetestNotice: React.FC<{ tracking: IssuePainTracking }> = ({
+  tracking,
+}) =>
+  tracking.validIssuesRetestPassed && getPendingReviewCount(tracking) > 0 ? (
+    <Alert
+      type="info"
+      showIcon
+      message="有效 Issue 已复测通过，等待非有效判定审核"
+      description="已通过的结果会保留；全部审核完成且无待判定、待处理 Issue 后，痛点自动闭环。"
+    />
+  ) : (
+    <Alert
+      type="warning"
+      showIcon
+      message="已修复，可立即复测或等待自动复测"
+      description="可在下方对单个 Issue 发起重跑复测，无需等待下一期报告；若选择等待，下一期未复现将自动判定通过，再次出现则重置对应 Issue 的修复标记。"
+    />
+  );
+
 export const IssueFixButton: React.FC<{
   tracking: IssuePainTracking;
   issue: IssuePainTrackingIssue;
@@ -153,8 +224,12 @@ export const IssueFixButton: React.FC<{
   const canChange =
     !disabled &&
     tracking.trackingType === 'fix' &&
-    (tracking.status === IssuePainTrackingStatus.TRACKING ||
-      (tracking.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST &&
+    issue.valid === true &&
+    !isIssueAwaitingReview(issue) &&
+    issue.retest_status !== 'passed' &&
+    (getIssueProcessingStatus(tracking) === IssuePainTrackingStatus.TRACKING ||
+      (getIssueProcessingStatus(tracking) ===
+        IssuePainTrackingStatus.FIXED_PENDING_RETEST &&
         issue.fixed));
 
   const performAction = async () => {

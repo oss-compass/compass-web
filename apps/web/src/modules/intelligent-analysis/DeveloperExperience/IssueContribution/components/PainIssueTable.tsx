@@ -1,4 +1,11 @@
 import { getEvidenceActorName } from '../evidenceActor';
+import {
+  getIssueProcessingStatus,
+  isIssueAwaitingReview,
+  isIssueUndecided,
+  isIssueValidityActionable,
+  isIssueRepairActionable,
+} from '../issueTracking';
 import { resolveIssueUrl } from '../issueUrl';
 import React from 'react';
 import {
@@ -180,8 +187,8 @@ const useFinalIssueTransitionConfirm = (type: FinalIssueConfirmType) => {
             {remainingIssueCount > 1
               ? `最后 ${remainingIssueCount} 个 Issue`
               : '最后一个 Issue'}
-            的判定。提交后，本痛点将结束待确认阶段：存在有效 Issue
-            且无待审核项时进入“已确认待修复”；判定为否需由
+            的判定。提交后，本痛点将结束待确认阶段：存在有效 Issue 后，有效
+            Issue 可继续修复和复测；判定为否需由
             <strong className="mx-0.5 font-semibold">开源能力组</strong>
             审核通过后生效。请确认已核对全部 Issue。
           </>
@@ -234,7 +241,7 @@ const LOCKED_ISSUE_MANUAL_REASON =
 
 const getUndecidedIssueNumbers = (tracking?: IssuePainTracking): string[] =>
   (tracking?.activeIssues ?? [])
-    .filter((issue) => issue.valid !== true && issue.valid !== false)
+    .filter(isIssueUndecided)
     .map((issue) => issue.number);
 
 const selectionCompletesDecision = (
@@ -378,6 +385,7 @@ type PainIssueTableProps = {
   tracking?: IssuePainTracking;
   pagination?: boolean;
   responsive?: boolean;
+  operationsOnly?: boolean;
   renderReportLink?: (issue: IssueReportPainIssue) => React.ReactNode;
   decisions?: Record<string, PainIssueDecisionDraft>;
   onDecisionsChange?: (
@@ -1088,13 +1096,19 @@ const isRerunEligible = (
   tracking: IssuePainTracking | undefined,
   issue: ActiveTrackingIssue
 ) => {
-  if (tracking?.trackingType !== 'fix') return false;
-  if (tracking?.status === IssuePainTrackingStatus.TRACKING) {
+  if (
+    tracking?.trackingType !== 'fix' ||
+    issue.valid !== true ||
+    isIssueAwaitingReview(issue) ||
+    issue.retest_status === 'passed'
+  )
+    return false;
+  if (getIssueProcessingStatus(tracking) === IssuePainTrackingStatus.TRACKING) {
     return issue.fixed === true;
   }
   return (
-    tracking?.status === IssuePainTrackingStatus.FIXED_PENDING_RETEST &&
-    issue.retest_status !== 'passed'
+    getIssueProcessingStatus(tracking) ===
+    IssuePainTrackingStatus.FIXED_PENDING_RETEST
   );
 };
 
@@ -1163,7 +1177,7 @@ const IssueActionCell: React.FC<{
   // 已复测通过的 Issue 流程已闭环，不再提供有效性改判入口。
   const validityAction =
     activeIssue &&
-    activeIssue.retest_status !== 'passed' &&
+    isIssueValidityActionable(activeIssue) &&
     tracking &&
     onTrackingAction ? (
       <IssueValidityButton
@@ -1176,14 +1190,14 @@ const IssueActionCell: React.FC<{
       />
     ) : null;
   const fixActionable =
-    activeIssue?.valid !== false &&
     activeIssue &&
+    isIssueRepairActionable(activeIssue) &&
     tracking &&
     onTrackingAction &&
     [
       IssuePainTrackingStatus.TRACKING,
       IssuePainTrackingStatus.FIXED_PENDING_RETEST,
-    ].includes(tracking.status);
+    ].includes(getIssueProcessingStatus(tracking) ?? tracking.status);
   const rerunEligible = Boolean(
     activeIssue &&
       activeIssue.valid === true &&
@@ -1768,6 +1782,7 @@ const hasTrackingOperations = (
       [
         IssuePainTrackingStatus.TRACKING,
         IssuePainTrackingStatus.FIXED_PENDING_RETEST,
+        IssuePainTrackingStatus.PENDING,
         IssuePainTrackingStatus.PASSED,
         IssuePainTrackingStatus.INVALID,
       ].includes(tracking.status)
@@ -1791,9 +1806,13 @@ const canUseManualFix = (
       [
         IssuePainTrackingStatus.TRACKING,
         IssuePainTrackingStatus.FIXED_PENDING_RETEST,
-      ].includes(tracking.status) &&
+      ].includes(getIssueProcessingStatus(tracking) ?? tracking.status) &&
       issues.some(
-        (issue) => issue.valid === true && Boolean(issue.fixed) !== desired
+        (issue) =>
+          issue.valid === true &&
+          !isIssueAwaitingReview(issue) &&
+          issue.retest_status !== 'passed' &&
+          Boolean(issue.fixed) !== desired
       )
   );
 
@@ -1824,6 +1843,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   tracking,
   pagination = true,
   responsive = false,
+  operationsOnly = false,
   renderReportLink,
   decisions,
   onDecisionsChange,
@@ -1877,15 +1897,13 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     ].map((issue) => [issue.number, issue])
   );
   const decisionMode = Boolean(decisions && onDecisionsChange);
-  const operationMode = hasTrackingOperations(
-    decisionMode,
-    tracking,
-    onTrackingAction,
-    onRerun
-  );
+  const operationMode =
+    (tracking?.status !== IssuePainTrackingStatus.PENDING || operationsOnly) &&
+    hasTrackingOperations(decisionMode, tracking, onTrackingAction, onRerun);
   // 待确认阶段的即时判定模式：与修复阶段一致，逐条提交并校验共享提交人。
   const pendingDecisionMode = Boolean(
     !decisionMode &&
+      !operationsOnly &&
       tracking &&
       tracking.status === IssuePainTrackingStatus.PENDING &&
       onTrackingAction
@@ -1928,7 +1946,7 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     return trackingIssue ? [trackingIssue] : [];
   });
   const decidedCount = displayedTrackingIssues.filter(
-    (item) => item.valid === true || item.valid === false
+    (item) => !isIssueUndecided(item)
   ).length;
   const showSelection = decisionMode || operationMode || pendingDecisionMode;
   const showStatus = Boolean(tracking) && !decisionMode && !pendingDecisionMode;
@@ -2023,7 +2041,13 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         type,
         operator: normalizedOperator,
         issueNumbers: selectedTrackingIssues
-          .filter((issue) => issue.valid === true)
+          .filter(
+            (issue) =>
+              issue.valid === true &&
+              !isIssueAwaitingReview(issue) &&
+              issue.retest_status !== 'passed' &&
+              Boolean(issue.fixed) !== (type === 'mark_issues_fixed')
+          )
           .map((issue) => issue.number),
       });
       setSelectedNumbers([]);

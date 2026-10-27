@@ -319,6 +319,7 @@ export type IssuePainTrackingIssue = {
     reason: string;
     submitted_by: string;
     submitted_at: string;
+    period?: string;
     reviewed_by?: string;
     reviewed_at?: string;
     review_reason?: string | null;
@@ -352,6 +353,9 @@ export type IssuePainTracking = {
   trackingType: IssuePainTrackingType;
   status: IssuePainTrackingStatus;
   statusLabel: string;
+  pendingReviewCount?: number;
+  unconfirmedIssueCount?: number;
+  validIssuesRetestPassed?: boolean;
   anchorType: 'metric' | 'title';
   metricCode?: string | null;
   metricCodes?: string[];
