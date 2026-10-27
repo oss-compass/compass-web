@@ -11,8 +11,12 @@ export type ScoreTrendPoint = {
   weekEnd?: string;
 };
 
+// ISO date-only values describe calendar days, not midnight UTC instants.
+const parseHistoryDate = (value: string): Date =>
+  new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00` : value);
+
 const formatScoreLabel = (value: string): string => {
-  const date = new Date(value);
+  const date = parseHistoryDate(value);
   if (!Number.isNaN(date.getTime())) {
     return `${date.getMonth() + 1}/${date.getDate()}`;
   }
@@ -23,7 +27,7 @@ const formatScoreLabel = (value: string): string => {
 };
 
 const getTimeValue = (value: string): number => {
-  const parsed = Date.parse(value);
+  const parsed = parseHistoryDate(value).getTime();
   return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
 };
 
@@ -37,7 +41,7 @@ const toIsoDate = (date: Date): string => {
 const getWeekRange = (
   value: string
 ): { weekStart: string; weekEnd: string; label: string } => {
-  const date = new Date(value);
+  const date = parseHistoryDate(value);
   if (Number.isNaN(date.getTime())) {
     return {
       weekStart: value,
