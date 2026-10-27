@@ -80,7 +80,7 @@ const DependencywheelCommon: React.FC<HighchartsDependencyWheelProps> = ({
           Highcharts as any
         ).SeriesRegistry.seriesTypes.dependencywheel.prototype.pointClass.prototype.getDataLabelPath =
           function (a) {
-            var c = this.series.chart.renderer,
+            const c = this.series.chart.renderer,
               f = this.shapeArgs,
               e = 0 > this.angle || this.angle > Math.PI,
               g = f.start,
@@ -99,7 +99,7 @@ const DependencywheelCommon: React.FC<HighchartsDependencyWheelProps> = ({
               })
               // We don't get the real box until it's been added
               .add();
-            var width = tmpText.getBBox().width;
+            const width = tmpText.getBBox().width;
             // Clean up the dummy text element
             tmpText.destroy();
 
