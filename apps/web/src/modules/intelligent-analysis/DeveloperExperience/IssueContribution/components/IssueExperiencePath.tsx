@@ -27,6 +27,7 @@ import PainTrackingModal, {
   TrackingProgress,
 } from './PainTrackingModal';
 import HintIcon from './HintIcon';
+import OperationGuide from '../../components/OperationGuide';
 import PainIssueTable from './PainIssueTable';
 import IssueExportButton from './IssueExportButton';
 import { exportIssueScores, exportPainIssues } from '../issueExport';
@@ -493,7 +494,8 @@ const StagePainCard: React.FC<{
             </span>
           ) : null}
         </button>
-        <div className="flex max-w-full items-start gap-2 pt-0.5">
+        <div className="flex max-w-full flex-wrap items-center gap-2 pt-0.5">
+          <OperationGuide module="issue" section="pain" compact />
           {efficiencyOnly ? (
             <div className="flex min-w-0 flex-col items-end">
               <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-dashed border-cyan-400 bg-cyan-50 px-3 py-1.5 text-[11px] font-semibold text-cyan-700">

@@ -206,7 +206,7 @@ const useFinalIssueTransitionConfirm = (type: FinalIssueConfirmType) => {
               ? `最后 ${remainingIssueCount} 个 Issue`
               : '最后一个 Issue'}
             的修复。提交后，所有有效 Issue
-            均已修复，痛点将自动进入“已修复待复测”，等待下一期报告自动复测。请确认修复情况无误。
+            均已修复，痛点将自动进入“已修复待复测”。提交后可单个或批量发起复测，也可等待后续报告自动复测。请确认修复情况无误。
           </>
         )}
       </div>

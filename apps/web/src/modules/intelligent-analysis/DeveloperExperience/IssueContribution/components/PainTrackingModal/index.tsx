@@ -43,6 +43,7 @@ import {
   TrackingHistoryTable,
 } from './components';
 import IssueExportButton from '../IssueExportButton';
+import OperationGuide from '../../../components/OperationGuide';
 import { exportPainIssues } from '../../issueExport';
 import PainIssueTable, {
   InvalidDecisionReasonModal,
@@ -875,16 +876,19 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           <span className="text-base font-semibold text-slate-800">
             痛点管理
           </span>
-          <Tooltip title="查看当前报告的 Issue 重跑任务记录">
-            <button
-              type="button"
-              className="inline-flex h-8 items-center gap-1.5 rounded-[10px] border border-sky-200 bg-sky-50 px-3 text-xs font-semibold text-sky-700 shadow-none transition-colors hover:border-sky-300 hover:bg-sky-100"
-              onClick={() => setRerunListOpen(true)}
-            >
-              <HistoryOutlined />
-              重跑记录
-            </button>
-          </Tooltip>
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-3">
+            <Tooltip title="查看当前报告的 Issue 重跑任务记录">
+              <button
+                type="button"
+                className="inline-flex h-8 items-center gap-1.5 rounded-[10px] border border-sky-200 bg-sky-50 px-3 text-xs font-semibold text-sky-700 shadow-none transition-colors hover:border-sky-300 hover:bg-sky-100"
+                onClick={() => setRerunListOpen(true)}
+              >
+                <HistoryOutlined />
+                重跑记录
+              </button>
+            </Tooltip>
+            <OperationGuide module="issue" section="pain" compact />
+          </div>
         </div>
       }
     >
@@ -961,7 +965,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 />
                 <Tooltip
                   title={
-                    '质量类痛点确认后需逐个完成 Issue 修复；所有有效 Issue 完成修复后，痛点将自动进入待复测状态。'
+                    '质量类痛点确认后需完成有效 Issue 的修复。单个 Issue 标记修复后即可发起复测，也可勾选多条已修复的 Issue 批量发起复测；全部有效 Issue 修复后，痛点自动进入“已修复待复测”。'
                   }
                 >
                   <span className="ml-2 inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full bg-slate-100 text-[13px] font-normal leading-none text-slate-500 transition-colors hover:bg-slate-200 hover:text-slate-600">
@@ -1053,7 +1057,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               <div className="mt-1 text-xs text-slate-500">
                 仅统计当前报告中已确认有效的 Issue，未判定和非有效问题不计入。
                 <div className="mt-1">
-                  全部有效 Issue 修复后自动进入“已修复待复测”。
+                  单个 Issue 标记修复后即可点击“发起复测”，也可勾选多条已修复的
+                  Issue 后点击“批量发起复测”。全部有效 Issue
+                  修复后，痛点自动进入“已修复待复测”。
                 </div>
               </div>
             </div>

@@ -18,6 +18,7 @@ import {
   type UpsertPainConfirmationPayload,
 } from '../rawData/apiClient';
 import { formatLocalDateTime } from '../time';
+import OperationGuide from '../../DeveloperExperience/components/OperationGuide';
 /* ─── 图标 ─── */
 export const EvidenceIcon: React.FC<{ className?: string }> = ({
   className = '',
@@ -2390,6 +2391,15 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
             <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-slate-500">
               <PainIcon className="h-3 w-3" />
               痛点
+              {!previewMode && (
+                <span className="ml-auto">
+                  <OperationGuide
+                    module="community-onboarding"
+                    section="pain"
+                    compact
+                  />
+                </span>
+              )}
             </div>
             <ul className="space-y-1">
               {displayPainPoints.map(
@@ -2469,29 +2479,40 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     <div className="flex flex-col gap-3">
       {hasPain && (
         <div className="rounded-xl border border-rose-100 bg-rose-50/70 px-4 py-3">
-          <button
-            type="button"
-            className="flex w-full items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600"
-            onClick={() => handlePainExpandedChange(!resolvedPainExpanded)}
-          >
-            <PainIcon className="h-3 w-3" />
-            痛点
-            <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
-              {displayPainPoints.length}
-            </span>
-            <svg
-              className={`ml-auto h-3.5 w-3.5 transition-transform ${
-                resolvedPainExpanded ? 'rotate-180' : ''
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className="flex w-full items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-rose-600"
+              onClick={() => handlePainExpandedChange(!resolvedPainExpanded)}
             >
-              <polyline points="4,6 8,10 12,6" />
-            </svg>
-          </button>
+              <PainIcon className="h-3 w-3" />
+              痛点
+              <span className="ml-0.5 rounded-full bg-rose-100 px-1.5 text-[10px] font-bold text-rose-700">
+                {displayPainPoints.length}
+              </span>
+              <svg
+                className={`ml-auto h-3.5 w-3.5 transition-transform ${
+                  resolvedPainExpanded ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="4,6 8,10 12,6" />
+              </svg>
+            </button>
+            {!previewMode && (
+              <span className="shrink-0">
+                <OperationGuide
+                  module="community-onboarding"
+                  section="pain"
+                  compact
+                />
+              </span>
+            )}
+          </div>
           {resolvedPainExpanded && (
             <ul className="mt-2 space-y-1.5">
               {displayPainPoints.map(

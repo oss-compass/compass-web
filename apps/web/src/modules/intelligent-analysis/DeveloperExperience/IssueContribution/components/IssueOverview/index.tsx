@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Empty, Skeleton, Typography } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { buildIssueRepoManagementHref } from '../../../routes';
+import OperationGuide from '../../../components/OperationGuide';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import {
   fetchIssueOverviewFrequentPains,
@@ -263,31 +264,48 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     });
   }, [latestRepos, rankingTrendQuery.data]);
 
+  const summaryHeading = (
+    <div className="overview-summary-title-row">
+      <Title level={4} className="oj-section-title">
+        总览信息
+      </Title>
+      <div className="overview-summary-actions !ml-auto !w-auto !justify-end">
+        <OperationGuide module="issue" />
+      </div>
+    </div>
+  );
+
   if (summaryQuery.isError) {
     return (
-      <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
-        <Empty
-          description={
-            <span className="text-sm text-[var(--overview-slate)]">
-              Issue 总览数据加载失败，请稍后重试
-            </span>
-          }
-        />
-      </section>
+      <>
+        {summaryHeading}
+        <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
+          <Empty
+            description={
+              <span className="text-sm text-[var(--overview-slate)]">
+                Issue 总览数据加载失败，请稍后重试
+              </span>
+            }
+          />
+        </section>
+      </>
     );
   }
 
   if (summary && summary.repoCount === 0) {
     return (
-      <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
-        <Empty
-          description={
-            <span className="text-sm text-[var(--overview-slate)]">
-              当前组织下暂无 Issue 贡献报告数据
-            </span>
-          }
-        />
-      </section>
+      <>
+        {summaryHeading}
+        <section className="flex min-h-[420px] items-center justify-center rounded-3xl border border-[rgba(var(--overview-white-rgb),0.8)] bg-[rgba(var(--overview-white-rgb),0.9)] p-6 shadow-[0_24px_70px_rgba(var(--overview-text-rgb),0.08)]">
+          <Empty
+            description={
+              <span className="text-sm text-[var(--overview-slate)]">
+                当前组织下暂无 Issue 贡献报告数据
+              </span>
+            }
+          />
+        </section>
+      </>
     );
   }
 
@@ -322,9 +340,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   return (
     <>
       <span hidden data-issue-weekly-ready={allReady} />
-      <Title level={4} className="oj-section-title">
-        总览信息
-      </Title>
+      {summaryHeading}
       <div
         className="overview-bottom-row"
         style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import DatePicker from '@common/components/DatePicker';
+import OperationGuide from '../../../DeveloperExperience/components/OperationGuide';
 import {
   Button,
   Empty,
@@ -1179,6 +1180,7 @@ export const ModalFooter: React.FC<{
 export const ModalTitle: React.FC = () => (
   <div className="flex items-center justify-between pr-8">
     <span className="text-base font-semibold text-slate-800">痛点管理</span>
+    <OperationGuide module="community-onboarding" section="pain" compact />
   </div>
 );
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Checkbox, Segmented, Typography } from 'antd';
 import OverviewSummaryBlock from './OverviewSummaryBlock';
+import OperationGuide from '../../DeveloperExperience/components/OperationGuide';
 import ExperienceScoreRulePopoverTrigger from '../components/ExperienceScoreRulePopoverTrigger';
 import { ScoreSparkline } from './CloseRateTrendChart';
 import ScoreTrendModal from './ScoreTrendModal';
@@ -172,9 +173,10 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
         <Title level={4} className="oj-section-title">
           总览信息
         </Title>
-        {titleExtra ? (
-          <div className="overview-summary-actions">{titleExtra}</div>
-        ) : null}
+        <div className="overview-summary-actions !ml-auto !w-auto !justify-end">
+          {titleExtra}
+          <OperationGuide module="community-onboarding" />
+        </div>
       </div>
       <div className="overview-summary-stack">
         <div
