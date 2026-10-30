@@ -188,6 +188,12 @@ const OperationGuide: React.FC<OperationGuideProps> = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(section);
+  const rawCaptureMode = router.query.captureMode;
+  const captureMode = Array.isArray(rawCaptureMode)
+    ? rawCaptureMode[0]
+    : rawCaptureMode;
+  if (!compact && (captureMode === '1' || captureMode === 'true')) return null;
+
   const chapters = getChapters(module);
   const active = chapters.find((chapter) => chapter.id === activeSection)!;
   const label = module === 'issue' ? '社区贡献' : '社区入门';
@@ -201,10 +207,12 @@ const OperationGuide: React.FC<OperationGuideProps> = ({
   return (
     <>
       <Button
-        type={compact ? 'link' : 'default'}
+        type="link"
         size="small"
         icon={compact ? undefined : <QuestionCircleOutlined />}
-        className={compact ? '!h-auto !px-0 !py-0 !text-xs !font-normal' : ''}
+        className={`!h-auto !border-0 !bg-transparent !px-0 !py-0 !shadow-none ${
+          compact ? '!text-xs !font-normal' : '!text-sm !font-semibold'
+        }`}
         onClick={(event) => {
           event.stopPropagation();
           setActiveSection(section);
