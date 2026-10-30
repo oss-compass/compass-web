@@ -1,4 +1,6 @@
 import React from 'react';
+import IssueExportButton from './IssueExportButton';
+import { exportIssueScores } from '../issueExport';
 import { LinkOutlined } from '@ant-design/icons';
 import { Popover, Table } from 'antd';
 import type { TableProps } from 'antd';
@@ -361,6 +363,9 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
         <HintIcon title="一行一条 Issue：类型、范围、状态、关键时间与各阶段得分一览，不随上方阶段切换变化；点击表头可按对应列排序（默认综合分低分优先）；悬停阶段分可查看该阶段各指标得分与评分原因。" />
         <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
           {rows.length} 个 Issue
+        </span>
+        <span className="ml-auto">
+          <IssueExportButton onClick={() => exportIssueScores(rows)} />
         </span>
       </div>
 

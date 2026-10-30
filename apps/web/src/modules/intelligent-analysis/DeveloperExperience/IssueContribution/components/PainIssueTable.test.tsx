@@ -1,10 +1,38 @@
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import PainIssueTable from './PainIssueTable';
 import type { IssuePainTracking } from '../types';
 import { IssuePainTrackingStatus } from '../types';
 
 describe('PainIssueTable with overview slim Issue data', () => {
+  it('shows report assignees and the state snapshot time in the shared table', async () => {
+    render(
+      <PainIssueTable
+        issues={[
+          {
+            number: '702',
+            score: 60,
+            metric_code: '',
+            assignees: ['yuantao_', 'alice'],
+            issue_state: 'closed',
+            issue_state_updated_at: '2026-10-30T06:42:00+00:00',
+          },
+        ]}
+        pagination={false}
+      />
+    );
+    expect(
+      screen.getByRole('columnheader', { name: '责任人' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('yuantao_、alice')).toBeInTheDocument();
+    expect(
+      screen.getByRole('columnheader', { name: 'Issue 状态' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('已关闭')).toBeInTheDocument();
+    fireEvent.mouseOver(screen.getByLabelText('Issue 状态更新时间说明'));
+    expect(await screen.findByText(/状态更新时间/)).toHaveTextContent('2026');
+    expect(screen.getByText(/并非实时状态/)).toBeInTheDocument();
+  });
   it('renders an archived Issue before the full detail request finishes', () => {
     render(
       <PainIssueTable

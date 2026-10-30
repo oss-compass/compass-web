@@ -12,6 +12,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   ExclamationCircleFilled,
+  InfoCircleOutlined,
   LinkOutlined,
   ReloadOutlined,
   UserOutlined,
@@ -39,6 +40,8 @@ import type {
 import { IssuePainTrackingStatus } from '../types';
 import { IssueFixButton } from './PainTrackingModal/components';
 import IssueValidityButton from './IssueValidityButton';
+import IssueExportButton from './IssueExportButton';
+import { exportPainIssues } from '../issueExport';
 import { useTrackingOperator } from './PainTrackingModal/hooks';
 import {
   formatTrackingTime,
@@ -80,10 +83,12 @@ const PAIN_ISSUE_TABLE_LAYOUTS = {
   default: {
     table: 'min-w-[1320px]',
     issue: 'w-[210px]',
+    assignee: 'w-[100px]',
+    issueState: 'w-[84px]',
     priority: 'w-[110px]',
     score: 'w-[68px]',
-    reason: 'w-[230px]',
-    evidence: 'w-[280px]',
+    reason: 'w-[170px]',
+    evidence: 'w-[206px]',
     decision: 'w-[150px]',
     status: 'w-[150px]',
     action: 'w-[140px]',
@@ -92,11 +97,13 @@ const PAIN_ISSUE_TABLE_LAYOUTS = {
   },
   responsive: {
     table: 'issue-pain-table-responsive min-w-0',
-    issue: 'w-[16%]',
-    priority: 'w-[10%]',
+    issue: 'w-[15%]',
+    assignee: 'w-[10%]',
+    issueState: 'w-[8%]',
+    priority: 'w-[9%]',
     score: 'w-[6%]',
-    reason: 'w-[16%]',
-    evidence: 'w-[20%]',
+    reason: 'w-[10%]',
+    evidence: 'w-[13%]',
     decision: 'w-[16%]',
     status: 'w-[11%]',
     action: 'w-[14%]',
@@ -105,11 +112,13 @@ const PAIN_ISSUE_TABLE_LAYOUTS = {
   },
   reportResponsive: {
     table: 'issue-pain-table-responsive min-w-0',
-    issue: 'w-[22%]',
-    priority: 'w-[12%]',
+    issue: 'w-[20%]',
+    assignee: 'w-[11%]',
+    issueState: 'w-[8%]',
+    priority: 'w-[10%]',
     score: 'w-[7%]',
-    reason: 'w-[22%]',
-    evidence: 'w-[22%]',
+    reason: 'w-[16%]',
+    evidence: 'w-[13%]',
     decision: 'w-0',
     status: 'w-0',
     action: 'w-0',
@@ -674,6 +683,22 @@ type TrackingActionHandler = NonNullable<
   PainIssueTableProps['onTrackingAction']
 >;
 
+const IssueAssigneeCell: React.FC<{ assignees?: string[] }> = ({
+  assignees,
+}) => {
+  const text = assignees?.join('、') || '—';
+  return (
+    <td className="border-b border-slate-100 px-3 py-2.5 text-[11px] leading-5 text-slate-600">
+      <Tooltip
+        title={text === '—' ? '报告未提供可确认的责任人' : text}
+        placement="topLeft"
+      >
+        <div className="line-clamp-2 break-all">{text}</div>
+      </Tooltip>
+    </td>
+  );
+};
+
 const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
   issue,
 }) => {
@@ -706,6 +731,46 @@ const IssueSummaryCells: React.FC<{ issue: IssueReportPainIssue }> = ({
           <div className="mt-1 line-clamp-2 break-words leading-5 text-slate-600">
             {issue.title}
           </div>
+        </Tooltip>
+      </td>
+      <IssueAssigneeCell assignees={issue.assignees} />
+      <td className="border-b border-slate-100 px-2 py-2.5 text-center">
+        {issue.issue_state ? (
+          <span
+            className={`inline-flex whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] ${
+              issue.issue_state === 'closed'
+                ? 'border-slate-200 bg-slate-50 text-slate-500'
+                : 'border-green-200 bg-green-50 text-green-700'
+            }`}
+          >
+            {issue.issue_state === 'closed' ? '已关闭' : '开启中'}
+          </span>
+        ) : (
+          <span className="text-slate-400">—</span>
+        )}
+        <Tooltip
+          title={
+            <div>
+              <div>
+                状态更新时间：
+                {issue.issue_state_updated_at
+                  ? new Date(issue.issue_state_updated_at).toLocaleString(
+                      'zh-CN',
+                      { hour12: false }
+                    )
+                  : '暂无上传时间'}
+              </div>
+              <div>
+                以上状态来自报告上传时的数据，并非实时状态；后续 Issue
+                状态可能变化，页面不会实时同步，请以平台最新状态为准。
+              </div>
+            </div>
+          }
+        >
+          <InfoCircleOutlined
+            aria-label="Issue 状态更新时间说明"
+            className="ml-1 cursor-help text-[12px] text-slate-400"
+          />
         </Tooltip>
       </td>
       <td className="border-b border-slate-100 px-2 py-2.5 text-center">
@@ -1690,6 +1755,20 @@ const PainIssueTableHead: React.FC<{
         Issue
       </th>
       <th
+        className={`border-b border-slate-200 px-3 py-2 text-left text-[11px] font-semibold text-slate-500 ${layout.assignee}`}
+      >
+        <Tooltip title="报告采集时的 Issue 责任人；未提供或无法确认时显示 —">
+          责任人
+        </Tooltip>
+      </th>
+      <th
+        className={`border-b border-slate-200 px-2 py-2 text-center text-[11px] font-semibold text-slate-500 ${layout.issueState}`}
+      >
+        <Tooltip title="报告采集时的平台状态，与痛点修复、复测状态独立">
+          Issue 状态
+        </Tooltip>
+      </th>
+      <th
         className={`border-b border-slate-200 px-2 py-2 text-center text-[11px] font-semibold text-slate-500 ${layout.priority}`}
       >
         优先级
@@ -2130,6 +2209,9 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   // 一组 batch 形态的 IssueValidityButton（valid 分别为 false/true）。
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200">
+      <div className="flex justify-end border-b border-slate-100 bg-slate-50/50 px-3 py-2">
+        <IssueExportButton onClick={() => exportPainIssues(issues)} />
+      </div>
       <PainIssueTableToolbar
         decisionMode={decisionMode}
         operationMode={operationMode}

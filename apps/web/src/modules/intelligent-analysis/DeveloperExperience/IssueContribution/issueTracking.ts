@@ -60,6 +60,9 @@ export const getReviewablePainIssues = (
     .filter((issue) => !known.has(issue.number))
     .map((issue) => ({
       number: issue.number,
+      assignees: issue.assignees,
+      issue_state: issue.issue_state,
+      issue_state_updated_at: issue.issue_state_updated_at,
       title: issue.title,
       url: issue.url,
       score: issue.score,

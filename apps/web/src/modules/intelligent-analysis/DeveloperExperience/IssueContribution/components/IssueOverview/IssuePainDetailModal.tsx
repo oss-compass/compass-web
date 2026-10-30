@@ -400,6 +400,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
         '序号',
         'Issue',
         '标题',
+        '责任人',
+        'Issue 状态',
         '链接',
         '得分',
         '指标',
@@ -412,6 +414,12 @@ const IssuePainDetailModal: React.FC<Props> = ({
         index + 1,
         `#${issue.number}`,
         issue.title || '--',
+        issue.assignees?.join('、') || '—',
+        issue.issue_state === 'open'
+          ? '开启中'
+          : issue.issue_state === 'closed'
+          ? '已关闭'
+          : '—',
         issue.url || '--',
         issue.score ?? '—',
         issue.metric_code || '--',

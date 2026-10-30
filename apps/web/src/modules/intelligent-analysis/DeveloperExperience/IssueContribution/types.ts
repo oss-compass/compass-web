@@ -79,6 +79,10 @@ export type IssueReportPainIssueEvidence = {
 
 export type IssueReportPainIssue = {
   number: string;
+  /** 报告采集时的责任人账号；无法确认时为空数组。 */
+  assignees?: string[];
+  issue_state?: 'open' | 'closed' | null;
+  issue_state_updated_at?: string | null;
   /** slim 模式（首屏全量拉取）下不下发，弹窗明细按需拉取完整数据 */
   title?: string;
   /** slim 模式下不下发 */
@@ -301,6 +305,9 @@ export type IssuePainTrackingType = 'fix' | 'observe';
 
 export type IssuePainTrackingIssue = {
   number: string;
+  assignees?: string[];
+  issue_state?: 'open' | 'closed' | null;
+  issue_state_updated_at?: string | null;
   title: string;
   url: string;
   score: number | null;

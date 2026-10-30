@@ -28,6 +28,8 @@ import PainTrackingModal, {
 } from './PainTrackingModal';
 import HintIcon from './HintIcon';
 import PainIssueTable from './PainIssueTable';
+import IssueExportButton from './IssueExportButton';
+import { exportIssueScores } from '../issueExport';
 import PainIssuePriorityFilter from './PainIssuePriorityFilter';
 import IssueStageDirectory from './IssueStageDirectory';
 
@@ -186,6 +188,16 @@ const StageIssueScoreSection: React.FC<{
 
       {open ? (
         <>
+          <div className="mt-3 flex justify-end">
+            <IssueExportButton
+              onClick={() =>
+                exportIssueScores(
+                  entries.map((entry) => entry.row),
+                  stageId
+                )
+              }
+            />
+          </div>
           <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full min-w-[760px] border-collapse text-[12px]">
               <thead className="bg-slate-50/80">
