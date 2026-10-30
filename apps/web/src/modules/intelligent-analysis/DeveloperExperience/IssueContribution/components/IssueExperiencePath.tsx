@@ -29,7 +29,7 @@ import PainTrackingModal, {
 import HintIcon from './HintIcon';
 import PainIssueTable from './PainIssueTable';
 import IssueExportButton from './IssueExportButton';
-import { exportIssueScores } from '../issueExport';
+import { exportIssueScores, exportPainIssues } from '../issueExport';
 import PainIssuePriorityFilter from './PainIssuePriorityFilter';
 import IssueStageDirectory from './IssueStageDirectory';
 
@@ -160,44 +160,49 @@ const StageIssueScoreSection: React.FC<{
 
   return (
     <div className="border-t border-slate-200 pt-6">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 text-left"
-      >
-        <span className="flex flex-wrap items-center gap-2">
-          <ProfileOutlined className="text-sky-500" />
-          <h4 className="text-base font-semibold text-slate-900">
-            全部 Issue 得分
-          </h4>
-          <HintIcon title="本阶段所有参与评分的 Issue 及其指标得分明细，按本阶段得分从低到高排列，每页 10 条；悬停指标标签可查看评分原因。" />
-          <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
-            {entries.length} 个 Issue
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="flex items-center gap-3 text-left"
+        >
+          <span className="flex flex-wrap items-center gap-2">
+            <ProfileOutlined className="text-sky-500" />
+            <h4 className="text-base font-semibold text-slate-900">
+              全部 Issue 得分
+            </h4>
+            <HintIcon title="本阶段所有参与评分的 Issue 及其指标得分明细，按本阶段得分从低到高排列，每页 10 条；悬停指标标签可查看评分原因。" />
+            <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
+              {entries.length} 个 Issue
+            </span>
           </span>
-        </span>
-        <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400">
+        </button>
+        <IssueExportButton
+          onClick={() =>
+            exportIssueScores(
+              entries.map((entry) => entry.row),
+              stageId
+            )
+          }
+        />
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="ml-auto flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400"
+        >
           {open ? '收起' : '展开'}
           <DownOutlined
             className={`text-[10px] transition-transform ${
               open ? 'rotate-180' : ''
             }`}
           />
-        </span>
-      </button>
+        </button>
+      </div>
 
       {open ? (
         <>
-          <div className="mt-3 flex justify-end">
-            <IssueExportButton
-              onClick={() =>
-                exportIssueScores(
-                  entries.map((entry) => entry.row),
-                  stageId
-                )
-              }
-            />
-          </div>
           <div className="mt-3 overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full min-w-[760px] border-collapse text-[12px]">
               <thead className="bg-slate-50/80">
@@ -552,6 +557,9 @@ const StagePainCard: React.FC<{
                   issues={issues}
                   value={effectiveIssuePriorityFilter}
                   onChange={onIssuePriorityFilterChange}
+                />
+                <IssueExportButton
+                  onClick={() => exportPainIssues(filteredIssues)}
                 />
               </div>
               <PainIssueTable

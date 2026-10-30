@@ -364,7 +364,7 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
         <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
           {rows.length} 个 Issue
         </span>
-        <span className="ml-auto">
+        <span className="ml-1">
           <IssueExportButton onClick={() => exportIssueScores(rows)} />
         </span>
       </div>

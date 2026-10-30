@@ -42,6 +42,8 @@ import {
   PassedIssueTable,
   TrackingHistoryTable,
 } from './components';
+import IssueExportButton from '../IssueExportButton';
+import { exportPainIssues } from '../../issueExport';
 import PainIssueTable, {
   InvalidDecisionReasonModal,
   useFinalIssueDecisionConfirm,
@@ -380,21 +382,32 @@ const RepairIssueOperationSection: React.FC<{
     ? tracking.activeIssues[0]
     : undefined;
   if (!painLevelIssue) {
+    const issues = getReviewablePainIssues(
+      pain.low_score_issues ?? [],
+      tracking,
+      reviewOnly
+    );
     return (
-      <PainIssueTable
-        issues={getReviewablePainIssues(
-          pain.low_score_issues ?? [],
-          tracking,
-          reviewOnly
-        )}
-        tracking={tracking}
-        onTrackingAction={onAction}
-        responsive
-        onRerun={onRerun}
-        rerunDisabledReason={rerunDisabledReason}
-        lockedIssueNumbers={lockedIssueNumbers}
-        onOpenRerunRecords={onOpenRerunRecords}
-      />
+      <div>
+        <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-500">
+          <span>涉及 Issue · {issues.length} 个</span>
+          <IssueExportButton onClick={() => exportPainIssues(issues)} />
+        </div>
+        <PainIssueTable
+          issues={getReviewablePainIssues(
+            pain.low_score_issues ?? [],
+            tracking,
+            reviewOnly
+          )}
+          tracking={tracking}
+          onTrackingAction={onAction}
+          responsive
+          onRerun={onRerun}
+          rerunDisabledReason={rerunDisabledReason}
+          lockedIssueNumbers={lockedIssueNumbers}
+          onOpenRerunRecords={onOpenRerunRecords}
+        />
+      </div>
     );
   }
   return (
@@ -943,6 +956,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                     onChange={setIssuePriorityFilter}
                   />
                 </div>
+                <IssueExportButton
+                  onClick={() => exportPainIssues(pendingPainIssues)}
+                />
                 <Tooltip
                   title={
                     '质量类痛点确认后需逐个完成 Issue 修复；所有有效 Issue 完成修复后，痛点将自动进入待复测状态。'
@@ -1080,13 +1096,23 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               description={passedPresentation.description}
             />
             {pain.low_score_issues?.length ? (
-              <PainIssueTable
-                issues={pain.low_score_issues}
-                tracking={tracking}
-                onTrackingAction={onAction}
-                lockedIssueNumbers={lockedIssueNumbers}
-                responsive
-              />
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-500">
+                  <span>涉及 Issue · {pain.low_score_issues.length} 个</span>
+                  <IssueExportButton
+                    onClick={() =>
+                      exportPainIssues(pain.low_score_issues ?? [])
+                    }
+                  />
+                </div>
+                <PainIssueTable
+                  issues={pain.low_score_issues}
+                  tracking={tracking}
+                  onTrackingAction={onAction}
+                  lockedIssueNumbers={lockedIssueNumbers}
+                  responsive
+                />
+              </div>
             ) : null}
           </div>
         ) : null}
@@ -1111,6 +1137,12 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                 </div>
               }
             />
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+              <span>涉及 Issue · {pain.low_score_issues?.length ?? 0} 个</span>
+              <IssueExportButton
+                onClick={() => exportPainIssues(pain.low_score_issues ?? [])}
+              />
+            </div>
             <PainIssueTable
               issues={pain.low_score_issues ?? []}
               tracking={tracking}

@@ -40,8 +40,6 @@ import type {
 import { IssuePainTrackingStatus } from '../types';
 import { IssueFixButton } from './PainTrackingModal/components';
 import IssueValidityButton from './IssueValidityButton';
-import IssueExportButton from './IssueExportButton';
-import { exportPainIssues } from '../issueExport';
 import { useTrackingOperator } from './PainTrackingModal/hooks';
 import {
   formatTrackingTime,
@@ -2209,9 +2207,6 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
   // 一组 batch 形态的 IssueValidityButton（valid 分别为 false/true）。
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200">
-      <div className="flex justify-end border-b border-slate-100 bg-slate-50/50 px-3 py-2">
-        <IssueExportButton onClick={() => exportPainIssues(issues)} />
-      </div>
       <PainIssueTableToolbar
         decisionMode={decisionMode}
         operationMode={operationMode}
