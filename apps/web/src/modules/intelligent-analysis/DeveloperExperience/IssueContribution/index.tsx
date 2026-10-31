@@ -454,8 +454,13 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 onRerunApplied={handleRerunApplied}
               />
               <IssueScoreOverview
+                reportContext={{
+                  community: report.community,
+                  period: report.period,
+                }}
                 stages={visibleStages}
                 issueScoreRows={report.data.report_context.issue_score_rows}
+                pains={report.data.report_context.top_pains}
               />
             </IssueReportOverview>
 

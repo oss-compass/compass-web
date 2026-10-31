@@ -1,5 +1,18 @@
-import type { IssueReportPainIssue, IssueScoreRow } from './types';
+import type {
+  IssueReportPain,
+  IssueReportPainIssue,
+  IssueScoreRow,
+} from './types';
 import { getEvidenceActorName } from './evidenceActor';
+
+export type IssueExportContext = {
+  community: string;
+  period: string;
+};
+
+const exportFilename = (name: string, context?: IssueExportContext) =>
+  [context?.community, context?.period, name].filter(Boolean).join('_') +
+  '.csv';
 
 export const escapeCsvCell = (value: unknown): string => {
   let text = String(value ?? '');
@@ -28,9 +41,12 @@ export const downloadCsv = (
   URL.revokeObjectURL(href);
 };
 
-export const exportPainIssues = (issues: IssueReportPainIssue[]) =>
+export const exportPainIssues = (
+  issues: IssueReportPainIssue[],
+  context?: IssueExportContext
+) =>
   downloadCsv(
-    '痛点涉及Issue.csv',
+    exportFilename('痛点涉及Issue', context),
     [
       'Issue',
       '标题',
@@ -67,13 +83,46 @@ export const exportPainIssues = (issues: IssueReportPainIssue[]) =>
     ])
   );
 
-export const exportIssueScores = (rows: IssueScoreRow[], stageId?: string) =>
+/** 只收集当前报告评分列表中的痛点 Issue，保留跨痛点的不同低分明细。 */
+export const collectReportPainIssues = (
+  rows: IssueScoreRow[],
+  pains: IssueReportPain[]
+): IssueReportPainIssue[] => {
+  const rowByNumber = new Map(rows.map((row) => [row.number, row]));
+  return pains.flatMap((pain) =>
+    (pain.low_score_issues ?? []).flatMap((issue) => {
+      const row = rowByNumber.get(issue.number);
+      if (!row) return [];
+      return [
+        {
+          ...issue,
+          title: issue.title || row.title,
+          url: issue.url || row.url,
+          assignees: issue.assignees ?? row.assignees,
+          issue_state:
+            issue.issue_state ??
+            (row.state === 'open' || row.state === 'closed' ? row.state : null),
+        },
+      ];
+    })
+  );
+};
+
+export const exportIssueScores = (
+  rows: IssueScoreRow[],
+  stageId?: string,
+  context?: IssueExportContext
+) =>
   downloadCsv(
-    stageId ? `${stageId}_全部Issue得分.csv` : '全部Issue得分.csv',
+    exportFilename(
+      stageId ? `${stageId}_全部Issue得分` : '全部Issue得分',
+      context
+    ),
     [
       'Issue',
       '标题',
       '链接',
+      '责任人',
       'Issue 状态',
       '类型',
       '范围',
@@ -95,6 +144,7 @@ export const exportIssueScores = (rows: IssueScoreRow[], stageId?: string) =>
             row.number,
             row.title,
             row.url,
+            row.assignees?.join('、') || '—',
             row.state,
             row.issue_type,
             row.scope,

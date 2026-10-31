@@ -151,7 +151,8 @@ const NotEvaluatedHint: React.FC<{ className?: string }> = ({
 const StageIssueScoreSection: React.FC<{
   stageId: string;
   entries: StageScoreEntry[];
-}> = ({ stageId, entries }) => {
+  reportContext: IssueExperiencePathProps['reportContext'];
+}> = ({ stageId, entries, reportContext }) => {
   const [open, setOpen] = useState(true);
   const [page, setPage] = useState(1);
   const visibleEntries = entries.slice(
@@ -183,7 +184,8 @@ const StageIssueScoreSection: React.FC<{
           onClick={() =>
             exportIssueScores(
               entries.map((entry) => entry.row),
-              stageId
+              stageId,
+              reportContext
             )
           }
         />
@@ -561,7 +563,9 @@ const StagePainCard: React.FC<{
                   onChange={onIssuePriorityFilterChange}
                 />
                 <IssueExportButton
-                  onClick={() => exportPainIssues(filteredIssues)}
+                  onClick={() =>
+                    exportPainIssues(filteredIssues, reportContext)
+                  }
                 />
               </div>
               <PainIssueTable
@@ -1176,6 +1180,7 @@ const IssueExperiencePath: React.FC<IssueExperiencePathProps> = ({
                       key={`issue-scores-${activeStage.id}`}
                       stageId={activeStage.id}
                       entries={stageScoreEntries}
+                      reportContext={reportContext}
                     />
                   ) : null}
                 </div>

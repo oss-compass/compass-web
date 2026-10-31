@@ -1,20 +1,31 @@
 import React from 'react';
-import IssueExportButton from './IssueExportButton';
-import { exportIssueScores } from '../issueExport';
-import { LinkOutlined } from '@ant-design/icons';
-import { Popover, Table } from 'antd';
+import {
+  collectReportPainIssues,
+  exportIssueScores,
+  exportPainIssues,
+  type IssueExportContext,
+} from '../issueExport';
+import {
+  DownloadOutlined,
+  DownOutlined,
+  LinkOutlined,
+} from '@ant-design/icons';
+import { Dropdown, Popover, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import { formatScore, getScoreTone } from '../presentation';
 import type {
   IssueReportStage,
+  IssueReportPain,
   IssueScoreRow,
   IssueScoreRowStageDetail,
 } from '../types';
 import HintIcon from './HintIcon';
 
 type IssueScoreOverviewProps = {
+  reportContext: IssueExportContext;
   stages: IssueReportStage[];
   issueScoreRows?: IssueScoreRow[];
+  pains?: IssueReportPain[];
 };
 
 /** 解析 pain_stages（形如「I2、I3」）为阶段 id 列表，过滤「—」占位符 */
@@ -135,7 +146,7 @@ const ScoreBadge: React.FC<{ scoreText: string; score: number }> = ({
 
 /**
  * 全部 Issue 总览（报告级，置于执行摘要之前）：一行一条 Issue，
- * 按表头 Issue | 类型 | 范围 | 状态 | 创建时间 | 关闭时间 | 综合分 | I0…In
+ * 按表头 Issue | 责任人 | 类型 | 范围 | 状态 | 创建时间 | 关闭时间 | 综合分 | I0…In
  * 展示全阶段得分矩阵，不随上方阶段切换变化。
  * 表格样式与排序/分页交互对齐 Issue 贡献总览页（antd Table 同款规范）；
  * 悬停阶段分可查看该阶段各指标得分与评分原因；
@@ -144,8 +155,11 @@ const ScoreBadge: React.FC<{ scoreText: string; score: number }> = ({
 const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
   stages,
   issueScoreRows,
+  pains = [],
+  reportContext,
 }) => {
   const rows = issueScoreRows ?? [];
+  const painIssues = collectReportPainIssues(rows, pains);
   const visibleStages = stages.filter((stage) => !stage.is_lens);
 
   const getStageDetail = (row: IssueScoreRow, stageId: string) =>
@@ -188,6 +202,29 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
               {row.title}
             </div>
           </div>
+        );
+      },
+    },
+    {
+      title: (
+        <Tooltip title="报告采集时的 Issue 责任人；未提供或无法确认时显示 —">
+          责任人
+        </Tooltip>
+      ),
+      dataIndex: 'assignees',
+      width: 140,
+      align: 'left',
+      sorter: (a, b) =>
+        compareText(a.assignees?.join('、'), b.assignees?.join('、')),
+      render: (assignees?: string[]) => {
+        const text = assignees?.join('、') || '—';
+        return (
+          <Tooltip
+            title={text === '—' ? '报告未提供可确认的责任人' : text}
+            placement="topLeft"
+          >
+            <div className="line-clamp-2 break-all text-slate-600">{text}</div>
+          </Tooltip>
         );
       },
     },
@@ -360,12 +397,43 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
         >
           全部 Issue 总览
         </h2>
-        <HintIcon title="一行一条 Issue：类型、范围、状态、关键时间与各阶段得分一览，不随上方阶段切换变化；点击表头可按对应列排序（默认综合分低分优先）；悬停阶段分可查看该阶段各指标得分与评分原因。" />
+        <HintIcon title="一行一条 Issue：责任人、类型、范围、状态、关键时间与各阶段得分一览，不随上方阶段切换变化；点击表头可按对应列排序（默认综合分低分优先）；悬停阶段分可查看该阶段各指标得分与评分原因。" />
         <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-[11px] font-semibold text-sky-600">
           {rows.length} 个 Issue
         </span>
         <span className="ml-1">
-          <IssueExportButton onClick={() => exportIssueScores(rows)} />
+          <Dropdown
+            trigger={['click']}
+            menu={{
+              items: [
+                {
+                  key: 'scores',
+                  label: '导出全部 Issue 得分（含评分原因）',
+                  onClick: () =>
+                    exportIssueScores(rows, undefined, reportContext),
+                },
+                {
+                  key: 'pains',
+                  label: '导出当前报告痛点 Issue',
+                  disabled: !painIssues.length,
+                  title: painIssues.length
+                    ? '字段与痛点弹窗一致；同一 Issue 涉及多个痛点时保留各条低分明细'
+                    : '当前报告暂无痛点 Issue 明细',
+                  onClick: () => exportPainIssues(painIssues, reportContext),
+                },
+              ],
+            }}
+          >
+            <button
+              type="button"
+              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 transition-colors hover:border-blue-300 hover:text-blue-600"
+              title="选择导出内容（当前报告完整数据，不限当前分页）"
+            >
+              <DownloadOutlined />
+              导出
+              <DownOutlined className="text-[10px]" />
+            </button>
+          </Dropdown>
         </span>
       </div>
 
@@ -416,7 +484,7 @@ const IssueScoreOverview: React.FC<IssueScoreOverviewProps> = ({
         dataSource={rows}
         rowKey="number"
         size="middle"
-        scroll={{ x: 1220 }}
+        scroll={{ x: 1360 }}
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: false,

@@ -359,6 +359,7 @@ const getPassedPresentation = (tracking: IssuePainTracking) => {
 };
 
 const RepairIssueOperationSection: React.FC<{
+  reportContext: PainTrackingModalProps['reportContext'];
   pain: PainTrackingModalProps['pain'];
   tracking: PainTrackingModalProps['tracking'];
   onAction: PainTrackingModalProps['onAction'];
@@ -369,6 +370,7 @@ const RepairIssueOperationSection: React.FC<{
   lockedIssueNumbers?: string[];
   onOpenRerunRecords?: () => void;
 }> = ({
+  reportContext,
   pain,
   tracking,
   onAction,
@@ -392,7 +394,9 @@ const RepairIssueOperationSection: React.FC<{
       <div>
         <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-slate-500">
           <span>涉及 Issue · {issues.length} 个</span>
-          <IssueExportButton onClick={() => exportPainIssues(issues)} />
+          <IssueExportButton
+            onClick={() => exportPainIssues(issues, reportContext)}
+          />
         </div>
         <PainIssueTable
           issues={getReviewablePainIssues(
@@ -961,7 +965,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                   />
                 </div>
                 <IssueExportButton
-                  onClick={() => exportPainIssues(pendingPainIssues)}
+                  onClick={() =>
+                    exportPainIssues(pendingPainIssues, reportContext)
+                  }
                 />
                 <Tooltip
                   title={
@@ -1064,6 +1070,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
               </div>
             </div>
             <RepairIssueOperationSection
+              reportContext={reportContext}
               pain={pain}
               tracking={tracking}
               onAction={onAction}
@@ -1080,6 +1087,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           <div className="space-y-4">
             <PendingRetestNotice tracking={tracking} />
             <RepairIssueOperationSection
+              reportContext={reportContext}
               pain={pain}
               tracking={tracking}
               onAction={onAction}
@@ -1107,7 +1115,10 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
                   <span>涉及 Issue · {pain.low_score_issues.length} 个</span>
                   <IssueExportButton
                     onClick={() =>
-                      exportPainIssues(pain.low_score_issues ?? [])
+                      exportPainIssues(
+                        pain.low_score_issues ?? [],
+                        reportContext
+                      )
                     }
                   />
                 </div>
@@ -1146,7 +1157,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
               <span>涉及 Issue · {pain.low_score_issues?.length ?? 0} 个</span>
               <IssueExportButton
-                onClick={() => exportPainIssues(pain.low_score_issues ?? [])}
+                onClick={() =>
+                  exportPainIssues(pain.low_score_issues ?? [], reportContext)
+                }
               />
             </div>
             <PainIssueTable

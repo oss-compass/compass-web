@@ -139,6 +139,8 @@ export type IssueScoreRowStageDetail = {
  *  narrative 字段，旧版报告（v1–v3）无这些字段，前端需按可选处理。 */
 export type IssueScoreRow = {
   number: string;
+  /** 报告采集时的责任人账号；无法确认时为空数组。 */
+  assignees?: string[];
   url: string;
   title: string;
   state: string;
