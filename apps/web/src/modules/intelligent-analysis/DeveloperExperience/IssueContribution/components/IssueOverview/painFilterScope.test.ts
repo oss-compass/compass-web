@@ -1,48 +1,26 @@
 import { resolvePainFilter, ALL_PAIN_FILTER as ALL } from './painFilterScope';
-const available = ['pending', 'inProgress', 'resolved', 'historical'];
+const available = ['2', '3', '7'];
 
 describe('pain modal entry scope', () => {
-  it.each(available)(
-    'keeps %s entry fixed even after all or a stale selection',
-    (entry) => {
-      for (const selected of [ALL, ...available]) {
-        const result = resolvePainFilter(selected, entry, undefined, available);
-        expect(result.allowed).toEqual([entry]);
-        expect(result.state).toBe(entry);
-        expect(result.states).toBeUndefined();
-        expect(result.fixed).toBe(true);
-      }
-    }
-  );
-  it('lets the total entry filter every state and return to all', () => {
+  it('filters concrete statuses inside the entry and returns to all', () => {
     for (const selected of available) {
-      expect(
-        resolvePainFilter(selected, undefined, undefined, available).state
-      ).toBe(selected);
+      expect(resolvePainFilter(selected, available).filter).toBe(selected);
     }
-    expect(
-      resolvePainFilter(ALL, undefined, undefined, available).state
-    ).toBeUndefined();
+    expect(resolvePainFilter(ALL, available).filter).toBeUndefined();
   });
-  it('keeps all inside the open-pain scope and rejects historical selection', () => {
-    for (const selected of [ALL, 'historical']) {
-      const result = resolvePainFilter(
-        selected,
-        undefined,
-        ['pending', 'inProgress'],
-        available
-      );
-      expect(result.allowed).toEqual(['pending', 'inProgress']);
-      expect(result.state).toBeUndefined();
-      expect(result.states).toEqual(['pending', 'inProgress']);
-    }
-    expect(
-      resolvePainFilter(
-        'pending',
-        undefined,
-        ['pending', 'inProgress'],
-        available
-      ).state
-    ).toBe('pending');
+  it('rejects a stale status absent from the complete entry data', () => {
+    expect(resolvePainFilter('historical', available)).toEqual({
+      value: ALL,
+      filter: undefined,
+    });
+  });
+  it('restores fixed priority and stage entry conditions on all', () => {
+    expect(resolvePainFilter(ALL, ['P0'], 'P0').filter).toBe('P0');
+    expect(resolvePainFilter('P2', ['P0'], 'P0').filter).toBe('P0');
+    expect(resolvePainFilter(ALL, ['创建'], '创建').filter).toBe('创建');
+  });
+  it('does not turn the loading state into a filter or widen fixed entry scope', () => {
+    expect(resolvePainFilter('3', []).filter).toBeUndefined();
+    expect(resolvePainFilter('P1', [], 'P0').filter).toBe('P0');
   });
 });

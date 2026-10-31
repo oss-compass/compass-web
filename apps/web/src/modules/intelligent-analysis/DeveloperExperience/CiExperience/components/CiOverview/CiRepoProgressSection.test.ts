@@ -12,7 +12,7 @@ const repo = (
   ({
     repo: slug,
     slug,
-    teamName: '算子分队',
+    teamName: '算子',
     scoreOverall,
     issues,
   } as unknown as RepoRow);

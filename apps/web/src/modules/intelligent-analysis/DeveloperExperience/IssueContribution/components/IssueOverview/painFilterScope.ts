@@ -1,20 +1,11 @@
 export const ALL_PAIN_FILTER = '__ALL__';
 
-// Local filters may narrow an entry scope, never widen it.
+/** 候选项来自入口完整数据；全部恢复入口条件，局部选择只收窄范围。 */
 export const resolvePainFilter = (
   selected: string,
-  entry: string | undefined,
-  entries: string[] | undefined,
-  available: string[]
+  available: string[],
+  entry?: string
 ) => {
-  const allowed = entry ? [entry] : entries?.length ? entries : available;
-  const value =
-    entry || (allowed.includes(selected) ? selected : ALL_PAIN_FILTER);
-  return {
-    allowed,
-    value,
-    state: value === ALL_PAIN_FILTER ? undefined : value,
-    states: value === ALL_PAIN_FILTER && entries?.length ? entries : undefined,
-    fixed: !!entry,
-  };
+  const value = available.includes(selected) ? selected : ALL_PAIN_FILTER;
+  return { value, filter: value === ALL_PAIN_FILTER ? entry : value };
 };

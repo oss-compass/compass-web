@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Drawer } from 'antd';
+import { Button, Drawer, Image } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -15,7 +15,11 @@ type Chapter = {
   id: GuideSection;
   title: string;
   description: string;
-  steps: Array<{ title: string; detail: string }>;
+  steps: Array<{
+    title: string;
+    detail: string;
+    image?: { src: string; caption: string };
+  }>;
   notes: string[];
 };
 
@@ -111,22 +115,42 @@ const getChapters = (module: GuideModule): Chapter[] => {
             {
               title: '查看痛点与涉及的 Issue',
               detail:
-                '从总览进入仓库报告，在阶段详情中展开痛点，核对指标、证据及涉及的 Issue。效率类痛点标记为“无需跟踪修复”，持续关注后续同类问题即可。',
+                '从总览进入仓库报告，在阶段详情中展开痛点，核对指标、证据及涉及的 Issue。点击痛点卡片右上方的“待确认”按钮，打开痛点处理弹窗。效率类痛点标记为“无需跟踪修复”，持续关注后续同类问题即可。',
+              image: {
+                src: '/images/operation-guide/issue-open-dialog.png',
+                caption:
+                  '点击红框标出的“待确认”按钮，打开痛点处理弹窗，查看并处理涉及的 Issue。',
+              },
             },
             {
               title: '逐条判定有效性',
               detail:
                 '质量类痛点处于“待确认”时，使用痛点操作入口逐项或批量判断 Issue 是否为有效问题。判定为非有效问题需补充原因并提交审核；审核期间留意待审核提示，驳回后重新判定。',
+              image: {
+                src: '/images/operation-guide/issue-confirm.png',
+                caption:
+                  '先在标记①处填写提交人，再在标记②的“是否为有效问题”列逐条判定。',
+              },
             },
             {
               title: '修复有效 Issue',
               detail:
-                '对已确认有效的 Issue 完成修复后，标记“已修复”；误操作可撤销修复标记。单个 Issue 标记修复后即可发起复测，不必等待其他 Issue 全部修复。全部有效 Issue 修复后，痛点自动进入“已修复待复测”。',
+                '对已确认有效的 Issue 完成实际修复后，填写提交人，点击该 Issue 操作栏中的“完成修复”按钮，标记为“已修复”；误操作可撤销修复标记。单个 Issue 标记修复后即可发起复测，不必等待其他 Issue 全部修复。全部有效 Issue 修复后，痛点自动进入“已修复待复测”。',
+              image: {
+                src: '/images/operation-guide/issue-fix.png',
+                caption:
+                  '先在标记①处填写提交人，实际修复后点击标记②处的“完成修复”按钮。已修复的 Issue 可单独发起复测。',
+              },
             },
             {
               title: '发起单个或批量复测',
               detail:
                 '在 Issue 行的操作区域点击“发起复测”，验证该条 Issue 的修复结果；也可勾选多条已修复的 Issue，点击“批量发起复测”。按提示填写提交人并确认，即可提交复测任务。批量操作会自动跳过复测中的 Issue，已复测通过的 Issue 无需重复复测。',
+              image: {
+                src: '/images/operation-guide/issue-retest.png',
+                caption:
+                  '已修复的 Issue 可单个发起复测，或勾选后批量发起复测；右上角可查看重跑记录。',
+              },
             },
             {
               title: '查看复测结果并继续处理',
@@ -143,31 +167,44 @@ const getChapters = (module: GuideModule): Chapter[] => {
           id: 'pain',
           title: '社区入门痛点处理',
           description:
-            '结合执行证据确认问题，记录修复过程，再根据复测报告提交结论。',
+            '结合执行证据确认问题并提交修复，系统根据后续报告自动复测并更新结果。',
           steps: [
             {
               title: '定位并核对痛点',
               detail:
-                '从总览的仓库或待办痛点进入报告，在“任务与关键动作”的痛点区域查看描述和关联执行步骤，点击痛点状态入口打开处理面板。',
+                '从总览的仓库或待办痛点进入报告，在“任务与关键动作”的痛点区域查看描述和关联执行步骤。点击对应痛点右侧的“待确认”按钮，打开痛点处理弹窗；已处理的痛点可点击相应状态按钮查看处理进度。',
+              image: {
+                src: '/images/operation-guide/community-open-dialog.png',
+                caption:
+                  '点击红框标出的“待确认”按钮，打开社区入门痛点处理弹窗。',
+              },
             },
             {
               title: '确认问题和严重程度',
               detail:
                 '在“待确认”阶段核对痛点等级，按表单要求填写 Issue 链接、预计闭环时间等信息后提交。判定为非项目本身问题时需要补充原因，并等待管理员审核。',
+              image: {
+                src: '/images/operation-guide/community-confirm.png',
+                caption: '核对痛点等级，填写 Issue 链接和预计闭环时间后提交。',
+              },
             },
             {
               title: '完成修复并提交',
               detail:
                 '确认问题后进入“已确认待修复”。完成实际修复后，在处理面板按要求补充 PR 链接等信息并提交，进入“已修复待复测”。',
+              image: {
+                src: '/images/operation-guide/community-fix.png',
+                caption: '完成修复后，按表单要求补充 PR 链接并提交。',
+              },
             },
             {
-              title: '核对复测报告并提交结论',
+              title: '等待系统自动复测并查看结果',
               detail:
-                '生成新报告后核对执行结果；页面检测到可用报告时，可提交复测结论。通过时选择对应报告，未通过时继续修复。可在面板中查看历史记录，必要时按页面提供的回退操作修正状态。',
+                '提交修复后，痛点进入“已修复待复测”。后续报告生成后，系统自动复测并更新痛点状态，无需手动选择复测结论或关联通过报告。可在处理面板查看复测结果和历史记录；复测不通过时，根据结果继续修复。',
             },
           ],
           notes: [
-            '常用流程：待确认 → 已确认待修复 → 已修复待复测 → 已复测通过；复测不通过后继续修复。历史记录中也可能出现“已复测待确认”，具体可提交的操作以当前状态为准。',
+            '常用流程：待确认 → 已确认待修复 → 已修复待复测 → 系统自动复测 → 已复测通过；复测不通过时继续修复。',
             '历史报告用于回看；处理时请核对当前仓库、任务和报告版本。',
           ],
         },
@@ -187,6 +224,7 @@ const OperationGuide: React.FC<OperationGuideProps> = ({
 }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState(section);
   const rawCaptureMode = router.query.captureMode;
   const captureMode = Array.isArray(rawCaptureMode)
@@ -224,7 +262,10 @@ const OperationGuide: React.FC<OperationGuideProps> = ({
       <Drawer
         title={`${label} · 操作指引`}
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          if (previewImage) setPreviewImage(null);
+          else setOpen(false);
+        }}
         width="min(640px, 100vw)"
         zIndex={1200}
         destroyOnHidden
@@ -267,13 +308,34 @@ const OperationGuide: React.FC<OperationGuideProps> = ({
                 >
                   {index + 1}
                 </span>
-                <div>
+                <div className="min-w-0 flex-1">
                   <h3 className="mb-1 text-base font-semibold text-slate-800">
                     {step.title}
                   </h3>
                   <p className="text-sm leading-6 text-slate-600">
                     {renderGuideText(step.detail)}
                   </p>
+                  {step.image ? (
+                    <figure className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                      <Image
+                        src={step.image.src}
+                        alt={`${step.title}：${step.image.caption}`}
+                        width="100%"
+                        preview={{
+                          mask: '点击查看大图',
+                          zIndex: 1400,
+                          visible: previewImage === step.image.src,
+                          onVisibleChange: (visible) =>
+                            setPreviewImage(
+                              visible ? step.image?.src ?? null : null
+                            ),
+                        }}
+                      />
+                      <figcaption className="border-t border-slate-100 bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-500">
+                        示例界面 · {step.image.caption} 点击图片可放大查看。
+                      </figcaption>
+                    </figure>
+                  ) : null}
                 </div>
               </li>
             ))}

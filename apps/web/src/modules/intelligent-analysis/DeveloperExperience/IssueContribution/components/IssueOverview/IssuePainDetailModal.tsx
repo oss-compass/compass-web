@@ -20,12 +20,12 @@ import { resolvePainFilter } from './painFilterScope';
 const ALL = '__ALL__';
 const PAIN_PAGE_SIZE = 10;
 const ISSUE_PAGE_SIZE = 10;
-const PAIN_STATE_OPTIONS = [
-  { value: 'pending', label: '待处理' },
-  { value: 'inProgress', label: '进行中' },
-  { value: 'resolved', label: '已闭环' },
-  { value: 'historical', label: '历史感知痛点' },
-];
+const getTrackingStatusOptions = (options: { trackingStatuses?: string[] }) =>
+  options.trackingStatuses ?? [];
+const getStateFilterLabel = (value: string) =>
+  value === 'historical'
+    ? '无需跟踪修复'
+    : getTrackingStatusMeta(Number(value), 'fix').label;
 
 const reportDateLabel = (period?: string) => {
   const value = String(period || '');
@@ -45,7 +45,7 @@ type SortKey =
 type Props = {
   open: boolean;
   title: string;
-  /** 基础筛选条件；弹窗内的阶段/优先级/状态筛选会在其基础上覆盖。 */
+  /** 入口范围；弹窗内的筛选只在该范围中进一步收窄。 */
   query: Omit<IssueOverviewV2TopPainsQuery, 'page' | 'pageSize'>;
   stageOptions: string[];
   /** Issue 明细按需拉取所需的组织隔离参数 */
@@ -223,7 +223,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
 
   // Aggregate options over the entry scope, independent of page/local filters.
   const filterOptionsQuery = useQuery({
-    queryKey: ['issue-pain-filter-options', org, query],
+    queryKey: ['issue-pain-filter-options', 'tracking-status', org, query],
     queryFn: ({ signal }) =>
       fetchIssueOverviewTopPainsV2(
         { ...query, page: 1, pageSize: 1, includeFilterOptions: true },
@@ -236,23 +236,30 @@ const IssuePainDetailModal: React.FC<Props> = ({
     stages: [],
     prios: [],
     states: [],
+    trackingStatuses: [],
   };
+  const statusOptions = getTrackingStatusOptions(options);
   const stateScope = resolvePainFilter(
     stateFilter,
-    query.state,
-    query.states,
-    options.states
+    statusOptions,
+    query.trackingStatus
   );
   const effectiveStateFilter = stateScope.value;
-  const effectivePrioFilter = query.prio ?? prioFilter;
-  const effectiveStageFilter = query.stage ?? stageFilter;
+  const prioScope = resolvePainFilter(prioFilter, options.prios, query.prio);
+  const stageScope = resolvePainFilter(
+    stageFilter,
+    options.stages,
+    query.stage
+  );
+  const effectivePrioFilter = prioScope.value;
+  const effectiveStageFilter = stageScope.value;
   const baseRepoKey = (query.repos ?? []).join(',');
   const baseStateKey = (query.states ?? []).join(',');
 
   // 入口条件（团队/仓库/分组/基础状态或优先级）变化时重置筛选与分页。
   React.useEffect(() => {
-    setPrioFilter(query.prio ?? ALL);
-    setStateFilter(query.state ?? ALL);
+    setPrioFilter(ALL);
+    setStateFilter(ALL);
     setStageFilter(ALL);
     setPainPage(1);
     setIssueDetailPain(null);
@@ -266,6 +273,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
     query.prio,
     query.repo,
     query.state,
+    query.stage,
+    query.trackingStatus,
     query.team,
   ]);
 
@@ -282,6 +291,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
       baseRepoKey,
       query.team ?? '',
       query.prio ?? '',
+      query.stage ?? '',
+      query.trackingStatus ?? '',
       query.state ?? '',
       baseStateKey,
       effectiveStageFilter,
@@ -295,11 +306,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
           ...query,
           page: painPage,
           pageSize: PAIN_PAGE_SIZE,
-          stage:
-            effectiveStageFilter === ALL ? undefined : effectiveStageFilter,
-          prio: effectivePrioFilter === ALL ? undefined : effectivePrioFilter,
-          state: stateScope.state,
-          states: stateScope.states,
+          stage: stageScope.filter,
+          prio: prioScope.filter,
+          trackingStatus: stateScope.filter,
         },
         signal
       ),
@@ -491,21 +500,19 @@ const IssuePainDetailModal: React.FC<Props> = ({
           >
             <Radio.Group
               value={value}
-              onChange={(event) => onChange(String(event.target.value))}
+              onChange={(event) => {
+                setPainPage(1);
+                onChange(String(event.target.value));
+              }}
               className="flex max-h-[240px] flex-col gap-1 overflow-auto px-1"
             >
-              {!(
-                (key === 'state' && stateScope.fixed) ||
-                (key === 'prio' && query.prio) ||
-                (key === 'stage' && query.stage)
-              ) && <Radio value={ALL}>全部</Radio>}
+              <Radio value={ALL}>全部</Radio>
               {values.map((item) => (
                 <Radio key={item} value={item}>
                   {key === 'prio' ? (
                     <IssuePriorityTag priority={item} />
                   ) : key === 'state' ? (
-                    PAIN_STATE_OPTIONS.find((state) => state.value === item)
-                      ?.label ?? item
+                    getStateFilterLabel(item)
                   ) : (
                     item
                   )}
@@ -517,6 +524,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
       >
         <button
           type="button"
+          aria-label={`筛选${label}`}
           className={`inline-flex h-5 w-5 items-center justify-center rounded ${
             value === ALL
               ? 'text-[var(--overview-slateLight)]'
@@ -615,7 +623,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
                       '状态',
                       'state',
                       effectiveStateFilter,
-                      options.states,
+                      statusOptions,
                       setStateFilter
                     )}
                   </th>

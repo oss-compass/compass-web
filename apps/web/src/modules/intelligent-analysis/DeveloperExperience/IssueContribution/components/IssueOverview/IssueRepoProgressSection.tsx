@@ -848,7 +848,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         </div>
       );
     }
-    const grouped = team.name === '算子分队';
+    const grouped = team.name === '算子';
     const sections = grouped
       ? groupOperatorRepos(team.repos)
       : [{ key: 'all', label: '', repos: team.repos }];

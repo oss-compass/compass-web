@@ -3207,7 +3207,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         );
       },
       expandedRowRender: (record) =>
-        renderExpandedRepoRows(record.repos, record.name === '算子分队'),
+        renderExpandedRepoRows(record.repos, record.name === '算子'),
     }),
     [
       currentTab,

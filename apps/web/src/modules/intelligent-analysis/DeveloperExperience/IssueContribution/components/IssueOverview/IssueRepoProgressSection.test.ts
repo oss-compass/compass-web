@@ -62,7 +62,7 @@ describe('community contribution category aggregation', () => {
   });
 
   it('averages repository scores for each period in chronological order', () => {
-    const result = buildAggregateRow('算子分队', [
+    const result = buildAggregateRow('算子', [
       repo('a', {
         idxTrend: [60, 80],
         idxTrendPeriods: [

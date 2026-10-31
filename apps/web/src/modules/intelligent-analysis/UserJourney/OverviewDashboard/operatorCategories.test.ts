@@ -11,7 +11,7 @@ function repo(
   return {
     id,
     name: id,
-    team: '算子分队',
+    team: '算子',
     repoCategory: 'aal',
     score: null,
     successRate: null,

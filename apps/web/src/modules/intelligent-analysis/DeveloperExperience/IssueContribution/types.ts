@@ -537,7 +537,7 @@ export type IssueOverviewRepo = {
   repoShort: string; // 例：cann-samples（展示用短名）
   org: string;
   teamName: string; // 仓库管理中配置的责任团队
-  repoCategory?: string; // 算子分队二次分类
+  repoCategory?: string; // 算子二次分类
   period: string;
   periodLabel: string;
   idxTotal: number | null;
