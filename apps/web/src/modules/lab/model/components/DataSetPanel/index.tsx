@@ -44,7 +44,7 @@ const DataSetPanel: React.FC<{
       <div className="mt-4 flex w-full md:hidden">
         <div className="mr-3 flex h-5 items-center text-sm font-medium">
           <img
-            className="mr-2 mb-0.5 inline-block align-text-top"
+            className="mb-0.5 mr-2 inline-block align-text-top"
             src="/images/lab/datasets.png"
             alt=""
           />
@@ -56,7 +56,7 @@ const DataSetPanel: React.FC<{
             <div
               key={ident}
               className={classnames(
-                'line-clamp-1 mr-2  flex h-5 cursor-pointer rounded-full border  px-2.5 text-xs ',
+                'mr-2 line-clamp-1  flex h-5 cursor-pointer rounded-full border  px-2.5 text-xs ',
                 [
                   active
                     ? 'border-primary text-primary bg-white'
@@ -101,7 +101,7 @@ const DataSetPanel: React.FC<{
       />
 
       <div
-        className={classnames('grid gap-4 pt-4 pb-4 md:grid-cols-2', [
+        className={classnames('grid gap-4 pb-4 pt-4 md:grid-cols-2', [
           fullWidth ? 'grid-cols-6' : 'grid-cols-4',
         ])}
       >
@@ -123,9 +123,9 @@ const DataSetPanel: React.FC<{
                   setCompareList((pre) => [...pre, shortCode]);
                   return;
                 }
-                setCompareList((pre) => {
-                  return pre.splice(pre.indexOf(shortCode), 1);
-                });
+                setCompareList((pre) =>
+                  pre.filter((code) => code !== shortCode)
+                );
               }}
             />
           );
