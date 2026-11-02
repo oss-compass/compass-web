@@ -8,9 +8,9 @@ import { buildIssueRepoManagementHref } from '../../../routes';
 import OperationGuide from '../../../components/OperationGuide';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import { getWeeklyClosureData } from './weeklyClosure';
+import { useIssuePainSummaryQuery } from './useIssuePainSummaryQuery';
 import {
   fetchIssueOverviewFrequentPains,
-  fetchIssueOverviewPainSummary,
   fetchIssueOverviewScoreInsights,
   fetchIssueOverviewSummary,
   fetchIssueOverviewTrends,
@@ -121,8 +121,6 @@ const buildKpis = ({
       trendMax: 100,
       trendUnit: '%',
       monthlyMode: 'last',
-      trendNote:
-        '卡片数字为全部已闭环数 / 全部需跟踪痛点数；周度趋势与下方图共用数据，月度闭环率为当月各周已闭环数合计 / 需跟踪痛点数合计，按报告周期结束日期归月。',
     },
     {
       label: '达成 90 分以上仓数',
@@ -165,12 +163,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     staleTime: 0,
     refetchOnMount: 'always',
   });
-  const painSummaryQuery = useQuery({
-    queryKey: ['issue-overview-v2-pain-summary', org],
-    queryFn: ({ signal }) => fetchIssueOverviewPainSummary(org, signal),
-    staleTime: 0,
-    refetchOnMount: 'always',
-  });
+  const painSummaryQuery = useIssuePainSummaryQuery(org);
   const frequentQuery = useQuery({
     queryKey: ['issue-overview-v2-frequent-pains', org],
     queryFn: ({ signal }) => fetchIssueOverviewFrequentPains(org, signal),

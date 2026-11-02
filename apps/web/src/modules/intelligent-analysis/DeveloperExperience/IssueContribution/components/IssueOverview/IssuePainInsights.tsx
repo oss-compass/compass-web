@@ -323,11 +323,17 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
             <TrendWindowPicker value={trendWindow} onChange={setTrendWindow} />
           </div>
           {summary.periodsReady === false ? (
-            <div className="pain-trend-empty">周度统计准备中，请稍后刷新</div>
+            <div className="pain-trend-empty">
+              周度统计准备中，完成后将自动更新
+            </div>
           ) : trendPoints.length ? (
             <>
               <div className="pain-trend-chart">
-                <TrendChart points={trendPoints} fitContainerHeight />
+                <TrendChart
+                  points={trendPoints}
+                  fitContainerHeight
+                  adaptiveAxes
+                />
               </div>
               <div className="oj-trend-legend">
                 {PRIORITIES.map((priority) => (
@@ -343,9 +349,6 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
                   <span className="oj-trend-line" />
                   周度闭环率
                 </span>
-              </div>
-              <div className="mt-2 text-xs leading-5 text-[var(--overview-slate)]">
-                当周闭环率按该周痛点截至周末的闭环状态计算，无需跟踪修复的痛点不计入分母。
               </div>
             </>
           ) : (

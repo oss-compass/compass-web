@@ -6,8 +6,16 @@ import type { IssueOverviewV2PainSummary } from '../../types';
 jest.mock(
   '../../../../UserJourney/OverviewDashboard/OverviewSummaryBlock',
   () => ({
-    TrendChart: ({ points }: { points: unknown[] }) => (
-      <div data-testid="weekly-points">{JSON.stringify(points)}</div>
+    TrendChart: ({
+      points,
+      adaptiveAxes,
+    }: {
+      points: unknown[];
+      adaptiveAxes?: boolean;
+    }) => (
+      <div data-testid="weekly-points" data-adaptive-axes={adaptiveAxes}>
+        {JSON.stringify(points)}
+      </div>
     ),
     TrendWindowPicker: () => null,
   })
@@ -62,7 +70,13 @@ it('displays backend weekly rates without dividing by next week or cumulative to
       closeRate: 0,
     }),
   ]);
-  expect(screen.getByText(/当周闭环率按该周痛点截至周末/)).toBeInTheDocument();
+  expect(
+    screen.queryByText(/当周闭环率按该周痛点截至周末/)
+  ).not.toBeInTheDocument();
+  expect(screen.getByTestId('weekly-points')).toHaveAttribute(
+    'data-adaptive-axes',
+    'true'
+  );
 });
 
 it('does not display incomplete migration data as zero closure rates', () => {
@@ -72,7 +86,9 @@ it('does not display incomplete migration data as zero closure rates', () => {
       reportHref={() => '/report'}
     />
   );
-  expect(screen.getByText('周度统计准备中，请稍后刷新')).toBeInTheDocument();
+  expect(
+    screen.getByText('周度统计准备中，完成后将自动更新')
+  ).toBeInTheDocument();
   expect(screen.queryByTestId('weekly-points')).not.toBeInTheDocument();
   expect(screen.getByText('102')).toBeInTheDocument();
 });
