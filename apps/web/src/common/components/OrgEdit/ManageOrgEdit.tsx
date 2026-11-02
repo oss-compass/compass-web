@@ -46,7 +46,7 @@ const ManageOrgEdit = ({
         organizations: [{ orgName, firstDate, lastDate }],
       });
     } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
+      console.error('Failed:', errorInfo);
     }
   };
   const mutation = useManageUserOrgsMutation(client, {
