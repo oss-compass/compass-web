@@ -31,6 +31,7 @@ import type {
 } from './types';
 import { formatPercent, normalizeSeverity } from './utils';
 import { USER_JOURNEY_PAIN_GUIDE_ITEMS_INFO } from '../rawData/constants';
+import { getAdaptiveTrendAxis } from './trendAxis';
 
 type OverviewSummaryBlockProps = {
   title: React.ReactNode;
@@ -320,7 +321,14 @@ export const TrendChart: React.FC<{
   mode?: 'overall' | 'common';
   /** 开启后按容器纵横比扩展绘图区高度，让图表尽量撑满父容器。 */
   fitContainerHeight?: boolean;
-}> = ({ points, mode = 'overall', fitContainerHeight = false }) => {
+  /** 仅按需启用，其他总览保留原有轴范围。 */
+  adaptiveAxes?: boolean;
+}> = ({
+  points,
+  mode = 'overall',
+  fitContainerHeight = false,
+  adaptiveAxes = false,
+}) => {
   const chartId = React.useId();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
@@ -344,7 +352,12 @@ export const TrendChart: React.FC<{
   const n = points.length;
   if (n === 0) return null;
   const maxTotal = Math.max(0, ...points.map((p) => p.total));
-  const yMax = getNiceMax(maxTotal);
+  const countAxis = adaptiveAxes ? getAdaptiveTrendAxis(maxTotal) : null;
+  const rateAxis = adaptiveAxes
+    ? getAdaptiveTrendAxis(Math.max(0, ...points.map((p) => p.closeRate)), true)
+    : null;
+  const yMax = countAxis?.max ?? getNiceMax(maxTotal);
+  const rateMax = rateAxis?.max ?? 100;
   // 顶部轴标题与底部周标签留白固定，仅按容器纵横比扩展绘图区高度。
   const viewBoxH =
     fitContainerHeight && containerRatio > 0
@@ -369,7 +382,7 @@ export const TrendChart: React.FC<{
   const yForCount = (value: number) =>
     plotBottom - (Math.max(0, value) / yMax) * plotH;
   const yForRate = (value: number) =>
-    plotBottom - (Math.max(0, Math.min(100, value)) / 100) * plotH;
+    plotBottom - (Math.max(0, Math.min(rateMax, value)) / rateMax) * plotH;
 
   const yTextMin = TREND_LABEL_SAFE_TOP;
   const ratePointYs = points.map((p) => yForRate(p.closeRate));
@@ -384,7 +397,7 @@ export const TrendChart: React.FC<{
     return Math.abs(totalLabelYs[index] - rateLabelYs[index]) >= 18;
   });
 
-  const ticks = [
+  const ticks = countAxis?.ticks ?? [
     yMax,
     Math.round((yMax * 3) / 4),
     Math.round(yMax / 2),
@@ -539,7 +552,7 @@ export const TrendChart: React.FC<{
           问题数
         </text>
 
-        {[100, 75, 50, 25, 0].map((t, i) => (
+        {(rateAxis?.ticks ?? [100, 75, 50, 25, 0]).map((t, i) => (
           <text
             key={`yr-${i}`}
             className="oj-trend-axis oj-trend-axis-y"
