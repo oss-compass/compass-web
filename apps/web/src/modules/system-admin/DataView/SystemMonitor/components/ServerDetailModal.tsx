@@ -113,7 +113,7 @@ const ServerDetailModal: React.FC<ServerDetailModalProps> = ({
     setDateRange(range);
     // 如果是自定义日期，可以在这里处理customDates
     if (range === 'custom' && customDates) {
-      console.log('Custom date range:', customDates);
+      // customDates handled below via getDateRange
     }
   };
 
