@@ -9,6 +9,7 @@ const { Title } = Typography;
 export type IssueTrendModalData = {
   title: string;
   subtitle?: string;
+  note?: string;
   unit?: string;
   height?: number;
   values: Array<number | null>;
@@ -154,6 +155,11 @@ const IssueTrendModal: React.FC<IssueTrendModalProps> = ({
               </div>
             ) : null}
           </div>
+          {trend.note ? (
+            <div className="mb-3 text-xs leading-5 text-[var(--overview-slate)]">
+              {trend.note}
+            </div>
+          ) : null}
           <ScoreTrendChart
             points={points}
             height={trend.height ?? 290}

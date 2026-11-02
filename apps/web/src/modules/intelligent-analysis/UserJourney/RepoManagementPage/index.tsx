@@ -1688,6 +1688,29 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         }),
       },
       {
+        title: '预计上线日期',
+        dataIndex: 'expected_online_at',
+        key: 'expected_online_at',
+        width: 150,
+        render: (value: string | null | undefined, record) => {
+          if (record.overview_enabled || String(record.remark || '').trim())
+            return '-';
+          if (!value) return getRepoLatestReportId(record) ? '待首次提醒' : '-';
+          const date = new Date(value);
+          if (Number.isNaN(date.getTime())) return '-';
+          return (
+            <Tooltip title="按上线提醒时间预计，实际以到期后的系统检查为准；提醒延迟时日期相应顺延。">
+              {date.toLocaleDateString('zh-CN', {
+                timeZone: 'Asia/Shanghai',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              })}
+            </Tooltip>
+          );
+        },
+      },
+      {
         title: sortableTitle(isIssueManagement ? 'Issue 总览' : '总览看板'),
         dataIndex: 'overview_enabled',
         key: 'overview_enabled',

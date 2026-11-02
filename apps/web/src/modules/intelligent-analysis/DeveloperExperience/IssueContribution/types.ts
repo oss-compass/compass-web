@@ -625,6 +625,9 @@ export type IssueOverviewV2Trend = {
   periods: string[];
   values: Array<number | null>;
   repos?: Record<string, Array<number | null>>;
+  /** 覆盖仓库数按自然月及实际上线时间独立统计，避免跨月周归错月份。 */
+  monthly?: { periods: string[]; values: Array<number | null> };
+  unknownOnlineDateRepoCount?: number;
 };
 
 export type IssueOverviewV2ReposResponse = {

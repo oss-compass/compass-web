@@ -88,6 +88,7 @@ type Kpi = {
   trendMax?: number;
   trendUnit?: string;
   monthlyMode: 'average' | 'last';
+  trendNote?: string;
 };
 
 const buildKpis = ({
@@ -136,6 +137,9 @@ const buildKpis = ({
       value: summary ? String(summary.repoCount) : '-',
       trend: coverageTrend,
       monthlyMode: 'last',
+      trendNote: coverageTrend?.unknownOnlineDateRepoCount
+        ? `按实际上线时间统计（北京时间）。${coverageTrend.unknownOnlineDateRepoCount} 个历史仓库缺少早期上线时间，以历史存量基线计入。`
+        : '按仓库实际上线时间统计（北京时间）。',
     },
   ];
 };
@@ -348,11 +352,12 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         {kpis.map((kpi) => {
           const values = kpi.trend?.values ?? [];
           const periods = kpi.trend?.periods ?? [];
-          const monthlyTrend = buildMonthlyTrend(
-            values,
-            periods,
-            kpi.monthlyMode
-          );
+          const monthlyTrend = kpi.trend?.monthly
+            ? {
+                labels: kpi.trend.monthly.periods,
+                values: kpi.trend.monthly.values,
+              }
+            : buildMonthlyTrend(values, periods, kpi.monthlyMode);
           return (
             <div key={kpi.label} className="bottom-metric">
               <div className="bm-label">{kpi.label}</div>
@@ -371,6 +376,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
                     className="bm-trend-sparkline"
                     trend={{
                       title: `${kpi.label} · 趋势`,
+                      note: kpi.trendNote,
                       subtitle:
                         kpi.label === '综合体验评分'
                           ? undefined

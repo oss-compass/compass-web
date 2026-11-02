@@ -159,6 +159,7 @@ export type CompassOperatorChangePasswordResponse = {
 export type RepoManagementItem = {
   issue_online_pending?: boolean;
   community_online_pending?: boolean;
+  expected_online_at?: string | null;
   id: string;
   seq_no: number;
   repo_name: string;
