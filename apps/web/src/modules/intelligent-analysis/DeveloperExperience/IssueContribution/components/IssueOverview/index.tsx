@@ -7,6 +7,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { buildIssueRepoManagementHref } from '../../../routes';
 import OperationGuide from '../../../components/OperationGuide';
 import IssueTrendSparkline from './IssueTrendSparkline';
+import { getWeeklyClosureData } from './weeklyClosure';
 import {
   fetchIssueOverviewFrequentPains,
   fetchIssueOverviewPainSummary,
@@ -95,21 +96,16 @@ const buildKpis = ({
   summary,
   painSummary,
   scoreTrend,
-  closeTrend,
   score90Trend,
   coverageTrend,
 }: {
   summary?: IssueOverviewV2Summary;
   painSummary?: IssueOverviewV2PainSummary;
   scoreTrend?: IssueOverviewV2Trend;
-  closeTrend?: IssueOverviewV2Trend;
   score90Trend?: IssueOverviewV2Trend;
   coverageTrend?: IssueOverviewV2Trend;
 }): Kpi[] => {
-  const trackablePains = painSummary
-    ? painSummary.total - (painSummary.counts.historical ?? 0)
-    : 0;
-  const resolvedPains = painSummary?.counts.resolved ?? 0;
+  const closure = getWeeklyClosureData(painSummary);
   return [
     {
       label: '综合体验评分',
@@ -120,11 +116,13 @@ const buildKpis = ({
     },
     {
       label: '闭环情况',
-      value: painSummary ? `${resolvedPains} / ${trackablePains}` : '-',
-      trend: closeTrend,
+      value: closure.value,
+      trend: closure.trend,
       trendMax: 100,
       trendUnit: '%',
       monthlyMode: 'last',
+      trendNote:
+        '卡片数字为全部已闭环数 / 全部需跟踪痛点数；周度趋势与下方图共用数据，月度闭环率为当月各周已闭环数合计 / 需跟踪痛点数合计，按报告周期结束日期归月。',
     },
     {
       label: '达成 90 分以上仓数',
@@ -184,16 +182,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     queryKey: ['issue-overview-v2-trend', org, 'score'],
     queryFn: ({ signal }) =>
       fetchIssueOverviewTrends({ org, weeks: 104, metric: 'score' }, signal),
-    staleTime: 0,
-    refetchOnMount: 'always',
-  });
-  const closeTrendQuery = useQuery({
-    queryKey: ['issue-overview-v2-trend', org, 'closeRate'],
-    queryFn: ({ signal }) =>
-      fetchIssueOverviewTrends(
-        { org, weeks: 104, metric: 'closeRate' },
-        signal
-      ),
     staleTime: 0,
     refetchOnMount: 'always',
   });
@@ -321,7 +309,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     summary,
     painSummary,
     scoreTrend: scoreTrendQuery.data,
-    closeTrend: closeTrendQuery.data,
     score90Trend: score90TrendQuery.data,
     coverageTrend: coverageTrendQuery.data,
   });
@@ -332,7 +319,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     !painSummaryQuery.isLoading &&
     !frequentQuery.isLoading &&
     !scoreTrendQuery.isLoading &&
-    !closeTrendQuery.isLoading &&
+    painSummary?.periodsReady !== false &&
     !score90TrendQuery.isLoading &&
     !coverageTrendQuery.isLoading &&
     !summaryQuery.isError &&

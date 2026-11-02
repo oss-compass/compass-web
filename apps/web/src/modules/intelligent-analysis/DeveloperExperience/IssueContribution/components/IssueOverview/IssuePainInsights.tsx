@@ -17,6 +17,7 @@ import type {
 import IssuePainDetailModal from './IssuePainDetailModal';
 import IssuePriorityTag, { getIssuePriorityLabel } from './IssuePriorityTag';
 import IssueTrendSparkline from './IssueTrendSparkline';
+import { getWeeklyClosureData } from './weeklyClosure';
 import { SEVERITY_CFG } from '../../../../UserJourney/OverviewDashboard/constants';
 import {
   OVERVIEW_COLORS,
@@ -95,8 +96,8 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
   const trackableTotal = total - (counts.historical ?? 0);
   const closeRate = summary.closeRate;
   const allPeriods = React.useMemo(
-    () => summary.periods.map((point) => point.period),
-    [summary.periods]
+    () => getWeeklyClosureData(summary).periods.map((point) => point.period),
+    [summary]
   );
   const periods = React.useMemo(() => {
     if (trendWindow.kind === 'weeks') {
@@ -109,7 +110,10 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
   }, [allPeriods, trendWindow]);
   const trendPoints = React.useMemo<WeeklyCloseRateTrendPoint[]>(() => {
     const byPeriod = new Map(
-      summary.periods.map((point) => [point.period, point])
+      getWeeklyClosureData(summary).periods.map((point) => [
+        point.period,
+        point,
+      ])
     );
     return periods.map((period) => {
       const point = byPeriod.get(period);
@@ -129,7 +133,7 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
         closeRate: point?.closeRate ?? 0,
       };
     });
-  }, [periods, summary.periods]);
+  }, [periods, summary]);
   const cards = [
     {
       label: '问题总数',
@@ -315,10 +319,12 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
 
         <section className="pain-panel pain-weekly">
           <div className="ov-panel-head">
-            <div className="ov-panel-title">周问题新增趋势及闭环率</div>
+            <div className="ov-panel-title">周度痛点趋势及闭环率</div>
             <TrendWindowPicker value={trendWindow} onChange={setTrendWindow} />
           </div>
-          {trendPoints.length ? (
+          {summary.periodsReady === false ? (
+            <div className="pain-trend-empty">周度统计准备中，请稍后刷新</div>
+          ) : trendPoints.length ? (
             <>
               <div className="pain-trend-chart">
                 <TrendChart points={trendPoints} fitContainerHeight />
@@ -337,6 +343,9 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
                   <span className="oj-trend-line" />
                   周度闭环率
                 </span>
+              </div>
+              <div className="mt-2 text-xs leading-5 text-[var(--overview-slate)]">
+                当周闭环率按该周痛点截至周末的闭环状态计算，无需跟踪修复的痛点不计入分母。
               </div>
             </>
           ) : (

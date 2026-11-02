@@ -625,7 +625,8 @@ export type IssueOverviewV2Trend = {
   periods: string[];
   values: Array<number | null>;
   repos?: Record<string, Array<number | null>>;
-  /** 覆盖仓库数按自然月及实际上线时间独立统计，避免跨月周归错月份。 */
+  periodsReady?: boolean;
+  /** 覆盖数按自然月快照统计；闭环率汇总当月各周分子、分母后计算。 */
   monthly?: { periods: string[]; values: Array<number | null> };
   unknownOnlineDateRepoCount?: number;
 };
@@ -655,6 +656,8 @@ export type IssueOverviewV2PainSummary = {
   closeRate: number;
   priorities: IssueOverviewV2PainPeriod['priorities'];
   periods: IssueOverviewV2PainPeriod[];
+  /** 老读模型后台补齐周度快照期间不展示不完整的历史曲线。 */
+  periodsReady?: boolean;
   repoOptions: string[];
   stageOptions: string[];
 };
