@@ -386,16 +386,33 @@ export const TrendChart: React.FC<{
 
   const yTextMin = TREND_LABEL_SAFE_TOP;
   const ratePointYs = points.map((p) => yForRate(p.closeRate));
-  const rateLabelYs = ratePointYs.map((y) => Math.max(yTextMin, y - 16));
-  const totalTopYs = points.map((p) => yForCount(p.total));
+  // 柱高来自实际绘制的分段，不能用可能包含未分级痛点的总数字段定位标签。
+  const totalTopYs = points.map((p) => {
+    const stackedTotal =
+      mode === 'common'
+        ? (p.issueTypeCounts ?? []).reduce(
+            (sum, item) => sum + Math.max(0, item.count),
+            0
+          )
+        : OJ_TREND_SEVERITY_SEGMENTS.reduce(
+            (sum, { key }) => sum + Math.max(0, getTrendSeverityValue(p, key)),
+            0
+          );
+    return yForCount(stackedTotal);
+  });
   const totalLabelYs = totalTopYs.map((y) => Math.max(yTextMin, y - 8));
+  const rateLabelYs = ratePointYs.map((y, index) => {
+    const above = Math.max(yTextMin, y - 16);
+    if (Math.abs(above - totalLabelYs[index]) >= 18) return above;
+    // 优先保留柱顶总数；闭环率标签移到折线下方，避免互相覆盖。
+    const below = Math.min(plotBottom - 2, y + 20);
+    return Math.abs(below - totalLabelYs[index]) >= 18
+      ? below
+      : Math.max(yTextMin, totalLabelYs[index] - 18);
+  });
   // 闭环率为 0 时也显示弱化标签，避免折线贴轴时无从识别数值。
   const showRateLabel = points.map((p) => p.closeRate >= 0);
-  const showTotalLabel = points.map((p, index) => {
-    if (p.total < 0) return false;
-    if (!showRateLabel[index]) return true;
-    return Math.abs(totalLabelYs[index] - rateLabelYs[index]) >= 18;
-  });
+  const showTotalLabel = points.map((p) => p.total >= 0);
 
   const ticks = countAxis?.ticks ?? [
     yMax,

@@ -73,3 +73,38 @@ it('uses adaptive axes only for the contribution chart that opts in', () => {
   }
   expect(screen.queryByText('4%')).not.toBeInTheDocument();
 });
+
+it('places the total directly above the rendered stack rather than the total-count height', () => {
+  render(
+    <TrendChart
+      points={[{ ...points[0], p0: 85, p1: 51, p2: 60, p3: 54 }]}
+      fitContainerHeight
+      adaptiveAxes
+    />
+  );
+  // 实际堆叠为 250，绘图区为 32..156，Y 轴上限为 500。
+  const stackTop = 156 - (250 / 500) * (156 - 32);
+  expect(Number(screen.getByText('447').getAttribute('y'))).toBe(stackTop - 8);
+});
+
+it('keeps the total visible and separates the rate label when their positions collide', () => {
+  render(
+    <TrendChart
+      points={[
+        {
+          ...points[0],
+          total: 400,
+          p0: 100,
+          p1: 100,
+          p2: 100,
+          p3: 100,
+          closeRate: 3.4,
+        },
+      ]}
+      adaptiveAxes
+    />
+  );
+  const totalY = Number(screen.getByText('400').getAttribute('y'));
+  const rateY = Number(screen.getByText('3.4%').getAttribute('y'));
+  expect(Math.abs(totalY - rateY)).toBeGreaterThanOrEqual(18);
+});
