@@ -1,3 +1,4 @@
+import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
 import React, {
   useCallback,
   useEffect,
@@ -1425,6 +1426,10 @@ const TaskManagementPage: React.FC = () => {
                     >
                       返回看板
                     </Button>
+                    <AdminReviewButton
+                      user={operatorUser}
+                      reportType="community"
+                    />
                     <Title level={4} className="!mb-0 !mt-0">
                       任务管理
                     </Title>

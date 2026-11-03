@@ -500,6 +500,7 @@ export type IssuePainTrackingActionType =
 export type IssuePainTrackingActionPayload = {
   community: string;
   trackingKey: string;
+  reportKey?: string;
   type: IssuePainTrackingActionType;
   operator: string;
   issueNumber?: string;

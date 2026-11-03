@@ -178,7 +178,8 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
     void fetchIssuePainTrackings(
       report.community,
       report.period,
-      controller.signal
+      controller.signal,
+      report.key
     )
       .then((response) => {
         if (controller.signal.aborted) return;
@@ -192,7 +193,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
         if (!backgroundRefresh) setPainTrackings(null);
       });
     return () => controller.abort();
-  }, [report?.community, report?.period, refreshVersion]);
+  }, [report?.community, report?.period, report?.key, refreshVersion]);
 
   const trackingByPain = useMemo(() => {
     const itemMap = new Map(
@@ -216,6 +217,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
       const response = await postIssuePainTrackingAction({
         ...payload,
         community: report.community,
+        reportKey: report.key,
       });
       if (payload.type === 'decide_issue' || payload.type === 'decide_issues') {
         const previous = painTrackings?.items.find(

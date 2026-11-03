@@ -358,9 +358,11 @@ export const fetchIssueTopPains = async (
 export const fetchIssuePainTrackings = async (
   community: string,
   period: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  reportKey?: string
 ): Promise<IssuePainTrackingResponse> => {
   const search = new URLSearchParams({ community, period });
+  if (reportKey) search.set('reportKey', reportKey);
   const response = await fetch(
     `${getApiBase()}${PAIN_TRACKINGS_API_PATH}?${search.toString()}`,
     { signal, cache: 'no-store' }

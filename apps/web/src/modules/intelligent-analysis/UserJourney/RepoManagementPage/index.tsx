@@ -1,3 +1,4 @@
+import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
 import { buildIssueTaskManagementHref } from '../../DeveloperExperience/routes';
 import React, {
   useCallback,
@@ -1942,17 +1943,10 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                     >
                       返回看板
                     </Button>
-                    {isAdmin ? (
-                      <Button
-                        type="text"
-                        className={`${headerButtonClassName} ${pageMeta.communityOnlyClassName}`}
-                        onClick={() => {
-                          window.location.href = '/pain-admin/#/report-reviews';
-                        }}
-                      >
-                        去后台审核
-                      </Button>
-                    ) : null}
+                    <AdminReviewButton
+                      user={operatorUser}
+                      reportType={reportType}
+                    />
                     <Title level={4} className="!mb-0 !mt-0">
                       {pageMeta.title}
                     </Title>

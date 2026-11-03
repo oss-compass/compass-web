@@ -1,3 +1,4 @@
+import AdminReviewButton from '../../components/AdminReviewButton';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Alert, Button, Card, Space, Tabs, Typography } from 'antd';
@@ -100,6 +101,7 @@ const IssueTaskManagementPage: React.FC = () => {
                   >
                     返回看板
                   </Button>
+                  <AdminReviewButton user={user} reportType="issue" />
                   <Typography.Title level={4} className="!mb-0 !mt-0">
                     任务管理
                   </Typography.Title>
