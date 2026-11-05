@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Table, Tag, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
-import type { CiPri, CiRepoData, CiRepoKey } from '../../types';
+import type { CiJourney, CiPri, CiRepoData, CiRepoKey } from '../../types';
 import type { CiDelta } from '../../helpers';
 import { EmptyState } from '../shared';
 import Appendix from '../Appendix';
@@ -23,6 +23,7 @@ const { Title } = Typography;
 type CiOverviewProps = {
   /** 跨仓数据源（runtime + ops-nn + ops-cv），社区 CI/CD 总览为多仓聚合视图 */
   data: Record<CiRepoKey, CiRepoData>;
+  journeys: Partial<Record<CiRepoKey, CiJourney>>;
   /** 与“总览信息”标题同行、靠右展示的操作区域。 */
   headerAction?: React.ReactNode;
 };
@@ -96,12 +97,19 @@ const statusCat = (s: string): 'active' | 'backfill' | 'faded' | 'other' =>
  * overview-bottom-row / bm-* / capability-* / overview-progress-* /
  * overview-ant-table），仅数据取自 CI 看板。
  */
-const CiOverview: React.FC<CiOverviewProps> = ({ data, headerAction }) => {
+const CiOverview: React.FC<CiOverviewProps> = ({
+  data,
+  journeys,
+  headerAction,
+}) => {
   const router = useRouter();
-  const m = computeCommunityOverview(data);
+  const m = React.useMemo(
+    () => computeCommunityOverview(data, journeys),
+    [data, journeys]
+  );
   const [trendModal, setTrendModal] = React.useState<CiTrendItem | null>(null);
   const [appendixOpen, setAppendixOpen] = React.useState(false);
-  // 重点待办问题：本地分页（数据为前端静态 JSON，交互对齐社区贡献的重点待办痛点）
+  // 重点待办问题：本地分页（数据已由后端加载，交互对齐社区贡献的重点待办痛点）
   const [topPage, setTopPage] = React.useState(1);
   const [topPageSize, setTopPageSize] = React.useState(10);
 
@@ -502,7 +510,7 @@ const CiOverview: React.FC<CiOverviewProps> = ({ data, headerAction }) => {
               <span className="oj-qa-a-label">A</span>
             </div>
             <div className="oj-qa-answer-body">
-              <Appendix />
+              <Appendix repositories={data} />
             </div>
           </div>
         )}

@@ -6,7 +6,6 @@ import type { TableProps } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRepoTeams } from '../../../IssueContribution/data';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
-import { groupOperatorRepos } from '../../../../UserJourney/OverviewDashboard/operatorCategories';
 import type { CiRepoSummary, CiTopIssue } from './communityMetrics';
 
 const { Title } = Typography;
@@ -75,6 +74,20 @@ export const buildCiAggregateRow = (
     closeRate: total ? (counts.faded / total) * 100 : 100,
     repos,
   };
+};
+
+/** 只展示接口中实际出现的分类，不注入本地分类名单和空统计行。 */
+export const groupCiRepoCategories = (repos: RepoRow[]) => {
+  const groups = new Map<string, RepoRow[]>();
+  repos.forEach((repo) => {
+    const category = repo.repoCategory || '未分类';
+    groups.set(category, [...(groups.get(category) || []), repo]);
+  });
+  return Array.from(groups, ([key, items]) => ({
+    key,
+    label: key,
+    repos: items,
+  }));
 };
 
 const CiRepoProgressSection: React.FC<Props> = ({
@@ -427,7 +440,7 @@ const CiRepoProgressSection: React.FC<Props> = ({
   const renderExpandedTeam = (team: TeamRow) => {
     const grouped = team.name === '算子';
     const sections = grouped
-      ? groupOperatorRepos(team.repos)
+      ? groupCiRepoCategories(team.repos)
       : [{ key: 'all', label: '', repos: team.repos }];
     return (
       <div className="overview-expanded-rows">

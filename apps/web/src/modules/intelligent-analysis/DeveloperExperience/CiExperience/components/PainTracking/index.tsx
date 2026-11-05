@@ -1,3 +1,4 @@
+import { useCiRepositoryUrl } from '../../repository';
 import {
   CheckCircleOutlined,
   CheckOutlined,
@@ -35,8 +36,8 @@ import {
   Tag,
   Tooltip,
 } from 'antd';
-import type { CiProblem, CiRepoKey } from '../../types';
-import { prURL, runURL } from '../../helpers';
+import type { CiDimKey, CiPri, CiProblem, CiRepoKey } from '../../types';
+import { DIM_NAME, prURL, runURL } from '../../helpers';
 import { useTrackingOperator } from '../../../IssueContribution/components/PainTrackingModal/hooks';
 import {
   formatTrackingTime,
@@ -109,7 +110,7 @@ export const CiPainTrackingButton: React.FC<{ problem: CiProblem }> = ({
           ? '点击状态管理该痛点'
           : context.loading
           ? '正在加载痛点状态'
-          : '请在 CI 痛点管理中重试加载'
+          : '请在痛点问题列表中重试加载'
       }
       onClick={() => context.open(problem)}
     />
@@ -487,8 +488,22 @@ export const CiPainTrackingProvider: React.FC<{
   scope: TrackingScope;
   repo: CiRepoKey;
   problems: CiProblem[];
+  activeDimension?: CiDimKey | null;
+  activePriority?: CiPri | null;
+  onResetFilters?: () => void;
+  onProblemJump?: (problem: CiProblem) => void;
   children: React.ReactNode;
-}> = ({ scope, repo, problems, children }) => {
+}> = ({
+  scope,
+  repo,
+  problems,
+  activeDimension = null,
+  activePriority = null,
+  onResetFilters,
+  onProblemJump,
+  children,
+}) => {
+  const repositoryUrl = useCiRepositoryUrl();
   const [records, setRecords] = useState<Record<string, TrackingRecord>>({});
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -611,8 +626,19 @@ export const CiPainTrackingProvider: React.FC<{
     setReason('');
     setInvalidReasonOpen(true);
   };
+  const scopedProblems = problems.filter(
+    (problem) =>
+      (!activeDimension || problem.dimkey === activeDimension) &&
+      (!activePriority || problem.pri === activePriority)
+  );
+  const visibleProblems = scopedProblems.filter(
+    (problem) =>
+      filter === 'all' ||
+      (ready &&
+        (records[trackingProblemKey(problem)]?.status ?? 'pending') === filter)
+  );
   const count = (value: TrackingStatus) =>
-    problems.filter(
+    scopedProblems.filter(
       (problem) =>
         (records[trackingProblemKey(problem)]?.status ?? 'pending') === value
     ).length;
@@ -622,15 +648,31 @@ export const CiPainTrackingProvider: React.FC<{
       value={{ records, ready: Boolean(ready), loading, open }}
     >
       {children}
-      <section className="ci-pain-management rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+      <section
+        id="ci-report-problems"
+        aria-label="痛点问题"
+        className="ci-pain-management scroll-mt-6 rounded-xl border border-slate-200 bg-white p-6 md:p-4"
+      >
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-base font-semibold text-slate-900">
-              CI 痛点管理
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              {scope.day} · 逐项确认是否为有效问题，修复后手动标记完成。
-            </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-base font-semibold text-slate-900">痛点问题</h2>
+            <span aria-live="polite" className="text-sm text-slate-500">
+              {visibleProblems.length} 项
+            </span>
+            {activeDimension ? <Tag>{DIM_NAME[activeDimension]}</Tag> : null}
+            {activePriority ? <Tag>{activePriority}</Tag> : null}
+            {activeDimension || activePriority || filter !== 'all' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onResetFilters?.();
+                  setFilter('all');
+                }}
+                className="rounded text-sm text-blue-600 hover:underline focus-visible:outline-blue-600"
+              >
+                重置筛选
+              </button>
+            ) : null}
           </div>
           <Space wrap>
             <Select
@@ -639,7 +681,7 @@ export const CiPainTrackingProvider: React.FC<{
               onChange={setFilter}
               className="min-w-[200px]"
               options={[
-                { value: 'all', label: `全部（${problems.length}）` },
+                { value: 'all', label: `全部（${scopedProblems.length}）` },
                 ...Object.entries(STATUS_META).map(([value, meta]) => ({
                   value,
                   label: `${meta.label}${
@@ -649,7 +691,7 @@ export const CiPainTrackingProvider: React.FC<{
               ]}
             />
             <Button
-              className="!rounded-[10px]"
+              className="ci-pain-refresh !rounded-[10px]"
               loading={loading}
               disabled={saving}
               onClick={() => setRetry((value) => value + 1)}
@@ -675,52 +717,68 @@ export const CiPainTrackingProvider: React.FC<{
           />
         ) : null}
         <Table<CiProblem>
+          key={`${activeDimension}:${activePriority}:${filter}`}
           rowKey={trackingProblemKey}
           loading={loading}
           size="middle"
-          scroll={{ x: 900 }}
+          tableLayout="fixed"
+          scroll={{ x: 720 }}
           pagination={{
             pageSize: 10,
             hideOnSinglePage: true,
             showSizeChanger: false,
           }}
-          dataSource={problems.filter(
-            (problem) =>
-              filter === 'all' ||
-              (ready &&
-                (records[trackingProblemKey(problem)]?.status ?? 'pending') ===
-                  filter)
-          )}
+          dataSource={visibleProblems}
+          locale={{
+            emptyText: problems.length
+              ? '没有符合筛选条件的问题'
+              : '当日暂无问题',
+          }}
           columns={[
             {
               title: '优先级',
               dataIndex: 'pri',
-              width: 90,
+              width: 100,
+              sorter: (a, b) => a.pri.localeCompare(b.pri),
               render: (value: string) => (
                 <Tag color={value === 'P0' ? 'red' : 'orange'}>{value}</Tag>
               ),
             },
             {
-              title: '痛点问题',
+              title: '问题',
               dataIndex: 'title',
               render: (value: string, problem) => (
-                <div>
-                  <div className="font-medium text-slate-800">{problem.kb}</div>
-                  <div className="mt-1 text-sm text-slate-500">{value}</div>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => open(problem)}
+                  className="block w-full rounded text-left text-sm leading-6 text-slate-800 hover:text-blue-600 focus-visible:outline-blue-600"
+                >
+                  <span className="block font-medium">{problem.kb}</span>
+                  <span className="mt-1 line-clamp-2 text-slate-500">
+                    {value}
+                  </span>
+                </button>
               ),
             },
             {
               title: '步骤',
-              width: 140,
-              render: (_, problem) =>
-                problem.seg_cross?.join('、') || problem.seg || '未定位步骤',
-            },
-            {
-              title: '影响范围',
               width: 150,
-              render: (_, problem) =>
-                `${problem.impact.runs} 次执行 / ${problem.impact.prs} 个 PR`,
+              render: (_, problem) => {
+                const label =
+                  problem.seg_cross?.join('、') || problem.seg || '跨段/未映射';
+                return onProblemJump ? (
+                  <button
+                    type="button"
+                    onClick={() => onProblemJump(problem)}
+                    aria-label={`定位步骤：${label}`}
+                    className="rounded text-left text-sm text-blue-600 hover:underline focus-visible:outline-blue-600"
+                  >
+                    {label}
+                  </button>
+                ) : (
+                  label
+                );
+              },
             },
             {
               title: '处理状态',
@@ -757,36 +815,52 @@ export const CiPainTrackingProvider: React.FC<{
       >
         {selected ? (
           <div className="space-y-6">
-            <CiTrackingSteps status={status} record={record} />
-            <div className="rounded-lg border border-rose-100 bg-rose-50/80 px-3.5 py-3">
+            {ready ? <CiTrackingSteps status={status} record={record} /> : null}
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
               <div className="text-sm font-semibold leading-6 text-slate-900">
                 {selected.kb}
               </div>
-              <div className="mt-0.5 text-xs leading-5 text-slate-500">
+              <div className="mt-1 text-sm leading-6 text-slate-700">
                 {selected.title}
               </div>
               <div className="mt-1 text-xs text-slate-500">
                 {scope.org} / {scope.repo} · {scope.day} · {scope.workflow}
               </div>
             </div>
-            <StatusWorkflowPanel
-              status={status}
-              operator={operator}
-              operatorError={operatorError}
-              reason={reason}
-              saving={saving}
-              ready={ready}
-              onOperatorChange={(value) => {
-                setOperator(value);
-                if (value.trim()) setOperatorError('');
-              }}
-              onReasonChange={setReason}
-              onAction={(nextAction, nextReason) =>
-                void performAction(nextAction, nextReason)
-              }
-              onInvalid={requestInvalidDecision}
-            />
-            {loadError ? <Alert type="error" message={loadError} /> : null}
+            {ready ? (
+              <StatusWorkflowPanel
+                status={status}
+                operator={operator}
+                operatorError={operatorError}
+                reason={reason}
+                saving={saving}
+                ready={ready}
+                onOperatorChange={(value) => {
+                  setOperator(value);
+                  if (value.trim()) setOperatorError('');
+                }}
+                onReasonChange={setReason}
+                onAction={(nextAction, nextReason) =>
+                  void performAction(nextAction, nextReason)
+                }
+                onInvalid={requestInvalidDecision}
+              />
+            ) : (
+              <Alert
+                type={loading ? 'info' : 'error'}
+                showIcon
+                message={loading ? '处理状态加载中' : '处理状态暂不可用'}
+                description={loadError || undefined}
+                action={
+                  <Button
+                    loading={loading}
+                    onClick={() => setRetry((value) => value + 1)}
+                  >
+                    重新加载状态
+                  </Button>
+                }
+              />
+            )}
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm">
               <div className="font-medium">判断依据</div>
               <p className="mt-2">
@@ -835,7 +909,7 @@ export const CiPainTrackingProvider: React.FC<{
                   render: (id: string, run) =>
                     id ? (
                       <a
-                        href={runURL(repo, id)}
+                        href={runURL(repositoryUrl, id)}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -851,7 +925,7 @@ export const CiPainTrackingProvider: React.FC<{
                   render: (pr: string) =>
                     pr ? (
                       <a
-                        href={prURL(repo, pr)}
+                        href={prURL(repositoryUrl, pr)}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -990,6 +1064,7 @@ export const CiPainTrackingProvider: React.FC<{
         </div>
       </Modal>
       <style jsx global>{`
+        .ci-pain-management .ci-pain-refresh.ant-btn,
         .ci-pain-management .ant-select-selector,
         .ci-pain-management-modal .ant-btn,
         .ci-pain-management-modal .ant-input,

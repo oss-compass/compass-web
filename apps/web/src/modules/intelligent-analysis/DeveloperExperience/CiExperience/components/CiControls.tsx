@@ -1,9 +1,11 @@
 import React from 'react';
 import type { CiRepoData, CiRepoKey } from '../types';
+import type { CiCatalogEntry } from '../api';
 import LabeledReportSelect from '../../components/LabeledReportSelect';
 
 type CiControlsProps = {
   repo: CiRepoKey;
+  catalog: CiCatalogEntry[];
   onRepoChange: (repo: CiRepoKey) => void;
   data: CiRepoData;
   day: string;
@@ -13,6 +15,7 @@ type CiControlsProps = {
 
 const CiControls: React.FC<CiControlsProps> = ({
   repo,
+  catalog,
   onRepoChange,
   data,
   day,
@@ -22,33 +25,20 @@ const CiControls: React.FC<CiControlsProps> = ({
   <div className="flex flex-wrap items-center gap-2">
     <LabeledReportSelect
       label="组织"
-      value="cann"
-      options={[{ value: 'cann', label: 'cann' }]}
+      value={catalog.find((entry) => entry.repo === repo)?.org}
+      options={Array.from(new Set(catalog.map((entry) => entry.org)))
+        .filter(Boolean)
+        .map((org) => ({ value: org, label: org }))}
       minWidth={110}
     />
     <LabeledReportSelect
       label="仓库"
       value={repo}
       onChange={(value) => onRepoChange(value as CiRepoKey)}
-      options={[
-        { value: 'runtime', label: 'runtime' },
-        { value: 'opsnn', label: 'ops-nn' },
-        { value: 'opscv', label: 'ops-cv' },
-        { value: 'graphaf', label: 'graph-autofusion' },
-        { value: 'opstransformer', label: 'ops-transformer' },
-        { value: 'hcomm', label: 'hcomm' },
-        { value: 'pypto', label: 'pypto' },
-        { value: 'ascdevkit', label: 'asc-devkit' },
-        { value: 'hccl', label: 'hccl' },
-        { value: 'hixl', label: 'hixl' },
-        { value: 'ptoisa', label: 'ptoisa' },
-        { value: 'oamtools', label: 'oam-tools' },
-        { value: 'amct', label: 'amct' },
-        { value: 'opbase', label: 'opbase' },
-        { value: 'pyasc', label: 'pyasc' },
-        { value: 'metadef', label: 'metadef' },
-        { value: 'asctools', label: 'asc-tools' },
-      ]}
+      options={catalog.map((entry) => ({
+        value: entry.repo,
+        label: entry.name,
+      }))}
       minWidth={130}
     />
     <LabeledReportSelect

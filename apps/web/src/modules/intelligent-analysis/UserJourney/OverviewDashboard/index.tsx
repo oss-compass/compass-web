@@ -60,7 +60,6 @@ import {
 import OverviewModuleTabs, { type OverviewModule } from './OverviewModuleTabs';
 import CiOverviewPanel from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverviewPanel';
 import IssueOverview from '@modules/intelligent-analysis/DeveloperExperience/IssueContribution/components/IssueOverview';
-import { CI_DATA } from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/data';
 
 type OverviewDashboardProps = {
   org?: string;
@@ -932,7 +931,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             </div>
           ) : null}
 
-          {activeModule === 'ci' ? <CiOverviewPanel data={CI_DATA} /> : null}
+          {activeModule === 'ci' ? <CiOverviewPanel org={org} /> : null}
 
           {activeModule === 'issue' ? (
             <div className="detail-panel-content">

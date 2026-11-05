@@ -9,69 +9,37 @@ import type {
   CiVal,
 } from './types';
 
-const repoSlug = (repo: CiRepoKey) =>
-  repo === 'opsnn'
-    ? 'ops-nn'
-    : repo === 'opscv'
-    ? 'ops-cv'
-    : repo === 'graphaf'
-    ? 'graph-autofusion'
-    : repo;
-
-export const runURL = (repo: CiRepoKey, id: string) =>
-  `https://gitcode.com/cann/${repoSlug(repo)}/actions/runs/${id}`;
-
-export const prURL = (repo: CiRepoKey, n: string | number) =>
-  `https://gitcode.com/cann/${repoSlug(repo)}/merge_requests/${n}`;
-
-/** 归一化 query 中的 repo 值（兼容 ops-nn / opsnn / ops-cv / opscv） */
-export const normalizeRepoKey = (
-  value: string | string[] | undefined
-): CiRepoKey => {
+/** 仓库身份来自后端目录，支持新增仓库与后端提供的名称别名。 */
+export const parseRepoKey = (
+  value: string | string[] | undefined,
+  catalog: Array<{ repo: string; name?: string; slug?: string }> = []
+): CiRepoKey | null => {
   const raw = (Array.isArray(value) ? value[0] : value)?.trim().toLowerCase();
-  if (raw === 'opsnn' || raw === 'ops-nn') {
-    return 'opsnn';
-  }
-  if (raw === 'opscv' || raw === 'ops-cv') {
-    return 'opscv';
-  }
-  if (raw === 'graphaf' || raw === 'graph-autofusion') {
-    return 'graphaf';
-  }
-  const allRepos: CiRepoKey[] = [
-    'runtime',
-    'opsnn',
-    'opscv',
-    'graphaf',
-    'opstransformer',
-    'hcomm',
-    'pypto',
-    'ascdevkit',
-    'hccl',
-    'hixl',
-    'ptoisa',
-    'oamtools',
-    'amct',
-    'opbase',
-    'pyasc',
-    'metadef',
-    'asctools',
-  ];
-  if (raw && allRepos.includes(raw as CiRepoKey)) {
-    return raw as CiRepoKey;
-  }
-  return 'runtime';
+  if (!raw) return null;
+  return (
+    catalog.find((entry) =>
+      [entry.repo, entry.name, entry.slug].some(
+        (alias) => alias?.toLowerCase() === raw
+      )
+    )?.repo ?? null
+  );
 };
 
-/** repo key -> query 参数值（对外用 ops-nn / ops-cv / graph-autofusion，其余用原名） */
-export const repoKeyToQuery = (repo: CiRepoKey) =>
-  repo === 'opsnn'
-    ? 'ops-nn'
-    : repo === 'opscv'
-    ? 'ops-cv'
-    : repo === 'graphaf'
-    ? 'graph-autofusion'
-    : repo;
+export const repoKeyToQuery = (repo: CiRepoKey) => repo;
+
+/** 证据链接以 API 仓库 URL 为基础；来源缺失时不构造猜测地址。 */
+export const runURL = (repositoryUrl: string | undefined, id: string) =>
+  repositoryUrl
+    ? `${repositoryUrl.replace(/\/$/, '')}/actions/runs/${encodeURIComponent(
+        id
+      )}`
+    : undefined;
+export const prURL = (repositoryUrl: string | undefined, n: string | number) =>
+  repositoryUrl
+    ? `${repositoryUrl.replace(/\/$/, '')}/merge_requests/${encodeURIComponent(
+        n
+      )}`
+    : undefined;
 
 /** 维度中文名 */
 export const DIM_NAME: Record<CiDimKey, string> = {

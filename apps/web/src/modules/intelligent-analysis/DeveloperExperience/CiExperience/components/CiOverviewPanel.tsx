@@ -1,18 +1,16 @@
 import React, { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
-import type { CiRepoData, CiRepoKey } from '../types';
+import { useCiDatasetsQuery } from '../queries';
+import CiDataState from './CiDataState';
 import CiEmbeddedReport from './CiEmbeddedReport';
 import CiOverview from './CiOverview';
 import CiViewTabs, { type CiView } from './CiViewTabs';
 import useCannEmbedReachability from './useCannEmbedReachability';
 
-type CiOverviewPanelProps = {
-  data: Record<CiRepoKey, CiRepoData>;
-};
-
 /** 社区工程总览入口：负责内网页签探测及总览/第三方报告切换。 */
-const CiOverviewPanel: React.FC<CiOverviewPanelProps> = ({ data }) => {
+const CiOverviewPanel: React.FC<{ org?: string }> = ({ org }) => {
+  const supportedOrg = !org || org.toLowerCase() === 'cann';
   const router = useRouter();
   const canAccessCannEmbed = useCannEmbedReachability();
   const forceEmbedEntry = useMemo(() => {
@@ -44,11 +42,27 @@ const CiOverviewPanel: React.FC<CiOverviewPanelProps> = ({ data }) => {
     [router]
   );
 
+  const query = useCiDatasetsQuery(
+    supportedOrg && (!showEmbedEntry || activeView === 'overview')
+  );
+
+  if (!supportedOrg) return <CiDataState />;
+
   if (!showEmbedEntry || activeView === 'overview') {
+    if (!query.data || query.isError) {
+      return (
+        <CiDataState
+          loading={query.isLoading}
+          error={query.error}
+          onRetry={() => void query.refetch()}
+        />
+      );
+    }
     return (
       <div className="detail-panel-content">
         <CiOverview
-          data={data}
+          data={query.data.datasets}
+          journeys={query.data.journeys}
           headerAction={
             showEmbedEntry ? (
               <CiViewTabs active={activeView} onChange={handleViewChange} />

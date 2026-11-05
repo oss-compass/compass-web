@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import {
   CiPainTrackingButton,
@@ -206,8 +207,22 @@ it('does not treat a read failure as pending and allows retry', async () => {
       name: /待确认|已确认待修复|状态加载失败/,
     })[0]
   ).toBeDisabled();
-  fireEvent.click(screen.getByRole('button', { name: /重\s*试/ }));
-  await openModal();
+  fireEvent.click(
+    screen.getByRole('button', { name: '执行失败 同一步骤多次失败' })
+  );
+  const details = screen.getByRole('dialog');
+  expect(details).toHaveTextContent('同一步骤多次失败');
+  expect(details).toHaveTextContent('处理状态暂不可用');
+  expect(within(details).queryByText('待确认')).not.toBeInTheDocument();
+  expect(
+    within(details).queryByRole('button', { name: /是，有效问题/ })
+  ).not.toBeInTheDocument();
+  fireEvent.click(
+    within(details).getByRole('button', { name: '重新加载状态' })
+  );
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled()
+  );
   expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled();
 });
 
@@ -322,4 +337,46 @@ it('only shows times for states reached in the current flow', () => {
   expect(findStepTime(resetRecord, 'pending')).toBeUndefined();
   expect(findStepTime(resetRecord, 'confirmed')).toBeUndefined();
   expect(findStepTime(resetRecord, 'fixed')).toBeUndefined();
+});
+
+it('filters the unified list, resets filters and opens full descriptions or the matching step', async () => {
+  const onResetFilters = jest.fn();
+  const onProblemJump = jest.fn();
+  const located = { ...problem, seg: '编译构建' };
+  const other = {
+    ...problem,
+    kb: '另一问题',
+    title: '后端效率问题',
+    dimkey: 'efficiency' as const,
+    pri: 'P1' as const,
+  };
+  const list = (dimension: 'stability' | null, priority: 'P0' | null) => (
+    <CiPainTrackingProvider
+      scope={scope}
+      repo="runtime"
+      problems={[located, other]}
+      activeDimension={dimension}
+      activePriority={priority}
+      onResetFilters={onResetFilters}
+      onProblemJump={onProblemJump}
+    >
+      <span>报告内容</span>
+    </CiPainTrackingProvider>
+  );
+  const { rerender } = render(list('stability', 'P0'));
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /待确认/ })).toBeEnabled()
+  );
+  expect(screen.queryByText('后端效率问题')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: '定位步骤：编译构建' }));
+  expect(onProblemJump).toHaveBeenCalledWith(located);
+  fireEvent.click(screen.getByRole('button', { name: '重置筛选' }));
+  expect(onResetFilters).toHaveBeenCalledTimes(1);
+  rerender(list(null, null));
+  expect(screen.getByText('后端效率问题')).toBeInTheDocument();
+  fireEvent.click(
+    screen.getByRole('button', { name: /另一问题 后端效率问题/ })
+  );
+  expect(screen.getByRole('dialog')).toHaveTextContent('后端效率问题');
+  expect(mockedSave).not.toHaveBeenCalled();
 });

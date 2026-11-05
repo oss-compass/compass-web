@@ -114,7 +114,9 @@ export const SparkLine: React.FC<{
   const w = 200;
   const h = 36;
   const p = 3;
-  const safe = pts.length ? pts : [0];
+  if (!pts.length)
+    return <div className="text-xs text-slate-400">暂无趋势数据</div>;
+  const safe = pts;
   const max = Math.max(...safe);
   const min = Math.min(...safe);
   const span = safe.length > 1 ? safe.length - 1 : 1;

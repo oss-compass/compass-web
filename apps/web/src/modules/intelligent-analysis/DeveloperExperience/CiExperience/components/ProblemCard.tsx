@@ -1,3 +1,4 @@
+import { useCiRepositoryUrl } from '../repository';
 import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import type { CiProblem, CiRepoKey } from '../types';
@@ -16,6 +17,7 @@ type ProblemCardProps = {
 };
 
 const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
+  const repositoryUrl = useCiRepositoryUrl();
   const [open, setOpen] = useState(problem.pri === 'P0');
   const [runsOpen, setRunsOpen] = useState(true);
   const im = problem.impact;
@@ -177,7 +179,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
                           >
                             <td className="border-b border-slate-100 px-3 py-2 align-top">
                               <a
-                                href={runURL(repo, r.id)}
+                                href={runURL(repositoryUrl, r.id)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-600 hover:underline"
@@ -189,7 +191,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
                               {r.pr ? (
                                 <>
                                   <a
-                                    href={prURL(repo, r.pr)}
+                                    href={prURL(repositoryUrl, r.pr)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline"

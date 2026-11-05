@@ -17,11 +17,14 @@ import pyascData from './ci-pyasc-data.json';
 import metadefData from './ci-metadef-data.json';
 import asctoolsData from './ci-asctools-data.json';
 
-// ============ 唯一数据源 ============
+// ============ 历史静态样本（线上报告由 api.ts / queries.ts 加载） ============
 // 17 个仓库全量实测数据由验证仓 gitcode-ci-lab 日粒度聚合，
 // 整块取自 v2 设计稿看板 DATA。渲染层零硬编码：所有数字来自下方 JSON。
 
-export const CI_DATA: Record<CiRepoKey, CiRepoData> = {
+export const CI_DATA: Record<
+  Exclude<CiRepoKey, 'opsmath' | 'ge'>,
+  CiRepoData
+> = {
   runtime: runtimeData as unknown as CiRepoData,
   opsnn: opsnnData as unknown as CiRepoData,
   opscv: opscvData as unknown as CiRepoData,

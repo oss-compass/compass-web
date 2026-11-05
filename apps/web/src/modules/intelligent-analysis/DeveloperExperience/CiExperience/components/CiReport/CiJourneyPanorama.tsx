@@ -1,3 +1,4 @@
+import { useCiRepositoryUrl } from '../../repository';
 import React, { useEffect, useState } from 'react';
 import { CiPainTrackingButton } from '../PainTracking';
 import {
@@ -8,7 +9,6 @@ import {
   DownOutlined,
   ExperimentOutlined,
   FlagOutlined,
-  InfoCircleOutlined,
   MessageOutlined,
   RedoOutlined,
   RocketOutlined,
@@ -20,6 +20,7 @@ import type {
   CiJourneyProblem,
   CiJourneyStage,
   CiRepoKey,
+  CiJourney,
 } from '../../types';
 import {
   ROOT_STATUS_LABEL,
@@ -29,9 +30,9 @@ import {
   rootStatusBadgeClass,
   runURL,
 } from '../../helpers';
-import { CI_JOURNEY } from './journeyData';
 
 type CiJourneyPanoramaProps = {
+  journey: CiJourney;
   repo: CiRepoKey;
   workflow: string;
   day: string;
@@ -44,55 +45,47 @@ type Tone = 'good' | 'warn' | 'bad' | 'neutral';
 /** 段元信息（图标 / 主题色 / 英文眉标 / 简介），按段名索引（仓无关，家族同构） */
 const SEG_META: Record<
   string,
-  { icon: React.ReactNode; color: string; code: string; intro: string }
+  { icon: React.ReactNode; color: string; code: string }
 > = {
   触发确认: {
     icon: <CommentOutlined />,
     color: '#2563eb',
     code: 'TRIGGER',
-    intro: '评论触发 CI → 确认回帖：衡量 CI 是否被正确唤起并及时确认。',
   },
   构建准备: {
     icon: <AppstoreOutlined />,
     color: '#7c3aed',
     code: 'BUILD',
-    intro: '镜像拉取 / 构建环境准备阶段的耗时与稳定性。',
   },
   静态检查: {
     icon: <CodeOutlined />,
     color: '#0891b2',
     code: 'LINT',
-    intro: '代码静态检查（lint / format / header）阶段的耗时与稳定性。',
   },
   编译: {
     icon: <CodeOutlined />,
     color: '#ea580c',
     code: 'COMPILE',
-    intro: '源码编译阶段的耗时、机时消耗与稳定性。',
   },
   单元测试: {
     icon: <ExperimentOutlined />,
     color: '#0d9488',
     code: 'UNIT',
-    intro: '单元测试执行与测试报告生成阶段。',
   },
   系统测试: {
     icon: <RocketOutlined />,
     color: '#e11d48',
     code: 'SYSTEM',
-    intro: 'NPU 真机冒烟（PreSmoke），依赖 self-hosted 执行机在线注册。',
   },
   结果反馈: {
     icon: <MessageOutlined />,
     color: '#d97706',
     code: 'FEEDBACK',
-    intro: '失败到首次反馈的时效与机器人回帖覆盖情况。',
   },
   修复重试: {
     icon: <RedoOutlined />,
     color: '#64748b',
     code: 'RETRY',
-    intro: '失败后重跑的再失败率与重复执行机时消耗。',
   },
 };
 
@@ -101,7 +94,6 @@ const segMeta = (seg: string) =>
     icon: <FlagOutlined />,
     color: '#64748b',
     code: '',
-    intro: '',
   };
 
 /** 四维明细顺序与元信息（对齐设计稿旅程段四维） */
@@ -132,13 +124,6 @@ const SCORE_TONE_TEXT: Record<Tone, string> = {
   neutral: 'text-slate-400',
 };
 
-const SCORE_BADGE: Record<Tone, string> = {
-  good: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  warn: 'border-amber-200 bg-amber-50 text-amber-700',
-  bad: 'border-rose-200 bg-rose-50 text-rose-700',
-  neutral: 'border-slate-200 bg-slate-50 text-slate-500',
-};
-
 const CARD_TONE: Record<Tone, string> = {
   good: 'border-emerald-200 bg-white',
   warn: 'border-amber-200 bg-white',
@@ -160,7 +145,7 @@ const STATUS_WORDS = ['需处理', '关注', '正常'] as const;
 const stageStatusWord = (stage: CiJourneyStage) =>
   STATUS_WORDS.find((w) =>
     DIM_META.some(({ key }) => stage.cells[key]?.word === w)
-  ) ?? '正常';
+  ) ?? '未评估';
 
 /** 段内问题总数（用于左菜单红点） */
 const stageProblemCount = (stage: CiJourneyStage) =>
@@ -478,21 +463,25 @@ const StageProblem: React.FC<{
   /** 外部跳转定位时临时高亮 */
   highlighted?: boolean;
 }> = ({ problem, repo, highlighted }) => {
+  const repositoryUrl = useCiRepositoryUrl();
   const { root, impact } = problem;
-  const [open, setOpen] = useState(true);
-  const [runsOpen, setRunsOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (highlighted) setOpen(true);
+  }, [highlighted]);
+  const [runsOpen, setRunsOpen] = useState(false);
   const metaLines: string[] = [];
   if (impact) {
     const parts = [
-      `${impact.runs} run`,
+      `${impact.runs} 次执行`,
       `${impact.prs} PR`,
       `连续 ${impact.streak_days} 天`,
       `窗口累计 ${impact.window_total}`,
     ];
     if (impact.wasted_min != null) {
-      parts.push(`浪费 ${impact.wasted_min} 机时`);
+      parts.push(`浪费 ${impact.wasted_min} 分钟`);
     }
-    metaLines.push(`影响面：${parts.join(' · ')}`);
+    metaLines.push(`影响：${parts.join(' · ')}`);
     if (impact.cross) {
       metaLines.push(...impact.cross);
     }
@@ -500,11 +489,11 @@ const StageProblem: React.FC<{
   return (
     <div
       data-prob-key={problemKey(problem)}
-      className={`scroll-mt-24 overflow-hidden rounded-2xl border border-rose-200/70 bg-white shadow-[0_10px_24px_rgba(244,63,94,0.06)] transition-shadow ${
-        highlighted ? 'ring-2 ring-violet-400' : ''
+      className={`scroll-mt-24 overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow ${
+        highlighted ? 'ring-2 ring-blue-400' : ''
       }`}
     >
-      <div className="flex w-full items-start justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-rose-50/40">
+      <div className="flex w-full items-start justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -514,17 +503,21 @@ const StageProblem: React.FC<{
           <span className="min-w-0 flex-1">
             <span className="flex flex-wrap items-center gap-2">
               <span
-                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold ${
+                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-bold ${
                   priBadgeClass[problem.pri]
                 }`}
               >
                 {problem.pri}
               </span>
-              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-medium text-slate-500">
                 {problem.dim}
               </span>
             </span>
-            <span className="mt-2 block text-sm font-semibold leading-6 text-slate-900">
+            <span
+              className={`mt-2 block text-sm font-medium leading-6 text-slate-900 ${
+                open ? '' : 'line-clamp-2'
+              }`}
+            >
               {problem.title}
             </span>
           </span>
@@ -539,7 +532,7 @@ const StageProblem: React.FC<{
             className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-slate-600"
           >
             <DownOutlined
-              className={`text-[11px] transition-transform ${
+              className={`text-xs transition-transform ${
                 open ? 'rotate-180' : ''
               }`}
             />
@@ -547,22 +540,20 @@ const StageProblem: React.FC<{
         </div>
       </div>
       {open ? (
-        <div className="border-t border-rose-100 px-4 py-4">
+        <div className="border-t border-slate-200 px-4 py-4">
           {metaLines.map((m, i) => (
             <div
               key={i}
-              className="mb-1 text-[11.5px] leading-relaxed text-slate-500"
+              className="mb-1 text-sm leading-relaxed text-slate-500"
             >
               {m}
             </div>
           ))}
           <div className="mt-2 rounded-xl border border-slate-200/80 bg-slate-50/60 p-3">
             <div className="flex items-center gap-2">
-              <b className="text-[12px] font-semibold text-slate-700">
-                可能根因
-              </b>
+              <b className="text-sm font-semibold text-slate-700">可能根因</b>
               <span
-                className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${
+                className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-semibold ${
                   rootStatusBadgeClass[root.status]
                 }`}
               >
@@ -570,12 +561,12 @@ const StageProblem: React.FC<{
               </span>
             </div>
             {root.cause ? (
-              <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-600">
                 {root.cause}
               </p>
             ) : null}
             {root.evidence && root.evidence.length ? (
-              <div className="mt-2 text-[12px] leading-relaxed text-slate-600">
+              <div className="mt-2 text-sm leading-relaxed text-slate-600">
                 <b className="font-semibold text-slate-700">已核证据</b>
                 <ul className="mt-1 list-disc pl-5">
                   {root.evidence.map((e, i) => (
@@ -585,17 +576,17 @@ const StageProblem: React.FC<{
               </div>
             ) : null}
             {root.guess ? (
-              <p className="mt-2 text-[12px] leading-relaxed text-slate-600">
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 <b className="font-semibold text-slate-700">推测(未核)</b>：
                 {root.guess}
               </p>
             ) : null}
             {root.action ? (
-              <p className="mt-2 text-[12px] leading-relaxed text-slate-600">
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 <b className="font-semibold text-slate-700">建议动作</b>：
                 {root.action}
                 {root.dest ? (
-                  <span className="ml-1 text-[11px] text-slate-400">
+                  <span className="ml-1 text-xs text-slate-400">
                     → {root.dest}
                   </span>
                 ) : null}
@@ -616,14 +607,14 @@ const StageProblem: React.FC<{
                   共 {problem.runs.length} 条
                 </span>
                 <DownOutlined
-                  className={`ml-auto text-[11px] text-slate-400 transition-transform ${
+                  className={`ml-auto text-xs text-slate-400 transition-transform ${
                     runsOpen ? 'rotate-180' : ''
                   }`}
                 />
               </button>
               {runsOpen ? (
                 <div className="mt-2 overflow-x-auto rounded-xl border border-slate-200">
-                  <table className="w-full min-w-[640px] border-collapse text-[11.5px]">
+                  <table className="w-full min-w-[640px] border-collapse text-sm">
                     <thead className="bg-slate-50/80">
                       <tr className="text-slate-500">
                         <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
@@ -648,7 +639,7 @@ const StageProblem: React.FC<{
                         <tr key={r.id} className="align-top text-slate-600">
                           <td className="border-b border-slate-100 px-3 py-2">
                             <a
-                              href={runURL(repo, r.id)}
+                              href={runURL(repositoryUrl, r.id)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:underline"
@@ -658,7 +649,7 @@ const StageProblem: React.FC<{
                           </td>
                           <td className="border-b border-slate-100 px-3 py-2">
                             <a
-                              href={prURL(repo, r.pr)}
+                              href={prURL(repositoryUrl, r.pr)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:underline"
@@ -700,18 +691,15 @@ const StageDetailPanel: React.FC<{
   highlightKey?: string | null;
 }> = ({ stage, repo, workflow, highlightKey }) => {
   const meta = segMeta(stage.seg);
-  const tone = scoreTone(stage.segscore);
   const problems = stage.problems ?? [];
   const [dimsOpen, setDimsOpen] = useState(true);
 
   return (
-    <div className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+    <div className=">lg:h-full overflow-hidden rounded-xl border border-slate-200 bg-white">
       {/* 头部：icon + 标题 + 简介 + 徽章行 */}
       <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
         <div className="flex items-start gap-4">
-          <span
-            className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border text-xl ${SCORE_BADGE[tone]}`}
-          >
+          <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-xl text-slate-600">
             {meta.icon}
           </span>
           <div className="min-w-0">
@@ -721,16 +709,16 @@ const StageDetailPanel: React.FC<{
               </span>{' '}
               {stage.seg}
             </div>
-            <p className="mt-0.5 text-sm leading-6 text-slate-500">
-              {meta.intro}
-            </p>
+            {stage.description?.trim() ? (
+              <p className="mt-1 text-sm leading-6 text-slate-500">
+                {stage.description}
+              </p>
+            ) : null}
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${SCORE_BADGE[tone]}`}
-          >
-            <span>旅程得分</span>
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3.5 py-1.5 text-sm font-semibold text-slate-700">
+            <span>步骤得分</span>
             <span className="text-base leading-none">
               {stage.segscore ?? '本次未评估'}
             </span>
@@ -738,7 +726,7 @@ const StageDetailPanel: React.FC<{
           <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm">
             <span className="font-medium text-slate-600">问题</span>
             <span
-              className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold tabular-nums leading-none ${
+              className={`rounded-full px-1.5 py-0.5 text-xs font-bold tabular-nums leading-none ${
                 problems.length
                   ? 'bg-rose-50 text-rose-600'
                   : 'bg-slate-100 text-slate-500'
@@ -750,7 +738,7 @@ const StageDetailPanel: React.FC<{
           {stage.bare.length ? (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm">
               <span className="font-medium text-slate-600">具体定位</span>
-              <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold leading-none text-slate-700">
+              <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-xs font-semibold leading-none text-slate-700">
                 {workflow} · {stage.bare.join(' / ')}
               </span>
             </span>
@@ -772,14 +760,11 @@ const StageDetailPanel: React.FC<{
               <h4 className="text-base font-semibold text-slate-900">
                 四维明细
               </h4>
-              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
-                段综合分 = 各有效维度等权均值
-              </span>
             </span>
-            <span className="flex shrink-0 items-center gap-1.5 text-[12px] text-slate-400">
+            <span className="flex shrink-0 items-center gap-1.5 text-xs text-slate-400">
               {dimsOpen ? '收起' : '展开'}
               <DownOutlined
-                className={`text-[10px] transition-transform ${
+                className={`text-xs transition-transform ${
                   dimsOpen ? 'rotate-180' : ''
                 }`}
               />
@@ -788,7 +773,7 @@ const StageDetailPanel: React.FC<{
           {dimsOpen ? (
             <>
               <div className="mt-3 overflow-x-auto rounded-2xl border border-slate-200">
-                <table className="w-full min-w-[760px] border-collapse text-[13px]">
+                <table className="w-full min-w-[760px] border-collapse text-sm">
                   <thead>
                     <tr>
                       {[
@@ -801,7 +786,7 @@ const StageDetailPanel: React.FC<{
                       ].map((heading, index) => (
                         <th
                           key={heading}
-                          className={`border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-[11.5px] font-semibold text-slate-500 ${
+                          className={`border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-xs font-semibold text-slate-500 ${
                             index === 1 || index === 5
                               ? 'text-right'
                               : 'text-left'
@@ -815,9 +800,6 @@ const StageDetailPanel: React.FC<{
                   <tbody>
                     {DIM_META.map(({ key, label }) => {
                       const cell = stage.cells[key];
-                      const cellTone = scoreTone(
-                        cell.fallback ? null : cell.score
-                      );
                       const attention = cell.word === '需处理';
                       return (
                         <tr
@@ -827,9 +809,7 @@ const StageDetailPanel: React.FC<{
                           <td className="border-b border-slate-100 px-3 py-2 font-medium text-slate-700">
                             {label}
                           </td>
-                          <td
-                            className={`border-b border-slate-100 px-3 py-2 text-right font-semibold tabular-nums ${SCORE_TONE_TEXT[cellTone]}`}
-                          >
+                          <td className="border-b border-slate-100 px-3 py-2 text-right font-semibold tabular-nums text-slate-900">
                             {cell.fallback ? '—' : cell.score ?? '—'}
                           </td>
                           <td
@@ -844,18 +824,18 @@ const StageDetailPanel: React.FC<{
                           <td className="border-b border-slate-100 px-3 py-2 text-slate-500">
                             {cell.fallback ? (
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="text-[11.5px] text-slate-400">
+                                <span className="text-xs text-slate-400">
                                   该阶段无{label}日度信号
                                 </span>
                                 {cell.score != null ? (
-                                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10.5px] font-medium text-slate-500">
+                                  <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2 py-0.5 text-xs font-medium text-slate-500">
                                     仓库{label} {cell.score} 分 · 仅参考
                                   </span>
                                 ) : null}
                               </div>
                             ) : (
                               <>
-                                <span className="text-[11.5px] text-slate-400">
+                                <span className="text-xs text-slate-400">
                                   {cell.name}
                                 </span>{' '}
                                 <b className="font-semibold text-slate-800">
@@ -886,14 +866,12 @@ const StageDetailPanel: React.FC<{
               </div>
 
               {/* 段趋势缩略折线 */}
-              <div className="mt-3 w-[320px] max-w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_10px_20px_rgba(15,23,42,0.04)]">
+              <div className="mt-3 w-[320px] max-w-full rounded-lg border border-slate-200 bg-white px-4 py-3">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <span className="text-[12px] font-semibold text-slate-500">
+                  <span className="text-xs font-semibold text-slate-500">
                     {stage.trend.name}
                   </span>
-                  <span className="text-[11px] text-slate-400">
-                    近 7 个观测日
-                  </span>
+                  <span className="text-xs text-slate-400">近 7 个观测日</span>
                 </div>
                 <div className="mt-1">
                   <StageSpark series={stage.trend.series} />
@@ -911,7 +889,7 @@ const StageDetailPanel: React.FC<{
                 <FlagOutlined className="text-rose-500" />
                 <h4 className="text-base font-semibold text-slate-900">问题</h4>
               </div>
-              <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-600">
+              <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-600">
                 {problems.length} 个问题
               </span>
             </div>
@@ -928,9 +906,8 @@ const StageDetailPanel: React.FC<{
           </div>
         ) : (
           <div className="border-t border-slate-200 pt-6">
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-[12.5px] text-slate-500">
-              本段当日无独立问题信号（
-              {stage.stats.map((s) => `${s.v} ${s.label}`).join(' · ')}）。
+            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-xs text-slate-500">
+              该步骤当日暂无问题。
             </div>
           </div>
         )}
@@ -945,7 +922,7 @@ const UnsegDetailPanel: React.FC<{
   repo: CiRepoKey;
   highlightKey?: string | null;
 }> = ({ problems, repo, highlightKey }) => (
-  <div className=">lg:h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+  <div className=">lg:h-full overflow-hidden rounded-xl border border-slate-200 bg-white">
     <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
       <div className="flex items-start gap-4">
         <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-xl text-slate-500">
@@ -956,7 +933,7 @@ const UnsegDetailPanel: React.FC<{
             跨段/未映射
           </div>
           <p className="mt-0.5 text-sm leading-6 text-slate-500">
-            阶段名被平台打码（「内容违规已隐藏」）或问题天然跨段（如取消长占），无法归入单一旅程段——在此露出，任何优先级不消失；段内四维表不适用。
+            跨步骤或暂未定位到具体步骤的问题。
           </p>
         </div>
       </div>
@@ -980,7 +957,7 @@ const UnsegDetailPanel: React.FC<{
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-[12.5px] text-slate-500">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-xs text-slate-500">
           当日无跨段/未映射问题。
         </div>
       )}
@@ -995,12 +972,12 @@ const UnsegDetailPanel: React.FC<{
  * 内容参考 v2 设计稿；日观测板 / 周复盘切换已隐藏，默认只展示日观测板。
  */
 const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
+  journey,
   repo,
   workflow,
   day,
   focus,
 }) => {
-  const journey = CI_JOURNEY[repo];
   const board = journey.boards[day];
   const stages = board?.stages ?? [];
   // 默认选中首个「有问题」段，其次首个「需处理」段（对齐设计稿默认落在系统测试）
@@ -1051,16 +1028,13 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
     <section>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          <h2 className="text-xl font-semibold text-slate-900">
+          <h2 className="text-base font-semibold text-slate-900">
             开发者旅程全景图
           </h2>
-          <Tooltip title="主轴=旅程段（仓无关，家族同构形态）；每卡=段综合分 + 星级（视觉）+ 状态词（事件 + 水位双信号）+ 段三宫格；点卡或左侧菜单进入段详情。「本段当日无信号」不造数。">
-            <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
-          </Tooltip>
         </div>
       </div>
 
-      <div className=">md:px-6 rounded-[28px] border border-slate-200 bg-white px-4 py-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+      <div className=">md:px-6 rounded-xl border border-slate-200 bg-white px-4 py-5">
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-slate-200" />
           <div className="text-center">
@@ -1088,7 +1062,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
                   >
                     {/* 下一段与当前都 parallel 时，显示 ∥ */}
                     {stages[index + 1]?.parallel && stage.parallel ? (
-                      <Tooltip title="并行：静态检查与编译同在 compile 阶段时间窗内并行执行，非先后">
+                      <Tooltip title="报告标记为并行执行的步骤">
                         <span className="text-lg font-bold text-indigo-400">
                           ∥
                         </span>

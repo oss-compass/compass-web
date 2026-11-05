@@ -1,319 +1,235 @@
-import React, { useEffect, useState } from 'react';
-import { DownOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
-import type {
-  CiDimKey,
-  CiPri,
-  CiProblem,
-  CiRepoData,
-  CiRepoKey,
-} from '../../types';
+import React, { useId, useState } from 'react';
+import { DownOutlined } from '@ant-design/icons';
+import type { CiDimKey, CiPri, CiProblem, CiJourney } from '../../types';
 import { DIM_NAME } from '../../helpers';
-import { HintIcon } from '../shared';
-import ProblemPanel from '../ProblemPanel';
-import { CI_JOURNEY } from './journeyData';
+import type { CiReportContext } from '../../reportContext';
+import CiScoreDetails from '../CiScoreDetails';
+import CiMetricDetails, { type CiMetricDetailsBoard } from './CiMetricDetails';
 
 type CiReportOverviewProps = {
-  data: CiRepoData;
-  repo: CiRepoKey;
+  journey: CiJourney;
+  context?: CiReportContext;
   day: string;
-  /** 展开面板内问题行点击 → 跳转旅程全景图同段同问题 */
+  board?: CiMetricDetailsBoard;
   onProblemJump?: (problem: CiProblem) => void;
+  problems: CiProblem[];
+  activeDimension: CiDimKey | null;
+  activePriority: CiPri | null;
+  onFilterChange: (dimension: CiDimKey | null, priority: CiPri | null) => void;
 };
 
-const DIMENSIONS: Array<{
-  key: CiDimKey;
-  title: string;
-  description: string;
-}> = [
-  {
-    key: 'stability',
-    title: '稳定性',
-    description: '当日稳定性维度评分，取自验证仓评分口径。',
-  },
-  {
-    key: 'efficiency',
-    title: '效率',
-    description: '当日效率维度评分，取自验证仓评分口径。',
-  },
-  {
-    key: 'interaction',
-    title: '交互体验',
-    description: '当日交互体验维度评分，取自验证仓评分口径。',
-  },
-  {
-    key: 'cost',
-    title: '成本',
-    description: '当日成本维度评分，取自验证仓评分口径。',
-  },
+const DIMENSIONS: CiDimKey[] = [
+  'stability',
+  'efficiency',
+  'interaction',
+  'cost',
 ];
-
-// 卡片展开面板 key：四维卡展开问题清单；综合卡展开「本页怎么读」
-type PanelKey = 'overall' | CiDimKey;
-
-// 状态词配色（小圆点 + 文字，对齐旅程全景图三态：需处理 rose / 关注 amber / 正常 slate）
-const WORD_DOT_CLASS: Record<string, string> = {
-  需处理: 'text-rose-600 [&>i]:bg-rose-500',
-  关注: 'text-amber-600 [&>i]:bg-amber-500',
+const PRIORITIES: CiPri[] = ['P0', 'P1', 'P2'];
+const PRIORITY_CLASS: Record<CiPri, string> = {
+  P0: 'bg-rose-50 text-rose-700 hover:bg-rose-100',
+  P1: 'bg-amber-50 text-amber-700 hover:bg-amber-100',
+  P2: 'bg-amber-50 text-amber-700 hover:bg-amber-100',
 };
-const wordDotClass = (word: string) =>
-  WORD_DOT_CLASS[word] ?? 'text-slate-400 [&>i]:bg-slate-300';
+const CARD_CLASS =
+  'flex min-w-0 items-stretch justify-between gap-x-3 rounded-2xl border px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)] md:gap-x-2 md:px-3';
 
-// 问题数胶囊配色：按最高优先级 P0/P1 红、P2 琥珀（无边框软底，降噪）
-const priTagClass = (pri: CiPri | null) =>
-  pri === 'P2' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600';
-
-const Strong: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <b className="font-semibold text-slate-900">{children}</b>
-);
-
-/** 「本页怎么读」——分数、问题卡 P 级、状态词的关系（对齐源页面同名折叠卡文案）。 */
-const HowToReadPanel: React.FC = () => (
-  <div className="flex flex-col gap-2 text-[12.5px] leading-relaxed text-slate-600">
-    <p>
-      <Strong>两条通道，互不改写</Strong>：<Strong>指标 → 分数</Strong>
-      回答「慢性水平好不好」；<Strong>事件 → 问题卡（P0–P2）</Strong>
-      回答「今天要不要动手」。分数不含 P
-      级、问题卡不改分数——这是防「改分数掩盖问题」的纪律；两者只在下面第④层和状态词处交汇。
-    </p>
-    <p>
-      <Strong>分数有四层</Strong>：
-      <br />① <Strong>指标分</Strong>（0–100）：13
-      个入分指标各按字典「评分公式」列打分（比例类按固定标准，时长类跟自己的过去比）——模型卡「评分明细」看到的就是它；
-      <br />② <Strong>模型分</Strong>：各模型唯一合成公式——稳定性加权
-      35/25/25/15，效率加权 50/25/25，交互体验等权 1/4，成本等权 1/2（权重见附录
-      A 各模型章头）；
-      <br />③ <Strong>总分与等级</Strong>：四模型等权均值；A≥90 / B≥75 / C≥60 /
-      D≥40 / F；完结 run&lt;5 当日不打分；
-      <Strong>日分仅观察，周定稿分=周内日分中位数</Strong>；
-      <br />④ <Strong>旅程段分</Strong>
-      （独立体系，不与上面相加）：每段×每模型一个格分（段代表指标打分），段综合=格分等权均值。
-      <Strong>P 级只影响这一层</Strong>——段格分封顶 P0≤40 / P1≤60 /
-      P2≤75；模型卡分数由全仓指标合成，不由段分加总。
-    </p>
-    <p>
-      <Strong>P 级定义</Strong>：<Strong>P0</Strong>（立刻）= 平台失败聚集 ≥5
-      run，或疑似系统性失败达量级条件（涉及 PR ≥ 当日活跃 PR 半数，或持续 ≥2
-      天）；<Strong>P1</Strong>（今天派活）= 平台零散 / 疑似系统性失败（基线） /
-      超基线 2 倍；<Strong>P2</Strong>（观察）= 其余待定聚集 / 观察项。
-    </p>
-    <p>
-      <Strong>状态词</Strong>：需处理 = 当日有 P0/P1；关注 = 有 P2，或模型分
-      ≤40（分数型信号，补触发器无基线时的盲区）；正常 =
-      两者皆无。慢性项不驱动状态词，进「长期改进追踪」区。
-    </p>
-    <p>
-      <Strong>触发器</Strong>是两条通道的翻译官：把指标的突变（相对前 7
-      日中位）翻译成问题卡；判据见附录 A 各模型章头「触发器」行。
-    </p>
-  </div>
+const ScoreValue: React.FC<{
+  score: number | null | undefined;
+  overall?: boolean;
+}> = ({ score, overall = false }) => (
+  <span className="mt-3 flex items-baseline gap-1.5">
+    <span
+      className={`font-semibold tabular-nums leading-none text-slate-900 ${
+        score == null ? 'text-base' : 'text-2xl'
+      }`}
+    >
+      {score ?? '未评估'}
+    </span>
+    {score != null ? (
+      <span className="text-sm font-medium text-slate-500">
+        {overall ? '/ 100' : '分'}
+      </span>
+    ) : null}
+  </span>
 );
 
 const CiReportOverview: React.FC<CiReportOverviewProps> = ({
-  data,
-  repo,
+  journey,
+  context,
   day,
+  board,
   onProblemJump,
+  problems,
+  activeDimension,
+  activePriority,
+  onFilterChange,
 }) => {
-  const journey = CI_JOURNEY[repo];
-  const board = journey.boards[day];
-  const scores = board?.scores ?? null;
-  // 详情面板数据走逐日看板（board.problems / board.metrics），与旅程 scores 并行两套数据源
-  const dayBoard = data.boards[day];
-
-  // 选中卡片：四维卡展开「当日问题清单与结果指标」，综合卡展开「本页怎么读」，再次点击收起
-  const [activePanel, setActivePanel] = useState<PanelKey | null>(null);
-  useEffect(() => {
-    setActivePanel(null);
-  }, [repo]);
-
-  const dimensionScores = DIMENSIONS.map((dimension) => {
-    // 状态词 / 问题数 / 最高优先级取自逐日看板 dims（与四模型卡同源），分数仍以旅程 scores 为准
-    const info = dayBoard?.dims?.find((d) => d.key === dimension.key) ?? null;
-    return {
-      ...dimension,
-      value: scores?.dims[dimension.key]?.score ?? null,
-      word: info?.word ?? null,
-      probn: info?.probn ?? 0,
-      toppri: info?.toppri ?? null,
-    };
-  });
-  const metrics: Array<{
-    key: 'overall' | CiDimKey;
-    title: string;
-    description: string;
-    value: number | null;
-    word?: string | null;
-    probn?: number;
-    toppri?: CiPri | null;
-  }> = [
-    {
-      key: 'overall',
-      title: '综合体验评分',
-      description:
-        '当日四维加权综合评分，取自验证仓评分口径（日分仅观察、周分为准）。',
-      value: scores?.total ?? null,
-    },
-    ...dimensionScores,
-  ];
-
-  const toggleDim = (key: PanelKey) => {
-    setActivePanel((cur) => (cur === key ? null : key));
+  const scores = journey.boards[day]?.scores;
+  const [scoreDetailsOpen, setScoreDetailsOpen] = useState(false);
+  const detailsId = useId();
+  const expanded = scoreDetailsOpen ? 'overall' : activeDimension;
+  const selectDimension = (
+    dimension: CiDimKey | null,
+    priority: CiPri | null
+  ) => {
+    setScoreDetailsOpen(false);
+    onFilterChange(dimension, priority);
+  };
+  const closeDetails = () => {
+    setScoreDetailsOpen(false);
+    onFilterChange(null, null);
   };
 
   return (
-    <div>
-      <div className="mb-2 text-base font-semibold text-slate-800">
-        报告概览
-      </div>
-      <div className="grid grid-cols-5 gap-4">
-        {metrics.map((metric) => {
-          const clickable = metric.key === 'overall' ? true : Boolean(dayBoard);
-          const active = clickable && activePanel === metric.key;
+    <section aria-label="报告概览">
+      <h2 className="mb-3 text-base font-semibold text-slate-800">报告概览</h2>
+      <div className="grid grid-cols-5 gap-4 md:grid-cols-2 md:gap-3 xl:grid-cols-3">
+        <button
+          type="button"
+          aria-label={`综合体验评分，${scores?.total ?? '未评估'}${
+            scores?.total != null ? '分' : ''
+          }，查看评分说明`}
+          aria-expanded={expanded === 'overall'}
+          aria-controls={detailsId}
+          onClick={() => {
+            setScoreDetailsOpen((open) => !open);
+            onFilterChange(null, null);
+          }}
+          className={`${CARD_CLASS} flex-col !justify-center text-left transition-colors hover:border-slate-300 focus-visible:outline-blue-600 md:col-span-2 ${
+            expanded === 'overall'
+              ? 'border-blue-300 bg-blue-50/50'
+              : 'border-slate-200/80 bg-white/90'
+          }`}
+        >
+          <span className="flex items-center gap-1.5 text-sm font-medium text-slate-500">
+            综合体验评分{' '}
+            <DownOutlined
+              aria-hidden
+              className={`text-xs text-slate-400 transition-transform ${
+                expanded === 'overall' ? 'rotate-180' : ''
+              }`}
+            />
+          </span>
+          <ScoreValue score={scores?.total} overall />
+        </button>
+        {DIMENSIONS.map((dimension) => {
+          const score = scores?.dims[dimension]?.score;
+          const active = activeDimension === dimension;
+          const priorities = PRIORITIES.map((priority) => ({
+            priority,
+            count: problems.filter(
+              (problem) =>
+                problem.dimkey === dimension && problem.pri === priority
+            ).length,
+          })).filter(({ count }) => count > 0);
           return (
             <div
-              key={metric.key}
-              role={clickable ? 'button' : undefined}
-              tabIndex={clickable ? 0 : undefined}
-              aria-pressed={clickable ? active : undefined}
-              onClick={clickable ? () => toggleDim(metric.key) : undefined}
-              onKeyDown={
-                clickable
-                  ? (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleDim(metric.key);
-                      }
-                    }
-                  : undefined
-              }
-              title={
-                clickable
-                  ? metric.key === 'overall'
-                    ? `点击${
-                        active ? '收起' : '展开'
-                      }本页怎么读 · 分数、问题卡 P 级、状态词的关系`
-                    : `点击${active ? '收起' : '展开'}${
-                        metric.title
-                      } · 当日问题清单与结果指标`
-                  : undefined
-              }
-              className={`flex min-w-0 items-stretch justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white/90 px-4 py-3 shadow-[0_12px_32px_rgba(15,23,42,0.05)] transition-all duration-200 ${
-                active ? 'ring-2 ring-violet-400' : ''
-              } ${
-                clickable
-                  ? 'cursor-pointer hover:shadow-[0_8px_20px_rgba(15,23,42,0.10)]'
-                  : ''
+              key={dimension}
+              className={`${CARD_CLASS} ${
+                active
+                  ? 'border-blue-300 bg-blue-50/50'
+                  : 'border-slate-200/80 bg-white/90'
               }`}
             >
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
-                <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-slate-500">
-                  <span className="truncate">{metric.title}</span>
-                  <Tooltip title={metric.description}>
-                    <InfoCircleOutlined className="shrink-0 cursor-help text-slate-400" />
-                  </Tooltip>
-                </div>
-                <div className="mt-3 flex items-baseline gap-1.5">
-                  <div className="text-2xl font-semibold leading-none text-slate-900">
-                    {metric.value ?? '—'}
-                  </div>
-                  {metric.value != null ? (
-                    <div className="text-sm font-medium text-slate-500">分</div>
-                  ) : null}
-                </div>
-              </div>
-              {/* 右侧竖列：状态词与问题数同一行靠右，展开箭头沉底；综合卡仅箭头 */}
-              <div className="flex shrink-0 flex-col items-end justify-between gap-1">
-                {metric.key !== 'overall' && (metric.word || metric.probn) ? (
-                  <div className="flex items-center gap-1.5">
-                    {metric.probn ? (
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium leading-none ${priTagClass(
-                          metric.toppri ?? null
-                        )}`}
-                      >
-                        {metric.toppri ? `${metric.toppri} · ` : ''}
-                        {metric.probn} 问题
-                      </span>
-                    ) : null}
-                    {metric.word ? (
-                      <span
-                        className={`inline-flex items-center gap-1 text-[11px] font-medium ${wordDotClass(
-                          metric.word
-                        )}`}
-                      >
-                        <i className="h-1.5 w-1.5 rounded-full" />
-                        {metric.word}
-                      </span>
-                    ) : null}
-                  </div>
-                ) : null}
-                {clickable ? (
+              <button
+                type="button"
+                aria-label={`${DIM_NAME[dimension]}，${score ?? '未评估'}${
+                  score != null ? '分' : ''
+                }`}
+                aria-pressed={active && activePriority === null}
+                aria-expanded={active}
+                aria-controls={detailsId}
+                onClick={() => selectDimension(active ? null : dimension, null)}
+                className="flex min-w-0 flex-1 flex-col justify-center rounded text-left focus-visible:outline-blue-600"
+              >
+                <span className="text-sm font-medium text-slate-500">
+                  {DIM_NAME[dimension]}
                   <DownOutlined
-                    className={`mt-auto text-[16px] text-blue-600 transition-transform ${
+                    aria-hidden
+                    className={`ml-1 text-[10px] text-slate-400 transition-transform ${
                       active ? 'rotate-180' : ''
                     }`}
                   />
-                ) : null}
-              </div>
+                </span>
+                <ScoreValue score={score} />
+              </button>
+              {priorities.length ? (
+                <div className="flex shrink-0 flex-col justify-center gap-1">
+                  {priorities.map(({ priority, count }) => {
+                    const selected = active && activePriority === priority;
+                    return (
+                      <button
+                        key={priority}
+                        type="button"
+                        aria-label={`筛选${DIM_NAME[dimension]} ${priority} 问题，${count} 项`}
+                        aria-pressed={selected}
+                        onClick={() =>
+                          selectDimension(dimension, selected ? null : priority)
+                        }
+                        className={`inline-flex items-center justify-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium tabular-nums transition-colors focus-visible:outline-blue-600 ${
+                          selected
+                            ? 'bg-blue-100 text-blue-700'
+                            : PRIORITY_CLASS[priority]
+                        }`}
+                      >
+                        <span>{priority}</span>
+                        <span>·</span>
+                        <span>{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
             </div>
           );
         })}
       </div>
-
-      {/* 综合卡详情：本页怎么读（对齐设计稿同名折叠卡） */}
-      {activePanel === 'overall' ? (
-        <div className="mt-4 rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <h3 className="text-[15px] font-semibold text-slate-900">
-                本页怎么读 · 分数、问题卡 P 级、状态词的关系
+      {expanded ? (
+        <section
+          id={detailsId}
+          aria-label={
+            expanded === 'overall'
+              ? '综合评分详情'
+              : `${DIM_NAME[expanded]}详情`
+          }
+          className="mt-4 min-w-0 rounded-xl border border-slate-200 bg-slate-50/40 p-4 md:p-3"
+        >
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-baseline gap-3">
+              <h3 className="text-base font-semibold text-slate-900">
+                {expanded === 'overall'
+                  ? '综合评分详情'
+                  : `${DIM_NAME[expanded]}详情`}
               </h3>
-              <HintIcon title="再次点击综合体验评分卡收起。" />
+              <span className="text-xs text-slate-500">{day}</span>
             </div>
             <button
               type="button"
-              onClick={() => setActivePanel(null)}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+              onClick={closeDetails}
+              aria-label="收起指标详情"
+              className="rounded px-2 py-1 text-sm text-slate-500 hover:bg-slate-100 focus-visible:outline-blue-600"
             >
-              收起 <DownOutlined className="rotate-180 text-[10px]" />
+              收起{' '}
+              <DownOutlined aria-hidden className="ml-1 rotate-180 text-xs" />
             </button>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <HowToReadPanel />
-          </div>
-        </div>
-      ) : null}
-
-      {/* 维度详情：当日问题清单与结果指标（对齐设计稿「稳定性 · 当日问题清单与结果指标」面板） */}
-      {activePanel && activePanel !== 'overall' && dayBoard ? (
-        <div className="mt-4 rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <h3 className="text-[15px] font-semibold text-slate-900">
-                {DIM_NAME[activePanel]} · 当日问题清单与结果指标
-              </h3>
-              <HintIcon title="点击其他维度卡切换；再次点击当前卡收起。" />
+          {expanded === 'overall' ? (
+            <div className="max-h-96 overflow-y-auto">
+              <CiScoreDetails context={context} />
             </div>
-            <button
-              type="button"
-              onClick={() => setActivePanel(null)}
-              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
-            >
-              收起 <DownOutlined className="rotate-180 text-[10px]" />
-            </button>
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <ProblemPanel
-              repo={repo}
-              board={dayBoard}
-              dim={activePanel}
+          ) : (
+            <CiMetricDetails
+              dimension={expanded}
+              priority={activePriority}
+              board={board}
+              problems={problems}
+              onClearPriority={() => selectDimension(expanded, null)}
               onProblemJump={onProblemJump}
             />
-          </div>
-        </div>
+          )}
+        </section>
       ) : null}
-    </div>
+    </section>
   );
 };
 

@@ -1,23 +1,6 @@
 // CI 体验诊断 · 数据类型（对齐 v2 设计稿 DATA schema，纯数据、不含 ReactNode）
 
-export type CiRepoKey =
-  | 'runtime'
-  | 'opsnn'
-  | 'opscv'
-  | 'graphaf'
-  | 'opstransformer'
-  | 'hcomm'
-  | 'pypto'
-  | 'ascdevkit'
-  | 'hccl'
-  | 'hixl'
-  | 'ptoisa'
-  | 'oamtools'
-  | 'amct'
-  | 'opbase'
-  | 'pyasc'
-  | 'metadef'
-  | 'asctools';
+export type CiRepoKey = string;
 
 export type CiDimKey = 'stability' | 'efficiency' | 'interaction' | 'cost';
 
@@ -287,6 +270,9 @@ export type CiWeekly = {
 };
 
 export type CiRepoData = {
+  repository_url?: string;
+  org?: string;
+  name: string;
   workflow: string;
   days: string[];
   boards: Record<string, CiBoard>;
@@ -349,6 +335,7 @@ export type CiJourneyFocus = {
 
 /** 单个旅程段（每卡=段综合分 + 星级 + 状态词 + 段三宫格；点卡进入段详情） */
 export type CiJourneyStage = {
+  description?: string;
   /** 段名（触发确认 / 构建准备 / …），同时用作段唯一标识 */
   seg: string;
   /** 段综合分（段内各有效维度等权均值；「仓级」回退格不参与；当日无有效维度时为 null=本次未评估） */

@@ -5,6 +5,7 @@ import type {
   CiWeeklyProb,
   CiDimKey,
   CiJourneyScores,
+  CiJourney,
 } from '../../types';
 import {
   daySeries,
@@ -19,7 +20,6 @@ import {
   type CiDaySeries,
   type CiDelta,
 } from '../../helpers';
-import { CI_JOURNEY } from '../CiReport/journeyData';
 
 /**
  * 社区 CI/CD 总览 · 跨仓聚合计算层
@@ -41,48 +41,7 @@ const PRI_NAME: Record<CiPri, string> = {
   P2: '显著影响',
 };
 
-const PRI_DESC: Record<CiPri, string> = {
-  P0: '平台侧故障导致流水线大面积挂死，贡献者无法自行解决，需基础设施团队优先处理。',
-  P1: '平台或环境问题造成显著失败/耗时上浮，影响多个 PR，需限期治理。',
-  P2: '局部退化或待观察项，暂不阻塞主干，持续跟踪或待人工判读。',
-};
-
 /** 仓库顺序（runtime 优先，与详细看板一致） */
-const REPO_ORDER: CiRepoKey[] = [
-  'runtime',
-  'opsnn',
-  'opscv',
-  'graphaf',
-  'opstransformer',
-  'hcomm',
-  'pypto',
-  'ascdevkit',
-  'hccl',
-  'hixl',
-  'ptoisa',
-  'oamtools',
-  'amct',
-  'opbase',
-  'pyasc',
-  'metadef',
-  'asctools',
-];
-const repoSlug = (repo: CiRepoKey) =>
-  repo === 'opsnn'
-    ? 'ops-nn'
-    : repo === 'opscv'
-    ? 'ops-cv'
-    : repo === 'graphaf'
-    ? 'graph-autofusion'
-    : repo === 'opstransformer'
-    ? 'ops-transformer'
-    : repo === 'ascdevkit'
-    ? 'asc-devkit'
-    : repo === 'oamtools'
-    ? 'oam-tools'
-    : repo === 'asctools'
-    ? 'asc-tools'
-    : repo;
 
 const isActive = (p: { status: string }) => /^仍活跃/.test(p.status);
 const isFaded = (p: { status: string }) => /已消退/.test(p.status);
@@ -128,19 +87,20 @@ export type CiRepoSummary = {
 /** 单仓报告概览得分 · 最新日期（该仓最新非空观测日的日分，口径同 CI 报告页概览） */
 const repoScoreLatest = (
   repo: CiRepoKey,
+  journeys: Partial<Record<CiRepoKey, CiJourney>>,
   sel: (sc: CiJourneyScores) => number | null
 ): number | null => {
-  const j = CI_JOURNEY[repo];
+  const j = journeys[repo];
   if (!j) return null;
-  for (let i = j.days.length - 1; i >= 0; i--) {
-    const b = j.boards[j.days[i]];
-    const v = b?.scores ? sel(b.scores) : null;
-    if (v != null) return v;
-  }
-  return null;
+  const board = j.boards[j.days[j.days.length - 1]];
+  return board?.scores ? sel(board.scores) : null;
 };
 
-const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
+const repoSummary = (
+  repo: CiRepoKey,
+  d: CiRepoData,
+  journeys: Partial<Record<CiRepoKey, CiJourney>>
+): CiRepoSummary => {
   const w = d.weekly;
   const s = daySeries(d);
   const run = d.days.map((dt) => metaNum(d.boards[dt], 'run'));
@@ -169,7 +129,7 @@ const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
     : 'good';
   return {
     repo,
-    slug: repoSlug(repo),
+    slug: d.name,
     workflow: d.workflow,
     days: d.days,
     latestDay: d.days[d.days.length - 1] || '',
@@ -188,20 +148,27 @@ const repoSummary = (repo: CiRepoKey, d: CiRepoData): CiRepoSummary => {
     blk0,
     blkL,
     activeP01,
-    scoreOverall: repoScoreLatest(repo, (sc) => sc.total),
+    scoreOverall: repoScoreLatest(repo, journeys, (sc) => sc.total),
     scoreStability: repoScoreLatest(
       repo,
+      journeys,
       (sc) => sc.dims.stability?.score ?? null
     ),
     scoreEfficiency: repoScoreLatest(
       repo,
+      journeys,
       (sc) => sc.dims.efficiency?.score ?? null
     ),
     scoreInteraction: repoScoreLatest(
       repo,
+      journeys,
       (sc) => sc.dims.interaction?.score ?? null
     ),
-    scoreCost: repoScoreLatest(repo, (sc) => sc.dims.cost?.score ?? null),
+    scoreCost: repoScoreLatest(
+      repo,
+      journeys,
+      (sc) => sc.dims.cost?.score ?? null
+    ),
     faded,
     backfill,
     hasP0,
@@ -389,14 +356,16 @@ const last = <T>(a: T[]): T | undefined => a[a.length - 1];
  * workflow 原生阶段短名 → 开发者旅程全景图段名 + 段顺序。
  * 口径同旅程全景图：取各仓最新观测日的八段定义并集，由 bare（如 image/compile/ut/PreSmoke）反查段名。
  */
-const buildJourneyStageMap = (): {
+const buildJourneyStageMap = (
+  journeys: Partial<Record<CiRepoKey, CiJourney>>
+): {
   bareToSeg: Record<string, string>;
   order: string[];
 } => {
   const bareToSeg: Record<string, string> = {};
   const order: string[] = [];
-  REPO_ORDER.forEach((repo) => {
-    const j = CI_JOURNEY[repo];
+  Object.keys(journeys).forEach((repo) => {
+    const j = journeys[repo];
     if (!j || !j.days.length) return;
     const board = j.boards[j.days[j.days.length - 1]];
     (board?.stages ?? []).forEach((st) => {
@@ -429,11 +398,12 @@ const mapProbStages = (
 
 /** 计算社区 CI/CD 总览全部模块所需数据（跨仓聚合）。 */
 export const computeCommunityOverview = (
-  data: Record<CiRepoKey, CiRepoData>
+  data: Record<CiRepoKey, CiRepoData>,
+  journeys: Partial<Record<CiRepoKey, CiJourney>>
 ): CiCommunityOverview => {
-  const repos = REPO_ORDER.filter((r) => data[r]).map((r) =>
-    repoSummary(r, data[r])
-  );
+  const repos = Object.keys(data)
+    .filter((r) => data[r])
+    .map((r) => repoSummary(r, data[r], journeys));
   const agg = aggSeries(repos);
   const hasData = repos.some((x) => x.days.length > 0);
 
@@ -472,14 +442,14 @@ export const computeCommunityOverview = (
   const dWaste = delta(agg.waste[0] ?? null, last(agg.waste) ?? null, true);
 
   // 报告概览五项得分 · 最新日期：取两仓最新非空观测日的非空日分池化后的当日值，
-  // 得分权威口径取自 CI_JOURNEY[repo].boards[day].scores（与 CI 报告页概览同源）。
+  // 得分权威口径取自 journeys[repo].boards[day].scores（与 CI 报告页概览同源）。
   const scoreDayLatest = (
     sel: (s: CiJourneyScores) => number | null
   ): { latest: number | null; series: (number | null)[] } => {
     const series = agg.days.map((dt) => {
       const perDay: number[] = [];
       repos.forEach((x) => {
-        const b = CI_JOURNEY[x.repo]?.boards[dt];
+        const b = journeys[x.repo]?.boards[dt];
         const v = b?.scores ? sel(b.scores) : null;
         if (v != null) {
           perDay.push(v);
@@ -489,7 +459,7 @@ export const computeCommunityOverview = (
         ? +(perDay.reduce((a, b) => a + b, 0) / perDay.length).toFixed(1)
         : null;
     });
-    const lastVal = lastNZ(series);
+    const lastVal = last(series);
     const latest = lastVal != null ? Math.round(lastVal) : null;
     return { latest, series };
   };
@@ -541,7 +511,7 @@ export const computeCommunityOverview = (
   const kpis: CiKpi[] = scoreDefs.map((def) => {
     const { latest, series } = scoreDayLatest(def.sel);
     const first = firstNZ(series);
-    const lastVal = lastNZ(series);
+    const lastVal = last(series);
     const d = delta(first, lastVal, false);
     return {
       label: def.label,
@@ -573,7 +543,7 @@ export const computeCommunityOverview = (
     return {
       pri,
       name: PRI_NAME[pri],
-      desc: PRI_DESC[pri],
+      desc: '',
       active: ps.filter(isActive).length,
       faded,
       backfill: ps.filter(isBackfill).length,
@@ -635,7 +605,7 @@ export const computeCommunityOverview = (
   const statusRank = (p: { status: string }) =>
     isActive(p) ? 0 : isBackfill(p) ? 1 : isFaded(p) ? 2 : 3;
   const { bareToSeg: stageBareToSeg, order: journeyStageOrder } =
-    buildJourneyStageMap();
+    buildJourneyStageMap(journeys);
   const topIssues: CiTopIssue[] = allProbs
     .sort(
       (a, b) =>

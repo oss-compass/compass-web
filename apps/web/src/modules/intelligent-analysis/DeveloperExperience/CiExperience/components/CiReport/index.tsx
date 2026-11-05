@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import type {
+  CiDimKey,
+  CiPri,
   CiJourneyFocus,
   CiProblem,
   CiRepoData,
   CiRepoKey,
+  CiJourney,
 } from '../../types';
 import { problemKey } from '../../helpers';
 import { Collapsible, EmptyState } from '../shared';
@@ -11,32 +14,47 @@ import Appendix from '../Appendix';
 import CiReportOverview from './CiReportOverview';
 import CiJourneyPanorama from './CiJourneyPanorama';
 import DailyDrilldown from './DailyDrilldown';
-import DeepAnalysis from './DeepAnalysis';
-import { CI_JOURNEY } from './journeyData';
+
 import { CiPainTrackingProvider } from '../PainTracking';
 import { uniqueProblems } from '../PainTracking/model';
+import type { CiReportContext } from '../../reportContext';
+import { CiRepositoryProvider } from '../../repository';
 
 type CiReportProps = {
+  journey: CiJourney;
+  context?: CiReportContext;
   data: CiRepoData;
   repo: CiRepoKey;
   day: string;
   org?: string;
 };
 
-/**
- * 报告部分（开发者旅程全景图驱动）：
- * 体验得分区已重构为开发者旅程全景图（样式借鉴社区入门体验旅程全景图）；
- * 日观测板 / 周复盘切换已隐藏，默认只展示日观测板 → 深度分析 → 附录。
- */
-const CiReport: React.FC<CiReportProps> = ({ data, repo, day, org }) => {
-  const scope = { org: org || 'cann', repo, workflow: data.workflow, day };
-  const journeyBoard = CI_JOURNEY[repo]?.boards[day];
+const CiReport: React.FC<CiReportProps> = ({
+  data,
+  journey,
+  context,
+  repo,
+  day,
+  org,
+}) => {
+  const scope = {
+    org: data.org || org || '',
+    repo,
+    workflow: data.workflow,
+    day,
+  };
+  const journeyBoard = journey.boards[day];
   const problems = uniqueProblems([
     ...(data.boards[day]?.problems ?? []),
     ...(journeyBoard?.stages.flatMap((stage) => stage.problems) ?? []),
     ...(journeyBoard?.unsegProblems ?? []),
   ]).sort((a, b) => a.pri.localeCompare(b.pri) || b.impact.prs - a.impact.prs);
-  // 报告概览展开面板问题行点击 → 全景图切段并定位同一问题
+  const [dimension, setDimension] = useState<CiDimKey | null>(null);
+  const [priority, setPriority] = useState<CiPri | null>(null);
+  const resetFilters = () => {
+    setDimension(null);
+    setPriority(null);
+  };
   const [journeyFocus, setJourneyFocus] = useState<CiJourneyFocus | null>(null);
   const handleProblemJump = (p: CiProblem) => {
     setJourneyFocus({
@@ -56,54 +74,59 @@ const CiReport: React.FC<CiReportProps> = ({ data, repo, day, org }) => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <CiPainTrackingProvider
-        key={JSON.stringify(scope)}
-        scope={scope}
-        repo={repo}
-        problems={problems}
-      >
-        <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-          <CiReportOverview
-            data={data}
-            repo={repo}
-            day={day}
-            onProblemJump={handleProblemJump}
-          />
-
-          {/* 体验得分（重构为开发者旅程全景图，含段详情：四维度 / 段中位耗时 / 段内问题） */}
-          <div className="mt-2 border-slate-100 pt-5">
-            <CiJourneyPanorama
-              repo={repo}
-              workflow={data.workflow}
+    <CiRepositoryProvider value={data.repository_url}>
+      <div className="flex flex-col gap-4">
+        <CiPainTrackingProvider
+          key={JSON.stringify(scope)}
+          scope={scope}
+          repo={repo}
+          problems={problems}
+          activeDimension={dimension}
+          activePriority={priority}
+          onResetFilters={resetFilters}
+          onProblemJump={handleProblemJump}
+        >
+          <div className="rounded-xl border border-slate-200 bg-white p-6 md:p-4">
+            <CiReportOverview
+              journey={journey}
+              context={context}
               day={day}
-              focus={journeyFocus}
+              board={data.boards[day]}
+              onProblemJump={handleProblemJump}
+              problems={problems}
+              activeDimension={dimension}
+              activePriority={priority}
+              onFilterChange={(nextDimension, nextPriority) => {
+                setDimension(nextDimension);
+                setPriority(nextPriority);
+              }}
             />
+
+            <div className="mt-2 border-slate-100 pt-5">
+              <CiJourneyPanorama
+                journey={journey}
+                repo={repo}
+                workflow={data.workflow}
+                day={day}
+                focus={journeyFocus}
+              />
+            </div>
           </div>
-        </div>
-      </CiPainTrackingProvider>
-      <DailyDrilldown data={data} day={day} />
+        </CiPainTrackingProvider>
+        <DailyDrilldown data={data} day={day} />
 
-      {/* 深度分析（默认折叠） */}
-      <DeepAnalysis data={data} />
-
-      {/* 附录 · 口径与来源（默认折叠，与深度分析同级） */}
-      <Collapsible
-        className="!rounded-2xl !border-slate-200 shadow-[0_4px_16px_rgba(15,23,42,0.06)]"
-        summary={
-          <span className="flex flex-wrap items-baseline gap-2">
-            <span className="text-base font-semibold text-slate-900">
-              附录 · 口径与来源
+        <Collapsible
+          className="!rounded-xl !border-slate-200"
+          summary={
+            <span className="inline-block py-2 text-base font-semibold text-slate-900">
+              评分口径与数据来源
             </span>
-            <span className="text-[11.5px] font-normal text-slate-400">
-              指标口径与数据来源说明（点击展开）
-            </span>
-          </span>
-        }
-      >
-        <Appendix />
-      </Collapsible>
-    </div>
+          }
+        >
+          <Appendix context={context} />
+        </Collapsible>
+      </div>
+    </CiRepositoryProvider>
   );
 };
 

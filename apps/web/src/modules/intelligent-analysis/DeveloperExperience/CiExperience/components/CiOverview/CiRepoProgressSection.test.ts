@@ -1,5 +1,9 @@
 import type { CiTopIssue } from './communityMetrics';
-import { buildCiAggregateRow, type RepoRow } from './CiRepoProgressSection';
+import {
+  buildCiAggregateRow,
+  groupCiRepoCategories,
+  type RepoRow,
+} from './CiRepoProgressSection';
 
 const issue = (key: string, status: string): CiTopIssue =>
   ({ key, status } as CiTopIssue);
@@ -46,4 +50,20 @@ describe('community engineering repository category aggregation', () => {
       repos: [],
     });
   });
+});
+
+it('only groups categories supplied by the API without static empty categories', () => {
+  const item = {
+    ...repo('dynamic', 0, []),
+    repoCategory: 'backend-new-category',
+  };
+  const groups = groupCiRepoCategories([item]);
+  expect(groups).toEqual([
+    {
+      key: 'backend-new-category',
+      label: 'backend-new-category',
+      repos: [item],
+    },
+  ]);
+  expect(groupCiRepoCategories([])).toEqual([]);
 });
