@@ -142,3 +142,16 @@ it('shows retry on API errors instead of static reports', () => {
   fireEvent.click(screen.getByRole('button', { name: /重\s*试/ }));
   expect(refetch).toHaveBeenCalled();
 });
+
+it('opens the observation day supplied by overview links and falls back for invalid dates', () => {
+  router.query = { repo: 'runtime', day: '2026-11-02' };
+  const { rerender } = render(<CiExperience />);
+  expect(screen.getByTestId('report')).toHaveTextContent(
+    'runtime:2026-11-02:71'
+  );
+  router.query = { repo: 'runtime', day: '2000-01-01' };
+  rerender(<CiExperience />);
+  expect(screen.getByTestId('report')).toHaveTextContent(
+    'runtime:2026-11-03:71'
+  );
+});

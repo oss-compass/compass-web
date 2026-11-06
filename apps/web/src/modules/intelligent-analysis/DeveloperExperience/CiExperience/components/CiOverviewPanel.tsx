@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Typography } from 'antd';
-import { useCiDatasetsQuery } from '../queries';
+import { useCiDatasetsQuery, useCiPainOverviewQuery } from '../queries';
 import CiDataState from './CiDataState';
 import CiEmbeddedReport from './CiEmbeddedReport';
 import CiOverview from './CiOverview';
@@ -45,6 +45,9 @@ const CiOverviewPanel: React.FC<{ org?: string }> = ({ org }) => {
   const query = useCiDatasetsQuery(
     supportedOrg && (!showEmbedEntry || activeView === 'overview')
   );
+  const painQuery = useCiPainOverviewQuery(
+    supportedOrg && (!showEmbedEntry || activeView === 'overview')
+  );
 
   if (!supportedOrg) return <CiDataState />;
 
@@ -63,6 +66,13 @@ const CiOverviewPanel: React.FC<{ org?: string }> = ({ org }) => {
         <CiOverview
           data={query.data.datasets}
           journeys={query.data.journeys}
+          painData={painQuery.data}
+          painLoading={painQuery.isLoading}
+          painError={painQuery.isError}
+          onRetryPain={() => {
+            void query.refetch();
+            void painQuery.refetch();
+          }}
           headerAction={
             showEmbedEntry ? (
               <CiViewTabs active={activeView} onChange={handleViewChange} />

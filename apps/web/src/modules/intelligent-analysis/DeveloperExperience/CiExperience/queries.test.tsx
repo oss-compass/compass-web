@@ -5,13 +5,16 @@ import {
   useCiCatalogQuery,
   useCiDatasetQuery,
   useCiDatasetsQuery,
+  useCiPainOverviewQuery,
 } from './queries';
+import { fetchCiPainOverview } from './overviewApi';
 import { fetchCiCatalog, fetchCiDataset, fetchCiDatasets } from './api';
 jest.mock('./api', () => ({
   fetchCiCatalog: jest.fn(),
   fetchCiDataset: jest.fn(),
   fetchCiDatasets: jest.fn(),
 }));
+jest.mock('./overviewApi', () => ({ fetchCiPainOverview: jest.fn() }));
 
 it('does not fetch while disabled and caches repeated overview visits', async () => {
   const client = new QueryClient();
@@ -56,5 +59,28 @@ it('fetches only catalog and selected repository for report pages', async () => 
   expect(fetchCiDataset).toHaveBeenCalledWith('ge', expect.any(AbortSignal));
   expect(fetchCiDatasets).not.toHaveBeenCalled();
   view.unmount();
+  client.clear();
+});
+
+it('does not fetch pain statuses for disabled modules and refreshes them when returning to the overview', async () => {
+  const read = fetchCiPainOverview as jest.Mock;
+  read.mockReset().mockResolvedValue({ reports: [] });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>
+  );
+  const view = renderHook(({ enabled }) => useCiPainOverviewQuery(enabled), {
+    wrapper,
+    initialProps: { enabled: false },
+  });
+  expect(fetchCiPainOverview).not.toHaveBeenCalled();
+  view.rerender({ enabled: true });
+  await waitFor(() => expect(view.result.current.isSuccess).toBe(true));
+  view.unmount();
+  const utils = renderHook(() => useCiPainOverviewQuery(), { wrapper });
+  await waitFor(() => expect(read).toHaveBeenCalledTimes(2));
+  utils.unmount();
   client.clear();
 });

@@ -323,11 +323,15 @@ export const TrendChart: React.FC<{
   fitContainerHeight?: boolean;
   /** 仅按需启用，其他总览保留原有轴范围。 */
   adaptiveAxes?: boolean;
+  rateLabel?: string;
+  rateTrendLabel?: string;
 }> = ({
   points,
   mode = 'overall',
   fitContainerHeight = false,
   adaptiveAxes = false,
+  rateLabel = '闭环率',
+  rateTrendLabel = '周度闭环率',
 }) => {
   const chartId = React.useId();
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -585,7 +589,7 @@ export const TrendChart: React.FC<{
           y={16}
           textAnchor={fitContainerHeight ? 'end' : 'start'}
         >
-          闭环率
+          {rateLabel}
         </text>
 
         <polygon
@@ -797,7 +801,7 @@ export const TrendChart: React.FC<{
             <div className="oj-trend-tooltip-item">
               <span className="oj-trend-tooltip-key">
                 <i className="oj-trend-tooltip-line-marker" />
-                周度闭环率
+                {rateTrendLabel}
               </span>
               <span className="oj-trend-tooltip-value">
                 {formatPercent(activePoint.closeRate)}

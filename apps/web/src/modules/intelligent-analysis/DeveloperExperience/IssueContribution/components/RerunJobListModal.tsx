@@ -4,7 +4,7 @@ import {
   QuestionCircleOutlined,
   ReloadOutlined,
 } from '@ant-design/icons';
-import { Button, Empty, Modal, Select, Table, Tooltip } from 'antd';
+import { Button, Empty, Modal, Select, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import toast from 'react-hot-toast';
 import { cancelIssuePainRerun, fetchIssuePainReruns } from '../data';
@@ -60,7 +60,7 @@ export const RerunResultTable: React.FC<{
     {
       title: 'Issue',
       dataIndex: 'issueNumber',
-      width: 82,
+      width: '6%',
       render: (value: string) => (
         <span className="font-semibold text-blue-600">#{value}</span>
       ),
@@ -68,7 +68,7 @@ export const RerunResultTable: React.FC<{
     {
       title: '对应痛点',
       key: 'pain',
-      width: 270,
+      width: '19%',
       render: (_value, result) => {
         const labels = result.metricLabels?.length
           ? result.metricLabels
@@ -92,6 +92,11 @@ export const RerunResultTable: React.FC<{
                 </span>
               ))}
             </div>
+            {result.painTitle ? (
+              <div className="mt-1 text-xs font-medium leading-5 text-slate-700">
+                {result.painTitle}
+              </div>
+            ) : null}
             {result.stageName ? (
               <Tooltip
                 title={
@@ -119,7 +124,7 @@ export const RerunResultTable: React.FC<{
         </Tooltip>
       ),
       key: 'score',
-      width: 130,
+      width: '10%',
       render: (_value, result) => (
         <span className="whitespace-nowrap text-xs tabular-nums text-slate-600">
           {result.beforeFinalScore == null
@@ -133,24 +138,93 @@ export const RerunResultTable: React.FC<{
       ),
     },
     {
-      title: '处理结果',
-      key: 'result',
-      width: 130,
+      title: '痛点指标得分',
+      key: 'painMetricScore',
+      width: '10%',
       render: (_value, result) => (
-        <span
-          className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-            result.result === 'resolved'
-              ? 'bg-emerald-50 text-emerald-700'
-              : 'bg-rose-50 text-rose-600'
-          }`}
-        >
-          {getRerunResultLabel(result, job.mode)}
-        </span>
+        <div className="space-y-1 text-xs tabular-nums text-slate-600">
+          {result.metricResults?.length ? (
+            result.metricResults.map((metric) => (
+              <div key={metric.code}>
+                {result.metricResults.length > 1 ? (
+                  <div className="text-[11px] text-slate-400">
+                    {metric.name}
+                  </div>
+                ) : null}
+                {metric.beforeScore ?? '—'} → {metric.afterScore ?? '—'}
+              </div>
+            ))
+          ) : (
+            <span className="text-slate-400">历史记录未保存</span>
+          )}
+        </div>
       ),
     },
     {
-      title: '指标变化',
+      title: '处理结果',
+      key: 'result',
+      width: '9%',
+      render: (_value, result) => (
+        <Tooltip
+          title={
+            result.resultExplanation ||
+            (result.result === 'resolved'
+              ? '该 Issue 已不再出现在此痛点中。'
+              : '该 Issue 仍涉及此痛点，或被报告排除；不能仅凭总分提高判断通过。')
+          }
+        >
+          <span
+            className={`inline-flex whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+              result.result === 'resolved'
+                ? 'bg-emerald-50 text-emerald-700'
+                : 'bg-rose-50 text-rose-600'
+            }`}
+          >
+            {getRerunResultLabel(result, job.mode)}
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: '复测说明 / 低分原因',
+      key: 'reason',
+      width: '34%',
+      render: (_value, result) =>
+        result.result === 'resolved' ? (
+          <span className="text-slate-400">—</span>
+        ) : (
+          <div className="space-y-2 text-xs leading-5 text-slate-600">
+            {result.metricResults?.length ? (
+              result.metricResults.map((metric) => (
+                <div key={metric.code}>
+                  {result.metricResults.length > 1 ? (
+                    <div className="font-medium">{metric.name}</div>
+                  ) : null}
+                  <Typography.Paragraph
+                    className="!mb-0 !text-xs !leading-5 !text-slate-600"
+                    ellipsis={{ rows: 3, expandable: true, symbol: '展开' }}
+                  >
+                    {metric.afterReason || '报告未提供此指标的详细低分原因。'}
+                  </Typography.Paragraph>
+                  {metric.beforeReason ? (
+                    <Tooltip title={metric.beforeReason}>
+                      <span className="cursor-help text-[11px] text-slate-400">
+                        查看复测前原因
+                      </span>
+                    </Tooltip>
+                  ) : null}
+                </div>
+              ))
+            ) : (
+              <span className="text-slate-400">历史记录未保存</span>
+            )}
+          </div>
+        ),
+    },
+    {
+      title: '阶段得分变化',
       key: 'metrics',
+      width: '12%',
       render: (_value, result) => {
         const changes = getMetricChangeSummary(result);
         return (
@@ -170,9 +244,22 @@ export const RerunResultTable: React.FC<{
         dataSource={results}
         pagination={false}
         size="small"
-        scroll={{ x: 760 }}
+        tableLayout="fixed"
       />
       <style jsx global>{`
+        .issue-rerun-result-table {
+          width: 100%;
+          min-width: 0;
+        }
+        .issue-rerun-result-table .ant-table-content > table {
+          width: 100%;
+          table-layout: fixed;
+        }
+        .issue-rerun-result-table .ant-table-cell {
+          padding: 9px 8px !important;
+          overflow-wrap: anywhere;
+          word-break: normal;
+        }
         .issue-rerun-result-table .ant-table-container {
           overflow: hidden;
           border: 1px solid #e2e8f0;
@@ -185,8 +272,16 @@ export const RerunResultTable: React.FC<{
           font-weight: 600;
         }
         .issue-rerun-result-table .ant-table-tbody > tr > td {
-          vertical-align: middle;
+          vertical-align: top;
           font-size: 12px;
+        }
+        @media (max-width: 760px) {
+          .issue-rerun-result-table .ant-table-content {
+            overflow-x: auto;
+          }
+          .issue-rerun-result-table .ant-table-content > table {
+            min-width: 720px;
+          }
         }
       `}</style>
     </>
@@ -476,7 +571,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
       onCancel={onClose}
       footer={null}
       width="calc(100vw - 32px)"
-      style={{ maxWidth: 1180 }}
+      style={{ maxWidth: 1560 }}
       styles={{ body: { maxHeight: '68vh', overflowY: 'auto' } }}
       title={
         <div className="flex items-center gap-2">

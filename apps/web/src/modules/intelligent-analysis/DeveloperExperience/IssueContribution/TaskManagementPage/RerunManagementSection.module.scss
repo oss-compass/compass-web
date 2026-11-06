@@ -1,0 +1,162 @@
+.section {
+  min-width: 0;
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+  }
+
+  .repoFilter {
+    width: 280px;
+    max-width: 100%;
+  }
+
+  .statusFilter {
+    width: 150px;
+  }
+
+  .repoFilter,
+  .statusFilter {
+    height: 34px;
+
+    :global(.ant-select-selector) {
+      height: 34px !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      background: linear-gradient(180deg, #fff 0%, #f8fbff 100%) !important;
+      box-shadow: 0 2px 6px rgb(15 23 42 / 4%);
+    }
+
+    :global(.ant-select-selection-item),
+    :global(.ant-select-selection-placeholder) {
+      line-height: 32px !important;
+    }
+  }
+
+  .refreshButton {
+    height: 34px !important;
+    padding: 0 14px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    color: #475569;
+    background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+    box-shadow: 0 2px 6px rgb(15 23 42 / 4%);
+  }
+
+  .refreshHint {
+    margin-left: auto;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  .taskTable {
+    // Only style the outer task table, not the expanded retest-results table.
+    > :global(.ant-spin-nested-loading)
+      > :global(.ant-spin-container)
+      > :global(.ant-table) {
+      > :global(.ant-table-container) > :global(.ant-table-content) > table {
+        > thead > tr > th {
+          padding: 11px 14px !important;
+          text-align: left !important;
+          color: #64748b;
+          font-weight: 500;
+          background: #f8fafc;
+        }
+
+        > tbody > tr:not(:global(.ant-table-expanded-row)) > td {
+          padding: 12px 14px !important;
+          text-align: left !important;
+          vertical-align: middle;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+
+    :global(.ant-pagination-item),
+    :global(.ant-pagination-prev button),
+    :global(.ant-pagination-next button) {
+      border-radius: 8px !important;
+    }
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #f8fafc;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .expandedResults {
+    min-width: 0;
+    padding: 16px 20px;
+    overflow: hidden;
+    background: #f8fafc;
+
+    // Expanded cells lose their padding in DashboardStyles. AntD's nested
+    // table negative margins must not pull details into adjacent task rows.
+    :global(.ant-table) {
+      margin: 0 !important;
+      margin-block: 0 !important;
+      margin-inline: 0 !important;
+    }
+
+    :global(.ant-table-thead) > tr > th,
+    :global(.ant-table-tbody) > tr > td {
+      text-align: left !important;
+    }
+  }
+
+  .statusDot {
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .reportLink {
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    color: #2563eb;
+    background: #f8fbff;
+    font-size: 12px;
+    white-space: nowrap;
+
+    &:hover {
+      border-color: #93c5fd;
+      background: #eff6ff;
+    }
+  }
+}
+
+@media (max-width: 760px) {
+  .section {
+    .refreshHint {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .taskTable :global(.ant-table-content) {
+      overflow-x: auto;
+    }
+
+    .taskTable
+      > :global(.ant-spin-nested-loading)
+      > :global(.ant-spin-container)
+      > :global(.ant-table)
+      > :global(.ant-table-container)
+      > :global(.ant-table-content)
+      > table {
+      min-width: 800px;
+    }
+  }
+}

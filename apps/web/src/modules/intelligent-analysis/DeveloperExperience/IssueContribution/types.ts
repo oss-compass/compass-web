@@ -408,6 +408,15 @@ export type IssuePainTracking = {
 };
 
 export type IssuePainRerunResult = {
+  resultExplanation?: string;
+  metricResults?: Array<{
+    code: string;
+    name: string;
+    beforeScore: number | null;
+    afterScore: number | null;
+    beforeReason?: string | null;
+    afterReason?: string | null;
+  }>;
   trackingKey: string;
   issueNumber: string;
   stageId: string;

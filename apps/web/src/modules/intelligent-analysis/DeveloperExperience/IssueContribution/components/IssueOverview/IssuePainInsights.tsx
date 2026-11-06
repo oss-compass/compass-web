@@ -1,3 +1,4 @@
+import OverviewPainProgress from '../../../../UserJourney/OverviewDashboard/OverviewPainProgress';
 import React from 'react';
 import { Segmented, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
@@ -93,7 +94,6 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
   });
   const counts = summary.counts;
   const total = summary.total;
-  const trackableTotal = total - (counts.historical ?? 0);
   const closeRate = summary.closeRate;
   const allPeriods = React.useMemo(
     () => getWeeklyClosureData(summary).periods.map((point) => point.period),
@@ -180,366 +180,84 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
   ];
 
   return (
-    <div className="section-card pain-progress-reference">
-      <div className="mb-3 text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
-        痛点问题进展及趋势
-      </div>
-      <div className="ov-row">
-        {cards.map((card) => {
-          const openDetail = () =>
-            setDetail({ title: card.label, state: card.state });
-          return (
-            <div key={card.label} className="ov-item">
-              <div className="ov-label">{card.label}</div>
-              <div
-                className={`ov-value ${card.valueClassName} ${
-                  card.clickable ? 'ov-value-link' : ''
-                }`.trim()}
-                role={card.clickable ? 'button' : undefined}
-                tabIndex={card.clickable ? 0 : undefined}
-                onClick={card.clickable ? openDetail : undefined}
-                onKeyDown={
-                  card.clickable
-                    ? (event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          openDetail();
-                        }
-                      }
-                    : undefined
-                }
-              >
-                {card.value}
-              </div>
-            </div>
+    <>
+      <OverviewPainProgress
+        cards={cards.map((card) => ({
+          ...card,
+          onClick: card.clickable
+            ? () => setDetail({ title: card.label, state: card.state })
+            : undefined,
+        }))}
+        priorities={PRIORITIES.map((priority) => {
+          const summaryPriority = summary.priorities.find(
+            (item) => item.priority === priority.key
           );
+          const counts = summaryPriority?.counts ?? {};
+          const total =
+            (summaryPriority?.total ?? 0) - (counts.historical ?? 0);
+          return {
+            ...priority,
+            label: getIssuePriorityLabel(priority.key),
+            total,
+            counts,
+            rate: total ? ((counts.resolved ?? 0) / total) * 100 : 100,
+          };
         })}
-      </div>
-
-      <div className="pain-duo">
-        <section className="pain-panel pain-priorities">
-          <h4 className="pain-mini">各优先级问题闭环进展</h4>
-          <div className="pain-priority-list">
-            {PRIORITIES.map((priority) => {
-              const prioritySummary = summary.priorities.find(
-                (item) => item.priority === priority.key
-              );
-              const priorityCounts = prioritySummary?.counts ?? {};
-              const priorityTotal = prioritySummary?.total ?? 0;
-              const priorityTrackable =
-                priorityTotal - (priorityCounts.historical ?? 0);
-              const priorityRate = priorityTrackable
-                ? ((priorityCounts.resolved ?? 0) / priorityTrackable) * 100
-                : 100;
-              return (
-                <div key={priority.key} className="pain-priority-row">
-                  <button
-                    type="button"
-                    className="pain-priority-label"
-                    style={{ color: priority.color }}
-                    title={`查看 ${getIssuePriorityLabel(priority.key)} 痛点`}
-                    onClick={() =>
-                      setDetail({
-                        title: getIssuePriorityLabel(priority.key),
-                        prio: priority.key,
-                      })
-                    }
-                  >
-                    <i style={{ background: priority.color }} />
-                    {getIssuePriorityLabel(priority.key)}
-                  </button>
-                  <div className="pain-status-bar">
-                    {priorityTrackable === 0 ? (
-                      <span
-                        className="pain-status-no-tracking"
-                        title="需跟踪问题为 0，闭环率按 100% 展示，不代表存在已闭环问题"
-                        style={{
-                          background: 'var(--overview-slateBorder)',
-                          color: 'var(--overview-slate)',
-                        }}
-                      >
-                        0
-                      </span>
-                    ) : null}
-                    {PROGRESS_STATES.map((state) => {
-                      const value = priorityCounts[state.key] ?? 0;
-                      return value > 0 ? (
-                        <button
-                          key={state.key}
-                          type="button"
-                          title={`${getIssuePriorityLabel(priority.key)} · ${
-                            state.label
-                          }：${value} 个`}
-                          style={{
-                            width: `${(value / priorityTrackable) * 100}%`,
-                            background: state.fill,
-                            color: state.color,
-                          }}
-                          onClick={() =>
-                            setDetail({
-                              title: `${getIssuePriorityLabel(
-                                priority.key
-                              )} · ${state.label}`,
-                              prio: priority.key,
-                              state: state.key,
-                            })
-                          }
-                        >
-                          {value}
-                        </button>
-                      ) : null;
-                    })}
-                  </div>
-                  <span
-                    className="pain-priority-rate"
-                    style={{
-                      color:
-                        priorityTrackable === 0
-                          ? 'var(--overview-slate)'
-                          : priorityRate > 0
-                          ? 'var(--overview-greenDark)'
-                          : 'var(--overview-slateLight)',
-                    }}
-                  >
-                    {priorityRate.toFixed(1)}%
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          <div className="pain-legend">
-            {PROGRESS_STATES.map((state) => (
-              <span key={state.key}>
-                <i style={{ background: state.fill }} />
-                {state.label}
+        states={PROGRESS_STATES}
+        onOpen={(state, prio) =>
+          setDetail({
+            state,
+            prio,
+            title: [
+              getIssuePriorityLabel(prio || ''),
+              PROGRESS_STATES.find((item) => item.key === state)?.label,
+            ]
+              .filter(Boolean)
+              .join(' · '),
+          })
+        }
+        trendTitle="周度痛点趋势及闭环率"
+        trendControls={
+          <TrendWindowPicker value={trendWindow} onChange={setTrendWindow} />
+        }
+        trendContent={
+          summary.periodsReady !== false && trendPoints.length > 0 ? (
+            <TrendChart points={trendPoints} fitContainerHeight adaptiveAxes />
+          ) : null
+        }
+        trendEmpty={
+          summary.periodsReady === false
+            ? '周度统计准备中，完成后将自动更新'
+            : '所选时间范围暂无数据'
+        }
+        trendLegend={
+          <>
+            {PRIORITIES.map((priority) => (
+              <span className="oj-trend-legend-item" key={priority.key}>
+                <i
+                  className="oj-trend-dot"
+                  style={{ background: priority.color }}
+                />
+                {getIssuePriorityLabel(priority.key)}
               </span>
             ))}
-          </div>
-        </section>
-
-        <section className="pain-panel pain-weekly">
-          <div className="ov-panel-head">
-            <div className="ov-panel-title">周度痛点趋势及闭环率</div>
-            <TrendWindowPicker value={trendWindow} onChange={setTrendWindow} />
-          </div>
-          {summary.periodsReady === false ? (
-            <div className="pain-trend-empty">
-              周度统计准备中，完成后将自动更新
-            </div>
-          ) : trendPoints.length ? (
-            <>
-              <div className="pain-trend-chart">
-                <TrendChart
-                  points={trendPoints}
-                  fitContainerHeight
-                  adaptiveAxes
-                />
-              </div>
-              <div className="oj-trend-legend">
-                {PRIORITIES.map((priority) => (
-                  <span className="oj-trend-legend-item" key={priority.key}>
-                    <i
-                      className="oj-trend-dot"
-                      style={{ background: priority.color }}
-                    />
-                    {getIssuePriorityLabel(priority.key)}
-                  </span>
-                ))}
-                <span className="oj-trend-legend-item">
-                  <span className="oj-trend-line" />
-                  周度闭环率
-                </span>
-              </div>
-            </>
-          ) : (
-            <div className="pain-trend-empty">所选时间范围暂无数据</div>
-          )}
-        </section>
-      </div>
-
+            <span className="oj-trend-legend-item">
+              <span className="oj-trend-line" />
+              周度闭环率
+            </span>
+          </>
+        }
+      />
       <IssuePainDetailModal
         open={!!detail}
         onClose={() => setDetail(null)}
-        query={{
-          org,
-          state: detail?.state,
-          prio: detail?.prio,
-        }}
+        query={{ org, state: detail?.state, prio: detail?.prio }}
         stageOptions={summary.stageOptions}
         org={org}
         reportHref={reportHref}
         title={detail?.title ?? '痛点详情'}
       />
-      <style jsx>{`
-        .pain-progress-reference {
-          container-type: inline-size;
-        }
-        .ov-row {
-          grid-template-columns: repeat(6, minmax(0, 1fr));
-        }
-        @container (max-width: 1000px) {
-          .ov-row {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-          }
-        }
-        @container (max-width: 540px) {
-          .ov-row {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-        .pain-duo {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-          gap: 14px;
-          margin-top: 24px;
-          align-items: stretch;
-        }
-        .pain-panel {
-          min-width: 0;
-          padding: 18px 18px 16px;
-          border: 1px solid rgba(var(--overview-slateBorder-rgb), 0.92);
-          border-radius: 18px;
-          background: rgba(var(--overview-white-rgb), 0.9);
-          box-shadow: inset 0 1px 0 rgba(var(--overview-white-rgb), 0.7);
-        }
-        .pain-mini {
-          font-size: 15px;
-          line-height: 22px;
-          font-weight: 700;
-          margin: 0 0 12px;
-          color: var(--overview-text);
-        }
-        .pain-priorities {
-          /* 整体高度基准：约 330px，行高以此为锚点，右侧图表同步撑满 */
-          min-height: 330px;
-          display: flex;
-          flex-direction: column;
-        }
-        .pain-priority-list {
-          flex: 1 1 0;
-          display: grid;
-          gap: 8px;
-        }
-        .pain-priority-row {
-          display: grid;
-          grid-template-columns: 104px minmax(0, 1fr) 56px;
-          align-items: center;
-          gap: 18px;
-          padding: 9px 0;
-        }
-        .pain-priority-label {
-          display: flex;
-          align-items: center;
-          gap: 7px;
-          color: var(--overview-slate);
-          font-size: 12.5px;
-          font-weight: 600;
-          text-align: left;
-          white-space: nowrap;
-        }
-        .pain-priority-label i,
-        .pain-legend > span:not(.pain-legend-items) > i {
-          width: 8px;
-          height: 8px;
-          border-radius: 2px;
-          flex-shrink: 0;
-        }
-        .pain-status-bar {
-          display: flex;
-          height: 24px;
-          /* 宽度略收窄并居中，与两侧留出呼吸空间 */
-          width: 96%;
-          justify-self: center;
-          border: 1px solid var(--overview-slateBorder);
-          border-radius: 9px;
-          overflow: hidden;
-          background: var(--overview-slateSoft);
-        }
-        .pain-status-bar button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 0;
-          overflow: hidden;
-          border-right: 1px solid rgba(var(--overview-white-rgb), 0.6);
-          font-size: 12px;
-          font-weight: 800;
-          line-height: 24px;
-          white-space: nowrap;
-        }
-        .pain-status-bar button:last-child {
-          border-right: 0;
-        }
-        .pain-status-bar button:hover {
-          filter: brightness(0.95);
-        }
-        .pain-status-no-tracking {
-          width: 100%;
-          text-align: center;
-          font-size: 12px;
-          font-weight: 800;
-          line-height: 24px;
-        }
-        .pain-priority-rate {
-          text-align: right;
-          font-size: 13.5px;
-          line-height: 20px;
-          font-weight: 600;
-          font-variant-numeric: tabular-nums;
-          white-space: nowrap;
-        }
-        .pain-legend {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 16px;
-          margin-top: 10px;
-          font-size: 12px;
-          color: var(--overview-slate);
-        }
-        .pain-legend span {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-        .pain-weekly {
-          /* 图表面板左右略紧于左侧，让趋势图占据更多宽度 */
-          padding: 18px 14px 16px;
-          display: flex;
-          flex-direction: column;
-        }
-        .pain-trend-chart {
-          display: flex;
-          /* 基准高度归零，不参与面板自然高度，行高完全由左侧优先级列表决定 */
-          flex: 1 1 0;
-          min-height: 140px;
-        }
-        .pain-trend-chart :global(.oj-trend-chart) {
-          flex: 1 1 auto;
-          min-height: 0;
-        }
-        .pain-trend-empty {
-          flex: 1 1 auto;
-          min-height: 176px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--overview-slateLight);
-          font-size: 13px;
-        }
-        @container (max-width: 800px) {
-          .pain-duo {
-            grid-template-columns: minmax(0, 1fr);
-          }
-          .pain-priorities {
-            padding: 18px 18px 16px;
-          }
-          .pain-weekly {
-            padding: 18px 18px 16px;
-          }
-        }
-      `}</style>
-    </div>
+    </>
   );
 };
 
@@ -605,7 +323,7 @@ export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
   const columns: TableProps<FrequentPain>['columns'] = [
     {
       title: '序号',
-      width: 64,
+      width: '5%',
       align: 'center',
       render: (_value, _record, index) => (
         <span className="row-num">{index + 1}</span>
@@ -614,20 +332,22 @@ export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
     {
       title: '问题',
       dataIndex: 'title',
+      width: '24%',
+      align: 'center',
       ellipsis: true,
       render: (value: string) => (
         <Tooltip title={value} placement="topLeft">
-          <span className="font-semibold text-[var(--overview-slateDark)]">
+          <span className="block truncate font-semibold text-[var(--overview-slateDark)]">
             {value}
           </span>
         </Tooltip>
       ),
     },
-    { title: '阶段', dataIndex: 'stageName', width: 130 },
+    { title: '阶段', dataIndex: 'stageName', width: '12%' },
     {
       title: '指标',
       dataIndex: 'metrics',
-      width: 230,
+      width: '22%',
       align: 'center',
       render: (value: FrequentPain['metrics']) =>
         value.length ? (
@@ -661,13 +381,13 @@ export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
     {
       title: '优先级',
       dataIndex: 'prio',
-      width: 92,
+      width: '12%',
       render: (value: string) => <IssuePriorityTag priority={value} />,
     },
     {
       title: '覆盖仓数',
       dataIndex: 'repoCount',
-      width: 100,
+      width: '10%',
       align: 'right',
       sorter: (left, right) => left.repoCount - right.repoCount,
     },
@@ -678,7 +398,7 @@ export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
           : view === 'done'
           ? '已闭环涉及 Issue 数'
           : '涉及 Issue 数',
-      width: 156,
+      width: '15%',
       align: 'center',
       sorter: (left, right) => {
         const countOf = (record: FrequentPain) =>
@@ -767,6 +487,7 @@ export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
           rowKey="key"
           columns={columns}
           dataSource={rows}
+          tableLayout="fixed"
           pagination={false}
           scroll={{ x: 970 }}
           locale={{ emptyText: '暂无匹配问题' }}

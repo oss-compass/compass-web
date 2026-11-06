@@ -1,11 +1,12 @@
 import type { CiTopIssue } from './communityMetrics';
+import type { TrackingStatus } from '../PainTracking/model';
 import {
   buildCiAggregateRow,
   groupCiRepoCategories,
   type RepoRow,
 } from './CiRepoProgressSection';
 
-const issue = (key: string, status: string): CiTopIssue =>
+const issue = (key: string, status: TrackingStatus): CiTopIssue =>
   ({ key, status } as CiTopIssue);
 
 const repo = (
@@ -24,8 +25,8 @@ const repo = (
 describe('community engineering repository category aggregation', () => {
   it('averages measured repository scores and aggregates issue progress', () => {
     const result = buildCiAggregateRow('ops-nn（神经网络算子）', [
-      repo('ops-nn', 60, [issue('a', '仍活跃'), issue('b', '已消退')]),
-      repo('ops-tensor', 90, [issue('c', '待回填'), issue('d', '已消退')]),
+      repo('ops-nn', 60, [issue('a', 'pending'), issue('b', 'fixed')]),
+      repo('ops-tensor', 90, [issue('c', 'confirmed'), issue('d', 'invalid')]),
       repo('missing-score', null, []),
     ]);
 
@@ -33,12 +34,13 @@ describe('community engineering repository category aggregation', () => {
       name: 'ops-nn（神经网络算子）',
       repoCount: 3,
       score: 75,
-      active: 1,
-      backfill: 1,
-      faded: 2,
+      pending: 1,
+      confirmed: 1,
+      fixed: 1,
+      invalid: 1,
       total: 4,
-      closeRate: 50,
     });
+    expect(result.closeRate).toBeCloseTo(100 / 3);
   });
 
   it('keeps empty categories neutral', () => {

@@ -153,11 +153,62 @@ export const ProgressMetaOnly: React.FC<{
 };
 
 export const IssueProgressBar: React.FC<{
-  pending: number;
-  inProgress: number;
-  resolved: number;
+  pending?: number;
+  inProgress?: number;
+  resolved?: number;
   onBucketClick?: (bucket: IssueBucket) => void;
-}> = ({ pending, inProgress, resolved, onBucketClick }) => {
+  states?: Array<{
+    key: string;
+    label: string;
+    title?: string;
+    value: number;
+    color: string;
+  }>;
+  onStateClick?: (key: string) => void;
+}> = ({
+  pending = 0,
+  inProgress = 0,
+  resolved = 0,
+  onBucketClick,
+  states,
+  onStateClick,
+}) => {
+  if (states) {
+    const total = states.reduce((sum, state) => sum + state.value, 0);
+    return (
+      <div className="overview-progress-cell">
+        <div className="overview-progress-bar">
+          {states.map(
+            (state) =>
+              state.value > 0 && (
+                <span
+                  key={state.key}
+                  className="overview-progress-segment"
+                  style={{
+                    width: `${(state.value / total) * 100}%`,
+                    background: state.color,
+                  }}
+                />
+              )
+          )}
+        </div>
+        <div className="overview-progress-meta">
+          {states.map((state) => (
+            <button
+              type="button"
+              key={state.key}
+              className="overview-progress-link"
+              style={{ color: state.color }}
+              title={state.title || state.label}
+              onClick={() => onStateClick?.(state.key)}
+            >
+              {state.label} {state.value}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="overview-progress-cell">
       <ProgressBarOnly

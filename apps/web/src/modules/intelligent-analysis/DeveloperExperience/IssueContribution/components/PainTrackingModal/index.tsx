@@ -866,7 +866,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
       onCancel={onClose}
       footer={null}
       width="calc(100vw - 32px)"
-      style={{ maxWidth: 1280 }}
+      style={{ maxWidth: 1440 }}
       destroyOnClose
       styles={{
         body: {

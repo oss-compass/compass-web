@@ -1,9 +1,10 @@
-import { buildIssueTaskManagementHref } from '../../../routes';
+import OverviewRepoComparison from '../../../../UserJourney/OverviewDashboard/OverviewRepoComparison';
+import TaskManagementEntry from '../../TaskManagementPage/TaskManagementEntry';
 import { formatScore } from '../../presentation';
 import React from 'react';
 import Link from 'next/link';
 import { RightOutlined } from '@ant-design/icons';
-import { Pagination, Segmented, Skeleton, Table, Typography } from 'antd';
+import { Pagination, Skeleton, Table } from 'antd';
 import type { TableProps } from 'antd';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import type { UseQueryOptions } from '@tanstack/react-query';
@@ -24,7 +25,6 @@ import {
 import type { IssueOverviewRepo } from '../../types';
 import IssuePainDetailModal from './IssuePainDetailModal';
 
-const { Title } = Typography;
 const REPO_PAGE_SIZE = 20;
 
 type ProgressView = 'team' | 'repo';
@@ -981,33 +981,21 @@ const IssueRepoProgressSection: React.FC<Props> = ({
 
   return (
     <>
-      <Title level={4} className="oj-section-title">
-        各仓库对比
-      </Title>
-      <div className="section-card">
-        <div className="tab-bar progress-toolbar-row">
-          <Segmented
-            className="overview-segmented"
-            value={view}
-            onChange={(value) => setView(value as ProgressView)}
-            options={[
-              { label: '责任团队', value: 'team' },
-              { label: '仓库', value: 'repo' },
-            ]}
-          />
-          <Link
-            href={repoManagementHref}
-            className="ml-auto inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
-          >
-            仓库管理
-          </Link>
-          <Link
-            href={buildIssueTaskManagementHref({ org })}
-            className="inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
-          >
-            任务管理
-          </Link>
-        </div>
+      <OverviewRepoComparison
+        view={view}
+        onViewChange={setView}
+        actions={
+          <>
+            <Link
+              href={repoManagementHref}
+              className="ml-auto inline-flex items-center rounded-full border border-[rgba(var(--overview-slateBorder-rgb),0.8)] bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] px-3 py-1.5 text-sm font-semibold text-[var(--overview-slateDark)] shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] transition-colors hover:bg-[var(--overview-slateSoft)]"
+            >
+              仓库管理
+            </Link>
+            <TaskManagementEntry org={org} />
+          </>
+        }
+      >
         {view === 'team' ? (
           <Table<TeamRow>
             className="overview-ant-table"
@@ -1065,7 +1053,7 @@ const IssueRepoProgressSection: React.FC<Props> = ({
             </div>
           </>
         )}
-      </div>
+      </OverviewRepoComparison>
       <IssuePainDetailModal
         open={detailTarget !== null}
         onClose={() => setDetailTarget(null)}

@@ -45,6 +45,57 @@ const TOP_PAINS_API_PATH = `${API_PREFIX}/overview/top-pains`;
 const PAIN_TRACKINGS_API_PATH = `${API_PREFIX}/pain-trackings`;
 const REPO_TEAMS_API_PATH = `${API_PREFIX}/overview/repo-teams`;
 
+export type IssueTaskManagementAccess = {
+  isAdmin: boolean;
+  repositories: string[];
+};
+export type ManagedIssueRerunJob = IssuePainRerunJob & {
+  isLatestReport: boolean;
+};
+
+const fetchTaskManagement = async <T>(
+  path: string,
+  token: string,
+  signal?: AbortSignal
+): Promise<T> => {
+  if (!token) throw new Error('请先登录操作账号');
+  const response = await fetch(
+    `${getApiBase()}${API_PREFIX}/task-management/${path}`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      signal,
+      cache: 'no-store',
+    }
+  );
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(
+      typeof data.detail === 'string' ? data.detail : '任务管理访问失败'
+    );
+  return data as T;
+};
+export const fetchIssueTaskManagementAccess = (
+  token: string,
+  signal?: AbortSignal
+) => fetchTaskManagement<IssueTaskManagementAccess>('access', token, signal);
+export const fetchManagedIssueReruns = (
+  token: string,
+  params: { org?: string; community?: string; status?: string; page: number },
+  signal?: AbortSignal
+) => {
+  const search = new URLSearchParams({
+    page: String(params.page),
+    pageSize: '20',
+  });
+  for (const key of ['org', 'community', 'status'] as const)
+    if (params[key]) search.set(key, params[key]);
+  return fetchTaskManagement<{ items: ManagedIssueRerunJob[]; total: number }>(
+    `reruns?${search}`,
+    token,
+    signal
+  );
+};
+
 export type RepoTeamItem = {
   repoShort: string;
   teamName: string;

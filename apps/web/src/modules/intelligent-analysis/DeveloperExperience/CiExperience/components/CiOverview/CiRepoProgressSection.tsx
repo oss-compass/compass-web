@@ -1,87 +1,56 @@
+import OverviewRepoComparison from '../../../../UserJourney/OverviewDashboard/OverviewRepoComparison';
+import { ScoreSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
+import { useCiRepoTeams } from './useCiRepoTeams';
 import React from 'react';
 import Link from 'next/link';
-import { RightOutlined } from '@ant-design/icons';
-import { Modal, Segmented, Table, Typography } from 'antd';
+import { RightOutlined, SearchOutlined } from '@ant-design/icons';
+import { Alert, Input, Modal, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
-import { useQuery } from '@tanstack/react-query';
-import { fetchRepoTeams } from '../../../IssueContribution/data';
+import {
+  countPainProgress,
+  type CiRepoSummary,
+  type CiTopIssue,
+} from './communityMetrics';
+import CiIssueTable, { type CiReportHref } from './CiIssueTable';
+import { REPAIR_RATE_NOTE } from './CiPainProgress';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
-import type { CiRepoSummary, CiTopIssue } from './communityMetrics';
 
-const { Title } = Typography;
-const COLUMN_WIDTHS = [64, 210, 110, 138, 230, 110, 100, 110] as const;
-const TABLE_WIDTH = COLUMN_WIDTHS.reduce((sum, width) => sum + width, 0);
+const PROGRESS_STATUS = {
+  pending: { status: 'pending', label: '待处理' },
+  inProgress: { status: 'confirmed', label: '进行中' },
+  resolved: { status: 'fixed', label: '已闭环' },
+} as const;
 
 export type RepoRow = CiRepoSummary & {
   teamName: string;
   repoCategory?: string;
   issues: CiTopIssue[];
 };
-type TeamSortKey =
-  | 'name'
-  | 'repoCount'
-  | 'score'
-  | 'total'
-  | 'closeRate'
-  | 'report';
-type TableSortOrder = 'ascend' | 'descend' | null;
-type TeamRow = {
-  id: string;
-  name: string;
-  repoCount: number;
-  score: number | null;
-  active: number;
-  backfill: number;
-  faded: number;
-  total: number;
-  closeRate: number;
-  repos: RepoRow[];
-};
-
-type Props = {
-  repos: CiRepoSummary[];
-  issues: CiTopIssue[];
-  reportHref: (slug: string) => string;
-};
-
-const statusCounts = (issues: CiTopIssue[]) => ({
-  active: issues.filter((issue) => /^仍活跃/.test(issue.status)).length,
-  backfill: issues.filter((issue) => /待回填/.test(issue.status)).length,
-  faded: issues.filter((issue) => /已消退/.test(issue.status)).length,
-});
-
-const reportName = (repo: RepoRow) => `${repo.slug}_${repo.latestDay}`;
-
-export const buildCiAggregateRow = (
-  name: string,
-  repos: RepoRow[]
-): TeamRow => {
-  const aggregateIssues = repos.flatMap((repo) => repo.issues);
-  const counts = statusCounts(aggregateIssues);
+export const buildCiAggregateRow = (name: string, repos: RepoRow[]) => {
+  const issues = repos.flatMap((repo) => repo.issues);
   const scores = repos
     .map((repo) => repo.scoreOverall)
-    .filter((score): score is number => score !== null);
-  const total = aggregateIssues.length;
+    .filter((score): score is number => score != null);
+  const progress = countPainProgress(issues);
   return {
     id: name,
     name,
     repoCount: repos.length,
     score: scores.length
-      ? scores.reduce((sum, score) => sum + score, 0) / scores.length
+      ? scores.reduce((a, b) => a + b, 0) / scores.length
       : null,
-    ...counts,
-    total,
-    closeRate: total ? (counts.faded / total) * 100 : 100,
+    ...progress,
+    closeRate: progress.rate,
+    issues,
     repos,
   };
 };
 
-/** 只展示接口中实际出现的分类，不注入本地分类名单和空统计行。 */
 export const groupCiRepoCategories = (repos: RepoRow[]) => {
   const groups = new Map<string, RepoRow[]>();
   repos.forEach((repo) => {
-    const category = repo.repoCategory || '未分类';
-    groups.set(category, [...(groups.get(category) || []), repo]);
+    const key = repo.repoCategory || '未分类';
+    groups.set(key, [...(groups.get(key) || []), repo]);
   });
   return Array.from(groups, ([key, items]) => ({
     key,
@@ -90,574 +59,456 @@ export const groupCiRepoCategories = (repos: RepoRow[]) => {
   }));
 };
 
+type TeamRow = ReturnType<typeof buildCiAggregateRow>;
+type Props = {
+  repos: CiRepoSummary[];
+  issues: CiTopIssue[];
+  trackingReady: boolean;
+  reportHref: CiReportHref;
+};
+
 const CiRepoProgressSection: React.FC<Props> = ({
   repos,
   issues,
+  trackingReady,
   reportHref,
 }) => {
   const [view, setView] = React.useState<'team' | 'repo'>('team');
-  const [expandedRowKeys, setExpandedRowKeys] = React.useState<React.Key[]>([]);
-  const [collapsedCategories, setCollapsedCategories] = React.useState<
-    string[]
-  >([]);
-  const [teamSort, setTeamSort] = React.useState<{
-    key?: TeamSortKey;
-    order: TableSortOrder;
-  }>({ order: null });
+  const [search, setSearch] = React.useState('');
+  const [expandedKeys, setExpandedKeys] = React.useState<React.Key[]>([]);
   const [detail, setDetail] = React.useState<{
     title: string;
     issues: CiTopIssue[];
-    teams: Record<string, string>;
   } | null>(null);
-  const { data: teamResponse } = useQuery({
-    queryKey: ['overview-repo-teams', 'with-category-v1'],
-    queryFn: ({ signal }) => fetchRepoTeams(signal),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const repoInfoMap = React.useMemo(
-    () =>
-      Object.fromEntries(
-        (teamResponse?.items ?? []).map((item) => [
-          item.repoShort.replace(/_/g, '-'),
-          item,
-        ])
-      ),
-    [teamResponse]
+  const [collapsed, setCollapsed] = React.useState<string[]>([]);
+  const [sort, setSort] = React.useState<{
+    key: string;
+    order: 'ascend' | 'descend';
+  }>({ key: 'score', order: 'ascend' });
+  const teams = useCiRepoTeams();
+  const repoInfo = teams.repoInfo;
+  const rows: RepoRow[] = repos.map((repo) => ({
+    ...repo,
+    teamName:
+      repoInfo[repo.slug]?.teamName ||
+      (teams.isLoading
+        ? '团队加载中'
+        : teams.isError
+        ? '团队信息不可用'
+        : '未分配团队'),
+    repoCategory: repoInfo[repo.slug]?.repoCategory,
+    issues: issues.filter((issue) => issue.repo === repo.repo),
+  }));
+  const filtered = rows.filter((repo) =>
+    `${repo.slug} ${repo.teamName} ${repo.repoCategory || ''}`
+      .toLowerCase()
+      .includes(search.trim().toLowerCase())
   );
-
-  const repoRows = React.useMemo<RepoRow[]>(
-    () =>
-      repos.map((repo) => ({
-        ...repo,
-        teamName: repoInfoMap[repo.slug]?.teamName || '未分配团队',
-        repoCategory: repoInfoMap[repo.slug]?.repoCategory,
-        issues: issues.filter((issue) => issue.slug === repo.slug),
-      })),
-    [issues, repoInfoMap, repos]
+  const groups = new Map<string, RepoRow[]>();
+  filtered.forEach((repo) =>
+    groups.set(repo.teamName, [...(groups.get(repo.teamName) || []), repo])
   );
-
-  const teamRows = React.useMemo<TeamRow[]>(() => {
-    const groups = new Map<string, RepoRow[]>();
-    repoRows.forEach((repo) =>
-      groups.set(repo.teamName, [...(groups.get(repo.teamName) ?? []), repo])
-    );
-    return Array.from(groups.entries()).map(([name, teamRepos]) =>
-      buildCiAggregateRow(name, teamRepos)
-    );
-  }, [repoRows]);
-
-  const progress = (active: number, backfill: number, faded: number) => (
-    <IssueProgressBar pending={active} inProgress={backfill} resolved={faded} />
+  const teamRows = Array.from(groups, ([name, values]) =>
+    buildCiAggregateRow(name, values)
   );
-  const rate = (value: number) => (
-    <span className="overview-close-rate-value text-sm font-semibold text-slate-700">
-      {value.toFixed(0)}%
-    </span>
-  );
-  const openDetails = (title: string, rows: RepoRow[]) =>
-    setDetail({
-      title,
-      issues: rows.flatMap((repo) => repo.issues),
-      teams: Object.fromEntries(rows.map((repo) => [repo.slug, repo.teamName])),
-    });
-
-  const sortExpandedRepos = React.useCallback(
-    (teamRepos: RepoRow[]) => {
-      if (!teamSort.key || !teamSort.order) return teamRepos;
-      const direction = teamSort.order === 'ascend' ? 1 : -1;
-      const value = (repo: RepoRow): string | number => {
-        switch (teamSort.key) {
-          case 'score':
-            return repo.scoreOverall ?? -1;
-          case 'total':
-            return repo.issues.length;
-          case 'closeRate': {
-            const counts = statusCounts(repo.issues);
-            return repo.issues.length ? counts.faded / repo.issues.length : 1;
-          }
-          case 'report':
-            return reportName(repo);
-          case 'name':
-          case 'repoCount':
-          default:
-            return repo.slug;
-        }
-      };
-      return [...teamRepos].sort((left, right) => {
-        const leftValue = value(left);
-        const rightValue = value(right);
-        const result =
-          typeof leftValue === 'string' && typeof rightValue === 'string'
-            ? leftValue.localeCompare(rightValue, 'zh-CN')
-            : Number(leftValue) - Number(rightValue);
-        return result === 0
-          ? left.slug.localeCompare(right.slug, 'zh-CN')
-          : result * direction;
-      });
-    },
-    [teamSort]
-  );
-  const displayedTeamRows = React.useMemo(
-    () =>
-      teamRows.map((team) => ({
-        ...team,
-        repos: sortExpandedRepos(team.repos),
-      })),
-    [sortExpandedRepos, teamRows]
-  );
-
-  const repoColumns = React.useMemo<TableProps<RepoRow>['columns']>(
-    () => [
-      {
-        title: '序号',
-        width: 64,
-        align: 'center',
-        render: (_v, _r, index) => <span className="row-num">{index + 1}</span>,
-      },
-      {
-        title: '仓库',
-        dataIndex: 'slug',
-        width: 170,
-        sorter: (a, b) => a.slug.localeCompare(b.slug),
-      },
-      {
-        title: '责任团队',
-        dataIndex: 'teamName',
-        width: 150,
-        sorter: (a, b) => a.teamName.localeCompare(b.teamName, 'zh-CN'),
-      },
-      {
-        title: '综合体验评分',
-        dataIndex: 'scoreOverall',
-        width: 138,
-        sorter: (a, b) => (a.scoreOverall ?? -1) - (b.scoreOverall ?? -1),
-        render: (value: number | null) => (
-          <span className="text-sm font-semibold text-slate-700">
-            {value?.toFixed(1) ?? '—'}
-          </span>
-        ),
-      },
-      {
-        title: '问题处理进展',
-        width: 230,
-        render: (_v, row) => {
-          const counts = statusCounts(row.issues);
-          return progress(counts.active, counts.backfill, counts.faded);
-        },
-      },
-      {
-        title: '总问题数',
-        width: 105,
-        sorter: (a, b) => a.issues.length - b.issues.length,
-        render: (_v, row) => (
-          <button
-            type="button"
-            className="overview-table-link overview-table-link-strong"
-            onClick={() => openDetails(`${row.slug} · 总问题数`, [row])}
-          >
-            {row.issues.length}
-          </button>
-        ),
-      },
-      {
-        title: '闭环率',
-        width: 95,
-        sorter: (a, b) => {
-          const ac = statusCounts(a.issues);
-          const bc = statusCounts(b.issues);
-          return (
-            (a.issues.length ? ac.faded / a.issues.length : 1) -
-            (b.issues.length ? bc.faded / b.issues.length : 1)
-          );
-        },
-        render: (_v, row) => {
-          const counts = statusCounts(row.issues);
-          return rate(
-            row.issues.length ? (counts.faded / row.issues.length) * 100 : 100
-          );
-        },
-      },
-      {
-        title: '最新报告',
-        width: 110,
-        fixed: 'right',
-        sorter: (a, b) => reportName(a).localeCompare(reportName(b)),
-        render: (_v, row) => (
-          <Link href={reportHref(row.slug)} className="overview-table-link">
-            查看报告
-          </Link>
-        ),
-      },
-    ],
-    [reportHref]
-  );
-
-  const teamColumns = React.useMemo<TableProps<TeamRow>['columns']>(
-    () => [
-      {
-        title: '序号',
-        width: COLUMN_WIDTHS[0],
-        align: 'center',
-        render: (_v, _r, index) => <span className="row-num">{index + 1}</span>,
-      },
-      {
-        title: '责任团队',
-        dataIndex: 'name',
-        key: 'name',
-        width: COLUMN_WIDTHS[1],
-        align: 'left',
-        sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
-        sortOrder: teamSort.key === 'name' ? teamSort.order : null,
-        render: (value, row) => (
-          <span className="overview-expand-label">
-            <RightOutlined
-              className={`overview-expand-icon ${
-                expandedRowKeys.includes(row.id) ? 'is-expanded' : ''
-              }`}
-            />
-            <span>{value}</span>
-          </span>
-        ),
-      },
-      {
-        title: '负责仓库',
-        dataIndex: 'repoCount',
-        key: 'repoCount',
-        width: COLUMN_WIDTHS[2],
-        sorter: (a, b) => a.repoCount - b.repoCount,
-        sortOrder: teamSort.key === 'repoCount' ? teamSort.order : null,
-        render: (value: number) => `${value} 个`,
-      },
-      {
-        title: '综合体验评分',
-        dataIndex: 'score',
-        key: 'score',
-        width: COLUMN_WIDTHS[3],
-        sorter: (a, b) => (a.score ?? -1) - (b.score ?? -1),
-        sortOrder: teamSort.key === 'score' ? teamSort.order : null,
-        render: (value: number | null) => value?.toFixed(1) ?? '—',
-      },
-      {
-        title: '问题处理进展',
-        width: COLUMN_WIDTHS[4],
-        render: (_v, row) => progress(row.active, row.backfill, row.faded),
-      },
-      {
-        title: '总问题数',
-        key: 'total',
-        width: COLUMN_WIDTHS[5],
-        sorter: (a, b) => a.total - b.total,
-        sortOrder: teamSort.key === 'total' ? teamSort.order : null,
-        render: (_v, row) => (
-          <button
-            type="button"
-            className="overview-table-link overview-table-link-strong"
-            onClick={(event) => {
-              event.stopPropagation();
-              openDetails(`${row.name} · 总问题数`, row.repos);
-            }}
-          >
-            {row.total}
-          </button>
-        ),
-      },
-      {
-        title: '闭环率',
-        dataIndex: 'closeRate',
-        key: 'closeRate',
-        width: COLUMN_WIDTHS[6],
-        sorter: (a, b) => a.closeRate - b.closeRate,
-        sortOrder: teamSort.key === 'closeRate' ? teamSort.order : null,
-        render: (value: number) => rate(value),
-      },
-      {
-        title: '最新报告',
-        key: 'report',
-        width: COLUMN_WIDTHS[7],
-        sorter: (a, b) =>
-          (a.repos.map(reportName).sort()[0] ?? '').localeCompare(
-            b.repos.map(reportName).sort()[0] ?? ''
-          ),
-        sortOrder: teamSort.key === 'report' ? teamSort.order : null,
-        render: () => <span className="text-slate-300">-</span>,
-      },
-    ],
-    [expandedRowKeys, teamSort]
-  );
-
-  const renderExpandedRepoRow = (
-    repo: RepoRow,
-    index: number,
-    nested = false
-  ) => {
-    const counts = statusCounts(repo.issues);
+  const latestReport = (items: RepoRow[]) =>
+    [...items].sort((a, b) => b.latestDay.localeCompare(a.latestDay))[0];
+  const openIssues = (title: string, values: CiTopIssue[]) =>
+    setDetail({ title, issues: values });
+  const progressCell = (title: string, values: CiTopIssue[]) => {
+    if (!trackingReady) return '—';
+    const counts = countPainProgress(values);
     return (
-      <tr
-        key={repo.repo}
-        className="overview-expanded-row"
-        style={{ animationDelay: `${index * 50}ms` }}
-      >
-        <td className="overview-expanded-cell overview-expanded-cell-index" />
-        <td className="overview-expanded-cell overview-expanded-cell-name">
-          <span
-            className="overview-expanded-repo-name"
-            style={nested ? { paddingLeft: 20 } : undefined}
-          >
-            {repo.slug}
-          </span>
-        </td>
-        <td className="overview-expanded-cell">-</td>
-        <td className="overview-expanded-cell">
-          {repo.scoreOverall?.toFixed(1) ?? '—'}
-        </td>
-        <td className="overview-expanded-cell">
-          {progress(counts.active, counts.backfill, counts.faded)}
-        </td>
-        <td className="overview-expanded-cell">
-          <button
-            type="button"
-            className="overview-table-link overview-table-link-strong"
-            onClick={() => openDetails(`${repo.slug} · 总问题数`, [repo])}
-          >
-            {repo.issues.length}
-          </button>
-        </td>
-        <td className="overview-expanded-cell">
-          {rate(
-            repo.issues.length ? (counts.faded / repo.issues.length) * 100 : 100
-          )}
-        </td>
-        <td className="overview-expanded-cell">
-          <Link href={reportHref(repo.slug)} className="overview-table-link">
-            查看报告
-          </Link>
-        </td>
-      </tr>
+      <div onClick={(event) => event.stopPropagation()}>
+        <IssueProgressBar
+          pending={counts.pending}
+          inProgress={counts.confirmed}
+          resolved={counts.fixed}
+          onBucketClick={(bucket) => {
+            if (bucket === 'na') return;
+            const { status, label } = PROGRESS_STATUS[bucket];
+            openIssues(
+              `${title} · ${label}`,
+              values.filter((issue) => issue.status === status)
+            );
+          }}
+        />
+      </div>
     );
   };
-
-  const renderExpandedTeam = (team: TeamRow) => {
-    const grouped = team.name === '算子';
-    const sections = grouped
-      ? groupCiRepoCategories(team.repos)
-      : [{ key: 'all', label: '', repos: team.repos }];
-    return (
-      <div className="overview-expanded-rows">
-        <table
-          className="overview-expanded-table"
-          style={{ minWidth: TABLE_WIDTH }}
+  const totalCell = (title: string, values: CiTopIssue[]) =>
+    trackingReady ? (
+      <button
+        type="button"
+        className="overview-table-link overview-table-link-strong"
+        onClick={(event) => {
+          event.stopPropagation();
+          openIssues(title, values);
+        }}
+      >
+        {values.length}
+      </button>
+    ) : (
+      '—'
+    );
+  const scoreCell = (
+    score: number | null,
+    history: Array<{ score: number | null }> = []
+  ) => (
+    <div className="overview-close-rate-cell">
+      <ScoreSparkline values={history.slice(-7).map((point) => point.score)} />
+      <span className="text-sm font-semibold text-[var(--overview-slateDark)]">
+        {score?.toFixed(1) ?? '—'}
+      </span>
+    </div>
+  );
+  const rateCell = (values: CiTopIssue[]) =>
+    trackingReady ? (
+      <Tooltip title={REPAIR_RATE_NOTE}>
+        <span className="tabular-nums text-slate-700">
+          {countPainProgress(values).rate.toFixed(0)}%
+        </span>
+      </Tooltip>
+    ) : (
+      '—'
+    );
+  const reportCell = (repo?: RepoRow) =>
+    repo?.latestDay ? (
+      <Link
+        href={reportHref(repo.repo, repo.latestDay)}
+        onClick={(event) => event.stopPropagation()}
+        className="overview-table-link"
+      >
+        {repo.latestDay}
+      </Link>
+    ) : (
+      '—'
+    );
+  const indexColumn = {
+    title: '序号',
+    width: 64,
+    align: 'center' as const,
+    render: (_value: unknown, _row: unknown, index: number) => (
+      <span className="row-num">{index + 1}</span>
+    ),
+  };
+  const repoColumns: TableProps<RepoRow>['columns'] = [
+    indexColumn,
+    {
+      title: '仓库',
+      dataIndex: 'slug',
+      key: 'name',
+      width: 210,
+      sorter: (a, b) => a.slug.localeCompare(b.slug),
+    },
+    { title: '责任团队', dataIndex: 'teamName', width: 110, ellipsis: true },
+    {
+      title: '综合体验评分',
+      dataIndex: 'scoreOverall',
+      key: 'score',
+      width: 138,
+      sorter: (a, b) => (a.scoreOverall ?? -1) - (b.scoreOverall ?? -1),
+      render: (score: number | null, repo) =>
+        scoreCell(score, repo.scoreHistory),
+    },
+    {
+      title: '问题处理进展',
+      width: 230,
+      render: (_value, repo) => progressCell(repo.slug, repo.issues),
+    },
+    {
+      title: '总问题数',
+      key: 'total',
+      width: 110,
+      sorter: (a, b) => a.issues.length - b.issues.length,
+      render: (_value, repo) => totalCell(repo.slug, repo.issues),
+    },
+    {
+      title: '修复率',
+      key: 'rate',
+      width: 100,
+      sorter: (a, b) =>
+        countPainProgress(a.issues).rate - countPainProgress(b.issues).rate,
+      render: (_value, repo) => rateCell(repo.issues),
+    },
+    {
+      title: '最新报告',
+      key: 'day',
+      width: 110,
+      sorter: (a, b) => a.latestDay.localeCompare(b.latestDay),
+      render: (_value, repo) => reportCell(repo),
+    },
+  ];
+  const teamColumns: TableProps<TeamRow>['columns'] = [
+    indexColumn,
+    {
+      title: '责任团队',
+      dataIndex: 'name',
+      key: 'name',
+      width: 210,
+      sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
+      render: (name: string, team) => (
+        <button
+          type="button"
+          className="overview-expand-label"
+          aria-label={`${
+            expandedKeys.includes(team.id) ? '收起' : '展开'
+          }${name}`}
+          aria-expanded={expandedKeys.includes(team.id)}
+          onClick={(event) => {
+            event.stopPropagation();
+            setExpandedKeys((previous) =>
+              previous.includes(team.id)
+                ? previous.filter((key) => key !== team.id)
+                : [...previous, team.id]
+            );
+          }}
         >
-          <colgroup>
-            {COLUMN_WIDTHS.map((width, index) => (
-              <col key={index} style={{ width }} />
-            ))}
-          </colgroup>
-          <tbody>
-            {sections.map((section) => {
-              const aggregate = buildCiAggregateRow(
-                section.label,
-                section.repos
-              );
-              const latestRepo = [...section.repos].sort(
-                (left, right) =>
-                  right.latestDay.localeCompare(left.latestDay) ||
-                  right.slug.localeCompare(left.slug, 'zh-CN')
-              )[0];
-              return (
-                <React.Fragment key={section.key}>
-                  {grouped ? (
-                    <tr className="overview-category-row">
-                      <td className="overview-expanded-cell" />
+          <RightOutlined
+            className={`overview-expand-icon ${
+              expandedKeys.includes(team.id) ? 'is-expanded' : ''
+            }`}
+          />
+          {name}
+        </button>
+      ),
+    },
+    {
+      title: '仓库数',
+      dataIndex: 'repoCount',
+      width: 110,
+      sorter: (a, b) => a.repoCount - b.repoCount,
+    },
+    {
+      title: '综合体验评分',
+      dataIndex: 'score',
+      key: 'score',
+      width: 138,
+      sorter: (a, b) => (a.score ?? -1) - (b.score ?? -1),
+      render: (score: number | null) => scoreCell(score),
+    },
+    {
+      title: '问题处理进展',
+      width: 230,
+      render: (_value, team) => progressCell(team.name, team.issues),
+    },
+    {
+      title: '总问题数',
+      key: 'total',
+      width: 110,
+      sorter: (a, b) => a.total - b.total,
+      render: (_value, team) => totalCell(team.name, team.issues),
+    },
+    {
+      title: '修复率',
+      key: 'rate',
+      width: 100,
+      sorter: (a, b) => a.rate - b.rate,
+      render: (_value, team) => rateCell(team.issues),
+    },
+    {
+      title: '最新报告',
+      key: 'day',
+      width: 110,
+      render: (_value, team) => reportCell(latestReport(team.repos)),
+    },
+  ];
+  const sortRepos = (values: RepoRow[]) =>
+    [...values].sort((a, b) => {
+      const value = (repo: RepoRow): string | number => {
+        if (sort.key === 'score') return repo.scoreOverall ?? -1;
+        if (sort.key === 'total') return repo.issues.length;
+        if (sort.key === 'rate') return countPainProgress(repo.issues).rate;
+        if (sort.key === 'day') return repo.latestDay;
+        return repo.slug;
+      };
+      const left = value(a),
+        right = value(b);
+      return (
+        (typeof left === 'string' && typeof right === 'string'
+          ? left.localeCompare(right)
+          : Number(left) - Number(right)) * (sort.order === 'ascend' ? 1 : -1)
+      );
+    });
+  const repoTable = (items: RepoRow[]) => (
+    <Table<RepoRow>
+      className="overview-ant-table"
+      rowKey="repo"
+      columns={repoColumns}
+      dataSource={sortRepos(items)}
+      pagination={false}
+      tableLayout="fixed"
+      scroll={{ x: 1172 }}
+    />
+  );
+  const renderExpandedTeam = (team: TeamRow) => (
+    <div className="overview-expanded-wrap">
+      <table
+        className="overview-expanded-table"
+        style={{ width: '100%', tableLayout: 'fixed' }}
+      >
+        <colgroup>
+          {[64, 210, 110, 138, 230, 110, 100, 110].map((width, index) => (
+            <col key={index} style={{ width }} />
+          ))}
+        </colgroup>
+        <tbody>
+          {groupCiRepoCategories(sortRepos(team.repos)).map((category) => {
+            const key = `${team.id}:${category.key}`;
+            const grouped = category.key !== '未分类';
+            const hidden = collapsed.includes(key);
+            const aggregate = buildCiAggregateRow(
+              category.label,
+              category.repos
+            );
+            return (
+              <React.Fragment key={key}>
+                {grouped && (
+                  <tr className="overview-category-row">
+                    <td className="overview-expanded-cell" />
+                    <td className="overview-expanded-cell overview-expanded-cell-name">
+                      <button
+                        type="button"
+                        className="overview-expand-label"
+                        aria-expanded={!hidden}
+                        onClick={() =>
+                          setCollapsed((previous) =>
+                            hidden
+                              ? previous.filter((item) => item !== key)
+                              : [...previous, key]
+                          )
+                        }
+                      >
+                        <RightOutlined
+                          className={`overview-expand-icon ${
+                            hidden ? '' : 'is-expanded'
+                          }`}
+                        />
+                        {category.label}
+                      </button>
+                    </td>
+                    <td className="overview-expanded-cell">
+                      {category.repos.length} 个
+                    </td>
+                    <td className="overview-expanded-cell">
+                      {scoreCell(aggregate.score)}
+                    </td>
+                    <td className="overview-expanded-cell">
+                      {progressCell(category.label, aggregate.issues)}
+                    </td>
+                    <td className="overview-expanded-cell">
+                      {totalCell(category.label, aggregate.issues)}
+                    </td>
+                    <td className="overview-expanded-cell">
+                      {rateCell(aggregate.issues)}
+                    </td>
+                    <td className="overview-expanded-cell">
+                      {reportCell(latestReport(category.repos))}
+                    </td>
+                  </tr>
+                )}
+                {(!grouped || !hidden) &&
+                  category.repos.map((repo, index) => (
+                    <tr key={repo.repo}>
+                      <td className="overview-expanded-cell">{index + 1}</td>
                       <td className="overview-expanded-cell overview-expanded-cell-name">
-                        <button
-                          type="button"
-                          className="overview-expand-label w-full text-left text-sm text-slate-700"
-                          aria-expanded={
-                            !collapsedCategories.includes(section.key)
-                          }
-                          onClick={() =>
-                            setCollapsedCategories((previous) =>
-                              previous.includes(section.key)
-                                ? previous.filter((key) => key !== section.key)
-                                : [...previous, section.key]
-                            )
-                          }
-                        >
-                          <RightOutlined
-                            className={`overview-expand-icon ${
-                              collapsedCategories.includes(section.key)
-                                ? ''
-                                : 'is-expanded'
-                            }`}
-                          />
-                          {section.label}
-                        </button>
+                        {repo.slug}
+                      </td>
+                      <td className="overview-expanded-cell">—</td>
+                      <td className="overview-expanded-cell">
+                        {scoreCell(repo.scoreOverall, repo.scoreHistory)}
                       </td>
                       <td className="overview-expanded-cell">
-                        {section.repos.length} 个
+                        {progressCell(repo.slug, repo.issues)}
                       </td>
                       <td className="overview-expanded-cell">
-                        {aggregate.score?.toFixed(1) ?? '—'}
+                        {totalCell(repo.slug, repo.issues)}
                       </td>
                       <td className="overview-expanded-cell">
-                        {section.repos.length
-                          ? progress(
-                              aggregate.active,
-                              aggregate.backfill,
-                              aggregate.faded
-                            )
-                          : '-'}
+                        {rateCell(repo.issues)}
                       </td>
                       <td className="overview-expanded-cell">
-                        {section.repos.length ? (
-                          <button
-                            type="button"
-                            className="overview-table-link overview-table-link-strong"
-                            onClick={() =>
-                              openDetails(
-                                `${section.label} · 总问题数`,
-                                section.repos
-                              )
-                            }
-                          >
-                            {aggregate.total}
-                          </button>
-                        ) : (
-                          0
-                        )}
-                      </td>
-                      <td className="overview-expanded-cell">
-                        {section.repos.length ? rate(aggregate.closeRate) : '-'}
-                      </td>
-                      <td className="overview-expanded-cell">
-                        {latestRepo ? (
-                          <Link
-                            href={reportHref(latestRepo.slug)}
-                            className="overview-table-link"
-                          >
-                            查看报告
-                          </Link>
-                        ) : (
-                          '-'
-                        )}
+                        {reportCell(repo)}
                       </td>
                     </tr>
-                  ) : null}
-                  {(!grouped || !collapsedCategories.includes(section.key)) &&
-                    section.repos.map((repo, index) =>
-                      renderExpandedRepoRow(repo, index, grouped)
-                    )}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
+                  ))}
+              </React.Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
   return (
-    <>
-      <Title level={4} className="oj-section-title">
-        各仓库对比
-      </Title>
-      <div className="section-card">
-        <div className="tab-bar progress-toolbar-row">
-          <Segmented
-            className="overview-segmented"
-            value={view}
-            onChange={(value) => setView(value as 'team' | 'repo')}
-            options={[
-              { label: '责任团队', value: 'team' },
-              { label: '仓库', value: 'repo' },
-            ]}
-          />
-        </div>
-        {view === 'team' ? (
-          <Table<TeamRow>
-            className="overview-ant-table"
-            dataSource={displayedTeamRows}
-            columns={teamColumns}
-            rowKey="id"
-            pagination={false}
-            tableLayout="fixed"
-            scroll={{ x: TABLE_WIDTH }}
-            onChange={(_pagination, _filters, sorter) => {
-              const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
-              setTeamSort({
-                key: activeSorter.columnKey as TeamSortKey | undefined,
-                order: activeSorter.order ?? null,
-              });
-            }}
-            expandable={{
-              expandedRowKeys,
-              expandRowByClick: true,
-              showExpandColumn: false,
-              onExpandedRowsChange: (keys) => setExpandedRowKeys([...keys]),
-              expandedRowRender: renderExpandedTeam,
-            }}
-          />
-        ) : (
-          <Table<RepoRow>
-            className="overview-ant-table"
-            dataSource={repoRows}
-            columns={repoColumns}
-            rowKey="repo"
-            pagination={false}
-            tableLayout="fixed"
-            scroll={{ x: 1168 }}
-          />
-        )}
-      </div>
+    <OverviewRepoComparison
+      view={view}
+      onViewChange={setView}
+      actions={
+        <Input
+          className="!ml-auto !h-8 !w-56 max-w-full !border-[rgba(var(--overview-slateBorder-rgb),0.8)] !bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] !px-3 !text-sm !shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] [&.ant-input-affix-wrapper]:!rounded-2xl [&_.ant-input]:!bg-transparent"
+          aria-label="搜索仓库或团队"
+          placeholder="搜索仓库或团队"
+          value={search}
+          prefix={<SearchOutlined className="text-[var(--overview-slate)]" />}
+          allowClear
+          onChange={(event) => setSearch(event.target.value)}
+        />
+      }
+    >
+      {teams.isError && (
+        <Alert
+          className="mb-3"
+          type="warning"
+          message="团队信息加载失败"
+          action={
+            <button type="button" onClick={() => void teams.refetch()}>
+              重试
+            </button>
+          }
+        />
+      )}
+      {view === 'repo' ? (
+        repoTable(filtered)
+      ) : (
+        <Table<TeamRow>
+          className="overview-ant-table"
+          rowKey="id"
+          columns={teamColumns}
+          dataSource={teamRows}
+          pagination={false}
+          scroll={{ x: 1172 }}
+          onChange={(_pagination, _filters, sorter) => {
+            const item = Array.isArray(sorter) ? sorter[0] : sorter;
+            setSort({
+              key: String(item.columnKey || 'score'),
+              order: item.order || 'ascend',
+            });
+          }}
+          tableLayout="fixed"
+          expandable={{
+            expandedRowKeys: expandedKeys,
+            onExpandedRowsChange: (keys) => setExpandedKeys([...keys]),
+            showExpandColumn: false,
+            expandRowByClick: true,
+            expandedRowRender: renderExpandedTeam,
+          }}
+        />
+      )}
       <Modal
-        open={detail !== null}
+        open={!!detail}
+        title={
+          detail ? `${detail.title} · 痛点问题（${detail.issues.length}）` : ''
+        }
         onCancel={() => setDetail(null)}
         footer={null}
-        width="min(96vw, 1420px)"
-        title={detail ? `${detail.title}（共${detail.issues.length}条）` : ''}
-        destroyOnHidden
+        width={1080}
+        destroyOnClose
       >
-        <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-200">
-          <table className="w-full table-fixed border-collapse text-center text-[13px] text-slate-700">
-            <thead className="sticky top-0 z-10 bg-slate-50 text-[11px] text-slate-500">
-              <tr>
-                <th className="w-[6%] px-2 py-3">序号</th>
-                <th className="w-[10%] px-2 py-3">仓库</th>
-                <th className="w-[12%] px-2 py-3">责任团队</th>
-                <th className="w-[9%] px-2 py-3">优先级</th>
-                <th className="w-[12%] px-2 py-3">状态</th>
-                <th className="w-[25%] px-2 py-3">问题描述</th>
-                <th className="w-[18%] px-2 py-3">建议动作</th>
-                <th className="w-[8%] px-2 py-3">相关报告</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
-              {detail?.issues.map((issue, index) => (
-                <tr key={issue.key} className="hover:bg-slate-50/80">
-                  <td className="px-2 py-3">{index + 1}</td>
-                  <td className="px-2 py-3">{issue.slug}</td>
-                  <td className="px-2 py-3">{detail.teams[issue.slug]}</td>
-                  <td className="px-2 py-3">{issue.pri}</td>
-                  <td className="px-2 py-3">{issue.status}</td>
-                  <td className="px-2 py-3">{issue.kb}</td>
-                  <td className="px-2 py-3">{issue.action}</td>
-                  <td className="px-2 py-3">
-                    <Link
-                      href={reportHref(issue.slug)}
-                      className="overview-table-link text-blue-600"
-                    >
-                      查看报告
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {detail && (
+          <CiIssueTable issues={detail.issues} reportHref={reportHref} />
+        )}
       </Modal>
-    </>
+    </OverviewRepoComparison>
   );
 };
-
 export default CiRepoProgressSection;

@@ -1,5 +1,8 @@
 import AdminReviewButton from '../../components/AdminReviewButton';
 import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchIssueTaskManagementAccess } from '../data';
+import RerunManagementSection from './RerunManagementSection';
 import { useRouter } from 'next/router';
 import { Alert, Button, Card, Space, Tabs, Typography } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -31,6 +34,20 @@ const IssueTaskManagementPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('reruns');
+  const accessQuery = useQuery({
+    queryKey: [
+      'issue-task-management-access',
+      user?.username,
+      user?.role,
+      user?.last_login_at,
+      user?.repo_keys,
+    ],
+    queryFn: ({ signal }) =>
+      fetchIssueTaskManagementAccess(getCompassOperatorToken() || '', signal),
+    enabled: Boolean(user),
+    retry: false,
+  });
 
   useEffect(() => {
     let disposed = false;
@@ -125,19 +142,45 @@ const IssueTaskManagementPage: React.FC = () => {
               </Space>
             </div>
           </div>
-          {checking ? (
+          {checking || (user && accessQuery.isLoading) ? (
             <div className="flex items-center gap-3 py-6 text-sm text-slate-500">
               <span>正在校验当前登录状态...</span>
             </div>
-          ) : user?.role === 'admin' ? (
+          ) : user && accessQuery.data ? (
             <div className="mb-5">
               <Tabs
-                activeKey="weekly-report"
-                items={[{ key: 'weekly-report', label: '周报管理' }]}
-              />
-              <WeeklyReportManagementSection
-                key={user.username}
-                reportType="issue"
+                activeKey={accessQuery.data.isAdmin ? activeTab : 'reruns'}
+                onChange={setActiveTab}
+                destroyInactiveTabPane
+                items={[
+                  {
+                    key: 'reruns',
+                    label: '重跑任务',
+                    children: (
+                      <RerunManagementSection
+                        key={user.username}
+                        userKey={user.username}
+                        token={getCompassOperatorToken() || ''}
+                        org={org}
+                        repositories={accessQuery.data.repositories}
+                      />
+                    ),
+                  },
+                  ...(accessQuery.data.isAdmin
+                    ? [
+                        {
+                          key: 'weekly-report',
+                          label: '周报管理',
+                          children: (
+                            <WeeklyReportManagementSection
+                              key={user.username}
+                              reportType="issue"
+                            />
+                          ),
+                        },
+                      ]
+                    : []),
+                ]}
               />
             </div>
           ) : (
@@ -147,8 +190,10 @@ const IssueTaskManagementPage: React.FC = () => {
                 showIcon
                 message={
                   user
-                    ? '社区贡献周报管理仅限管理员访问，请切换管理员账号'
-                    : '请先登录管理员账号'
+                    ? accessQuery.error instanceof Error
+                      ? accessQuery.error.message
+                      : '任务管理仅限管理员和仓库负责人访问'
+                    : '请先登录管理员或仓库负责人账号'
                 }
               />
               <Button
@@ -156,7 +201,7 @@ const IssueTaskManagementPage: React.FC = () => {
                 className="rounded-full px-4 font-semibold"
                 onClick={() => setAccessOpen(true)}
               >
-                {user ? '切换管理员账号' : '登录并进入'}
+                {user ? '切换操作账号' : '登录并进入'}
               </Button>
             </div>
           )}

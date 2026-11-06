@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { parseRepoKey, repoKeyToQuery } from './helpers';
-import type { CiRepoKey } from './types';
+import type { CiRepoData, CiRepoKey } from './types';
 import { useCiCatalogQuery, useCiDatasetQuery } from './queries';
 import type { CiCatalogEntry } from './api';
 import ExperienceBackLink from '../components/ExperienceBackLink';
@@ -14,6 +14,26 @@ const getDefaultRepo = (catalog: CiCatalogEntry[] = []) =>
   catalog.find((entry) => entry.repo === 'runtime')?.repo ??
   catalog[0]?.repo ??
   null;
+
+type DaySelection = { repo: CiRepoKey; day: string; requestedDay: string };
+
+const resolveDay = (
+  data: CiRepoData | null | undefined,
+  repo: CiRepoKey | null,
+  selection: DaySelection | null,
+  requestedDay: string
+) => {
+  if (!data) return '';
+  if (
+    selection?.repo === repo &&
+    selection.requestedDay === requestedDay &&
+    data.days.includes(selection.day)
+  )
+    return selection.day;
+  return data.days.includes(requestedDay)
+    ? requestedDay
+    : data.days[data.days.length - 1] ?? '';
+};
 
 const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
   const router = useRouter();
@@ -33,22 +53,22 @@ const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
   );
   const data = reportQuery.data?.dataset;
   const journey = reportQuery.data?.journey;
+  const requestedDay =
+    typeof router.query.day === 'string' ? router.query.day : '';
 
   // 按仓库保留有效选择；异步刷新不覆盖用户正在查看的历史日期。
-  const [selection, setSelection] = useState<{
-    repo: CiRepoKey;
-    day: string;
-  } | null>(null);
-  const day =
-    data && selection?.repo === repo && data.days.includes(selection.day)
-      ? selection.day
-      : data?.days[data.days.length - 1] ?? '';
+  const [selection, setSelection] = useState<DaySelection | null>(null);
+  const day = resolveDay(data, repo, selection, requestedDay);
   useEffect(() => {
     if (repo && data && day)
       setSelection((current) =>
-        current?.repo === repo && current.day === day ? current : { repo, day }
+        current?.repo === repo &&
+        current.day === day &&
+        current.requestedDay === requestedDay
+          ? current
+          : { repo, day, requestedDay }
       );
-  }, [repo, data, day]);
+  }, [repo, data, day, requestedDay]);
 
   const handleRepoChange = useCallback(
     (next: CiRepoKey) => {
@@ -56,7 +76,11 @@ const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
       void router.push(
         {
           pathname: router.pathname,
-          query: { ...router.query, repo: repoKeyToQuery(next) },
+          query: {
+            ...router.query,
+            day: undefined,
+            repo: repoKeyToQuery(next),
+          },
         },
         undefined,
         { shallow: true }
@@ -87,7 +111,7 @@ const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
               day={day}
               days={data.days}
               onDayChange={(next) =>
-                setSelection({ repo: availableRepo, day: next })
+                setSelection({ repo: availableRepo, day: next, requestedDay })
               }
             />
           ) : null}

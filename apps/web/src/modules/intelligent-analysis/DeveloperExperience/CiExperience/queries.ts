@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchCiCatalog, fetchCiDataset, fetchCiDatasets } from './api';
 import type { CiRepoKey } from './types';
+import { fetchCiPainOverview, fetchCiPainTrends } from './overviewApi';
 
 const queryOptions = {
   staleTime: 5 * 60 * 1000,
@@ -30,5 +31,25 @@ export const useCiDatasetsQuery = (enabled = true) =>
     ...queryOptions,
     queryKey: ['ci-data', 'overview'],
     queryFn: ({ signal }) => fetchCiDatasets(signal),
+    enabled,
+  });
+
+export const useCiPainOverviewQuery = (enabled = true) =>
+  useQuery({
+    ...queryOptions,
+    queryKey: ['ci-data', 'pain-overview'],
+    queryFn: ({ signal }) => fetchCiPainOverview(signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
+    enabled,
+  });
+
+export const useCiPainTrendsQuery = (enabled = true) =>
+  useQuery({
+    ...queryOptions,
+    queryKey: ['ci-data', 'pain-trends'],
+    queryFn: ({ signal }) => fetchCiPainTrends(signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
     enabled,
   });
