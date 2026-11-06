@@ -81,12 +81,17 @@ function MyApp({
   return (
     <QueryClientProvider client={queryClient}>
       <Head>
-        <title>OSS Compass</title>
+        <title>{pageProps.reportMetadata?.title || 'OSS Compass'}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width" />
         <meta
           name="keywords"
-          content="Ecosystem Evaluation System,Code Compliance Guarantee,Code Security Guarantee,Robustness,Productivity,Collaboration Development Index,Community,Community Service and Support,"
+          content={[
+            pageProps.reportMetadata?.keywords,
+            'Ecosystem Evaluation System,Code Compliance Guarantee,Code Security Guarantee,Robustness,Productivity,Collaboration Development Index,Community,Community Service and Support,',
+          ]
+            .filter(Boolean)
+            .join(',')}
         />
         <meta
           name="description"
