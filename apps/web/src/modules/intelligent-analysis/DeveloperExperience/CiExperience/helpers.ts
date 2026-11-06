@@ -25,8 +25,6 @@ export const parseRepoKey = (
   );
 };
 
-export const repoKeyToQuery = (repo: CiRepoKey) => repo;
-
 /** 证据链接以 API 仓库 URL 为基础；来源缺失时不构造猜测地址。 */
 export const runURL = (repositoryUrl: string | undefined, id: string) =>
   repositoryUrl
@@ -40,6 +38,69 @@ export const prURL = (repositoryUrl: string | undefined, n: string | number) =>
         n
       )}`
     : undefined;
+
+/**
+ * CANN 已知仓库注册表，供静态汇总顺序和 slug 归一化使用。
+ *
+ * `key` 是页面状态与 query 内部使用的仓库键；`slug` 是 GitCode 项目名，即
+ * https://gitcode.com/cann/<slug> —— 二者并不总是相同（如 ascdevkit → asc-devkit）；
+ * `label` 是选择器/看板对外展示名。
+ *
+ * run/PR 外链使用 API 返回的仓库 URL；动态仓库目录决定选择器选项。
+ */
+export const CI_REPOS: ReadonlyArray<{
+  key: CiRepoKey;
+  slug: string;
+  label: string;
+}> = [
+  { key: 'runtime', slug: 'runtime', label: 'runtime' },
+  { key: 'opsnn', slug: 'ops-nn', label: 'ops-nn' },
+  { key: 'opscv', slug: 'ops-cv', label: 'ops-cv' },
+  { key: 'graphaf', slug: 'graph-autofusion', label: 'graph-autofusion' },
+  { key: 'opstransformer', slug: 'ops-transformer', label: 'ops-transformer' },
+  { key: 'hcomm', slug: 'hcomm', label: 'hcomm' },
+  { key: 'pypto', slug: 'pypto', label: 'pypto' },
+  { key: 'ascdevkit', slug: 'asc-devkit', label: 'asc-devkit' },
+  { key: 'hccl', slug: 'hccl', label: 'hccl' },
+  { key: 'hixl', slug: 'hixl', label: 'hixl' },
+  { key: 'ptoisa', slug: 'ptoisa', label: 'ptoisa' },
+  { key: 'oamtools', slug: 'oam-tools', label: 'oam-tools' },
+  { key: 'amct', slug: 'amct', label: 'amct' },
+  { key: 'opbase', slug: 'opbase', label: 'opbase' },
+  { key: 'pyasc', slug: 'pyasc', label: 'pyasc' },
+  { key: 'metadef', slug: 'metadef', label: 'metadef' },
+  { key: 'asctools', slug: 'asc-tools', label: 'asc-tools' },
+];
+
+/**
+ * repo key → 已知 GitCode 项目名。
+ * 命中注册表返回 slug；未登记的 key 原样返回，保证 URL 可读且不会抛错。
+ */
+export const repoSlug = (repo: CiRepoKey): string =>
+  CI_REPOS.find((r) => r.key === repo)?.slug ?? repo;
+
+/**
+ * 归一化 query 中的 repo 值：仓库键与 GitCode slug 均可（大小写不敏感），
+ * 如 opsnn / ops-nn、ascdevkit / asc-devkit、opstransformer / ops-transformer。
+ * 未知值回退 runtime，与详细看板默认仓一致。
+ */
+export const normalizeRepoKey = (
+  value: string | string[] | undefined
+): CiRepoKey => {
+  const raw = (Array.isArray(value) ? value[0] : value)?.trim().toLowerCase();
+  if (!raw) {
+    return 'runtime';
+  }
+  const hit = CI_REPOS.find(
+    (r) => r.key.toLowerCase() === raw || r.slug.toLowerCase() === raw
+  );
+  return hit ? hit.key : 'runtime';
+};
+
+/**
+ * query 保留后端仓库键，以支持注册表之外的新仓库。
+ */
+export const repoKeyToQuery = (repo: CiRepoKey): string => repo;
 
 /** 维度中文名 */
 export const DIM_NAME: Record<CiDimKey, string> = {
