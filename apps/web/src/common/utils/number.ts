@@ -59,7 +59,8 @@ export function percentRound(ipt: number[], precision?: number) {
       const diffs = new Array(length);
 
       for (let i = 0; i < length; i++) {
-        diffs[i] = Math.abs(out[i] - iptPercents[i] * powPrecision);
+        const diff = out[i] - iptPercents[i] * powPrecision;
+        diffs[i] = check100 > pow100 ? diff : -diff;
       }
 
       while (grainCount > 0) {
