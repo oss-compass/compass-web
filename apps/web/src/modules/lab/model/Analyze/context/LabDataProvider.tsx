@@ -73,7 +73,10 @@ const LabDataProvider: React.FC<PropsWithChildren> = ({ children }) => {
     .filter((i) => i.status !== 'error');
 
   const isLoading = items.some((i) => i.status === 'loading');
-  const value = { loading: isLoading, items };
+  const value = {
+    loading: isLoading,
+    items: items.filter((i) => i.result?.labModelVersionReportDetail),
+  };
 
   return (
     <ChartsDataContext.Provider value={value}>
