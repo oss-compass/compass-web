@@ -4,7 +4,7 @@ import AnalysisMatrices from '../matrices';
 import { Collapsible } from '../shared';
 
 type DailyDrilldownProps = {
-  data: CiRepoData;
+  data: Pick<CiRepoData, 'boards'>;
   day: string;
 };
 
@@ -14,7 +14,7 @@ const DailyDrilldown: React.FC<DailyDrilldownProps> = ({ data, day }) => {
 
   return (
     <Collapsible
-      className="!rounded-xl"
+      className="!rounded-3xl !border-white/80 !bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
       summary={
         <span className="inline-block py-2 text-base font-semibold text-slate-900">
           详细数据

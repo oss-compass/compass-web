@@ -5,6 +5,8 @@ import { DIM_NAME } from '../../helpers';
 import type { CiReportContext } from '../../reportContext';
 import CiScoreDetails from '../CiScoreDetails';
 import CiMetricDetails, { type CiMetricDetailsBoard } from './CiMetricDetails';
+import { uniqueProblems } from '../PainTracking/model';
+import { useCiPainListNavigation } from '../PainTracking';
 
 type CiReportOverviewProps = {
   journey: CiJourney;
@@ -65,6 +67,8 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
   onFilterChange,
 }) => {
   const scores = journey.boards[day]?.scores;
+  const totalPainCount = uniqueProblems(problems).length;
+  const showAllProblems = useCiPainListNavigation();
   const [scoreDetailsOpen, setScoreDetailsOpen] = useState(false);
   const detailsId = useId();
   const expanded = scoreDetailsOpen ? 'overall' : activeDimension;
@@ -84,34 +88,60 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
     <section aria-label="报告概览">
       <h2 className="mb-3 text-base font-semibold text-slate-800">报告概览</h2>
       <div className="grid grid-cols-5 gap-4 md:grid-cols-2 md:gap-3 xl:grid-cols-3">
-        <button
-          type="button"
-          aria-label={`综合体验评分，${scores?.total ?? '未评估'}${
-            scores?.total != null ? '分' : ''
-          }，查看评分说明`}
-          aria-expanded={expanded === 'overall'}
-          aria-controls={detailsId}
-          onClick={() => {
-            setScoreDetailsOpen((open) => !open);
-            onFilterChange(null, null);
-          }}
-          className={`${CARD_CLASS} flex-col !justify-center text-left transition-colors hover:border-slate-300 focus-visible:outline-blue-600 md:col-span-2 ${
+        <div
+          className={`${CARD_CLASS} md:col-span-2 ${
             expanded === 'overall'
               ? 'border-blue-300 bg-blue-50/50'
               : 'border-slate-200/80 bg-white/90'
           }`}
         >
-          <span className="flex items-center gap-1.5 text-sm font-medium text-slate-500">
-            综合体验评分{' '}
-            <DownOutlined
-              aria-hidden
-              className={`text-xs text-slate-400 transition-transform ${
-                expanded === 'overall' ? 'rotate-180' : ''
+          <button
+            type="button"
+            aria-label={`综合体验评分，${scores?.total ?? '未评估'}${
+              scores?.total != null ? '分' : ''
+            }，痛点总数 ${totalPainCount}，查看评分说明`}
+            aria-expanded={expanded === 'overall'}
+            aria-controls={detailsId}
+            onClick={() => {
+              setScoreDetailsOpen((open) => !open);
+              onFilterChange(null, null);
+            }}
+            className="flex min-w-0 flex-1 flex-col justify-center rounded text-left focus-visible:outline-blue-600"
+          >
+            <span className="flex items-center gap-1.5 text-sm font-medium text-slate-500">
+              综合体验评分{' '}
+              <DownOutlined
+                aria-hidden
+                className={`text-xs text-slate-400 transition-transform ${
+                  expanded === 'overall' ? 'rotate-180' : ''
+                }`}
+              />
+            </span>
+            <ScoreValue score={scores?.total} overall />
+          </button>
+          <span className="flex shrink-0 flex-col justify-center gap-1">
+            <button
+              type="button"
+              aria-label={`本报告痛点总数：${totalPainCount}`}
+              aria-controls="ci-report-problems"
+              title="点击查看本报告全部痛点，包含跨段/未映射项"
+              onClick={() => {
+                setScoreDetailsOpen(false);
+                onFilterChange(null, null);
+                showAllProblems?.();
+              }}
+              className={`inline-flex items-center justify-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium tabular-nums transition-colors focus-visible:outline-blue-600 ${
+                totalPainCount
+                  ? 'bg-violet-50 text-violet-700 hover:bg-violet-100'
+                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
               }`}
-            />
+            >
+              <span>痛点总数</span>
+              <span>·</span>
+              <span>{totalPainCount}</span>
+            </button>
           </span>
-          <ScoreValue score={scores?.total} overall />
-        </button>
+        </div>
         {DIMENSIONS.map((dimension) => {
           const score = scores?.dims[dimension]?.score;
           const active = activeDimension === dimension;
@@ -192,7 +222,7 @@ const CiReportOverview: React.FC<CiReportOverviewProps> = ({
               ? '综合评分详情'
               : `${DIM_NAME[expanded]}详情`
           }
-          className="mt-4 min-w-0 rounded-xl border border-slate-200 bg-slate-50/40 p-4 md:p-3"
+          className="mt-4 min-w-0 rounded-[28px] border border-slate-200/80 bg-[linear-gradient(180deg,#fbfdff_0%,#f8fbff_100%)] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] md:p-3"
         >
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-baseline gap-3">

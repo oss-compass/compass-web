@@ -36,6 +36,55 @@ it('does not fill a missing latest score from an earlier date', () => {
   expect(m.kpis[0].value).toBe('—');
 });
 
+it('retains backend dimension names and metric identity when labels repeat across dimensions', () => {
+  const data = JSON.parse(JSON.stringify(rawData)) as CiRepoData;
+  const journey = JSON.parse(JSON.stringify(rawJourneys.runtime)) as CiJourney;
+  const day = data.days[data.days.length - 1];
+  const dimension = data.boards[day].dims.find(
+    (dim) => dim.key === 'stability'
+  )!;
+  dimension.name = '后端稳定维度';
+  journey.boards[day].scores!.dims.stability.metrics = { 同名指标: 0 };
+  journey.boards[day].scores!.dims.cost.metrics = { 同名指标: 80 };
+  const overview = computeCommunityOverview(
+    { runtime: data },
+    { runtime: journey }
+  );
+  expect(overview.repos[0].scoreMetrics).toEqual(
+    expect.arrayContaining([
+      {
+        key: 'stability:同名指标',
+        label: '同名指标',
+        score: 0,
+        groupKey: 'stability',
+        groupLabel: '后端稳定维度',
+        groupOrder: 0,
+      },
+      {
+        key: 'cost:同名指标',
+        label: '同名指标',
+        score: 80,
+        groupKey: 'cost',
+        groupLabel: '成本',
+        groupOrder: 3,
+      },
+    ])
+  );
+  Reflect.deleteProperty(dimension, 'name');
+  expect(
+    computeCommunityOverview({ runtime: data }, { runtime: journey }).repos[0]
+      .scoreMetrics
+  ).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        key: 'stability:同名指标',
+        groupLabel: '稳定性',
+        score: 0,
+      }),
+    ])
+  );
+});
+
 it('counts real tracking states, excludes invalid issues and treats zero problems as 100 percent', () => {
   expect(countPainProgress([]).rate).toBe(100);
   expect(countPainProgress([{ status: 'invalid' }]).rate).toBe(100);
@@ -142,7 +191,7 @@ it('counts repositories with latest scores of at least 90 and includes unscored 
   const overview = computeCommunityOverview(datasets, journeys);
   expect(overview.kpis.map(({ label }) => label)).toEqual([
     '综合体验评分',
-    '问题闭环',
+    '闭环率',
     '达成 90 分以上仓数',
     '覆盖仓库数',
   ]);

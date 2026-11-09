@@ -14,30 +14,26 @@ import {
   cookieSetAuthRole,
   cookieSetAuthBoardRole,
 } from '@common/utils/cookie';
-
-// 这些路径下不需要获取用户信息（无需鉴权、无需用户数据）
-const EXCLUDED_PATHS = ['/intelligent-analysis/community-experience'];
-
-function isExcludedPath(path: string): boolean {
-  return EXCLUDED_PATHS.some((prefix) => path.startsWith(prefix));
-}
+import { isStandaloneExperiencePath } from './userInfoRoutes';
 
 const UserInfoFetcher: React.FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter();
-  const skipFetch = isExcludedPath(router.asPath);
+  const skipFetch =
+    isStandaloneExperiencePath(router.pathname) ||
+    isStandaloneExperiencePath(router.asPath);
 
   const { data, isLoading, refetch } = useUserinfoQuery(
     client,
     {},
     {
-      enabled: !skipFetch,
+      enabled: router.isReady && !skipFetch,
     }
   );
 
   const event$ = useEventEmitter<UserEventType>();
   event$.useSubscription((e) => {
     if (e === userEvent.REFRESH) {
-      if (!skipFetch) {
+      if (router.isReady && !skipFetch) {
         refetch();
       }
     }
@@ -52,10 +48,11 @@ const UserInfoFetcher: React.FC<PropsWithChildren> = ({ children }) => {
       serUserLoading(false);
       return;
     }
+    if (!router.isReady) return;
     setUserInfo(data);
     cookieSetAuthRole(data?.currentUser?.roleLevel);
     cookieSetAuthBoardRole(data?.currentUser?.dashboardRole || false);
-  }, [data, skipFetch]);
+  }, [data, skipFetch, router.isReady]);
 
   useEffect(() => {
     if (!skipFetch) {

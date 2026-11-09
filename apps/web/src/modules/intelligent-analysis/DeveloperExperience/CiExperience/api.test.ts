@@ -2,6 +2,7 @@ import {
   fetchCiCatalog,
   fetchCiDataset,
   fetchCiDatasets,
+  fetchCiReportPage,
   validateCiDataset,
 } from './api';
 import { compassApiFetch } from '../../UserJourney/rawData/apiClient';
@@ -80,9 +81,12 @@ it('reads the 19-repository catalog and validates all overview datasets', async 
   });
   const all = await fetchCiDatasets();
   expect(all.datasets.runtime).toBe(data.dataset);
-  expect(request).toHaveBeenLastCalledWith('/ci-experience/ci-data/overview', {
-    signal: undefined,
-  });
+  expect(request).toHaveBeenLastCalledWith(
+    '/ci-experience/ci-data/overview?include_pains=true',
+    {
+      signal: undefined,
+    }
+  );
 });
 
 it.each([
@@ -131,4 +135,30 @@ it('rejects report context belonging to another observation day', () => {
     },
   };
   expect(() => validateCiDataset(data)).toThrow('仓库或日期不一致');
+});
+
+it('loads catalog and only the selected report in one cancellable request', async () => {
+  const signal = new AbortController().signal;
+  const data = {
+    ...fixture(),
+    catalog: [{ repo: 'runtime' }],
+    available_days: ['2026-11-02', '2026-11-03'],
+    selected_day: '2026-11-03',
+  };
+  request.mockResolvedValue(data);
+  expect(await fetchCiReportPage('runtime', '2026-11-03', signal)).toBe(data);
+  expect(request).toHaveBeenCalledWith(
+    '/ci-experience/ci-data/report?repo=runtime&day=2026-11-03',
+    { signal }
+  );
+});
+
+it('rejects a report page with a selected date outside its available dates', async () => {
+  request.mockResolvedValue({
+    ...fixture(),
+    catalog: [{ repo: 'runtime' }],
+    available_days: ['2026-11-02'],
+    selected_day: '2026-11-03',
+  });
+  await expect(fetchCiReportPage()).rejects.toThrow('日期或仓库');
 });

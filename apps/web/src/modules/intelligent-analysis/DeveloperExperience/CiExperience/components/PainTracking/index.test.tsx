@@ -13,6 +13,7 @@ import {
   CiPainTrackingButton,
   CiPainTrackingProvider,
   findStepTime,
+  useCiPainListNavigation,
 } from './index';
 import { fetchTrackings, saveTracking, TrackingApiError } from './api';
 import { trackingProblemKey } from './model';
@@ -379,4 +380,60 @@ it('filters the unified list, resets filters and opens full descriptions or the 
   );
   expect(screen.getByRole('dialog')).toHaveTextContent('后端效率问题');
   expect(mockedSave).not.toHaveBeenCalled();
+});
+
+it('jumps to the full pain list and clears dimension, priority and status filters', async () => {
+  const JumpButton = () => {
+    const showAllProblems = useCiPainListNavigation();
+    return <button onClick={showAllProblems}>查看全部痛点</button>;
+  };
+  const Wrapper = () => {
+    const [dimension, setDimension] = React.useState<'stability' | null>(
+      'stability'
+    );
+    return (
+      <CiPainTrackingProvider
+        scope={scope}
+        repo="runtime"
+        problems={[
+          problem,
+          {
+            ...problem,
+            kb: '效率问题',
+            title: '另一个维度的痛点',
+            dimkey: 'efficiency',
+            pri: 'P1',
+          },
+        ]}
+        activeDimension={dimension}
+        activePriority={dimension ? 'P0' : null}
+        onResetFilters={() => setDimension(null)}
+      >
+        <JumpButton />
+      </CiPainTrackingProvider>
+    );
+  };
+  render(<Wrapper />);
+  const list = screen.getByRole('region', { name: '痛点问题' });
+  const scrollIntoView = jest.fn();
+  list.scrollIntoView = scrollIntoView;
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /待确认/ })).toBeEnabled()
+  );
+  expect(list).not.toHaveTextContent('另一个维度的痛点');
+  fireEvent.mouseDown(screen.getByRole('combobox'));
+  fireEvent.click(await screen.findByText('已修复待复测（0）'));
+  expect(list).not.toHaveTextContent(problem.title);
+  fireEvent.click(screen.getByRole('button', { name: '查看全部痛点' }));
+  expect(list).toHaveTextContent(problem.title);
+  expect(list).toHaveTextContent('另一个维度的痛点');
+  expect(scrollIntoView).toHaveBeenCalledWith({
+    behavior: 'smooth',
+    block: 'start',
+  });
+  expect(
+    screen.queryByRole('button', { name: '重置筛选' })
+  ).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: '查看全部痛点' }));
+  expect(scrollIntoView).toHaveBeenCalledTimes(2);
 });

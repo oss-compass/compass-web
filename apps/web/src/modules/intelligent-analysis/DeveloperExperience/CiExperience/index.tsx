@@ -1,74 +1,50 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
-import { parseRepoKey, repoKeyToQuery } from './helpers';
-import type { CiRepoData, CiRepoKey } from './types';
-import { useCiCatalogQuery, useCiDatasetQuery } from './queries';
-import type { CiCatalogEntry } from './api';
+import { repoKeyToQuery } from './helpers';
+import type { CiRepoKey } from './types';
+import { useCiReportPageQuery } from './queries';
 import ExperienceBackLink from '../components/ExperienceBackLink';
 import CiControls from './components/CiControls';
 import CiReport from './components/CiReport';
 import CiDataState from './components/CiDataState';
 import CiReportMetadata from './components/CiReportMetadata';
 
-const getDefaultRepo = (catalog: CiCatalogEntry[] = []) =>
-  catalog.find((entry) => entry.repo === 'runtime')?.repo ??
-  catalog[0]?.repo ??
-  null;
-
-type DaySelection = { repo: CiRepoKey; day: string; requestedDay: string };
-
-const resolveDay = (
-  data: CiRepoData | null | undefined,
-  repo: CiRepoKey | null,
-  selection: DaySelection | null,
-  requestedDay: string
-) => {
-  if (!data) return '';
-  if (
-    selection?.repo === repo &&
-    selection.requestedDay === requestedDay &&
-    data.days.includes(selection.day)
-  )
-    return selection.day;
-  return data.days.includes(requestedDay)
-    ? requestedDay
-    : data.days[data.days.length - 1] ?? '';
+type DaySelection = {
+  repo: string | undefined;
+  day: string;
+  requestedDay: string;
 };
 
 const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
   const router = useRouter();
   const supportedOrg = !org || org.toLowerCase() === 'cann';
-  const catalogQuery = useCiCatalogQuery(router.isReady && supportedOrg);
-  const catalog = catalogQuery.data;
-  const requestedRepo = router.query.repo;
+  const requestedRepo = Array.isArray(router.query.repo)
+    ? router.query.repo[0]
+    : router.query.repo;
   const hasRequestedRepo = requestedRepo !== undefined;
-  const parsedRepo = parseRepoKey(requestedRepo, catalog);
-  const defaultRepo = getDefaultRepo(catalog);
-  const repo = hasRequestedRepo ? parsedRepo : defaultRepo;
-  const availableRepo =
-    supportedOrg && catalog?.some((entry) => entry.repo === repo) ? repo : null;
-  const reportQuery = useCiDatasetQuery(
-    availableRepo,
-    router.isReady && supportedOrg
-  );
-  const data = reportQuery.data?.dataset;
-  const journey = reportQuery.data?.journey;
   const requestedDay =
     typeof router.query.day === 'string' ? router.query.day : '';
-
-  // 按仓库保留有效选择；异步刷新不覆盖用户正在查看的历史日期。
   const [selection, setSelection] = useState<DaySelection | null>(null);
-  const day = resolveDay(data, repo, selection, requestedDay);
-  useEffect(() => {
-    if (repo && data && day)
-      setSelection((current) =>
-        current?.repo === repo &&
-        current.day === day &&
-        current.requestedDay === requestedDay
-          ? current
-          : { repo, day, requestedDay }
-      );
-  }, [repo, data, day, requestedDay]);
+  const selectedDay =
+    selection &&
+    selection.repo === requestedRepo &&
+    selection.requestedDay === requestedDay
+      ? selection.day
+      : requestedDay;
+  const reportQuery = useCiReportPageQuery(
+    requestedRepo,
+    selectedDay || undefined,
+    router.isReady && supportedOrg
+  );
+  const catalog = reportQuery.data?.catalog;
+  const availableRepo = catalog?.some(
+    (entry) => entry.repo === reportQuery.data?.repo
+  )
+    ? reportQuery.data!.repo
+    : null;
+  const data = reportQuery.data?.dataset;
+  const journey = reportQuery.data?.journey;
+  const day = reportQuery.data?.selected_day ?? '';
 
   const handleRepoChange = useCallback(
     (next: CiRepoKey) => {
@@ -89,16 +65,12 @@ const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
     [router]
   );
 
-  const error = supportedOrg ? catalogQuery.error || reportQuery.error : null;
-  const loading =
-    supportedOrg &&
-    (!router.isReady ||
-      catalogQuery.isLoading ||
-      (availableRepo !== null && reportQuery.isLoading));
+  const error = supportedOrg ? reportQuery.error : null;
+  const loading = supportedOrg && (!router.isReady || reportQuery.isLoading);
   const unavailable = !supportedOrg || !availableRepo;
 
   return (
-    <div className="min-h-full bg-slate-50">
+    <div className="min-h-full bg-[linear-gradient(180deg,#f8fbff_0%,#eef3fb_100%)]">
       <div className="flex min-h-full flex-col gap-5 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <ExperienceBackLink org={org} module="ci" />
@@ -109,9 +81,9 @@ const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
               onRepoChange={handleRepoChange}
               data={data}
               day={day}
-              days={data.days}
+              days={reportQuery.data!.available_days}
               onDayChange={(next) =>
-                setSelection({ repo: availableRepo, day: next, requestedDay })
+                setSelection({ repo: requestedRepo, day: next, requestedDay })
               }
             />
           ) : null}
@@ -126,14 +98,18 @@ const CiExperience: React.FC<{ org?: string }> = ({ org }) => {
                 : undefined
             }
             onRetry={() => {
-              void catalogQuery.refetch();
-              if (availableRepo) void reportQuery.refetch();
+              void reportQuery.refetch();
             }}
           />
         ) : (
           <>
             <CiReport
-              key={JSON.stringify([data.org, repo, data.workflow, day])}
+              key={JSON.stringify([
+                data.org,
+                availableRepo,
+                data.workflow,
+                day,
+              ])}
               data={data}
               context={reportQuery.data?.report_context?.boards[day]}
               journey={journey}

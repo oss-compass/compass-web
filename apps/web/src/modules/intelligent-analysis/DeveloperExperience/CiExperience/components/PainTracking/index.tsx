@@ -57,8 +57,11 @@ type TrackingContextValue = {
   ready: boolean;
   loading: boolean;
   open: (problem: CiProblem) => void;
+  showAllProblems: () => void;
 };
 const TrackingContext = createContext<TrackingContextValue | null>(null);
+export const useCiPainListNavigation = () =>
+  useContext(TrackingContext)?.showAllProblems;
 
 const CI_PAIN_MODAL_BUTTON_STYLE: React.CSSProperties = {
   height: 36,
@@ -509,6 +512,17 @@ export const CiPainTrackingProvider: React.FC<{
   const [loadError, setLoadError] = useState('');
   const [selected, setSelected] = useState<CiProblem | null>(null);
   const [filter, setFilter] = useState<TrackingStatus | 'all'>('all');
+  const listRef = useRef<HTMLElement>(null);
+  const [listJump, setListJump] = useState(0);
+  const showAllProblems = () => {
+    onResetFilters?.();
+    setFilter('all');
+    setListJump((value) => value + 1);
+  };
+  useEffect(() => {
+    if (listJump === 0) return;
+    listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [listJump]);
   const [retry, setRetry] = useState(0);
   const [reason, setReason] = useState('');
   const [actionError, setActionError] = useState('');
@@ -645,13 +659,14 @@ export const CiPainTrackingProvider: React.FC<{
 
   return (
     <TrackingContext.Provider
-      value={{ records, ready: Boolean(ready), loading, open }}
+      value={{ records, ready: Boolean(ready), loading, open, showAllProblems }}
     >
       {children}
       <section
+        ref={listRef}
         id="ci-report-problems"
         aria-label="痛点问题"
-        className="ci-pain-management scroll-mt-6 rounded-xl border border-slate-200 bg-white p-6 md:p-4"
+        className="ci-pain-management scroll-mt-24 rounded-xl border border-slate-200 bg-white p-6 md:p-4"
       >
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
@@ -717,7 +732,7 @@ export const CiPainTrackingProvider: React.FC<{
           />
         ) : null}
         <Table<CiProblem>
-          key={`${activeDimension}:${activePriority}:${filter}`}
+          key={`${activeDimension}:${activePriority}:${filter}:${listJump}`}
           rowKey={trackingProblemKey}
           loading={loading}
           size="middle"

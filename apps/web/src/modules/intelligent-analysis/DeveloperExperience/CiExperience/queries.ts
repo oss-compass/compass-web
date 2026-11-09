@@ -1,5 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchCiCatalog, fetchCiDataset, fetchCiDatasets } from './api';
+import {
+  fetchCiCatalog,
+  fetchCiDataset,
+  fetchCiDatasets,
+  fetchCiReportPage,
+} from './api';
 import type { CiRepoKey } from './types';
 import { fetchCiPainOverview, fetchCiPainTrends } from './overviewApi';
 
@@ -29,8 +34,10 @@ export const useCiDatasetQuery = (repo: CiRepoKey | null, enabled = true) =>
 export const useCiDatasetsQuery = (enabled = true) =>
   useQuery({
     ...queryOptions,
-    queryKey: ['ci-data', 'overview'],
+    queryKey: ['ci-data', 'overview', 'page-v2'],
     queryFn: ({ signal }) => fetchCiDatasets(signal),
+    staleTime: 0,
+    refetchOnMount: 'always',
     enabled,
   });
 
@@ -51,5 +58,17 @@ export const useCiPainTrendsQuery = (enabled = true) =>
     queryFn: ({ signal }) => fetchCiPainTrends(signal),
     staleTime: 0,
     refetchOnMount: 'always',
+    enabled,
+  });
+
+export const useCiReportPageQuery = (
+  repo: string | undefined,
+  day: string | undefined,
+  enabled = true
+) =>
+  useQuery({
+    ...queryOptions,
+    queryKey: ['ci-data', 'report-page', repo, day],
+    queryFn: ({ signal }) => fetchCiReportPage(repo, day, signal),
     enabled,
   });

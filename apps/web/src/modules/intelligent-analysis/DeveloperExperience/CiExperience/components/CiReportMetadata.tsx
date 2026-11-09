@@ -3,7 +3,7 @@ import type { CiDatasetResponse } from '../api';
 
 const CiReportMetadata: React.FC<{
   day: string;
-  report: CiDatasetResponse;
+  report: Pick<CiDatasetResponse, 'journey' | 'uploaded_at'>;
 }> = ({ day, report }) => {
   const caliber = report.journey?.boards[day]?.scores?.caliber;
   return (

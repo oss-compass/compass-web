@@ -7,7 +7,7 @@ type CiControlsProps = {
   repo: CiRepoKey;
   catalog: CiCatalogEntry[];
   onRepoChange: (repo: CiRepoKey) => void;
-  data: CiRepoData;
+  data: Pick<CiRepoData, 'workflow'>;
   day: string;
   days: string[];
   onDayChange: (day: string) => void;

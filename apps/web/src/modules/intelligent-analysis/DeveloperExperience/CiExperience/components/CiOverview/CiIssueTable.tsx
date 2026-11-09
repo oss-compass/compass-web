@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Descriptions, Modal, Table, Tag, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import type { CiPri } from '../../types';
-import { STATUS_META } from '../PainTracking/model';
+import { CI_OVERVIEW_STATUS_META } from './statusPresentation';
 import type { CiTopIssue } from './communityMetrics';
 
 export type CiReportHref = (repo: string, day?: string) => string;
@@ -55,7 +55,9 @@ const CiIssueTable: React.FC<{
       dataIndex: 'status',
       width: 155,
       render: (status: CiTopIssue['status']) => (
-        <Tag color={STATUS_META[status].color}>{STATUS_META[status].label}</Tag>
+        <Tag color={CI_OVERVIEW_STATUS_META[status].color}>
+          {CI_OVERVIEW_STATUS_META[status].label}
+        </Tag>
       ),
     },
     {
@@ -110,7 +112,7 @@ const CiIssueTable: React.FC<{
                 <CiPriorityTag pri={detail.pri} />
               </Descriptions.Item>
               <Descriptions.Item label="处理状态">
-                {STATUS_META[detail.status].label}
+                {CI_OVERVIEW_STATUS_META[detail.status].label}
               </Descriptions.Item>
               <Descriptions.Item label="维度">
                 {detail.dim || '—'}

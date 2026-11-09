@@ -70,6 +70,63 @@ const board: CiMetricDetailsBoard = {
   },
 };
 
+it('shows the report-wide unique pain total, including unmapped problems, independently of filters', () => {
+  const props = {
+    journey,
+    day,
+    problems: [
+      problem,
+      problem,
+      { ...problem, kb: '跨段问题', dimkey: 'cost' as const, seg: null },
+    ],
+    activeDimension: null,
+    activePriority: null,
+    onFilterChange: jest.fn(),
+  };
+  const { rerender } = render(<CiReportOverview {...props} />);
+  expect(
+    screen.getByRole('button', { name: '本报告痛点总数：2' })
+  ).toHaveTextContent('痛点总数·2');
+  rerender(
+    <CiReportOverview
+      {...props}
+      activeDimension="stability"
+      activePriority="P0"
+    />
+  );
+  expect(
+    screen.getByRole('button', { name: '本报告痛点总数：2' })
+  ).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: '本报告痛点总数：2' }));
+  expect(props.onFilterChange).toHaveBeenLastCalledWith(null, null);
+  expect(screen.getByRole('button', { name: /综合体验评分/ })).toHaveAttribute(
+    'aria-expanded',
+    'false'
+  );
+});
+
+it('shows a zero pain total even when the overall score is unavailable', () => {
+  render(
+    <CiReportOverview
+      journey={{
+        ...journey,
+        boards: { [day]: { ...journey.boards[day], scores: null } },
+      }}
+      day={day}
+      problems={[]}
+      activeDimension={null}
+      activePriority={null}
+      onFilterChange={jest.fn()}
+    />
+  );
+  expect(
+    screen.getByRole('button', { name: /综合体验评分，未评估/ })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', { name: '本报告痛点总数：0' })
+  ).toHaveTextContent('痛点总数·0');
+});
+
 it('preserves zero scores, distinguishes missing scores and exposes confidence details on demand', () => {
   render(
     <CiReportOverview

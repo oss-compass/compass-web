@@ -1,6 +1,7 @@
 import { compassApiFetch } from '../../UserJourney/rawData/apiClient';
-import type { CiJourney, CiRepoData, CiRepoKey } from './types';
+import type { CiBoard, CiJourney, CiRepoData, CiRepoKey } from './types';
 import type { CiReportContext } from './reportContext';
+import { validateCiPainOverview, type CiPainOverview } from './overviewApi';
 
 export type CiCatalogEntry = {
   repo: CiRepoKey;
@@ -29,10 +30,44 @@ export type CiDatasetResponse = {
   generated_at?: string | null;
 };
 
-export type CiDatasetsResponse = {
+export type CiReportDataset = Omit<CiRepoData, 'weekly'>;
+
+export type CiReportPageResponse = Omit<CiDatasetResponse, 'dataset'> & {
+  dataset: CiReportDataset | null;
   catalog: CiCatalogEntry[];
-  datasets: Record<CiRepoKey, CiRepoData>;
-  journeys: Record<CiRepoKey, CiJourney>;
+  available_days: string[];
+  selected_day: string | null;
+};
+
+export type CiOverviewDataset = Pick<
+  CiRepoData,
+  'name' | 'workflow' | 'days'
+> & {
+  boards: Record<
+    string,
+    { dims: Array<Pick<CiBoard['dims'][number], 'key' | 'name'>> }
+  >;
+};
+export type CiOverviewJourney = Pick<
+  CiJourney,
+  'days' | 'projectName' | 'workflow'
+> & {
+  boards: Record<
+    string,
+    {
+      scores: {
+        total: number | null;
+        dims?: CiJourney['boards'][string]['scores']['dims'];
+      } | null;
+    }
+  >;
+};
+
+export type CiDatasetsResponse = {
+  pain_overview?: CiPainOverview | null;
+  catalog: CiCatalogEntry[];
+  datasets: Record<CiRepoKey, CiOverviewDataset>;
+  journeys: Record<CiRepoKey, CiOverviewJourney>;
 };
 
 const endpoint = '/ci-experience/ci-data';
@@ -47,9 +82,13 @@ const readCatalog = (items: CiCatalogEntry[]): CiCatalogEntry[] => {
 };
 
 /** 两套数据必须属于同一仓库、流水线和日期，避免拼接出混合报告。 */
-export const validateCiDataset = (
-  response: CiDatasetResponse
-): CiDatasetResponse => {
+export const validateCiDataset = <
+  T extends Omit<CiDatasetResponse, 'dataset'> & {
+    dataset: CiReportDataset | null;
+  }
+>(
+  response: T
+): T => {
   const { dataset, journey } = response;
   if (dataset == null) return { ...response, dataset: null, journey: null };
   if (
@@ -111,19 +150,54 @@ export const fetchCiDatasets = async (
   signal?: AbortSignal
 ): Promise<CiDatasetsResponse> => {
   const response = await compassApiFetch<CiDatasetsResponse>(
-    `${endpoint}/overview`,
+    `${endpoint}/overview?include_pains=true`,
     { signal }
   );
   response.catalog = readCatalog(response.catalog);
   if (!response.datasets || !response.journeys)
     throw new Error('CI 总览数据格式异常');
   for (const { repo } of response.catalog) {
-    validateCiDataset({
-      dataset: response.datasets[repo],
-      journey: response.journeys[repo],
-    });
-    if (!response.datasets[repo]?.weekly)
-      throw new Error(`CI 仓库 ${repo} 缺少汇总数据`);
+    const dataset = response.datasets[repo];
+    const journey = response.journeys[repo];
+    if (
+      !Array.isArray(dataset?.days) ||
+      !journey?.boards ||
+      journey.workflow !== dataset.workflow ||
+      journey.projectName !== dataset.name ||
+      dataset.days.some((day) => !journey.boards[day]) ||
+      (dataset.days.length > 0 &&
+        !dataset.boards?.[dataset.days[dataset.days.length - 1]])
+    )
+      throw new Error(`CI 仓库 ${repo} 缺少总览评分数据`);
   }
+  if (response.pain_overview) validateCiPainOverview(response.pain_overview);
+  return response;
+};
+
+export const fetchCiReportPage = async (
+  repo?: string,
+  day?: string,
+  signal?: AbortSignal
+): Promise<CiReportPageResponse> => {
+  const params = new URLSearchParams({
+    ...(repo !== undefined ? { repo } : {}),
+    ...(day && /^\d{4}-\d{2}-\d{2}$/.test(day) ? { day } : {}),
+  });
+  const response = await compassApiFetch<CiReportPageResponse>(
+    `${endpoint}/report?${params}`,
+    { signal }
+  );
+  response.catalog = readCatalog(response.catalog);
+  validateCiDataset(response);
+  if (
+    !Array.isArray(response.available_days) ||
+    (response.dataset &&
+      (!response.selected_day ||
+        !response.available_days.includes(response.selected_day) ||
+        response.dataset.days.length !== 1 ||
+        response.dataset.days[0] !== response.selected_day ||
+        !response.catalog.some((entry) => entry.repo === response.repo)))
+  )
+    throw new Error('CI 报告日期或仓库数据不一致，请重试');
   return response;
 };

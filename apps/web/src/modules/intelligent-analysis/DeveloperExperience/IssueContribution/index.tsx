@@ -27,6 +27,7 @@ import IssueReportControls from './components/IssueReportControls';
 import IssueReportOverview from './components/IssueReportOverview';
 import IssueExperiencePath from './components/IssueExperiencePath';
 import IssueScoreOverview from './components/IssueScoreOverview';
+import DeferredReportSection from '../components/DeferredReportSection';
 
 type IssueContributionProps = {
   org?: string;
@@ -110,6 +111,13 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
       .then((response) => {
         if (controller.signal.aborted) return;
         loadedReportKey.current = requestKey;
+        if (!backgroundRefresh) {
+          setActiveStageId(
+            response.report?.data.report_context.stages.find(
+              (stage) => !stage.is_lens
+            )?.id ?? ''
+          );
+        }
         setCatalog(response.catalog);
         setReport(response.report);
       })
@@ -455,15 +463,20 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
                 }}
                 onRerunApplied={handleRerunApplied}
               />
-              <IssueScoreOverview
-                reportContext={{
-                  community: report.community,
-                  period: report.period,
-                }}
-                stages={visibleStages}
-                issueScoreRows={report.data.report_context.issue_score_rows}
-                pains={report.data.report_context.top_pains}
-              />
+              <DeferredReportSection
+                key={report.key}
+                anchorId="issue-score-overview"
+              >
+                <IssueScoreOverview
+                  reportContext={{
+                    community: report.community,
+                    period: report.period,
+                  }}
+                  stages={visibleStages}
+                  issueScoreRows={report.data.report_context.issue_score_rows}
+                  pains={report.data.report_context.top_pains}
+                />
+              </DeferredReportSection>
             </IssueReportOverview>
 
             <footer className="px-1 pb-2 text-[11px] leading-5 text-slate-500">

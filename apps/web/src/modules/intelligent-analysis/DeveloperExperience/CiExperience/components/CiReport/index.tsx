@@ -4,10 +4,10 @@ import type {
   CiPri,
   CiJourneyFocus,
   CiProblem,
-  CiRepoData,
   CiRepoKey,
   CiJourney,
 } from '../../types';
+import type { CiReportDataset } from '../../api';
 import { problemKey } from '../../helpers';
 import { Collapsible, EmptyState } from '../shared';
 import Appendix from '../Appendix';
@@ -23,7 +23,7 @@ import { CiRepositoryProvider } from '../../repository';
 type CiReportProps = {
   journey: CiJourney;
   context?: CiReportContext;
-  data: CiRepoData;
+  data: CiReportDataset;
   repo: CiRepoKey;
   day: string;
   org?: string;
@@ -66,7 +66,7 @@ const CiReport: React.FC<CiReportProps> = ({
 
   if (!data.days.length) {
     return (
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_16px_rgba(15,23,42,0.06)]">
+      <section className="overflow-hidden rounded-3xl border border-white/80 bg-white/90 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
         <h2 className="mb-3 text-base font-semibold text-slate-900">报告</h2>
         <EmptyState>该仓库数据落库中，暂无报告内容。</EmptyState>
       </section>
@@ -86,7 +86,7 @@ const CiReport: React.FC<CiReportProps> = ({
           onResetFilters={resetFilters}
           onProblemJump={handleProblemJump}
         >
-          <div className="rounded-xl border border-slate-200 bg-white p-6 md:p-4">
+          <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] md:p-4">
             <CiReportOverview
               journey={journey}
               context={context}
@@ -116,7 +116,7 @@ const CiReport: React.FC<CiReportProps> = ({
         <DailyDrilldown data={data} day={day} />
 
         <Collapsible
-          className="!rounded-xl !border-slate-200"
+          className="!rounded-3xl !border-white/80 !bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
           summary={
             <span className="inline-block py-2 text-base font-semibold text-slate-900">
               评分口径与数据来源

@@ -2,12 +2,11 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import CiExperience from './index';
-import { useCiCatalogQuery, useCiDatasetQuery } from './queries';
+import { useCiReportPageQuery } from './queries';
 
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
 jest.mock('./queries', () => ({
-  useCiCatalogQuery: jest.fn(),
-  useCiDatasetQuery: jest.fn(),
+  useCiReportPageQuery: jest.fn(),
 }));
 jest.mock(
   '../components/ExperienceBackLink',
@@ -53,6 +52,10 @@ const catalog = [
   { repo: 'ge', name: 'ge' },
 ];
 const response = (repo = 'runtime', days = ['2026-11-02', '2026-11-03']) => ({
+  repo,
+  catalog,
+  available_days: days,
+  selected_day: days[days.length - 1],
   dataset: { name: repo, workflow: 'w', days, boards: {} },
   journey: {
     boards: Object.fromEntries(
@@ -68,13 +71,16 @@ beforeEach(() => {
   router = { query: {}, isReady: true, pathname: '/report', push: jest.fn() };
   current = response();
   (useRouter as jest.Mock).mockImplementation(() => router);
-  (useCiCatalogQuery as jest.Mock).mockReturnValue({
-    data: catalog,
-    isLoading: false,
-    refetch,
-  });
-  (useCiDatasetQuery as jest.Mock).mockImplementation((repo) => ({
-    data: repo ? current : undefined,
+  (useCiReportPageQuery as jest.Mock).mockImplementation((repo, day) => ({
+    data:
+      repo === 'unknown'
+        ? { catalog }
+        : {
+            ...current,
+            selected_day: current.available_days.includes(day)
+              ? day
+              : current.selected_day,
+          },
     isLoading: false,
     refetch,
   }));
@@ -123,15 +129,23 @@ it('shows empty for unknown repositories and disables queries for other organiza
   const { rerender } = render(<CiExperience />);
   expect(screen.queryByTestId('report')).not.toBeInTheDocument();
   expect(screen.getByText('该仓库暂无 CI 报告数据')).toBeInTheDocument();
-  expect(useCiDatasetQuery).toHaveBeenLastCalledWith(null, true);
+  expect(useCiReportPageQuery).toHaveBeenLastCalledWith(
+    'unknown',
+    undefined,
+    true
+  );
   router.query = {};
   rerender(<CiExperience org="nvidia" />);
   expect(screen.queryByTestId('report')).not.toBeInTheDocument();
-  expect(useCiCatalogQuery).toHaveBeenLastCalledWith(false);
+  expect(useCiReportPageQuery).toHaveBeenLastCalledWith(
+    undefined,
+    undefined,
+    false
+  );
 });
 
 it('shows retry on API errors instead of static reports', () => {
-  (useCiCatalogQuery as jest.Mock).mockReturnValue({
+  (useCiReportPageQuery as jest.Mock).mockReturnValue({
     error: new Error('offline'),
     isLoading: false,
     refetch,
@@ -153,5 +167,25 @@ it('opens the observation day supplied by overview links and falls back for inva
   rerender(<CiExperience />);
   expect(screen.getByTestId('report')).toHaveTextContent(
     'runtime:2026-11-03:71'
+  );
+});
+
+it('starts the selected report request without waiting for a separate catalog query', () => {
+  router.query = { repo: 'ops-nn', day: '2026-11-02' };
+  render(<CiExperience />);
+  expect(useCiReportPageQuery).toHaveBeenCalledWith(
+    'ops-nn',
+    '2026-11-02',
+    true
+  );
+});
+
+it('does not request data until the router is ready', () => {
+  router.isReady = false;
+  render(<CiExperience />);
+  expect(useCiReportPageQuery).toHaveBeenCalledWith(
+    undefined,
+    undefined,
+    false
   );
 });

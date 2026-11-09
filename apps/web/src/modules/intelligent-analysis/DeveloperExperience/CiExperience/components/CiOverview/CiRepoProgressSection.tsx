@@ -224,7 +224,7 @@ const CiRepoProgressSection: React.FC<Props> = ({
       render: (_value, repo) => totalCell(repo.slug, repo.issues),
     },
     {
-      title: '修复率',
+      title: '闭环率',
       key: 'rate',
       width: 100,
       sorter: (a, b) =>
@@ -300,7 +300,7 @@ const CiRepoProgressSection: React.FC<Props> = ({
       render: (_value, team) => totalCell(team.name, team.issues),
     },
     {
-      title: '修复率',
+      title: '闭环率',
       key: 'rate',
       width: 100,
       sorter: (a, b) => a.rate - b.rate,

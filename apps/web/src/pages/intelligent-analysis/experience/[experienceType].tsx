@@ -1,8 +1,9 @@
 import React from 'react';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import ExperienceReportRoute from '@modules/intelligent-analysis/DeveloperExperience/ExperienceReportRoute';
 import {
   isExperienceType,
+  EXPERIENCE_MODULES,
   type ExperienceType,
 } from '@modules/intelligent-analysis/DeveloperExperience/experienceModules';
 
@@ -13,7 +14,17 @@ type ExperienceReportPageProps = {
 const getSingleParam = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value;
 
-export const getServerSideProps: GetServerSideProps<
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => ({
+  paths: EXPERIENCE_MODULES.flatMap(({ type }) =>
+    (locales ?? ['en']).map((locale) => ({
+      params: { experienceType: type },
+      locale,
+    }))
+  ),
+  fallback: false,
+});
+
+export const getStaticProps: GetStaticProps<
   ExperienceReportPageProps
 > = async ({ params }) => {
   const experienceType = getSingleParam(params?.experienceType);

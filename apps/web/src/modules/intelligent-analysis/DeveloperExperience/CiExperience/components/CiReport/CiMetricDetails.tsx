@@ -38,7 +38,7 @@ const CiMetricDetails: React.FC<CiMetricDetailsProps> = ({
       <div className="min-w-0">
         <h4 className="mb-3 text-sm font-semibold text-slate-800">指标明细</h4>
         {metrics.length ? (
-          <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
             <table className="w-full min-w-[580px] border-collapse text-sm md:block md:min-w-0">
               <thead className="bg-slate-50 text-xs text-slate-500 md:hidden">
                 <tr>
@@ -106,7 +106,7 @@ const CiMetricDetails: React.FC<CiMetricDetailsProps> = ({
             </table>
           </div>
         ) : (
-          <p className="rounded-lg border border-slate-200 bg-white px-4 py-5 text-sm text-slate-500">
+          <p className="rounded-2xl border border-slate-200 bg-white px-4 py-5 text-sm text-slate-500">
             暂无该维度的指标数据
           </p>
         )}
@@ -186,7 +186,7 @@ const CiMetricDetails: React.FC<CiMetricDetailsProps> = ({
             ))}
           </div>
         ) : (
-          <p className="rounded-lg border border-slate-200 bg-white px-4 py-5 text-sm text-slate-500">
+          <p className="rounded-2xl border border-slate-200 bg-white px-4 py-5 text-sm text-slate-500">
             {priority ? '该优先级暂无问题' : '该维度当日暂无问题'}
           </p>
         )}

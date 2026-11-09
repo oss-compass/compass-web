@@ -13,7 +13,14 @@ export type OverviewScoreCardRepo = {
   reportUrl: string;
   latestScore: number;
   scoreHistory: Array<{ date: string; score: number | null }>;
-  stageScores: Array<{ key: string; label: string; score: number | null }>;
+  stageScores: Array<{
+    key: string;
+    label: string;
+    score: number | null;
+    groupKey?: string;
+    groupLabel?: string;
+    groupOrder?: number;
+  }>;
 };
 
 const ScoreBandsContext = React.createContext(ONBOARDING_SCORE_BANDS);
@@ -33,6 +40,9 @@ type Props = {
 type DistributionItem = {
   key: string;
   label: string;
+  groupKey?: string;
+  groupLabel?: string;
+  groupOrder?: number;
   score: number;
   values: Array<{ repo: OverviewScoreCardRepo; score: number }>;
 };
@@ -43,6 +53,9 @@ const average = (values: number[]) =>
     : 0;
 
 const reportHref = (repo: OverviewScoreCardRepo) => repo.reportUrl;
+
+const distributionLabel = (item: DistributionItem) =>
+  [item.groupLabel, item.label].filter(Boolean).join(' · ');
 
 const buildTeamDistribution = (
   repos: OverviewScoreCardRepo[],
@@ -78,25 +91,40 @@ const buildMetricDistribution = (
 ): DistributionItem[] => {
   const grouped = new Map<
     string,
-    { label: string; values: DistributionItem['values'] }
+    {
+      label: string;
+      groupKey?: string;
+      groupLabel?: string;
+      groupOrder?: number;
+      values: DistributionItem['values'];
+    }
   >();
   repos.forEach((repo) => {
     repo.stageScores.forEach((stage) => {
       if (typeof stage.score !== 'number') return;
       const current = grouped.get(stage.key) ?? {
         label: stage.label,
+        groupKey: stage.groupKey,
+        groupLabel: stage.groupLabel,
+        groupOrder: stage.groupOrder,
         values: [],
       };
       current.values.push({ repo, score: stage.score });
       grouped.set(stage.key, current);
     });
   });
-  return Array.from(grouped.entries()).map(([key, item]) => ({
-    key,
-    label: item.label,
-    score: average(item.values.map((value) => value.score)),
-    values: item.values,
-  }));
+  return Array.from(grouped.entries())
+    .map(([key, item]) => ({
+      key,
+      ...item,
+      score: average(item.values.map((value) => value.score)),
+    }))
+    .sort(
+      (left, right) =>
+        (left.groupOrder ?? 0) - (right.groupOrder ?? 0) ||
+        (left.groupKey ?? '').localeCompare(right.groupKey ?? '') ||
+        (left.groupKey ? right.score - left.score : 0)
+    );
 };
 
 const DistributionRows: React.FC<{
@@ -112,65 +140,75 @@ const DistributionRows: React.FC<{
   );
   return (
     <div className="space-y-1.5 overflow-x-auto">
-      {items.map((item) => {
+      {items.map((item, index) => {
         const isTotal = item.key === '__all_teams__';
+        const showGroup =
+          item.groupKey && item.groupKey !== items[index - 1]?.groupKey;
         const counts = SCORE_BANDS.map((band) => ({
           band,
           repos: item.values.filter((value) => band.matches(value.score)),
         }));
         return (
-          <div
-            key={item.key}
-            className={`group grid grid-cols-[minmax(150px,220px)_minmax(260px,1fr)_58px_58px] items-center gap-3 px-2 transition-colors hover:bg-[rgba(var(--overview-slateSoft-rgb),0.8)] ${
-              isTotal
-                ? 'mb-2 border-b border-[var(--overview-slateBorder)] pb-2 pt-0.5 font-semibold'
-                : 'rounded-lg py-1'
-            }`}
-          >
-            <Tooltip title={item.label}>
-              <span className="truncate text-sm font-medium text-[var(--overview-slateDark)]">
-                {item.label}
-              </span>
-            </Tooltip>
+          <React.Fragment key={item.key}>
+            {showGroup && (
+              <h4 className="px-2 pb-1 pt-3 text-[13px] font-semibold text-[var(--overview-textSecondary)] first:pt-0">
+                {item.groupLabel || item.groupKey}
+              </h4>
+            )}
             <div
-              className="flex h-[22px] overflow-hidden rounded-[7px] border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)]"
-              style={{
-                width: isTotal
-                  ? '100%'
-                  : `${(item.values.length / maxCount) * 100}%`,
-              }}
+              className={`group grid grid-cols-[minmax(150px,220px)_minmax(260px,1fr)_58px_58px] items-center gap-3 px-2 transition-colors hover:bg-[rgba(var(--overview-slateSoft-rgb),0.8)] ${
+                isTotal
+                  ? 'mb-2 border-b border-[var(--overview-slateBorder)] pb-2 pt-0.5 font-semibold'
+                  : 'rounded-lg py-1'
+              }`}
             >
-              {counts.map(({ band, repos: bandRepos }) =>
-                bandRepos.length ? (
-                  <button
-                    key={band.key}
-                    type="button"
-                    title={`${item.label} · ${band.label}：${bandRepos.length} 个仓库`}
-                    className="relative flex min-w-0 items-center justify-center overflow-hidden border-r border-[rgba(var(--overview-white-rgb),0.6)] text-xs font-extrabold tabular-nums leading-5 text-[var(--overview-white)] transition-[filter,width] last:border-r-0 hover:z-10 hover:brightness-95 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--overview-blueLight)]"
-                    style={{
-                      width: `${
-                        (bandRepos.length / item.values.length) * 100
-                      }%`,
-                      background: band.fill,
-                      color: band.textColor,
-                    }}
-                    onClick={() => onOpen(item, band)}
-                  >
-                    {bandRepos.length}
-                  </button>
-                ) : null
-              )}
+              <Tooltip title={distributionLabel(item)}>
+                <span className="truncate text-sm font-medium text-[var(--overview-slateDark)]">
+                  {item.label}
+                </span>
+              </Tooltip>
+              <div
+                className="flex h-[22px] overflow-hidden rounded-[7px] border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)]"
+                style={{
+                  width: isTotal
+                    ? '100%'
+                    : `${(item.values.length / maxCount) * 100}%`,
+                }}
+              >
+                {counts.map(({ band, repos: bandRepos }) =>
+                  bandRepos.length ? (
+                    <button
+                      key={band.key}
+                      type="button"
+                      title={`${distributionLabel(item)} · ${band.label}：${
+                        bandRepos.length
+                      } 个仓库`}
+                      className="relative flex min-w-0 items-center justify-center overflow-hidden border-r border-[rgba(var(--overview-white-rgb),0.6)] text-xs font-extrabold tabular-nums leading-5 text-[var(--overview-white)] transition-[filter,width] last:border-r-0 hover:z-10 hover:brightness-95 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--overview-blueLight)]"
+                      style={{
+                        width: `${
+                          (bandRepos.length / item.values.length) * 100
+                        }%`,
+                        background: band.fill,
+                        color: band.textColor,
+                      }}
+                      onClick={() => onOpen(item, band)}
+                    >
+                      {bandRepos.length}
+                    </button>
+                  ) : null
+                )}
+              </div>
+              <span className="text-right text-xs text-[var(--overview-slateLight)]">
+                {item.values.length} 个
+              </span>
+              <span
+                className="text-right text-sm font-semibold tabular-nums"
+                style={{ color: scoreColor(item.score) }}
+              >
+                {item.score.toFixed(1)}
+              </span>
             </div>
-            <span className="text-right text-xs text-[var(--overview-slateLight)]">
-              {item.values.length} 个
-            </span>
-            <span
-              className="text-right text-sm font-semibold tabular-nums"
-              style={{ color: scoreColor(item.score) }}
-            >
-              {item.score.toFixed(1)}
-            </span>
-          </div>
+          </React.Fragment>
         );
       })}
     </div>
@@ -223,7 +261,11 @@ const ScoreDistribution: React.FC<Omit<Props, 'isLoading'>> = ({
   ];
 
   return (
-    <div className="section-card min-w-0">
+    <div
+      className="section-card min-w-0"
+      role="region"
+      aria-label="综合体验评分分布"
+    >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
           综合体验评分分布
@@ -282,7 +324,11 @@ const ScoreDistribution: React.FC<Omit<Props, 'isLoading'>> = ({
       )}
       <Modal
         open={!!detail}
-        title={detail ? `${detail.item.label} · ${detail.band.label}` : ''}
+        title={
+          detail
+            ? `${distributionLabel(detail.item)} · ${detail.band.label}`
+            : ''
+        }
         footer={null}
         width={720}
         destroyOnHidden

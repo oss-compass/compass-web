@@ -11,7 +11,7 @@ import { useCiPainTrendsQuery } from '../../queries';
 import CiIssueTable, { type CiReportHref } from './CiIssueTable';
 import type { CiPri } from '../../types';
 import type { TrackingStatus } from '../PainTracking/model';
-import { STATUS_META } from '../PainTracking/model';
+import { CI_OVERVIEW_STATUS_META } from './statusPresentation';
 import {
   countPainProgress,
   TRACKING_STATES,
@@ -19,13 +19,7 @@ import {
 } from './communityMetrics';
 
 export const REPAIR_RATE_NOTE =
-  '已修复待复测 ÷ 有效问题（含待确认）；非有效问题不计入分母。无有效问题时为 100%。';
-const COLORS: Record<TrackingStatus, string> = {
-  pending: '#e7af4d',
-  confirmed: '#65a2ef',
-  fixed: '#a490d4',
-  invalid: '#cbd5e1',
-};
+  '已闭环问题 ÷ 有效问题（含待处理）；非有效问题不计入分母。无有效问题时为 100%。';
 
 const CiPainProgress: React.FC<{
   issues: CiTopIssue[];
@@ -61,7 +55,7 @@ const CiPainProgress: React.FC<{
       title: [
         priority,
         TRACKING_STATES.find((item) => item === state)
-          ? STATUS_META[state as TrackingStatus].label
+          ? CI_OVERVIEW_STATUS_META[state as TrackingStatus].label
           : '痛点问题',
       ]
         .filter(Boolean)
@@ -71,8 +65,8 @@ const CiPainProgress: React.FC<{
   };
   const states = TRACKING_STATES.map((key) => ({
     key,
-    label: STATUS_META[key].label,
-    fill: COLORS[key],
+    label: CI_OVERVIEW_STATUS_META[key].label,
+    fill: CI_OVERVIEW_STATUS_META[key].fill,
     color: '#fff',
   }));
   return (
@@ -81,18 +75,13 @@ const CiPainProgress: React.FC<{
         cards={[
           { label: '问题总数', value: progress.total, onClick: () => open() },
           ...TRACKING_STATES.map((state) => ({
-            label: STATUS_META[state].label,
+            label: CI_OVERVIEW_STATUS_META[state].label,
             value: progress[state],
-            valueClassName:
-              state === 'pending'
-                ? 'ov-value-pending'
-                : state === 'confirmed'
-                ? 'ov-value-blue'
-                : '',
+            valueClassName: CI_OVERVIEW_STATUS_META[state].valueClassName,
             onClick: () => open(state),
           })),
           {
-            label: '修复率',
+            label: '闭环率',
             value: `${progress.rate.toFixed(1)}%`,
             hint: REPAIR_RATE_NOTE,
           },
@@ -112,10 +101,10 @@ const CiPainProgress: React.FC<{
         })}
         states={states}
         priorityTitle="各优先级问题处理进展"
-        rateLabel="修复率"
+        rateLabel="闭环率"
         rateHint={REPAIR_RATE_NOTE}
         onOpen={open}
-        trendTitle="周度痛点趋势及修复率"
+        trendTitle="周度痛点趋势及闭环率"
         trendControls={
           <TrendWindowPicker value={trendWindow} onChange={setTrendWindow} />
         }
@@ -130,8 +119,8 @@ const CiPainProgress: React.FC<{
               }))}
               fitContainerHeight
               adaptiveAxes
-              rateLabel="修复率"
-              rateTrendLabel="周度修复率"
+              rateLabel="闭环率"
+              rateTrendLabel="周度闭环率"
             />
           ) : null
         }
@@ -162,7 +151,7 @@ const CiPainProgress: React.FC<{
             ))}
             <span className="oj-trend-legend-item">
               <span className="oj-trend-line" />
-              周度修复率
+              周度闭环率
             </span>
           </>
         }

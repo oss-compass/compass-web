@@ -1,5 +1,5 @@
 import { useCiRepositoryUrl } from '../../repository';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { CiPainTrackingButton } from '../PainTracking';
 import {
   AppstoreOutlined,
@@ -15,7 +15,6 @@ import {
 } from '@ant-design/icons';
 import { Card, Tooltip } from 'antd';
 import type {
-  CiJourneyCells,
   CiJourneyFocus,
   CiJourneyProblem,
   CiJourneyStage,
@@ -30,6 +29,12 @@ import {
   rootStatusBadgeClass,
   runURL,
 } from '../../helpers';
+import {
+  DIM_META,
+  getStageProblems,
+  getStageObservations,
+  getStageRecommendations,
+} from './journeySummary';
 
 type CiJourneyPanoramaProps = {
   journey: CiJourney;
@@ -96,14 +101,6 @@ const segMeta = (seg: string) =>
     code: '',
   };
 
-/** 四维明细顺序与元信息（对齐设计稿旅程段四维） */
-const DIM_META: Array<{ key: keyof CiJourneyCells; label: string }> = [
-  { key: 'stability', label: '稳定性' },
-  { key: 'efficiency', label: '效率' },
-  { key: 'interaction', label: '交互体验' },
-  { key: 'cost', label: '成本' },
-];
-
 const scoreTone = (score: number | null): Tone => {
   if (score == null) {
     return 'neutral';
@@ -149,7 +146,7 @@ const stageStatusWord = (stage: CiJourneyStage) =>
 
 /** 段内问题总数（用于左菜单红点） */
 const stageProblemCount = (stage: CiJourneyStage) =>
-  stage.problems?.length ?? 0;
+  getStageProblems(stage).length;
 
 /** 单张旅程段卡（借鉴社区入门体验旅程全景图 StepNode 样式） */
 const StageCard: React.FC<{
@@ -163,6 +160,9 @@ const StageCard: React.FC<{
   const attention = stageAttention(stage);
   const statusWord = stageStatusWord(stage);
   const stars = Math.round((stage.segscore ?? 0) / 20);
+  const problems = getStageProblems(stage);
+  const observations = getStageObservations(stage);
+  const recommendations = getStageRecommendations(problems);
   return (
     <div className="flex w-full min-w-0 flex-col items-center">
       <div
@@ -250,50 +250,49 @@ const StageCard: React.FC<{
               : 'border-dashed border-slate-200 bg-slate-50/60'
           }`}
         >
-          {hasScore ? (
-            <div className="grid grid-cols-3">
-              {stage.stats.map((st, i) => (
-                <div
-                  key={`${st.label}-${i}`}
-                  className="flex flex-col items-center py-1"
-                >
-                  <span className="text-[20px] font-bold leading-none text-slate-900">
-                    {st.v}
-                  </span>
-                  <span className="mt-1 text-[13px] text-slate-400">
-                    {st.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
-              <svg
-                className="h-7 w-7 text-slate-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+          <div
+            role="group"
+            aria-label={`${stage.seg}统计`}
+            className="grid grid-cols-3"
+          >
+            {[
+              {
+                label: '痛点',
+                value: problems.length,
+                color: problems.length ? 'text-rose-500' : 'text-slate-400',
+                description: '本步骤关联的独立痛点数量，与下方痛点列表一致',
+              },
+              {
+                label: '指标',
+                value: observations.length,
+                color: 'text-slate-900',
+                description:
+                  '本步骤实际有观测值的代表指标数，不含仓库级参考项；跨维度重复指标合并',
+              },
+              {
+                label: '建议',
+                value: recommendations.length,
+                color: 'text-emerald-600',
+                description: '本步骤痛点中实际提供的建议动作条目数',
+              },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                aria-label={`${stat.label}：${stat.value}`}
+                title={stat.description}
+                className="flex flex-col items-center py-1"
               >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="9"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeDasharray="3 2"
-                />
-                <path
-                  d="M9 12h6M12 9v6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="text-center text-base leading-4 text-slate-400">
-                本次未评估
-              </span>
-            </div>
-          )}
+                <span
+                  className={`text-[20px] font-bold leading-none ${stat.color}`}
+                >
+                  {stat.value}
+                </span>
+                <span className="mt-1 whitespace-nowrap text-[12px] text-slate-400">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -309,7 +308,7 @@ const JourneyDirectory: React.FC<{
 }> = ({ stages, activeKey, unsegCount, onSelect }) => (
   <Card
     bordered={false}
-    className="w-full rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.05)]"
+    className="w-full rounded-3xl border border-slate-200 bg-white/90 shadow-[0_20px_48px_rgba(15,23,42,0.08)]"
     bodyStyle={{ padding: 16 }}
   >
     <h2 className="mb-4 text-base font-semibold text-slate-800">旅程名称</h2>
@@ -323,10 +322,10 @@ const JourneyDirectory: React.FC<{
             type="button"
             aria-pressed={active}
             onClick={() => onSelect(stage.seg)}
-            className={`w-full rounded-2xl border text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 ${
+            className={`w-full rounded-2xl border text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 ${
               active
-                ? 'border-slate-900 bg-slate-900 text-white shadow-[0_14px_32px_rgba(15,23,42,0.18)]'
-                : 'border-slate-200/80 bg-white/90 text-slate-700 shadow-[0_12px_32px_rgba(15,23,42,0.05)] hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_28px_rgba(15,23,42,0.1)]'
+                ? 'border-slate-900 bg-slate-900 text-white'
+                : 'border-slate-200/80 bg-white/90 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
             }`}
           >
             <span className="flex items-center gap-3 px-4 py-3">
@@ -376,15 +375,15 @@ const JourneyDirectory: React.FC<{
       {/* 跨段/未映射 —— 只在有未归段问题时展示 */}
       {unsegCount > 0 ? (
         <>
-          <div className="border-t border-dashed border-slate-200" />
+          <div className="border-t border-slate-200" />
           <button
             type="button"
             aria-pressed={activeKey === '__unseg'}
             onClick={() => onSelect('__unseg')}
-            className={`w-full rounded-2xl border text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 ${
+            className={`w-full rounded-2xl border text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 ${
               activeKey === '__unseg'
-                ? 'border-slate-900 bg-slate-900 text-white shadow-[0_14px_32px_rgba(15,23,42,0.18)]'
-                : 'border-slate-200/80 bg-white/90 text-slate-700 shadow-[0_12px_32px_rgba(15,23,42,0.05)] hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_28px_rgba(15,23,42,0.1)]'
+                ? 'border-slate-900 bg-slate-900 text-white'
+                : 'border-slate-200/80 bg-white/90 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
             }`}
           >
             <span className="flex items-center gap-3 px-4 py-3">
@@ -489,7 +488,7 @@ const StageProblem: React.FC<{
   return (
     <div
       data-prob-key={problemKey(problem)}
-      className={`scroll-mt-24 overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow ${
+      className={`scroll-mt-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_4px_16px_rgba(15,23,42,0.06)] transition-shadow ${
         highlighted ? 'ring-2 ring-blue-400' : ''
       }`}
     >
@@ -549,7 +548,7 @@ const StageProblem: React.FC<{
               {m}
             </div>
           ))}
-          <div className="mt-2 rounded-xl border border-slate-200/80 bg-slate-50/60 p-3">
+          <div className="mt-2 rounded-2xl bg-slate-50 p-3">
             <div className="flex items-center gap-2">
               <b className="text-sm font-semibold text-slate-700">可能根因</b>
               <span
@@ -600,7 +599,7 @@ const StageProblem: React.FC<{
                 type="button"
                 aria-expanded={runsOpen}
                 onClick={() => setRunsOpen((value) => !value)}
-                className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+                className="flex w-full items-center gap-2 rounded-lg bg-slate-50 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
               >
                 <span>关联执行记录</span>
                 <span className="font-normal text-slate-400">
@@ -613,7 +612,7 @@ const StageProblem: React.FC<{
                 />
               </button>
               {runsOpen ? (
-                <div className="mt-2 overflow-x-auto rounded-xl border border-slate-200">
+                <div className="mt-2 overflow-x-auto rounded-2xl border border-slate-200">
                   <table className="w-full min-w-[640px] border-collapse text-sm">
                     <thead className="bg-slate-50/80">
                       <tr className="text-slate-500">
@@ -680,6 +679,50 @@ const StageProblem: React.FC<{
   );
 };
 
+const StageRecommendations: React.FC<{ problems: CiJourneyProblem[] }> = ({
+  problems,
+}) => {
+  const recommendations = getStageRecommendations(problems);
+  return (
+    <section aria-label="建议" className="border-t border-slate-200 pt-6">
+      <div className="flex items-center justify-between gap-3">
+        <h4 className="text-base font-semibold text-slate-900">建议</h4>
+        <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+          {recommendations.length} 项
+        </span>
+      </div>
+      {recommendations.length ? (
+        <ul className="mt-4 space-y-3">
+          {recommendations.map(({ problem, action }) => (
+            <li
+              key={`${problem.dimkey}-${problemKey(problem)}`}
+              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+            >
+              <p className="whitespace-pre-line break-words px-4 py-4 text-sm leading-7 text-slate-800">
+                {action}
+              </p>
+              <div className=">lg:grid-cols-2 grid gap-x-6 gap-y-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3 text-xs leading-5 text-slate-600">
+                <p className="min-w-0 break-words">
+                  <span className="font-medium text-slate-400">关联痛点：</span>
+                  {problem.title}
+                </p>
+                {problem.root.dest?.trim() ? (
+                  <p className="min-w-0 break-words">
+                    <span className="font-medium text-slate-400">执行方：</span>
+                    {problem.root.dest}
+                  </p>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-3 text-sm text-slate-500">本步骤暂未提供建议。</p>
+      )}
+    </section>
+  );
+};
+
 /**
  * 右侧旅程段详情面板（对齐 Issue 体验路径总览详情卡：头部 icon + 标题 + 简介 + 徽章行；
  * 主体=四维明细卡片网格 + 段趋势 + 段内问题）。
@@ -691,22 +734,25 @@ const StageDetailPanel: React.FC<{
   highlightKey?: string | null;
 }> = ({ stage, repo, workflow, highlightKey }) => {
   const meta = segMeta(stage.seg);
-  const problems = stage.problems ?? [];
+  const problems = getStageProblems(stage);
+  const observations = getStageObservations(stage);
+  const recommendations = getStageRecommendations(problems);
   const [dimsOpen, setDimsOpen] = useState(true);
 
   return (
-    <div className=">lg:h-full overflow-hidden rounded-xl border border-slate-200 bg-white">
+    <div className=">lg:h-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
       {/* 头部：icon + 标题 + 简介 + 徽章行 */}
-      <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
+      <div className=">md:px-5 border-b border-slate-100 bg-[linear-gradient(180deg,#fbfdff_0%,#f8fbff_100%)] px-4 py-4">
         <div className="flex items-start gap-4">
-          <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-xl text-slate-600">
+          <span
+            className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl text-xl"
+            style={{ color: meta.color, background: `${meta.color}12` }}
+          >
             {meta.icon}
           </span>
           <div className="min-w-0">
             <div className="text-lg font-semibold text-slate-900">
-              <span className="uppercase tracking-[0.12em] text-slate-400">
-                {meta.code}
-              </span>{' '}
+              <span className="uppercase tracking-[0.12em]">{meta.code}</span>{' '}
               {stage.seg}
             </div>
             {stage.description?.trim() ? (
@@ -717,28 +763,45 @@ const StageDetailPanel: React.FC<{
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3.5 py-1.5 text-sm font-semibold text-slate-700">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
+              stage.segscore != null
+                ? 'border-fuchsia-300 bg-[linear-gradient(180deg,#fdf4ff_0%,#fae8ff_100%)] text-fuchsia-700'
+                : 'border-slate-200 bg-white text-slate-500'
+            }`}
+          >
             <span>步骤得分</span>
-            <span className="text-base leading-none">
+            <span
+              className={`text-base leading-none ${
+                stage.segscore != null ? 'text-fuchsia-900' : ''
+              }`}
+            >
               {stage.segscore ?? '本次未评估'}
             </span>
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm">
-            <span className="font-medium text-slate-600">问题</span>
-            <span
-              className={`rounded-full px-1.5 py-0.5 text-xs font-bold tabular-nums leading-none ${
-                problems.length
-                  ? 'bg-rose-50 text-rose-600'
-                  : 'bg-slate-100 text-slate-500'
-              }`}
-            >
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold ${
+              problems.length
+                ? 'border-rose-200 bg-rose-50 text-rose-600'
+                : 'border-slate-200 bg-white text-slate-500'
+            }`}
+          >
+            <span>痛点</span>
+            <span className="text-base font-bold tabular-nums leading-none">
               {problems.length}
             </span>
           </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-sm font-semibold text-sky-700">
+            指标 <b className="text-base leading-none">{observations.length}</b>
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700">
+            建议{' '}
+            <b className="text-base leading-none">{recommendations.length}</b>
+          </span>
           {stage.bare.length ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm">
-              <span className="font-medium text-slate-600">具体定位</span>
-              <span className="rounded-full bg-slate-100 px-1.5 py-0.5 text-xs font-semibold leading-none text-slate-700">
+            <span className="inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600">
+              <span>具体定位</span>
+              <span className="break-words text-xs font-semibold text-slate-700">
                 {workflow} · {stage.bare.join(' / ')}
               </span>
             </span>
@@ -748,6 +811,45 @@ const StageDetailPanel: React.FC<{
 
       {/* 主体 */}
       <div className=">md:p-5 space-y-6 p-4">
+        <section aria-label="指标">
+          <div className="flex flex-wrap items-center gap-2">
+            <h4 className="text-base font-semibold text-slate-900">关键指标</h4>
+            <span
+              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600"
+              title="对应卡片“指标”：本步骤实际有观测值的代表指标数"
+            >
+              指标 {observations.length}
+            </span>
+          </div>
+          {observations.length ? (
+            <ul className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3 pb-1">
+              {observations.map((observation) => (
+                <li
+                  key={JSON.stringify([observation.name, observation.value])}
+                  className="min-w-0 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 text-[13px] font-medium leading-5 text-slate-600">
+                      {observation.name}
+                    </div>
+                  </div>
+                  <div className="mt-2 break-words text-[22px] font-bold leading-none tracking-tight text-slate-900">
+                    {observation.value}
+                  </div>
+                  <Tooltip title={observation.dimensions.join(' · ')}>
+                    <div className="mt-3 truncate text-[12px] leading-5 text-slate-400">
+                      {observation.dimensions.join(' · ')}
+                    </div>
+                  </Tooltip>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-slate-500">
+              本步骤暂无阶段指标，仓库级参考项见四维明细。
+            </p>
+          )}
+        </section>
         {/* 四维明细 */}
         <div>
           <button
@@ -772,7 +874,7 @@ const StageDetailPanel: React.FC<{
           </button>
           {dimsOpen ? (
             <>
-              <div className="mt-3 overflow-x-auto rounded-2xl border border-slate-200">
+              <div className="mt-3 overflow-x-auto rounded-2xl">
                 <table className="w-full min-w-[760px] border-collapse text-sm">
                   <thead>
                     <tr>
@@ -866,7 +968,7 @@ const StageDetailPanel: React.FC<{
               </div>
 
               {/* 段趋势缩略折线 */}
-              <div className="mt-3 w-[320px] max-w-full rounded-lg border border-slate-200 bg-white px-4 py-3">
+              <div className="mt-3 w-[320px] max-w-full rounded-2xl bg-slate-50 px-4 py-3">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <span className="text-xs font-semibold text-slate-500">
                     {stage.trend.name}
@@ -887,10 +989,10 @@ const StageDetailPanel: React.FC<{
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div className="flex items-center gap-1.5">
                 <FlagOutlined className="text-rose-500" />
-                <h4 className="text-base font-semibold text-slate-900">问题</h4>
+                <h4 className="text-base font-semibold text-slate-900">痛点</h4>
               </div>
-              <span className="rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-600">
-                {problems.length} 个问题
+              <span className="rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-600">
+                {problems.length} 个痛点
               </span>
             </div>
             <div className="mt-4 flex flex-col gap-4">
@@ -906,11 +1008,12 @@ const StageDetailPanel: React.FC<{
           </div>
         ) : (
           <div className="border-t border-slate-200 pt-6">
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-xs text-slate-500">
-              该步骤当日暂无问题。
+            <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-xs text-slate-500">
+              该步骤当日暂无痛点。
             </div>
           </div>
         )}
+        <StageRecommendations problems={problems} />
       </div>
     </div>
   );
@@ -922,10 +1025,10 @@ const UnsegDetailPanel: React.FC<{
   repo: CiRepoKey;
   highlightKey?: string | null;
 }> = ({ problems, repo, highlightKey }) => (
-  <div className=">lg:h-full overflow-hidden rounded-xl border border-slate-200 bg-white">
-    <div className=">md:px-5 border-b border-slate-100 px-4 py-4">
+  <div className=">lg:h-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+    <div className=">md:px-5 border-b border-slate-100 bg-[linear-gradient(180deg,#fbfdff_0%,#f8fbff_100%)] px-4 py-4">
       <div className="flex items-start gap-4">
-        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-xl text-slate-500">
+        <span className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-xl text-indigo-600">
           ✚
         </span>
         <div className="min-w-0">
@@ -957,10 +1060,11 @@ const UnsegDetailPanel: React.FC<{
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-center text-xs text-slate-500">
+        <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-xs text-slate-500">
           当日无跨段/未映射问题。
         </div>
       )}
+      <StageRecommendations problems={problems} />
     </div>
   </div>
 );
@@ -987,11 +1091,18 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
     stages[0]?.seg ??
     '';
   const [activeKey, setActiveKey] = useState<string>(defaultKey);
+  const [detailExpanded, setDetailExpanded] = useState(true);
+  const detailId = useId();
+  const selectStage = (key: string) => {
+    setActiveKey(key);
+    setDetailExpanded(true);
+  };
   // 外部跳转定位时临时高亮的问题 key
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveKey(defaultKey);
+    setDetailExpanded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
@@ -1001,6 +1112,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
       return;
     }
     setActiveKey(focus.seg);
+    setDetailExpanded(true);
     setHighlightKey(focus.probKey);
     const scrollTimer = window.setTimeout(() => {
       document
@@ -1034,7 +1146,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
         </div>
       </div>
 
-      <div className=">md:px-6 rounded-xl border border-slate-200 bg-white px-4 py-5">
+      <div className=">md:px-6 rounded-[28px] border border-slate-200 bg-white px-4 py-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-slate-200" />
           <div className="text-center">
@@ -1053,7 +1165,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
                 <StageCard
                   stage={stage}
                   active={activeKey === stage.seg}
-                  onClick={() => setActiveKey(stage.seg)}
+                  onClick={() => selectStage(stage.seg)}
                 />
                 {index < stages.length - 1 ? (
                   <div
@@ -1077,39 +1189,88 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
           })}
         </div>
 
-        {/* 旅程段详情 · 主从式布局（左菜单 + 右内容，对齐 Issue 体验路径总览） */}
-        <div className=">md:p-4 mt-6 rounded-[24px] border border-slate-200 bg-slate-50/70 p-3">
-          <div className=">lg:flex-row flex flex-col gap-4">
-            <div className=">lg:w-[240px] >lg:flex-none">
-              <div className=">lg:sticky >lg:top-5">
-                <JourneyDirectory
-                  stages={stages}
-                  activeKey={activeKey}
-                  unsegCount={unsegProblems.length}
-                  onSelect={setActiveKey}
+        {/* 分隔条与社区入门报告一致；详情保留左目录、右内容布局。 */}
+        <div className="mt-6">
+          <button
+            type="button"
+            aria-expanded={detailExpanded}
+            aria-controls={detailId}
+            onClick={() => setDetailExpanded((value) => !value)}
+            className="group flex w-full items-center gap-3 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
+          >
+            <span className="h-px flex-1 bg-slate-200" aria-hidden="true" />
+            <span
+              className={`flex items-center gap-2 rounded-full border px-3 py-1 text-sm transition-colors duration-150 ${
+                detailExpanded
+                  ? 'border-slate-300 bg-white text-slate-700 shadow-sm'
+                  : 'border-slate-200 bg-slate-100 text-slate-500'
+              }`}
+            >
+              <span className="font-semibold">
+                {activeKey === '__unseg'
+                  ? '跨段/未映射'
+                  : activeStage?.seg ?? '旅程详情'}
+              </span>
+              <span className="text-slate-400">· 任务总结与痛点</span>
+              <svg
+                className={`h-3.5 w-3.5 shrink-0 text-slate-400 transition-transform duration-200 ${
+                  detailExpanded ? '' : '-rotate-90'
+                }`}
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 6l4 4 4-4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-              </div>
-            </div>
+              </svg>
+            </span>
+            <span className="h-px flex-1 bg-slate-200" aria-hidden="true" />
+          </button>
 
-            <div className="min-w-0 flex-1">
-              {activeKey === '__unseg' ? (
-                <UnsegDetailPanel
-                  problems={unsegProblems}
-                  repo={repo}
-                  highlightKey={highlightKey}
-                />
-              ) : activeStage ? (
-                <StageDetailPanel
-                  stage={activeStage}
-                  repo={repo}
-                  workflow={workflow}
-                  highlightKey={highlightKey}
-                />
-              ) : (
-                <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-4 py-5 text-center text-sm text-slate-400">
-                  点击左侧菜单或上方全景图卡片查看对应旅程段详情
+          <div
+            id={detailId}
+            role="region"
+            aria-label="旅程步骤详情"
+            hidden={!detailExpanded}
+            className="mt-4"
+          >
+            <div className=">lg:flex-row flex flex-col gap-4">
+              <div className=">lg:w-[240px] >lg:flex-none">
+                <div className=">lg:sticky >lg:top-5">
+                  <JourneyDirectory
+                    stages={stages}
+                    activeKey={activeKey}
+                    unsegCount={unsegProblems.length}
+                    onSelect={selectStage}
+                  />
                 </div>
-              )}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                {activeKey === '__unseg' ? (
+                  <UnsegDetailPanel
+                    problems={unsegProblems}
+                    repo={repo}
+                    highlightKey={highlightKey}
+                  />
+                ) : activeStage ? (
+                  <StageDetailPanel
+                    stage={activeStage}
+                    repo={repo}
+                    workflow={workflow}
+                    highlightKey={highlightKey}
+                  />
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-4 py-5 text-center text-sm text-slate-400">
+                    点击左侧菜单或上方全景图卡片查看对应旅程段详情
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

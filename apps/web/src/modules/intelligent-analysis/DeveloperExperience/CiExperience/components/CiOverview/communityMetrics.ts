@@ -1,7 +1,8 @@
-import type { CiJourney, CiRepoData, CiRepoKey } from '../../types';
+import type { CiRepoKey } from '../../types';
+import type { CiOverviewDataset, CiOverviewJourney } from '../../api';
 import type { CiPainIssue, CiPainOverview } from '../../overviewApi';
 import type { TrackingStatus } from '../PainTracking/model';
-import { delta, type CiDelta } from '../../helpers';
+import { delta, DIM_KEYS, DIM_NAME, type CiDelta } from '../../helpers';
 
 export type CiRepoSummary = {
   repo: CiRepoKey;
@@ -11,7 +12,14 @@ export type CiRepoSummary = {
   latestDay: string;
   scoreOverall: number | null;
   scoreHistory: Array<{ date: string; score: number | null }>;
-  scoreMetrics: Array<{ key: string; label: string; score: number | null }>;
+  scoreMetrics: Array<{
+    key: string;
+    label: string;
+    score: number | null;
+    groupKey: string;
+    groupLabel: string;
+    groupOrder: number;
+  }>;
 };
 
 export type CiTopIssue = CiPainIssue & {
@@ -89,8 +97,8 @@ export const painReportsMatch = (
 
 /** 日分只取后端 scores；当前值均为各仓最新完整日报的均值，缺失分不补零。 */
 export const computeCommunityOverview = (
-  data: Record<CiRepoKey, CiRepoData>,
-  journeys: Partial<Record<CiRepoKey, CiJourney>>,
+  data: Record<CiRepoKey, CiOverviewDataset>,
+  journeys: Partial<Record<CiRepoKey, CiOverviewJourney>>,
   pain?: CiPainOverview
 ) => {
   const repos: CiRepoSummary[] = Object.entries(data).map(([repo, dataset]) => {
@@ -108,12 +116,20 @@ export const computeCommunityOverview = (
         score: journeys[repo]?.boards[date]?.scores?.total ?? null,
       })),
       scoreMetrics: Object.entries(scores?.dims ?? {}).flatMap(
-        ([dimension, item]) =>
-          Object.entries(item.metrics ?? {}).map(([label, score]) => ({
+        ([dimension, item]) => {
+          const order = DIM_KEYS.findIndex((key) => key === dimension);
+          const groupLabel =
+            dataset.boards[latestDay]?.dims.find((dim) => dim.key === dimension)
+              ?.name || (order < 0 ? dimension : DIM_NAME[DIM_KEYS[order]]);
+          return Object.entries(item.metrics ?? {}).map(([label, score]) => ({
             key: `${dimension}:${label}`,
             label,
             score,
-          }))
+            groupKey: dimension,
+            groupLabel,
+            groupOrder: order < 0 ? DIM_KEYS.length : order,
+          }));
+        }
       ),
     };
   });
@@ -186,7 +202,7 @@ export const computeCommunityOverview = (
       trend,
     },
     {
-      label: '问题闭环',
+      label: '闭环率',
       value: trackingReady ? String(+progress.rate.toFixed(1)) : '—',
       unit: trackingReady ? '%' : '',
     },

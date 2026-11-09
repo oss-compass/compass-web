@@ -69,6 +69,12 @@ export const fetchCiPainOverview = async (
     '/ci-experience/ci-data/pain-overview',
     { signal }
   );
+  return validateCiPainOverview(response);
+};
+
+export const validateCiPainOverview = (
+  response: CiPainOverview
+): CiPainOverview => {
   if (
     !Array.isArray(response.reports) ||
     response.reports.some(
