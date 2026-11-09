@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BsDownload } from 'react-icons/bs';
 import { AiOutlineLoading } from 'react-icons/ai';
-import { useRequest } from 'ahooks';
+import { useRequest, useUnmount, useUnmountedRef } from 'ahooks';
 import Tooltip from '@common/components/Tooltip';
 import {
   apiDownloadFiles,
@@ -33,11 +33,20 @@ const Download = ({
   newQuery['sort_opts'] && (newQuery['sort_opts'] = [newQuery['sort_opts']]);
 
   const [loadingDownLoad, setLoadingDownLoad] = useState(false);
+  const unmountedRef = useUnmountedRef();
+  const firstPollTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+  useUnmount(() => clearTimeout(firstPollTimer.current));
   const downloadFinish = () => setLoadingDownLoad(false);
   const { run, cancel } = useRequest(pollingFun, {
     pollingInterval: 3000,
     pollingWhenHidden: false,
     manual: true,
+    onError: () => {
+      downloadFinish();
+      cancel();
+    },
     onSuccess: ({ data }, params) => {
       if (data.status === Status.COMPLETE && data.download_path) {
         apiDownloadFiles(data.download_path, fileName, downloadFinish);
@@ -52,8 +61,9 @@ const Download = ({
   const downloadFun = async () => {
     try {
       const { data } = await beginFun(newQuery);
+      if (unmountedRef.current) return;
       if (data.code === 200 && data.status === Status.PENDING) {
-        setTimeout(() => {
+        firstPollTimer.current = setTimeout(() => {
           run(data.uuid);
         }, 2000);
       } else if (data.status === Status.COMPLETE && data.download_path) {
@@ -63,12 +73,12 @@ const Download = ({
       }
     } catch (e) {
       console.log(e);
-      downloadFinish();
+      if (!unmountedRef.current) downloadFinish();
     }
   };
   return (
     <>
-      <div className="flex h-7 cursor-pointer items-center justify-center rounded-sm border py-2 px-3 text-sm hover:text-[#3f60ef]">
+      <div className="flex h-7 cursor-pointer items-center justify-center rounded-sm border px-3 py-2 text-sm hover:text-[#3f60ef]">
         {loadingDownLoad ? (
           <>
             <AiOutlineLoading className="t mr-1 animate-spin" />
