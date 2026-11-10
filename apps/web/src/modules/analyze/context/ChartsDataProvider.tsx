@@ -21,6 +21,10 @@ import client from '@common/gqlClient';
 import { Level } from '@modules/analyze/constant';
 import { chartUserSettingState } from '@modules/analyze/store';
 import useQueryMetricType from '@modules/analyze/hooks/useQueryMetricType';
+import {
+  useCategoryOptions,
+  useCategoryScope,
+} from '@modules/analyze/hooks/useQueryCategory';
 
 interface Store {
   loading: boolean;
@@ -63,6 +67,9 @@ const ChartsDataProviderCollab: React.FC<PropsWithChildren> = ({
   const queryClient = useQueryClient();
   const { timeStart, timeEnd } = useQueryDateRange();
   const { compareItems } = useCompareItems();
+  // 基准范围（全局 / 某个分类）。走 URL 的 category 参数，与 range 一致。
+  const categoryOptions = useCategoryOptions();
+  const categoryScope = useCategoryScope(categoryOptions);
 
   useQueries({
     queries: compareItems.map(({ label, level }) => {
@@ -82,7 +89,7 @@ const ChartsDataProviderCollab: React.FC<PropsWithChildren> = ({
 
   useSummaryQuery(
     client,
-    { start: timeStart, end: timeEnd },
+    { start: timeStart, end: timeEnd, category: categoryScope.ident },
     {
       onSuccess(e) {
         proxyState.summary = e;
