@@ -86,6 +86,43 @@ import {
 } from '../OverviewDashboard/rerunPolicy';
 import { useRegistryData } from '../hooks/useRegistryData';
 import CompetitorRepoSection from './CompetitorRepoSection';
+import styles from './RepoManagementTable.module.css';
+
+const communityColumnWidths: Record<string, string> = {
+  seq_no: '4%',
+  repo_name: '13%',
+  team_name: '9%',
+  owner: '11%',
+  hardware_env: '9%',
+  latestReport: '10%',
+  benchmark_repo_name: '13%',
+  expected_online_at: '8%',
+  overview_enabled: '8%',
+  remark: '9%',
+  actions: '6%',
+};
+
+const getRepoTableLayout = (
+  columns: ColumnsType<RepoManagementItem>,
+  isIssueManagement: boolean
+): Pick<TableProps<RepoManagementItem>, 'columns' | 'className' | 'scroll'> => {
+  if (isIssueManagement) {
+    return {
+      columns,
+      className: 'overview-ant-table',
+      scroll: { x: '100%' },
+    };
+  }
+  return {
+    columns: columns.map((column) => ({
+      ...column,
+      width: communityColumnWidths[String(column.key)] ?? column.width,
+      fixed: undefined,
+    })),
+    className: `overview-ant-table ${styles.table}`,
+    scroll: undefined,
+  };
+};
 
 const { Title } = Typography;
 const nativeInputClassName =
@@ -1895,14 +1932,19 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
       ? getRecordHardwareEnvs(rerunRecordsModal.repo)[0]
       : '') ||
     '--';
+  const tableLayoutConfig = useMemo(
+    () => getRepoTableLayout(columns, isIssueManagement),
+    [columns, isIssueManagement]
+  );
+
   const shouldShowRerunRecordsTableInRerunModal =
     rerunRecordsLoading || !!rerunRecordsError || rerunRecords.length > 0;
   return (
-    <div className="oj-page min-h-full bg-[#eef2fa]">
+    <div className="oj-page min-h-full min-w-0 bg-[#eef2fa]">
       {contextHolder}
       <DashboardStyles />
       <ManagementModuleNav active={REPO_MANAGEMENT_MODULE[reportType]} />
-      <div className="flex w-full flex-col gap-4 px-7 py-4 md:px-6">
+      <div className="flex w-full min-w-0 flex-col gap-4 px-7 py-4 md:px-6">
         {!authInitialized ? (
           <Card className="w-full rounded-3xl border border-white/80 bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
             <div className="flex items-center gap-3 py-6 text-sm text-slate-500">
@@ -2029,13 +2071,14 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
 
             <div className={repoCategory === 'cann' ? 'w-full' : 'hidden'}>
               <Table<RepoManagementItem>
-                className="overview-ant-table"
+                className={tableLayoutConfig.className}
                 style={{ width: '100%' }}
                 rowKey={(record) => record.id}
                 loading={isLoading || authChecking}
-                columns={columns}
+                columns={tableLayoutConfig.columns}
                 dataSource={repoItems}
-                scroll={{ x: '100%' }}
+                tableLayout="fixed"
+                scroll={tableLayoutConfig.scroll}
                 onChange={handleTableChange}
                 pagination={{
                   current: page,

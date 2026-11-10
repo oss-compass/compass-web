@@ -983,18 +983,14 @@ const StageDetailPanel: React.FC<{
           ) : null}
         </div>
 
-        {/* 问题 */}
-        {problems.length ? (
-          <div className="border-t border-slate-200 pt-6">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div className="flex items-center gap-1.5">
-                <FlagOutlined className="text-rose-500" />
-                <h4 className="text-base font-semibold text-slate-900">痛点</h4>
-              </div>
-              <span className="rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-600">
-                {problems.length} 个痛点
-              </span>
-            </div>
+        <section aria-label="痛点" className="border-t border-slate-200 pt-6">
+          <div className="flex items-center justify-between gap-3">
+            <h4 className="text-base font-semibold text-slate-900">痛点</h4>
+            <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-semibold text-rose-600">
+              {problems.length} 项
+            </span>
+          </div>
+          {problems.length ? (
             <div className="mt-4 flex flex-col gap-4">
               {problems.map((p, i) => (
                 <StageProblem
@@ -1005,14 +1001,10 @@ const StageDetailPanel: React.FC<{
                 />
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="border-t border-slate-200 pt-6">
-            <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-xs text-slate-500">
-              该步骤当日暂无痛点。
-            </div>
-          </div>
-        )}
+          ) : (
+            <p className="mt-3 text-sm text-slate-500">该步骤当日暂无痛点。</p>
+          )}
+        </section>
         <StageRecommendations problems={problems} />
       </div>
     </div>
@@ -1048,22 +1040,28 @@ const UnsegDetailPanel: React.FC<{
       </div>
     </div>
     <div className=">md:p-5 space-y-6 p-4">
-      {problems.length ? (
-        <div className="flex flex-col gap-4">
-          {problems.map((p, i) => (
-            <StageProblem
-              key={i}
-              problem={p}
-              repo={repo}
-              highlighted={highlightKey === problemKey(p)}
-            />
-          ))}
+      <section aria-label="痛点" className="border-t border-slate-200 pt-6">
+        <div className="flex items-center justify-between gap-3">
+          <h4 className="text-base font-semibold text-slate-900">痛点</h4>
+          <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-[11px] font-semibold text-rose-600">
+            {problems.length} 项
+          </span>
         </div>
-      ) : (
-        <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-xs text-slate-500">
-          当日无跨段/未映射问题。
-        </div>
-      )}
+        {problems.length ? (
+          <div className="mt-4 flex flex-col gap-4">
+            {problems.map((p, i) => (
+              <StageProblem
+                key={i}
+                problem={p}
+                repo={repo}
+                highlighted={highlightKey === problemKey(p)}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-slate-500">当日无跨段/未映射问题。</p>
+        )}
+      </section>
       <StageRecommendations problems={problems} />
     </div>
   </div>

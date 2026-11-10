@@ -76,7 +76,6 @@ import {
   fetchContainerReportIds,
   fetchOverviewRepoRerunRecords,
   fetchOverviewRerunNodes,
-  fetchOverviewRepoRerunStatuses,
   fetchRepoManagementRegisterOptions,
   getCompassOperatorToken,
   loginCompassOperator,
@@ -765,7 +764,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const [rerunStatusMap, setRerunStatusMap] = useState<
     Record<string, RepoRerunJob>
   >({});
-  const [rerunStatusLoading, setRerunStatusLoading] = useState(false);
   const [rerunRecordsModal, setRerunRecordsModal] = useState<{
     open: boolean;
     repo: RepoProgressRow | null;
@@ -1863,7 +1861,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           {supportsRepoRerun(record.id) ? (
             <RerunActionButton
               job={job}
-              loading={rerunStatusLoading && !job}
+              loading={false}
               onOpenRecords={() => {
                 void openRerunRecordsModal(record);
               }}
@@ -1899,7 +1897,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       openContainerAccess,
       openRerunModal,
       openRerunRecordsModal,
-      rerunStatusLoading,
       rerunStatusMap,
     ]
   );
@@ -2638,58 +2635,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   );
 
   useEffect(() => {
-    const projectKeys = displayedRepoRowsForTable
-      .map((row) => row.id)
-      .filter((item) => !isBeatRepo(item));
-    if (!projectKeys.length) {
-      setRerunStatusMap({});
-      return;
-    }
-
-    let alive = true;
-    const loadStatuses = async (options?: { silent?: boolean }) => {
-      const silent = options?.silent ?? false;
-      if (!silent) {
-        setRerunStatusLoading(true);
-      }
-      try {
-        const result = await fetchOverviewRepoRerunStatuses(projectKeys);
-        if (!alive) return;
-        setRerunStatusMap(result.by_project_key || {});
-      } catch (_error) {
-        if (!alive) return;
-      } finally {
-        if (alive && !silent) setRerunStatusLoading(false);
-      }
-    };
-
-    void loadStatuses();
-    const timer = window.setInterval(() => {
-      void loadStatuses({ silent: true });
-    }, 60000);
-
-    return () => {
-      alive = false;
-      window.clearInterval(timer);
-    };
-  }, [displayedRepoRowsForTable]);
-
-  useEffect(() => {
-    if (!rerunRecordsModal.open || !rerunRecordsModal.repo) return undefined;
-    const hasActiveJob = rerunRecords.some((item) => isActiveRerunJob(item));
-    if (!hasActiveJob) return undefined;
-    const timer = window.setInterval(() => {
-      void loadRerunRecords(rerunRecordsModal.repo!.id, { silent: true });
-    }, 30000);
-    return () => window.clearInterval(timer);
-  }, [
-    loadRerunRecords,
-    rerunRecords,
-    rerunRecordsModal.open,
-    rerunRecordsModal.repo,
-  ]);
-
-  useEffect(() => {
     if ((!autoExpandAllTeams && !repoFilter) || progressView !== 'team') return;
     const nextKeys = displayedTeamRowsForTable.map((row) => row.id);
     setExpandedRowKeys((prev) => {
@@ -3142,10 +3087,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                               {supportsRepoRerun(repo.id) ? (
                                 <RerunActionButton
                                   job={rerunStatusMap[repo.id]}
-                                  loading={
-                                    rerunStatusLoading &&
-                                    !rerunStatusMap[repo.id]
-                                  }
+                                  loading={false}
                                   onOpenRecords={() => {
                                     void openRerunRecordsModal(repo);
                                   }}
@@ -3189,7 +3131,6 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       teamSortAsc,
       openRerunModal,
       openRerunRecordsModal,
-      rerunStatusLoading,
       rerunStatusMap,
     ]
   );

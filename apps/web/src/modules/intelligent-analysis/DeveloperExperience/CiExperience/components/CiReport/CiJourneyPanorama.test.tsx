@@ -177,7 +177,9 @@ it('keeps pain, observation and recommendation counts consistent with details ev
   expect(recommendations).toHaveTextContent('在构建镜像中补齐依赖。');
   expect(recommendations).toHaveTextContent('关联痛点：编译环境缺少依赖');
   expect(recommendations).toHaveTextContent('CI 维护者');
-  expect(screen.getByText('2 个痛点')).toBeInTheDocument();
+  expect(screen.getByRole('region', { name: '痛点' })).toHaveTextContent(
+    '2 项'
+  );
 });
 
 it('shows zero counts and explicit empty states when no stage observations or suggestions are available', () => {
@@ -209,4 +211,8 @@ it('shows zero counts and explicit empty states when no stage observations or su
   expect(screen.getByRole('region', { name: '建议' })).toHaveTextContent(
     '本步骤暂未提供建议'
   );
+  const pains = screen.getByRole('region', { name: '痛点' });
+  expect(within(pains).getByRole('heading', { name: '痛点' })).toBeVisible();
+  expect(pains).toHaveTextContent('0 项');
+  expect(pains).toHaveTextContent('该步骤当日暂无痛点。');
 });

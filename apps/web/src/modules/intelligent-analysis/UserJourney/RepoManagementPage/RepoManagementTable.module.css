@@ -1,0 +1,60 @@
+.table:global(.overview-ant-table) {
+  min-width: 0;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-content) {
+  overflow-x: auto;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-content) > table {
+  width: 100%;
+  min-width: 800px;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-thead) > tr > th,
+.table:global(.overview-ant-table) :global(.ant-table-tbody) > tr > td {
+  padding: 10px clamp(4px, 0.5vw, 10px);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-column-title) {
+  min-width: 0;
+}
+
+.table:global(.overview-ant-table) :global(.sortable-col-title) {
+  gap: 2px;
+}
+
+.table:global(.overview-ant-table) :global(.sort-arrow) {
+  display: none;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-column-sorter) {
+  flex: 0 0 auto;
+  margin-inline-start: 2px;
+}
+
+.table:global(.overview-ant-table) :global(.ant-tag) {
+  max-width: 100%;
+  margin-inline-end: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.table:global(.overview-ant-table) :global(.ant-space),
+.table:global(.overview-ant-table) :global(.ant-space-item) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.table:global(.overview-ant-table) :global(.ant-btn-link) {
+  height: auto;
+  padding-inline: 2px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-cell-ellipsis) {
+  white-space: nowrap;
+}
