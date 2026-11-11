@@ -99,10 +99,11 @@ const toWeeklyTrend = (
     const score = normalizeScore(item.score);
     if (score == null) return;
     const { weekStart, weekEnd, label } = getWeekRange(item.date);
+    const weight = item.sampleCount ?? 1;
     const existing = grouped.get(weekStart);
     if (existing) {
-      existing.totalScore += score;
-      existing.count += 1;
+      existing.totalScore += score * weight;
+      existing.count += weight;
       return;
     }
 
@@ -110,8 +111,8 @@ const toWeeklyTrend = (
       weekStart,
       weekEnd,
       label,
-      totalScore: score,
-      count: 1,
+      totalScore: score * weight,
+      count: weight,
     });
   });
 
@@ -214,7 +215,9 @@ const buildTeamRepoCountTrend = (
         key: week.weekStart,
         date: `${week.weekStart} - ${week.weekEnd}`,
         label: week.label,
-        score: entries.filter((entry) => matches(Number(entry.score))).length,
+        score: entries.filter((entry) =>
+          matches(Number(entry.latestScore ?? entry.score))
+        ).length,
         sampleCount: includeSampleCount ? entries.length : undefined,
         weekStart: week.weekStart,
         weekEnd: week.weekEnd,

@@ -88,18 +88,20 @@ import { useRegistryData } from '../hooks/useRegistryData';
 import CompetitorRepoSection from './CompetitorRepoSection';
 import styles from './RepoManagementTable.module.css';
 
-const communityColumnWidths: Record<string, string> = {
-  seq_no: '4%',
-  repo_name: '13%',
-  team_name: '9%',
-  owner: '11%',
-  hardware_env: '9%',
-  latestReport: '10%',
-  benchmark_repo_name: '13%',
-  expected_online_at: '8%',
-  overview_enabled: '8%',
-  remark: '9%',
-  actions: '6%',
+// Reserve space for the index and actions; share the remaining width between
+// data columns so a narrow viewport cannot squeeze individual button labels.
+const communityColumnWidths: Record<string, string | number> = {
+  seq_no: 44,
+  repo_name: 'calc((100% - 180px) * 0.16)',
+  team_name: 'calc((100% - 180px) * 0.09)',
+  owner: 'calc((100% - 180px) * 0.11)',
+  hardware_env: 'calc((100% - 180px) * 0.10)',
+  latestReport: 'calc((100% - 180px) * 0.11)',
+  benchmark_repo_name: 'calc((100% - 180px) * 0.12)',
+  expected_online_at: 'calc((100% - 180px) * 0.10)',
+  overview_enabled: 'calc((100% - 180px) * 0.10)',
+  remark: 'calc((100% - 180px) * 0.11)',
+  actions: 136,
 };
 
 const getRepoTableLayout = (
@@ -117,6 +119,7 @@ const getRepoTableLayout = (
     columns: columns.map((column) => ({
       ...column,
       width: communityColumnWidths[String(column.key)] ?? column.width,
+      className: column.key === 'actions' ? styles.actions : column.className,
       fixed: undefined,
     })),
     className: `overview-ant-table ${styles.table}`,

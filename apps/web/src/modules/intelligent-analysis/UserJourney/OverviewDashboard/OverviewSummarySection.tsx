@@ -26,6 +26,7 @@ type OverviewSummarySectionProps = {
   overviewSummary: MetricSummary;
   overviewTrend: WeeklyCloseRateTrendPoint[];
   overviewIssues: DashboardIssue[];
+  severitySummary?: Record<string, MetricSummary>;
   summaryScore: number | null;
   summarySuccessRate: number | null;
   summaryScoreTrend: ScoreTrendPoint[];
@@ -56,6 +57,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
   overviewSummary,
   overviewTrend,
   overviewIssues,
+  severitySummary,
   summaryScore,
   summarySuccessRate,
   summaryScoreTrend,
@@ -303,6 +305,7 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           trendWindow={trendWindow}
           onTrendWindowChange={onTrendWindowChange}
           issues={overviewIssues}
+          severitySummary={severitySummary}
           commonIssues={commonIssues}
           mode={effectiveMode}
           tooltip={primaryTooltip}

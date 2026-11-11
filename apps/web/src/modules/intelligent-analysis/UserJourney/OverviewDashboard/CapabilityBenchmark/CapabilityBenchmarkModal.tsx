@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Alert, Modal, Table, Typography } from 'antd';
+import { Alert, Modal, Spin, Table, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import type { RepoProgressRow } from '../types';
 import CapabilityBenchmarkChartCard from './CapabilityBenchmarkChartCard';
@@ -14,6 +14,8 @@ const { Link, Text } = Typography;
 
 type CapabilityBenchmarkModalProps = {
   open: boolean;
+  loading?: boolean;
+  error?: string;
   repo: RepoProgressRow | null;
   onClose: () => void;
 };
@@ -48,6 +50,8 @@ const buildCompareReportUrl = (
 
 const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
   open,
+  loading,
+  error,
   repo,
   onClose,
 }) => {
@@ -183,33 +187,43 @@ const CapabilityBenchmarkModal: React.FC<CapabilityBenchmarkModalProps> = ({
       width={1080}
       destroyOnHidden
     >
-      {!repo || !benchmark ? null : (
-        <div className="benchmark-modal-body">
-          <div className="benchmark-summary-shell">
-            <Table<BenchmarkSummaryRow>
-              className="overview-ant-table benchmark-summary-table"
-              rowKey="key"
-              dataSource={summaryRows}
-              columns={summaryColumns}
-              pagination={false}
-              size="middle"
-              tableLayout="fixed"
-            />
-          </div>
-          {!benchmark.latestReportId ? (
-            <Alert
-              type="info"
-              showIcon
-              message="已配置对标仓库，但暂未查询到竞品最新报告。"
-            />
-          ) : null}
-          <CapabilityBenchmarkChartCard
-            rows={chartRows}
-            primaryLegend={repo.name}
-            secondaryLegend={benchmark.repoName}
-            emptyText="暂无能力对比数据"
-          />
+      {loading ? (
+        <div className="p-6 text-center">
+          <Spin />
         </div>
+      ) : error ? (
+        <Alert type="error" message={error} />
+      ) : (
+        <>
+          {!repo || !benchmark ? null : (
+            <div className="benchmark-modal-body">
+              <div className="benchmark-summary-shell">
+                <Table<BenchmarkSummaryRow>
+                  className="overview-ant-table benchmark-summary-table"
+                  rowKey="key"
+                  dataSource={summaryRows}
+                  columns={summaryColumns}
+                  pagination={false}
+                  size="middle"
+                  tableLayout="fixed"
+                />
+              </div>
+              {!benchmark.latestReportId ? (
+                <Alert
+                  type="info"
+                  showIcon
+                  message="已配置对标仓库，但暂未查询到竞品最新报告。"
+                />
+              ) : null}
+              <CapabilityBenchmarkChartCard
+                rows={chartRows}
+                primaryLegend={repo.name}
+                secondaryLegend={benchmark.repoName}
+                emptyText="暂无能力对比数据"
+              />
+            </div>
+          )}
+        </>
       )}
     </Modal>
   );

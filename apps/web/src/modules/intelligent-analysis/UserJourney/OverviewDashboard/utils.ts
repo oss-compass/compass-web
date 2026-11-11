@@ -89,8 +89,9 @@ export const compareTeamNames = (left: string, right: string): number => {
 };
 
 export const getLatestScore = (card: OverviewCardItem): number | null => {
-  if (!card.scoreHistory.length) return null;
-  return card.scoreHistory[card.scoreHistory.length - 1]?.score ?? null;
+  const history = card.scoreHistory ?? [];
+  if (!history.length) return null;
+  return history[history.length - 1]?.score ?? null;
 };
 
 export const getAverage = (values: Array<number | null>): number | null => {
@@ -150,7 +151,7 @@ export const toMetricSummary = (card: OverviewCardItem): MetricSummary => {
 export const toDashboardIssue = (card: OverviewCardItem): DashboardIssue[] => {
   const latestScore = card.latestScore ?? getLatestScore(card);
   const successRate = card.latestSuccessRate ?? toSuccessRate(latestScore);
-  return card.painPoints
+  return (card.painPoints ?? [])
     .filter((row) => {
       const severity = normalizeSeverity(row.severity);
       const isInScope =

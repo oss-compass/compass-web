@@ -8,7 +8,7 @@
 
 .table:global(.overview-ant-table) :global(.ant-table-content) > table {
   width: 100%;
-  min-width: 800px;
+  min-width: 1080px;
 }
 
 .table:global(.overview-ant-table) :global(.ant-table-thead) > tr > th,
@@ -20,6 +20,13 @@
 
 .table:global(.overview-ant-table) :global(.ant-table-column-title) {
   min-width: 0;
+}
+
+.table:global(.overview-ant-table) :global(.ant-table-thead) > tr > th,
+.table:global(.overview-ant-table) :global(.ant-table-column-title),
+.table:global(.overview-ant-table) :global(.sortable-col-title) {
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 .table:global(.overview-ant-table) :global(.sortable-col-title) {
@@ -42,6 +49,20 @@
   overflow-wrap: anywhere;
 }
 
+.table:global(.overview-ant-table) .actions {
+  min-width: 136px;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.table:global(.overview-ant-table) .actions :global(.ant-space) {
+  flex-wrap: nowrap;
+}
+
+.table:global(.overview-ant-table) .actions :global(.ant-space-item) {
+  flex-shrink: 0;
+}
+
 .table:global(.overview-ant-table) :global(.ant-space),
 .table:global(.overview-ant-table) :global(.ant-space-item) {
   min-width: 0;
@@ -51,8 +72,9 @@
 .table:global(.overview-ant-table) :global(.ant-btn-link) {
   height: auto;
   padding-inline: 2px;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  flex-shrink: 0;
 }
 
 .table:global(.overview-ant-table) :global(.ant-table-cell-ellipsis) {

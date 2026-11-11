@@ -39,6 +39,7 @@ type OverviewSummaryBlockProps = {
   trend?: WeeklyCloseRateTrendPoint[];
   trendWindow?: TrendWindow;
   issues?: DashboardIssue[];
+  severitySummary?: Record<string, MetricSummary>;
   commonIssues?: CommonIssueGroup[];
   mode?: 'overall' | 'common';
   tooltip?: string;
@@ -881,6 +882,7 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   trend,
   trendWindow,
   issues = [],
+  severitySummary,
   commonIssues = [],
   mode = 'overall',
   tooltip,
@@ -890,8 +892,12 @@ const OverviewSummaryBlock: React.FC<OverviewSummaryBlockProps> = ({
   onPriorityBucketClick,
 }) => {
   const priorityProgress = React.useMemo(
-    () => buildPriorityProgress(issues),
-    [issues]
+    () =>
+      buildPriorityProgress(issues).map((item) => ({
+        ...item,
+        ...(severitySummary?.[item.key] ?? {}),
+      })),
+    [issues, severitySummary]
   );
   const visiblePriorityProgress = priorityProgress;
   const shouldShowCommonList = mode === 'common' && commonIssues.length > 0;

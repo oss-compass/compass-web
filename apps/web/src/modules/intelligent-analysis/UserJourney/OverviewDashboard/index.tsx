@@ -1,3 +1,4 @@
+import { toRepoProgressRow } from './cardRows';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
@@ -40,16 +41,9 @@ import type {
   TrendWindow,
 } from './types';
 import {
-  buildMetricSummaryFromPainRows,
   compareTeamNames,
-  getAverage,
-  getRepoSortValue,
-  getTeamSortValue,
-  mergeMetricSummaries,
   normalizeHardwareEnv,
   normalizeSeverity,
-  isKeyIssue,
-  toDashboardIssue,
 } from './utils';
 import {
   buildTeamScannedRepoCountTrend,
@@ -161,80 +155,87 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     if (!captureMode) return;
     setIncludeCommonIssues(captureIncludeCommonIssues);
   }, [captureIncludeCommonIssues, captureMode]);
-  const { data: cardsResp, isLoading } = useQuery({
-    queryKey: [
-      'overview-cards-page',
-      'slim-pains-v1',
+  const [cardsPage, setCardsPage] = useState(1);
+  const [severityFilters, setSeverityFilters] = useState<string[]>([]);
+  const [progressSort, setProgressSort] = useState<{
+    key: string;
+    order: 'asc' | 'desc';
+  }>({ key: 'none', order: 'desc' });
+  const handleProgressSortChange = React.useCallback(
+    (key: string, order: 'asc' | 'desc') => {
+      setProgressSort((previous) =>
+        previous.key === key && previous.order === order
+          ? previous
+          : { key, order }
+      );
+    },
+    []
+  );
+  const cardsParams = useMemo(
+    () => ({
+      viewType: progressView,
+      org,
+      tab: currentTab,
+      includeCommonIssues: true,
+      commonOnly:
+        issueSourceMode === 'common'
+          ? true
+          : issueSourceMode === 'non-common' || !includeCommonIssues
+          ? false
+          : undefined,
+      team: teamFilter || undefined,
+      repo: repoFilter || undefined,
+      hardwareEnv: hardwareEnvFilter || undefined,
+      operatingSystem: operatingSystemFilter || undefined,
+      summaryOnly: true,
+      hideBeat: captureMode,
+      severity: severityFilters,
+      sortBy:
+        progressSort.key !== 'none'
+          ? progressSort.key
+          : progressView === 'team'
+          ? teamSortKey
+          : repoSortKey,
+      sortOrder:
+        progressSort.key !== 'none'
+          ? progressSort.order
+          : (progressView === 'team' ? teamSortAsc : repoSortAsc)
+          ? ('asc' as const)
+          : ('desc' as const),
+      size: 20,
+    }),
+    [
+      progressView,
       org,
       currentTab,
-      repoFilter,
-      teamFilter,
-      hardwareEnvFilter,
-      operatingSystemFilter,
       issueSourceMode,
       includeCommonIssues,
-    ],
-    queryFn: () =>
-      fetchOverviewCards({
-        viewType: 'repo',
-        org,
-        tab: currentTab,
-        includeCommonIssues: true,
-        commonOnly:
-          issueSourceMode === 'common'
-            ? true
-            : issueSourceMode === 'non-common'
-            ? false
-            : includeCommonIssues
-            ? undefined
-            : false,
-        team: teamFilter || undefined,
-        repo: repoFilter || undefined,
-        hardwareEnv: hardwareEnvFilter || undefined,
-        operatingSystem: operatingSystemFilter || undefined,
-        slimPains: true,
-        page: 1,
-        size: 200,
-      }),
-    enabled: onboardingEnabled,
-  });
-
-  const { data: cardsOverallResp } = useQuery({
-    queryKey: [
-      'overview-cards-page',
-      'slim-pains-v1',
-      org,
-      'overall',
-      repoFilter,
       teamFilter,
+      repoFilter,
       hardwareEnvFilter,
       operatingSystemFilter,
-      issueSourceMode,
-      includeCommonIssues,
-    ],
-    queryFn: () =>
-      fetchOverviewCards({
-        viewType: 'repo',
-        org,
-        tab: 'overall',
-        includeCommonIssues: true,
-        commonOnly:
-          issueSourceMode === 'common'
-            ? true
-            : issueSourceMode === 'non-common'
-            ? false
-            : includeCommonIssues
-            ? undefined
-            : false,
-        team: teamFilter || undefined,
-        repo: repoFilter || undefined,
-        hardwareEnv: hardwareEnvFilter || undefined,
-        operatingSystem: operatingSystemFilter || undefined,
-        slimPains: true,
-        page: 1,
-        size: 200,
-      }),
+      captureMode,
+      severityFilters,
+      progressSort,
+      teamSortKey,
+      repoSortKey,
+      teamSortAsc,
+      repoSortAsc,
+    ]
+  );
+  useEffect(() => {
+    setCardsPage(1);
+  }, [cardsParams]);
+  const {
+    data: cardsResp,
+    isFetching: isLoading,
+    error: cardsError,
+  } = useQuery({
+    queryKey: ['overview-card-summaries-v2', cardsParams, cardsPage],
+    queryFn: ({ signal }) =>
+      fetchOverviewCards({ ...cardsParams, page: cardsPage }, signal),
     enabled: onboardingEnabled,
+    keepPreviousData: true,
   });
 
   const commonOnly = useMemo(() => {
@@ -370,119 +371,65 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     enabled: onboardingEnabled,
   });
 
-  const repoRows = useMemo<RepoProgressRow[]>(() => {
-    return (cardsResp?.items ?? []).map((card) => {
-      const issues = toDashboardIssue(card);
-      const metrics = buildMetricSummaryFromPainRows(issues);
-      return {
-        id: card.id,
-        name: card.name,
-        team: card.team || card.sig,
-        repoCategory: card.repoCategory,
-        latestReportMetadata: card.latestReportMetadata
-          ? {
-              ...card.latestReportMetadata,
-              hardwareEnv: normalizeHardwareEnv(
-                card.latestReportMetadata.hardwareEnv
-              ),
-            }
-          : null,
-        hardwareEnv: normalizeHardwareEnv(
-          card.hardwareEnv || issues[0]?.chipModel || ''
+  const trendRepos = useMemo<RepoProgressRow[]>(
+    () =>
+      (scoreInsightsResp?.repos ?? [])
+        .filter(
+          (repo) =>
+            (!teamFilter || repo.team === teamFilter) &&
+            (!repoFilter || repo.id === repoFilter) &&
+            (!hardwareEnvFilter ||
+              normalizeHardwareEnv(repo.hardwareEnv) ===
+                normalizeHardwareEnv(hardwareEnvFilter)) &&
+            (!operatingSystemFilter ||
+              repo.operatingSystem === operatingSystemFilter)
+        )
+        .map((repo) =>
+          toRepoProgressRow({
+            ...repo,
+            sig: repo.team,
+            painPoints: [],
+            scoreHistory: repo.scoreHistory,
+            totalPainPoints: 0,
+            pendingPainPoints: 0,
+            inProgressPainPoints: 0,
+            closedPainPoints: 0,
+            naPainPoints: 0,
+            closeRate: 0,
+          })
         ),
-        operatingSystem: String(card.operatingSystem || 'debian-13').trim(),
-        score: card.latestScore ?? issues[0]?.score ?? null,
-        successRate: card.latestSuccessRate ?? issues[0]?.successRate ?? null,
-        executionTime: card.latestExecutionTime ?? null,
-        latestReportId: card.latestReportId,
-        detailReportUrl: card.detailReportUrl,
-        scoreHistory: card.scoreHistory ?? [],
-        overall: metrics,
-        key: metrics,
-        issues,
-        benchmark: card.benchmark
-          ? {
-              repoKey: card.benchmark.repoKey,
-              repoName: card.benchmark.repoName,
-              latestReportId: card.benchmark.latestReportId,
-              detailReportUrl: card.benchmark.detailReportUrl,
-              latestScore: card.benchmark.latestScore ?? null,
-              latestSuccessRate: card.benchmark.latestSuccessRate ?? null,
-              latestExecutionTime: card.benchmark.latestExecutionTime ?? null,
-              hardwareEnv: normalizeHardwareEnv(
-                card.benchmark.hardwareEnv || ''
-              ),
-              scoreBreakdown: (card.benchmark.scoreBreakdown ?? []).map(
-                (item) => ({
-                  key: item.key,
-                  label: item.label,
-                  cannScore: item.cannScore ?? null,
-                  benchmarkScore: item.benchmarkScore ?? null,
-                })
-              ),
-            }
-          : null,
-      };
-    });
-  }, [cardsResp]);
-
-  const summaryIssues = useMemo<DashboardIssue[]>(() => {
-    const items = cardsOverallResp?.items ?? [];
-    if (!items.length) return [];
-    return items.flatMap((card) => toDashboardIssue(card));
-  }, [cardsOverallResp]);
-
-  const keySummaryIssues = useMemo<DashboardIssue[]>(
-    () => summaryIssues.filter((issue) => isKeyIssue(issue)),
-    [summaryIssues]
+    [
+      scoreInsightsResp,
+      teamFilter,
+      repoFilter,
+      hardwareEnvFilter,
+      operatingSystemFilter,
+    ]
   );
-
-  const teamRows = useMemo<TeamProgressRow[]>(() => {
-    const groups = new Map<string, TeamProgressRow>();
-
-    repoRows.forEach((row) => {
-      const teamName = row.team?.trim() || '未分配团队';
-      const existing = groups.get(teamName);
-      if (existing) {
-        existing.repoCount += 1;
-        existing.repos.push(row);
-        existing.issues.push(...row.issues);
-        existing.score =
-          getAverage(existing.repos.map((repo) => repo.score)) ??
-          existing.score;
-        existing.successRate =
-          getAverage(existing.repos.map((repo) => repo.successRate)) ??
-          existing.successRate;
-        existing.executionTime =
-          getAverage(existing.repos.map((repo) => repo.executionTime)) ??
-          existing.executionTime;
-        existing.overall = mergeMetricSummaries(
-          existing.repos.map((repo) => repo.overall)
-        );
-        existing.key = mergeMetricSummaries(
-          existing.repos.map((repo) => repo.key)
-        );
-        return;
-      }
-
-      groups.set(teamName, {
-        id: teamName,
-        name: teamName,
-        repoCount: 1,
-        score: row.score,
-        successRate: row.successRate,
-        executionTime: row.executionTime,
-        overall: row.overall,
-        key: row.key,
-        issues: [...row.issues],
-        repos: [row],
-      });
-    });
-
-    return Array.from(groups.values()).sort((left, right) =>
-      compareTeamNames(left.name, right.name)
-    );
-  }, [repoRows]);
+  const repoRows = useMemo<RepoProgressRow[]>(
+    () =>
+      (cardsResp?.items ?? []).map((card) =>
+        toRepoProgressRow(
+          card,
+          trendRepos.find((repo) => repo.id === card.id)?.scoreHistory
+        )
+      ),
+    [cardsResp, trendRepos]
+  );
+  const summaryIssues: DashboardIssue[] = [];
+  const teamRows = useMemo<TeamProgressRow[]>(
+    () =>
+      (cardsResp?.teamItems ?? []).map((team) => ({
+        ...team,
+        summaryOnly: true,
+        issues: [],
+        repos: [],
+        trendRepos: trendRepos.filter(
+          (repo) => (repo.team || '未分配团队') === team.name
+        ),
+      })),
+    [cardsResp, trendRepos]
+  );
 
   const teamOptions = useMemo(() => {
     const fromApi = (cardsResp?.teamOptions ?? []).filter(Boolean);
@@ -543,39 +490,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       ? cachedRepoOptions.current
       : repoOptions;
 
-  const sortedRepoRows = useMemo(() => {
-    const rows = [...repoRows];
-    rows.sort((left, right) => {
-      const a = getRepoSortValue(left, repoSortKey, currentTab);
-      const b = getRepoSortValue(right, repoSortKey, currentTab);
-      if (typeof a === 'string' && typeof b === 'string') {
-        const result =
-          repoSortKey === 'team'
-            ? compareTeamNames(a, b) || left.name.localeCompare(right.name)
-            : a.localeCompare(b);
-        return repoSortAsc ? result : -result;
-      }
-      if (a === b) return 0;
-      return repoSortAsc ? (a > b ? 1 : -1) : a < b ? 1 : -1;
-    });
-    return rows;
-  }, [currentTab, repoRows, repoSortAsc, repoSortKey]);
-
-  const sortedTeamRows = useMemo(() => {
-    const rows = [...teamRows];
-    rows.sort((left, right) => {
-      const a = getTeamSortValue(left, teamSortKey, currentTab);
-      const b = getTeamSortValue(right, teamSortKey, currentTab);
-      if (typeof a === 'string' && typeof b === 'string') {
-        const result = compareTeamNames(a, b);
-        return teamSortAsc ? result : -result;
-      }
-      if (a === b) return 0;
-      return teamSortAsc ? (a > b ? 1 : -1) : a < b ? 1 : -1;
-    });
-    return rows;
-  }, [currentTab, teamRows, teamSortAsc, teamSortKey]);
-
   const overviewSummary = useMemo(
     () =>
       summaryResp?.overviewSummary ?? {
@@ -622,20 +536,20 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     [closeRateTrendsResp]
   );
   const summaryScoreTrend = useMemo(
-    () => buildTeamScoreTrend(repoRows, 7),
-    [repoRows]
+    () => buildTeamScoreTrend(trendRepos, 7),
+    [trendRepos]
   );
   const summarySuccessRateTrend = useMemo(
-    () => buildTeamSuccessRateTrend(repoRows, 7),
-    [repoRows]
+    () => buildTeamSuccessRateTrend(trendRepos, 7),
+    [trendRepos]
   );
   const score95PlusRepoCountTrend = useMemo(
-    () => buildTeamScore95PlusRepoCountTrend(repoRows, 7),
-    [repoRows]
+    () => buildTeamScore95PlusRepoCountTrend(trendRepos, 7),
+    [trendRepos]
   );
   const repoCountTrend = useMemo(
-    () => buildTeamScannedRepoCountTrend(repoRows, 7),
-    [repoRows]
+    () => buildTeamScannedRepoCountTrend(trendRepos, 7),
+    [trendRepos]
   );
   const keyIssueTrend = useMemo(
     () => closeRateTrendsResp?.key ?? [],
@@ -678,29 +592,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     bucket: IssueBucket | 'total',
     severity?: Severity
   ) => {
-    const baseIssues = card === 'secondary' ? keySummaryIssues : summaryIssues;
-    let issues = baseIssues;
-
-    if (severity) {
-      issues = issues.filter((issue) => issue.severity === severity);
-    }
-
-    if (bucket === 'pending') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
-    } else if (bucket === 'inProgress') {
-      issues = issues.filter(
-        (issue) => issue.normalizedStatus === 'inProgress'
-      );
-    } else if (bucket === 'resolved') {
-      issues = issues.filter(
-        (issue) =>
-          issue.normalizedStatus === 'resolved' ||
-          issue.normalizedStatus === 'na'
-      );
-    } else if (bucket === 'na') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'na');
-    }
-
     const bucketLabel =
       bucket === 'pending'
         ? '待处理'
@@ -722,30 +613,23 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         : '总体问题';
 
     const severityPrefix = severity ? `${severity.split('_')[0]} · ` : '';
-    openIssueModal(`${baseTitle} · ${severityPrefix}${bucketLabel}`, issues);
+    setIssueModal({
+      open: true,
+      title: `${baseTitle} · ${severityPrefix}${bucketLabel}`,
+      issues: [],
+      scope: {
+        tab: card === 'secondary' ? 'key' : 'overall',
+        common_only: commonOnly,
+        bucket,
+        severity: severity ? [severity] : undefined,
+      },
+    });
   };
 
   const openRepoIssues = (
     row: RepoProgressRow,
     bucket: IssueBucket | 'total'
   ) => {
-    let issues = row.issues;
-    if (bucket === 'pending') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
-    } else if (bucket === 'inProgress') {
-      issues = issues.filter(
-        (issue) => issue.normalizedStatus === 'inProgress'
-      );
-    } else if (bucket === 'resolved') {
-      issues = issues.filter(
-        (issue) =>
-          issue.normalizedStatus === 'resolved' ||
-          issue.normalizedStatus === 'na'
-      );
-    } else if (bucket === 'na') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'na');
-    }
-
     const bucketLabel =
       bucket === 'pending'
         ? '待处理'
@@ -757,30 +641,26 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         ? '不需要修复'
         : '总问题数';
 
-    openIssueModal(`${row.name} · ${bucketLabel}`, issues);
+    setIssueModal({
+      open: true,
+      title: `${row.name} · ${bucketLabel}`,
+      issues: [],
+      scope: {
+        tab: currentTab,
+        common_only: commonOnly,
+        hardware_env: hardwareEnvFilter || undefined,
+        operating_system: operatingSystemFilter || undefined,
+        severity: severityFilters,
+        bucket,
+        repo: row.id,
+      },
+    });
   };
 
   const openTeamIssues = (
     row: TeamProgressRow,
     bucket: IssueBucket | 'total'
   ) => {
-    let issues = row.issues;
-    if (bucket === 'pending') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'pending');
-    } else if (bucket === 'inProgress') {
-      issues = issues.filter(
-        (issue) => issue.normalizedStatus === 'inProgress'
-      );
-    } else if (bucket === 'resolved') {
-      issues = issues.filter(
-        (issue) =>
-          issue.normalizedStatus === 'resolved' ||
-          issue.normalizedStatus === 'na'
-      );
-    } else if (bucket === 'na') {
-      issues = issues.filter((issue) => issue.normalizedStatus === 'na');
-    }
-
     const bucketLabel =
       bucket === 'pending'
         ? '待处理'
@@ -792,7 +672,23 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         ? '不需要修复'
         : '总问题数';
 
-    openIssueModal(`${row.name} · ${bucketLabel}`, issues);
+    setIssueModal({
+      open: true,
+      title: `${row.name} · ${bucketLabel}`,
+      issues: [],
+      scope: {
+        tab: currentTab,
+        common_only: commonOnly,
+        hardware_env: hardwareEnvFilter || undefined,
+        operating_system: operatingSystemFilter || undefined,
+        severity: severityFilters,
+        bucket,
+        team: row.name,
+        repo_ids: row.id.startsWith('category:')
+          ? row.repos.map((repo) => repo.id)
+          : undefined,
+      },
+    });
   };
 
   const handleRepoSort = (key: RepoSortKey) => {
@@ -848,6 +744,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
                 overviewSummary={overviewSummary}
                 overviewTrend={overviewTrend}
                 overviewIssues={summaryIssues}
+                severitySummary={summaryResp?.severitySummary}
                 summaryScore={summaryScore}
                 summarySuccessRate={summarySuccessRate}
                 summaryScoreTrend={summaryScoreTrend}
@@ -902,8 +799,21 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
                 operatingSystemOptions={operatingSystemOptions}
                 onOperatingSystemFilterChange={setOperatingSystemFilter}
                 isLoading={isLoading}
-                teamRows={sortedTeamRows}
-                repoRows={sortedRepoRows}
+                teamRows={teamRows}
+                repoRows={repoRows}
+                remoteCards={{
+                  params: cardsParams,
+                  page: cardsPage,
+                  total: cardsResp?.total ?? 0,
+                  error:
+                    cardsError instanceof Error
+                      ? cardsError.message
+                      : undefined,
+                  onPageChange: setCardsPage,
+                  severityFilters,
+                  onSeverityChange: setSeverityFilters,
+                  onProgressSortChange: handleProgressSortChange,
+                }}
                 autoExpandAllTeams={autoExpandAllTeams}
                 repoSortKey={repoSortKey}
                 repoSortAsc={repoSortAsc}

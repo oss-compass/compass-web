@@ -69,6 +69,8 @@ export type ScoreHistoryEntry = {
   reportId: string;
   date: string;
   score: number;
+  sampleCount?: number;
+  latestScore?: number;
 };
 
 export type CapabilityBenchmarkScoreItem = {
@@ -114,6 +116,8 @@ export type OverviewCapabilityBenchmarkSummary = {
 };
 
 export type RepoProgressRow = {
+  summaryOnly?: boolean;
+  closeRateTrend?: import('./closeRateTrend').CloseRateTrendPoint[];
   latestReportMetadata?: LatestReportMetadata | null;
   repoCategory?: string;
   id: string;
@@ -134,6 +138,11 @@ export type RepoProgressRow = {
 };
 
 export type TeamProgressRow = {
+  trendRepos?: RepoProgressRow[];
+  hardwareEnvs?: string[];
+  operatingSystems?: string[];
+  summaryOnly?: boolean;
+  closeRateTrend?: import('./closeRateTrend').CloseRateTrendPoint[];
   id: string;
   name: string;
   repoCount: number;
@@ -161,6 +170,7 @@ export type CommonIssueGroup = {
 };
 
 export type IssueModalState = {
+  scope?: import('../rawData/apiClient').OverviewIssueScope;
   open: boolean;
   title: string;
   issues: DashboardIssue[];

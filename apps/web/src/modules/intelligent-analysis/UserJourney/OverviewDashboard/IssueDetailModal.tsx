@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FilterFilled } from '@ant-design/icons';
 import {
+  Alert,
+  Spin,
   Checkbox,
   Dropdown,
   Modal,
@@ -14,7 +16,10 @@ import { SeverityBadge } from './Badges';
 import { PAIN_STATUS_CFG, SEVERITY_RANK } from './constants';
 import type { DashboardIssue, IssueModalState, Severity } from './types';
 import { formatLocalDateTime } from '../time';
-import { fetchOverviewIssuePage } from '../rawData/apiClient';
+import {
+  fetchOverviewIssuePage,
+  fetchOverviewScopedIssues,
+} from '../rawData/apiClient';
 import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
@@ -214,10 +219,37 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   const [ownerFilter, setOwnerFilter] = useState<string>(OWNER_FILTER_ALL);
   const [page, setPage] = useState(1);
   const issues = state.issues;
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
+  const scopedParams = {
+    scope: state.scope ?? {},
+    filters: {
+      team: teamFilter === TEAM_FILTER_ALL ? [] : [teamFilter],
+      stage: stageFilter === STAGE_FILTER_ALL ? [] : [stageFilter],
+      severity: severityFilter,
+      status: statusFilter,
+      owner: ownerFilter === OWNER_FILTER_ALL ? [] : [ownerFilter],
+    },
+    sort_by: sortKey,
+    sort_order: sortOrder,
+    page,
+    size: PAGE_SIZE,
+  };
+  const scopedPage = useQuery({
+    queryKey: ['overview-scoped-issue-page-v2', scopedParams],
+    queryFn: ({ signal }) => fetchOverviewScopedIssues(scopedParams, signal),
+    enabled: state.open && !!state.scope,
+  });
 
   useEffect(() => {
     if (state.open) setPage(1);
-  }, [state.open, state.issues]);
+    setTeamFilter(TEAM_FILTER_ALL);
+    setStageFilter(STAGE_FILTER_ALL);
+    setSeverityFilter([]);
+    setStatusFilter([]);
+    setOwnerFilter(OWNER_FILTER_ALL);
+    setExportError('');
+  }, [state.open, state.issues, state.scope]);
 
   const resetFilters = () => {
     setTeamFilter(TEAM_FILTER_ALL);
@@ -229,6 +261,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   };
 
   const teamOptions = useMemo(() => {
+    if (state.scope) return scopedPage.data?.options.team ?? [];
     const values = Array.from(
       new Set(
         issues.map((issue) => String(issue.team || '').trim()).filter(Boolean)
@@ -236,9 +269,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     );
     values.sort((left, right) => compareTeamWithOtherLast(left, right, 'asc'));
     return values;
-  }, [issues]);
+  }, [issues, state.scope, scopedPage.data]);
 
   const stageOptions = useMemo(() => {
+    if (state.scope) return scopedPage.data?.options.stage ?? [];
     const values = Array.from(
       new Set(
         issues
@@ -248,9 +282,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     );
     values.sort(localeCompare);
     return values;
-  }, [issues]);
+  }, [issues, state.scope, scopedPage.data]);
 
   const severityOptions = useMemo(() => {
+    if (state.scope) return scopedPage.data?.options.severity ?? [];
     const values = Array.from(
       new Set(
         issues
@@ -268,9 +303,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
       return rightRank - leftRank;
     });
     return values;
-  }, [issues]);
+  }, [issues, state.scope, scopedPage.data]);
 
   const statusOptions = useMemo(() => {
+    if (state.scope) return scopedPage.data?.options.status ?? [];
     const values = Array.from(
       new Set(
         issues.map((issue) => String(issue.status || '').trim()).filter(Boolean)
@@ -278,9 +314,10 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     );
     values.sort((left, right) => Number(left) - Number(right));
     return values;
-  }, [issues]);
+  }, [issues, state.scope, scopedPage.data]);
 
   const ownerOptions = useMemo(() => {
+    if (state.scope) return scopedPage.data?.options.owner ?? [];
     const values = Array.from(
       new Set(
         issues
@@ -290,7 +327,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     );
     values.sort(localeCompare);
     return values;
-  }, [issues]);
+  }, [issues, state.scope, scopedPage.data]);
 
   const displayedIssues = useMemo(() => {
     const filtered = issues.filter((issue) => {
@@ -430,6 +467,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
   ]);
 
   const handleSort = (nextSortKey: IssueSortKey) => {
+    setPage(1);
     if (sortKey === nextSortKey) {
       setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
       return;
@@ -457,14 +495,14 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         { issueIds: orderedIssueIds, page, size: PAGE_SIZE },
         signal
       ),
-    enabled: state.open && orderedIssueIds.length > 0,
+    enabled: state.open && !state.scope && orderedIssueIds.length > 0,
     staleTime: 60 * 1000,
   });
   // 旧后端尚未部署或报告正在更新时，保留看板已有数据，避免弹窗空白。
   const pageDetails = new Map(
     (issuePage?.items ?? []).map((issue) => [issue.id, issue])
   );
-  const visibleIssues = pagedIssues.map((issue) => {
+  const localVisibleIssues = pagedIssues.map((issue) => {
     const detail = pageDetails.get(issue.id);
     return detail
       ? {
@@ -478,6 +516,12 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
       : issue;
   });
 
+  const visibleIssues = state.scope
+    ? scopedPage.data?.items ?? []
+    : localVisibleIssues;
+  const issueTotal = state.scope
+    ? scopedPage.data?.total ?? 0
+    : displayedIssues.length;
   const sortArrow = (key: IssueSortKey) => {
     if (sortKey !== key) return '↕';
     return sortOrder === 'asc' ? '↑' : '↓';
@@ -502,7 +546,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
     </button>
   );
 
-  const modalTitle = `${state.title}（共${displayedIssues.length}条）`;
+  const modalTitle = `${state.title}（共${issueTotal}条）`;
 
   const downloadTextFile = (text: string, filename: string) => {
     const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
@@ -583,22 +627,65 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
           <button
             type="button"
             className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)]"
-            onClick={() =>
-              downloadTextFile(
-                buildIssuesCsv(displayedIssues),
-                `issues_${String(state.title || 'detail').replace(
-                  /[\\/:*?"<>|]+/g,
-                  '_'
-                )}.csv`
-              )
-            }
+            disabled={exporting || (!!state.scope && !scopedPage.data)}
+            onClick={async () => {
+              setExporting(true);
+              setExportError('');
+              try {
+                let exportIssues = displayedIssues;
+                if (state.scope) {
+                  exportIssues = [];
+                  let exportPage = 1;
+                  while (true) {
+                    const response = await fetchOverviewScopedIssues({
+                      ...scopedParams,
+                      page: exportPage,
+                      size: 100,
+                    });
+                    exportIssues.push(...response.items);
+                    if (exportPage * 100 >= response.total) break;
+                    exportPage += 1;
+                  }
+                }
+                downloadTextFile(
+                  buildIssuesCsv(exportIssues),
+                  `issues_${String(state.title || 'detail').replace(
+                    /[\\/:*?"<>|]+/g,
+                    '_'
+                  )}.csv`
+                );
+              } catch (error) {
+                setExportError(
+                  error instanceof Error ? error.message : String(error)
+                );
+              } finally {
+                setExporting(false);
+              }
+            }}
           >
-            导出
+            {exporting ? '导出中...' : '导出'}
           </button>
         </div>
       }
       destroyOnHidden
     >
+      {scopedPage.error && state.scope ? (
+        <Alert
+          type="error"
+          message={
+            scopedPage.error instanceof Error
+              ? scopedPage.error.message
+              : String(scopedPage.error)
+          }
+        />
+      ) : null}
+      {exportError && <Alert type="error" message={exportError} />}
+      {state.scope && scopedPage.isFetching && (
+        <div className="p-3 text-center">
+          <Spin />
+        </div>
+      )}
+
       <div className="max-h-[70vh] overflow-y-auto rounded-xl border border-[var(--overview-slateBorder)]">
         <table className="w-full table-fixed border-collapse text-center text-[12px] text-[var(--overview-slateDark)] md:text-[13px]">
           <thead className="sticky top-0 z-10 bg-[var(--overview-slateSoft)] text-[10px] uppercase tracking-wide text-[var(--overview-slate)] md:text-[11px]">
@@ -898,7 +985,7 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
             </tr>
           </thead>
           <tbody>
-            {displayedIssues.length > 0 ? (
+            {issueTotal > 0 ? (
               visibleIssues.map((issue, index) => {
                 const taskLabel = getIssueTaskLabel(issue);
                 const reportEntries = getReportEntries(issue);
@@ -1065,11 +1152,11 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
         </table>
       </div>
       <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--overview-slate)]">
-        <span>共 {displayedIssues.length} 条</span>
+        <span>共 {issueTotal} 条</span>
         <Pagination
           current={page}
           pageSize={PAGE_SIZE}
-          total={displayedIssues.length}
+          total={issueTotal}
           showSizeChanger={false}
           onChange={setPage}
         />

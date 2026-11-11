@@ -1,3 +1,5 @@
+import { useRepoBenchmarkDetail } from './useRepoBenchmarkDetail';
+import PagedTeamRepos, { type RemoteCards } from './PagedTeamRepos';
 import React, {
   useCallback,
   useEffect,
@@ -14,6 +16,7 @@ import {
 } from './operatorCategories';
 import { useRouter } from 'next/router';
 import {
+  Alert,
   Button,
   Grid,
   Input,
@@ -519,6 +522,7 @@ const ColumnValueFilterHeader: React.FC<ColumnValueFilterHeaderProps> = ({
 };
 
 type RepoProgressSectionProps = {
+  remoteCards?: RemoteCards;
   captureMode?: boolean;
   progressView: ProgressView;
   onProgressViewChange: (view: ProgressView) => void;
@@ -563,6 +567,7 @@ type RepoProgressSectionProps = {
 
 const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   captureMode,
+  remoteCards,
   progressView,
   onProgressViewChange,
   currentTab,
@@ -711,11 +716,23 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     valueType: 'score',
   });
 
-  const [severityFilters, setSeverityFilters] = useState<KnownSeverity[]>(() =>
+  const [localSeverityFilters, setLocalSeverityFilters] = useState<
+    KnownSeverity[]
+  >(() =>
     currentTab === 'key'
       ? ['P0_BLOCKER', 'P1_CRITICAL']
       : ['P0_BLOCKER', 'P1_CRITICAL', 'P2_MAJOR', 'P3_MINOR']
   );
+  const severityFilters = (remoteCards?.severityFilters ??
+    localSeverityFilters) as KnownSeverity[];
+  const setSeverityFilters = (values: KnownSeverity[]) => {
+    if (remoteCards) remoteCards.onSeverityChange(values);
+    else setLocalSeverityFilters(values);
+  };
+  const onProgressSortChange = remoteCards?.onProgressSortChange;
+  useEffect(() => {
+    onProgressSortChange?.(progressSortKey, progressSortOrder);
+  }, [progressSortKey, progressSortOrder, onProgressSortChange]);
   const [exportingCsv, setExportingCsv] = useState(false);
   const [messageApi, messageContextHolder] = message.useMessage();
   const [operatorUser, setOperatorUser] = useState<CompassOperatorUser | null>(
@@ -1600,8 +1617,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       const issues = getFilteredIssues(row.issues);
       map.set(row.id, {
         issues,
-        metrics: buildMetricSummaryFromPainRows(issues),
-        trend: buildCloseRateTrend(issues, 7),
+        metrics: row.summaryOnly
+          ? row.overall
+          : buildMetricSummaryFromPainRows(issues),
+        trend: row.closeRateTrend ?? buildCloseRateTrend(issues, 7),
         scoreTrend: buildScoreTrend(row.scoreHistory, 7),
         successRateTrend: buildSuccessRateTrend(row.scoreHistory, 7),
       });
@@ -1624,10 +1643,15 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       const issues = getFilteredIssues(row.issues);
       map.set(row.id, {
         issues,
-        metrics: buildMetricSummaryFromPainRows(issues),
-        trend: buildCloseRateTrend(issues, 7),
-        scoreTrend: buildTeamScoreTrend(row.repos, 7),
-        successRateTrend: buildTeamSuccessRateTrend(row.repos, 7),
+        metrics: row.summaryOnly
+          ? row.overall
+          : buildMetricSummaryFromPainRows(issues),
+        trend: row.closeRateTrend ?? buildCloseRateTrend(issues, 7),
+        scoreTrend: buildTeamScoreTrend(row.trendRepos ?? row.repos, 7),
+        successRateTrend: buildTeamSuccessRateTrend(
+          row.trendRepos ?? row.repos,
+          7
+        ),
       });
     });
     return map;
@@ -1635,7 +1659,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
 
   const sortedByProgressMetric = useCallback(
     <T extends RepoProgressRow | TeamProgressRow>(rows: T[]) => {
-      if (progressSortKey === 'none') return rows;
+      if (remoteCards || progressSortKey === 'none') return rows;
       const direction = progressSortOrder === 'asc' ? 1 : -1;
       return [...rows].sort((left, right) => {
         if (!('repos' in left) && !('repos' in right)) {
@@ -1666,6 +1690,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       });
     },
     [
+      remoteCards,
       getFilteredIssues,
       progressSortKey,
       progressSortOrder,
@@ -1827,6 +1852,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     );
   };
 
+  const benchmarkDetails = useRepoBenchmarkDetail(
+    benchmarkModal.open,
+    benchmarkModal.repo
+  );
   const renderBenchmarkTag = useCallback((record: RepoProgressRow) => {
     if (!record.benchmark?.repoName) return null;
     return (
@@ -2103,7 +2132,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const derived = repoDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
           const trendPoints =
-            derived?.trend ?? buildCloseRateTrend(record.issues, 7);
+            derived?.trend ??
+            record.closeRateTrend ??
+            buildCloseRateTrend(record.issues, 7);
           const displayRate = metrics.total === 0 ? 100 : metrics.closeRate;
           const sparkValues =
             metrics.total === 0
@@ -2362,7 +2393,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const derived = teamDerived.get(record.id);
           const metrics = derived?.metrics ?? record.overall;
           const trendPoints =
-            derived?.trend ?? buildCloseRateTrend(record.issues, 7);
+            derived?.trend ??
+            record.closeRateTrend ??
+            buildCloseRateTrend(record.issues, 7);
           const displayRate = metrics.total === 0 ? 100 : metrics.closeRate;
           const sparkValues =
             metrics.total === 0
@@ -2423,8 +2456,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
               .values()
           );
 
-          return hardwareEnvs.length ? (
-            hardwareEnvs.join('、')
+          return (record.hardwareEnvs ?? hardwareEnvs).length ? (
+            (record.hardwareEnvs ?? hardwareEnvs).join('、')
           ) : (
             <span className="text-[var(--overview-slateLight)]">-</span>
           );
@@ -2442,7 +2475,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           const systems = Array.from(
             new Set(repos.map((repo) => repo.operatingSystem || 'debian-13'))
           );
-          return systems.length ? systems.join('、') : '-';
+          return (record.operatingSystems ?? systems).join('、') || '-';
         },
       },
       {
@@ -2551,6 +2584,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   );
 
   const sortedRepoRowsBySortKey = useMemo(() => {
+    if (remoteCards) return repoRows;
     const rows = [...repoRows];
     rows.sort((left, right) => {
       const beatCmp = compareBeatLast(left.id, right.id);
@@ -2574,6 +2608,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     });
     return rows;
   }, [
+    remoteCards,
     compareTeamNames,
     getRepoSortValueWithMetrics,
     repoRows,
@@ -2582,6 +2617,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   ]);
 
   const sortedTeamRowsBySortKey = useMemo(() => {
+    if (remoteCards) return teamRows;
     const rows = [...teamRows];
     rows.sort((left, right) => {
       const a = getTeamSortValueWithMetrics(left, teamSortKey);
@@ -2599,6 +2635,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
     });
     return rows;
   }, [
+    remoteCards,
     compareTeamNames,
     getTeamSortValueWithMetrics,
     teamRows,
@@ -2627,8 +2664,10 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
   const displayedTeamRowsForTable = useMemo(
     () =>
       hideBeatRepos
-        ? displayedTeamRows.filter((row) =>
-            (row.repos || []).some((repo) => !isBeatRepo(repo.id))
+        ? displayedTeamRows.filter(
+            (row) =>
+              row.summaryOnly ||
+              (row.repos || []).some((repo) => !isBeatRepo(repo.id))
           )
         : displayedTeamRows,
     [displayedTeamRows, hideBeatRepos]
@@ -2915,7 +2954,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                               renderScoreTrendCell(
                                 repo.name,
                                 repo.score,
-                                repoDerived.get(repo.id)?.scoreTrend
+                                repoDerived.get(repo.id)?.scoreTrend ??
+                                  buildScoreTrend(repo.scoreHistory, 7)
                               )
                             )}
                           </td>
@@ -2928,7 +2968,8 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                               renderSuccessRateTrendCell(
                                 repo.name,
                                 repo.successRate,
-                                repoDerived.get(repo.id)?.successRateTrend,
+                                repoDerived.get(repo.id)?.successRateTrend ??
+                                  buildSuccessRateTrend(repo.scoreHistory, 7),
                                 repo.score
                               )
                             )}
@@ -3014,6 +3055,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
                               const metrics = derived?.metrics ?? repo.overall;
                               const trendPoints =
                                 derived?.trend ??
+                                repo.closeRateTrend ??
                                 buildCloseRateTrend(repo.issues, 7);
                               const displayRate =
                                 metrics.total === 0 ? 100 : metrics.closeRate;
@@ -3148,9 +3190,19 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         );
       },
       expandedRowRender: (record) =>
-        renderExpandedRepoRows(record.repos, record.name === '算子'),
+        remoteCards ? (
+          <PagedTeamRepos
+            key={`${record.id}:${JSON.stringify(remoteCards.params)}`}
+            params={remoteCards.params}
+            team={record.name}
+            renderRows={(rows) => renderExpandedRepoRows(rows, false)}
+          />
+        ) : (
+          renderExpandedRepoRows(record.repos, record.name === '算子')
+        ),
     }),
     [
+      remoteCards,
       currentTab,
       expandedRowKeys,
       teamColumnWidths,
@@ -3370,6 +3422,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
           </div>
         </div>
 
+        {remoteCards?.error && (
+          <Alert type="error" message={remoteCards.error} />
+        )}
         {progressView === 'team' ? (
           <Table<TeamProgressRow>
             className="overview-ant-table"
@@ -3377,7 +3432,18 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             dataSource={displayedTeamRowsForTable}
             columns={visibleTeamColumns}
             rowKey="id"
-            pagination={false}
+            pagination={
+              remoteCards
+                ? {
+                    current: remoteCards.page,
+                    pageSize: remoteCards.params.size ?? 20,
+                    total: remoteCards.total,
+                    showSizeChanger: false,
+                    hideOnSinglePage: true,
+                    onChange: remoteCards.onPageChange,
+                  }
+                : false
+            }
             scroll={{ x: visibleTeamScrollX }}
             tableLayout="fixed"
             locale={{ emptyText }}
@@ -3390,7 +3456,18 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             dataSource={displayedRepoRowsForTable}
             columns={visibleRepoColumns}
             rowKey="id"
-            pagination={false}
+            pagination={
+              remoteCards
+                ? {
+                    current: remoteCards.page,
+                    pageSize: remoteCards.params.size ?? 20,
+                    total: remoteCards.total,
+                    showSizeChanger: false,
+                    hideOnSinglePage: true,
+                    onChange: remoteCards.onPageChange,
+                  }
+                : false
+            }
             scroll={{ x: visibleRepoScrollX }}
             tableLayout="fixed"
             locale={{ emptyText }}
@@ -3427,7 +3504,9 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
       />
       <CapabilityBenchmarkModal
         open={benchmarkModal.open}
-        repo={benchmarkModal.repo}
+        repo={benchmarkDetails.repo}
+        loading={benchmarkDetails.loading}
+        error={benchmarkDetails.error}
         onClose={() => setBenchmarkModal({ open: false, repo: null })}
       />
       <RepoRerunModal

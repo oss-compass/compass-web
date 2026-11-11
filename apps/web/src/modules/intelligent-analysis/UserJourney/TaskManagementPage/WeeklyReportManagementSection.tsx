@@ -1,15 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Button,
-  Input,
-  Popconfirm,
-  Select,
-  Switch,
-  Table,
-  Tag,
-  message,
-} from 'antd';
+import { Button, Popconfirm, Select, Switch, Table, Tag, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {
   fetchFormalWeeklyReportRecords,
@@ -35,6 +26,9 @@ const formatDateTime = (value: unknown) => {
   });
 };
 
+const recipientSelectClassName =
+  'w-full [&_.ant-select-selection-item]:!rounded-full [&_.ant-select-selection-item]:!border-0 [&_.ant-select-selection-item]:!bg-blue-50 [&_.ant-select-selection-item]:!text-blue-700 [&_.ant-select-selector]:!min-h-[96px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!py-2 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)]';
+
 const normalizeRecipients = (recipients: string[]) =>
   Array.from(new Set(recipients.map((item) => item.trim()).filter(Boolean)));
 
@@ -44,6 +38,9 @@ const WeeklyReportManagementSection: React.FC<{
   const [messageApi, contextHolder] = message.useMessage();
   const [savingPreview, setSavingPreview] = useState(false);
   const [savingFormalAuto, setSavingFormalAuto] = useState(false);
+  const [savingFormalRecipients, setSavingFormalRecipients] = useState(false);
+  const [formalRecipients, setFormalRecipients] = useState<string[]>([]);
+  const [formalCcRecipients, setFormalCcRecipients] = useState<string[]>([]);
   const [sendingFormal, setSendingFormal] = useState(false);
   const [previewRecipients, setPreviewRecipients] = useState<string[]>([]);
   const [recordPage, setRecordPage] = useState(1);
@@ -71,7 +68,19 @@ const WeeklyReportManagementSection: React.FC<{
   });
 
   useEffect(() => {
-    if (previewConfig) setPreviewRecipients(previewConfig.preview_recipients);
+    if (previewConfig) {
+      setPreviewRecipients(previewConfig.preview_recipients);
+      setFormalRecipients(
+        previewConfig.formal_recipients ??
+          previewConfig.effective_formal_recipients ??
+          []
+      );
+      setFormalCcRecipients(
+        previewConfig.formal_cc_recipients ??
+          previewConfig.effective_formal_cc_recipients ??
+          []
+      );
+    }
   }, [previewConfig]);
 
   const savePreviewConfig = useCallback(
@@ -98,6 +107,45 @@ const WeeklyReportManagementSection: React.FC<{
     },
     [messageApi, previewRecipients, refetchPreviewConfig, reportType]
   );
+
+  const saveFormalRecipients = useCallback(async () => {
+    const to = normalizeRecipients(formalRecipients);
+    const cc = normalizeRecipients(formalCcRecipients);
+    if (!to.length) {
+      messageApi.error('正式周报收件人不能为空');
+      return;
+    }
+    if (
+      [...to, ...cc].some(
+        (email) => !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(email)
+      )
+    ) {
+      messageApi.error('请输入正确的邮箱地址');
+      return;
+    }
+    setSavingFormalRecipients(true);
+    try {
+      const result = await updateWeeklyReportPreviewConfig(
+        { formal_recipients: to, formal_cc_recipients: cc },
+        undefined,
+        reportType
+      );
+      messageApi.success(result.message);
+      await refetchPreviewConfig();
+    } catch (error) {
+      messageApi.error(
+        error instanceof Error ? error.message : '保存正式周报收件配置失败'
+      );
+    } finally {
+      setSavingFormalRecipients(false);
+    }
+  }, [
+    formalRecipients,
+    formalCcRecipients,
+    messageApi,
+    refetchPreviewConfig,
+    reportType,
+  ]);
 
   const sendFormalReport = useCallback(async () => {
     setSendingFormal(true);
@@ -176,6 +224,12 @@ const WeeklyReportManagementSection: React.FC<{
         render: (value: string[]) => (value || []).join('、') || '--',
       },
       {
+        title: '正式抄送人',
+        dataIndex: 'cc_recipients',
+        key: 'cc_recipients',
+        render: (value: string[]) => (value || []).join('、') || '--',
+      },
+      {
         title: '结果信息',
         dataIndex: 'message',
         key: 'message',
@@ -216,9 +270,7 @@ const WeeklyReportManagementSection: React.FC<{
           <div className="min-w-0 flex-1">
             <div className="font-semibold text-slate-800">每周二预览周报</div>
             <div className="mt-1 text-sm text-slate-500">
-              预览周报每周二 15:00
-              自动发送，仅使用下方配置的收件人；正式周报仍使用现有脚本的正式
-              To/CC 收件人。
+              预览周报每周二 15:00 自动发送，使用下方配置的预览收件人。
             </div>
             <div className="mt-2 text-xs text-slate-500">
               下次触发：{nextPreviewText}
@@ -246,7 +298,7 @@ const WeeklyReportManagementSection: React.FC<{
           <Select
             mode="tags"
             value={previewRecipients}
-            className="w-full [&_.ant-select-selection-item]:!rounded-full [&_.ant-select-selection-item]:!border-0 [&_.ant-select-selection-item]:!bg-blue-50 [&_.ant-select-selection-item]:!text-blue-700 [&_.ant-select-selector]:!min-h-[96px] [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-white [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!py-2 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
+            className={recipientSelectClassName}
             placeholder="输入邮箱后按回车添加，可粘贴多个邮箱"
             tokenSeparators={[',', ';', '，', '；']}
             disabled={previewConfigLoading || savingPreview}
@@ -274,7 +326,7 @@ const WeeklyReportManagementSection: React.FC<{
             <div className="font-semibold text-slate-800">每周二正式周报</div>
             <div className="mt-1 text-sm text-slate-500">
               开启后，正式周报将在预览周报发送两小时后的每周二 17:00
-              自动发送。正式收件人继续使用系统现有固定 To/CC 配置。
+              自动发送。手动和定时发送均使用已保存的正式收件配置。
             </div>
             <div className="mt-2 text-xs text-slate-500">
               下次触发：{nextFormalText}
@@ -290,13 +342,66 @@ const WeeklyReportManagementSection: React.FC<{
             />
           </div>
         </div>
+        <div className="mt-4 flex flex-col gap-3">
+          {previewConfig?.formal_recipients == null && (
+            <div className="text-sm text-slate-500">
+              已回填系统当前正式名单，保存后将使用下方配置。
+            </div>
+          )}
+          <label
+            htmlFor="formal-weekly-recipients"
+            className="text-sm font-medium text-slate-700"
+          >
+            正式周报收件人
+          </label>
+          <Select
+            id="formal-weekly-recipients"
+            mode="tags"
+            value={formalRecipients}
+            className={recipientSelectClassName}
+            placeholder="输入邮箱后按回车添加，可粘贴多个邮箱"
+            tokenSeparators={[',', ';', '，', '；']}
+            disabled={
+              previewConfigLoading || !previewConfig || savingFormalRecipients
+            }
+            onChange={setFormalRecipients}
+          />
+          <label
+            htmlFor="formal-weekly-cc"
+            className="text-sm font-medium text-slate-700"
+          >
+            正式周报抄送人（可留空）
+          </label>
+          <Select
+            id="formal-weekly-cc"
+            mode="tags"
+            value={formalCcRecipients}
+            className={recipientSelectClassName}
+            placeholder="输入抄送邮箱后按回车添加"
+            tokenSeparators={[',', ';', '，', '；']}
+            disabled={
+              previewConfigLoading || !previewConfig || savingFormalRecipients
+            }
+            onChange={setFormalCcRecipients}
+          />
+          <div className="flex justify-end">
+            <Button
+              className="rounded-full"
+              loading={savingFormalRecipients}
+              disabled={previewConfigLoading || !previewConfig}
+              onClick={() => void saveFormalRecipients()}
+            >
+              保存正式收件配置
+            </Button>
+          </div>
+        </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-100 pt-4">
           <span className="text-sm text-slate-500">
             如需提前或补发，仍可手动立即发送并记录结果。
           </span>
           <Popconfirm
             title="确认发送正式周报？"
-            description="将立即发送周报至各仓库负责人和抄送人。"
+            description="将按照已保存的正式收件配置立即发送周报。"
             okText="确认发送"
             cancelText="取消"
             onConfirm={() => sendFormalReport()}

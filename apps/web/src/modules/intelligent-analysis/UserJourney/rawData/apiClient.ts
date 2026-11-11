@@ -368,6 +368,10 @@ export type WeeklyReportPreviewConfig = {
   preview_enabled: boolean;
   preview_recipients: string[];
   formal_auto_enabled: boolean;
+  formal_recipients: string[] | null;
+  formal_cc_recipients: string[] | null;
+  effective_formal_recipients?: string[];
+  effective_formal_cc_recipients?: string[];
   timezone: string;
   updated_by?: string;
   updated_at?: string | null;
@@ -879,6 +883,8 @@ export const updateWeeklyReportPreviewConfig = async (
     preview_enabled?: boolean;
     preview_recipients?: string[];
     formal_auto_enabled?: boolean;
+    formal_recipients?: string[];
+    formal_cc_recipients?: string[];
   },
   token = getCompassOperatorToken(),
   reportType: 'community' | 'issue' = 'community'
@@ -1135,6 +1141,10 @@ export type LatestReportMetadata = {
 };
 
 export type OverviewCardItem = {
+  summaryOnly?: boolean;
+  closeRateTrend?: import('../OverviewDashboard/closeRateTrend').CloseRateTrendPoint[];
+  overall?: OverviewMetricSummary;
+  key?: OverviewMetricSummary;
   latestReportMetadata?: LatestReportMetadata | null;
   repoCategory?: string;
   id: string;
@@ -1150,14 +1160,20 @@ export type OverviewCardItem = {
   latestScore?: number | null;
   latestSuccessRate?: number | null;
   latestExecutionTime?: number | null;
-  scoreHistory: Array<{ reportId: string; date: string; score: number }>;
+  scoreHistory?: Array<{
+    reportId: string;
+    date: string;
+    score: number;
+    sampleCount?: number;
+    latestScore?: number;
+  }>;
   totalPainPoints: number;
   pendingPainPoints: number;
   inProgressPainPoints: number;
   closedPainPoints: number;
   naPainPoints: number;
   closeRate: number;
-  painPoints: OverviewPainPointRow[];
+  painPoints?: OverviewPainPointRow[];
   benchmark?: {
     repoKey: string;
     repoName: string;
@@ -1212,6 +1228,7 @@ export type OverviewCommonIssueGroup = {
 
 export type OverviewSummary = {
   overviewSummary: OverviewMetricSummary;
+  severitySummary?: Record<string, OverviewMetricSummary>;
   keyIssueSummary: OverviewMetricSummary;
   blockingSummary?: OverviewMetricSummary;
   summaryScore: number | null;
@@ -1228,12 +1245,20 @@ export type OverviewSummary = {
 };
 
 export type OverviewScoreInsightRepo = {
+  hardwareEnv?: string;
+  operatingSystem?: string;
   id: string;
   name: string;
   team: string;
   latestReportId: string;
   latestScore: number;
-  scoreHistory: Array<{ reportId: string; date: string; score: number }>;
+  scoreHistory: Array<{
+    reportId: string;
+    date: string;
+    score: number;
+    sampleCount?: number;
+    latestScore?: number;
+  }>;
   stageScores: Array<{
     key: string;
     label: string;
@@ -1345,7 +1370,22 @@ export type OverviewCapabilityBenchmarkDetails = Pick<
   'pairCount' | 'detailRows'
 >;
 
+export type OverviewTeamCardItem = {
+  hardwareEnvs?: string[];
+  operatingSystems?: string[];
+  id: string;
+  name: string;
+  repoCount: number;
+  score: number | null;
+  successRate: number | null;
+  executionTime: number | null;
+  overall: OverviewMetricSummary;
+  key: OverviewMetricSummary;
+  closeRateTrend: import('../OverviewDashboard/closeRateTrend').CloseRateTrendPoint[];
+};
+
 export type OverviewCardsResponse = {
+  teamItems?: OverviewTeamCardItem[];
   total: number;
   page: number;
   size: number;
@@ -1490,22 +1530,30 @@ export const fetchOverviewCapabilityBenchmarkDetails =
       '/overview/capability-benchmark-details'
     );
 
-export const fetchOverviewCards = async (params: {
-  viewType: 'repo' | 'team' | 'sig';
-  tab?: 'overall' | 'key' | 'blocking';
-  includeCommonIssues?: boolean;
-  commonOnly?: boolean | null;
-  team?: string;
-  repo?: string;
-  hardwareEnv?: string;
-  operatingSystem?: string;
-  slimPains?: boolean;
-  sig?: string;
-  keyword?: string;
-  page?: number;
-  size?: number;
-  org?: string;
-}): Promise<OverviewCardsResponse> => {
+export const fetchOverviewCards = async (
+  params: {
+    viewType: 'repo' | 'team' | 'sig';
+    tab?: 'overall' | 'key' | 'blocking';
+    includeCommonIssues?: boolean;
+    commonOnly?: boolean | null;
+    team?: string;
+    repo?: string;
+    hardwareEnv?: string;
+    operatingSystem?: string;
+    slimPains?: boolean;
+    summaryOnly?: boolean;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    severity?: string[];
+    hideBeat?: boolean;
+    sig?: string;
+    keyword?: string;
+    page?: number;
+    size?: number;
+    org?: string;
+  },
+  signal?: AbortSignal
+): Promise<OverviewCardsResponse> => {
   const search = new URLSearchParams();
   search.set('view_type', params.viewType);
   if (params.org) search.set('org', params.org);
@@ -1519,13 +1567,19 @@ export const fetchOverviewCards = async (params: {
   if (params.hardwareEnv) search.set('hardware_env', params.hardwareEnv);
   if (params.operatingSystem)
     search.set('operating_system', params.operatingSystem);
+  if (params.summaryOnly) search.set('summary_only', 'true');
+  if (params.sortBy) search.set('sort_by', params.sortBy);
+  if (params.sortOrder) search.set('sort_order', params.sortOrder);
+  params.severity?.forEach((value) => search.append('severity', value));
+  if (params.hideBeat) search.set('hide_beat', 'true');
   if (params.slimPains) search.set('slim_pains', 'true');
   if (params.sig) search.set('sig', params.sig);
   if (params.keyword) search.set('keyword', params.keyword);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiFetch<OverviewCardsResponse>(
-    `/overview/cards?${search.toString()}`
+    `/overview/cards?${search.toString()}`,
+    { signal }
   );
 };
 
@@ -1547,6 +1601,43 @@ export const fetchOverviewIssuePage = async (
       page: params.page,
       size: params.size,
     }),
+    signal,
+  });
+
+export type OverviewIssueScope = {
+  tab?: 'overall' | 'key' | 'blocking';
+  team?: string;
+  repo?: string;
+  repo_ids?: string[];
+  hardware_env?: string;
+  operating_system?: string;
+  common_only?: boolean | null;
+  include_common_issues?: boolean;
+  severity?: string[];
+  bucket?: 'total' | OverviewIssueBucket;
+};
+
+export const fetchOverviewScopedIssues = (
+  params: {
+    scope: OverviewIssueScope;
+    filters: Record<string, string[]>;
+    sort_by: string;
+    sort_order: 'asc' | 'desc';
+    page: number;
+    size: number;
+  },
+  signal?: AbortSignal
+): Promise<{
+  items: OverviewCommonIssueItem[];
+  total: number;
+  page: number;
+  size: number;
+  options: Record<string, string[]>;
+}> =>
+  compassApiFetch('/overview/issues/query', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
     signal,
   });
 
