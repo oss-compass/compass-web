@@ -2,7 +2,8 @@ import { toRepoProgressRow } from './cardRows';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import { ConfigProvider } from 'antd';
+import dynamic from 'next/dynamic';
+import { Alert, ConfigProvider } from 'antd';
 import { OVERVIEW_ANT_THEME } from './theme';
 import {
   fetchOverviewCards,
@@ -11,20 +12,12 @@ import {
   fetchOverviewCloseRateTrends,
   fetchOverviewCommonIssues,
   fetchOverviewScoreInsights,
-  fetchOverviewSummary,
 } from '../rawData/apiClient';
-import {
-  CapabilityBenchmarkDetails,
-  CapabilityBenchmarkOverview,
-} from './CapabilityBenchmark';
-import CommonIssuesSection from './CommonIssuesSection';
-import ExperienceScoreRuleQASection from './ExperienceScoreRuleQASection';
+import { CapabilityBenchmarkOverview } from './CapabilityBenchmark';
 import { SEVERITY_RANK, STATUS_RANK } from './constants';
 import DashboardStyles from './DashboardStyles';
-import IssueDetailModal from './IssueDetailModal';
 import OverviewSummarySection from './OverviewSummarySection';
 import CommunityScoreInsights from './CommunityScoreInsights';
-import RepoProgressSection from './RepoProgressSection';
 import type {
   CommonIssueGroup,
   DashboardIssue,
@@ -52,8 +45,45 @@ import {
   buildTeamSuccessRateTrend,
 } from './scoreTrend';
 import OverviewModuleTabs, { type OverviewModule } from './OverviewModuleTabs';
-import CiOverviewPanel from '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverviewPanel';
-import IssueOverview from '@modules/intelligent-analysis/DeveloperExperience/IssueContribution/components/IssueOverview';
+
+import DeferredReportSection from '../../DeveloperExperience/components/DeferredReportSection';
+import { OverviewSectionPlaceholder } from './OverviewLoadingState';
+import { useOverviewSummaryQuery } from './useOverviewSummaryQuery';
+
+const CiOverviewPanel = dynamic(
+  () =>
+    import(
+      '@modules/intelligent-analysis/DeveloperExperience/CiExperience/components/CiOverviewPanel'
+    ),
+  { loading: () => <OverviewSectionPlaceholder minHeight={560} /> }
+);
+const IssueOverview = dynamic(
+  () =>
+    import(
+      '@modules/intelligent-analysis/DeveloperExperience/IssueContribution/components/IssueOverview'
+    ),
+  { loading: () => <OverviewSectionPlaceholder minHeight={560} /> }
+);
+const RepoProgressSection = dynamic(() => import('./RepoProgressSection'), {
+  loading: () => <OverviewSectionPlaceholder minHeight={640} />,
+});
+const IssueDetailModal = dynamic(() => import('./IssueDetailModal'));
+const CommonIssuesSection = dynamic(() => import('./CommonIssuesSection'), {
+  loading: () => <OverviewSectionPlaceholder />,
+});
+const CapabilityBenchmarkDetails = dynamic(
+  () =>
+    import('./CapabilityBenchmark').then(
+      (module) => module.CapabilityBenchmarkDetails
+    ),
+  { loading: () => <OverviewSectionPlaceholder /> }
+);
+const ExperienceScoreRuleQASection = dynamic(
+  () => import('./ExperienceScoreRuleQASection'),
+  {
+    loading: () => <OverviewSectionPlaceholder />,
+  }
+);
 
 type OverviewDashboardProps = {
   org?: string;
@@ -155,6 +185,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     if (!captureMode) return;
     setIncludeCommonIssues(captureIncludeCommonIssues);
   }, [captureIncludeCommonIssues, captureMode]);
+  const [progressReady, activateProgress] = React.useReducer(() => true, false);
+  const [benchmarkDetailsReady, activateBenchmarkDetails] = React.useReducer(
+    () => true,
+    false
+  );
+  const [commonIssuesReady, activateCommonIssues] = React.useReducer(
+    () => true,
+    false
+  );
   const [cardsPage, setCardsPage] = useState(1);
   const [severityFilters, setSeverityFilters] = useState<string[]>([]);
   const [progressSort, setProgressSort] = useState<{
@@ -234,7 +273,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     queryKey: ['overview-card-summaries-v2', cardsParams, cardsPage],
     queryFn: ({ signal }) =>
       fetchOverviewCards({ ...cardsParams, page: cardsPage }, signal),
-    enabled: onboardingEnabled,
+    enabled: onboardingEnabled && (progressReady || captureMode),
     keepPreviousData: true,
   });
 
@@ -249,21 +288,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
     return `range:${trendWindow.start}:${trendWindow.end}`;
   }, [trendWindow]);
 
-  const { data: summaryResp } = useQuery({
-    queryKey: ['overview-summary', org, issueSourceMode, includeCommonIssues],
-    queryFn: () =>
-      fetchOverviewSummary({
-        org,
-        includeCommonIssues: true,
-        commonOnly:
-          issueSourceMode === 'common'
-            ? true
-            : issueSourceMode === 'non-common'
-            ? false
-            : includeCommonIssues
-            ? undefined
-            : false,
-      }),
+  const { data: summaryResp } = useOverviewSummaryQuery({
+    org,
+    issueSourceMode,
+    includeCommonIssues,
     enabled: onboardingEnabled,
   });
 
@@ -304,13 +332,19 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
       enabled: onboardingEnabled,
     });
 
-  const { data: commonIssuesResp } = useQuery({
+  const {
+    data: commonIssuesResp,
+    isLoading: isCommonIssuesLoading,
+    error: commonIssuesError,
+  } = useQuery({
     queryKey: ['overview-common-issues', org],
     queryFn: () =>
       fetchOverviewCommonIssues({
         org,
       }),
-    enabled: onboardingEnabled,
+    enabled:
+      onboardingEnabled &&
+      (commonIssuesReady || issueSourceMode === 'common' || captureMode),
   });
 
   const {
@@ -368,7 +402,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
         throw error;
       }
     },
-    enabled: onboardingEnabled,
+    enabled: onboardingEnabled && (benchmarkDetailsReady || captureMode),
   });
 
   const trendRepos = useMemo<RepoProgressRow[]>(
@@ -738,6 +772,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
           ) : null}
         </header>
         <div className="detail-panel-body">
+          {activeModule === null && (
+            <OverviewSectionPlaceholder minHeight={560} />
+          )}
           {activeModule === 'community-onboarding' ? (
             <div className="detail-panel-content">
               <OverviewSummarySection
@@ -777,67 +814,109 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
                 }
               />
 
-              <RepoProgressSection
-                captureMode={captureMode}
-                progressView={progressView}
-                onProgressViewChange={setProgressView}
-                currentTab={currentTab}
-                onTabChange={setCurrentTab}
-                hideBeatRepos={captureMode}
-                org={org}
-                commonOnly={commonOnly}
-                repoFilter={repoFilter}
-                repoOptions={displayRepoOptions}
-                onRepoFilterChange={setRepoFilter}
-                teamFilter={teamFilter}
-                teamOptions={teamOptions}
-                onTeamFilterChange={setTeamFilter}
-                hardwareEnvFilter={hardwareEnvFilter}
-                hardwareEnvOptions={hardwareEnvOptions}
-                onHardwareEnvFilterChange={setHardwareEnvFilter}
-                operatingSystemFilter={operatingSystemFilter}
-                operatingSystemOptions={operatingSystemOptions}
-                onOperatingSystemFilterChange={setOperatingSystemFilter}
-                isLoading={isLoading}
-                teamRows={teamRows}
-                repoRows={repoRows}
-                remoteCards={{
-                  params: cardsParams,
-                  page: cardsPage,
-                  total: cardsResp?.total ?? 0,
-                  error:
-                    cardsError instanceof Error
-                      ? cardsError.message
-                      : undefined,
-                  onPageChange: setCardsPage,
-                  severityFilters,
-                  onSeverityChange: setSeverityFilters,
-                  onProgressSortChange: handleProgressSortChange,
-                }}
-                autoExpandAllTeams={autoExpandAllTeams}
-                repoSortKey={repoSortKey}
-                repoSortAsc={repoSortAsc}
-                repoSortArrow={repoSortArrow}
-                teamSortArrow={teamSortArrow}
-                teamSortKey={teamSortKey}
-                teamSortAsc={teamSortAsc}
-                onRepoSort={handleRepoSort}
-                onTeamSort={handleTeamSort}
-                onOpenRepoIssues={openRepoIssues}
-                onOpenTeamIssues={openTeamIssues}
-              />
+              <DeferredReportSection
+                className="flex min-w-0 flex-col [gap:inherit]"
+                anchorId="overview-repo-progress"
+                enabled={!isScoreInsightsLoading}
+                eager={captureMode}
+                onReady={activateProgress}
+                placeholder={<OverviewSectionPlaceholder minHeight={640} />}
+              >
+                <RepoProgressSection
+                  captureMode={captureMode}
+                  progressView={progressView}
+                  onProgressViewChange={setProgressView}
+                  currentTab={currentTab}
+                  onTabChange={setCurrentTab}
+                  hideBeatRepos={captureMode}
+                  org={org}
+                  commonOnly={commonOnly}
+                  repoFilter={repoFilter}
+                  repoOptions={displayRepoOptions}
+                  onRepoFilterChange={setRepoFilter}
+                  teamFilter={teamFilter}
+                  teamOptions={teamOptions}
+                  onTeamFilterChange={setTeamFilter}
+                  hardwareEnvFilter={hardwareEnvFilter}
+                  hardwareEnvOptions={hardwareEnvOptions}
+                  onHardwareEnvFilterChange={setHardwareEnvFilter}
+                  operatingSystemFilter={operatingSystemFilter}
+                  operatingSystemOptions={operatingSystemOptions}
+                  onOperatingSystemFilterChange={setOperatingSystemFilter}
+                  isLoading={isLoading}
+                  teamRows={teamRows}
+                  repoRows={repoRows}
+                  remoteCards={{
+                    params: cardsParams,
+                    page: cardsPage,
+                    total: cardsResp?.total ?? 0,
+                    error:
+                      cardsError instanceof Error
+                        ? cardsError.message
+                        : undefined,
+                    onPageChange: setCardsPage,
+                    severityFilters,
+                    onSeverityChange: setSeverityFilters,
+                    onProgressSortChange: handleProgressSortChange,
+                  }}
+                  autoExpandAllTeams={autoExpandAllTeams}
+                  repoSortKey={repoSortKey}
+                  repoSortAsc={repoSortAsc}
+                  repoSortArrow={repoSortArrow}
+                  teamSortArrow={teamSortArrow}
+                  teamSortKey={teamSortKey}
+                  teamSortAsc={teamSortAsc}
+                  onRepoSort={handleRepoSort}
+                  onTeamSort={handleTeamSort}
+                  onOpenRepoIssues={openRepoIssues}
+                  onOpenTeamIssues={openTeamIssues}
+                />
+              </DeferredReportSection>
 
-              <CapabilityBenchmarkDetails
-                data={capabilityBenchmarkDetailsResp ?? null}
-                isLoading={isBenchmarkDetailsLoading}
-              />
+              <DeferredReportSection
+                className="flex min-w-0 flex-col [gap:inherit]"
+                anchorId="overview-benchmark-details"
+                enabled={!isScoreInsightsLoading}
+                eager={captureMode}
+                onReady={activateBenchmarkDetails}
+                placeholder={<OverviewSectionPlaceholder />}
+              >
+                <CapabilityBenchmarkDetails
+                  data={capabilityBenchmarkDetailsResp ?? null}
+                  isLoading={isBenchmarkDetailsLoading}
+                />
+              </DeferredReportSection>
 
-              <CommonIssuesSection
-                commonIssues={commonIssues}
-                onOpenIssueModal={openIssueModal}
-              />
+              <DeferredReportSection
+                className="flex min-w-0 flex-col [gap:inherit]"
+                anchorId="overview-common-issues"
+                enabled={!isScoreInsightsLoading}
+                eager={captureMode}
+                onReady={activateCommonIssues}
+                placeholder={<OverviewSectionPlaceholder />}
+              >
+                {commonIssuesError ? (
+                  <Alert type="error" message={String(commonIssuesError)} />
+                ) : isCommonIssuesLoading ? (
+                  <OverviewSectionPlaceholder />
+                ) : (
+                  <CommonIssuesSection
+                    commonIssues={commonIssues}
+                    onOpenIssueModal={openIssueModal}
+                  />
+                )}
+              </DeferredReportSection>
 
-              {!captureMode && <ExperienceScoreRuleQASection />}
+              {!captureMode && (
+                <DeferredReportSection
+                  className="flex min-w-0 flex-col [gap:inherit]"
+                  anchorId="overview-score-rules"
+                  enabled={!isScoreInsightsLoading}
+                  placeholder={<OverviewSectionPlaceholder />}
+                >
+                  <ExperienceScoreRuleQASection />
+                </DeferredReportSection>
+              )}
             </div>
           ) : null}
 
@@ -849,12 +928,14 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ org }) => {
             </div>
           ) : null}
 
-          <IssueDetailModal
-            state={issueModal}
-            onClose={() =>
-              setIssueModal({ open: false, title: '', issues: [] })
-            }
-          />
+          {issueModal.open && (
+            <IssueDetailModal
+              state={issueModal}
+              onClose={() =>
+                setIssueModal({ open: false, title: '', issues: [] })
+              }
+            />
+          )}
           <DashboardStyles captureMode={captureMode} />
         </div>
       </div>

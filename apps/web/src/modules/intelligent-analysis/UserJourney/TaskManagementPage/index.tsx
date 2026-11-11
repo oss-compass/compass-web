@@ -1468,8 +1468,9 @@ const TaskManagementPage: React.FC = () => {
                 />
               ) : null}
 
-              {activeTaskTab === 'weekly_report' ? (
-                <WeeklyReportManagementSection />
+              {operatorUser.role === 'admin' &&
+              activeTaskTab === 'weekly_report' ? (
+                <WeeklyReportManagementSection user={operatorUser} />
               ) : (
                 <NodeStatusSection
                   nodes={rerunNodes}

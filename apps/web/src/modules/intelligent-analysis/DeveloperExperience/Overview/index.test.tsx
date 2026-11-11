@@ -7,6 +7,18 @@ import ExperienceOverview from './index';
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
 jest.mock('../CiExperience/queries', () => ({ useCiDatasetsQuery: jest.fn() }));
 jest.mock(
+  '../../UserJourney/OverviewDashboard/useOverviewSummaryQuery',
+  () => ({
+    useDefaultOverviewSummary: jest.fn(),
+  })
+);
+jest.mock(
+  '../IssueContribution/components/IssueOverview/useIssueOverviewSummaryQuery',
+  () => ({
+    useIssueOverviewSummaryQuery: jest.fn(),
+  })
+);
+jest.mock(
   'next/dynamic',
   () => () =>
     function LoadingDashboard() {
@@ -23,7 +35,9 @@ it('starts CI data while the dashboard script is still loading', () => {
   });
   render(<ExperienceOverview />);
   expect(screen.getByText('看板脚本加载中')).toBeInTheDocument();
-  expect(useCiDatasetsQuery).toHaveBeenCalledWith(true);
+  expect(useCiDatasetsQuery).toHaveBeenCalledWith(true, {
+    reuseFreshData: true,
+  });
 });
 
 it.each<[boolean, string, string | undefined]>([
@@ -36,6 +50,8 @@ it.each<[boolean, string, string | undefined]>([
   (isReady, module, org) => {
     (useRouter as jest.Mock).mockReturnValue({ isReady, query: { module } });
     render(<ExperienceOverview org={org} />);
-    expect(useCiDatasetsQuery).toHaveBeenCalledWith(false);
+    expect(useCiDatasetsQuery).toHaveBeenCalledWith(false, {
+      reuseFreshData: true,
+    });
   }
 );

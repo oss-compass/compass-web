@@ -91,6 +91,8 @@ const IssueTaskManagementPage: React.FC = () => {
     }
   };
 
+  const isAdmin = user?.role === 'admin' && accessQuery.data?.isAdmin === true;
+
   const controlClassName =
     'h-8 !rounded-2xl border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-sm shadow-[0_2px_6px_rgba(15,23,42,0.06)]';
 
@@ -149,7 +151,7 @@ const IssueTaskManagementPage: React.FC = () => {
           ) : user && accessQuery.data ? (
             <div className="mb-5">
               <Tabs
-                activeKey={accessQuery.data.isAdmin ? activeTab : 'reruns'}
+                activeKey={isAdmin ? activeTab : 'reruns'}
                 onChange={setActiveTab}
                 destroyInactiveTabPane
                 items={[
@@ -166,7 +168,7 @@ const IssueTaskManagementPage: React.FC = () => {
                       />
                     ),
                   },
-                  ...(accessQuery.data.isAdmin
+                  ...(isAdmin
                     ? [
                         {
                           key: 'weekly-report',
@@ -174,6 +176,7 @@ const IssueTaskManagementPage: React.FC = () => {
                           children: (
                             <WeeklyReportManagementSection
                               key={user.username}
+                              user={user}
                               reportType="issue"
                             />
                           ),

@@ -1,8 +1,13 @@
 import { formatScore } from '../../presentation';
 import React from 'react';
+import dynamic from 'next/dynamic';
+import DeferredReportSection from '../../../components/DeferredReportSection';
+import { OverviewSectionPlaceholder } from '../../../../UserJourney/OverviewDashboard/OverviewLoadingState';
+import { useIssueOverviewSummaryQuery } from './useIssueOverviewSummaryQuery';
+import { useIssueCaptureReady } from './useIssueCaptureReady';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
-import { Empty, Skeleton, Typography } from 'antd';
+import { Alert, Empty, Skeleton, Typography } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { buildIssueRepoManagementHref } from '../../../routes';
 import OperationGuide from '../../../components/OperationGuide';
@@ -12,20 +17,13 @@ import { useIssuePainSummaryQuery } from './useIssuePainSummaryQuery';
 import {
   fetchIssueOverviewFrequentPains,
   fetchIssueOverviewScoreInsights,
-  fetchIssueOverviewSummary,
   fetchIssueOverviewTrends,
 } from '../../data';
-import IssueTrendModal from './IssueTrendModal';
-import IssueRepoProgressSection from './IssueRepoProgressSection';
-import IssueMetricsAppendix from './IssueMetricsAppendix';
 import {
   IssueRepoRankings,
   IssueScoreDistribution,
 } from './IssueScoreInsights';
-import {
-  IssueFrequentPainSection,
-  IssuePainProgressOverview,
-} from './IssuePainInsights';
+
 import type {
   IssueOverviewV2PainSummary,
   IssueOverviewV2Summary,
@@ -35,6 +33,31 @@ import type {
   IssueTrendGranularity,
   IssueTrendModalData,
 } from './IssueTrendModal';
+
+const IssueTrendModal = dynamic(() => import('./IssueTrendModal'));
+const IssueRepoProgressSection = dynamic(
+  () => import('./IssueRepoProgressSection'),
+  {
+    loading: () => <OverviewSectionPlaceholder minHeight={640} />,
+  }
+);
+const IssueMetricsAppendix = dynamic(() => import('./IssueMetricsAppendix'), {
+  loading: () => <OverviewSectionPlaceholder />,
+});
+const IssuePainProgressOverview = dynamic(
+  () =>
+    import('./IssuePainInsights').then(
+      (loaded) => loaded.IssuePainProgressOverview
+    ),
+  { loading: () => <OverviewSectionPlaceholder /> }
+);
+const IssueFrequentPainSection = dynamic(
+  () =>
+    import('./IssuePainInsights').then(
+      (loaded) => loaded.IssueFrequentPainSection
+    ),
+  { loading: () => <OverviewSectionPlaceholder /> }
+);
 
 const { Title } = Typography;
 
@@ -143,6 +166,16 @@ const buildKpis = ({
 /** 按模块独立取数：首屏得分不再等待痛点索引，任一模块慢只影响自身。 */
 const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const router = useRouter();
+  const captureMode = ['1', 'true'].includes(
+    String(router.query.captureMode ?? '')
+  );
+  const expandAllTeams = ['1', 'true'].includes(
+    String(router.query.expandAllTeams ?? '')
+  );
+  const eagerSections = captureMode || expandAllTeams;
+  const capture = useIssueCaptureReady(eagerSections);
+  const [frequentReady, activateFrequent] = React.useReducer(() => true, false);
+  const [rankingsReady, activateRankings] = React.useReducer(() => true, false);
   const [appendixOpen, setAppendixOpen] = React.useState(false);
   const [repoReady, setRepoReady] = React.useState(false);
   const [trendModal, setTrendModal] =
@@ -151,12 +184,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     React.useState<IssueTrendGranularity>('month');
   const repoManagementHref = buildIssueRepoManagementHref({ org });
 
-  const summaryQuery = useQuery({
-    queryKey: ['issue-overview-v2-summary', org],
-    queryFn: ({ signal }) => fetchIssueOverviewSummary(org, signal),
-    staleTime: 0,
-    refetchOnMount: 'always',
-  });
+  const summaryQuery = useIssueOverviewSummaryQuery(org);
   const insightsQuery = useQuery({
     queryKey: ['issue-overview-v2-score-insights', org],
     queryFn: ({ signal }) => fetchIssueOverviewScoreInsights(org, signal),
@@ -167,6 +195,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   const frequentQuery = useQuery({
     queryKey: ['issue-overview-v2-frequent-pains', org],
     queryFn: ({ signal }) => fetchIssueOverviewFrequentPains(org, signal),
+    enabled: frequentReady || eagerSections,
     staleTime: 0,
     refetchOnMount: 'always',
   });
@@ -224,7 +253,7 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         { org, weeks: 104, repos: rankingCommunities },
         signal
       ),
-    enabled: rankingCommunities.length > 0,
+    enabled: rankingCommunities.length > 0 && (rankingsReady || eagerSections),
     staleTime: 0,
     refetchOnMount: 'always',
   });
@@ -248,6 +277,10 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
       };
     });
   }, [latestRepos, rankingTrendQuery.data]);
+
+  const orgSeg =
+    typeof router.query.org === 'string' ? `/${router.query.org}` : '';
+  const reportHref = React.useMemo(() => buildReportHref(orgSeg), [orgSeg]);
 
   const summaryHeading = (
     <div className="overview-summary-title-row">
@@ -295,9 +328,6 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
   }
 
   const painSummary = painSummaryQuery.data;
-  const orgSeg =
-    typeof router.query.org === 'string' ? `/${router.query.org}` : '';
-  const reportHref = buildReportHref(orgSeg);
   const kpis = buildKpis({
     summary,
     painSummary,
@@ -306,25 +336,28 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
     coverageTrend: coverageTrendQuery.data,
   });
 
-  const allReady =
-    !summaryQuery.isLoading &&
-    !insightsQuery.isLoading &&
-    !painSummaryQuery.isLoading &&
-    !frequentQuery.isLoading &&
-    !scoreTrendQuery.isLoading &&
-    painSummary?.periodsReady !== false &&
-    !score90TrendQuery.isLoading &&
-    !coverageTrendQuery.isLoading &&
-    !summaryQuery.isError &&
-    !insightsQuery.isError &&
-    !painSummaryQuery.isError &&
-    !frequentQuery.isError &&
-    repoReady;
+  const allReady = [
+    capture.ready,
+    !summaryQuery.isLoading,
+    !insightsQuery.isLoading,
+    !painSummaryQuery.isLoading,
+    !frequentQuery.isLoading,
+    !scoreTrendQuery.isLoading,
+    painSummary?.periodsReady !== false,
+    !score90TrendQuery.isLoading,
+    !coverageTrendQuery.isLoading,
+    !summaryQuery.isError,
+    !insightsQuery.isError,
+    !painSummaryQuery.isError,
+    !frequentQuery.isError,
+    repoReady,
+  ].every(Boolean);
 
   return (
     <>
       <span hidden data-issue-weekly-ready={allReady} />
       {summaryHeading}
+      {capture.error && <Alert type="error" message={capture.error.message} />}
       <div
         className="overview-bottom-row"
         style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
@@ -392,68 +425,104 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
             reportHref={reportHref}
             overallScore={summary?.score ?? null}
           />
-          <IssueRepoRankings repos={reposWithTrends} reportHref={reportHref} />
+          <DeferredReportSection
+            className="flex min-w-0 flex-col [gap:inherit]"
+            anchorId="issue-overview-rankings"
+            eager={eagerSections}
+            onReady={activateRankings}
+            placeholder={<OverviewSectionPlaceholder minHeight={420} />}
+          >
+            <IssueRepoRankings
+              repos={reposWithTrends}
+              reportHref={reportHref}
+            />
+          </DeferredReportSection>
         </>
       )}
 
-      {painSummaryQuery.isLoading ? (
-        <div className="section-card">
-          <Skeleton active title paragraph={{ rows: 6 }} />
-        </div>
-      ) : painSummary ? (
-        <IssuePainProgressOverview
-          summary={painSummary}
-          reportHref={reportHref}
-          org={org}
-        />
-      ) : (
-        <div className="section-card">
-          <Empty description="痛点数据加载失败，请稍后重试" />
-        </div>
-      )}
+      <DeferredReportSection
+        className="flex min-w-0 flex-col [gap:inherit]"
+        anchorId="issue-overview-pain-progress"
+        enabled={!insightsQuery.isLoading}
+        eager={eagerSections}
+        placeholder={<OverviewSectionPlaceholder />}
+      >
+        {painSummaryQuery.isLoading ? (
+          <div className="section-card">
+            <Skeleton active title paragraph={{ rows: 6 }} />
+          </div>
+        ) : painSummary ? (
+          <IssuePainProgressOverview
+            summary={painSummary}
+            reportHref={reportHref}
+            org={org}
+          />
+        ) : (
+          <div className="section-card">
+            <Empty description="痛点数据加载失败，请稍后重试" />
+          </div>
+        )}
+      </DeferredReportSection>
 
-      <Title level={4} className="oj-section-title">
-        TOP 问题
-      </Title>
-      {frequentQuery.isLoading ? (
-        <div className="section-card">
-          <Skeleton active title={false} paragraph={{ rows: 6 }} />
-        </div>
-      ) : (
-        <IssueFrequentPainSection
-          groups={frequentQuery.data?.items ?? []}
+      <DeferredReportSection
+        className="flex min-w-0 flex-col [gap:inherit]"
+        anchorId="issue-overview-frequent-pains"
+        enabled={!insightsQuery.isLoading}
+        eager={eagerSections}
+        onReady={activateFrequent}
+        placeholder={<OverviewSectionPlaceholder />}
+      >
+        <Title level={4} className="oj-section-title">
+          TOP 问题
+        </Title>
+        {frequentQuery.isLoading ? (
+          <div className="section-card">
+            <Skeleton active title={false} paragraph={{ rows: 6 }} />
+          </div>
+        ) : (
+          <IssueFrequentPainSection
+            groups={frequentQuery.data?.items ?? []}
+            stageOptions={painSummary?.stageOptions ?? []}
+            reportHref={reportHref}
+            org={org}
+          />
+        )}
+      </DeferredReportSection>
+
+      <DeferredReportSection
+        className="flex min-w-0 flex-col [gap:inherit]"
+        anchorId="issue-overview-repositories"
+        enabled={!insightsQuery.isLoading}
+        eager={eagerSections}
+        placeholder={<OverviewSectionPlaceholder minHeight={640} />}
+      >
+        <IssueRepoProgressSection
+          expandAllTeams={expandAllTeams}
+          org={org}
           stageOptions={painSummary?.stageOptions ?? []}
           reportHref={reportHref}
-          org={org}
+          repoManagementHref={repoManagementHref}
+          onReadyChange={setRepoReady}
+          onOpenScoreTrend={(repo) =>
+            setTrendModal({
+              title: `${repo.repoShort} · 得分趋势`,
+              subtitle: '该仓各周综合体验指数（时间升序）',
+              values: repo.idxTrend,
+              labels: repo.idxTrendPeriods.map(shortPeriod),
+              periods: repo.idxTrendPeriods,
+            })
+          }
+          onOpenAggregateScoreTrend={(name, values, periods) =>
+            setTrendModal({
+              title: `${name} · 得分趋势`,
+              subtitle: '各仓库同周期综合体验指数平均值（时间升序）',
+              values,
+              labels: periods.map(shortPeriod),
+              periods,
+            })
+          }
         />
-      )}
-
-      <IssueRepoProgressSection
-        expandAllTeams={router.query.expandAllTeams === '1'}
-        org={org}
-        stageOptions={painSummary?.stageOptions ?? []}
-        reportHref={reportHref}
-        repoManagementHref={repoManagementHref}
-        onReadyChange={setRepoReady}
-        onOpenScoreTrend={(repo) =>
-          setTrendModal({
-            title: `${repo.repoShort} · 得分趋势`,
-            subtitle: '该仓各周综合体验指数（时间升序）',
-            values: repo.idxTrend,
-            labels: repo.idxTrendPeriods.map(shortPeriod),
-            periods: repo.idxTrendPeriods,
-          })
-        }
-        onOpenAggregateScoreTrend={(name, values, periods) =>
-          setTrendModal({
-            title: `${name} · 得分趋势`,
-            subtitle: '各仓库同周期综合体验指数平均值（时间升序）',
-            values,
-            labels: periods.map(shortPeriod),
-            periods,
-          })
-        }
-      />
+      </DeferredReportSection>
 
       <Title level={4} className="oj-section-title">
         附录
@@ -489,11 +558,13 @@ const IssueOverview: React.FC<IssueOverviewProps> = ({ org }) => {
         ) : null}
       </div>
 
-      <IssueTrendModal
-        open={!!trendModal}
-        trend={trendModal}
-        onClose={() => setTrendModal(null)}
-      />
+      {trendModal && (
+        <IssueTrendModal
+          open={!!trendModal}
+          trend={trendModal}
+          onClose={() => setTrendModal(null)}
+        />
+      )}
     </>
   );
 };

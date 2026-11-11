@@ -3,10 +3,15 @@ import { useRouter } from 'next/router';
 import { Typography } from 'antd';
 import { useCiDatasetsQuery } from '../queries';
 import CiDataState from './CiDataState';
-import CiEmbeddedReport from './CiEmbeddedReport';
+import dynamic from 'next/dynamic';
+import { OverviewSectionPlaceholder } from '../../../UserJourney/OverviewDashboard/OverviewLoadingState';
 import CiOverview from './CiOverview';
 import CiViewTabs, { type CiView } from './CiViewTabs';
 import useCannEmbedReachability from './useCannEmbedReachability';
+
+const CiEmbeddedReport = dynamic(() => import('./CiEmbeddedReport'), {
+  loading: () => <OverviewSectionPlaceholder minHeight={560} />,
+});
 
 /** 社区工程总览入口：负责内网页签探测及总览/第三方报告切换。 */
 const CiOverviewPanel: React.FC<{ org?: string }> = ({ org }) => {
@@ -43,7 +48,8 @@ const CiOverviewPanel: React.FC<{ org?: string }> = ({ org }) => {
   );
 
   const query = useCiDatasetsQuery(
-    supportedOrg && (!showEmbedEntry || activeView === 'overview')
+    supportedOrg && (!showEmbedEntry || activeView === 'overview'),
+    { reuseFreshData: true }
   );
 
   if (!supportedOrg) return <CiDataState />;

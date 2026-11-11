@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Modal, Popover } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import ExperienceScoreRulePanel from './ExperienceScoreRulePanel';
+import dynamic from 'next/dynamic';
+
+const ExperienceScoreRulePanel = dynamic(
+  () => import('./ExperienceScoreRulePanel')
+);
 
 type ExperienceScoreRulePopoverTriggerProps = {
   className?: string;
@@ -47,7 +51,7 @@ const ExperienceScoreRulePopoverTrigger: React.FC<
         centered
       >
         <div className="max-h-[70vh] overflow-auto pr-1">
-          <ExperienceScoreRulePanel />
+          {open && <ExperienceScoreRulePanel />}
         </div>
       </Modal>
     </>

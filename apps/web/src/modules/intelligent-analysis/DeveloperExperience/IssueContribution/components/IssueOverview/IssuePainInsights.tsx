@@ -15,7 +15,7 @@ import type {
   IssueOverviewV2FrequentPain,
   IssueOverviewV2PainSummary,
 } from '../../types';
-import IssuePainDetailModal from './IssuePainDetailModal';
+import dynamic from 'next/dynamic';
 import IssuePriorityTag, { getIssuePriorityLabel } from './IssuePriorityTag';
 import IssueTrendSparkline from './IssueTrendSparkline';
 import { getWeeklyClosureData } from './weeklyClosure';
@@ -37,6 +37,8 @@ type ProgressProps = {
   org?: string;
   reportHref: ReportHref;
 };
+
+const IssuePainDetailModal = dynamic(() => import('./IssuePainDetailModal'));
 
 const PRIORITIES = [
   {
@@ -248,15 +250,17 @@ export const IssuePainProgressOverview: React.FC<ProgressProps> = ({
           </>
         }
       />
-      <IssuePainDetailModal
-        open={!!detail}
-        onClose={() => setDetail(null)}
-        query={{ org, state: detail?.state, prio: detail?.prio }}
-        stageOptions={summary.stageOptions}
-        org={org}
-        reportHref={reportHref}
-        title={detail?.title ?? '痛点详情'}
-      />
+      {!!detail && (
+        <IssuePainDetailModal
+          open={!!detail}
+          onClose={() => setDetail(null)}
+          query={{ org, state: detail?.state, prio: detail?.prio }}
+          stageOptions={summary.stageOptions}
+          org={org}
+          reportHref={reportHref}
+          title={detail?.title ?? '痛点详情'}
+        />
+      )}
     </>
   );
 };
@@ -493,19 +497,21 @@ export const IssueFrequentPainSection: React.FC<FrequentProps> = ({
           locale={{ emptyText: '暂无匹配问题' }}
         />
       </div>
-      <IssuePainDetailModal
-        open={!!detail}
-        onClose={() => setDetail(null)}
-        query={{
-          org,
-          group: detail?.group,
-          states: detail?.states,
-        }}
-        stageOptions={stageOptions}
-        org={org}
-        reportHref={reportHref}
-        title={detail?.title ?? '问题详情'}
-      />
+      {!!detail && (
+        <IssuePainDetailModal
+          open={!!detail}
+          onClose={() => setDetail(null)}
+          query={{
+            org,
+            group: detail?.group,
+            states: detail?.states,
+          }}
+          stageOptions={stageOptions}
+          org={org}
+          reportHref={reportHref}
+          title={detail?.title ?? '问题详情'}
+        />
+      )}
     </>
   );
 };

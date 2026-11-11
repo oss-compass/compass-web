@@ -8,18 +8,23 @@ import {
 import type { TrendWindow } from '../../../../UserJourney/OverviewDashboard/types';
 import { ISSUE_PRIORITY_LEVELS } from '../../../IssueContribution/components/IssueOverview/IssuePriorityTag';
 import { useCiPainTrendsQuery } from '../../queries';
-import CiIssueTable, { type CiReportHref } from './CiIssueTable';
+import dynamic from 'next/dynamic';
+import type { CiReportHref } from './CiIssueTable';
 import type { CiPri } from '../../types';
 import type { TrackingStatus } from '../PainTracking/model';
-import { CI_OVERVIEW_STATUS_META } from './statusPresentation';
+import {
+  CI_OVERVIEW_STATUS_META,
+  REPAIR_RATE_NOTE,
+} from './statusPresentation';
 import {
   countPainProgress,
   TRACKING_STATES,
   type CiTopIssue,
 } from './communityMetrics';
 
-export const REPAIR_RATE_NOTE =
-  '已闭环问题 ÷ 有效问题（含待处理）；非有效问题不计入分母。无有效问题时为 100%。';
+export { REPAIR_RATE_NOTE } from './statusPresentation';
+
+const CiIssueTable = dynamic(() => import('./CiIssueTable'));
 
 const CiPainProgress: React.FC<{
   issues: CiTopIssue[];

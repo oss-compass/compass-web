@@ -42,4 +42,4 @@ const CiScoreInsights: React.FC<{
     />
   );
 };
-export default CiScoreInsights;
+export default React.memo(CiScoreInsights);

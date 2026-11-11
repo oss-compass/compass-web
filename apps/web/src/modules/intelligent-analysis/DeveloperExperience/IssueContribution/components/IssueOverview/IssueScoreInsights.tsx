@@ -256,7 +256,7 @@ const DistributionRows: React.FC<{
   );
 };
 
-export const IssueScoreDistribution: React.FC<Props> = ({
+const ScoreDistribution: React.FC<Props> = ({
   repos,
   reportHref,
   overallScore,
@@ -512,7 +512,7 @@ const RankingColumn: React.FC<{
   </section>
 );
 
-export const IssueRepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
+const RepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
   const [metricRepo, setMetricRepo] = React.useState<IssueOverviewRepo | null>(
     null
   );
@@ -678,3 +678,6 @@ export const IssueRepoRankings: React.FC<Props> = ({ repos, reportHref }) => {
     </div>
   );
 };
+
+export const IssueScoreDistribution = React.memo(ScoreDistribution);
+export const IssueRepoRankings = React.memo(RepoRankings);

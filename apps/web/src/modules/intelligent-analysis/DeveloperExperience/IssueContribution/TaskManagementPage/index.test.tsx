@@ -99,3 +99,15 @@ it('does not show either management tab when server denies access', async () => 
     screen.queryByRole('tab', { name: '重跑任务' })
   ).not.toBeInTheDocument();
 });
+
+it('hides weekly report entry for a non-admin even if cached access says admin', async () => {
+  mockAccess.mockResolvedValue({ isAdmin: true, repositories: ['cann/demo'] });
+  mount();
+  expect(
+    await screen.findByRole('tab', { name: '重跑任务' })
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByRole('tab', { name: '周报管理' })
+  ).not.toBeInTheDocument();
+  expect(screen.queryByText('周报管理内容')).not.toBeInTheDocument();
+});

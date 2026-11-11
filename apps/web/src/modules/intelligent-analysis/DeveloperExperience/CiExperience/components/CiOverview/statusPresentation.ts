@@ -31,3 +31,6 @@ export const CI_OVERVIEW_STATUS_META: Record<
     valueClassName: '',
   },
 };
+
+export const REPAIR_RATE_NOTE =
+  '已闭环问题 ÷ 有效问题（含待处理）；非有效问题不计入分母。无有效问题时为 100%。';

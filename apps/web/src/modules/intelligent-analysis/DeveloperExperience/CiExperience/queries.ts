@@ -31,13 +31,16 @@ export const useCiDatasetQuery = (repo: CiRepoKey | null, enabled = true) =>
     enabled: enabled && repo !== null,
   });
 
-export const useCiDatasetsQuery = (enabled = true) =>
+export const useCiDatasetsQuery = (
+  enabled = true,
+  { reuseFreshData = false }: { reuseFreshData?: boolean } = {}
+) =>
   useQuery({
     ...queryOptions,
     queryKey: ['ci-data', 'overview', 'page-v2'],
     queryFn: ({ signal }) => fetchCiDatasets(signal),
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: reuseFreshData ? 15_000 : 0,
+    refetchOnMount: reuseFreshData ? true : 'always',
     enabled,
   });
 

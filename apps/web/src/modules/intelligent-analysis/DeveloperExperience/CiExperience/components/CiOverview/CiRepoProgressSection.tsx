@@ -11,9 +11,12 @@ import {
   type CiRepoSummary,
   type CiTopIssue,
 } from './communityMetrics';
-import CiIssueTable, { type CiReportHref } from './CiIssueTable';
-import { REPAIR_RATE_NOTE } from './CiPainProgress';
+import dynamic from 'next/dynamic';
+import type { CiReportHref } from './CiIssueTable';
+import { REPAIR_RATE_NOTE } from './statusPresentation';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
+
+const CiIssueTable = dynamic(() => import('./CiIssueTable'));
 
 const PROGRESS_STATUS = {
   pending: { status: 'pending', label: '待处理' },

@@ -23,7 +23,9 @@ import {
   fetchIssueOverviewTrends,
 } from '../../data';
 import type { IssueOverviewRepo } from '../../types';
-import IssuePainDetailModal from './IssuePainDetailModal';
+import dynamic from 'next/dynamic';
+
+const IssuePainDetailModal = dynamic(() => import('./IssuePainDetailModal'));
 
 const REPO_PAGE_SIZE = 20;
 
@@ -1054,27 +1056,30 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           </>
         )}
       </OverviewRepoComparison>
-      <IssuePainDetailModal
-        open={detailTarget !== null}
-        onClose={() => setDetailTarget(null)}
-        query={detailQuery}
-        stageOptions={stageOptions}
-        org={org}
-        reportHref={reportHref}
-        title={
-          detailTarget
-            ? `${
-                detailTarget.type === 'team' || detailTarget.type === 'category'
-                  ? detailTarget.name
-                  : detailTarget.repo.repoShort
-              } · ${
-                detailTarget.bucket
-                  ? PROGRESS_BUCKET_LABELS[detailTarget.bucket]
-                  : '问题数'
-              }`
-            : '问题详情'
-        }
-      />
+      {detailTarget !== null && (
+        <IssuePainDetailModal
+          open={detailTarget !== null}
+          onClose={() => setDetailTarget(null)}
+          query={detailQuery}
+          stageOptions={stageOptions}
+          org={org}
+          reportHref={reportHref}
+          title={
+            detailTarget
+              ? `${
+                  detailTarget.type === 'team' ||
+                  detailTarget.type === 'category'
+                    ? detailTarget.name
+                    : detailTarget.repo.repoShort
+                } · ${
+                  detailTarget.bucket
+                    ? PROGRESS_BUCKET_LABELS[detailTarget.bucket]
+                    : '问题数'
+                }`
+              : '问题详情'
+          }
+        />
+      )}
     </>
   );
 };

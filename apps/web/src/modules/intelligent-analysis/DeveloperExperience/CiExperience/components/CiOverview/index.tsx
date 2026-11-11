@@ -1,4 +1,7 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
+import DeferredReportSection from '../../../components/DeferredReportSection';
+import { OverviewSectionPlaceholder } from '../../../../UserJourney/OverviewDashboard/OverviewLoadingState';
 import { useRouter } from 'next/router';
 import { Alert, Button, Skeleton, Tooltip, Typography } from 'antd';
 import type { CiRepoKey } from '../../types';
@@ -11,11 +14,19 @@ import {
   painReportsMatch,
   type CiTrendItem,
 } from './communityMetrics';
-import CiTrendModal from './CiTrendModal';
-import CiRepoProgressSection from './CiRepoProgressSection';
 import CiScoreInsights from './CiScoreInsights';
-import CiPainProgress, { REPAIR_RATE_NOTE } from './CiPainProgress';
-import CiFrequentPainSection from './CiFrequentPainSection';
+import { REPAIR_RATE_NOTE } from './statusPresentation';
+
+const CiTrendModal = dynamic(() => import('./CiTrendModal'));
+const CiRepoProgressSection = dynamic(() => import('./CiRepoProgressSection'), {
+  loading: () => <OverviewSectionPlaceholder minHeight={640} />,
+});
+const CiPainProgress = dynamic(() => import('./CiPainProgress'), {
+  loading: () => <OverviewSectionPlaceholder />,
+});
+const CiFrequentPainSection = dynamic(() => import('./CiFrequentPainSection'), {
+  loading: () => <OverviewSectionPlaceholder />,
+});
 
 type CiOverviewProps = {
   data: Record<CiRepoKey, CiOverviewDataset>;
@@ -37,6 +48,9 @@ const CiOverview: React.FC<CiOverviewProps> = ({
   headerAction,
 }) => {
   const router = useRouter();
+  const eagerSections =
+    ['1', 'true'].includes(String(router.query.captureMode ?? '')) ||
+    ['1', 'true'].includes(String(router.query.expandAllTeams ?? ''));
   const m = React.useMemo(
     () =>
       computeCommunityOverview(
@@ -53,10 +67,13 @@ const CiOverview: React.FC<CiOverviewProps> = ({
     typeof router.query.org === 'string'
       ? `/${encodeURIComponent(router.query.org)}`
       : '';
-  const reportHref = (repo: string, day?: string) =>
-    `/intelligent-analysis${orgSeg}/experience/ci-experience?${new URLSearchParams(
-      { repo, ...(day ? { day } : {}) }
-    )}`;
+  const reportHref = React.useCallback(
+    (repo: string, day?: string) =>
+      `/intelligent-analysis${orgSeg}/experience/ci-experience?${new URLSearchParams(
+        { repo, ...(day ? { day } : {}) }
+      )}`,
+    [orgSeg]
+  );
   return (
     <div className="ci-community-overview space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -117,51 +134,74 @@ const CiOverview: React.FC<CiOverviewProps> = ({
             overallScore={m.overallScore}
             reportHref={reportHref}
           />
-          {trackingReady ? (
-            <>
-              <CiPainProgress issues={m.topIssues} reportHref={reportHref} />
-              <CiFrequentPainSection
-                issues={m.topIssues}
-                reportHref={reportHref}
+          <DeferredReportSection
+            className="min-w-0 space-y-4"
+            anchorId="ci-overview-pain-progress"
+            eager={eagerSections}
+            placeholder={<OverviewSectionPlaceholder />}
+          >
+            {trackingReady ? (
+              <>
+                <CiPainProgress issues={m.topIssues} reportHref={reportHref} />
+                <DeferredReportSection
+                  className="min-w-0 space-y-4"
+                  anchorId="ci-overview-frequent-pains"
+                  eager={eagerSections}
+                  placeholder={<OverviewSectionPlaceholder />}
+                >
+                  <CiFrequentPainSection
+                    issues={m.topIssues}
+                    reportHref={reportHref}
+                  />
+                </DeferredReportSection>
+              </>
+            ) : painLoading ? (
+              <section className="section-card">
+                <Skeleton
+                  active
+                  paragraph={{ rows: 3 }}
+                  title={{ width: '20%' }}
+                />
+              </section>
+            ) : (
+              <Alert
+                type="warning"
+                showIcon
+                message="痛点处理状态暂不可用"
+                description={
+                  painData && !painError
+                    ? '报告日期已变化，请刷新以保持评分与痛点同源。'
+                    : undefined
+                }
+                action={
+                  <Button size="small" onClick={onRetryPain}>
+                    重试
+                  </Button>
+                }
               />
-            </>
-          ) : painLoading ? (
-            <section className="section-card">
-              <Skeleton
-                active
-                paragraph={{ rows: 3 }}
-                title={{ width: '20%' }}
-              />
-            </section>
-          ) : (
-            <Alert
-              type="warning"
-              showIcon
-              message="痛点处理状态暂不可用"
-              description={
-                painData && !painError
-                  ? '报告日期已变化，请刷新以保持评分与痛点同源。'
-                  : undefined
-              }
-              action={
-                <Button size="small" onClick={onRetryPain}>
-                  重试
-                </Button>
-              }
+            )}
+          </DeferredReportSection>
+          <DeferredReportSection
+            className="min-w-0 space-y-4"
+            anchorId="ci-overview-repositories"
+            eager={eagerSections}
+            placeholder={<OverviewSectionPlaceholder minHeight={640} />}
+          >
+            <CiRepoProgressSection
+              repos={m.repos}
+              issues={trackingReady ? m.topIssues : []}
+              trackingReady={trackingReady}
+              reportHref={reportHref}
+            />
+          </DeferredReportSection>
+          {trendModal && (
+            <CiTrendModal
+              open={!!trendModal}
+              trend={trendModal}
+              days={m.days}
+              onClose={() => setTrendModal(null)}
             />
           )}
-          <CiRepoProgressSection
-            repos={m.repos}
-            issues={trackingReady ? m.topIssues : []}
-            trackingReady={trackingReady}
-            reportHref={reportHref}
-          />
-          <CiTrendModal
-            open={!!trendModal}
-            trend={trendModal}
-            days={m.days}
-            onClose={() => setTrendModal(null)}
-          />
         </>
       )}
       <style jsx global>{`

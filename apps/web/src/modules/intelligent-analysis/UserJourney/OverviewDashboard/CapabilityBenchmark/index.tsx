@@ -610,6 +610,12 @@ const CapabilityBenchmarkDetails: React.FC<CapabilityBenchmarkDetailsProps> = ({
   );
 };
 
-export { CapabilityBenchmarkDetails, CapabilityBenchmarkOverview };
+const MemoizedCapabilityBenchmarkOverview = React.memo(
+  CapabilityBenchmarkOverview
+);
+export {
+  CapabilityBenchmarkDetails,
+  MemoizedCapabilityBenchmarkOverview as CapabilityBenchmarkOverview,
+};
 
-export default CapabilityBenchmarkOverview;
+export default MemoizedCapabilityBenchmarkOverview;

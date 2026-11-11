@@ -4,7 +4,8 @@ import OverviewSummaryBlock from './OverviewSummaryBlock';
 import OperationGuide from '../../DeveloperExperience/components/OperationGuide';
 import ExperienceScoreRulePopoverTrigger from '../components/ExperienceScoreRulePopoverTrigger';
 import { ScoreSparkline } from './CloseRateTrendChart';
-import ScoreTrendModal from './ScoreTrendModal';
+import dynamic from 'next/dynamic';
+
 import type {
   CommonIssueGroup,
   DashboardIssue,
@@ -17,6 +18,8 @@ import type {
 } from './types';
 import type { ScoreTrendPoint } from './scoreTrend';
 import { formatPercent, formatScore } from './utils';
+
+const ScoreTrendModal = dynamic(() => import('./ScoreTrendModal'));
 
 const { Title } = Typography;
 
@@ -316,26 +319,28 @@ const OverviewSummarySection: React.FC<OverviewSummarySectionProps> = ({
           }
         />
       </div>
-      <ScoreTrendModal
-        open={trendModal.open}
-        title={trendModal.title}
-        points={trendModal.points}
-        legendLabel={trendModal.legendLabel}
-        axisTitle={trendModal.axisTitle}
-        tooltipLabel={trendModal.tooltipLabel}
-        valueType={trendModal.valueType}
-        onClose={() =>
-          setTrendModal({
-            open: false,
-            title: '',
-            points: [],
-            legendLabel: '综合体验评分',
-            axisTitle: '综合体验评分',
-            tooltipLabel: '周度评分',
-            valueType: 'score',
-          })
-        }
-      />
+      {trendModal.open && (
+        <ScoreTrendModal
+          open={trendModal.open}
+          title={trendModal.title}
+          points={trendModal.points}
+          legendLabel={trendModal.legendLabel}
+          axisTitle={trendModal.axisTitle}
+          tooltipLabel={trendModal.tooltipLabel}
+          valueType={trendModal.valueType}
+          onClose={() =>
+            setTrendModal({
+              open: false,
+              title: '',
+              points: [],
+              legendLabel: '综合体验评分',
+              axisTitle: '综合体验评分',
+              tooltipLabel: '周度评分',
+              valueType: 'score',
+            })
+          }
+        />
+      )}
     </>
   );
 };

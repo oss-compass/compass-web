@@ -18,4 +18,4 @@ const CommunityScoreInsights: React.FC<{
     }))}
   />
 );
-export default CommunityScoreInsights;
+export default React.memo(CommunityScoreInsights);

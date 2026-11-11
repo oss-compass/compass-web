@@ -2,8 +2,11 @@ import React from 'react';
 import { CloseRateSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
 import { getIntegerScaleRange } from '../../../../UserJourney/OverviewDashboard/ScoreTrendChart';
 import { OJ_TREND_COLORS } from '../../../../UserJourney/OverviewDashboard/constants';
-import IssueTrendModal, { IssueTrendModalData } from './IssueTrendModal';
+import dynamic from 'next/dynamic';
+import type { IssueTrendModalData } from './IssueTrendModal';
 import type { IssueTrendGranularity } from './IssueTrendModal';
+
+const IssueTrendModal = dynamic(() => import('./IssueTrendModal'));
 
 const resolveScale = (
   values: Array<number | null>,
@@ -96,13 +99,15 @@ const IssueTrendSparkline: React.FC<{
           connectNulls
         />
       </button>
-      <IssueTrendModal
-        open={open}
-        trend={normalizedTrend}
-        onClose={() => setOpen(false)}
-        granularity={granularity}
-        onGranularityChange={onGranularityChange}
-      />
+      {open && (
+        <IssueTrendModal
+          open={open}
+          trend={normalizedTrend}
+          onClose={() => setOpen(false)}
+          granularity={granularity}
+          onGranularityChange={onGranularityChange}
+        />
+      )}
     </>
   );
 };

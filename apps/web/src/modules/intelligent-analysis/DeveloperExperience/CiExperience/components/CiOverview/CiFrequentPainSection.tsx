@@ -2,13 +2,16 @@ import React from 'react';
 import { Modal, Segmented, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import IssuePriorityTag from '../../../IssueContribution/components/IssueOverview/IssuePriorityTag';
-import CiIssueTable, { type CiReportHref } from './CiIssueTable';
+import dynamic from 'next/dynamic';
+import type { CiReportHref } from './CiIssueTable';
 import type { CiTopIssue } from './communityMetrics';
 import {
   buildCiFrequentPains,
   type CiFrequentPain,
   type CiPainView,
 } from './frequentPainGroups';
+
+const CiIssueTable = dynamic(() => import('./CiIssueTable'));
 
 const CiFrequentPainSection: React.FC<{
   issues: CiTopIssue[];
