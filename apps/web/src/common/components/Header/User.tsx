@@ -34,7 +34,12 @@ const User = () => {
 
   return (
     <div className="group relative flex h-full items-center pl-6 transition">
-      <div className="border-secondary relative flex h-[32px] w-[32px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-hover:bg-[#333333]">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-label={user?.name || t('common:profile_setting')}
+        className="border-secondary relative flex h-[32px] w-[32px] cursor-pointer items-center justify-center overflow-hidden rounded-full border group-focus-within:bg-[#333333] group-hover:bg-[#333333]"
+      >
         <Image
           src={user?.avatarUrl!}
           referrerPolicy="no-referrer"
@@ -46,9 +51,9 @@ const User = () => {
           }}
           alt=""
         />
-      </div>
+      </button>
 
-      <div className="z-dropdown absolute -right-4 top-[100%] hidden w-auto group-hover:block">
+      <div className="z-dropdown absolute -right-4 top-[100%] hidden w-auto group-focus-within:block group-hover:block">
         <div className="mt-[2px] bg-black/90 text-white">
           <Link
             href="/settings/subscribe"
@@ -93,8 +98,9 @@ const User = () => {
             {t('common:profile_setting')}
           </Link>
 
-          <div
-            className="flex cursor-pointer items-center  whitespace-nowrap border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
+          <button
+            type="button"
+            className="flex w-full cursor-pointer items-center  whitespace-nowrap border-b border-white/20 py-4 pl-6 text-center last:border-b-0 hover:bg-[#333333]"
             onClick={() => {
               mutation.mutate(
                 {},
@@ -108,7 +114,7 @@ const User = () => {
             }}
           >
             <MdOutlineLogout className="mr-2 text-base" /> {t('common:signout')}
-          </div>
+          </button>
         </div>
       </div>
     </div>
