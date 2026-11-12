@@ -1,3 +1,4 @@
+import useManagementControls from '@common/hooks/useManagementControls';
 import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
 import React, {
   useCallback,
@@ -348,13 +349,6 @@ const toRepoProgressRow = (job: RepoRerunJob | null): RepoProgressRow | null =>
       }
     : null;
 
-const getTimeValue = (value: unknown) => {
-  const text = String(value || '').trim();
-  if (!text) return 0;
-  const parsed = new Date(text).getTime();
-  return Number.isNaN(parsed) ? 0 : parsed;
-};
-
 const compareText = (left: unknown, right: unknown) =>
   String(left || '').localeCompare(String(right || ''), 'zh-CN');
 
@@ -498,6 +492,7 @@ const canDeleteRerunJob = (job: RepoRerunJob) =>
   );
 
 const TaskManagementPage: React.FC = () => {
+  useManagementControls();
   const router = useRouter();
   const screens = Grid.useBreakpoint();
   const [messageApi, contextHolder] = message.useMessage();
@@ -505,6 +500,10 @@ const TaskManagementPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<TaskStatusFilter>('all');
   const [teamFilter, setTeamFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [taskSort, setTaskSort] = useState<{
+    key?: string;
+    order?: 'ascend' | 'descend';
+  }>({});
   const [pageSize, setPageSize] = useState(20);
   const [activeTaskTab, setActiveTaskTab] = useState<
     'manual' | 'scheduled' | 'weekly_report'
@@ -584,6 +583,8 @@ const TaskManagementPage: React.FC = () => {
       statusFilter,
       teamFilter,
       activeTaskTab,
+      taskSort.key,
+      taskSort.order,
       page,
       pageSize,
     ],
@@ -593,6 +594,8 @@ const TaskManagementPage: React.FC = () => {
         status: statusFilter === 'all' ? undefined : statusFilter,
         teamName: teamFilter || undefined,
         triggerSource: activeTaskTab === 'scheduled' ? 'scheduled' : 'manual',
+        sortKey: taskSort.key,
+        sortOrder: taskSort.order === 'ascend' ? 'asc' : 'desc',
         page,
         size: pageSize,
       }),
@@ -1066,12 +1069,9 @@ const TaskManagementPage: React.FC = () => {
         title: sortableTitle('仓库名称'),
         dataIndex: 'repo_name',
         key: 'repo_name',
+        sortOrder: taskSort.key === 'repo_name' ? taskSort.order : null,
         width: 180,
-        sorter: (left, right) =>
-          compareText(
-            getJobRepoDisplayName(left),
-            getJobRepoDisplayName(right)
-          ),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (_value, record) => (
           <span
@@ -1102,8 +1102,9 @@ const TaskManagementPage: React.FC = () => {
         ),
         dataIndex: 'team_name',
         key: 'team_name',
+        sortOrder: taskSort.key === 'team_name' ? taskSort.order : null,
         width: 180,
-        sorter: (left, right) => compareText(left.team_name, right.team_name),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value) => value || '--',
         onHeaderCell: () => ({
@@ -1114,9 +1115,9 @@ const TaskManagementPage: React.FC = () => {
         title: sortableTitle('操作人'),
         dataIndex: 'requested_by',
         key: 'requested_by',
+        sortOrder: taskSort.key === 'requested_by' ? taskSort.order : null,
         width: 170,
-        sorter: (left, right) =>
-          compareText(left.requested_by, right.requested_by),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value) => value || '--',
         onHeaderCell: () => ({
@@ -1140,9 +1141,9 @@ const TaskManagementPage: React.FC = () => {
         title: sortableTitle('创建时间'),
         dataIndex: 'created_at',
         key: 'created_at',
+        sortOrder: taskSort.key === 'created_at' ? taskSort.order : null,
         width: 168,
-        sorter: (left, right) =>
-          getTimeValue(left.created_at) - getTimeValue(right.created_at),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value) => formatDateTime(value),
         onHeaderCell: () => ({
@@ -1153,9 +1154,9 @@ const TaskManagementPage: React.FC = () => {
         title: sortableTitle('完成时间'),
         dataIndex: 'completed_at',
         key: 'completed_at',
+        sortOrder: taskSort.key === 'completed_at' ? taskSort.order : null,
         width: 168,
-        sorter: (left, right) =>
-          getTimeValue(left.completed_at) - getTimeValue(right.completed_at),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value) => formatDateTime(value),
         onHeaderCell: () => ({
@@ -1177,18 +1178,9 @@ const TaskManagementPage: React.FC = () => {
         ),
         dataIndex: 'status',
         key: 'status',
+        sortOrder: taskSort.key === 'status' ? taskSort.order : null,
         width: 132,
-        sorter: (left, right) => {
-          const leftMeta = getRerunStatusMeta(
-            left.status,
-            left.generated_report_review_status
-          );
-          const rightMeta = getRerunStatusMeta(
-            right.status,
-            right.generated_report_review_status
-          );
-          return compareText(leftMeta.label, rightMeta.label);
-        },
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value, record) => {
           const meta = getRerunStatusMeta(
@@ -1212,9 +1204,9 @@ const TaskManagementPage: React.FC = () => {
         title: sortableTitle('队列排名'),
         dataIndex: 'queue_rank',
         key: 'queue_rank',
+        sortOrder: taskSort.key === 'queue_rank' ? taskSort.order : null,
         width: 100,
-        sorter: (left, right) =>
-          Number(left.queue_rank || 0) - Number(right.queue_rank || 0),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value, record) => {
           const status = String(record.status || '')
@@ -1238,12 +1230,10 @@ const TaskManagementPage: React.FC = () => {
         title: sortableTitle('硬件环境'),
         dataIndex: 'selected_node_hardware',
         key: 'selected_node_hardware',
+        sortOrder:
+          taskSort.key === 'selected_node_hardware' ? taskSort.order : null,
         width: 150,
-        sorter: (left, right) =>
-          compareText(
-            left.selected_node_hardware || left.third_party_hardware,
-            right.selected_node_hardware || right.third_party_hardware
-          ),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (value, record) =>
           String(value || record.third_party_hardware || '').trim() || '--',
@@ -1254,9 +1244,10 @@ const TaskManagementPage: React.FC = () => {
       {
         title: sortableTitle('报告ID'),
         key: 'generated_report_id',
+        sortOrder:
+          taskSort.key === 'generated_report_id' ? taskSort.order : null,
         width: 240,
-        sorter: (left, right) =>
-          compareText(left.generated_report_id, right.generated_report_id),
+        sorter: true,
         sortDirections: ['ascend', 'descend'],
         render: (_value, record) => {
           const reportId = String(record.generated_report_id || '').trim();
@@ -1347,14 +1338,21 @@ const TaskManagementPage: React.FC = () => {
       statusHeaderOptions,
       teamFilter,
       teamOptions,
+      taskSort,
     ]
   );
 
   const handleTableChange = useCallback<
     NonNullable<TableProps<RepoRerunJob>['onChange']>
   >(
-    (pagination) => {
-      setPage(pagination.current ?? 1);
+    (pagination, _filters, sorter, extra) => {
+      setPage(extra.action === 'sort' ? 1 : pagination.current ?? 1);
+      const active = Array.isArray(sorter) ? sorter[0] : sorter;
+      setTaskSort(
+        active.order
+          ? { key: String(active.columnKey), order: active.order }
+          : {}
+      );
       setPageSize(pagination.pageSize ?? pageSize);
     },
     [pageSize]

@@ -299,6 +299,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
       effectivePrioFilter,
       effectiveStateFilter,
       painPage,
+      sortKey,
+      sortAsc,
     ],
     queryFn: ({ signal }) =>
       fetchIssueOverviewTopPainsV2(
@@ -306,6 +308,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
           ...query,
           page: painPage,
           pageSize: PAIN_PAGE_SIZE,
+          sort: sortKey,
+          order: sortAsc ? 'asc' : 'desc',
           stage: stageScope.filter,
           prio: prioScope.filter,
           trackingStatus: stateScope.filter,
@@ -322,26 +326,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
   const total = painsQuery.data?.total ?? 0;
   const loading = painsQuery.isFetching;
 
-  // 排序只作用于服务端返回的当前页，跨页顺序由 ES 默认优先级/周期排序保证。
-  const pagedDisplayedItems = React.useMemo(
-    () =>
-      [...items].sort((a, b) => {
-        const sortValue = (item: IssueOverviewTopPain) => {
-          if (sortKey === 'repo') return item.repoShort;
-          if (sortKey === 'team') return item.teamName || '';
-          if (sortKey === 'metric') return getPainMetricLabel(item);
-          if (sortKey === 'state') return getPainStateLabel(item);
-          return String(item[sortKey] || '');
-        };
-        const left = sortValue(a);
-        const right = sortValue(b);
-        const result = left.localeCompare(right, 'zh-Hans-CN', {
-          sensitivity: 'base',
-        });
-        return sortAsc ? result : -result;
-      }),
-    [items, sortAsc, sortKey]
-  );
+  const pagedDisplayedItems = items;
 
   const issueDetailQuery = useQuery({
     queryKey: [
@@ -467,6 +452,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
       type="button"
       className="inline-flex items-center justify-center gap-1 font-semibold text-[var(--overview-slate)] hover:text-[var(--overview-slateDark)]"
       onClick={() => {
+        setPainPage(1);
         if (sortKey === key) setSortAsc((value) => !value);
         else {
           setSortKey(key);

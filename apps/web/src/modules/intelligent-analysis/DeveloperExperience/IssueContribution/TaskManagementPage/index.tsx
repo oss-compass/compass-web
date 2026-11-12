@@ -1,3 +1,4 @@
+import useManagementControls from '@common/hooks/useManagementControls';
 import AdminReviewButton from '../../components/AdminReviewButton';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -24,6 +25,7 @@ import {
 } from '../../routes';
 
 const IssueTaskManagementPage: React.FC = () => {
+  useManagementControls();
   const router = useRouter();
   const org =
     typeof router.query.org === 'string' ? router.query.org : undefined;

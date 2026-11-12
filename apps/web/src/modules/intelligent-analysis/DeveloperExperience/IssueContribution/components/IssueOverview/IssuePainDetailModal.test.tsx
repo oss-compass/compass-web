@@ -210,7 +210,40 @@ it.each([
         stage: undefined,
         prio: undefined,
         trackingStatus: undefined,
+        sort: 'team',
+        order: 'asc',
       });
     });
   }
 );
+
+it('sorts the full filtered scope on the server and resets the current page', async () => {
+  await renderModal();
+  fireEvent.click(await screen.findByTitle('2'));
+  await waitFor(() =>
+    expect(fetchPains).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 2, pageSize: 10 }),
+      expect.anything()
+    )
+  );
+  fireEvent.click(screen.getByRole('button', { name: /痛点.*↕/ }));
+  await waitFor(() =>
+    expect(fetchPains).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 1,
+        sort: 'title',
+        order: 'asc',
+        state: 'inProgress',
+        team: '算子分队',
+      }),
+      expect.anything()
+    )
+  );
+  fireEvent.click(screen.getByRole('button', { name: /痛点.*↑/ }));
+  await waitFor(() =>
+    expect(fetchPains).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 1, sort: 'title', order: 'desc' }),
+      expect.anything()
+    )
+  );
+});

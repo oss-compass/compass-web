@@ -1,0 +1,140 @@
+.active {
+  // The low-specificity native selectors preserve Ant Design variants and states.
+  :global(.ant-btn),
+  :global(
+      button:where(
+          :not([role='switch']):not([role='tab']):not(.ant-modal-close):not(
+              .ant-drawer-close
+            ):not(.ant-input-clear-icon):not(.ant-select-clear):not(
+              .ant-picker-clear
+            ):not(.ant-pagination-item-link)
+        )
+    ) {
+    border: 1px solid var(--overview-slateBorder, #e2e8f0) !important;
+    border-radius: 10px !important;
+  }
+
+  :global(.ant-btn-default:not(:disabled):not(.ant-btn-dangerous)) {
+    background: linear-gradient(180deg, #fff 0%, #f8fbff 100%) !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+
+  :global(
+      .ant-btn:not(:disabled):not(.ant-btn-primary):not(
+          .ant-btn-dangerous
+        ):hover
+    ),
+  :global(
+      button:where(
+          :not(:disabled):not(.ant-btn):not([role='switch']):not([role='tab'])
+        ):focus-visible
+    ) {
+    border-color: var(--overview-blueLight, #93c5fd) !important;
+  }
+
+  :global(.ant-btn:focus-visible) {
+    outline: 2px solid var(--overview-blueBorder, #bfdbfe);
+    outline-offset: 2px;
+  }
+
+  :global(.ant-btn-primary:not(:disabled):not(.ant-btn-disabled)) {
+    border-color: var(--overview-blue, #2563eb) !important;
+    background: var(--overview-blue, #2563eb) !important;
+    color: #fff !important;
+  }
+
+  :global(
+      .ant-btn-primary:not(:disabled):not(.ant-btn-disabled):not(
+          .ant-btn-dangerous
+        ):hover
+    ) {
+    border-color: var(--overview-blueDark, #1d4ed8) !important;
+    background: var(--overview-blueDark, #1d4ed8) !important;
+  }
+
+  :global(.ant-btn-dangerous:not(:disabled)) {
+    border-color: var(--overview-red, #dc2626) !important;
+    color: var(--overview-red, #dc2626) !important;
+  }
+
+  :global(.ant-btn-primary.ant-btn-dangerous:not(:disabled)) {
+    background: var(--overview-red, #dc2626) !important;
+    color: #fff !important;
+  }
+
+  :global(.ant-btn-primary:disabled),
+  :global(.ant-btn-primary.ant-btn-disabled) {
+    border-color: var(--overview-slateBorder, #e2e8f0) !important;
+    background: #f1f5f9 !important;
+    color: #94a3b8 !important;
+  }
+
+  :global(
+      input:where(
+          :not([type='checkbox']):not([type='radio']):not([type='range']):not(
+              [type='file']
+            ):not([type='hidden'])
+        )
+    ),
+  :global(textarea),
+  :global(select),
+  :global(.ant-input-affix-wrapper),
+  :global(.ant-input-number),
+  :global(.ant-picker),
+  :global(.ant-select-selector) {
+    border: 1px solid
+      var(--management-control-border, var(--overview-slateBorder, #e2e8f0)) !important;
+    border-radius: 10px !important;
+  }
+
+  :global(input:where(:not(:disabled):hover)),
+  :global(textarea:where(:not(:disabled):hover)),
+  :global(select:where(:not(:disabled):hover)),
+  :global(.ant-input:not(:disabled):hover),
+  :global(
+      .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover
+    ),
+  :global(.ant-input-number:not(.ant-input-number-disabled):hover),
+  :global(.ant-picker:not(.ant-picker-disabled):hover),
+  :global(.ant-select:not(.ant-select-disabled):hover .ant-select-selector) {
+    --management-control-border: var(--overview-blueLight, #93c5fd);
+  }
+
+  :global(input:focus),
+  :global(textarea:focus),
+  :global(select:focus),
+  :global(.ant-input:focus),
+  :global(.ant-input-affix-wrapper-focused),
+  :global(.ant-input-number-focused),
+  :global(.ant-picker-focused),
+  :global(.ant-select-focused:not(.ant-select-disabled) .ant-select-selector) {
+    --management-control-border: var(--overview-blue, #2563eb);
+    box-shadow: 0 0 0 2px var(--overview-blueSoft, #eff6ff) !important;
+  }
+
+  // Composite inputs need one outer border, including their focus and error states.
+  :global(.ant-input-affix-wrapper input),
+  :global(.ant-input-number input),
+  :global(.ant-select input),
+  :global(.ant-picker input) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  :global(.ant-input-status-error),
+  :global(.ant-input-affix-wrapper-status-error),
+  :global(.ant-input-number-status-error),
+  :global(.ant-picker-status-error),
+  :global(.ant-select-status-error .ant-select-selector) {
+    --management-control-border: var(--overview-red, #dc2626) !important;
+  }
+
+  :global(.ant-input-status-warning),
+  :global(.ant-input-affix-wrapper-status-warning),
+  :global(.ant-input-number-status-warning),
+  :global(.ant-picker-status-warning),
+  :global(.ant-select-status-warning .ant-select-selector) {
+    --management-control-border: var(--overview-orange, #d97706) !important;
+  }
+}

@@ -1,3 +1,4 @@
+import useManagementControls from '@common/hooks/useManagementControls';
 import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
 import { buildIssueTaskManagementHref } from '../../DeveloperExperience/routes';
 import React, {
@@ -137,7 +138,11 @@ const nativeButtonClassName =
 const nativePrimaryButtonClassName =
   'inline-flex h-8 items-center justify-center rounded-xl border border-blue-600 bg-blue-600 px-4 text-sm text-white transition-colors hover:border-blue-500 hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60';
 
-type RepoManagementServerSortKey = 'benchmark_repo_name' | 'overview_enabled';
+type RepoManagementServerSortKey =
+  | 'benchmark_repo_name'
+  | 'overview_enabled'
+  | 'repo_name'
+  | 'latestReport';
 type RepoManagementServerSortOrder = 'ascend' | 'descend';
 type RepoManagementStatusFilter = 'all' | 'online' | 'registered' | 'offline';
 
@@ -501,6 +506,7 @@ const REPO_MANAGEMENT_MODULE = {
 const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
   reportType = 'community',
 }) => {
+  useManagementControls();
   const router = useRouter();
   const isIssueManagement = reportType === 'issue';
   const pageMeta = REPO_MANAGEMENT_PAGE_META[reportType];
@@ -1552,7 +1558,9 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
 
       if (
         (columnKey === 'benchmark_repo_name' ||
-          columnKey === 'overview_enabled') &&
+          columnKey === 'overview_enabled' ||
+          columnKey === 'repo_name' ||
+          columnKey === 'latestReport') &&
         (order === 'ascend' || order === 'descend')
       ) {
         setServerSort({ key: columnKey, order });
@@ -1589,11 +1597,8 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         dataIndex: 'repo_name',
         key: 'repo_name',
         width: 180,
-        sorter: (left, right) =>
-          getRepoDisplayName(left).localeCompare(
-            getRepoDisplayName(right),
-            'zh-CN'
-          ),
+        sorter: true,
+        sortOrder: serverSort.key === 'repo_name' ? serverSort.order : null,
         sortDirections: ['ascend', 'descend'],
         render: (_value: string, record) => (
           <span
@@ -1682,11 +1687,8 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
         title: sortableTitle('最新报告'),
         key: 'latestReport',
         width: 150,
-        sorter: (left, right) =>
-          getRepoLatestReportId(left).localeCompare(
-            getRepoLatestReportId(right),
-            'zh-CN'
-          ),
+        sorter: true,
+        sortOrder: serverSort.key === 'latestReport' ? serverSort.order : null,
         sortDirections: ['ascend', 'descend'],
         render: (_value, record) => {
           const reportId = getRepoLatestReportId(record);

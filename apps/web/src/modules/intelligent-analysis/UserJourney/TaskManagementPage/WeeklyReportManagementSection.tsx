@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Input, Popconfirm, Switch, Table, Tag, message } from 'antd';
+import useManagementControls from '@common/hooks/useManagementControls';
 import type { ColumnsType } from 'antd/es/table';
 import {
   fetchFormalWeeklyReportRecords,
@@ -47,40 +48,153 @@ const hasInvalidRecipients = (recipients: string[]) =>
     (email) => !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(email)
   );
 
+const getRecipientSaveHint = (pending: boolean, dirty: boolean) =>
+  pending
+    ? '请先验证并添加新增邮箱，再保存名单'
+    : dirty
+    ? '有未保存修改，点击保存后生效'
+    : '点击保存后生效';
+
 const RecipientInput: React.FC<{
   id: string;
   label: string;
   value: string;
   disabled: boolean;
   onChange: (value: string) => void;
-}> = ({ id, label, value, disabled, onChange }) => (
-  <div>
-    <div className="mb-2 flex items-center justify-between gap-3">
-      <label htmlFor={id} className="text-sm font-medium text-slate-700">
-        {label}
-      </label>
-      <span className="text-xs text-slate-400">
-        {parseRecipients(value).length} 个邮箱
-      </span>
-    </div>
-    <Input.TextArea
-      id={id}
-      value={value}
-      autoSize={{ minRows: 3, maxRows: 8 }}
-      className="!rounded-2xl !border-slate-200 !bg-white !px-3 !py-2 !shadow-[0_2px_6px_rgba(15,23,42,0.06)]"
-      placeholder="每行一个邮箱，也可用逗号、分号分隔，输入后直接保存"
-      disabled={disabled}
-      spellCheck={false}
-      autoCapitalize="none"
-      onChange={(event) => onChange(event.target.value)}
-    />
-  </div>
-);
+  onPendingChange: (pending: boolean) => void;
+}> = ({ id, label, value, disabled, onChange, onPendingChange }) => {
+  const [newEmails, setNewEmails] = useState('');
+  const [error, setError] = useState('');
+  const [feedback, setFeedback] = useState('');
+  const recipients = parseRecipients(value);
+  const addRecipients = () => {
+    const additions = parseRecipients(newEmails);
+    if (!additions.length) return;
+    if (hasInvalidRecipients(additions)) {
+      setError('邮箱格式不正确，请检查后再添加');
+      return;
+    }
+    const merged = parseRecipients([...recipients, ...additions].join('\n'));
+    const addedCount = merged.length - recipients.length;
+    if (addedCount) onChange(merged.join('\n'));
+    setNewEmails('');
+    setError('');
+    setFeedback(addedCount ? '' : '邮箱已在名单中，未重复添加');
+    onPendingChange(false);
+  };
+
+  return (
+    <section aria-labelledby={`${id}-label`}>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <div id={`${id}-label`} className="text-sm font-medium text-slate-700">
+          {label}
+        </div>
+        <span className="text-xs text-slate-400">
+          {recipients.length} 个邮箱
+        </span>
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_2px_6px_rgba(15,23,42,0.06)]">
+        <div className="mb-2 text-xs text-slate-500">已有名单</div>
+        <ul
+          aria-label={`${label}名单`}
+          className="m-0 flex min-h-[48px] list-none flex-wrap content-start gap-2 p-0"
+        >
+          {recipients.map((email) => (
+            <li
+              key={email.toLowerCase()}
+              className="inline-flex max-w-full items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700"
+            >
+              <span className="break-all">{email}</span>
+              <button
+                type="button"
+                aria-label={`${label}：移除 ${email}`}
+                disabled={disabled}
+                className="shrink-0 rounded-full px-1 hover:bg-blue-100 disabled:opacity-40"
+                onClick={() => {
+                  setFeedback('');
+                  onChange(
+                    recipients.filter((item) => item !== email).join('\n')
+                  );
+                }}
+              >
+                ×
+              </button>
+            </li>
+          ))}
+          {!recipients.length && (
+            <li className="text-sm text-slate-400">暂无收件人</li>
+          )}
+        </ul>
+        <div className="mt-3 border-t border-slate-100 pt-3">
+          <label
+            htmlFor={id}
+            className="mb-2 block text-xs font-medium text-slate-600"
+          >
+            新增{label}
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <Input
+              id={id}
+              value={newEmails}
+              className="min-w-[180px] flex-1 !rounded-xl"
+              placeholder="输入邮箱，多个邮箱可用逗号或分号分隔"
+              allowClear
+              disabled={disabled}
+              status={error ? 'error' : undefined}
+              aria-invalid={Boolean(error)}
+              aria-describedby={`${id}-hint`}
+              spellCheck={false}
+              autoCapitalize="none"
+              onChange={(event) => {
+                const text = event.target.value;
+                setNewEmails(text);
+                setError('');
+                setFeedback('');
+                onPendingChange(Boolean(text.trim()));
+              }}
+              onPressEnter={(event) => {
+                if (!event.nativeEvent.isComposing) {
+                  event.preventDefault();
+                  addRecipients();
+                }
+              }}
+            />
+            <Button
+              disabled={disabled || !newEmails.trim()}
+              onClick={addRecipients}
+            >
+              验证并添加
+            </Button>
+          </div>
+          <div id={`${id}-hint`} className="mt-2 text-xs text-slate-500">
+            {error ? (
+              <span role="alert" className="text-red-600">
+                {error}
+              </span>
+            ) : (
+              <span role="status">
+                {feedback || (
+                  <>
+                    新增邮箱校验通过后加入已有名单，
+                    <strong className="font-bold text-blue-700">
+                      点击保存后生效
+                    </strong>
+                  </>
+                )}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const WeeklyReportManagementContent: React.FC<{
   userKey: string;
   reportType?: 'community' | 'issue';
 }> = ({ userKey, reportType = 'community' }) => {
+  useManagementControls();
   const [messageApi, contextHolder] = message.useMessage();
   const [savingPreview, setSavingPreview] = useState(false);
   const [savingFormalAuto, setSavingFormalAuto] = useState(false);
@@ -96,6 +210,9 @@ const WeeklyReportManagementContent: React.FC<{
     string | null
   >(null);
   const [recordPage, setRecordPage] = useState(1);
+  const [previewPending, setPreviewPending] = useState(false);
+  const [formalPending, setFormalPending] = useState(false);
+  const [ccPending, setCcPending] = useState(false);
 
   const {
     data: previewConfig,
@@ -119,6 +236,7 @@ const WeeklyReportManagementContent: React.FC<{
       ),
   });
 
+  const configurationUnavailable = previewConfigLoading || !previewConfig;
   const savedPreviewRecipients = getRecipientText(
     previewConfig?.preview_recipients
   );
@@ -140,6 +258,10 @@ const WeeklyReportManagementContent: React.FC<{
 
   const savePreviewConfig = useCallback(
     async (previewEnabled?: boolean) => {
+      if (previewEnabled === undefined && previewPending) {
+        messageApi.error('请先验证并添加新增的预览邮箱');
+        return;
+      }
       const recipients = parseRecipients(previewRecipients);
       if (previewEnabled === undefined && hasInvalidRecipients(recipients)) {
         messageApi.error('请输入正确的预览收件邮箱地址');
@@ -167,10 +289,20 @@ const WeeklyReportManagementContent: React.FC<{
         setSavingPreview(false);
       }
     },
-    [messageApi, previewRecipients, refetchPreviewConfig, reportType]
+    [
+      messageApi,
+      previewRecipients,
+      previewPending,
+      refetchPreviewConfig,
+      reportType,
+    ]
   );
 
   const saveFormalRecipients = useCallback(async () => {
+    if (formalPending || ccPending) {
+      messageApi.error('请先验证并添加新增的正式邮箱');
+      return;
+    }
     const to = parseRecipients(formalRecipients);
     const cc = parseRecipients(formalCcRecipients);
     if (!to.length) {
@@ -202,6 +334,8 @@ const WeeklyReportManagementContent: React.FC<{
   }, [
     formalRecipients,
     formalCcRecipients,
+    formalPending,
+    ccPending,
     messageApi,
     refetchPreviewConfig,
     reportType,
@@ -352,17 +486,19 @@ const WeeklyReportManagementContent: React.FC<{
             id="preview-weekly-recipients"
             label="预览周报收件人"
             value={previewRecipients}
-            disabled={previewConfigLoading || !previewConfig || savingPreview}
+            disabled={configurationUnavailable || savingPreview}
             onChange={setPreviewRecipients}
+            onPendingChange={setPreviewPending}
           />
           <div className="mt-3 flex items-center justify-between gap-3">
-            <span className="text-xs text-slate-500">
-              {previewDirty ? '有未保存修改' : '输入完成后点击保存即可生效'}
-            </span>
+            <strong className="text-sm font-bold text-blue-700">
+              {getRecipientSaveHint(previewPending, previewDirty)}
+            </strong>
             <Button
-              className="rounded-full"
+              type="primary"
+              className="rounded-full font-semibold"
               loading={savingPreview}
-              disabled={previewConfigLoading || !previewConfig}
+              disabled={configurationUnavailable || previewPending}
               onClick={() => void savePreviewConfig()}
             >
               保存预览配置
@@ -404,35 +540,39 @@ const WeeklyReportManagementContent: React.FC<{
             id="formal-weekly-recipients"
             label="正式周报收件人"
             value={formalRecipients}
-            disabled={
-              previewConfigLoading || !previewConfig || savingFormalRecipients
-            }
+            disabled={configurationUnavailable || savingFormalRecipients}
             onChange={setFormalRecipients}
+            onPendingChange={setFormalPending}
           />
           <RecipientInput
             id="formal-weekly-cc"
             label="正式周报抄送人（可留空）"
             value={formalCcRecipients}
-            disabled={
-              previewConfigLoading || !previewConfig || savingFormalRecipients
-            }
+            disabled={configurationUnavailable || savingFormalRecipients}
             onChange={setFormalCcRecipients}
+            onPendingChange={setCcPending}
           />
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs text-slate-500">
-              {formalDirty ? '有未保存修改' : '输入完成后点击保存即可生效'}
-            </span>
+            <strong className="text-sm font-bold text-blue-700">
+              {getRecipientSaveHint(formalPending || ccPending, formalDirty)}
+            </strong>
             <Button
-              className="rounded-full"
+              type="primary"
+              className="rounded-full font-semibold"
               loading={savingFormalRecipients}
-              disabled={previewConfigLoading || !previewConfig}
+              disabled={
+                previewConfigLoading ||
+                !previewConfig ||
+                formalPending ||
+                ccPending
+              }
               onClick={() => void saveFormalRecipients()}
             >
               保存正式收件配置
             </Button>
           </div>
         </div>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-emerald-100 pt-4">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-emerald-200 pt-8">
           <span className="text-sm text-slate-500">
             如需提前或补发，仍可手动立即发送并记录结果。
           </span>

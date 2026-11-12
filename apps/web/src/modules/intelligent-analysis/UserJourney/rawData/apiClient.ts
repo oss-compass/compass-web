@@ -574,7 +574,11 @@ export const fetchRepoManagementRepos = async (
     owner?: string;
     hardwareEnv?: string;
     status?: 'online' | 'registered' | 'offline';
-    sortKey?: 'benchmark_repo_name' | 'overview_enabled';
+    sortKey?:
+      | 'benchmark_repo_name'
+      | 'overview_enabled'
+      | 'repo_name'
+      | 'latestReport';
     sortOrder?: 'ascend' | 'descend';
     reportType?: 'community' | 'issue';
     page?: number;
@@ -799,6 +803,8 @@ export const fetchOverviewAllRepoRerunRecords = async (
     teamName?: string;
     repoName?: string;
     triggerSource?: 'manual' | 'scheduled';
+    sortKey?: string;
+    sortOrder?: 'asc' | 'desc';
     page?: number;
     size?: number;
   },
@@ -813,6 +819,8 @@ export const fetchOverviewAllRepoRerunRecords = async (
   if (params.teamName) search.set('team_name', params.teamName);
   if (params.repoName) search.set('repo_name', params.repoName);
   if (params.triggerSource) search.set('trigger_source', params.triggerSource);
+  if (params.sortKey) search.set('sort_key', params.sortKey);
+  if (params.sortOrder) search.set('sort_order', params.sortOrder);
   search.set('page', String(params.page ?? 1));
   search.set('size', String(params.size ?? 20));
   return compassApiAuthedFetch<RepoRerunJobListResponse>(

@@ -1,8 +1,11 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import TaskManagementPage from './index';
-import { fetchCompassOperatorMe } from '../rawData/apiClient';
+import {
+  fetchCompassOperatorMe,
+  fetchOverviewAllRepoRerunRecords,
+} from '../rawData/apiClient';
 
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -99,4 +102,42 @@ test('allows administrators to open community weekly report management', async (
   mount('admin');
   fireEvent.click(await screen.findByRole('tab', { name: '周报管理' }));
   expect(screen.getByText('周报管理内容')).toBeInTheDocument();
+});
+
+test('requests a global task sort and preserves it when paging', async () => {
+  const fetchTasks = jest.mocked(fetchOverviewAllRepoRerunRecords);
+  fetchTasks.mockClear();
+  fetchTasks.mockResolvedValue({ items: [], total: 61, page: 1, size: 20 });
+  mount('admin');
+  const heading = (await screen.findAllByText('仓库名称'))[0];
+  fireEvent.click(heading);
+  await waitFor(() =>
+    expect(fetchTasks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 1,
+        sortKey: 'repo_name',
+        sortOrder: 'asc',
+      })
+    )
+  );
+  fireEvent.click(await screen.findByTitle('2'));
+  await waitFor(() =>
+    expect(fetchTasks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 2,
+        sortKey: 'repo_name',
+        sortOrder: 'asc',
+      })
+    )
+  );
+  fireEvent.click(heading);
+  await waitFor(() =>
+    expect(fetchTasks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 1,
+        sortKey: 'repo_name',
+        sortOrder: 'desc',
+      })
+    )
+  );
 });

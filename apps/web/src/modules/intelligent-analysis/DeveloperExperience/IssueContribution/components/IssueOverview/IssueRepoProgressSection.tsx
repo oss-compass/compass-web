@@ -19,6 +19,7 @@ import {
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
 import {
   fetchIssueOverviewRepos,
+  fetchAllIssueOverviewTeamRepos,
   fetchIssueOverviewTeams,
   fetchIssueOverviewTrends,
 } from '../../data';
@@ -201,6 +202,27 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     order: TableSortOrder;
   }>({ order: null });
   const [repoPage, setRepoPage] = React.useState(1);
+  const [repoSort, setRepoSort] = React.useState<{
+    key: string;
+    order: 'ascend' | 'descend';
+  }>({ key: 'idxTotal', order: 'descend' });
+  const repoSortFields: Record<string, string> = {
+    repoShort: 'repo',
+    teamName: 'team',
+    idxTotal: 'score',
+    painTotal: 'painTotal',
+    closeRate: 'closeRate',
+    report: 'report',
+  };
+  const repoSortField =
+    progressSortKey === 'none' ? repoSortFields[repoSort.key] : progressSortKey;
+  const repoSortDirection =
+    progressSortKey === 'none'
+      ? repoSort.order === 'ascend'
+        ? 'asc'
+        : 'desc'
+      : progressSortOrder;
+
   const [detailTarget, setDetailTarget] = React.useState<DetailTarget | null>(
     null
   );
@@ -219,37 +241,41 @@ const IssueRepoProgressSection: React.FC<Props> = ({
     queries: teamItems.map<UseQueryOptions<IssueOverviewRepo[]>>((team) => ({
       queryKey: ['issue-overview-v2-team-repos', org, team.name],
       queryFn: async ({ signal }): Promise<IssueOverviewRepo[]> => {
-        const page = await fetchIssueOverviewRepos(
-          {
-            org,
-            team: team.name,
-            page: 1,
-            pageSize: 100,
-            sort: 'repo',
-            order: 'asc',
-          },
+        const teamRepos = await fetchAllIssueOverviewTeamRepos(
+          org,
+          team.name,
           signal
         );
-        if (!page.items.length) return [];
-        const trend = await fetchIssueOverviewTrends(
-          { org, weeks: 104, repos: page.items.map((repo) => repo.repoShort) },
-          signal
-        );
-        return page.items.map((repo) => {
-          const values = trend.repos?.[repo.community];
-          if (!values?.length) return repo;
-          const valid = values
-            .map((value, index) => ({ value, period: trend.periods[index] }))
-            .filter(
-              (item): item is { value: number; period: string } =>
-                item.value != null && Number.isFinite(item.value)
-            );
-          return {
-            ...repo,
-            idxTrend: valid.map((item) => item.value),
-            idxTrendPeriods: valid.map((item) => item.period),
-          };
-        });
+        if (!teamRepos.length) return [];
+        const rows: IssueOverviewRepo[] = [];
+        for (let offset = 0; offset < teamRepos.length; offset += 50) {
+          const batch = teamRepos.slice(offset, offset + 50);
+          const trend = await fetchIssueOverviewTrends(
+            { org, weeks: 104, repos: batch.map((repo) => repo.repoShort) },
+            signal
+          );
+          rows.push(
+            ...batch.map((repo) => {
+              const values = trend.repos?.[repo.community];
+              if (!values?.length) return repo;
+              const valid = values
+                .map((value, index) => ({
+                  value,
+                  period: trend.periods[index],
+                }))
+                .filter(
+                  (item): item is { value: number; period: string } =>
+                    item.value != null && Number.isFinite(item.value)
+                );
+              return {
+                ...repo,
+                idxTrend: valid.map((item) => item.value),
+                idxTrendPeriods: valid.map((item) => item.period),
+              };
+            })
+          );
+        }
+        return rows;
       },
       enabled:
         !!team.name && (expandAllTeams || expandedRowKeys.includes(team.name)),
@@ -274,15 +300,21 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   }, [teamItems, teamRepoQueries]);
 
   const repoQuery = useQuery({
-    queryKey: ['issue-overview-v2-repos', org, repoPage],
+    queryKey: [
+      'issue-overview-v2-repos',
+      org,
+      repoPage,
+      repoSortField,
+      repoSortDirection,
+    ],
     queryFn: ({ signal }) =>
       fetchIssueOverviewRepos(
         {
           org,
           page: repoPage,
           pageSize: REPO_PAGE_SIZE,
-          sort: 'score',
-          order: 'desc',
+          sort: repoSortField,
+          order: repoSortDirection,
         },
         signal
       ),
@@ -430,8 +462,12 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         onSortKeyChange={(key) => {
           setTeamTableSort({ order: null });
           setProgressSortKey(key);
+          setRepoPage(1);
         }}
-        onSortOrderChange={setProgressSortOrder}
+        onSortOrderChange={(order) => {
+          setProgressSortOrder(order);
+          setRepoPage(1);
+        }}
       />
     ),
     [progressSortKey, progressSortOrder]
@@ -593,8 +629,12 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         title: '仓库',
         dataIndex: 'repoShort',
         key: 'repoShort',
+        sortOrder:
+          progressSortKey === 'none' && repoSort.key === 'repoShort'
+            ? repoSort.order
+            : null,
         width: 170,
-        sorter: (a, b) => a.repoShort.localeCompare(b.repoShort),
+        sorter: true,
         render: (value) => (
           <span className="font-semibold text-[var(--overview-slateDark)]">
             {value}
@@ -605,16 +645,24 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         title: '责任团队',
         dataIndex: 'teamName',
         key: 'teamName',
+        sortOrder:
+          progressSortKey === 'none' && repoSort.key === 'teamName'
+            ? repoSort.order
+            : null,
         width: 150,
         ellipsis: true,
-        sorter: (a, b) => a.teamName.localeCompare(b.teamName, 'zh-CN'),
+        sorter: true,
       },
       {
         title: '综合体验评分',
         dataIndex: 'idxTotal',
         key: 'idxTotal',
+        sortOrder:
+          progressSortKey === 'none' && repoSort.key === 'idxTotal'
+            ? repoSort.order
+            : null,
         width: 138,
-        sorter: (a, b) => (a.idxTotal ?? -1) - (b.idxTotal ?? -1),
+        sorter: true,
         render: (_value: number, record) => repoScoreCell(record),
       },
       {
@@ -632,8 +680,12 @@ const IssueRepoProgressSection: React.FC<Props> = ({
       {
         title: '问题数',
         key: 'painTotal',
+        sortOrder:
+          progressSortKey === 'none' && repoSort.key === 'painTotal'
+            ? repoSort.order
+            : null,
         width: 105,
-        sorter: (a, b) => a.painTotal - b.painTotal,
+        sorter: true,
         render: (_value, record) => (
           <button
             type="button"
@@ -648,17 +700,24 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         title: '闭环率',
         dataIndex: 'painCloseRate',
         key: 'closeRate',
+        sortOrder:
+          progressSortKey === 'none' && repoSort.key === 'closeRate'
+            ? repoSort.order
+            : null,
         width: 95,
-        sorter: (a, b) => a.painCloseRate - b.painCloseRate,
+        sorter: true,
         render: (value: number) => closeRateCell(value),
       },
       {
         title: '最新报告',
         key: 'report',
+        sortOrder:
+          progressSortKey === 'none' && repoSort.key === 'report'
+            ? repoSort.order
+            : null,
         width: 100,
         fixed: 'right',
-        sorter: (a, b) =>
-          reportSortName(a).localeCompare(reportSortName(b), 'zh-CN'),
+        sorter: true,
         render: (_value, record) => (
           <Link
             href={reportHref(record.community, record.period)}
@@ -669,7 +728,14 @@ const IssueRepoProgressSection: React.FC<Props> = ({
         ),
       },
     ],
-    [progressHeader, repoPage, repoScoreCell, reportHref]
+    [
+      progressHeader,
+      repoPage,
+      repoScoreCell,
+      reportHref,
+      progressSortKey,
+      repoSort,
+    ]
   );
 
   const teamColumns = React.useMemo<TableProps<TeamRow>['columns']>(
@@ -836,6 +902,22 @@ const IssueRepoProgressSection: React.FC<Props> = ({
   );
 
   const renderExpandedTeam = (team: TeamRow) => {
+    const detailQuery =
+      teamRepoQueries[teamItems.findIndex((item) => item.name === team.name)];
+    if (detailQuery?.isError) {
+      return (
+        <div role="alert" className="px-4 py-3 text-sm text-rose-600">
+          团队仓库加载失败，请重试。
+          <button
+            type="button"
+            className="ml-2 rounded border px-2 py-1"
+            onClick={() => detailQuery.refetch()}
+          >
+            重试
+          </button>
+        </div>
+      );
+    }
     if (teamLoadingByName.get(team.name)) {
       return (
         <div className="overview-expanded-rows px-4 py-3">
@@ -1031,8 +1113,18 @@ const IssueRepoProgressSection: React.FC<Props> = ({
           <>
             <Table<IssueOverviewRepo>
               className="overview-ant-table"
-              dataSource={sortByProgress(repoRows)}
+              dataSource={repoRows}
               columns={repoColumns}
+              onChange={(_pagination, _filters, sorter) => {
+                const active = Array.isArray(sorter) ? sorter[0] : sorter;
+                setProgressSortKey('none');
+                setRepoPage(1);
+                setRepoSort(
+                  active.order
+                    ? { key: String(active.columnKey), order: active.order }
+                    : { key: 'idxTotal', order: 'descend' }
+                );
+              }}
               rowKey={(repo) => `${repo.community}-${repo.period}`}
               loading={repoQuery.isLoading || repoTrendQuery.isLoading}
               pagination={false}

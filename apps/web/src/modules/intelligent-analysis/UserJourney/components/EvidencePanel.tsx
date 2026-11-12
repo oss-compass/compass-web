@@ -19,6 +19,7 @@ import {
 } from '../rawData/apiClient';
 import { formatLocalDateTime } from '../time';
 import OperationGuide from '../../DeveloperExperience/components/OperationGuide';
+import { isCommonIssue } from '../OverviewDashboard/utils';
 /* ─── 图标 ─── */
 export const EvidenceIcon: React.FC<{ className?: string }> = ({
   className = '',
@@ -1733,6 +1734,10 @@ const HistoryPainTable: React.FC<{
       painIndex?: number;
     }>
   ) => {
+    // 历史列表按父痛点展示，旧报告的确认记录不能覆盖合并后的当前状态。
+    const parentStatus = getParentPainStatus(item);
+    if (parentStatus !== undefined) return parentStatus;
+
     const parentId = String(item.parentId || item.id || '').trim();
     const children = parentChildrenMap?.get(parentId) || [];
     const resolveConfirmationStatus = (child?: OverviewParentChildPain) => {
@@ -2282,6 +2287,8 @@ const EvidencePanel: React.FC<EvidencePanelProps> = ({
     return rows.filter((row) => {
       const childIds = row.childIds ?? [];
       if (!childIds.length) return false;
+      // 已合并的共性问题由当前痛点和共性问题入口承载，历史列表不重复展示。
+      if (isCommonIssue(row) && new Set(childIds).size > 1) return false;
 
       let hasTaskMatch = false;
       let hasHistoricalEntry = false;

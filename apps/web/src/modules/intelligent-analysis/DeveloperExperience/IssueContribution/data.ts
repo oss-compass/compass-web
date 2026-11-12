@@ -223,6 +223,25 @@ export const fetchIssueOverviewRepos = async (
     signal
   );
 
+/** Team expansion needs all team repositories before local grouping and sorting. */
+export const fetchAllIssueOverviewTeamRepos = async (
+  org: string | undefined,
+  team: string,
+  signal?: AbortSignal
+): Promise<IssueOverviewRepo[]> => {
+  const items: IssueOverviewRepo[] = [];
+  for (let page = 1; page <= 100; page += 1) {
+    const response = await fetchIssueOverviewRepos(
+      { org, team, page, pageSize: 100, sort: 'repo', order: 'asc' },
+      signal
+    );
+    items.push(...response.items);
+    if (items.length >= response.total) return items;
+    if (!response.items.length) break;
+  }
+  throw new Error('团队仓库列表未完整加载，请重试');
+};
+
 export const fetchIssueOverviewPainSummary = async (
   org?: string,
   signal?: AbortSignal
@@ -281,6 +300,16 @@ export type IssueOverviewV2TopPainsQuery = {
   states?: string[];
   includeFilterOptions?: boolean;
   trackingStatus?: string;
+  sort?:
+    | 'repo'
+    | 'team'
+    | 'stage'
+    | 'metric'
+    | 'title'
+    | 'prio'
+    | 'state'
+    | 'period';
+  order?: 'asc' | 'desc';
 };
 
 const priorityFromCounts = (

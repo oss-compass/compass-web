@@ -1,5 +1,11 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import WeeklyReportManagementSection from './WeeklyReportManagementSection';
 import {
@@ -15,24 +21,35 @@ jest.mock('../rawData/apiClient', () => ({
   updateWeeklyReportPreviewConfig: jest.fn(),
   sendFormalWeeklyReport: jest.fn(),
 }));
-
 jest.mock('antd', () => ({
   Button: ({ children, onClick, disabled, loading }) => (
     <button onClick={onClick} disabled={disabled || loading}>
       {children}
     </button>
   ),
-  Input: {
-    TextArea: ({ id, value, onChange, disabled, placeholder }) => (
-      <textarea
-        id={id}
-        value={value}
-        disabled={disabled}
-        placeholder={placeholder}
-        onChange={onChange}
-      />
-    ),
-  },
+  Input: ({
+    id,
+    value,
+    onChange,
+    disabled,
+    placeholder,
+    onPressEnter,
+    'aria-invalid': invalid,
+    'aria-describedby': describedBy,
+  }) => (
+    <input
+      id={id}
+      value={value}
+      disabled={disabled}
+      placeholder={placeholder}
+      onChange={onChange}
+      aria-invalid={invalid}
+      aria-describedby={describedBy}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') onPressEnter(event);
+      }}
+    />
+  ),
   Switch: ({ checked, onChange, loading, 'aria-label': label }) => (
     <input
       type="checkbox"
@@ -59,19 +76,29 @@ const config = {
   formal_cc_recipients: ['cc@example.com'],
   timezone: 'Asia/Shanghai',
 };
-beforeEach(() => {
-  jest.clearAllMocks();
-  jest.mocked(fetchWeeklyReportPreviewConfig).mockResolvedValue(config);
-  jest
-    .mocked(fetchFormalWeeklyReportRecords)
-    .mockResolvedValue({ items: [], total: 0, page: 1, size: 10 });
-  jest
-    .mocked(updateWeeklyReportPreviewConfig)
-    .mockResolvedValue({ message: '已保存', data: config });
-});
+const toLabel = '正式周报收件人';
+const ccLabel = '正式周报抄送人（可留空）';
+const previewLabel = '预览周报收件人';
+const list = (label: string) =>
+  screen.getByRole('list', { name: `${label}名单` });
+const input = (label: string) => screen.getByLabelText(`新增${label}`);
+const add = (label: string, text: string) => {
+  fireEvent.change(input(label), { target: { value: text } });
+  fireEvent.click(
+    within(screen.getByRole('region', { name: label })).getByRole('button', {
+      name: '验证并添加',
+    })
+  );
+};
+const remove = (label: string, email: string) =>
+  fireEvent.click(
+    screen.getByRole('button', { name: `${label}：移除 ${email}` })
+  );
+const saveButton = () =>
+  screen.getByRole('button', { name: '保存正式收件配置' });
 const renderForm = (reportType: 'community' | 'issue' = 'community') => {
   const client = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
+    defaultOptions: { queries: { retry: false, cacheTime: 0 } },
   });
   return render(
     <QueryClientProvider client={client}>
@@ -82,17 +109,35 @@ const renderForm = (reportType: 'community' | 'issue' = 'community') => {
     </QueryClientProvider>
   );
 };
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(fetchWeeklyReportPreviewConfig).mockResolvedValue(config);
+  jest
+    .mocked(fetchFormalWeeklyReportRecords)
+    .mockResolvedValue({ items: [], total: 0, page: 1, size: 10 });
+  jest
+    .mocked(updateWeeklyReportPreviewConfig)
+    .mockResolvedValue({ message: '已保存', data: config });
+});
+
 test.each(['community', 'issue'] as const)(
-  'saves formal To and cleared CC for %s independently',
+  'validates and stages %s recipients before explicit save',
   async (reportType) => {
     renderForm(reportType);
-    const to = screen.getByLabelText('正式周报收件人');
-    await waitFor(() => expect(to).toHaveValue('saved@example.com'));
-    fireEvent.change(to, { target: { value: 'new@example.com' } });
-    fireEvent.change(screen.getByLabelText('正式周报抄送人（可留空）'), {
-      target: { value: '' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: '保存正式收件配置' }));
+    await waitFor(() =>
+      expect(list(toLabel)).toHaveTextContent('saved@example.com')
+    );
+    expect(input(toLabel)).toHaveValue('');
+    add(toLabel, 'new@example.com');
+    expect(list(toLabel)).toHaveTextContent('new@example.com');
+    expect(input(toLabel)).toHaveValue('');
+    expect(
+      screen.getByText('有未保存修改，点击保存后生效')
+    ).toBeInTheDocument();
+    expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
+    remove(toLabel, 'saved@example.com');
+    remove(ccLabel, 'cc@example.com');
+    fireEvent.click(saveButton());
     await waitFor(() =>
       expect(updateWeeklyReportPreviewConfig).toHaveBeenCalledWith(
         { formal_recipients: ['new@example.com'], formal_cc_recipients: [] },
@@ -100,24 +145,94 @@ test.each(['community', 'issue'] as const)(
         reportType
       )
     );
-    await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: '保存正式收件配置' })
-      ).not.toBeDisabled()
-    );
+    await waitFor(() => expect(saveButton()).not.toBeDisabled());
   }
 );
-test('rejects invalid formal recipients before updating', async () => {
+
+test('rejects invalid email addresses without modifying the list', async () => {
   renderForm();
-  const to = screen.getByLabelText('正式周报收件人');
-  await waitFor(() => expect(to).toHaveValue('saved@example.com'));
-  fireEvent.change(to, { target: { value: 'invalid' } });
-  fireEvent.click(screen.getByRole('button', { name: '保存正式收件配置' }));
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  add(toLabel, 'valid@example.com, invalid');
+  expect(screen.getByRole('alert')).toHaveTextContent('邮箱格式不正确');
+  expect(list(toLabel)).not.toHaveTextContent('valid@example.com');
+  expect(input(toLabel)).toHaveValue('valid@example.com, invalid');
+  expect(input(toLabel)).toHaveAttribute('aria-invalid', 'true');
+  expect(saveButton()).toBeDisabled();
+  expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
+});
+
+test('blocks saving pending input until validation or cancellation', async () => {
+  renderForm();
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  fireEvent.change(input(toLabel), {
+    target: { value: 'pending@example.com' },
+  });
+  expect(list(toLabel)).not.toHaveTextContent('pending@example.com');
+  expect(saveButton()).toBeDisabled();
+  fireEvent.change(input(toLabel), { target: { value: '' } });
+  expect(saveButton()).not.toBeDisabled();
+  expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
+});
+
+test('deduplicates validated pasted emails without overwriting existing recipients', async () => {
+  renderForm();
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  add(
+    toLabel,
+    'SAVED@example.com，first@example.com;FIRST@example.com；second@example.com'
+  );
+  expect(within(list(toLabel)).getAllByRole('listitem')).toHaveLength(3);
+  expect(list(toLabel)).toHaveTextContent('first@example.com');
+  expect(list(toLabel)).toHaveTextContent('second@example.com');
+  fireEvent.click(saveButton());
+  await waitFor(() =>
+    expect(updateWeeklyReportPreviewConfig).toHaveBeenCalledWith(
+      {
+        formal_recipients: [
+          'saved@example.com',
+          'first@example.com',
+          'second@example.com',
+        ],
+        formal_cc_recipients: ['cc@example.com'],
+      },
+      undefined,
+      'community'
+    )
+  );
+  await waitFor(() => expect(saveButton()).not.toBeDisabled());
+});
+
+test('keeps duplicate additions out of the list and clears the new input', async () => {
+  renderForm();
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  add(toLabel, 'SAVED@example.com');
+  expect(within(list(toLabel)).getAllByRole('listitem')).toHaveLength(1);
+  expect(input(toLabel)).toHaveValue('');
+  expect(screen.getByText('邮箱已在名单中，未重复添加')).toBeInTheDocument();
+  expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
+});
+
+test('allows optional Enter validation without saving the server configuration', async () => {
+  renderForm();
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  fireEvent.change(input(toLabel), { target: { value: 'enter@example.com' } });
+  fireEvent.keyDown(input(toLabel), { key: 'Enter', code: 'Enter' });
+  expect(list(toLabel)).toHaveTextContent('enter@example.com');
   expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
 });
 
 test.each(['community', 'issue'] as const)(
-  'prefills the existing effective To and CC for %s',
+  'prefills the effective %s To and CC into existing lists',
   async (reportType) => {
     jest.mocked(fetchWeeklyReportPreviewConfig).mockResolvedValue({
       ...config,
@@ -131,13 +246,11 @@ test.each(['community', 'issue'] as const)(
     });
     renderForm(reportType);
     await waitFor(() =>
-      expect(screen.getByLabelText('正式周报收件人')).toHaveValue(
-        'existing@example.com\nowner@example.com'
-      )
+      expect(list(toLabel)).toHaveTextContent('existing@example.com')
     );
-    expect(screen.getByLabelText('正式周报抄送人（可留空）')).toHaveValue(
-      'admin@example.com'
-    );
+    expect(list(toLabel)).toHaveTextContent('owner@example.com');
+    expect(list(ccLabel)).toHaveTextContent('admin@example.com');
+    expect(input(toLabel)).toHaveValue('');
     expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
   }
 );
@@ -150,126 +263,25 @@ test('keeps an explicitly cleared CC empty when prefilling', async () => {
   });
   renderForm();
   await waitFor(() =>
-    expect(screen.getByLabelText('正式周报收件人')).toHaveValue(
-      'saved@example.com'
-    )
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
   );
-  expect(screen.getByLabelText('正式周报抄送人（可留空）')).toHaveValue('');
+  expect(list(ccLabel)).not.toHaveTextContent('old@example.com');
+  expect(list(ccLabel)).toHaveTextContent('暂无收件人');
 });
 
-test.each(['community', 'issue'] as const)(
-  'hides %s weekly report management and makes no requests for non-admins',
-  (reportType) => {
-    const client = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
-    const { rerender } = render(
-      <QueryClientProvider client={client}>
-        <WeeklyReportManagementSection
-          user={{ username: 'member', role: 'repo_owner' }}
-          reportType={reportType}
-        />
-      </QueryClientProvider>
-    );
-    expect(screen.queryByLabelText('正式周报收件人')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: '发送正式周报' })
-    ).not.toBeInTheDocument();
-    rerender(
-      <QueryClientProvider client={client}>
-        <WeeklyReportManagementSection user={null} reportType={reportType} />
-      </QueryClientProvider>
-    );
-    expect(fetchWeeklyReportPreviewConfig).not.toHaveBeenCalled();
-    expect(fetchFormalWeeklyReportRecords).not.toHaveBeenCalled();
-    expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
-    expect(sendFormalWeeklyReport).not.toHaveBeenCalled();
-  }
-);
-
-test('unmounts weekly report management immediately when switching away from an administrator', async () => {
-  const client = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-  const { rerender } = render(
-    <QueryClientProvider client={client}>
-      <WeeklyReportManagementSection
-        user={{ username: 'admin', role: 'admin' }}
-      />
-    </QueryClientProvider>
-  );
-  await waitFor(() =>
-    expect(screen.getByLabelText('正式周报收件人')).toHaveValue(
-      'saved@example.com'
-    )
-  );
-  rerender(
-    <QueryClientProvider client={client}>
-      <WeeklyReportManagementSection
-        user={{ username: 'member', role: 'repo_owner' }}
-      />
-    </QueryClientProvider>
-  );
-  expect(screen.queryByLabelText('正式周报收件人')).not.toBeInTheDocument();
-  expect(
-    screen.queryByRole('button', { name: '发送正式周报' })
-  ).not.toBeInTheDocument();
-});
-
-test.each(['community', 'issue'] as const)(
-  'saves pasted %s addresses directly without pressing Enter',
-  async (reportType) => {
-    renderForm(reportType);
-    const to = screen.getByLabelText('正式周报收件人');
-    await waitFor(() => expect(to).toHaveValue('saved@example.com'));
-    const text =
-      'first@example.com，SECOND@example.com; first@example.com\nthird@example.com；fourth@example.com';
-    fireEvent.change(to, { target: { value: text } });
-    expect(to).toHaveValue(text);
-    expect(screen.getByText('有未保存修改')).toBeInTheDocument();
-    expect(screen.getByText('4 个邮箱')).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText('正式周报抄送人（可留空）'), {
-      target: { value: 'cc@example.com, CC@example.com' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: '保存正式收件配置' }));
-    await waitFor(() =>
-      expect(updateWeeklyReportPreviewConfig).toHaveBeenCalledWith(
-        {
-          formal_recipients: [
-            'first@example.com',
-            'SECOND@example.com',
-            'third@example.com',
-            'fourth@example.com',
-          ],
-          formal_cc_recipients: ['cc@example.com'],
-        },
-        undefined,
-        reportType
-      )
-    );
-    await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: '保存正式收件配置' })
-      ).not.toBeDisabled()
-    );
-  }
-);
-
-test('saves preview recipients directly from the visible text', async () => {
+test('validates preview recipients before staging and saving them', async () => {
   renderForm();
-  const input = screen.getByLabelText('预览周报收件人');
-  await waitFor(() => expect(input).toHaveValue('preview@example.com'));
-  fireEvent.change(input, {
-    target: { value: 'preview-one@example.com\npreview-two@example.com' },
-  });
+  await waitFor(() =>
+    expect(list(previewLabel)).toHaveTextContent('preview@example.com')
+  );
+  add(previewLabel, 'new-preview@example.com');
+  expect(list(previewLabel)).toHaveTextContent('new-preview@example.com');
+  expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: '保存预览配置' }));
   await waitFor(() =>
     expect(updateWeeklyReportPreviewConfig).toHaveBeenCalledWith(
       {
-        preview_recipients: [
-          'preview-one@example.com',
-          'preview-two@example.com',
-        ],
+        preview_recipients: ['preview@example.com', 'new-preview@example.com'],
       },
       undefined,
       'community'
@@ -282,38 +294,37 @@ test('saves preview recipients directly from the visible text', async () => {
   );
 });
 
-test('preserves the edited address text when saving fails', async () => {
+test('preserves the staged list if saving fails', async () => {
   jest
     .mocked(updateWeeklyReportPreviewConfig)
     .mockRejectedValueOnce(new Error('保存失败'));
   renderForm();
-  const input = screen.getByLabelText('正式周报收件人');
-  await waitFor(() => expect(input).toHaveValue('saved@example.com'));
-  fireEvent.change(input, { target: { value: 'keep-draft@example.com' } });
-  fireEvent.click(screen.getByRole('button', { name: '保存正式收件配置' }));
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  add(toLabel, 'keep-draft@example.com');
+  fireEvent.click(saveButton());
   await waitFor(() =>
     expect(updateWeeklyReportPreviewConfig).toHaveBeenCalledTimes(1)
   );
-  await waitFor(() =>
-    expect(
-      screen.getByRole('button', { name: '保存正式收件配置' })
-    ).not.toBeDisabled()
-  );
-  expect(input).toHaveValue('keep-draft@example.com');
-  expect(screen.getByText('有未保存修改')).toBeInTheDocument();
+  await waitFor(() => expect(saveButton()).not.toBeDisabled());
+  expect(list(toLabel)).toHaveTextContent('keep-draft@example.com');
+  expect(screen.getByText('有未保存修改，点击保存后生效')).toBeInTheDocument();
 });
 
-test('keeps unsaved address drafts when toggling the preview schedule', async () => {
+test('keeps both pending inputs and staged lists when toggling a schedule', async () => {
   jest
     .mocked(fetchWeeklyReportPreviewConfig)
     .mockResolvedValueOnce(config)
     .mockResolvedValue({ ...config, preview_enabled: true });
   renderForm();
-  const preview = screen.getByLabelText('预览周报收件人');
-  const formal = screen.getByLabelText('正式周报收件人');
-  await waitFor(() => expect(preview).toHaveValue('preview@example.com'));
-  fireEvent.change(preview, { target: { value: 'preview-draft@example.com' } });
-  fireEvent.change(formal, { target: { value: 'formal-draft@example.com' } });
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  add(toLabel, 'formal-draft@example.com');
+  fireEvent.change(input(previewLabel), {
+    target: { value: 'preview-draft@example.com' },
+  });
   fireEvent.click(screen.getByRole('switch', { name: '预览周报自动发送' }));
   await waitFor(() =>
     expect(updateWeeklyReportPreviewConfig).toHaveBeenCalledWith(
@@ -327,6 +338,61 @@ test('keeps unsaved address drafts when toggling the preview schedule', async ()
       screen.getByRole('switch', { name: '预览周报自动发送' })
     ).not.toBeDisabled()
   );
-  expect(preview).toHaveValue('preview-draft@example.com');
-  expect(formal).toHaveValue('formal-draft@example.com');
+  expect(input(previewLabel)).toHaveValue('preview-draft@example.com');
+  expect(list(toLabel)).toHaveTextContent('formal-draft@example.com');
+});
+
+test.each(['community', 'issue'] as const)(
+  'hides %s weekly management and makes no requests for non-admins',
+  (reportType) => {
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const { rerender } = render(
+      <QueryClientProvider client={client}>
+        <WeeklyReportManagementSection
+          user={{ username: 'member', role: 'repo_owner' }}
+          reportType={reportType}
+        />
+      </QueryClientProvider>
+    );
+    expect(
+      screen.queryByRole('region', { name: toLabel })
+    ).not.toBeInTheDocument();
+    rerender(
+      <QueryClientProvider client={client}>
+        <WeeklyReportManagementSection user={null} reportType={reportType} />
+      </QueryClientProvider>
+    );
+    expect(fetchWeeklyReportPreviewConfig).not.toHaveBeenCalled();
+    expect(fetchFormalWeeklyReportRecords).not.toHaveBeenCalled();
+    expect(updateWeeklyReportPreviewConfig).not.toHaveBeenCalled();
+    expect(sendFormalWeeklyReport).not.toHaveBeenCalled();
+  }
+);
+
+test('unmounts weekly management immediately when switching away from an administrator', async () => {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  const { rerender } = render(
+    <QueryClientProvider client={client}>
+      <WeeklyReportManagementSection
+        user={{ username: 'admin', role: 'admin' }}
+      />
+    </QueryClientProvider>
+  );
+  await waitFor(() =>
+    expect(list(toLabel)).toHaveTextContent('saved@example.com')
+  );
+  rerender(
+    <QueryClientProvider client={client}>
+      <WeeklyReportManagementSection
+        user={{ username: 'member', role: 'repo_owner' }}
+      />
+    </QueryClientProvider>
+  );
+  expect(
+    screen.queryByRole('region', { name: toLabel })
+  ).not.toBeInTheDocument();
 });
