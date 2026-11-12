@@ -13,8 +13,9 @@ const LogoUrlsSelect = ({
   onChange: (v: string) => void;
 }) => {
   useEffect(() => {
-    if (!value && logoUrls?.length > 0) {
-      onChange(logoUrls[0]);
+    if (!logoUrls.includes(value)) {
+      const nextValue = logoUrls[0] || '';
+      if (value !== nextValue) onChange(nextValue);
     }
   }, [logoUrls, onChange, value]);
 
@@ -41,7 +42,7 @@ const LogoUrlsSelect = ({
               />
             </div>
             {value === url ? (
-              <div className="absolute -right-1.5 -bottom-1.5 rounded-full bg-white p-0.5">
+              <div className="absolute -bottom-1.5 -right-1.5 rounded-full bg-white p-0.5">
                 <BsCheckCircleFill className={'text-xl text-green-500'} />
               </div>
             ) : null}
