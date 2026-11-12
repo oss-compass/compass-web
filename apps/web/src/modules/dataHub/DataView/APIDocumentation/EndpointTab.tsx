@@ -36,6 +36,7 @@ const EndpointTab = ({ endpoint }) => {
         key={endpoint?.id}
         method={endpoint.method}
         path={endpoint.path}
+        baseUrl={baseUrl}
         params={endpoint.parameters.map((p) => ({
           ...p,
           key: p.name,
