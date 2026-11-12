@@ -55,7 +55,7 @@ export const Select = forwardRef(function Select<
   );
 }) as <OptionValue extends {}, Multiple extends boolean>(
   props: SelectProps<OptionValue, Multiple> &
-    React.RefAttributes<HTMLUListElement> &
+    React.RefAttributes<HTMLButtonElement> &
     StyleProps
 ) => React.ReactElement;
 
