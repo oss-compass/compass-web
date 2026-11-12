@@ -7,6 +7,7 @@ import {
   getRepoOrigin,
   getRepoPath,
   getRepoUrlByName,
+  fillHttps,
   removeExtname,
   removeTrailingSlash,
   getNameSpacePng,
@@ -221,6 +222,36 @@ describe('utils url ', () => {
 
     testCases.map((item) => {
       expect(getNameSpacePng(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('fillHttps', function () {
+    const testCases = [
+      {
+        input: 'github.com/EdmondFrank/.emacs.d',
+        result: 'https://github.com/EdmondFrank/.emacs.d',
+      },
+      {
+        input: 'https://github.com/ant-design/ant-design',
+        result: 'https://github.com/ant-design/ant-design',
+      },
+      {
+        input: 'gitee.com/dotnetchina/MiniWord/',
+        result: 'https://gitee.com/dotnetchina/MiniWord',
+      },
+      {
+        // the substring "https" must not be mistaken for a protocol prefix
+        input: 'github.com/acme/https-client',
+        result: 'https://github.com/acme/https-client',
+      },
+      {
+        input: undefined,
+        result: '',
+      },
+    ];
+
+    testCases.map((item) => {
+      expect(fillHttps(item.input)).toEqual(item.result);
     });
   });
 });
