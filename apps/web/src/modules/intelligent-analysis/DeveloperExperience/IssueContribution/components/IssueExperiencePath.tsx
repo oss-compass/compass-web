@@ -6,7 +6,7 @@ import {
   LinkOutlined,
   ProfileOutlined,
 } from '@ant-design/icons';
-import { Pagination, Popover, Tooltip } from 'antd';
+import { Pagination, Popover, Tooltip, Typography } from 'antd';
 import { formatScore, getScoreTone, stripMetricCode } from '../presentation';
 import { getMetricCategory, getMetricDefinition } from '../metricDefinitions';
 import MetricDefinitionContent from './MetricDefinitionContent';
@@ -496,58 +496,73 @@ const StagePainCard: React.FC<{
             </span>
           ) : null}
         </button>
-        <div className="flex max-w-full flex-wrap items-center gap-2 pt-0.5">
-          <OperationGuide module="issue" section="pain" compact />
-          {efficiencyOnly ? (
-            <div className="flex min-w-0 flex-col items-end">
+        <div className="flex max-w-full flex-col items-end gap-1 pt-0.5">
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <OperationGuide module="issue" section="pain" compact />
+            {efficiencyOnly ? (
               <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-dashed border-cyan-400 bg-cyan-50 px-3 py-1.5 text-[11px] font-semibold text-cyan-700">
                 <span className="h-2 w-2 shrink-0 rounded-full bg-cyan-500" />
                 无需跟踪修复
               </span>
-              <p
-                className="mt-1 max-w-full truncate text-right text-[11px] leading-[14px] text-slate-500"
-                title="效率类痛点无需修复，仅记录涉及 Issue 数量，请持续减少后续同类问题。"
+            ) : tracking && onTrackingAction ? (
+              <TrackingActionButton
+                tracking={tracking}
+                onClick={() => setTrackingModalOpen(true)}
+              />
+            ) : (
+              <span
+                title="跟踪记录尚未生成，请稍后刷新"
+                className="inline-flex rounded-full border border-dashed border-slate-300 bg-slate-50 px-2.5 py-1 text-[10px] text-slate-400"
               >
-                效率类痛点无需修复，仅记录涉及 Issue
-                数量，请持续减少后续同类问题。
-              </p>
-            </div>
-          ) : tracking && onTrackingAction ? (
-            <TrackingActionButton
-              tracking={tracking}
-              onClick={() => setTrackingModalOpen(true)}
-            />
-          ) : (
-            <span
-              title="跟踪记录尚未生成，请稍后刷新"
-              className="inline-flex rounded-full border border-dashed border-slate-300 bg-slate-50 px-2.5 py-1 text-[10px] text-slate-400"
+                跟踪数据准备中
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-label={open ? '收起痛点详情' : '展开痛点详情'}
+              aria-expanded={open}
+              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-slate-600"
             >
-              跟踪数据准备中
-            </span>
-          )}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? '收起痛点详情' : '展开痛点详情'}
-            aria-expanded={open}
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-white hover:text-slate-600"
+              <DownOutlined
+                className={`text-[11px] transition-transform ${
+                  open ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+          </div>
+          <p
+            hidden={!efficiencyOnly}
+            className="max-w-full truncate text-right text-[11px] leading-[14px] text-slate-500"
+            title="效率类痛点无需修复，仅记录涉及 Issue 数量，请持续减少后续同类问题。"
           >
-            <DownOutlined
-              className={`text-[11px] transition-transform ${
-                open ? 'rotate-180' : ''
-              }`}
-            />
-          </button>
+            效率类痛点无需修复，仅记录涉及 Issue 数量，请持续减少后续同类问题。
+          </p>
         </div>
       </div>
 
       {open ? (
         <div className="border-t border-rose-100 px-4 py-4">
           <div className="grid gap-2 text-xs leading-5">
-            <p className="px-1 text-slate-600">
+            <Typography.Paragraph
+              className="!mb-0 px-1 !text-xs !leading-5 !text-slate-600"
+              ellipsis={{
+                rows: 2,
+                tooltip: {
+                  title: (
+                    <div className="max-h-[50vh] overflow-y-auto whitespace-pre-wrap break-words">
+                      {pain.impact}
+                    </div>
+                  ),
+                  overlayStyle: {
+                    maxWidth: 'min(640px, calc(100vw - 32px))',
+                  },
+                },
+              }}
+            >
               <span className="font-semibold text-slate-400">体验影响 · </span>
               {pain.impact}
-            </p>
+            </Typography.Paragraph>
           </div>
 
           {issues.length ? (
