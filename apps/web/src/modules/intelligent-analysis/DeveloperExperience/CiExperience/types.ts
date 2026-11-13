@@ -42,7 +42,12 @@ export type CiDim = {
 };
 
 /** 问题卡内单条 run×PR 映射 */
-export type CiRun = {
+export type CiRuleReference = {
+  rule_id?: string;
+  rulebook_version?: string;
+};
+
+export type CiRun = CiRuleReference & {
   n: number;
   id: string;
   pr: string;
@@ -73,7 +78,7 @@ export type CiProblemRoot = {
 };
 
 /** 单个问题卡 */
-export type CiProblem = {
+export type CiProblem = CiRuleReference & {
   pri: CiPri;
   dim: string;
   kb: string;

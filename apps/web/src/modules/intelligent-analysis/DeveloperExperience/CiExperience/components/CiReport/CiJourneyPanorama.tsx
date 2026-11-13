@@ -1,3 +1,4 @@
+import { CiProblemRuleSummary, CiRunRuleCell } from '../RuleReviews';
 import { useCiRepositoryUrl } from '../../repository';
 import React, { useEffect, useId, useState } from 'react';
 import { CiPainTrackingButton } from '../PainTracking';
@@ -538,6 +539,8 @@ const StageProblem: React.FC<{
           </button>
         </div>
       </div>
+      <CiProblemRuleSummary problem={problem} />
+
       {open ? (
         <div className="border-t border-slate-200 px-4 py-4">
           {metaLines.map((m, i) => (
@@ -631,6 +634,9 @@ const StageProblem: React.FC<{
                         <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
                           失败信息 / 说明
                         </th>
+                        <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
+                          判据 / 审核
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -664,6 +670,9 @@ const StageProblem: React.FC<{
                           </td>
                           <td className="border-b border-slate-100 px-3 py-2 text-slate-400">
                             {r.msg}
+                          </td>
+                          <td className="border-b border-slate-100 px-3 py-2">
+                            <CiRunRuleCell problem={problem} run={r} />
                           </td>
                         </tr>
                       ))}

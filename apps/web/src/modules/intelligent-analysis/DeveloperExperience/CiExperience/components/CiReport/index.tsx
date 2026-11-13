@@ -19,6 +19,7 @@ import { CiPainTrackingProvider } from '../PainTracking';
 import { uniqueProblems } from '../PainTracking/model';
 import type { CiReportContext } from '../../reportContext';
 import { CiRepositoryProvider } from '../../repository';
+import { CiRuleReviewProvider } from '../RuleReviews';
 
 type CiReportProps = {
   journey: CiJourney;
@@ -75,57 +76,59 @@ const CiReport: React.FC<CiReportProps> = ({
 
   return (
     <CiRepositoryProvider value={data.repository_url}>
-      <div className="flex flex-col gap-4">
-        <CiPainTrackingProvider
-          key={JSON.stringify(scope)}
-          scope={scope}
-          repo={repo}
-          problems={problems}
-          activeDimension={dimension}
-          activePriority={priority}
-          onResetFilters={resetFilters}
-          onProblemJump={handleProblemJump}
-        >
-          <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] md:p-4">
-            <CiReportOverview
-              journey={journey}
-              context={context}
-              day={day}
-              board={data.boards[day]}
-              onProblemJump={handleProblemJump}
-              problems={problems}
-              activeDimension={dimension}
-              activePriority={priority}
-              onFilterChange={(nextDimension, nextPriority) => {
-                setDimension(nextDimension);
-                setPriority(nextPriority);
-              }}
-            />
-
-            <div className="mt-2 border-slate-100 pt-5">
-              <CiJourneyPanorama
+      <CiRuleReviewProvider key={`${repo}:${day}`} repo={repo} day={day}>
+        <div className="flex flex-col gap-4">
+          <CiPainTrackingProvider
+            key={JSON.stringify(scope)}
+            scope={scope}
+            repo={repo}
+            problems={problems}
+            activeDimension={dimension}
+            activePriority={priority}
+            onResetFilters={resetFilters}
+            onProblemJump={handleProblemJump}
+          >
+            <div className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] md:p-4">
+              <CiReportOverview
                 journey={journey}
-                repo={repo}
-                workflow={data.workflow}
+                context={context}
                 day={day}
-                focus={journeyFocus}
+                board={data.boards[day]}
+                onProblemJump={handleProblemJump}
+                problems={problems}
+                activeDimension={dimension}
+                activePriority={priority}
+                onFilterChange={(nextDimension, nextPriority) => {
+                  setDimension(nextDimension);
+                  setPriority(nextPriority);
+                }}
               />
-            </div>
-          </div>
-        </CiPainTrackingProvider>
-        <DailyDrilldown data={data} day={day} />
 
-        <Collapsible
-          className="!rounded-3xl !border-white/80 !bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
-          summary={
-            <span className="inline-block py-2 text-base font-semibold text-slate-900">
-              评分口径与数据来源
-            </span>
-          }
-        >
-          <Appendix context={context} />
-        </Collapsible>
-      </div>
+              <div className="mt-2 border-slate-100 pt-5">
+                <CiJourneyPanorama
+                  journey={journey}
+                  repo={repo}
+                  workflow={data.workflow}
+                  day={day}
+                  focus={journeyFocus}
+                />
+              </div>
+            </div>
+          </CiPainTrackingProvider>
+          <DailyDrilldown data={data} day={day} />
+
+          <Collapsible
+            className="!rounded-3xl !border-white/80 !bg-white/90 shadow-[0_24px_70px_rgba(15,23,42,0.08)]"
+            summary={
+              <span className="inline-block py-2 text-base font-semibold text-slate-900">
+                评分口径与数据来源
+              </span>
+            }
+          >
+            <Appendix context={context} />
+          </Collapsible>
+        </div>
+      </CiRuleReviewProvider>
     </CiRepositoryProvider>
   );
 };

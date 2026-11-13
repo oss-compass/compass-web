@@ -1,4 +1,3 @@
-import { useCiRepositoryUrl } from '../../repository';
 import {
   CheckCircleOutlined,
   CheckOutlined,
@@ -26,7 +25,6 @@ import toast from 'react-hot-toast';
 import {
   Alert,
   Button,
-  Empty,
   Input,
   Modal,
   Select,
@@ -37,7 +35,8 @@ import {
   Tooltip,
 } from 'antd';
 import type { CiDimKey, CiPri, CiProblem, CiRepoKey } from '../../types';
-import { DIM_NAME, prURL, runURL } from '../../helpers';
+import { DIM_NAME } from '../../helpers';
+import RunReviewTable from './RunReviewTable';
 import { useTrackingOperator } from '../../../IssueContribution/components/PainTrackingModal/hooks';
 import {
   formatTrackingTime,
@@ -242,30 +241,48 @@ const OperatorField: React.FC<{
   operator: string;
   operatorError: string;
   saving: boolean;
+  compact?: boolean;
   onOperatorChange: (value: string) => void;
-}> = ({ operator, operatorError, saving, onOperatorChange }) => (
-  <div>
-    <label
-      htmlFor="ci-pain-tracking-operator"
-      className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-600"
-    >
-      <UserOutlined
-        className={operatorError ? 'text-rose-500' : 'text-slate-400'}
+}> = ({
+  operator,
+  operatorError,
+  saving,
+  compact = false,
+  onOperatorChange,
+}) => (
+  <div className={compact ? 'shrink-0' : undefined}>
+    <div className={compact ? 'flex h-7 items-center gap-2' : undefined}>
+      <label
+        htmlFor="ci-pain-tracking-operator"
+        className={
+          compact
+            ? 'flex shrink-0 items-center gap-1.5 text-xs font-medium text-slate-600'
+            : 'mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-600'
+        }
+      >
+        <UserOutlined
+          className={operatorError ? 'text-rose-500' : 'text-slate-400'}
+        />
+        提交人<span className="text-rose-500">*</span>
+      </label>
+      <Input
+        id="ci-pain-tracking-operator"
+        aria-label="提交人"
+        status={operatorError ? 'error' : undefined}
+        size={compact ? 'small' : 'middle'}
+        className={
+          compact
+            ? '!h-7 !w-36 !rounded-lg !border-slate-200 !bg-white !px-2.5'
+            : '!h-10 !rounded-[10px] !border-slate-200 !bg-white !px-3'
+        }
+        value={operator}
+        placeholder="请输入姓名"
+        maxLength={20}
+        autoComplete="off"
+        disabled={saving}
+        onChange={(event) => onOperatorChange(event.target.value)}
       />
-      提交人<span className="text-rose-500">*</span>
-    </label>
-    <Input
-      id="ci-pain-tracking-operator"
-      aria-label="提交人"
-      status={operatorError ? 'error' : undefined}
-      className="!h-10 !rounded-[10px] !border-slate-200 !bg-white !px-3"
-      value={operator}
-      placeholder="请输入姓名"
-      maxLength={20}
-      autoComplete="off"
-      disabled={saving}
-      onChange={(event) => onOperatorChange(event.target.value)}
-    />
+    </div>
     {operatorError ? (
       <div
         role="alert"
@@ -289,6 +306,8 @@ const StatusWorkflowPanel: React.FC<{
   onReasonChange: (value: string) => void;
   onAction: (action: TrackingAction, reason?: string) => void;
   onInvalid: () => void;
+  showOperator?: boolean;
+  perRunDecision?: boolean;
 }> = ({
   status,
   operator,
@@ -300,6 +319,8 @@ const StatusWorkflowPanel: React.FC<{
   onReasonChange,
   onAction,
   onInvalid,
+  showOperator = true,
+  perRunDecision = false,
 }) => {
   const meta = WORKFLOW_PANEL_META[status];
   const disabled = !ready || saving;
@@ -331,13 +352,21 @@ const StatusWorkflowPanel: React.FC<{
         </span>
       </div>
 
-      <div className="grid gap-4 bg-white/70 p-5 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <OperatorField
-          operator={operator}
-          operatorError={operatorError}
-          saving={saving}
-          onOperatorChange={onOperatorChange}
-        />
+      <div
+        className={
+          showOperator
+            ? 'grid gap-4 bg-white/70 p-5 lg:grid-cols-[220px_minmax(0,1fr)]'
+            : 'space-y-3 bg-white/70 p-5'
+        }
+      >
+        {showOperator ? (
+          <OperatorField
+            operator={operator}
+            operatorError={operatorError}
+            saving={saving}
+            onOperatorChange={onOperatorChange}
+          />
+        ) : null}
 
         {status === 'pending' ? (
           <div>
@@ -444,7 +473,7 @@ const StatusWorkflowPanel: React.FC<{
                   撤销修复
                 </Button>
               ) : null}
-              {status === 'invalid' ? (
+              {status === 'invalid' && !perRunDecision ? (
                 <Button
                   type="primary"
                   aria-label="恢复为有效问题"
@@ -455,7 +484,7 @@ const StatusWorkflowPanel: React.FC<{
                   恢复为有效问题
                 </Button>
               ) : null}
-              {status !== 'invalid' ? (
+              {status !== 'invalid' && !perRunDecision ? (
                 <Button
                   danger
                   disabled={disabled}
@@ -465,14 +494,16 @@ const StatusWorkflowPanel: React.FC<{
                   判为非有效问题
                 </Button>
               ) : null}
-              <Button
-                type="text"
-                disabled={disabled}
-                className="!h-9 !rounded-[10px] !text-slate-500"
-                onClick={() => onAction('reset', reason)}
-              >
-                回退待确认
-              </Button>
+              {!perRunDecision ? (
+                <Button
+                  type="text"
+                  disabled={disabled}
+                  className="!h-9 !rounded-[10px] !text-slate-500"
+                  onClick={() => onAction('reset', reason)}
+                >
+                  回退待确认
+                </Button>
+              ) : null}
             </div>
           </div>
         )}
@@ -486,6 +517,9 @@ const ActionErrorAlert: React.FC<{ message: string; hidden?: boolean }> = ({
   hidden = false,
 }) =>
   hidden || !message ? null : <Alert type="error" showIcon message={message} />;
+
+const showsPainWorkflow = (problem: CiProblem, status: TrackingStatus) =>
+  problem.runs.length === 0 || status !== 'pending';
 
 export const CiPainTrackingProvider: React.FC<{
   scope: TrackingScope;
@@ -506,7 +540,6 @@ export const CiPainTrackingProvider: React.FC<{
   onProblemJump,
   children,
 }) => {
-  const repositoryUrl = useCiRepositoryUrl();
   const [records, setRecords] = useState<Record<string, TrackingRecord>>({});
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -842,7 +875,7 @@ export const CiPainTrackingProvider: React.FC<{
                 {scope.org} / {scope.repo} · {scope.day} · {scope.workflow}
               </div>
             </div>
-            {ready ? (
+            {ready && showsPainWorkflow(selected, status) ? (
               <StatusWorkflowPanel
                 status={status}
                 operator={operator}
@@ -859,8 +892,10 @@ export const CiPainTrackingProvider: React.FC<{
                   void performAction(nextAction, nextReason)
                 }
                 onInvalid={requestInvalidDecision}
+                showOperator={selected.runs.length === 0}
+                perRunDecision={selected.runs.length > 0}
               />
-            ) : (
+            ) : !ready ? (
               <Alert
                 type={loading ? 'info' : 'error'}
                 showIcon
@@ -875,9 +910,14 @@ export const CiPainTrackingProvider: React.FC<{
                   </Button>
                 }
               />
-            )}
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm">
-              <div className="font-medium">判断依据</div>
+            ) : null}
+            <details
+              open={selected.runs.length === 0}
+              className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm"
+            >
+              <summary className="cursor-pointer font-medium text-slate-700">
+                判断依据
+              </summary>
               <p className="mt-2">
                 影响 {selected.impact.runs} 次执行、{selected.impact.prs} 个
                 PR；原报告归因：{selected.owner || '待确认'}。
@@ -898,65 +938,41 @@ export const CiPainTrackingProvider: React.FC<{
               {selected.root.action ? (
                 <p className="mt-2">建议：{selected.root.action}</p>
               ) : null}
-            </div>
-            <Table
-              size="small"
-              rowKey={(run) => `${run.id}:${run.stage}:${run.job}`}
-              dataSource={selected.runs}
-              pagination={{
-                pageSize: 5,
-                hideOnSinglePage: true,
-                showSizeChanger: false,
-              }}
-              scroll={{ x: 650 }}
-              locale={{
-                emptyText: (
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description="该问题未提供执行记录，请结合报告指标判断"
+            </details>
+            {selected.runs.length ? (
+              <RunReviewTable
+                key={trackingProblemKey(selected)}
+                problem={selected}
+                scope={scope}
+                operator={operator}
+                operatorField={
+                  <OperatorField
+                    compact
+                    operator={operator}
+                    operatorError={operatorError}
+                    saving={saving}
+                    onOperatorChange={(value) => {
+                      setOperator(value);
+                      if (value.trim()) setOperatorError('');
+                    }}
                   />
-                ),
-              }}
-              columns={[
-                {
-                  title: '执行记录',
-                  dataIndex: 'id',
-                  render: (id: string, run) =>
-                    id ? (
-                      <a
-                        href={runURL(repositoryUrl, id)}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        #{run.n}
-                      </a>
-                    ) : (
-                      '—'
-                    ),
-                },
-                {
-                  title: 'PR',
-                  dataIndex: 'pr',
-                  render: (pr: string) =>
-                    pr ? (
-                      <a
-                        href={prURL(repositoryUrl, pr)}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        #{pr}
-                      </a>
-                    ) : (
-                      '—'
-                    ),
-                },
-                {
-                  title: '阶段 / 任务',
-                  render: (_, run) => `${run.stage} / ${run.job}`,
-                },
-                { title: '日志摘要', dataIndex: 'msg' },
-              ]}
-            />
+                }
+                busy={saving}
+                onBusy={(value) => {
+                  savingRef.current = value;
+                  if (mounted.current) setSaving(value);
+                }}
+                onOperatorInvalid={setOperatorError}
+                rememberOperator={rememberOperator}
+                onTracking={(data) => {
+                  if (mounted.current)
+                    setRecords((current) => ({
+                      ...current,
+                      [data.problemKey]: data,
+                    }));
+                }}
+              />
+            ) : null}
             <ActionErrorAlert
               message={actionError}
               hidden={invalidReasonOpen}

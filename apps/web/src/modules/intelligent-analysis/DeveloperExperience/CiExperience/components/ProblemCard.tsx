@@ -1,3 +1,4 @@
+import { CiProblemRuleSummary, CiRunRuleCell } from './RuleReviews';
 import { useCiRepositoryUrl } from '../repository';
 import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
@@ -74,6 +75,8 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
           </button>
         </div>
       </div>
+
+      <CiProblemRuleSummary problem={problem} />
 
       {open ? (
         <div className="border-t border-slate-100 px-4 py-3">
@@ -167,6 +170,9 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
                         <th className="border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-left text-[11px] font-semibold text-slate-500">
                           失败信息 / 说明
                         </th>
+                        <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold">
+                          判据 / 审核
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -217,6 +223,9 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
                             </td>
                             <td className="border-b border-slate-100 px-3 py-2 align-top text-[11px] text-slate-400">
                               {r.msg || ''}
+                            </td>
+                            <td className="border-b border-slate-100 px-3 py-2">
+                              <CiRunRuleCell problem={problem} run={r} />
                             </td>
                           </tr>
                         );
