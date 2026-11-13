@@ -6,10 +6,19 @@ import { toFixed } from '@common/utils';
 import classnames from 'classnames';
 import Popper from '@mui/material/Popper';
 
-const PopperContent = ({ dataList, name, active, setActive, origin }) => {
+/**
+ * The details panel is exported on its own because the contribution pie charts
+ * reuse it inside their domain persona floating window, so that the table and
+ * the floating window always render exactly the same details.
+ */
+export const PopperContent = ({ dataList, name, active, setActive, origin }) => {
   const { t } = useTranslation();
+  // Fall back to the first domain when nothing is selected yet, otherwise the
+  // details column would stay empty while the floating window is visible.
+  const activeType =
+    dataList.find((item) => item.type === active)?.type || dataList[0]?.type;
   const activeItem = dataList
-    .find((item) => item.type === active)
+    .find((item) => item.type === activeType)
     ?.childern.sort((a, b) => b.contribution - a.contribution);
   // const allType = ['Code', 'Code Admin', 'Issue', 'Issue Admin', 'Observe'];
   return (
@@ -29,7 +38,7 @@ const PopperContent = ({ dataList, name, active, setActive, origin }) => {
                 }}
                 className={classnames(
                   'flex h-9 w-full cursor-pointer items-center justify-between border-b border-r bg-[#F6F6F6] last:border-b-0',
-                  { '!border-r-0 !bg-[#FFFFFF]': active === type }
+                  { '!border-r-0 !bg-[#FFFFFF]': activeType === type }
                 )}
               >
                 <div
