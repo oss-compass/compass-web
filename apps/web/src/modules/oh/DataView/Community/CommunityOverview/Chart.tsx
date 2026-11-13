@@ -25,12 +25,12 @@ let yList = [
 ];
 // prettier-ignore
 function getRecentYearMonths() {
-    var monthsArray: any = [];
-    var currentDate = new Date(); // 获取当前日期
-    for (var i = 0; i < 12; i++) {
-      var month = currentDate.getMonth(); // 月份从 0 开始，需要加 1
-      var year = currentDate.getFullYear();
-      var formattedMonth: string = year + "-" + (month < 10 ? "0" : "") + month; // 格式化为 YYYY-MM 形式
+    const monthsArray: any = [];
+    const currentDate = new Date(); // 获取当前日期
+    for (let i = 0; i < 12; i++) {
+      const month = currentDate.getMonth(); // 月份从 0 开始，需要加 1
+      const year = currentDate.getFullYear();
+      const formattedMonth: string = year + "-" + (month < 10 ? "0" : "") + month; // 格式化为 YYYY-MM 形式
       monthsArray.unshift(formattedMonth); // 将月份添加到数组的开头
       currentDate.setMonth(currentDate.getMonth() - 1); // 获取上一个月的日期
     }
@@ -52,8 +52,8 @@ const Chart = () => {
   const hours = getRecentYearMonths();
 
   const initChart = () => {
-    var chartDom = document.getElementById('main');
-    var myChart = init(chartDom);
+    const chartDom = document.getElementById('main');
+    const myChart = init(chartDom);
     const data_tmp = getdata(yList);
     const data = data_tmp.map(function (item) {
       return [item[1], item[0], item[2], item[3] || ''];
