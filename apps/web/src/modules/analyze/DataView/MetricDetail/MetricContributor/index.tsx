@@ -10,6 +10,7 @@ import ContributionCount from './ContributionCount';
 import ContributorContributors from './Contributors';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import Tooltip from '@common/components/Tooltip';
+import { safeJsonParse } from '@common/utils';
 import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
@@ -27,7 +28,7 @@ const MetricContributor = () => {
   const options = useMileageOptions();
   const queryMileage = router.query?.mileage as string;
   const defaultMileage = queryMileage
-    ? JSON.parse(queryMileage)
+    ? safeJsonParse<string[]>(queryMileage, ['core', 'regular'])
     : ['core', 'regular'];
   const [mileage, setMileage] = useState<string[]>(defaultMileage);
   const [isBot, setIsBot] = useState(false);
