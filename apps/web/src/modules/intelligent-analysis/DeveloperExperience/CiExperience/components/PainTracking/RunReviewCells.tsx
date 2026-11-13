@@ -146,12 +146,12 @@ export const RunDecisionCell: React.FC<{
   <div className="flex items-center gap-1">
     <div
       role="group"
-      aria-label={`执行记录 #${runNumber} 是否有效`}
+      aria-label={`执行记录 #${runNumber} 判据审核`}
       className="inline-flex shrink-0 items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-100/80 p-0.5"
     >
       <button
         type="button"
-        aria-label={`执行记录 #${runNumber}：有效问题`}
+        aria-label={`执行记录 #${runNumber}：判据正确`}
         aria-pressed={review?.status === 'confirmed'}
         aria-busy={loadingAction === 'confirmed'}
         disabled={disabled}
@@ -163,11 +163,11 @@ export const RunDecisionCell: React.FC<{
         ) : (
           <CheckOutlined className="text-[10px]" />
         )}
-        是
+        正确
       </button>
       <button
         type="button"
-        aria-label={`执行记录 #${runNumber}：非有效问题`}
+        aria-label={`执行记录 #${runNumber}：判据有误`}
         aria-pressed={review?.status === 'incorrect'}
         aria-busy={loadingAction === 'incorrect'}
         disabled={disabled}
@@ -179,13 +179,13 @@ export const RunDecisionCell: React.FC<{
         ) : (
           <CloseOutlined className="text-[10px]" />
         )}
-        否
+        有误
       </button>
     </div>
     <Dropdown
       trigger={['click']}
       menu={{
-        items: [{ key: 'history', label: '查看判定记录', onClick: onHistory }],
+        items: [{ key: 'history', label: '查看审核记录', onClick: onHistory }],
       }}
     >
       <button

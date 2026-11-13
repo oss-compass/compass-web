@@ -178,9 +178,9 @@ test('keeps selection across pages and submits only the two selected runs', asyn
     await screen.findByRole('checkbox', { name: '选择执行记录 #11' })
   );
   expect(
-    screen.getByRole('status', { name: '执行记录判定进度' })
+    screen.getByRole('status', { name: '判据审核进度' })
   ).toHaveTextContent('已选 2 项');
-  fireEvent.click(screen.getByRole('button', { name: '批量确认有效' }));
+  fireEvent.click(screen.getByRole('button', { name: '批量确认判据正确' }));
   fireEvent.click(await screen.findByRole('button', { name: '确认提交 2 条' }));
   await screen.findByText('已保存 2/2 条');
   expect(saveBatch).toHaveBeenCalledTimes(1);
@@ -200,10 +200,10 @@ test('batch non-effective decisions require a reason and preserve failed selecti
   fireEvent.click(
     await screen.findByRole('menuitem', { name: '选择全部待确认（2）' })
   );
-  fireEvent.click(screen.getByRole('button', { name: '批量判为非有效' }));
+  fireEvent.click(screen.getByRole('button', { name: '批量标记判据有误' }));
   const confirm = await screen.findByRole('button', { name: '确认提交 2 条' });
   expect(confirm).toBeDisabled();
-  fireEvent.change(screen.getByLabelText('批量判定依据'), {
+  fireEvent.change(screen.getByLabelText('批量审核原因'), {
     target: { value: '预期环境行为' },
   });
   saveBatch.mockResolvedValueOnce({
@@ -218,7 +218,7 @@ test('batch non-effective decisions require a reason and preserve failed selecti
   fireEvent.click(confirm);
   await screen.findByText('已保存 1/2 条，请查看失败明细');
   expect(
-    screen.getByRole('status', { name: '执行记录判定进度' })
+    screen.getByRole('status', { name: '判据审核进度' })
   ).toHaveTextContent('已选 1 项');
   expect(
     screen.getByRole('checkbox', { name: '选择执行记录 #2' })
@@ -236,7 +236,7 @@ test('reviews a single run in the pain table using the shared submitter', async 
     screen.getByRole('columnheader', { name: '判据' })
   ).toBeInTheDocument();
   fireEvent.click(
-    screen.getByRole('button', { name: '执行记录 #1：有效问题' })
+    screen.getByRole('button', { name: '执行记录 #1：判据正确' })
   );
   expect(save).not.toHaveBeenCalled();
   expect(screen.getByText('请填写提交人')).toBeInTheDocument();
@@ -247,11 +247,11 @@ test('reviews a single run in the pain table using the shared submitter', async 
     items: [{ ...rows[0], status: 'confirmed', revision: 1 }, rows[1]],
   });
   fireEvent.click(
-    screen.getByRole('button', { name: '执行记录 #1：有效问题' })
+    screen.getByRole('button', { name: '执行记录 #1：判据正确' })
   );
   await waitFor(() =>
     expect(
-      screen.getByRole('progressbar', { name: '执行记录审核完成进度' })
+      screen.getByRole('progressbar', { name: '判据审核完成进度' })
     ).toHaveAttribute('aria-valuenow', '50')
   );
   expect(save).toHaveBeenCalledTimes(1);
@@ -268,7 +268,7 @@ test('reviews a single run in the pain table using the shared submitter', async 
   const otherRun = screen
     .getAllByRole('row')
     .find((row) =>
-      within(row).queryByRole('button', { name: '执行记录 #2：有效问题' })
+      within(row).queryByRole('button', { name: '执行记录 #2：判据正确' })
     );
   if (!otherRun) throw new Error('Missing second run');
   expect(within(otherRun).getByText('待确认')).toBeInTheDocument();
@@ -284,10 +284,13 @@ test('non-effective decisions require a reason in the confirmation modal and upd
     target: { value: '张三' },
   });
   fireEvent.click(
-    screen.getByRole('button', { name: '执行记录 #2：非有效问题' })
+    screen.getByRole('button', { name: '执行记录 #2：判据有误' })
   );
-  expect(screen.getByRole('button', { name: '提交判定' })).toBeDisabled();
-  fireEvent.change(screen.getByLabelText('执行记录 #2 判断依据'), {
+  expect(screen.getByRole('button', { name: '提交审核' })).toBeDisabled();
+  expect(
+    screen.queryByRole('region', { name: '执行记录 #2 审核记录' })
+  ).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('执行记录 #2 原因'), {
     target: { value: '预期环境行为' },
   });
   const tracking = {
@@ -301,7 +304,7 @@ test('non-effective decisions require a reason in the confirmation modal and upd
     data: { instance_id: rows[1].instance_id },
     tracking,
   });
-  fireEvent.click(screen.getByRole('button', { name: '提交判定' }));
+  fireEvent.click(screen.getByRole('button', { name: '提交审核' }));
   await waitFor(() => expect(onTracking).toHaveBeenCalledWith(tracking));
   expect(save).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -320,7 +323,7 @@ test('stale reviews show the conflict and refresh without silently resubmitting'
   });
   save.mockRejectedValueOnce(new RunReviewError('记录已更新，请刷新', 409));
   fireEvent.click(
-    screen.getByRole('button', { name: '执行记录 #1：有效问题' })
+    screen.getByRole('button', { name: '执行记录 #1：判据正确' })
   );
   await screen.findByText('记录已更新，请刷新');
   expect(save).toHaveBeenCalledTimes(1);
@@ -354,7 +357,7 @@ test('shows loading for the submitting run, blocks repeated clicks and recovers 
     target: { value: '张三' },
   });
   fireEvent.click(screen.getByRole('button', { name: '执行记录 #1 更多操作' }));
-  await screen.findByRole('menuitem', { name: '查看判定记录' });
+  await screen.findByRole('menuitem', { name: '查看审核记录' });
   expect(
     screen.queryByRole('menuitem', { name: '标记证据不足' })
   ).not.toBeInTheDocument();
@@ -363,12 +366,12 @@ test('shows loading for the submitting run, blocks repeated clicks and recovers 
   expect(
     screen.queryByRole('menuitem', { name: '批量标记证据不足' })
   ).not.toBeInTheDocument();
-  const button = screen.getByRole('button', { name: '执行记录 #1：有效问题' });
+  const button = screen.getByRole('button', { name: '执行记录 #1：判据正确' });
   fireEvent.click(button);
   expect(button).toHaveAttribute('aria-busy', 'true');
   expect(button).toBeDisabled();
   expect(
-    screen.getByRole('button', { name: '执行记录 #2：有效问题' })
+    screen.getByRole('button', { name: '执行记录 #2：判据正确' })
   ).toBeDisabled();
   fireEvent.click(button);
   expect(save).toHaveBeenCalledTimes(1);
@@ -378,4 +381,66 @@ test('shows loading for the submitting run, blocks repeated clicks and recovers 
   });
   expect(button).toHaveAttribute('aria-busy', 'false');
   expect(screen.getByText('保存失败')).toBeInTheDocument();
+});
+
+test('keeps review history collapsed until requested and shows newest records in a table', async () => {
+  fetchRows.mockResolvedValue({
+    items: [
+      {
+        ...rows[0],
+        history: [
+          {
+            action: 'confirmed',
+            reviewed_by: '审核人甲',
+            reviewed_at: '2026-11-12T10:00:00+08:00',
+            reason: '',
+            original_rule: rows[0].rule,
+            corrected_rule: null,
+          },
+          {
+            action: 'incorrect',
+            reviewed_by: '审核人乙',
+            reviewed_at: '2026-11-13T10:00:00+08:00',
+            reason: '需要修正匹配范围',
+            original_rule: rows[0].rule,
+            corrected_rule: null,
+          },
+        ],
+      },
+      rows[1],
+    ],
+  });
+  page();
+  await screen.findAllByText('编译判据说明');
+  expect(
+    screen.queryByRole('region', { name: '执行记录 #1 审核记录' })
+  ).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: '执行记录 #1 更多操作' }));
+  fireEvent.click(
+    await screen.findByRole('menuitem', { name: '查看审核记录' })
+  );
+  const history = screen.getByRole('region', { name: '执行记录 #1 审核记录' });
+  const table = within(history).getByRole('table');
+  expect(
+    within(table).getByRole('columnheader', { name: '审核人' })
+  ).toBeInTheDocument();
+  expect(
+    within(table).getByRole('columnheader', { name: '原因' })
+  ).toBeInTheDocument();
+  const entries = within(table)
+    .getAllByRole('row')
+    .filter((row) => within(row).queryByRole('cell', { name: /审核人[甲乙]/ }));
+  expect(entries).toHaveLength(2);
+  expect(
+    within(entries[0]).getByRole('cell', { name: '审核人乙' })
+  ).toBeInTheDocument();
+  expect(
+    within(entries[0]).getByRole('cell', { name: '需要修正匹配范围' })
+  ).toBeInTheDocument();
+  fireEvent.click(
+    within(history).getByRole('button', { name: '收起执行记录 #1 审核记录' })
+  );
+  expect(
+    screen.queryByRole('region', { name: '执行记录 #1 审核记录' })
+  ).not.toBeInTheDocument();
 });

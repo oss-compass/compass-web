@@ -53,8 +53,8 @@ export type CiRunRuleReview = {
 export const runReviewLabels: Record<CiRunRuleReview['status'], string> = {
   pending: '待确认',
   needs_review: '需重新确认',
-  confirmed: '有效问题',
-  incorrect: '非有效问题',
+  confirmed: '判据正确',
+  incorrect: '判据有误',
   insufficient: '证据不足',
 };
 export const ruleLinkLabels: Record<CiRunRuleReview['rule_status'], string> = {

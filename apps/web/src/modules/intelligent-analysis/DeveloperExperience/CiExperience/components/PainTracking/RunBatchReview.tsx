@@ -130,10 +130,10 @@ const RunBatchReview: React.FC<Props> = (props) => {
         <span
           className="mr-auto text-xs text-slate-500"
           role="status"
-          aria-label="执行记录判定进度"
+          aria-label="判据审核进度"
           aria-live="polite"
         >
-          已判定{' '}
+          已审核{' '}
           <span>
             {props.completed || 0}/{props.total ?? props.pending.length}
           </span>{' '}
@@ -143,23 +143,23 @@ const RunBatchReview: React.FC<Props> = (props) => {
         <div className="flex h-7 items-center gap-2">
           <Button
             size="small"
-            aria-label="批量确认有效"
+            aria-label="批量确认判据正确"
             className="ci-run-bulk-button !h-7 !border-emerald-200 !bg-emerald-50 !px-3 !font-medium !text-emerald-700 !shadow-none hover:!border-emerald-300 hover:!bg-emerald-100"
             disabled={disabled}
             loading={loadingAction === 'confirmed'}
             onClick={() => open('confirmed')}
           >
-            批量判为是
+            批量通过
           </Button>
           <Button
             size="small"
-            aria-label="批量判为非有效"
+            aria-label="批量标记判据有误"
             className="ci-run-bulk-button !h-7 !border-rose-200 !bg-rose-50 !px-3 !font-medium !text-rose-600 !shadow-none hover:!border-rose-300 hover:!bg-rose-100"
             disabled={disabled}
             loading={loadingAction === 'incorrect'}
             onClick={() => open('incorrect')}
           >
-            批量判为否
+            批量不通过
           </Button>
           <Dropdown
             trigger={['click']}
@@ -217,7 +217,7 @@ const RunBatchReview: React.FC<Props> = (props) => {
       ) : null}
       <Modal
         open={Boolean(target)}
-        title={`批量判定为${target ? runReviewLabels[target.action] : ''}`}
+        title={`批量审核：${target ? runReviewLabels[target.action] : ''}`}
         className="ci-pain-invalid-modal"
         width={520}
         centered
@@ -236,17 +236,20 @@ const RunBatchReview: React.FC<Props> = (props) => {
           <p className="text-sm text-slate-600">提交人：{props.operator}</p>
           {target?.action !== 'confirmed' ? (
             <label className="block text-sm font-medium text-slate-700">
-              判断依据<span className="ml-1 text-rose-500">*</span>
+              原因<span className="ml-1 text-rose-500">*</span>
               <Input.TextArea
-                aria-label="批量判定依据"
+                aria-label="批量审核原因"
+                placeholder="请说明判据有误的原因及建议修正内容"
                 value={reason}
                 disabled={props.busy}
                 onChange={(event) => setReason(event.target.value)}
                 maxLength={500}
                 rows={4}
-                showCount
                 className="mt-2 !rounded-[10px]"
               />
+              <span className="mt-2 block text-right text-xs font-normal leading-5 text-slate-400">
+                {reason.length} / 500
+              </span>
             </label>
           ) : null}
           <div className="flex justify-end gap-2">

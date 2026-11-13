@@ -76,7 +76,7 @@ test('large selections use at most 100 items per request and stop on network unc
       onRefresh={onRefresh}
     />
   );
-  fireEvent.click(screen.getByRole('button', { name: '批量确认有效' }));
+  fireEvent.click(screen.getByRole('button', { name: '批量确认判据正确' }));
   fireEvent.click(
     await screen.findByRole('button', { name: '确认提交 201 条' })
   );

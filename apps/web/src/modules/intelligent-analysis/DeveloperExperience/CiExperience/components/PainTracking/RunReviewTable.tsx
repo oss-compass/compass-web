@@ -25,6 +25,7 @@ import {
   savePainRunReview,
   RunReviewError,
   type CiRunRuleReview,
+  type CiRunDecision,
   type CiRunReviewAction,
 } from '../../ruleReviews';
 import {
@@ -110,7 +111,7 @@ const RunReviewTable: React.FC<Props> = ({
       return;
     }
     if (action !== 'confirmed' && !reason.trim()) {
-      setError('请填写判断依据');
+      setError('请填写原因');
       return;
     }
     submitting.current = true;
@@ -137,10 +138,11 @@ const RunReviewTable: React.FC<Props> = ({
       setReason('');
       await context?.retry();
       toast.success(
-        `执行记录 #${row.run.n} 已判定为${runReviewLabels[action]}`
+        `执行记录 #${row.run.n} 审核结果：${runReviewLabels[action]}`
       );
     } catch (e) {
-      const message = e instanceof Error ? e.message : '判定保存失败，请重试';
+      const message =
+        e instanceof Error ? e.message : '判据审核保存失败，请重试';
       setError(message);
       toast.error(message);
       if (e instanceof RunReviewError && e.status === 409) {
@@ -175,10 +177,9 @@ const RunReviewTable: React.FC<Props> = ({
       runNumber: row.run.n,
     });
     setReason('');
-    setExpanded([row.key]);
   };
   return (
-    <section className="space-y-4" aria-label="逐条执行记录判定">
+    <section className="space-y-4" aria-label="逐条判据审核">
       <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
         <span>涉及执行记录</span>
         <span className="font-normal text-slate-400">共 {rows.length} 条</span>
@@ -186,17 +187,19 @@ const RunReviewTable: React.FC<Props> = ({
       <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <InfoCircleOutlined className="text-amber-500" />
+            <Tooltip title="判据由 AI 生成，请核对判据内容；如有误，请填写原因及建议修正内容。">
+              <InfoCircleOutlined className="text-amber-500" />
+            </Tooltip>
             {rows.length > 0 && completed === rows.length
-              ? '已完成全部执行记录判定'
-              : '待确认：请逐条判断“是否为有效问题”'}
+              ? '已完成全部判据审核'
+              : '待确认：请逐条审核判据'}
           </div>
           <span className="shrink-0 text-sm font-semibold text-amber-600">
             {completed}/{rows.length}
           </span>
         </div>
         <Progress
-          aria-label="执行记录审核完成进度"
+          aria-label="判据审核完成进度"
           percent={
             rows.length ? Math.round((completed / rows.length) * 100) : 0
           }
@@ -210,7 +213,7 @@ const RunReviewTable: React.FC<Props> = ({
         <Alert
           type="error"
           showIcon
-          message="执行记录判据与判定状态读取失败"
+          message="执行记录判据与审核状态读取失败"
           action={<Button onClick={() => void context?.retry()}>重试</Button>}
         />
       ) : null}
@@ -314,46 +317,77 @@ const RunReviewTable: React.FC<Props> = ({
             expandedRowKeys: expanded,
             showExpandColumn: false,
             expandedRowRender: (row) => (
-              <div className="space-y-3 rounded-xl bg-slate-50 p-4">
-                <div className="whitespace-pre-wrap break-all text-sm text-slate-600">
-                  {row.run.msg || '无日志摘要'}
+              <section
+                aria-label={`执行记录 #${row.run.n} 审核记录`}
+                className="rounded-xl border border-slate-200 bg-white"
+              >
+                <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-xs font-semibold text-slate-700">
+                  <span>审核记录</span>
+                  <span className="font-normal text-slate-400">
+                    共 {row.review?.history.length || 0} 条
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setExpanded([])}
+                    className="ml-auto rounded px-1 text-slate-500 hover:text-sky-600"
+                    aria-label={`收起执行记录 #${row.run.n} 审核记录`}
+                  >
+                    收起
+                  </button>
                 </div>
-                {row.review?.evidence.sig ? (
-                  <div className="whitespace-pre-wrap break-all text-xs text-slate-500">
-                    日志特征：{row.review.evidence.sig}
-                  </div>
-                ) : null}
-                {row.review?.history.length ? (
-                  <div className="space-y-2">
-                    <div className="text-xs font-semibold text-slate-600">
-                      判定记录
-                    </div>
-                    {[...row.review.history].reverse().map((item, index) => (
-                      <div
-                        key={index}
-                        className="rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-600"
-                      >
-                        <div>
-                          {runReviewLabels[
-                            item.action as CiRunRuleReview['status']
-                          ] || item.action}{' '}
-                          · {item.reviewed_by} ·{' '}
-                          {formatTrackingTime(item.reviewed_at)}
-                        </div>
-                        <div className="mt-1 whitespace-pre-wrap">
-                          {item.reason}
-                        </div>
-                        {item.original_rule ? (
-                          <div className="mt-1">
-                            判定时判据：{item.original_rule.rule_id} ·{' '}
-                            {item.original_rule.version}
-                          </div>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
+                <Table<CiRunDecision>
+                  size="small"
+                  rowKey={(item, index) => `${item.reviewed_at}-${index}`}
+                  dataSource={[...(row.review?.history || [])].reverse()}
+                  pagination={
+                    (row.review?.history.length || 0) > 6
+                      ? { pageSize: 6, size: 'small' }
+                      : false
+                  }
+                  locale={{ emptyText: '暂无审核记录' }}
+                  columns={[
+                    {
+                      title: '时间',
+                      dataIndex: 'reviewed_at',
+                      width: 150,
+                      render: formatTrackingTime,
+                    },
+                    { title: '审核人', dataIndex: 'reviewed_by', width: 90 },
+                    {
+                      title: '审核结果',
+                      dataIndex: 'action',
+                      width: 110,
+                      render: (action: string) =>
+                        runReviewLabels[action as CiRunRuleReview['status']] ||
+                        action,
+                    },
+                    {
+                      title: '原因',
+                      dataIndex: 'reason',
+                      render: (value: string) => (
+                        <span className="whitespace-pre-wrap break-words">
+                          {value || '—'}
+                        </span>
+                      ),
+                    },
+                    {
+                      title: '审核时判据',
+                      width: 240,
+                      render: (_, item) => (
+                        <span className="break-all">
+                          {item.original_rule?.rule_id || '—'}
+                        </span>
+                      ),
+                    },
+                    {
+                      title: '版本',
+                      width: 70,
+                      render: (_, item) => item.original_rule?.version || '—',
+                    },
+                  ]}
+                  scroll={{ x: 850 }}
+                />
+              </section>
             ),
           }}
           columns={[
@@ -440,7 +474,7 @@ const RunReviewTable: React.FC<Props> = ({
             {
               title: (
                 <span className="flex items-center gap-1.5">
-                  <span>是否为有效问题</span>
+                  <span>判据审核</span>
                   <span className="rounded-full border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-amber-600">
                     必填
                   </span>
@@ -471,9 +505,7 @@ const RunReviewTable: React.FC<Props> = ({
       </div>
       <Modal
         open={Boolean(editing)}
-        title={
-          editing?.action === 'incorrect' ? '判定为非有效问题' : '证据不足说明'
-        }
+        title={editing?.action === 'incorrect' ? '判据有误' : '证据不足说明'}
         className="ci-pain-invalid-modal"
         width={480}
         centered
@@ -492,20 +524,23 @@ const RunReviewTable: React.FC<Props> = ({
         <div className="space-y-4">
           <p className="text-sm leading-6 text-slate-600">
             执行记录 #{editing?.runNumber} ·
-            请填写判断依据，提交后保留在判定记录中。
+            请说明判据有误的原因及建议修正内容，提交后保留在审核记录中。
           </p>
           <label className="block text-sm font-medium text-slate-700">
-            判断依据<span className="ml-1 text-rose-500">*</span>
+            原因<span className="ml-1 text-rose-500">*</span>
             <Input.TextArea
-              aria-label={`执行记录 #${editing?.runNumber} 判断依据`}
+              aria-label={`执行记录 #${editing?.runNumber} 原因`}
+              placeholder="请说明判据有误的原因及建议修正内容"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               rows={4}
               maxLength={500}
-              showCount
               disabled={busy}
               className="mt-2 !rounded-[10px]"
             />
+            <span className="mt-2 block text-right text-xs font-normal leading-5 text-slate-400">
+              {reason.length} / 500
+            </span>
           </label>
           <div className="flex justify-end gap-2">
             <Button
@@ -527,7 +562,7 @@ const RunReviewTable: React.FC<Props> = ({
                 if (row && editing) void submit(row, editing.action);
               }}
             >
-              提交判定
+              提交审核
             </Button>
           </div>
         </div>
