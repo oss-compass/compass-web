@@ -21,8 +21,6 @@ const useHashchangeEvent = (
         let parts = hash.split('?');
         hash = parts[0];
       }
-      console.log('hashChangeHandle', hash);
-
       const id = hash.replace('#', '');
       setActiveId(id);
     };
@@ -35,7 +33,6 @@ const useHashchangeEvent = (
 
   useDebounce(
     () => {
-      console.log(activeId);
       if (!activeId) return;
       const decodedId = decodeURIComponent(activeId);
       const el = document.getElementById(decodedId);
