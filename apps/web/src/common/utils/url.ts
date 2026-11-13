@@ -20,6 +20,39 @@ export const getAllPathname = (urls: string[]) => {
   return uniq(pathName);
 };
 
+/**
+ * Canonical identity of a repository URL, used to tell whether two labels
+ * point at the *same* repository (possibly hosted on different providers).
+ *
+ * Only the `namespace/repo` pair is kept, lowercased, with any trailing slash
+ * or `.git` suffix removed. The host is deliberately dropped here because it is
+ * handled separately by `getProvider`: two URLs that share this canonical path
+ * but have different hosts are the exact case where the provider has to be
+ * rendered to keep the legend/tooltip unambiguous.
+ *
+ * Returning '' for non-URLs (or URLs without a full `namespace/repo` pair) lets
+ * callers skip entries that cannot be compared instead of matching them by
+ * accident.
+ */
+export function getCanonicalRepoPath(url?: string): string {
+  if (!url) return '';
+
+  const parsed = parseUrl(url);
+  if (!parsed) return '';
+
+  const segments = parsed.pathname
+    .split('/')
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  if (segments.length < 2) return '';
+
+  const namespace = segments[0].toLowerCase();
+  const repo = segments[1].toLowerCase().replace(/\.git$/, '');
+  if (!namespace || !repo) return '';
+
+  return `${namespace}/${repo}`;
+}
+
 //  gg/cli => gg
 export function getFirstPathSegment(path: string) {
   if (!path) return '';
