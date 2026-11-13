@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Modal, Input, Select, Button, message } from 'antd';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames';
@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 const PersonalTokens = () => {
   const { t } = useTranslation();
+  const creationInFlight = useRef(false);
   const { data, refetch } = useTokenListQuery(client);
   const createMutation = useCreateAuthTokenMutation(client, {
     onSuccess(res) {
@@ -39,6 +40,9 @@ const PersonalTokens = () => {
         msg = errors[0].message;
       }
       toast.error(msg || t('common:toast.add_failed'));
+    },
+    onSettled() {
+      creationInFlight.current = false;
     },
   });
   const deleteMutation = useDeleteAuthTokenMutation(client, {
@@ -68,6 +72,8 @@ const PersonalTokens = () => {
   const tokens = data?.tokenList || [];
 
   const onAddToken = () => {
+    if (creationInFlight.current || createMutation.isLoading) return;
+    creationInFlight.current = true;
     const tokenData = {
       name: newTokenName,
       expiresAt: dayjs().add(newTokenExpiry, 'day').toISOString(),
@@ -158,6 +164,7 @@ const PersonalTokens = () => {
             key="submit"
             type="primary"
             onClick={onAddToken}
+            loading={createMutation.isLoading}
             disabled={!newTokenName || newTokenExpiry === undefined}
           >
             {t('common:btn.save')}
