@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { flushSync } from 'react-dom';
 import { FiImage } from 'react-icons/fi';
 import { BiLoaderAlt } from 'react-icons/bi';
 import { toast } from 'react-hot-toast';
@@ -116,7 +117,19 @@ const CommentInput = forwardRef<InputRefProps, Props>(
               if (loading) return;
               if (event.key == 'Enter' || event.code == 'Enter') {
                 if (event.shiftKey || event.ctrlKey) {
-                  setValue((p) => p + '\n');
+                  const input = event.currentTarget;
+                  const { selectionStart, selectionEnd, value } = input;
+                  flushSync(() => {
+                    setValue(
+                      value.slice(0, selectionStart) +
+                        '\n' +
+                        value.slice(selectionEnd)
+                    );
+                  });
+                  input.setSelectionRange(
+                    selectionStart + 1,
+                    selectionStart + 1
+                  );
                 } else {
                   if (value) {
                     onSubmit(value, images);
