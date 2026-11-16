@@ -73,6 +73,9 @@ const getDeital = (item) => {
   }
 };
 export const getContent = (item, riskFill = false) => {
+  if (item.score === -2) {
+    return '此报告不涉及该指标';
+  }
   let scoreContent = null;
   if (riskFill) {
     scoreContent = <div>得分：10 (澄清前：{item.score})</div>;
@@ -115,6 +118,12 @@ export const useGetMetricIcon = (item, riskFill) => {
         <ClockCircleOutlined className="cursor-pointer text-lg text-[#ABABAB]" />
       </Popover>
     );
+  } else if (item.score === -2) {
+    return (
+      <Popover content={'此报告不涉及该指标'} title="">
+        <ClockCircleOutlined className="cursor-pointer text-lg text-[#ABABAB]" />
+      </Popover>
+    );
   } else if (item.score == 10) {
     return (
       <Popover content={getContent(item)} title="">
@@ -141,7 +150,7 @@ export const useGetMetricIcon = (item, riskFill) => {
 };
 export const setRiskTag = (item, riskFill) => {
   const { score } = item;
-  if (score === 10 || score === -1 || score === null) {
+  if (score === 10 || score === -1 || score === -2 || score === null) {
     return '';
   } else if (score >= 6) {
     return (
