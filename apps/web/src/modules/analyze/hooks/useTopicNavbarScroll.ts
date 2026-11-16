@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'next-i18next';
 import { throttle } from 'lodash';
 
 const isCardInView = (rect: DOMRect) => {
@@ -47,6 +48,7 @@ function lookupParentSiblingH2(element: HTMLElement): HTMLElement | null {
 
 const useTopicNavbarScroll = () => {
   const [inViewCardId, setInViewCardId] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     const scrollEventListener = throttle(() => {
@@ -79,7 +81,7 @@ const useTopicNavbarScroll = () => {
     }
 
     if (inViewCardId === 'topic_overview') {
-      return { topicTitle: 'Overview', subTitle: '' };
+      return { topicTitle: t('analyze:overview'), subTitle: '' };
     }
 
     let topicTitle = '';
