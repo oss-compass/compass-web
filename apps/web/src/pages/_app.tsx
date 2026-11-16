@@ -113,7 +113,7 @@ function MyApp({
       />
       <UserInfoFetcher />
       <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 }
