@@ -4,6 +4,7 @@ import {
   type OrganizationRow,
 } from '@modules/intelligent-analysis/server/intelligentAnalysisNewDatasetCache';
 import { isSafePathSegment } from '@modules/intelligent-analysis/server/pathSafety';
+import { parsePage, parsePageSize } from '@modules/intelligent-analysis/server/pagination';
 
 function parseCsvList(value: unknown): string[] {
   if (!value) return [];
@@ -112,8 +113,8 @@ export default async function handler(
   const mode: 'backup' | 'detail' =
     req.query.mode === 'detail' ? 'detail' : 'backup';
 
-  const page = Math.max(1, Number(req.query.page || 1));
-  const pageSize = Math.min(100, Math.max(1, Number(req.query.pageSize || 10)));
+  const page = parsePage(req.query.page);
+  const pageSize = parsePageSize(req.query.pageSize);
 
   const q = normalizeSearchText(req.query.q);
   const regions = parseCsvList(req.query.regions);
