@@ -39,7 +39,7 @@ const getAllowedTagPath = (tags: string[] = []) => {
 };
 
 // @ts-ignore
-function resolveSchema(definitions: DefinitionsMap, targetSchema?: string) {
+export function resolveSchema(definitions: DefinitionsMap, targetSchema?: string) {
   if (!targetSchema || !definitions[targetSchema]) {
     return {};
   }
@@ -57,6 +57,15 @@ function resolveSchema(definitions: DefinitionsMap, targetSchema?: string) {
       example: propDef.example,
     };
 
+    // 直接 $ref 属性（{ $ref: "#/definitions/X", description }）没有 type，
+    // 此前落入无分支区——引用的 schema 从未被解析，嵌套对象在文档页空白。
+    // 线上 /api/v2/docs 中 60/225 端点受影响（所有 metric_detail + TpcItem.scorecard）。
+    if (propDef?.$ref) {
+      const refSchema = propDef.$ref.split('/').pop();
+      propData.type = propDef.type || 'object';
+      propData.properties = resolveSchema(definitions, refSchema);
+    }
+
     if (propDef?.type === 'array' && propDef.items) {
       if (propDef.items.$ref) {
         const refSchema = propDef.items.$ref.split('/').pop();
@@ -67,7 +76,7 @@ function resolveSchema(definitions: DefinitionsMap, targetSchema?: string) {
     }
 
     if (propDef.type === 'object' && propDef.properties) {
-      propData.properties = resolveSchema(definitions, propDef.type);
+      propData.properties = propDef.properties;
     }
 
     result[propName] = propData;
