@@ -33,4 +33,19 @@ describe('transDataForOverview', () => {
     // console.log(JSON.stringify(result, null, 2));
     expect(result).toEqual(overviewOutputData);
   });
+
+  it('skips a metric type that has no data instead of indexing undefined', function () {
+    const data = {
+      metricCommunity: [
+        { grimoireCreationDate: '2024-01-01T00:00:00.000Z', value: 1 },
+      ],
+    };
+    const opts = [
+      { type: 'metricCommunity', key: 'value', legendName: 'community' },
+      { type: 'metricActivity', key: 'value', legendName: 'activity' },
+    ];
+    // @ts-ignore
+    const result = transDataForOverview(data, opts, 'grimoireCreationDate');
+    expect(result.xAxis.length).toBeGreaterThan(0);
+  });
 });
