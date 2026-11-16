@@ -25,7 +25,7 @@ const FormUsers = (props: {
         {items.map((user) => {
           return (
             <FormUsersItem
-              key={user.name}
+              key={user.id}
               user={user}
               modelId={modelId}
               permission={permission}
