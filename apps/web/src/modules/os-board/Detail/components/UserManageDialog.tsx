@@ -295,6 +295,11 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
   const [selectedUser, setSelectedUser] = useState<SearchUserItem | null>(null);
   const [role, setRole] = useState<RoleValue>('viewer');
 
+  // Guards against stale search responses: bumped whenever the keyword
+  // changes, the dialog closes or the component unmounts, so an older
+  // in-flight response can no longer write back into the dropdown.
+  const searchSeqRef = useRef(0);
+
   const searchMutation = useSearchUser();
   const assignMutation = useAssignMembers();
   const updateRolesMutation = useUpdateMemberRoles();
@@ -336,6 +341,8 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
   // 弹窗关闭时重置邀请区
   useEffect(() => {
     if (!open) {
+      searchSeqRef.current += 1;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       setKeyword('');
       setSearchResults([]);
       setShowDropdown(false);
@@ -343,6 +350,14 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
       setRole('viewer');
     }
   }, [open]);
+
+  // 卸载时清理未执行的防抖与在途请求回写
+  useEffect(() => {
+    return () => {
+      searchSeqRef.current += 1;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -352,21 +367,28 @@ const UserManageDialog: React.FC<UserManageDialogProps> = ({
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     if (!val.trim()) {
+      searchSeqRef.current += 1;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       setSearchResults([]);
       setShowDropdown(false);
       return;
     }
 
+    const seq = ++searchSeqRef.current;
     debounceRef.current = setTimeout(async () => {
       setIsSearching(true);
       try {
         const res = await searchMutation.mutateAsync({ keyword: val.trim() });
+        if (seq !== searchSeqRef.current) return;
         setSearchResults(Array.isArray(res) ? res : []);
         setShowDropdown(true);
       } catch {
+        if (seq !== searchSeqRef.current) return;
         setSearchResults([]);
       } finally {
-        setIsSearching(false);
+        if (seq === searchSeqRef.current) {
+          setIsSearching(false);
+        }
       }
     }, 300);
   };
