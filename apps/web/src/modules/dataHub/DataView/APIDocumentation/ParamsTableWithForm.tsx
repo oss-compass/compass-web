@@ -20,10 +20,12 @@ const constructUrl = (path: string, values: any) => {
 const ParamsTableWithForm = ({
   method,
   path,
+  baseUrl,
   params,
 }: {
   method: string;
   path: string;
+  baseUrl?: string;
   params: ApiParameter[];
 }) => {
   const { t, i18n } = useTranslation();
@@ -134,7 +136,6 @@ const ParamsTableWithForm = ({
   };
 
   const handleTest = async (values: any) => {
-    console.log(values);
     setLoading(true);
     setTestResult(null);
 
@@ -153,21 +154,15 @@ const ParamsTableWithForm = ({
           param.type
         );
 
-        // 添加调试日志，显示参数处理前后的变化
-        if (originalValue !== processedValues[param.name]) {
-          console.log(`参数 ${param.name} (${param.type}) 处理: `, {
-            原始值: originalValue,
-            处理后: processedValues[param.name],
-            类型: typeof processedValues[param.name],
-          });
-        }
       }
     });
 
     try {
+      // 数据源选择器选中的 origin 才是测试请求的目标——此前用的是相对路径，
+      // axios 解析到页面 origin 而非选中的数据源。
       const config = {
         method: method.toLowerCase(),
-        url: constructUrl(path, processedValues), // 使用处理过的 processedValues
+        url: constructUrl((baseUrl || '') + path, processedValues),
         data: method === 'POST' ? processedValues : null, // 使用处理过的 processedValues
         params: method === 'GET' ? processedValues : null, // 使用处理过的 processedValues
       };
