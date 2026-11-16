@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy';
 import { FormItemLabel } from '@modules/lab/model/Form/Misc';
 import { ItemCard, ItemCardPlus } from './FormDataSet/SelectedItem';
 import { formState, actions } from './state';
-import { formFiledState } from '@modules/lab/model/Form/FormDataSet/state';
+import { formFiledState } from './FormDataSet/state';
 import ModalSelect from './FormDataSet/Modal';
 
 const ReportForm = ({ name, version, modelIsPublic = false, edit = false }) => {
