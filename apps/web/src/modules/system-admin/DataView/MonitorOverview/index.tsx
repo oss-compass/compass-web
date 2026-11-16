@@ -26,6 +26,23 @@ import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import Service from '../Dashboard/Service';
 
+// Static demo data: hoisted out of the component so the chart effect below does
+// not re-run on every render (the array used to be recreated each time).
+const chartData = [
+  { month: '1月', value: 65 },
+  { month: '2月', value: 45 },
+  { month: '3月', value: 35 },
+  { month: '4月', value: 240 },
+  { month: '5月', value: 65 },
+  { month: '6月', value: 45 },
+  { month: '7月', value: 55 },
+  { month: '8月', value: 35 },
+  { month: '9月', value: 180 },
+  { month: '10月', value: 220 },
+  { month: '11月', value: 165 },
+  { month: '12月', value: 145 },
+];
+
 const MonitorOverview: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [dateRange, setDateRange] = useState<DateRangeType>('1y');
@@ -38,24 +55,8 @@ const MonitorOverview: React.FC = () => {
     setDateRange(range);
     // 如果是自定义日期，可以在这里处理customDates
     if (range === 'custom' && customDates) {
-      console.log('Custom date range:', customDates);
     }
   };
-  const chartData = [
-    { month: '1月', value: 65 },
-    { month: '2月', value: 45 },
-    { month: '3月', value: 35 },
-    { month: '4月', value: 240 },
-    { month: '5月', value: 65 },
-    { month: '6月', value: 45 },
-    { month: '7月', value: 55 },
-    { month: '8月', value: 35 },
-    { month: '9月', value: 180 },
-    { month: '10月', value: 220 },
-    { month: '11月', value: 165 },
-    { month: '12月', value: 145 },
-  ];
-
   useEffect(() => {
     if (chartRef.current) {
       const chart = echarts.init(chartRef.current);
@@ -156,7 +157,7 @@ const MonitorOverview: React.FC = () => {
         chart.dispose();
       };
     }
-  }, [chartData]);
+  }, []);
 
   const activityData = [
     { id: 1, title: '工作流 0 导入', time: '321,234', avatar: '1' },
