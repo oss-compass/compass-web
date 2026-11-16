@@ -251,49 +251,78 @@ const StageCard: React.FC<{
               : 'border-dashed border-slate-200 bg-slate-50/60'
           }`}
         >
-          <div
-            role="group"
-            aria-label={`${stage.seg}统计`}
-            className="grid grid-cols-3"
-          >
-            {[
-              {
-                label: '痛点',
-                value: problems.length,
-                color: problems.length ? 'text-rose-500' : 'text-slate-400',
-                description: '本步骤关联的独立痛点数量，与下方痛点列表一致',
-              },
-              {
-                label: '指标',
-                value: observations.length,
-                color: 'text-slate-900',
-                description:
-                  '本步骤实际有观测值的代表指标数，不含仓库级参考项；跨维度重复指标合并',
-              },
-              {
-                label: '建议',
-                value: recommendations.length,
-                color: 'text-emerald-600',
-                description: '本步骤痛点中实际提供的建议动作条目数',
-              },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                aria-label={`${stat.label}：${stat.value}`}
-                title={stat.description}
-                className="flex flex-col items-center py-1"
-              >
-                <span
-                  className={`text-[20px] font-bold leading-none ${stat.color}`}
+          {hasScore ? (
+            <div
+              role="group"
+              aria-label={`${stage.seg}统计`}
+              className="grid grid-cols-3"
+            >
+              {[
+                {
+                  label: '痛点',
+                  value: problems.length,
+                  color: problems.length ? 'text-rose-500' : 'text-slate-400',
+                  description: '本步骤关联的独立痛点数量，与下方痛点列表一致',
+                },
+                {
+                  label: '指标',
+                  value: observations.length,
+                  color: 'text-slate-900',
+                  description:
+                    '本步骤实际有观测值的代表指标数，不含仓库级参考项；跨维度重复指标合并',
+                },
+                {
+                  label: '建议',
+                  value: recommendations.length,
+                  color: 'text-emerald-600',
+                  description: '本步骤痛点中实际提供的建议动作条目数',
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  aria-label={`${stat.label}：${stat.value}`}
+                  title={stat.description}
+                  className="flex flex-col items-center py-1"
                 >
-                  {stat.value}
-                </span>
-                <span className="mt-1 whitespace-nowrap text-[12px] text-slate-400">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </div>
+                  <span
+                    className={`text-[20px] font-bold leading-none ${stat.color}`}
+                  >
+                    {stat.value}
+                  </span>
+                  <span className="mt-1 whitespace-nowrap text-[12px] text-slate-400">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
+              <svg
+                className="h-7 w-7 text-slate-300"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 2"
+                />
+                <path
+                  d="M9 12h6M12 9v6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="text-center text-base leading-4 text-slate-400">
+                本次未评估
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

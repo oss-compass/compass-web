@@ -132,55 +132,73 @@ const pain: CiJourneyProblem = {
   },
 };
 
-it('keeps pain, observation and recommendation counts consistent with details even without a score', () => {
-  const zeroCell = { ...cell, name: '失败执行数', disp: '0 次', score: null };
-  const currentStage: CiJourneyStage = {
-    ...stage('编译'),
-    segscore: null,
-    cells: {
-      stability: zeroCell,
-      efficiency: { ...cell, fallback: true },
-      interaction: zeroCell,
-      cost: { ...cell, disp: '—' },
-    },
-    problems: [
-      pain,
-      pain,
-      {
-        ...pain,
-        title: '执行耗时偏长',
-        root: { status: 'pending', action: '  ' },
+it.each([null, 80])(
+  'shows counts only for evaluated cards while preserving details (score: %s)',
+  (score) => {
+    const zeroCell = { ...cell, name: '失败执行数', disp: '0 次', score: null };
+    const currentStage: CiJourneyStage = {
+      ...stage('编译'),
+      segscore: score,
+      cells: {
+        stability: zeroCell,
+        efficiency: { ...cell, fallback: true },
+        interaction: zeroCell,
+        cost: { ...cell, disp: '—' },
       },
-    ],
-    stats: [{ label: '问题', v: 99 }],
-  };
-  const currentJourney: CiJourney = {
-    ...journey,
-    boards: { [day]: { ...journey.boards[day], stages: [currentStage] } },
-  };
-  render(<CiJourneyPanorama {...props} journey={currentJourney} />);
-  const cardStats = screen.getByRole('group', { name: '编译统计' });
-  expect(within(cardStats).getByLabelText('痛点：2')).toHaveTextContent('2');
-  expect(within(cardStats).getByLabelText('指标：1')).toHaveTextContent('1');
-  expect(within(cardStats).getByLabelText('建议：1')).toHaveTextContent('1');
-  expect(cardStats).not.toHaveTextContent('99');
+      problems: [
+        pain,
+        pain,
+        {
+          ...pain,
+          title: '执行耗时偏长',
+          root: { status: 'pending', action: '  ' },
+        },
+      ],
+      stats: [{ label: '问题', v: 99 }],
+    };
+    const currentJourney: CiJourney = {
+      ...journey,
+      boards: { [day]: { ...journey.boards[day], stages: [currentStage] } },
+    };
+    render(<CiJourneyPanorama {...props} journey={currentJourney} />);
+    if (score === null) {
+      expect(
+        screen.queryByRole('group', { name: '编译统计' })
+      ).not.toBeInTheDocument();
+      const card = screen.getByTitle('编译 · 本次未评估');
+      expect(within(card).getByText('本次未评估')).toBeInTheDocument();
+      expect(within(card).getByText('Not Evaluated')).toBeInTheDocument();
+    } else {
+      const cardStats = screen.getByRole('group', { name: '编译统计' });
+      expect(within(cardStats).getByLabelText('痛点：2')).toHaveTextContent(
+        '2'
+      );
+      expect(within(cardStats).getByLabelText('指标：1')).toHaveTextContent(
+        '1'
+      );
+      expect(within(cardStats).getByLabelText('建议：1')).toHaveTextContent(
+        '1'
+      );
+      expect(cardStats).not.toHaveTextContent('99');
+    }
 
-  const observations = screen.getByRole('region', { name: '指标' });
-  expect(within(observations).getAllByRole('listitem')).toHaveLength(1);
-  expect(observations).toHaveTextContent('失败执行数');
-  expect(observations).toHaveTextContent('0 次');
-  expect(observations).toHaveTextContent('稳定性 · 交互体验');
-  expect(observations).not.toHaveTextContent('阶段耗时');
+    const observations = screen.getByRole('region', { name: '指标' });
+    expect(within(observations).getAllByRole('listitem')).toHaveLength(1);
+    expect(observations).toHaveTextContent('失败执行数');
+    expect(observations).toHaveTextContent('0 次');
+    expect(observations).toHaveTextContent('稳定性 · 交互体验');
+    expect(observations).not.toHaveTextContent('阶段耗时');
 
-  const recommendations = screen.getByRole('region', { name: '建议' });
-  expect(within(recommendations).getAllByRole('listitem')).toHaveLength(1);
-  expect(recommendations).toHaveTextContent('在构建镜像中补齐依赖。');
-  expect(recommendations).toHaveTextContent('关联痛点：编译环境缺少依赖');
-  expect(recommendations).toHaveTextContent('CI 维护者');
-  expect(screen.getByRole('region', { name: '痛点' })).toHaveTextContent(
-    '2 项'
-  );
-});
+    const recommendations = screen.getByRole('region', { name: '建议' });
+    expect(within(recommendations).getAllByRole('listitem')).toHaveLength(1);
+    expect(recommendations).toHaveTextContent('在构建镜像中补齐依赖。');
+    expect(recommendations).toHaveTextContent('关联痛点：编译环境缺少依赖');
+    expect(recommendations).toHaveTextContent('CI 维护者');
+    expect(screen.getByRole('region', { name: '痛点' })).toHaveTextContent(
+      '2 项'
+    );
+  }
+);
 
 it('shows zero counts and explicit empty states when no stage observations or suggestions are available', () => {
   const currentStage = stage('编译');

@@ -249,6 +249,7 @@ const CiRepoProgressSection: React.FC<Props> = ({
       dataIndex: 'name',
       key: 'name',
       width: 210,
+      align: 'left',
       sorter: (a, b) => a.name.localeCompare(b.name, 'zh-CN'),
       render: (name: string, team) => (
         <button
