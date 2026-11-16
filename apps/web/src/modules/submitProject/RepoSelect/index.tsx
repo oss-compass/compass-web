@@ -56,7 +56,13 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
           if (res.data.length < defaultPageSize) {
             setHasMore(false);
           }
-          setRepoList((pre) => [...pre, ...res.data]);
+          setRepoList((pre) => {
+            const repositoriesById = new Map<number, Repos>(
+              pre.map((repo) => [repo.id, repo])
+            );
+            res.data.forEach((repo) => repositoriesById.set(repo.id, repo));
+            return Array.from(repositoriesById.values());
+          });
         }
       },
     }
