@@ -1,3 +1,4 @@
+import path from 'path';
 import { isSafePathSegment, resolveFileInsideDir } from './pathSafety';
 
 describe('isSafePathSegment', () => {
@@ -29,10 +30,10 @@ describe('resolveFileInsideDir', () => {
 
   it('resolves ordinary file names inside the dir', () => {
     expect(resolveFileInsideDir(dir, 'alice_main.json')).toBe(
-      dir + '/alice_main.json'
+      path.resolve(dir, 'alice_main.json')
     );
     expect(resolveFileInsideDir(dir + '/', 'alice.json')).toBe(
-      dir + '/alice.json'
+      path.resolve(dir, 'alice.json')
     );
   });
 
