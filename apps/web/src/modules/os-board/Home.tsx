@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { Input, Tabs } from 'antd';
@@ -18,26 +18,37 @@ const DashboardHome = () => {
   // API 调用：获取看板列表
   const [page, setPage] = useState(1);
   const [perPage] = useState(9);
-  const [keyword, setKeyword] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  const keyword =
+    typeof router.query.keyword === 'string' ? router.query.keyword : '';
+  const [inputValue, setInputValue] = useState(keyword);
   const activeTab: DashboardTypeFilter =
     router.query.tab === 'community' || router.query.tab === 'repo'
       ? router.query.tab
       : 'all';
-  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    setInputValue(keyword);
+    setPage(1);
+  }, [keyword]);
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value;
-      setInputValue(val);
-      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
-      searchTimerRef.current = setTimeout(() => {
-        setKeyword(val);
-        setPage(1);
-      }, 400);
-    },
-    []
-  );
+  useEffect(() => {
+    if (inputValue === keyword) return;
+
+    const timer = setTimeout(() => {
+      const query = { ...router.query };
+      if (inputValue) {
+        query.keyword = inputValue;
+      } else {
+        delete query.keyword;
+      }
+      setPage(1);
+      void router.replace({ pathname: router.pathname, query }, undefined, {
+        shallow: true,
+        scroll: false,
+      });
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [inputValue, keyword, router]);
 
   const handleTabChange = (tab: DashboardTypeFilter) => {
     setPage(1);
@@ -130,7 +141,7 @@ const DashboardHome = () => {
               prefix={<SearchOutlined className="text-gray-400" />}
               placeholder="搜索看板名称"
               value={inputValue}
-              onChange={handleInputChange}
+              onChange={(e) => setInputValue(e.target.value)}
               allowClear
               style={{ width: 220 }}
             />

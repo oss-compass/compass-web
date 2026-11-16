@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useRouter } from 'next/router';
 import { useDashboardList } from './api/dashboard';
 import DashboardHome from './Home';
@@ -25,7 +25,9 @@ jest.mock('@oss-compass/ui', () => ({
   ),
 }));
 jest.mock('antd', () => ({
-  Input: () => null,
+  Input: ({ value, onChange, placeholder }) => (
+    <input value={value} onChange={onChange} placeholder={placeholder} />
+  ),
   Tabs: ({ activeKey, onChange, items }) => (
     <div role="tablist">
       {items.map(({ key, label }) => (
@@ -58,6 +60,8 @@ beforeEach(() => {
     isError: false,
   });
 });
+
+afterEach(() => jest.useRealTimers());
 
 it.each([
   ['community', '社区'],
@@ -115,4 +119,79 @@ it('writes the tab to the URL, preserves other parameters and resets pagination'
     undefined,
     { shallow: true, scroll: false }
   );
+});
+
+it('restores the search input and filtered query from a shared URL', () => {
+  router.query = { tab: 'community', keyword: '开源 & Compass' };
+  const { rerender } = render(<DashboardHome />);
+  expect(screen.getByRole('textbox')).toHaveValue('开源 & Compass');
+  expect(useDashboardList).toHaveBeenLastCalledWith({
+    page: 1,
+    per_page: 9,
+    dashboard_type: 'community',
+    keyword: '开源 & Compass',
+  });
+
+  router.query = { tab: 'repo', keyword: 'another' };
+  rerender(<DashboardHome />);
+  expect(screen.getByRole('textbox')).toHaveValue('another');
+});
+
+it('debounces search updates, preserves the tab and clears an empty keyword', () => {
+  jest.useFakeTimers();
+  router.query = { tab: 'community', source: 'share' };
+  const { rerender } = render(<DashboardHome />);
+  fireEvent.click(screen.getByRole('button', { name: '2' }));
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Comp' } });
+  act(() => jest.advanceTimersByTime(200));
+  fireEvent.change(screen.getByRole('textbox'), {
+    target: { value: 'Compass' },
+  });
+  act(() => jest.advanceTimersByTime(499));
+  expect(router.replace).not.toHaveBeenCalled();
+  act(() => jest.advanceTimersByTime(1));
+  expect(router.replace).toHaveBeenLastCalledWith(
+    {
+      pathname: '/os-board',
+      query: { tab: 'community', source: 'share', keyword: 'Compass' },
+    },
+    undefined,
+    { shallow: true, scroll: false }
+  );
+
+  router.query = { tab: 'community', source: 'share', keyword: 'Compass' };
+  rerender(<DashboardHome />);
+  expect(useDashboardList).toHaveBeenLastCalledWith(
+    expect.objectContaining({ page: 1, keyword: 'Compass' })
+  );
+  fireEvent.click(screen.getByRole('tab', { name: '仓库' }));
+  expect(router.replace).toHaveBeenLastCalledWith(
+    {
+      pathname: '/os-board',
+      query: { tab: 'repo', source: 'share', keyword: 'Compass' },
+    },
+    undefined,
+    { shallow: true, scroll: false }
+  );
+
+  router.query = { tab: 'repo', source: 'share', keyword: 'Compass' };
+  rerender(<DashboardHome />);
+  fireEvent.change(screen.getByRole('textbox'), { target: { value: '' } });
+  act(() => jest.advanceTimersByTime(500));
+  expect(router.replace).toHaveBeenLastCalledWith(
+    { pathname: '/os-board', query: { tab: 'repo', source: 'share' } },
+    undefined,
+    { shallow: true, scroll: false }
+  );
+});
+
+it('cancels pending search updates when leaving the page', () => {
+  jest.useFakeTimers();
+  const { unmount } = render(<DashboardHome />);
+  fireEvent.change(screen.getByRole('textbox'), {
+    target: { value: 'Compass' },
+  });
+  unmount();
+  act(() => jest.advanceTimersByTime(500));
+  expect(router.replace).not.toHaveBeenCalled();
 });
