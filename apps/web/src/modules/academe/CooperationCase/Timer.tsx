@@ -20,7 +20,8 @@ const Timer = ({
             setActiveFun();
             return 0;
           } else {
-            return prevProgress + 10 / time;
+            // A zero (or negative) duration would step the progress by Infinity.
+            return prevProgress + 10 / (time > 0 ? time : 20);
           }
         });
     }, 100);
