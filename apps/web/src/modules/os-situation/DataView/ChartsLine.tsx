@@ -77,7 +77,7 @@ const Charts = ({ metric }) => {
             <Alert message={descMap?.[metric]} showIcon />
           </div>
         )}
-        {chartsList.map((ChartItem) => {
+        {chartsList?.map((ChartItem) => {
           return (
             <div key={ChartItem.id}>
               <h1
