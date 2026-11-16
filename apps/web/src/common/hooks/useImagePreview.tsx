@@ -9,9 +9,21 @@ const useImagePreview = () => {
 
   useEffect(() => {
     if (element) {
-      galleryRef.current = new Viewer(element);
+      const gallery = new Viewer(element);
+      galleryRef.current = gallery;
+      const observer = new MutationObserver(() => {
+        gallery.update();
+      });
+      observer.observe(element, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['src', 'alt'],
+      });
       return () => {
-        galleryRef.current?.destroy();
+        observer.disconnect();
+        gallery.destroy();
+        galleryRef.current = null;
       };
     }
   }, [element]);
