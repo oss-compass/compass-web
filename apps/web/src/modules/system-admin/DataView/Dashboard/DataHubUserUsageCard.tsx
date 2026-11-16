@@ -205,19 +205,6 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
     }));
   }, [apiTableData, archiveDownloadTableData, activeTab]);
 
-  // 筛选数据（根据搜索关键词）
-  const filteredData = useMemo(() => {
-    if (!searchKeyword) return processedData;
-    const keyword = searchKeyword.toLowerCase();
-    return processedData.filter(
-      (item) =>
-        item.login_binds?.nickname?.toLowerCase().includes(keyword) ||
-        item.login_binds?.account?.toLowerCase().includes(keyword) ||
-        (item as any).api_path?.toLowerCase().includes(keyword) ||
-        (item as any).dataset_name?.toLowerCase().includes(keyword)
-    );
-  }, [processedData, searchKeyword]);
-
   // 获取API选项列表
   const getApiOptions = () => {
     let data;
@@ -367,7 +354,7 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
             options={apiOptions}
           />
           <Input.Search
-            placeholder={`搜索用户、${activeTab === 'api' ? 'API' : '数据集'}`}
+            placeholder="搜索用户名或邮箱"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             style={{ width: 200 }}
@@ -379,7 +366,7 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
       {/* 表格 */}
       <Table
         columns={columns}
-        dataSource={filteredData}
+        dataSource={processedData}
         loading={isLoading}
         pagination={{
           current: currentPage,
