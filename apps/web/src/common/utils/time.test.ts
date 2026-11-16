@@ -20,4 +20,10 @@ describe('time', () => {
   it('formatToNowStrict', function () {
     expect(formatToNowStrict('2022-09-28T02:11:54Z')).toBe('2 months');
   });
+
+  it('returns an empty string for a value that is not a date', () => {
+    expect(formatISO('not-a-date')).toEqual('');
+    expect(formatToNow('not-a-date')).toEqual('');
+    expect(formatToNowStrict('not-a-date')).toEqual('');
+  });
 });
