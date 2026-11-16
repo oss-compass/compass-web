@@ -9,6 +9,12 @@ import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 import getLocale from '@common/utils/getLocale';
 import useOsBoardDateRange from '../../hooks/useOsBoardDateRange';
+import {
+  getMaxSelectableDate,
+  MIN_RANGE_DAYS,
+  MIN_SELECTABLE_DATE,
+  normalizeDateRange,
+} from './dateRange';
 
 const { RangePicker } = DatePicker;
 
@@ -68,10 +74,10 @@ const DashboardDateRangePicker: React.FC<{
     if (!current) return false;
 
     // 基本限制：不能选择今天之后的日期，不能选择 2000 年之前的日期
-    const today = dayjs().subtract(1, 'day');
-    const minDate = dayjs('2000-01-01');
+    const maxDate = getMaxSelectableDate();
+    const minDate = dayjs(MIN_SELECTABLE_DATE);
 
-    return current.isAfter(today, 'day') || current.isBefore(minDate, 'day');
+    return current.isAfter(maxDate, 'day') || current.isBefore(minDate, 'day');
   };
 
   return (
@@ -91,10 +97,8 @@ const DashboardDateRangePicker: React.FC<{
           onCalendarChange={(dates) => {
             if (dates && dates[0] && dates[1]) {
               const daysDiff = dates[1].diff(dates[0], 'day');
-              if (daysDiff < 7) {
-                // 如果间隔小于7天，自动调整结束日期
-                const adjustedEndDate = dates[0].add(7, 'day');
-                setDateRange([dates[0], adjustedEndDate]);
+              if (daysDiff < MIN_RANGE_DAYS) {
+                setDateRange(normalizeDateRange(dates));
               }
             }
           }}
