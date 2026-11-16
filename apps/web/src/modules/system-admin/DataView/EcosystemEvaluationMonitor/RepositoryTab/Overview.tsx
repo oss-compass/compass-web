@@ -93,6 +93,7 @@ const RepositoryOverview: React.FC = () => {
 
   // 初始化平台分布饼图
   useEffect(() => {
+    let platformChartCleanup: (() => void) | undefined;
     const initPlatformChart = () => {
       if (platformChartRef.current) {
         const existingChart = echarts.getInstanceByDom(
@@ -156,7 +157,7 @@ const RepositoryOverview: React.FC = () => {
         };
         window.addEventListener('resize', resizeHandler);
 
-        return () => {
+        platformChartCleanup = () => {
           window.removeEventListener('resize', resizeHandler);
           chart.dispose();
         };
@@ -168,17 +169,16 @@ const RepositoryOverview: React.FC = () => {
 
     return () => {
       clearTimeout(timer);
-      if (
-        platformChartRef.current &&
-        (platformChartRef.current as any)._chartCleanup
-      ) {
-        (platformChartRef.current as any)._chartCleanup();
-      }
+      // The node that held the chart may already have been replaced, so run the
+      // cleanup captured when the chart was created instead of reading the ref
+      // again here (that path also never removed the resize listener).
+      platformChartCleanup?.();
     };
   }, [platformData]);
 
   // 初始化更新时间分布柱状图
   useEffect(() => {
+    let updateChartCleanup: (() => void) | undefined;
     const initUpdateChart = () => {
       if (updateChartRef.current) {
         const existingChart = echarts.getInstanceByDom(updateChartRef.current);
@@ -240,7 +240,7 @@ const RepositoryOverview: React.FC = () => {
         };
         window.addEventListener('resize', resizeHandler);
 
-        return () => {
+        updateChartCleanup = () => {
           window.removeEventListener('resize', resizeHandler);
           chart.dispose();
         };
@@ -252,12 +252,7 @@ const RepositoryOverview: React.FC = () => {
 
     return () => {
       clearTimeout(timer);
-      if (
-        updateChartRef.current &&
-        (updateChartRef.current as any)._chartCleanup
-      ) {
-        (updateChartRef.current as any)._chartCleanup();
-      }
+      updateChartCleanup?.();
     };
   }, [updateData]);
 
