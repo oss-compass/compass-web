@@ -37,8 +37,10 @@ const MiniTrendChart: React.FC<MiniTrendChartProps> = ({
     }
 
     const chart: ECharts = init(chartRef.current);
-    const rawMin = Math.min(...values);
-    const rawMax = Math.max(...values);
+    // Math.min()/Math.max() on an empty spread give Infinity/-Infinity, which
+    // turns the axis bounds into NaN further down.
+    const rawMin = values.length ? Math.min(...values) : 0;
+    const rawMax = values.length ? Math.max(...values) : 0;
     const range = rawMax - rawMin;
     const padding =
       range === 0 ? Math.max(1, Math.abs(rawMax) * 0.1) : range * 0.15;
