@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Svg100 from 'public/images/analyze/number-100.svg';
 import Svg1 from 'public/images/analyze/number-1.svg';
 import { useTranslation } from 'next-i18next';
@@ -11,15 +11,21 @@ const ScoreConversion: React.FC<{
   onChange: (pre: boolean) => void;
 }> = ({ onePoint, onChange }) => {
   const { t } = useTranslation();
-  const unsubscribe = subscribeKey(
-    chartUserSettingState,
-    'onePointSys',
-    (v) => {
-      if (onePoint !== v) {
-        onChange(v);
+  // subscribeKey 必须在 effect 中订阅并在卸载/依赖变化时退订：在渲染体内调用
+  // 会随每次重渲染累积一个永不退订的订阅，导航栏切换一次设置会触发全部累积
+  // 回调（闭包陈旧、卸载后仍 setState）。
+  useEffect(() => {
+    const unsubscribe = subscribeKey(
+      chartUserSettingState,
+      'onePointSys',
+      (v) => {
+        if (onePoint !== v) {
+          onChange(v);
+        }
       }
-    }
-  );
+    );
+    return unsubscribe;
+  }, [onePoint, onChange]);
   return (
     <Tooltip
       arrow
