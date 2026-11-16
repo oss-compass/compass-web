@@ -20,7 +20,10 @@ const DashboardHome = () => {
   const [perPage] = useState(9);
   const [keyword, setKeyword] = useState('');
   const [inputValue, setInputValue] = useState('');
-  const [activeTab, setActiveTab] = useState<DashboardTypeFilter>('all');
+  const activeTab: DashboardTypeFilter =
+    router.query.tab === 'community' || router.query.tab === 'repo'
+      ? router.query.tab
+      : 'all';
   const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleInputChange = useCallback(
@@ -37,8 +40,12 @@ const DashboardHome = () => {
   );
 
   const handleTabChange = (tab: DashboardTypeFilter) => {
-    setActiveTab(tab);
     setPage(1);
+    void router.replace(
+      { pathname: router.pathname, query: { ...router.query, tab } },
+      undefined,
+      { shallow: true, scroll: false }
+    );
   };
 
   const {
