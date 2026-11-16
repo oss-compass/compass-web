@@ -6,7 +6,6 @@ import NoSsr from '@common/components/NoSsr';
 import Header from '@common/components/Header';
 import MyModelsBanner from '@modules/lab/model/components/MyModelsBanner';
 import EditPage from '@modules/lab/model/Version/EditPage';
-import ModelVersionProvider from '@modules/lab/model/Provider/ModelVersionProvider';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
@@ -22,9 +21,7 @@ const ModelVersionEdit = () => {
       <Header />
       <MyModelsBanner />
       <AuthRequire loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
-        <ModelVersionProvider loadingClassName="mx-auto w-[1200px] py-10 md:w-full md:px-6">
-          <EditPage />
-        </ModelVersionProvider>
+        <EditPage />
       </AuthRequire>
     </NoSsr>
   );
