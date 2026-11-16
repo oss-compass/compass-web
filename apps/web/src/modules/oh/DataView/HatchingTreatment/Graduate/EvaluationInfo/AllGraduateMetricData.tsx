@@ -1,19 +1,9 @@
 import { toFixed } from '@common/utils';
+import { formatOatAlarmText, OAT_ALARM_TITLE } from '@modules/oh/utils/utils';
 
 const OATRender = (oatDetail) => {
-  if (oatDetail?.length > 0) {
-    if (oatDetail.length > 2) {
-      return (
-        <span title="更多告警信息请下载报告 csv 查看">
-          以下告警来自 oat 扫描：${oatDetail.slice(0, 1)?.join('、')};
-          (更多告警信息请下载报告 csv 查看)
-        </span>
-      );
-    } else {
-      return `以下告警来自 oat 扫描：${oatDetail?.join('、')}; `;
-    }
-  }
-  return '';
+  const text = formatOatAlarmText(oatDetail);
+  return text ? <span title={OAT_ALARM_TITLE}>{text}</span> : '';
 };
 
 export const allMetricData = [

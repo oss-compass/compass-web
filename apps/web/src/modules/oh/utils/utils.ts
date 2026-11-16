@@ -1,5 +1,27 @@
 import { getPathname } from '@common/utils';
 
+export const OAT_ALARM_TITLE = '更多告警信息请下载报告 csv 查看';
+
+/**
+ * Warning line of the "oat 扫描" details of a hatching/sandbox/graduation report.
+ *
+ * With more than two warnings only the first one is listed and the rest is left to the
+ * downloadable csv, otherwise all of them are joined. The text used to be written as JSX
+ * text in the three metric tables, which rendered the placeholder literally:
+ * `以下告警来自 oat 扫描：${oatDetail.slice(0, 1)?.join('、')};`.
+ */
+export const formatOatAlarmText = (oatDetail?: string[] | null): string => {
+  if (!oatDetail?.length) {
+    return '';
+  }
+  if (oatDetail.length > 2) {
+    return `以下告警来自 oat 扫描：${oatDetail
+      .slice(0, 1)
+      .join('、')}; (${OAT_ALARM_TITLE})`;
+  }
+  return `以下告警来自 oat 扫描：${oatDetail.join('、')}; `;
+};
+
 export const getRiskFillScore = (
   score: number | null,
   riskFill: boolean
