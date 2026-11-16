@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 interface Props {
@@ -10,6 +10,10 @@ const useDropDown = ({ totalLength, onPressEnter }: Props) => {
   const [active, setActive] = useState(-1);
   const max = totalLength - 1;
 
+  useEffect(() => {
+    setActive((p) => (p > totalLength - 1 ? -1 : p));
+  }, [totalLength]);
+
   useHotkeys(
     'up,down,enter',
     (e, he) => {
@@ -17,7 +21,9 @@ const useDropDown = ({ totalLength, onPressEnter }: Props) => {
       const press = he.key;
       // press first time
       if ((press === 'up' || press === 'down') && active === -1) {
-        setActive(0);
+        if (totalLength > 0) {
+          setActive(0);
+        }
         return;
       }
       // press up
@@ -31,7 +37,7 @@ const useDropDown = ({ totalLength, onPressEnter }: Props) => {
         return;
       }
       // press enter,  navigate to analyze page
-      if (press === 'enter' && active > -1) {
+      if (press === 'enter' && active > -1 && active < totalLength) {
         onPressEnter();
       }
     },
