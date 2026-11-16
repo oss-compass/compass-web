@@ -16,7 +16,6 @@ const useHashchangeEvent = (
   useEffect(() => {
     const hashChangeHandle = (e: HashChangeEvent) => {
       let hash = window.location.hash;
-      if (!hash) return;
       if (hash.includes('?')) {
         let parts = hash.split('?');
         hash = parts[0];
@@ -36,14 +35,14 @@ const useHashchangeEvent = (
   useDebounce(
     () => {
       console.log(activeId);
-      if (!activeId) return;
-      const decodedId = decodeURIComponent(activeId);
-      const el = document.getElementById(decodedId);
-      if (!el) return;
       const cards = document.querySelectorAll(`.${cardClassName}`);
       cards.forEach((card) => {
         card.classList.remove('card-hash-active-border');
       });
+      if (!activeId) return;
+      const decodedId = decodeURIComponent(activeId);
+      const el = document.getElementById(decodedId);
+      if (!el) return;
 
       if (el.classList.contains?.(cardClassName)) {
         el.classList.add('card-hash-active-border');
