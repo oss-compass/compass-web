@@ -76,7 +76,7 @@ const UserManage = () => {
   return (
     <div className="flex-1 bg-[#FFFFFF] pb-10 md:px-4">
       <Center>
-        <div className="flex items-center justify-between pt-10 pb-4">
+        <div className="flex items-center justify-between pb-4 pt-10">
           <div className="text-xl font-semibold">
             <Link href={'/lab/model/my'}>{t('lab:my_models')}</Link> / {name} /{' '}
             {t('lab:user_management')}
@@ -94,6 +94,7 @@ const UserManage = () => {
           <div className="flex justify-center py-6">
             <Pagination
               current={page}
+              pageSize={per}
               total={count}
               onChange={(p) => {
                 setPage(p);

@@ -54,6 +54,7 @@ const FormInviteUsers = forwardRef(
           <div className="flex justify-center py-6">
             <Pagination
               current={page}
+              pageSize={per}
               total={count}
               onChange={(p) => {
                 setPage(p);
