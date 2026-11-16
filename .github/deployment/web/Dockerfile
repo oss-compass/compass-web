@@ -11,6 +11,7 @@ COPY ["package.json", "yarn.lock", "./"]
 
 COPY ./apps apps
 COPY ./packages packages
+COPY ./patches patches
 
 RUN if [[ -z "$REGISTRY" ]] ; then echo not set registry ; else yarn config set registry $REGISTRY && npm config set registry $REGISTRY ; fi
 RUN yarn config list
