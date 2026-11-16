@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { DateRangeType } from '@common/components/DateRangePicker';
-import { subMonths, subYears } from 'date-fns';
+import { parseISO, subMonths, subYears } from 'date-fns';
 
 export interface DateState {
   range: DateRangeType | string;
@@ -82,8 +82,8 @@ export const DateProvider: React.FC<{ children: ReactNode }> = ({
       const [startStr, endStr] = range.split(' ~ ');
       setDateState({
         range,
-        timeStart: new Date(startStr),
-        timeEnd: new Date(endStr),
+        timeStart: parseISO(startStr),
+        timeEnd: parseISO(endStr),
       });
     } else if (start && end) {
       // 直接提供开始和结束时间
