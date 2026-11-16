@@ -17,7 +17,7 @@ interface ChartProps {
 
 // 向上取整到最接近的10的倍数，给雷达图刻度留出余量
 export const calcRadarAxisMax = (values: number[]): number =>
-  Math.ceil(Math.max(...values) / 10) * 10;
+  values.length ? Math.ceil(Math.max(...values) / 10) * 10 : 10;
 
 const Chart: React.FC<ChartProps> = ({ containerRef, data }) => {
   // 如果没有数据，使用默认值
