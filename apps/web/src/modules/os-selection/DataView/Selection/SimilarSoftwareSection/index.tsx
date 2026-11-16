@@ -7,6 +7,7 @@ import { useLanguagesList } from '@modules/os-selection/constant';
 import GenReport from '../GenReport';
 import { useTranslation } from 'next-i18next';
 import { TrackingWrapper } from '@common/monumentedStation';
+import { normalizeRecommendationItems } from '../normalizeRecommendationItems';
 
 const SimilarSoftwareSection = () => {
   const languagesList = useLanguagesList();
@@ -30,18 +31,7 @@ const SimilarSoftwareSection = () => {
   );
   useEffect(() => {
     if (data?.thirdTpl) {
-      setRecommendations(
-        data.thirdTpl?.items!.map((item) => {
-          const parts = item?.packageId.split('@@@@$$@@@@');
-          const name = parts[0];
-          const target = parts[1];
-          return {
-            name,
-            target,
-            ...item,
-          };
-        })
-      );
+      setRecommendations(normalizeRecommendationItems(data.thirdTpl.items));
     }
   }, [data]);
 
