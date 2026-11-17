@@ -1649,6 +1649,22 @@ export const fetchOverviewScopedIssues = (
     signal,
   });
 
+/**
+ * 总览 Issue 弹窗导出：后端按当前 scope/筛选/排序生成完整 CSV。
+ * 返回原始 Response，调用方读取附件名并触发下载。
+ */
+export const fetchOverviewScopedIssuesCsv = (
+  params: Omit<Parameters<typeof fetchOverviewScopedIssues>[0], 'page' | 'size'>
+): Promise<Response> => {
+  const url = compassApiUrl('/overview/issues/export-csv');
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+    cache: 'no-store',
+  });
+};
+
 export const fetchOverviewParentChildren = async (
   parentId: string,
   params?: {

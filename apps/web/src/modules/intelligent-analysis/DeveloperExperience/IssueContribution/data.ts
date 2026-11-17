@@ -187,6 +187,54 @@ const fetchOverviewV2 = async <T>(
   return response.json() as Promise<T>;
 };
 
+/**
+ * 导出接口返回 CSV 文件；由后端在完整筛选范围内生成，不经过前端分页。
+ * 返回原始 Response，调用方用 `downloadCsvResponse` 下载并保留服务端文件名。
+ */
+const fetchOverviewV2Csv = async (
+  path: string,
+  params: Record<string, string | number | undefined> = {}
+): Promise<Response> => {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') query.set(key, String(value));
+  });
+  const search = query.toString();
+  const base = `${getApiBase()}${OVERVIEW_V2_API_PATH}${path}`;
+  return fetch(search ? `${base}?${search}` : base, { cache: 'no-store' });
+};
+
+/**
+ * 痛点全量导出：只传筛选/排序条件，不带分页，由后端在完整范围内生成 CSV。
+ */
+export const fetchIssueOverviewTopPainsCsv = (
+  params: IssueOverviewV2TopPainsQuery
+) =>
+  fetchOverviewV2Csv('/top-pains/export-csv', {
+    org: params.org,
+    repo: params.repo,
+    team: params.team,
+    group: params.group,
+    stage: params.stage,
+    prio: params.prio,
+    state: params.state,
+    trackingStatus: params.trackingStatus,
+    sort: params.sort,
+    order: params.order,
+    repos: params.repos?.length ? params.repos.join(',') : undefined,
+    states: params.states?.length ? params.states.join(',') : undefined,
+  });
+
+export const fetchIssueOverviewPainIssuesCsv = (params: {
+  painId: string;
+  org?: string;
+  priority?: 'P0' | 'P1' | 'P2' | 'P3';
+}) =>
+  fetchOverviewV2Csv(
+    `/pains/${encodeURIComponent(params.painId)}/issues/export-csv`,
+    { org: params.org, priority: params.priority }
+  );
+
 export const fetchIssueOverviewSummary = async (
   org?: string,
   signal?: AbortSignal

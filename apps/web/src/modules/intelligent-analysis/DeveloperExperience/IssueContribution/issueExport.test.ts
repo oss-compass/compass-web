@@ -1,11 +1,107 @@
 import {
   collectReportPainIssues,
   downloadCsv,
+  downloadCsvResponse,
   escapeCsvCell,
   exportIssueScores,
   exportPainIssues,
 } from './issueExport';
 import type { IssueReportPain, IssueScoreRow } from './types';
+
+describe('downloadCsvResponse', () => {
+  const mockAnchor = () => {
+    const filenames: string[] = [];
+    const click = jest
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(function (this: HTMLAnchorElement) {
+        filenames.push(this.download);
+      });
+    return { click, filenames };
+  };
+
+  it('downloads the server CSV with the filename from Content-Disposition', async () => {
+    const create = jest.fn<string, [Blob]>(() => 'blob:export');
+    const revoke = jest.fn();
+    const originalCreate = URL.createObjectURL;
+    const originalRevoke = URL.revokeObjectURL;
+    URL.createObjectURL = create;
+    URL.revokeObjectURL = revoke;
+    const { click, filenames } = mockAnchor();
+    const response = {
+      ok: true,
+      headers: {
+        get: () => 'attachment; filename="issue_pains_2026-11-17.csv"',
+      },
+      blob: async () => new Blob(['a,b\n1,2']),
+    } as unknown as Response;
+    try {
+      await downloadCsvResponse(response, '痛点_全部.csv');
+      expect(filenames).toEqual(['issue_pains_2026-11-17.csv']);
+      expect(create).toHaveBeenCalledWith(expect.any(Blob));
+      expect(click).toHaveBeenCalledTimes(1);
+      expect(revoke).toHaveBeenCalledWith('blob:export');
+    } finally {
+      click.mockRestore();
+      URL.createObjectURL = originalCreate;
+      URL.revokeObjectURL = originalRevoke;
+    }
+  });
+
+  it('falls back to the local filename and prefers UTF-8 filenames', async () => {
+    const { click, filenames } = mockAnchor();
+    const originalCreate = URL.createObjectURL;
+    const originalRevoke = URL.revokeObjectURL;
+    URL.createObjectURL = () => 'blob:export';
+    URL.revokeObjectURL = () => undefined;
+    try {
+      await downloadCsvResponse(
+        {
+          ok: true,
+          headers: { get: () => null },
+          blob: async () => new Blob([]),
+        } as unknown as Response,
+        'fallback.csv'
+      );
+      await downloadCsvResponse(
+        {
+          ok: true,
+          headers: {
+            get: () =>
+              'attachment; filename="plain.csv"; filename*=UTF-8\'\'%E7%97%9B%E7%82%B9.csv',
+          },
+          blob: async () => new Blob([]),
+        } as unknown as Response,
+        'fallback.csv'
+      );
+      expect(filenames).toEqual(['fallback.csv', '痛点.csv']);
+    } finally {
+      click.mockRestore();
+      URL.createObjectURL = originalCreate;
+      URL.revokeObjectURL = originalRevoke;
+    }
+  });
+
+  it('throws the server error message without downloading', async () => {
+    const { click, filenames } = mockAnchor();
+    try {
+      await expect(
+        downloadCsvResponse(
+          {
+            ok: false,
+            status: 503,
+            statusText: 'Service Unavailable',
+            text: async () => '数据尚未就绪，请稍后重试',
+          } as unknown as Response,
+          'fallback.csv'
+        )
+      ).rejects.toThrow('数据尚未就绪，请稍后重试');
+      expect(click).not.toHaveBeenCalled();
+      expect(filenames).toEqual([]);
+    } finally {
+      click.mockRestore();
+    }
+  });
+});
 
 describe('Issue CSV export', () => {
   it('exports only current report pain Issues and retains different pain reasons', () => {

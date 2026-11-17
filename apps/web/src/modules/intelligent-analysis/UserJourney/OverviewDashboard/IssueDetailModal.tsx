@@ -19,7 +19,9 @@ import { formatLocalDateTime } from '../time';
 import {
   fetchOverviewIssuePage,
   fetchOverviewScopedIssues,
+  fetchOverviewScopedIssuesCsv,
 } from '../rawData/apiClient';
+import { downloadFileResponse } from '@common/utils/file';
 import taskDefinitions from '../rawData/task_definitions.json';
 
 const TEAM_FILTER_ALL = '__ALL__';
@@ -632,28 +634,27 @@ const IssueDetailModal: React.FC<IssueDetailModalProps> = ({
               setExporting(true);
               setExportError('');
               try {
-                let exportIssues = displayedIssues;
                 if (state.scope) {
-                  exportIssues = [];
-                  let exportPage = 1;
-                  while (true) {
-                    const response = await fetchOverviewScopedIssues({
-                      ...scopedParams,
-                      page: exportPage,
-                      size: 100,
-                    });
-                    exportIssues.push(...response.items);
-                    if (exportPage * 100 >= response.total) break;
-                    exportPage += 1;
-                  }
+                  // 后端按当前 scope/筛选/排序导出全量 Issue，不再逐页拉取。
+                  await downloadFileResponse(
+                    await fetchOverviewScopedIssuesCsv({
+                      scope: state.scope,
+                      filters: scopedParams.filters,
+                      sort_by: scopedParams.sort_by,
+                      sort_order: scopedParams.sort_order,
+                    }),
+                    `issues_${String(state.title || 'detail')}.csv`
+                  );
+                } else {
+                  // 非 scope 入口的数据已完整加载在客户端，直接本地生成。
+                  downloadTextFile(
+                    buildIssuesCsv(displayedIssues),
+                    `issues_${String(state.title || 'detail').replace(
+                      /[\\/:*?"<>|]+/g,
+                      '_'
+                    )}.csv`
+                  );
                 }
-                downloadTextFile(
-                  buildIssuesCsv(exportIssues),
-                  `issues_${String(state.title || 'detail').replace(
-                    /[\\/:*?"<>|]+/g,
-                    '_'
-                  )}.csv`
-                );
               } catch (error) {
                 setExportError(
                   error instanceof Error ? error.message : String(error)

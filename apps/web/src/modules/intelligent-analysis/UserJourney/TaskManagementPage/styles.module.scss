@@ -1,0 +1,12 @@
+.taskTable {
+  :global(.ant-table-tbody .ant-btn-link) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    padding: 0 10px !important;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+  }
+}

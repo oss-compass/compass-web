@@ -1,12 +1,16 @@
-import { getEvidenceActorName } from '../../evidenceActor';
 import React from 'react';
 import Link from 'next/link';
 import { FilterFilled } from '@ant-design/icons';
-import { Dropdown, Modal, Pagination, Radio, Tooltip } from 'antd';
+import { Alert, Dropdown, Modal, Pagination, Radio, Tooltip } from 'antd';
 import { useQuery } from '@tanstack/react-query';
-import type { IssueOverviewTopPain } from '../../types';
+import type {
+  IssueOverviewTopPain,
+  IssueOverviewV2PainDetail,
+} from '../../types';
 import {
   fetchIssueOverviewPainDetail,
+  fetchIssueOverviewPainIssuesCsv,
+  fetchIssueOverviewTopPainsCsv,
   fetchIssueOverviewTopPainsV2,
 } from '../../data';
 import type { IssueOverviewV2TopPainsQuery } from '../../data';
@@ -16,6 +20,7 @@ import PainIssueTable from '../PainIssueTable';
 import IssuePriorityTag, { ISSUE_PRIORITY_LEVELS } from './IssuePriorityTag';
 
 import { resolvePainFilter } from './painFilterScope';
+import { downloadCsvResponse } from '../../issueExport';
 
 const ALL = '__ALL__';
 const PAIN_PAGE_SIZE = 10;
@@ -75,6 +80,20 @@ const getPainMetricLabel = (item: IssueOverviewTopPain) =>
   item.metricLabels?.filter(Boolean).join('、') ||
   item.metricCodes?.filter(Boolean).join('、') ||
   '--';
+
+const getIssueDetails = (
+  detail: IssueOverviewV2PainDetail | undefined,
+  selectedPain: IssueOverviewTopPain | null
+) => {
+  const pain = detail?.pain ?? selectedPain;
+  return {
+    pain,
+    resolvedOnly:
+      pain?.openIssueCount === 0 && (pain?.resolvedIssueCount ?? 0) > 0,
+    items: detail?.items ?? [],
+    total: detail?.total ?? 0,
+  };
+};
 
 const PainIssuePriorityDistribution: React.FC<{
   item: IssueOverviewTopPain;
@@ -164,32 +183,6 @@ const PainIssuePriorityDistribution: React.FC<{
   );
 };
 
-const escapeCsvCell = (value: unknown) => {
-  const text = String(value ?? '');
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-};
-
-const downloadCsv = (
-  filename: string,
-  headers: string[],
-  rows: unknown[][]
-) => {
-  const content = [headers, ...rows]
-    .map((row) => row.map(escapeCsvCell).join(','))
-    .join('\n');
-  const blob = new Blob([`\uFEFF${content}\n`], {
-    type: 'text/csv;charset=utf-8',
-  });
-  const href = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = href;
-  anchor.download = filename.replace(/[\\/:*?"<>|]+/g, '_');
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(href);
-};
-
 const IssuePainDetailModal: React.FC<Props> = ({
   open,
   title,
@@ -198,6 +191,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
   onClose,
   reportHref,
 }) => {
+  const orgKey = org ?? '';
   const [sortKey, setSortKey] = React.useState<SortKey>('team');
   const [sortAsc, setSortAsc] = React.useState(true);
   const [stageFilter, setStageFilter] = React.useState(ALL);
@@ -210,6 +204,10 @@ const IssuePainDetailModal: React.FC<Props> = ({
   >();
   const [painPage, setPainPage] = React.useState(1);
   const [issuePage, setIssuePage] = React.useState(1);
+  const [exportingPains, setExportingPains] = React.useState(false);
+  const [exportingIssues, setExportingIssues] = React.useState(false);
+  const [painExportError, setPainExportError] = React.useState('');
+  const [issueExportError, setIssueExportError] = React.useState('');
 
   const resetFilters = () => {
     setStageFilter(ALL);
@@ -219,6 +217,8 @@ const IssuePainDetailModal: React.FC<Props> = ({
     setIssueDetailPriority(undefined);
     setPainPage(1);
     setIssuePage(1);
+    setPainExportError('');
+    setIssueExportError('');
   };
 
   // Aggregate options over the entry scope, independent of page/local filters.
@@ -285,7 +285,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
   const painsQuery = useQuery({
     queryKey: [
       'issue-overview-v2-top-pains',
-      org ?? '',
+      orgKey,
       query.group ?? '',
       query.repo ?? '',
       baseRepoKey,
@@ -331,7 +331,7 @@ const IssuePainDetailModal: React.FC<Props> = ({
   const issueDetailQuery = useQuery({
     queryKey: [
       'issue-overview-v2-pain-detail',
-      org ?? '',
+      orgKey,
       issueDetailPain?.key ?? '',
       issueDetailPriority ?? '',
       issuePage,
@@ -350,101 +350,63 @@ const IssuePainDetailModal: React.FC<Props> = ({
     enabled: open && !!issueDetailPain,
     staleTime: 0,
   });
-  const sourceDetailPain = issueDetailQuery.data?.pain ?? issueDetailPain;
-  const resolvedOnly =
-    sourceDetailPain?.openIssueCount === 0 &&
-    (sourceDetailPain?.resolvedIssueCount ?? 0) > 0;
-  const issueDetailItems = issueDetailQuery.data?.items ?? [];
-  const issueDetailTotal = issueDetailQuery.data?.total ?? 0;
+  const {
+    pain: sourceDetailPain,
+    resolvedOnly,
+    items: issueDetailItems,
+    total: issueDetailTotal,
+  } = getIssueDetails(issueDetailQuery.data, issueDetailPain);
 
-  const exportPainRows = () => {
-    downloadCsv(
-      `痛点_${title}.csv`,
-      [
-        '序号',
-        '仓库',
-        '责任团队',
-        '阶段',
-        '指标',
-        '痛点描述',
-        '优先级',
-        '状态',
-        '涉及 Issue 数',
-        '相关报告',
-      ],
-      pagedDisplayedItems.map((item, index) => [
-        (painPage - 1) * PAIN_PAGE_SIZE + index + 1,
-        item.repoShort,
-        item.teamName || '--',
-        item.stageName || '--',
-        getPainMetricLabel(item),
-        item.title || '--',
-        item.prio || '--',
-        getPainStateLabel(item),
-        item.openIssueCount ?? 0,
-        reportHref(item.community, item.period, item.stageId, item.painId),
-      ])
-    );
+  /**
+   * 导出当前筛选条件下的全量痛点。
+   * 由后端在同一筛选/排序范围内生成完整 CSV，前端不再逐页拉取。
+   */
+  const exportPainRows = async () => {
+    if (exportingPains) return;
+    setExportingPains(true);
+    setPainExportError('');
+    try {
+      await downloadCsvResponse(
+        await fetchIssueOverviewTopPainsCsv({
+          ...query,
+          sort: sortKey,
+          order: sortAsc ? 'asc' : 'desc',
+          stage: stageScope.filter,
+          prio: prioScope.filter,
+          trackingStatus: stateScope.filter,
+        }),
+        `痛点_${title}.csv`
+      );
+    } catch (error) {
+      setPainExportError(
+        error instanceof Error ? error.message : '导出失败，请稍后重试'
+      );
+    } finally {
+      setExportingPains(false);
+    }
   };
 
-  const exportIssueRows = () => {
-    downloadCsv(
-      `涉及Issue_${sourceDetailPain?.title || '详情'}.csv`,
-      [
-        '序号',
-        'Issue',
-        '标题',
-        '责任人',
-        'Issue 状态',
-        '链接',
-        '得分',
-        '指标',
-        '低分原因',
-        '原文依据',
-        '报告周期',
-        '报告链接',
-      ],
-      issueDetailItems.map((issue, index) => [
-        index + 1,
-        `#${issue.number}`,
-        issue.title || '--',
-        issue.assignees?.join('、') || '—',
-        issue.issue_state === 'open'
-          ? '开启中'
-          : issue.issue_state === 'closed'
-          ? '已关闭'
-          : '—',
-        issue.url || '--',
-        issue.score ?? '—',
-        issue.metric_code || '--',
-        issue.reason || '--',
-        issue.evidence?.length
-          ? issue.evidence
-              .map(
-                (evidence) =>
-                  `[${evidence.type || '记录'}] ${
-                    evidence.time ? `${evidence.time.replace('T', ' ')} ` : ''
-                  }${
-                    getEvidenceActorName(evidence.actor)
-                      ? `${getEvidenceActorName(evidence.actor)}：`
-                      : ''
-                  }${evidence.text || ''}${
-                    evidence.url ? `（${evidence.url}）` : ''
-                  }`
-              )
-              .join(' | ')
-          : '--',
-        issue.report_period || sourceDetailPain?.period || '--',
-        sourceDetailPain
-          ? reportHref(
-              sourceDetailPain.community,
-              issue.report_period || sourceDetailPain.period,
-              sourceDetailPain.stageId,
-              issue.report_pain_id || sourceDetailPain.painId
-            )
-          : '--',
-      ])
-    );
+  /** 导出该痛点/优先级下的全量涉及 Issue（后端生成完整 CSV）。 */
+  const exportIssueRows = async () => {
+    if (exportingIssues || !issueDetailPain) return;
+    setExportingIssues(true);
+    setIssueExportError('');
+    try {
+      await downloadCsvResponse(
+        await fetchIssueOverviewPainIssuesCsv({
+          painId: issueDetailPain.key,
+          org,
+          priority: issueDetailPriority,
+        }),
+        `涉及Issue_${sourceDetailPain?.title || '详情'}.csv`
+      );
+    } catch (error) {
+      setIssueExportError(
+        error instanceof Error ? error.message : '导出失败，请稍后重试'
+      );
+    } finally {
+      setExportingIssues(false);
+    }
   };
 
   const sortableHeader = (label: string, key: SortKey) => (
@@ -543,6 +505,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
           },
           body: {
             boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
             flex: '1 1 auto',
             minHeight: 0,
             maxWidth: '100%',
@@ -555,16 +520,19 @@ const IssuePainDetailModal: React.FC<Props> = ({
             <button
               type="button"
               className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)] disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={!total}
-              onClick={exportPainRows}
+              disabled={!total || exportingPains}
+              onClick={() => void exportPainRows()}
             >
-              导出
+              {exportingPains ? '导出中...' : '导出'}
             </button>
           </div>
         }
         destroyOnHidden
       >
-        <div className="flex h-full min-h-0 w-full max-w-full flex-col gap-3 overflow-hidden">
+        {painExportError ? (
+          <Alert type="error" message={painExportError} />
+        ) : null}
+        <div className="flex min-h-0 w-full max-w-full flex-1 flex-col gap-3 overflow-hidden">
           <div
             className={`min-h-0 min-w-0 flex-1 overflow-x-hidden rounded-xl border border-[var(--overview-slateBorder)] ${
               issueDetailPain ? 'overflow-y-hidden' : 'overflow-y-auto'
@@ -742,6 +710,9 @@ const IssuePainDetailModal: React.FC<Props> = ({
           },
           body: {
             boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
             flex: '1 1 auto',
             minHeight: 0,
             maxWidth: '100%',
@@ -758,16 +729,19 @@ const IssuePainDetailModal: React.FC<Props> = ({
             <button
               type="button"
               className="inline-flex items-center rounded-full border border-[var(--overview-slateBorder)] bg-[var(--overview-white)] px-3 py-1 text-xs font-semibold text-[var(--overview-slateDark)] shadow-sm transition-colors hover:bg-[var(--overview-slateSoft)] disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={!issueDetailItems.length}
-              onClick={exportIssueRows}
+              disabled={!issueDetailTotal || exportingIssues}
+              onClick={() => void exportIssueRows()}
             >
-              导出
+              {exportingIssues ? '导出中...' : '导出'}
             </button>
           </div>
         }
         destroyOnHidden
       >
-        <div className="flex h-full min-h-0 max-w-full flex-col gap-4 overflow-hidden">
+        {issueExportError ? (
+          <Alert type="error" message={issueExportError} />
+        ) : null}
+        <div className="flex min-h-0 max-w-full flex-1 flex-col gap-4 overflow-hidden">
           <div className="shrink-0 rounded-lg border border-[var(--overview-redSoft)] bg-[rgba(var(--overview-redSoft-rgb),0.8)] px-3.5 py-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-[var(--overview-textSecondary)]">

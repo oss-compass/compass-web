@@ -14,6 +14,9 @@ const exportFilename = (name: string, context?: IssueExportContext) =>
   [context?.community, context?.period, name].filter(Boolean).join('_') +
   '.csv';
 
+/** 列出接口已支持的全量导出由后端生成，本模块的 downloadCsv 仅用于本地已加载数据。 */
+export { downloadFileResponse as downloadCsvResponse } from '@common/utils/file';
+
 export const escapeCsvCell = (value: unknown): string => {
   let text = String(value ?? '');
   // Prevent spreadsheet formula execution in report-provided text.

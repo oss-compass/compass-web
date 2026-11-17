@@ -1,17 +1,57 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import IssuePainDetailModal from './IssuePainDetailModal';
-import { fetchIssueOverviewTopPainsV2 } from '../../data';
+import {
+  fetchIssueOverviewPainDetail,
+  fetchIssueOverviewPainIssuesCsv,
+  fetchIssueOverviewTopPainsCsv,
+  fetchIssueOverviewTopPainsV2,
+} from '../../data';
+import type { IssueOverviewTopPain } from '../../types';
 
 jest.mock('../../data', () => ({
   fetchIssueOverviewTopPainsV2: jest.fn(),
   fetchIssueOverviewPainDetail: jest.fn(),
+  fetchIssueOverviewTopPainsCsv: jest.fn(),
+  fetchIssueOverviewPainIssuesCsv: jest.fn(),
 }));
 jest.mock('../PainIssueTable', () => () => null);
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Modal: ({
+    open,
+    title,
+    children,
+  }: React.PropsWithChildren<{
+    open: boolean;
+    title: React.ReactNode;
+  }>) =>
+    open ? (
+      <section role="dialog">
+        {title}
+        {children}
+      </section>
+    ) : null,
+}));
 
 const fetchPains = fetchIssueOverviewTopPainsV2 as jest.MockedFunction<
   typeof fetchIssueOverviewTopPainsV2
+>;
+const fetchPainDetail = fetchIssueOverviewPainDetail as jest.MockedFunction<
+  typeof fetchIssueOverviewPainDetail
+>;
+const fetchPainsCsv = fetchIssueOverviewTopPainsCsv as jest.MockedFunction<
+  typeof fetchIssueOverviewTopPainsCsv
+>;
+const fetchIssuesCsv = fetchIssueOverviewPainIssuesCsv as jest.MockedFunction<
+  typeof fetchIssueOverviewPainIssuesCsv
 >;
 
 beforeAll(() => {
@@ -39,6 +79,9 @@ beforeEach(() => {
       trackingStatuses: ['2', '3', '7'],
     },
   }));
+  fetchPainDetail.mockReset();
+  fetchPainsCsv.mockReset();
+  fetchIssuesCsv.mockReset();
 });
 
 const renderModal = async () => {
@@ -246,4 +289,120 @@ it('sorts the full filtered scope on the server and resets the current page', as
       expect.anything()
     )
   );
+});
+
+describe('export', () => {
+  const originalCreate = URL.createObjectURL;
+  const originalRevoke = URL.revokeObjectURL;
+  let click: jest.SpyInstance;
+
+  const csvResponse = (filename: string) =>
+    ({
+      ok: true,
+      headers: { get: () => `attachment; filename="${filename}"` },
+      blob: async () => new Blob(['a,b\n1,2']),
+    } as unknown as Response);
+
+  beforeEach(() => {
+    URL.createObjectURL = jest.fn(() => 'blob:export');
+    URL.revokeObjectURL = jest.fn();
+    click = jest
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    click.mockRestore();
+    URL.createObjectURL = originalCreate;
+    URL.revokeObjectURL = originalRevoke;
+  });
+
+  it('exports every filtered pain row through the backend CSV endpoint', async () => {
+    await renderModal();
+    fireEvent.click(screen.getByRole('button', { name: '筛选优先级' }));
+    fireEvent.click(await screen.findByRole('radio', { name: /P2/ }));
+    await waitFor(() =>
+      expect(fetchPains).toHaveBeenCalledWith(
+        expect.objectContaining({ prio: 'P2', page: 1 }),
+        expect.anything()
+      )
+    );
+    fetchPainsCsv.mockResolvedValueOnce(
+      csvResponse('issue_pains_2026-11-17.csv')
+    );
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: '导出' })).toBeEnabled()
+    );
+    fireEvent.click(screen.getByRole('button', { name: '导出' }));
+    await waitFor(() => expect(click).toHaveBeenCalledTimes(1));
+
+    // 只请求一次导出接口，筛选/排序条件与列表一致，不再逐页拉取。
+    expect(fetchPainsCsv).toHaveBeenCalledTimes(1);
+    expect(fetchPainsCsv).toHaveBeenCalledWith(
+      expect.objectContaining({
+        state: 'inProgress',
+        team: '算子分队',
+        prio: 'P2',
+        sort: 'team',
+        order: 'asc',
+      })
+    );
+    expect(fetchPains).not.toHaveBeenCalledWith(
+      expect.objectContaining({ pageSize: 100 })
+    );
+    expect(click).toHaveBeenCalledTimes(1);
+  });
+
+  it('exports the full Issue list of a pain through the backend CSV endpoint', async () => {
+    fetchPains.mockImplementation(async (query) => ({
+      items: [
+        {
+          key: 'pain-1',
+          repoShort: 'repo-1',
+          title: '痛点一',
+          openIssueCount: 2,
+          issuePriorityCounts: { P0: 0, P1: 1, P2: 1, P3: 0 },
+        } as unknown as IssueOverviewTopPain,
+      ],
+      total: query.trackingStatus ? 1 : 61,
+      page: query.page ?? 1,
+      pageSize: query.pageSize ?? 10,
+      filterOptions: {
+        stages: [],
+        prios: [],
+        states: [],
+        trackingStatuses: [],
+      },
+    }));
+    fetchPainDetail.mockResolvedValue({
+      pain: { key: 'pain-1', title: '痛点一' },
+      items: [],
+      total: 2,
+      page: 1,
+      pageSize: 10,
+    } as never);
+    fetchIssuesCsv.mockResolvedValueOnce(
+      csvResponse('pain_issues_pain-1_2026-11-17.csv')
+    );
+
+    await renderModal();
+    fireEvent.click(await screen.findByRole('button', { name: /总 2/ }));
+    const dialog = await waitFor(() => {
+      const dialogs = screen.getAllByRole('dialog');
+      expect(dialogs).toHaveLength(2);
+      return dialogs[1];
+    });
+    const exportButton = within(dialog).getByRole('button', { name: '导出' });
+    await waitFor(() => expect(exportButton).toBeEnabled());
+    expect(exportButton).toBeInTheDocument();
+    fireEvent.click(within(dialog).getByRole('button', { name: '导出' }));
+    await waitFor(() => expect(fetchIssuesCsv).toHaveBeenCalledTimes(1));
+    expect(fetchIssuesCsv).toHaveBeenCalledWith({
+      painId: 'pain-1',
+      org: undefined,
+      priority: undefined,
+    });
+    expect(click).toHaveBeenCalledTimes(1);
+  });
 });

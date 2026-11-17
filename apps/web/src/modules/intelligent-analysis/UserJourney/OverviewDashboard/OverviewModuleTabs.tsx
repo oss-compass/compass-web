@@ -32,6 +32,7 @@ const OverviewModuleTabs: React.FC<OverviewModuleTabsProps> = ({
         <button
           key={item.key}
           type="button"
+          data-management-control="navigation"
           aria-current={isActive ? 'page' : undefined}
           onClick={() => onChange(item.key)}
           className={

@@ -1,9 +1,11 @@
 .active {
-  // The low-specificity native selectors preserve Ant Design variants and states.
-  :global(.ant-btn),
+  // Native controls and navigation keep their own corner radius.
+  :global(.ant-btn:where(:not(.ant-btn-link))),
   :global(
       button:where(
-          :not([role='switch']):not([role='tab']):not(.ant-modal-close):not(
+          :not(.ant-btn):not([data-management-control='navigation']):not(
+              [role='switch']
+            ):not([role='tab']):not(.ant-modal-close):not(
               .ant-drawer-close
             ):not(.ant-input-clear-icon):not(.ant-select-clear):not(
               .ant-picker-clear
@@ -11,7 +13,31 @@
         )
     ) {
     border: 1px solid var(--overview-slateBorder, #e2e8f0) !important;
+  }
+
+  :global(.ant-btn) {
     border-radius: 10px !important;
+  }
+
+  :global(.ant-btn-circle) {
+    border-radius: 50% !important;
+  }
+
+  :global(.ant-btn-round) {
+    border-radius: 999px !important;
+  }
+
+  :global(.ant-btn-link) {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none;
+  }
+
+  :global(.overview-ant-table .ant-btn-link) {
+    font-family: inherit;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 20px !important;
   }
 
   :global(.ant-btn-default:not(:disabled):not(.ant-btn-dangerous)) {

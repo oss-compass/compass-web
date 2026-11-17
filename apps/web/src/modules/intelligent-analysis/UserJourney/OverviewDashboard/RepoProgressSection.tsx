@@ -3264,6 +3264,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
         search.set('operating_system', operatingSystemFilter);
       }
       search.set('view', progressView);
+      search.set('hide_beat', String(hideBeatRepos));
 
       severityFilters.forEach((sev) => search.append('severity', sev));
 

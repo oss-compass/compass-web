@@ -1,4 +1,5 @@
 import useManagementControls from '@common/hooks/useManagementControls';
+import styles from './styles.module.scss';
 import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
 import React, {
   useCallback,
@@ -1276,7 +1277,7 @@ const TaskManagementPage: React.FC = () => {
           if (!canManageRecord)
             return <span className="text-slate-400">-</span>;
           return (
-            <Space size={4} wrap>
+            <Space size={8} wrap>
               <RerunActionButton
                 job={record}
                 onOpenRecords={() => {
@@ -1503,7 +1504,7 @@ const TaskManagementPage: React.FC = () => {
                 </div>
 
                 <Table<RepoRerunJob>
-                  className="overview-ant-table"
+                  className={`overview-ant-table ${styles.taskTable}`}
                   style={{ width: '100%' }}
                   rowKey={(record) =>
                     record.job_id ||
