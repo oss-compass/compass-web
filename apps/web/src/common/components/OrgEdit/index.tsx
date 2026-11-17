@@ -63,7 +63,7 @@ const OrgEdit = ({
         });
       }
     } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
+      console.error('Failed:', errorInfo);
     }
   };
   const disabledDate = (current: Dayjs) => {
