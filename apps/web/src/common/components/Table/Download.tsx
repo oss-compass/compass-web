@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 // 对象驼峰转下划线
 const objectHumpToLine = (obj) => {
-  var newObj = new Object();
+  const newObj = new Object();
   for (let key in obj) {
     newObj[key.replace(/([A-Z])/g, '_$1').toLowerCase()] = obj[key];
   }

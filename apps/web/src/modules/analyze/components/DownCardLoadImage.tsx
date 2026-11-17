@@ -101,7 +101,7 @@ const DownLoadImage = (props: DownLoadImageProps) => {
           await inlineResources(svgDocument.documentElement);
           // Get SVG string
           const svgString = new XMLSerializer().serializeToString(svgDocument);
-          var link = document.createElement('a');
+          const link = document.createElement('a');
           link.download = `${Date.now()}.svg`;
           link.href =
             'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);

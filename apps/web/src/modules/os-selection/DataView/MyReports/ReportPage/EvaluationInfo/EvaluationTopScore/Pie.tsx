@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { EChartsOption, init } from 'echarts';
 
 const Pie = ({ score }) => {
-  var colorList = ['#998CEF', '#D9D8EB'];
+  const colorList = ['#998CEF', '#D9D8EB'];
   let option: EChartsOption = {
     title: {
       text: score,
