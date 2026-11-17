@@ -547,6 +547,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
     {
       title: '操作',
       key: 'action',
+      className: 'community-table-actions',
       width: 90,
       render: (_value: unknown, job: IssuePainRerunJob) =>
         job.taskStatus === 'pending' || job.taskStatus === 'running' ? (

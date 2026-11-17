@@ -120,7 +120,10 @@ const getRepoTableLayout = (
     columns: columns.map((column) => ({
       ...column,
       width: communityColumnWidths[String(column.key)] ?? column.width,
-      className: column.key === 'actions' ? styles.actions : column.className,
+      className:
+        column.key === 'actions'
+          ? `${styles.actions} community-table-actions`
+          : column.className,
       fixed: undefined,
     })),
     className: `overview-ant-table ${styles.table}`,
@@ -1834,6 +1837,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
       {
         title: '操作',
         key: 'actions',
+        className: 'community-table-actions',
         width: 240,
         fixed: screens.xl ? 'right' : undefined,
         render: (_value, record) => {

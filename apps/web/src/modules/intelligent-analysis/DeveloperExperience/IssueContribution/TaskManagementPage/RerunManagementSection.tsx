@@ -111,6 +111,7 @@ const RerunManagementSection: React.FC<{
     {
       title: '操作',
       key: 'action',
+      className: 'community-table-actions',
       width: '9%',
       render: (_, job) => (
         <a

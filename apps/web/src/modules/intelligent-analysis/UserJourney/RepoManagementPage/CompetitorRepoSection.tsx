@@ -188,6 +188,7 @@ const CompetitorRepoSection: React.FC<Props> = ({ isAdmin, authChecking }) => {
       },
       {
         title: '操作',
+        className: 'community-table-actions',
         width: 190,
         fixed: 'right',
         render: (_value, record) =>

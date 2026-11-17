@@ -2217,6 +2217,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             {
               title: '操作',
               key: 'actions',
+              className: 'community-table-actions',
               width: repoColumnWidths[12],
               render: (_value, record) => renderRerunAction(record),
             },
@@ -2492,6 +2493,7 @@ const RepoProgressSection: React.FC<RepoProgressSectionProps> = ({
             {
               title: '操作',
               key: 'actions',
+              className: 'community-table-actions',
               width: teamColumnWidths[12],
               render: () => (
                 <span className="text-[var(--overview-slateLight)]">-</span>

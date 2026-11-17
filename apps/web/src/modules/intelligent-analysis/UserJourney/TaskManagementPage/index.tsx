@@ -1270,6 +1270,7 @@ const TaskManagementPage: React.FC = () => {
       {
         title: '操作',
         key: 'actions',
+        className: 'community-table-actions',
         fixed: 'right',
         width: 180,
         render: (_value, record) => {

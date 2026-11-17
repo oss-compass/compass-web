@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import i18nextConfig from '../../next-i18next.config.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import UserInfoFetcher from '@modules/auth/UserInfoFetcher';
+import CommunityExperienceButtonStyles from '@common/components/CommunityExperienceButtonStyles';
 import { useAppGA, GAScripts } from '@common/lib/ga';
 import { browserLanguageDetectorAndReload } from '@common/utils/getLocale';
 import {
@@ -112,6 +113,7 @@ function MyApp({
         // }}
       />
       <UserInfoFetcher />
+      <CommunityExperienceButtonStyles />
       <Component {...pageProps} />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

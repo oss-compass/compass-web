@@ -367,6 +367,7 @@ export const RerunRecordsTable: React.FC<RerunRecordsTableProps> = ({
             {
               title: '操作',
               key: 'actions',
+              className: 'community-table-actions',
               width: 90,
               render: (_value: unknown, record: RepoRerunJob) =>
                 canCancelRecord?.(record) ? (
@@ -864,7 +865,7 @@ export const RepoRerunModal: React.FC<RepoRerunModalProps> = ({
           取消
         </Button>,
         <Tooltip key="submit" title={submitTooltip}>
-          <span className="inline-flex">
+          <span className="ml-4 inline-flex">
             <Button
               type="primary"
               loading={rerunning}

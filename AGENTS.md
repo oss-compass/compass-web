@@ -91,6 +91,11 @@ yarn workspace @oss-compass/storybook dev
 
 ## UI、SSR 与国际化
 
+- 社区入门、社区贡献、社区工程的总览、报告及关联仓库管理、任务管理页面必须使用一致的按钮风格：普通操作按钮统一为 8px 圆角矩形，禁止使用 `border-radius: 0`、`rounded-none` 或无圆角的按钮；同类操作保持一致的尺寸、间距及主次、危险、禁用状态样式，社区入门与社区贡献的仓库管理继续复用同一页面和控件样式。
+- 顶部模块切换 Tab 复用 `OverviewModuleTabs`，按用户参考图使用全圆角胶囊形：选中项、悬停项及外层导航组均使用 `rounded-full`（等值圆角半径，如 9999px），两端为半圆、中间为直边；不要使用百分比圆角生成椭圆，也不要改成 8px 小圆角矩形。Tab 独立于普通操作按钮的 8px 圆角规则。
+- 按钮圆角仅适用于操作控件，统一覆盖须限定 `.ant-btn` 或显式的 `data-community-action` 标记；原生操作按钮可使用 `rounded-lg`。禁止按 `button` 标签或 `[role="button"]` 批量覆盖：图表分段、堆叠条、进度条、可点击卡片即使可交互，也必须保留原有几何形状和分段连接处。改动公共样式须同时验证普通/弹窗按钮圆角及图表分段未受影响。
+- 表格“操作”列中的按钮统一不显示边框和按钮阴影，包括编辑、重跑、撤销、删除等；列配置显式添加 `className: 'community-table-actions'`，使用公共样式限定至该列单元格内。不得去掉表格边线、其他列控件或表格外工具栏及弹窗确认按钮的边框；保留文字颜色、禁用/加载状态及键盘焦点提示。
+- 上述按钮规则由 `apps/web/src/common/components/CommunityExperienceButtonStyles.tsx` 统一维护，并在 `_app.tsx` 按社区路由挂载；新增入口时须覆盖普通与组织级路由、旧社区入口，以及挂载到 `body` 的 Modal、Drawer、Popover、Popconfirm。不得只修改页面容器或单个按钮而遗漏弹窗页脚的“切换账号 / 取消 / 确认重跑”等操作，也不得让 `styles/antd.scss` 的全局直角重置覆盖该规则。验证时同时检查总览、报告、仓库管理、任务管理及弹窗按钮。
 - 优先复用 `@oss-compass/ui`、`@common/components` 和模块内组件；沿用当前页面的 Ant Design/MUI 选择，避免为同一交互再引入新的组件库。
 - 优先沿用 Tailwind、CSS/SCSS Modules 和现有主题变量。注意本项目 `md`、`lg` 等断点采用 **max-width**，`>md` 等为 min-width；不要套用 Tailwind 默认的断点含义。
 - 交互元素使用语义化标签，图标按钮提供可访问名称，表单有标签，弹窗和可点击区域支持合理的键盘操作。状态变化除颜色外提供文本提示。
