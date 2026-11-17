@@ -67,7 +67,7 @@ it('limits the ranking to five groups and opens details matching each closure vi
   );
   let dialog = within(screen.getByRole('dialog'));
   expect(
-    dialog.getAllByRole('link', { name: '查看报告', exact: true })
+    await dialog.findAllByRole('link', { name: '查看报告', exact: true })
   ).toHaveLength(3);
   fireEvent.click(dialog.getByRole('button', { name: 'Close', exact: true }));
   await waitFor(() =>
@@ -80,7 +80,7 @@ it('limits the ranking to five groups and opens details matching each closure vi
   );
   dialog = within(screen.getByRole('dialog'));
   expect(
-    dialog.getAllByRole('link', { name: '查看报告', exact: true })
+    await dialog.findAllByRole('link', { name: '查看报告', exact: true })
   ).toHaveLength(2);
   expect(dialog.queryByText('已闭环')).not.toBeInTheDocument();
   fireEvent.click(dialog.getByRole('button', { name: 'Close', exact: true }));
@@ -94,7 +94,7 @@ it('limits the ranking to five groups and opens details matching each closure vi
   );
   dialog = within(screen.getByRole('dialog'));
   expect(
-    dialog.getByRole('link', { name: '查看报告', exact: true })
+    await dialog.findByRole('link', { name: '查看报告', exact: true })
   ).toHaveAttribute('href', '/ci?repo=three');
   expect(dialog.getByText('已闭环')).toBeInTheDocument();
 });

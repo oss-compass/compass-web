@@ -343,6 +343,21 @@ test('rule details open outside the table without adding expanded rows', async (
   expect(within(table).getAllByRole('row')).toHaveLength(rowCount);
 });
 
+test('more-action menus expose review history and pending selection without evidence decisions', async () => {
+  page();
+  await screen.findAllByText('编译判据说明');
+  fireEvent.click(screen.getByLabelText('执行记录 #1 更多操作'));
+  await screen.findByRole('menuitem', { name: '查看审核记录' });
+  expect(
+    screen.queryByRole('menuitem', { name: '标记证据不足' })
+  ).not.toBeInTheDocument();
+  fireEvent.click(screen.getByLabelText('更多批量操作'));
+  await screen.findByRole('menuitem', { name: '选择全部待确认（2）' });
+  expect(
+    screen.queryByRole('menuitem', { name: '批量标记证据不足' })
+  ).not.toBeInTheDocument();
+});
+
 test('shows loading for the submitting run, blocks repeated clicks and recovers after failure', async () => {
   let rejectRequest: (error: Error) => void = () => {};
   save.mockImplementationOnce(
@@ -356,23 +371,12 @@ test('shows loading for the submitting run, blocks repeated clicks and recovers 
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
-  fireEvent.click(screen.getByRole('button', { name: '执行记录 #1 更多操作' }));
-  await screen.findByRole('menuitem', { name: '查看审核记录' });
-  expect(
-    screen.queryByRole('menuitem', { name: '标记证据不足' })
-  ).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: '更多批量操作' }));
-  await screen.findByRole('menuitem', { name: '选择全部待确认（2）' });
-  expect(
-    screen.queryByRole('menuitem', { name: '批量标记证据不足' })
-  ).not.toBeInTheDocument();
-  const button = screen.getByRole('button', { name: '执行记录 #1：判据正确' });
+  const button = screen.getByLabelText('执行记录 #1：判据正确');
+  const otherButton = screen.getByLabelText('执行记录 #2：判据正确');
   fireEvent.click(button);
   expect(button).toHaveAttribute('aria-busy', 'true');
   expect(button).toBeDisabled();
-  expect(
-    screen.getByRole('button', { name: '执行记录 #2：判据正确' })
-  ).toBeDisabled();
+  expect(otherButton).toBeDisabled();
   fireEvent.click(button);
   expect(save).toHaveBeenCalledTimes(1);
   await act(async () => rejectRequest(new Error('保存失败')));
