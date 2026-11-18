@@ -1,6 +1,5 @@
 import { ModelMetric, Diagram } from '@oss-compass/graphql';
 import { Level } from '@common/constant';
-import first from 'lodash/first';
 import uniq from 'lodash/uniq';
 import parseISO from 'date-fns/parseISO';
 import { formatISO, toFixed } from '@common/utils';
@@ -17,10 +16,9 @@ export const pickTabs = (
     diagrams?: Array<Diagram> | null;
   }[]
 ): { label: string; value: string }[] => {
-  const firstSlugItem = first(slugsData);
-  const diagrams = firstSlugItem?.diagrams;
+  const diagrams = slugsData.find((item) => item.diagrams?.length)?.diagrams;
 
-  return diagrams?.map?.((i) => ({
+  return (diagrams || []).map((i) => ({
     label: i.tabIdent,
     value: i.tabIdent,
   }));
@@ -45,14 +43,14 @@ export const pickDataByTab = (
 }[] => {
   return slugsData.map(({ metric, diagrams, level, label }) => {
     const diagram = diagrams?.find((i) => i.tabIdent === tab);
-    const hasYear = isYearCheck(metric.ident);
+    const hasYear = isYearCheck(metric?.ident || '');
     return {
       label,
       level,
       chartType: hasYear ? 'bar' : diagram?.type,
       tab: diagram?.tabIdent,
-      dates: diagram?.dates as string[],
-      values: diagram?.values,
+      dates: (diagram?.dates || []) as string[],
+      values: diagram?.values || [],
     };
   });
 };
