@@ -5,6 +5,8 @@ export const RERUN_STATUS_META: Record<
   string,
   { label: string; color: string }
 > = {
+  queued: { label: '排队中', color: 'text-amber-600' },
+  dispatching: { label: '正在提交', color: 'text-sky-600' },
   pending: { label: '排队中', color: 'text-amber-600' },
   running: { label: '重跑中', color: 'text-sky-600' },
   waiting_report: { label: '等待报告', color: 'text-violet-600' },
@@ -16,7 +18,8 @@ export const RERUN_STATUS_META: Record<
 };
 
 export const RERUN_STATUS_OPTIONS = [
-  { value: 'pending', label: '排队中' },
+  { value: 'queueing', label: '排队中' },
+  { value: 'dispatching', label: '正在提交' },
   { value: 'running', label: '重跑中' },
   { value: 'waiting_report', label: '等待报告' },
   { value: 'applying', label: '正在应用' },
@@ -34,6 +37,9 @@ export const getRerunStatusKey = (job: IssuePainRerunJob) => {
   return job.taskStatus;
 };
 
+export const isRerunQueued = (job: IssuePainRerunJob) =>
+  ['queued', 'pending'].includes(getRerunStatusKey(job));
+
 /** 任务尚未应用且未进入终态时，同仓同周期仍被锁定。 */
 export const isRerunLocked = (job?: IssuePainRerunJob | null) =>
   Boolean(
@@ -42,6 +48,12 @@ export const isRerunLocked = (job?: IssuePainRerunJob | null) =>
       job.taskStatus !== 'failed' &&
       job.taskStatus !== 'cancelled'
   );
+
+export const canCancelRerun = (job: IssuePainRerunJob) =>
+  job.taskStatus === 'queued' ||
+  (job.applyStatus === 'waiting_task' &&
+    Boolean(job.taskId) &&
+    (job.taskStatus === 'pending' || job.taskStatus === 'running'));
 
 export const getLockedRerunIssueNumbers = (job?: IssuePainRerunJob | null) =>
   isRerunLocked(job) ? job?.issueNumbers ?? [] : [];

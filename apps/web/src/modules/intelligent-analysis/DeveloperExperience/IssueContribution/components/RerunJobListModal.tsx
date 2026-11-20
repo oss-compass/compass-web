@@ -21,6 +21,8 @@ import {
   getRerunResultLabel,
   getRerunStatusKey,
   isRerunLocked,
+  isRerunQueued,
+  canCancelRerun,
 } from './rerunJobPresentation';
 
 /** 列表入口维度：总览页按组织查看全部任务，报告弹窗只看当前报告的任务。 */
@@ -405,6 +407,11 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
             <span className={`text-xs font-semibold ${meta.color}`}>
               {meta.label}
             </span>
+            {(job.attempt ?? 1) > 1 ? (
+              <div className="text-[10px] leading-4 text-slate-500">
+                第 {job.attempt}/{job.maxAttempts ?? 3} 次尝试
+              </div>
+            ) : null}
             {job.queuedPosition && job.queuedPosition > 1 ? (
               <div className="text-[10px] leading-4 text-amber-600">
                 前方还有 {job.queuedPosition - 1} 个任务
@@ -515,6 +522,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
       width: 110,
       render: (_value: unknown, job: IssuePainRerunJob) => {
         if (job.applyStatus !== 'applied' || !job.results.length) {
+          if (isRerunQueued(job)) return '等待队列执行';
           return isRerunLocked(job) ? (
             <Tooltip title={`预计完成 ${getRerunEtaRangeText(job)}`}>
               <span className="cursor-help text-xs text-slate-400">
@@ -550,7 +558,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
       className: 'community-table-actions',
       width: 90,
       render: (_value: unknown, job: IssuePainRerunJob) =>
-        job.taskStatus === 'pending' || job.taskStatus === 'running' ? (
+        canCancelRerun(job) ? (
           <Button
             size="small"
             className="issue-rerun-list-action-button"
@@ -648,7 +656,7 @@ const RerunJobListModal: React.FC<RerunJobListModalProps> = ({
           }}
         />
         <div className="text-xs text-slate-400">
-          同仓库同周期同时只允许触发一个重跑任务；任务完成后会更新报告并自动更新痛点状态。
+          同仓库同周期的任务按顺序执行，上一任务的报告应用完成后启动下一任务。
           {items.some((job) => getLockedRerunIssueNumbers(job).length)
             ? ' 锁定中的 Issue 暂不能人工修改修复状态。'
             : ''}

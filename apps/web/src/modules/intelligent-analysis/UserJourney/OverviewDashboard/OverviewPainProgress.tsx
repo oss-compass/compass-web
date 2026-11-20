@@ -28,6 +28,8 @@ const OverviewPainProgress: React.FC<{
   cards: OverviewPainSummaryCard[];
   priorities: OverviewPainPriority[];
   states: readonly OverviewPainState[];
+  headerActions?: React.ReactNode;
+  progressContent?: React.ReactNode;
   priorityTitle?: string;
   rateLabel?: string;
   rateHint?: string;
@@ -41,6 +43,8 @@ const OverviewPainProgress: React.FC<{
   cards,
   priorities,
   states,
+  headerActions,
+  progressContent,
   priorityTitle = '各优先级问题闭环进展',
   rateLabel = '闭环率',
   rateHint,
@@ -52,8 +56,11 @@ const OverviewPainProgress: React.FC<{
   trendEmpty = '所选时间范围暂无数据',
 }) => (
   <div className="section-card pain-progress-reference">
-    <div className="mb-3 text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
-      痛点问题进展及趋势
+    <div className="mb-3 flex flex-wrap items-center gap-3">
+      <div className="text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
+        痛点问题进展及趋势
+      </div>
+      {headerActions}
     </div>
     <div className="ov-row">
       {cards.map((card) => (
@@ -87,77 +94,81 @@ const OverviewPainProgress: React.FC<{
     <div className="pain-duo">
       <section className="pain-panel pain-priorities">
         <h4 className="pain-mini">{priorityTitle}</h4>
-        <div className="pain-priority-list">
-          {priorities.map((priority) => (
-            <div key={priority.key} className="pain-priority-row">
-              <button
-                type="button"
-                className="pain-priority-label"
-                style={{ color: priority.color }}
-                title={`查看 ${priority.label} 痛点`}
-                onClick={() => onOpen(undefined, priority.key)}
-              >
-                <i style={{ background: priority.color }} />
-                {priority.label}
-              </button>
-              <div className="pain-status-bar">
-                {priority.total === 0 && (
-                  <span
-                    className="pain-status-no-tracking"
-                    title={`需跟踪问题为 0，${rateLabel}按 100% 展示`}
-                    style={{
-                      background: 'var(--overview-slateBorder)',
-                      color: 'var(--overview-slate)',
-                    }}
+        {progressContent ?? (
+          <>
+            <div className="pain-priority-list">
+              {priorities.map((priority) => (
+                <div key={priority.key} className="pain-priority-row">
+                  <button
+                    type="button"
+                    className="pain-priority-label"
+                    style={{ color: priority.color }}
+                    title={`查看 ${priority.label} 痛点`}
+                    onClick={() => onOpen(undefined, priority.key)}
                   >
-                    0
-                  </span>
-                )}
-                {states.map((state) => {
-                  const value = priority.counts[state.key] ?? 0;
-                  return value > 0 ? (
-                    <button
-                      key={state.key}
-                      type="button"
-                      title={`${priority.label} · ${state.label}：${value} 个`}
+                    <i style={{ background: priority.color }} />
+                    {priority.label}
+                  </button>
+                  <div className="pain-status-bar">
+                    {priority.total === 0 && (
+                      <span
+                        className="pain-status-no-tracking"
+                        title={`需跟踪问题为 0，${rateLabel}按 100% 展示`}
+                        style={{
+                          background: 'var(--overview-slateBorder)',
+                          color: 'var(--overview-slate)',
+                        }}
+                      >
+                        0
+                      </span>
+                    )}
+                    {states.map((state) => {
+                      const value = priority.counts[state.key] ?? 0;
+                      return value > 0 ? (
+                        <button
+                          key={state.key}
+                          type="button"
+                          title={`${priority.label} · ${state.label}：${value} 个`}
+                          style={{
+                            width: `${(value / priority.total) * 100}%`,
+                            background: state.fill,
+                            color: state.color,
+                          }}
+                          onClick={() => onOpen(state.key, priority.key)}
+                        >
+                          {value}
+                        </button>
+                      ) : null;
+                    })}
+                  </div>
+                  <Tooltip title={rateHint}>
+                    <span
+                      className="pain-priority-rate"
                       style={{
-                        width: `${(value / priority.total) * 100}%`,
-                        background: state.fill,
-                        color: state.color,
+                        color:
+                          priority.total === 0
+                            ? 'var(--overview-slate)'
+                            : priority.rate > 0
+                            ? 'var(--overview-greenDark)'
+                            : 'var(--overview-slateLight)',
                       }}
-                      onClick={() => onOpen(state.key, priority.key)}
                     >
-                      {value}
-                    </button>
-                  ) : null;
-                })}
-              </div>
-              <Tooltip title={rateHint}>
-                <span
-                  className="pain-priority-rate"
-                  style={{
-                    color:
-                      priority.total === 0
-                        ? 'var(--overview-slate)'
-                        : priority.rate > 0
-                        ? 'var(--overview-greenDark)'
-                        : 'var(--overview-slateLight)',
-                  }}
-                >
-                  {priority.rate.toFixed(1)}%
-                </span>
-              </Tooltip>
+                      {priority.rate.toFixed(1)}%
+                    </span>
+                  </Tooltip>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="pain-legend">
-          {states.map((state) => (
-            <span key={state.key}>
-              <i style={{ background: state.fill }} />
-              {state.label}
-            </span>
-          ))}
-        </div>
+            <div className="pain-legend">
+              {states.map((state) => (
+                <span key={state.key}>
+                  <i style={{ background: state.fill }} />
+                  {state.label}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
       </section>
       <section className="pain-panel pain-weekly">
         <div className="ov-panel-head">

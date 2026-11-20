@@ -558,6 +558,7 @@ export const createIssuePainRerun = async (payload: {
 };
 
 export type IssuePainRerunListParams = {
+  activeOnly?: boolean;
   trackingKey?: string;
   community?: string;
   period?: string;
@@ -609,6 +610,24 @@ export const fetchIssuePainRerun = async (
   if (!response.ok) throw new Error(await parseApiError(response));
   const body = (await response.json()) as { data: IssuePainRerunJob };
   return body.data;
+};
+
+export const fetchActiveIssuePainReruns = async (
+  community: string,
+  period: string,
+  signal: AbortSignal
+): Promise<IssuePainRerunJob[]> => {
+  const jobs: IssuePainRerunJob[] = [];
+  const pageSize = 100;
+  for (let page = 1; ; page += 1) {
+    const response = await fetchIssuePainReruns(
+      { community, period, activeOnly: true, page, pageSize },
+      signal
+    );
+    jobs.push(...response.items);
+    if (page * pageSize >= response.total || !response.items.length)
+      return jobs;
+  }
 };
 
 export const cancelIssuePainRerun = async (

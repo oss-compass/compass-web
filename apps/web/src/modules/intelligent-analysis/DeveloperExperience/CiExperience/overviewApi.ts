@@ -7,7 +7,10 @@ import type {
 
 export type CiPainIssue = Pick<
   CiProblem,
-  'responsible_party' | 'responsible_person'
+  | 'responsible_party'
+  | 'responsible_person'
+  | 'is_common_issue'
+  | 'common_issue_type'
 > & {
   problemKey: string;
   pri: CiPri;
@@ -84,10 +87,13 @@ export type CiPainTrendPoint = {
 };
 
 export const fetchCiPainTrends = async (
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  commonOnly = false
 ): Promise<{ points: CiPainTrendPoint[] }> => {
   const response = await compassApiFetch<{ points: CiPainTrendPoint[] }>(
-    '/ci-experience/ci-data/pain-trends',
+    `/ci-experience/ci-data/pain-trends${
+      commonOnly ? '?common_only=true' : ''
+    }`,
     { signal }
   );
   if (

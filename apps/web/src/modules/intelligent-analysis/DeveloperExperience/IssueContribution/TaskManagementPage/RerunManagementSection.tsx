@@ -90,6 +90,11 @@ const RerunManagementSection: React.FC<{
               <span className={styles.statusDot} />
               {meta.label}
             </span>
+            {(job.attempt ?? 1) > 1 ? (
+              <div className="mt-1 text-xs text-slate-500">
+                第 {job.attempt}/{job.maxAttempts ?? 3} 次尝试
+              </div>
+            ) : null}
             {job.error ? (
               <Tooltip title={job.error}>
                 <div className="mt-1 truncate text-xs text-rose-500">

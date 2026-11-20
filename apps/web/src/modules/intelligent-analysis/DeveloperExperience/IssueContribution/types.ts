@@ -460,7 +460,16 @@ export type IssuePainRerunJob = {
   affectedTrackingKeys: string[];
   mode: 'repair_check' | 'retest';
   issueNumbers: string[];
-  taskStatus: 'pending' | 'running' | 'succeeded' | 'failed' | 'cancelled';
+  taskStatus:
+    | 'queued'
+    | 'dispatching'
+    | 'pending'
+    | 'running'
+    | 'succeeded'
+    | 'failed'
+    | 'cancelled';
+  attempt?: number;
+  maxAttempts?: number;
   applyStatus:
     | 'waiting_task'
     | 'waiting_report'

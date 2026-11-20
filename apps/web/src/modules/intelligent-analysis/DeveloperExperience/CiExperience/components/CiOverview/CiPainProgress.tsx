@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Segmented, Tag } from 'antd';
 import OverviewPainProgress from '../../../../UserJourney/OverviewDashboard/OverviewPainProgress';
 import {
   TrendChart,
@@ -10,7 +10,6 @@ import { ISSUE_PRIORITY_LEVELS } from '../../../IssueContribution/components/Iss
 import { useCiPainTrendsQuery } from '../../queries';
 import dynamic from 'next/dynamic';
 import type { CiReportHref } from './CiIssueTable';
-import type { CiPri } from '../../types';
 import type { TrackingStatus } from '../PainTracking/model';
 import {
   CI_OVERVIEW_STATUS_META,
@@ -28,11 +27,79 @@ const CiIssueListModal = dynamic(() =>
   import('./CiIssueTable').then((module) => module.CiIssueListModal)
 );
 
+const CommonIssueList: React.FC<{
+  issues: CiTopIssue[];
+  onOpen: (title: string, issues: CiTopIssue[]) => void;
+}> = ({ issues, onOpen }) => {
+  const groups = new Map<
+    string,
+    { type: string; title: string; issues: CiTopIssue[] }
+  >();
+  for (const issue of issues) {
+    const type = issue.common_issue_type?.trim() || '共性问题';
+    const title = issue.title || issue.kb;
+    const key = JSON.stringify([type, title]);
+    const group = groups.get(key);
+    if (group) group.issues.push(issue);
+    else groups.set(key, { type, title, issues: [issue] });
+  }
+  if (groups.size === 0) {
+    return (
+      <p className="flex flex-1 items-center justify-center text-sm text-[var(--overview-slateLight)]">
+        暂无共性问题
+      </p>
+    );
+  }
+  return (
+    <div className="ov-ci-list max-h-[320px] overflow-y-auto">
+      {Array.from(groups, ([key, group]) => (
+        <div className="ov-ci-row gap-2" key={key}>
+          <div className="flex flex-wrap items-center gap-2">
+            <Tag
+              className="max-w-full whitespace-normal break-words"
+              color="blue"
+            >
+              {group.type}
+            </Tag>
+            <button
+              type="button"
+              className="max-w-full break-words rounded-lg text-left text-sm font-semibold text-[var(--overview-blue)] hover:underline"
+              onClick={() => onOpen(group.title, group.issues)}
+            >
+              {group.title}
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-[var(--overview-slate)]">
+            <span>
+              {new Set(group.issues.map((issue) => issue.repo)).size} 仓
+            </span>
+            <span>
+              {Array.from(
+                new Set(group.issues.flatMap((issue) => issue.journeyStages))
+              ).join('、')}
+            </span>
+            <span>
+              {Array.from(new Set(group.issues.map((issue) => issue.pri)))
+                .sort()
+                .join('、')}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const CiPainProgress: React.FC<{
   issues: CiTopIssue[];
   reportHref: CiReportHref;
 }> = ({ issues, reportHref }) => {
-  const progress = countPainProgress(issues);
+  const [mode, setMode] = React.useState<'overall' | 'common'>('overall');
+  const commonOnly = mode === 'common';
+  const scopedIssues = commonOnly
+    ? issues.filter((issue) => issue.is_common_issue === true)
+    : issues;
+  const progress = countPainProgress(scopedIssues);
   const [detail, setDetail] = React.useState<{
     title: string;
     issues: CiTopIssue[];
@@ -41,7 +108,7 @@ const CiPainProgress: React.FC<{
     kind: 'weeks',
     weeks: 7,
   });
-  const query = useCiPainTrendsQuery();
+  const query = useCiPainTrendsQuery(commonOnly);
   const points = (query.data?.points ?? []).filter(
     (point) =>
       trendWindow.kind === 'weeks' ||
@@ -53,7 +120,7 @@ const CiPainProgress: React.FC<{
     ['P0', 'P1', 'P2'].includes(item.priority)
   );
   const open = (state?: string, priority?: string) => {
-    const rows = issues.filter(
+    const rows = scopedIssues.filter(
       (issue) =>
         (!state || issue.status === state) &&
         (!priority || issue.pri === priority)
@@ -63,6 +130,8 @@ const CiPainProgress: React.FC<{
         priority,
         TRACKING_STATES.find((item) => item === state)
           ? CI_OVERVIEW_STATUS_META[state as TrackingStatus].label
+          : commonOnly
+          ? '共性问题'
           : '痛点问题',
       ]
         .filter(Boolean)
@@ -79,6 +148,26 @@ const CiPainProgress: React.FC<{
   return (
     <>
       <OverviewPainProgress
+        headerActions={
+          <Segmented<'overall' | 'common'>
+            aria-label="痛点问题类型"
+            className="oj-summary-mode-toggle"
+            value={mode}
+            options={[
+              { label: '总体问题', value: 'overall' },
+              { label: '共性问题', value: 'common' },
+            ]}
+            onChange={setMode}
+          />
+        }
+        progressContent={
+          commonOnly ? (
+            <CommonIssueList
+              issues={scopedIssues}
+              onOpen={(title, rows) => setDetail({ title, issues: rows })}
+            />
+          ) : undefined
+        }
         cards={[
           { label: '问题总数', value: progress.total, onClick: () => open() },
           ...TRACKING_STATES.map((state) => ({
@@ -89,13 +178,16 @@ const CiPainProgress: React.FC<{
           })),
           {
             label: '闭环率',
-            value: `${progress.rate.toFixed(1)}%`,
+            value:
+              commonOnly && !progress.total
+                ? '—'
+                : `${progress.rate.toFixed(1)}%`,
             hint: REPAIR_RATE_NOTE,
           },
         ]}
         priorities={priorities.map((item) => {
           const counts = countPainProgress(
-            issues.filter((issue) => issue.pri === item.priority)
+            scopedIssues.filter((issue) => issue.pri === item.priority)
           );
           return {
             key: item.priority,
@@ -107,11 +199,13 @@ const CiPainProgress: React.FC<{
           };
         })}
         states={states}
-        priorityTitle="各优先级问题处理进展"
+        priorityTitle={commonOnly ? '共性问题清单' : '各优先级问题处理进展'}
         rateLabel="闭环率"
         rateHint={REPAIR_RATE_NOTE}
         onOpen={open}
-        trendTitle="周度痛点趋势及闭环率"
+        trendTitle={
+          commonOnly ? '周度共性问题趋势及闭环率' : '周度痛点趋势及闭环率'
+        }
         trendControls={
           <TrendWindowPicker value={trendWindow} onChange={setTrendWindow} />
         }
@@ -141,6 +235,8 @@ const CiPainProgress: React.FC<{
                 重试
               </Button>
             </span>
+          ) : commonOnly ? (
+            '所选时间范围暂无共性问题数据'
           ) : (
             '所选时间范围暂无数据'
           )

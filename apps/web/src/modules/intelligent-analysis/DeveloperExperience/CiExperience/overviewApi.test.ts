@@ -74,6 +74,12 @@ it('loads weekly snapshots with cancellation, preserving genuine zero-problem 10
   expect(request).toHaveBeenCalledWith('/ci-experience/ci-data/pain-trends', {
     signal,
   });
+  request.mockResolvedValueOnce({ points: [] });
+  expect(await fetchCiPainTrends(signal, true)).toEqual({ points: [] });
+  expect(request).toHaveBeenCalledWith(
+    '/ci-experience/ci-data/pain-trends?common_only=true',
+    { signal }
+  );
   request.mockRejectedValueOnce(new Error('weekly unavailable'));
   await expect(fetchCiPainTrends()).rejects.toThrow('weekly unavailable');
 });

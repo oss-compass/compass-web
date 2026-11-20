@@ -59,14 +59,13 @@ export const useCiPainOverviewQuery = (enabled = true) =>
     enabled,
   });
 
-export const useCiPainTrendsQuery = (enabled = true) =>
+export const useCiPainTrendsQuery = (commonOnly = false) =>
   useQuery({
     ...queryOptions,
-    queryKey: ['ci-data', 'pain-trends'],
-    queryFn: ({ signal }) => fetchCiPainTrends(signal),
+    queryKey: ['ci-data', 'pain-trends', commonOnly],
+    queryFn: ({ signal }) => fetchCiPainTrends(signal, commonOnly),
     staleTime: 0,
     refetchOnMount: 'always',
-    enabled,
   });
 
 export const useCiRepoComparisonQuery = (filters: CiRepoComparisonFilters) =>

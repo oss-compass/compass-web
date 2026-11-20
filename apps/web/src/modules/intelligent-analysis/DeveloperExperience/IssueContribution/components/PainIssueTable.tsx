@@ -242,9 +242,9 @@ const withDisabledTooltip = (node: React.ReactNode, reason?: string | null) =>
   );
 
 /** 单个 Issue 被重跑锁定时，行内重跑与人工修复入口的置灰原因。 */
-const LOCKED_ISSUE_RERUN_REASON = '该 Issue 正在重跑中，重跑完成后才能再次发起';
+const LOCKED_ISSUE_RERUN_REASON = '该 Issue 已有重跑任务，完成后可再次发起';
 const LOCKED_ISSUE_MANUAL_REASON =
-  '该 Issue 正在重跑中，重完成前不能人工修改修复状态';
+  '该 Issue 已有重跑任务，完成前不能人工修改修复状态';
 
 const getUndecidedIssueNumbers = (tracking?: IssuePainTracking): string[] =>
   (tracking?.activeIssues ?? [])
@@ -1312,7 +1312,7 @@ const IssueActionCell: React.FC<{
                 disabled={!onOpenRerunRecords}
                 onClick={onOpenRerunRecords}
               >
-                <ReloadOutlined spin />该 Issue 重跑中
+                <ReloadOutlined />该 Issue 已加入重跑
               </button>
             </Tooltip>
           ) : null}

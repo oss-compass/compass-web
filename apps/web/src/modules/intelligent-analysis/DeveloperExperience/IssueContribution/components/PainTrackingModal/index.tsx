@@ -22,8 +22,9 @@ import { ReviewPendingNotice, PendingRetestNotice } from './components';
 import {
   cancelIssuePainRerun,
   createIssuePainRerun,
-  fetchIssuePainRerun,
   fetchIssuePainReruns,
+  fetchActiveIssuePainReruns,
+  fetchIssuePainRerun,
 } from '../../data';
 import { resolvePainIssuePriority } from '../../issuePriority';
 import type { PainIssuePriority } from '../../issuePriority';
@@ -33,9 +34,10 @@ import {
   formatRerunEtaTime,
   getLockedRerunIssueNumbers,
   getRerunEtaRangeText,
-  getRerunModeLabel,
   getRerunStatusKey,
   isRerunLocked,
+  isRerunQueued,
+  canCancelRerun,
 } from '../rerunJobPresentation';
 import {
   IssueFixButton,
@@ -201,6 +203,8 @@ const useRerunConfirm = () => {
 };
 
 const PAIN_MODAL_RERUN_STATUS_LABELS: Record<string, string> = {
+  queued: 'Issue 重跑排队中',
+  dispatching: 'Issue 重跑提交中',
   pending: 'Issue 重跑排队中',
   running: 'Issue 重跑中',
   waiting_report: 'Issue 重跑等待报告更新',
@@ -255,19 +259,22 @@ const RerunJobPanel: React.FC<{
             {getPainModalRerunStatusLabel(job)}
           </div>
           <div className="mt-0.5 text-xs text-slate-500">
-            {job.issueNumbers.length} 个 Issue · 预计 {job.eta.minMinutes}–
+            {job.issueNumbers.length} 个 Issue · 预计执行 {job.eta.minMinutes}–
             {job.eta.maxMinutes} 分钟
+            {(job.attempt ?? 1) > 1
+              ? ` · 第 ${job.attempt} 次尝试（最多 ${job.maxAttempts ?? 3} 次）`
+              : ''}
             {job.queuedPosition && job.queuedPosition > 1
               ? ` · 前方还有 ${job.queuedPosition - 1} 个任务，实际时间可能顺延`
               : ''}
           </div>
-          {isRerunLocked(job) ? (
+          {isRerunLocked(job) && !isRerunQueued(job) ? (
             <div className="mt-0.5 text-[11px] text-slate-400">
               预计完成：{getRerunEtaRangeText(job)}
             </div>
           ) : null}
         </div>
-        {job.taskStatus === 'pending' || job.taskStatus === 'running' ? (
+        {canCancelRerun(job) ? (
           <button
             type="button"
             disabled={cancelling}
@@ -631,7 +638,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const [rollbackSubmitting, setRollbackSubmitting] = useState(false);
   const [issuePriorityFilter, setIssuePriorityFilter] =
     useState<PainIssuePriority>();
-  const [rerunJob, setRerunJob] = useState<IssuePainRerunJob | null>(null);
+  const [rerunJobs, setRerunJobs] = useState<IssuePainRerunJob[]>([]);
   const [rerunSubmitting, setRerunSubmitting] = useState(false);
   const [rerunCancelling, setRerunCancelling] = useState(false);
   const [rerunListOpen, setRerunListOpen] = useState(false);
@@ -643,113 +650,120 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   useEffect(() => {
     if (!pendingReviewCount) setReviewOnly(false);
   }, [pendingReviewCount]);
-  const observedRerunRef = useRef<{
-    jobId: string;
-    applyStatus: IssuePainRerunJob['applyStatus'];
-  } | null>(null);
+  const observedReruns = useRef(new Set<string>());
   const rerunConfirm = useRerunConfirm();
 
-  const acceptRerunJob = useCallback(
-    (next: IssuePainRerunJob) => {
-      const previous = observedRerunRef.current;
-      const newlyApplied =
-        next.applyStatus === 'applied' &&
-        previous?.jobId === next.jobId &&
-        previous.applyStatus !== 'applied';
-      observedRerunRef.current = {
-        jobId: next.jobId,
-        applyStatus: next.applyStatus,
-      };
-      setRerunJob(next);
-      if (newlyApplied) {
-        toast.success('重跑报告已应用，痛点状态已自动更新');
-        onRerunApplied?.();
-      }
-    },
-    [onRerunApplied]
-  );
+  const acceptRerunJob = useCallback((next: IssuePainRerunJob) => {
+    if (isRerunLocked(next)) observedReruns.current.add(next.jobId);
+    setRerunJobs((jobs) => [
+      next,
+      ...jobs.filter((job) => job.jobId !== next.jobId),
+    ]);
+  }, []);
 
   useEffect(() => {
-    if (open) {
-      setRollbackModalOpen(false);
-      setRollbackReason('');
-      setRollbackOperatorError('');
-      setRollbackReasonError('');
-      setIssuePriorityFilter(undefined);
-      const controller = new AbortController();
-      void fetchIssuePainReruns(
-        {
-          community: reportContext.community,
-          period: reportContext.period,
-        },
-        controller.signal
-      )
-        .then((response) => {
-          const active = response.items.find(isRerunLocked);
-          const ownLatest = response.items.find(
-            (item) =>
-              item.trackingKey === tracking.trackingKey ||
-              item.affectedTrackingKeys.includes(tracking.trackingKey)
+    if (!open) return;
+    setRollbackModalOpen(false);
+    setRollbackReason('');
+    setRollbackOperatorError('');
+    setRollbackReasonError('');
+    setIssuePriorityFilter(undefined);
+  }, [open, tracking.trackingKey]);
+
+  const onRerunAppliedRef = useRef(onRerunApplied);
+  const { community: rerunCommunity, period: rerunPeriod } = reportContext;
+  useEffect(() => {
+    onRerunAppliedRef.current = onRerunApplied;
+  }, [onRerunApplied]);
+
+  useEffect(() => {
+    if (!open) return;
+    observedReruns.current.clear();
+    setRerunJobs([]);
+    const controller = new AbortController();
+    let initial = true;
+    let loading = false;
+    const poll = async () => {
+      if (document.hidden || loading) return;
+      loading = true;
+      try {
+        const [active, history] = await Promise.all([
+          fetchActiveIssuePainReruns(
+            rerunCommunity,
+            rerunPeriod,
+            controller.signal
+          ),
+          initial
+            ? fetchIssuePainReruns(
+                { community: rerunCommunity, period: rerunPeriod },
+                controller.signal
+              )
+            : null,
+        ]);
+        const activeIds = new Set(active.map((job) => job.jobId));
+        const completed = await Promise.allSettled(
+          Array.from(observedReruns.current)
+            .filter((jobId) => !activeIds.has(jobId))
+            .map((jobId) => fetchIssuePainRerun(jobId, controller.signal))
+        );
+        const latest = [
+          ...(history?.items ?? []),
+          ...active,
+          ...completed.flatMap((result) =>
+            result.status === 'fulfilled' ? [result.value] : []
+          ),
+        ];
+        if (controller.signal.aborted) return;
+        initial = false;
+        const applied = latest.some(
+          (job) =>
+            job.applyStatus === 'applied' &&
+            observedReruns.current.has(job.jobId)
+        );
+        for (const job of latest) {
+          if (isRerunLocked(job)) observedReruns.current.add(job.jobId);
+          else observedReruns.current.delete(job.jobId);
+        }
+        setRerunJobs((jobs) => {
+          const merged = new Map(
+            [...jobs, ...latest].map((job) => [job.jobId, job])
           );
-          const next = active ?? ownLatest ?? null;
-          if (next) {
-            // 初次恢复仅建立观察基线；历史已完成任务不能触发页面刷新。
-            observedRerunRef.current = {
-              jobId: next.jobId,
-              applyStatus: next.applyStatus,
-            };
-            setRerunJob(next);
-          } else {
-            observedRerunRef.current = null;
-            setRerunJob(null);
-          }
-        })
-        .catch((error: unknown) => {
-          if (error instanceof DOMException && error.name === 'AbortError')
-            return;
-          toast.error(
-            error instanceof Error ? error.message : '重跑任务状态加载失败'
+          return Array.from(merged.values()).sort((a, b) =>
+            b.createdAt.localeCompare(a.createdAt)
           );
         });
-      return () => controller.abort();
-    }
-  }, [
-    open,
-    reportContext.community,
-    reportContext.period,
-    tracking.status,
-    tracking.trackingKey,
-  ]);
-
-  useEffect(() => {
-    // 痛点管理始终独立监听当前任务；任务记录弹窗的开关不能中断报告
-    // 应用完成事件，否则用户查看记录时会错过页面自动刷新。
-    if (!open || !rerunJob || !isRerunLocked(rerunJob)) return;
-    const controller = new AbortController();
-    const poll = () => {
-      // 页面切后台时暂停轮询，切回时立即拉一次避免最长 60 秒感知延迟。
-      if (document.hidden) return;
-      void fetchIssuePainRerun(rerunJob.jobId, controller.signal)
-        .then(acceptRerunJob)
-        .catch((error: unknown) => {
-          if (error instanceof DOMException && error.name === 'AbortError')
-            return;
+        if (applied) {
+          toast.success('重跑报告已应用，痛点状态已自动更新');
+          onRerunAppliedRef.current?.();
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
           toast.error(
             error instanceof Error ? error.message : '重跑任务状态更新失败'
           );
-        });
+        }
+      } finally {
+        loading = false;
+      }
     };
-    const onVisibilityChange = () => {
-      if (!document.hidden) poll();
-    };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    const timer = window.setInterval(poll, RERUN_POLL_INTERVAL_MS);
+    const reload = () => void poll();
+    reload();
+    document.addEventListener('visibilitychange', reload);
+    const timer = window.setInterval(reload, RERUN_POLL_INTERVAL_MS);
     return () => {
-      document.removeEventListener('visibilitychange', onVisibilityChange);
+      document.removeEventListener('visibilitychange', reload);
       controller.abort();
       window.clearInterval(timer);
     };
-  }, [acceptRerunJob, open, rerunJob]);
+  }, [open, rerunCommunity, rerunPeriod]);
+
+  const ownJob = (job: IssuePainRerunJob) =>
+    job.trackingKey === tracking.trackingKey ||
+    job.affectedTrackingKeys.includes(tracking.trackingKey);
+  const rerunJob =
+    rerunJobs.find((job) => ownJob(job) && isRerunLocked(job)) ??
+    rerunJobs.find(ownJob) ??
+    null;
 
   const requestRerun = useCallback(
     async (issueNumbers: string[], operatorValue: string) => {
@@ -769,7 +783,7 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
           operator: operatorValue,
         });
         acceptRerunJob(next);
-        toast.success('复测任务已提交');
+        toast.success('复测任务已加入队列');
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : '复测任务提交失败'
@@ -800,26 +814,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
     index >= currentStep ? { ...item, description: null } : item
   );
 
-  // 重跑入口置灰时给出具体原因：提交中 / 当前痛点任务 / 同周期其他痛点的任务。
-  const rerunDisabledReason = React.useMemo(() => {
-    if (rerunSubmitting) return '重跑任务提交中，请稍候…';
-    if (!isRerunLocked(rerunJob)) return null;
-    if (!rerunJob) return null;
-    const own =
-      rerunJob.trackingKey === tracking.trackingKey ||
-      rerunJob.affectedTrackingKeys.includes(tracking.trackingKey);
-    return [
-      own
-        ? '当前痛点存在进行中的重跑任务'
-        : '同仓库当前周期存在其他痛点发起的重跑任务',
-      `状态：${getPainModalRerunStatusLabel(rerunJob)}`,
-      `${getRerunModeLabel(rerunJob.mode)} ${
-        rerunJob.issueNumbers.length
-      } 个 Issue`,
-      `预计完成 ${getRerunEtaRangeText(rerunJob)}`,
-      '报告应用完成前不能再次发起',
-    ].join('，');
-  }, [rerunJob, rerunSubmitting, tracking.trackingKey]);
+  const rerunDisabledReason = rerunSubmitting
+    ? '重跑任务提交中，请稍候…'
+    : null;
 
   const submitRollback = async () => {
     const validation = validateOperator(operator);
@@ -858,7 +855,9 @@ const PainTrackingModal: React.FC<PainTrackingModalProps> = ({
   const pendingDecidedCount = tracking.activeIssues.filter(
     (item) => !isIssueUndecided(item)
   ).length;
-  const lockedIssueNumbers = getLockedRerunIssueNumbers(rerunJob);
+  const lockedIssueNumbers = Array.from(
+    new Set(rerunJobs.flatMap(getLockedRerunIssueNumbers))
+  );
 
   return (
     <Modal
