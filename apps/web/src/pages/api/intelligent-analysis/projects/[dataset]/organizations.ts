@@ -112,8 +112,18 @@ export default async function handler(
   const mode: 'backup' | 'detail' =
     req.query.mode === 'detail' ? 'detail' : 'backup';
 
-  const page = Math.max(1, Number(req.query.page || 1));
-  const pageSize = Math.min(100, Math.max(1, Number(req.query.pageSize || 10)));
+  // Number('') / Number('abc') is NaN, and Math.max(1, NaN) stays NaN, which
+  // made slice(NaN, NaN) return [] while the response still claimed a total.
+  const requestedPage = Number(req.query.page ?? 1);
+  const requestedPageSize = Number(req.query.pageSize ?? 10);
+  const page =
+    Number.isFinite(requestedPage) && requestedPage >= 1
+      ? Math.floor(requestedPage)
+      : 1;
+  const pageSize =
+    Number.isFinite(requestedPageSize) && requestedPageSize >= 1
+      ? Math.min(100, Math.floor(requestedPageSize))
+      : 10;
 
   const q = normalizeSearchText(req.query.q);
   const regions = parseCsvList(req.query.regions);
