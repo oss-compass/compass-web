@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Segmented, Table, Tooltip, Typography } from 'antd';
+import { Segmented, Table, Tooltip, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import IssuePriorityTag from '../../../IssueContribution/components/IssueOverview/IssuePriorityTag';
 import dynamic from 'next/dynamic';
@@ -11,7 +11,9 @@ import {
   type CiPainView,
 } from './frequentPainGroups';
 
-const CiIssueTable = dynamic(() => import('./CiIssueTable'));
+const CiIssueListModal = dynamic(() =>
+  import('./CiIssueTable').then((module) => module.CiIssueListModal)
+);
 
 const CiFrequentPainSection: React.FC<{
   issues: CiTopIssue[];
@@ -42,7 +44,7 @@ const CiFrequentPainSection: React.FC<{
     {
       title: '问题',
       dataIndex: 'title',
-      width: '25%',
+      width: '22%',
       align: 'center',
       ellipsis: true,
       render: (title: string, row) => (
@@ -60,7 +62,7 @@ const CiFrequentPainSection: React.FC<{
     {
       title: '步骤',
       dataIndex: 'stages',
-      width: '20%',
+      width: '16%',
       ellipsis: true,
       render: (stages: string[]) => {
         const label = stages.join('、') || '跨段/未映射';
@@ -81,13 +83,24 @@ const CiFrequentPainSection: React.FC<{
     {
       title: '优先级',
       dataIndex: 'priority',
-      width: '13%',
+      width: '10%',
       render: (priority: string) => <IssuePriorityTag priority={priority} />,
+    },
+    {
+      title: '责任方',
+      width: '14%',
+      ellipsis: true,
+      render: (_value, row) => {
+        const parties = row.issues
+          .map((issue) => issue.responsible_party?.trim())
+          .filter(Boolean);
+        return Array.from(new Set(parties)).join('、') || '—';
+      },
     },
     { title: '覆盖仓数', dataIndex: 'repoCount', width: '10%', align: 'right' },
     {
       title: countTitle,
-      width: '15%',
+      width: '11%',
       align: 'center',
       render: (_value, row) => (
         <button
@@ -138,26 +151,16 @@ const CiFrequentPainSection: React.FC<{
           dataSource={groups.slice(0, 5)}
           tableLayout="fixed"
           pagination={false}
-          scroll={{ x: 970 }}
+          scroll={{ x: 1100 }}
           locale={{ emptyText: '暂无匹配问题' }}
         />
       </section>
-      <Modal
-        open={!!detail}
-        title={detail?.title || '问题详情'}
-        footer={null}
-        width={1080}
-        destroyOnHidden
-        onCancel={() => setDetailKey(null)}
-      >
-        {detail && (
-          <CiIssueTable
-            key={`${view}:${detail.key}`}
-            issues={detail.issues}
-            reportHref={reportHref}
-          />
-        )}
-      </Modal>
+      <CiIssueListModal
+        title={detail?.title}
+        issues={detail?.issues}
+        reportHref={reportHref}
+        onClose={() => setDetailKey(null)}
+      />
     </>
   );
 };

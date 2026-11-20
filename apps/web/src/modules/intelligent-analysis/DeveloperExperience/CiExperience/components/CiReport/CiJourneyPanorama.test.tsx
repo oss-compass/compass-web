@@ -86,15 +86,46 @@ it('opens collapsed details when selecting a panorama card and keeps the directo
   expect(getToggle()).toHaveTextContent('触发确认');
 });
 
+const pain: CiJourneyProblem = {
+  seg: '编译',
+  kb: 'compile-failure',
+  title: '编译环境缺少依赖',
+  pri: 'P1',
+  dim: '稳定性',
+  dimkey: 'stability',
+  cls: '待确认',
+  mech: '依赖缺失',
+  owner: '维护者',
+  responsible_party: '基础设施团队',
+  responsible_person: '李四',
+  stages: {},
+  impact: { runs: 1, prs: 1, streak_days: 1, window_total: 1 },
+  runs: [],
+  root: {
+    status: 'pending',
+    action: '在构建镜像中补齐依赖。',
+    dest: 'CI 维护者',
+  },
+};
+
 it('reopens collapsed details for external problem jumps, including unmapped problems', () => {
   jest.useFakeTimers();
-  const { rerender, unmount } = render(<CiJourneyPanorama {...props} />);
+  const journeyWithUnmappedProblem = {
+    ...journey,
+    boards: {
+      [day]: { ...journey.boards[day], unsegProblems: [pain] },
+    },
+  };
+  const { rerender, unmount } = render(
+    <CiJourneyPanorama {...props} journey={journeyWithUnmappedProblem} />
+  );
   try {
     ['编译', '__unseg'].forEach((seg, index) => {
       fireEvent.click(getToggle());
       rerender(
         <CiJourneyPanorama
           {...props}
+          journey={journeyWithUnmappedProblem}
           focus={{ seg, probKey: 'problem', nonce: index + 1 }}
         />
       );
@@ -112,93 +143,104 @@ it('reopens collapsed details for external problem jumps, including unmapped pro
   }
 });
 
-const pain: CiJourneyProblem = {
-  seg: '编译',
-  kb: 'compile-failure',
-  title: '编译环境缺少依赖',
-  pri: 'P1',
-  dim: '稳定性',
-  dimkey: 'stability',
-  cls: '待确认',
-  mech: '依赖缺失',
-  owner: '维护者',
-  stages: {},
-  impact: { runs: 1, prs: 1, streak_days: 1, window_total: 1 },
-  runs: [],
-  root: {
-    status: 'pending',
-    action: '在构建镜像中补齐依赖。',
-    dest: 'CI 维护者',
-  },
-};
-
-it.each([null, 80])(
-  'shows counts only for evaluated cards while preserving details (score: %s)',
-  (score) => {
-    const zeroCell = { ...cell, name: '失败执行数', disp: '0 次', score: null };
-    const currentStage: CiJourneyStage = {
-      ...stage('编译'),
-      segscore: score,
-      cells: {
-        stability: zeroCell,
-        efficiency: { ...cell, fallback: true },
-        interaction: zeroCell,
-        cost: { ...cell, disp: '—' },
+it('hides unevaluated steps in both lists and selects a visible step when the day changes', () => {
+  const nextDay = '2026-11-04';
+  const thirdDay = '2026-11-05';
+  const unevaluated = { ...stage('编译'), segscore: null };
+  const currentJourney = {
+    ...journey,
+    boards: {
+      ...journey.boards,
+      [nextDay]: {
+        ...journey.boards[day],
+        stages: [unevaluated, { ...stage('触发确认'), segscore: 0 }],
       },
-      problems: [
-        pain,
-        pain,
-        {
-          ...pain,
-          title: '执行耗时偏长',
-          root: { status: 'pending', action: '  ' },
-        },
-      ],
-      stats: [{ label: '问题', v: 99 }],
-    };
-    const currentJourney: CiJourney = {
-      ...journey,
-      boards: { [day]: { ...journey.boards[day], stages: [currentStage] } },
-    };
-    render(<CiJourneyPanorama {...props} journey={currentJourney} />);
-    if (score === null) {
-      expect(
-        screen.queryByRole('group', { name: '编译统计' })
-      ).not.toBeInTheDocument();
-      const card = screen.getByTitle('编译 · 本次未评估');
-      expect(within(card).getByText('本次未评估')).toBeInTheDocument();
-      expect(within(card).getByText('Not Evaluated')).toBeInTheDocument();
-    } else {
-      const cardStats = screen.getByRole('group', { name: '编译统计' });
-      expect(within(cardStats).getByLabelText('痛点：2')).toHaveTextContent(
-        '2'
-      );
-      expect(within(cardStats).getByLabelText('指标：1')).toHaveTextContent(
-        '1'
-      );
-      expect(within(cardStats).getByLabelText('建议：1')).toHaveTextContent(
-        '1'
-      );
-      expect(cardStats).not.toHaveTextContent('99');
-    }
+      [thirdDay]: { ...journey.boards[day], stages: [unevaluated] },
+    },
+  };
+  const { rerender } = render(
+    <CiJourneyPanorama {...props} journey={currentJourney} />
+  );
+  fireEvent.click(screen.getByTitle('编译 · 正常'));
 
-    const observations = screen.getByRole('region', { name: '指标' });
-    expect(within(observations).getAllByRole('listitem')).toHaveLength(1);
-    expect(observations).toHaveTextContent('失败执行数');
-    expect(observations).toHaveTextContent('0 次');
-    expect(observations).toHaveTextContent('稳定性 · 交互体验');
-    expect(observations).not.toHaveTextContent('阶段耗时');
+  rerender(
+    <CiJourneyPanorama {...props} journey={currentJourney} day={nextDay} />
+  );
+  const directory = screen.getByRole('navigation', { name: '旅程名称' });
+  expect(screen.queryByTitle(/^编译 ·/)).not.toBeInTheDocument();
+  expect(
+    within(directory).queryByRole('button', { name: /编译/ })
+  ).not.toBeInTheDocument();
+  expect(screen.getByTitle('触发确认 · 正常')).toBeVisible();
+  expect(
+    within(directory).getByRole('button', { name: /触发确认.*0 分/ })
+  ).toHaveAttribute('aria-pressed', 'true');
+  expect(getToggle()).toHaveTextContent('触发确认');
 
-    const recommendations = screen.getByRole('region', { name: '建议' });
-    expect(within(recommendations).getAllByRole('listitem')).toHaveLength(1);
-    expect(recommendations).toHaveTextContent('在构建镜像中补齐依赖。');
-    expect(recommendations).toHaveTextContent('关联痛点：编译环境缺少依赖');
-    expect(recommendations).toHaveTextContent('CI 维护者');
-    expect(screen.getByRole('region', { name: '痛点' })).toHaveTextContent(
-      '2 项'
-    );
-  }
-);
+  rerender(
+    <CiJourneyPanorama {...props} journey={currentJourney} day={thirdDay} />
+  );
+  expect(screen.getByText('当日暂无已评估的旅程步骤。')).toBeVisible();
+  expect(
+    screen.queryByRole('navigation', { name: '旅程名称' })
+  ).not.toBeInTheDocument();
+});
+
+it('shows stage counts and matching details for an evaluated step', () => {
+  const zeroCell = { ...cell, name: '失败执行数', disp: '0 次', score: null };
+  const currentStage: CiJourneyStage = {
+    ...stage('编译'),
+    cells: {
+      stability: zeroCell,
+      efficiency: { ...cell, fallback: true },
+      interaction: zeroCell,
+      cost: { ...cell, disp: '—' },
+    },
+    problems: [
+      pain,
+      pain,
+      {
+        ...pain,
+        title: '执行耗时偏长',
+        responsible_party: null,
+        responsible_person: null,
+        root: { status: 'pending', action: '  ' },
+      },
+    ],
+    stats: [{ label: '问题', v: 99 }],
+  };
+  const currentJourney: CiJourney = {
+    ...journey,
+    boards: { [day]: { ...journey.boards[day], stages: [currentStage] } },
+  };
+  render(<CiJourneyPanorama {...props} journey={currentJourney} />);
+  const cardStats = screen.getByRole('group', { name: '编译统计' });
+  expect(within(cardStats).getByLabelText('痛点：2')).toHaveTextContent('2');
+  expect(within(cardStats).getByLabelText('指标：1')).toHaveTextContent('1');
+  expect(within(cardStats).getByLabelText('建议：1')).toHaveTextContent('1');
+  expect(cardStats).not.toHaveTextContent('99');
+
+  const observations = screen.getByRole('region', { name: '指标' });
+  expect(within(observations).getAllByRole('listitem')).toHaveLength(1);
+  expect(observations).toHaveTextContent('失败执行数');
+  expect(observations).toHaveTextContent('0 次');
+  expect(observations).toHaveTextContent('稳定性 · 交互体验');
+  expect(observations).not.toHaveTextContent('阶段耗时');
+
+  const recommendations = screen.getByRole('region', { name: '建议' });
+  expect(within(recommendations).getAllByRole('listitem')).toHaveLength(1);
+  expect(recommendations).toHaveTextContent('在构建镜像中补齐依赖。');
+  expect(recommendations).toHaveTextContent('关联痛点：编译环境缺少依赖');
+  expect(recommendations).toHaveTextContent('CI 维护者');
+  const pains = screen.getByRole('region', { name: '痛点' });
+  expect(pains).toHaveTextContent('2 项');
+  expect(
+    within(pains).getByRole('button', { name: /编译环境缺少依赖/ })
+  ).toHaveTextContent('责任方：基础设施团队');
+  expect(within(pains).getByText('责任方：—')).toBeVisible();
+  expect(within(pains).getByText('责任人：李四')).toBeVisible();
+  expect(within(pains).getByText('责任人：—')).toBeVisible();
+});
 
 it('shows zero counts and explicit empty states when no stage observations or suggestions are available', () => {
   const currentStage = stage('编译');

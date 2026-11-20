@@ -44,8 +44,12 @@ const issue = (
 
 it('limits the ranking to five groups and opens details matching each closure view', async () => {
   const issues = [
-    issue('one', '执行失败'),
-    issue('two', '执行失败', 'confirmed'),
+    {
+      ...issue('one', '执行失败'),
+      responsible_party: '基础设施团队',
+      responsible_person: '李四',
+    },
+    { ...issue('two', '执行失败', 'confirmed'), responsible_party: '构建团队' },
     issue('three', '执行失败', 'fixed'),
     ...Array.from({ length: 5 }, (_, index) =>
       issue(`extra-${index}`, `其他问题${index}`)
@@ -62,13 +66,33 @@ it('limits the ranking to five groups and opens details matching each closure vi
   expect(
     card.getAllByRole('button', { name: /^查看.*的问题数，/ })
   ).toHaveLength(5);
+  expect(
+    card.getByRole('cell', { name: '基础设施团队、构建团队' })
+  ).toBeVisible();
   fireEvent.click(
     card.getByRole('button', { name: '查看执行失败的问题数，3项' })
   );
-  let dialog = within(screen.getByRole('dialog'));
+  let dialog = within(await screen.findByRole('dialog'));
   expect(
     await dialog.findAllByRole('link', { name: '查看报告', exact: true })
   ).toHaveLength(3);
+  expect(
+    dialog.getByRole('cell', { name: '基础设施团队' })
+  ).toBeInTheDocument();
+  expect(dialog.getByRole('cell', { name: '构建团队' })).toBeInTheDocument();
+  expect(dialog.getByRole('cell', { name: '李四' })).toBeInTheDocument();
+  const personFilter = dialog.getByRole('button', { name: '筛选责任人' });
+  fireEvent.click(personFilter);
+  const menu = within(await screen.findByRole('menu'));
+  fireEvent.click(menu.getByText('李四'));
+  fireEvent.click(screen.getByRole('button', { name: /确\s*定/ }));
+  expect(personFilter).toHaveAttribute('aria-pressed', 'true');
+  expect(
+    dialog.getAllByRole('link', { name: '查看报告', exact: true })
+  ).toHaveLength(1);
+  expect(
+    dialog.queryByRole('cell', { name: '构建团队' })
+  ).not.toBeInTheDocument();
   fireEvent.click(dialog.getByRole('button', { name: 'Close', exact: true }));
   await waitFor(() =>
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

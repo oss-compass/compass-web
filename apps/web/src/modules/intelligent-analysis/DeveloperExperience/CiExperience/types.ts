@@ -85,6 +85,9 @@ export type CiProblem = CiRuleReference & {
   cls: string;
   mech: string;
   owner: string;
+  /** 报告提供方为本条痛点填写的责任方。 */
+  responsible_party?: string | null;
+  responsible_person?: string | null;
   title: string;
   /** 归属旅程段（null/缺失 = 跨段或未映射） */
   seg?: string | null;

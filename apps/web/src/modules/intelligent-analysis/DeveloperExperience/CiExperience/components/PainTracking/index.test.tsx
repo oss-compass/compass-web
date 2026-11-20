@@ -343,7 +343,12 @@ it('only shows times for states reached in the current flow', () => {
 it('filters the unified list, resets filters and opens full descriptions or the matching step', async () => {
   const onResetFilters = jest.fn();
   const onProblemJump = jest.fn();
-  const located = { ...problem, seg: '编译构建' };
+  const located = {
+    ...problem,
+    seg: '编译构建',
+    responsible_party: '基础设施团队',
+    responsible_person: '李四',
+  };
   const other = {
     ...problem,
     kb: '另一问题',
@@ -369,12 +374,19 @@ it('filters the unified list, resets filters and opens full descriptions or the 
     expect(screen.getByRole('button', { name: /待确认/ })).toBeEnabled()
   );
   expect(screen.queryByText('后端效率问题')).not.toBeInTheDocument();
+  expect(screen.getByRole('columnheader', { name: '责任方' })).toBeVisible();
+  expect(screen.getByRole('columnheader', { name: '责任人' })).toBeVisible();
+  const row = screen.getByRole('row', { name: /同一步骤多次失败/ });
+  expect(within(row).getByRole('cell', { name: '基础设施团队' })).toBeVisible();
+  expect(within(row).getByRole('cell', { name: '李四' })).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: '定位步骤：编译构建' }));
   expect(onProblemJump).toHaveBeenCalledWith(located);
   fireEvent.click(screen.getByRole('button', { name: '重置筛选' }));
   expect(onResetFilters).toHaveBeenCalledTimes(1);
   rerender(list(null, null));
   expect(screen.getByText('后端效率问题')).toBeInTheDocument();
+  const legacyRow = screen.getByRole('row', { name: /后端效率问题/ });
+  expect(within(legacyRow).getAllByRole('cell', { name: '—' })).toHaveLength(2);
   fireEvent.click(
     screen.getByRole('button', { name: /另一问题 后端效率问题/ })
   );

@@ -1,10 +1,11 @@
 import OverviewRepoComparison from '../../../../UserJourney/OverviewDashboard/OverviewRepoComparison';
 import { ScoreSparkline } from '../../../../UserJourney/OverviewDashboard/CloseRateTrendChart';
-import { useCiRepoTeams } from './useCiRepoTeams';
+import { useCiRepoComparisonQuery } from '../../queries';
 import React from 'react';
 import Link from 'next/link';
-import { RightOutlined, SearchOutlined } from '@ant-design/icons';
-import { Alert, Input, Modal, Table, Tooltip } from 'antd';
+import { useDebounce } from 'ahooks';
+import { FilterFilled, RightOutlined, SearchOutlined } from '@ant-design/icons';
+import { Alert, Dropdown, Input, Select, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import {
   countPainProgress,
@@ -16,7 +17,9 @@ import type { CiReportHref } from './CiIssueTable';
 import { REPAIR_RATE_NOTE } from './statusPresentation';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
 
-const CiIssueTable = dynamic(() => import('./CiIssueTable'));
+const CiIssueListModal = dynamic(() =>
+  import('./CiIssueTable').then((module) => module.CiIssueListModal)
+);
 
 const PROGRESS_STATUS = {
   pending: { status: 'pending', label: '待处理' },
@@ -77,7 +80,18 @@ const CiRepoProgressSection: React.FC<Props> = ({
   reportHref,
 }) => {
   const [view, setView] = React.useState<'team' | 'repo'>('team');
-  const [search, setSearch] = React.useState('');
+  const [filters, setFilters] = React.useState({
+    repo: '',
+    team: '',
+    category: '',
+    keyword: '',
+  });
+  const keyword = useDebounce(filters.keyword.trim(), { wait: 250 });
+  const repoQuery = useCiRepoComparisonQuery({ ...filters, keyword });
+  const keywordPending = keyword !== filters.keyword.trim();
+  const filtering = repoQuery.isFetching || keywordPending;
+  const setFilter = (key: keyof typeof filters, value: string) =>
+    setFilters((previous) => ({ ...previous, [key]: value }));
   const [expandedKeys, setExpandedKeys] = React.useState<React.Key[]>([]);
   const [detail, setDetail] = React.useState<{
     title: string;
@@ -88,27 +102,88 @@ const CiRepoProgressSection: React.FC<Props> = ({
     key: string;
     order: 'ascend' | 'descend';
   }>({ key: 'score', order: 'ascend' });
-  const teams = useCiRepoTeams();
-  const repoInfo = teams.repoInfo;
-  const rows: RepoRow[] = repos.map((repo) => ({
-    ...repo,
-    teamName:
-      repoInfo[repo.slug]?.teamName ||
-      (teams.isLoading
-        ? '团队加载中'
-        : teams.isError
-        ? '团队信息不可用'
-        : '未分配团队'),
-    repoCategory: repoInfo[repo.slug]?.repoCategory,
-    issues: issues.filter((issue) => issue.repo === repo.repo),
-  }));
-  const filtered = rows.filter((repo) =>
-    `${repo.slug} ${repo.teamName} ${repo.repoCategory || ''}`
-      .toLowerCase()
-      .includes(search.trim().toLowerCase())
+  const reposByKey = new Map(repos.map((repo) => [repo.repo, repo]));
+  const matchingRepos =
+    repoQuery.isError || repoQuery.isPreviousData || keywordPending
+      ? []
+      : repoQuery.data?.items ?? [];
+  const rows: RepoRow[] = matchingRepos.flatMap(
+    ({ repo, teamName, repoCategory }) => {
+      const summary = reposByKey.get(repo);
+      return summary
+        ? [
+            {
+              ...summary,
+              teamName,
+              repoCategory,
+              issues: issues.filter((issue) => issue.repo === repo),
+            },
+          ]
+        : [];
+    }
   );
+  const repoOptions = repoQuery.data?.options.repos ?? [];
+  const teamOptions = (repoQuery.data?.options.teams ?? []).map((team) => ({
+    value: team,
+    label: team,
+  }));
+  const categoryOptions = (repoQuery.data?.options.categories ?? []).map(
+    (category) => ({
+      value: category,
+      label: category,
+    })
+  );
+  const filterHeader = (
+    key: 'repo' | 'team',
+    label: string,
+    options: typeof repoOptions
+  ) => {
+    const value = filters[key];
+    return (
+      <span className="inline-flex items-center gap-1">
+        {label}
+        <Dropdown
+          trigger={['click']}
+          menu={{
+            items: [
+              { key: 'all', label: '全部' },
+              ...options.map((option) => ({
+                key: `value:${option.value}`,
+                label: option.label,
+              })),
+            ],
+            selectedKeys: [value ? `value:${value}` : 'all'],
+            selectable: true,
+            style: { maxHeight: 320, overflowY: 'auto' },
+            onClick: ({ key: selected, domEvent }) => {
+              domEvent.stopPropagation();
+              setFilter(key, selected === 'all' ? '' : selected.slice(6));
+            },
+          }}
+        >
+          <button
+            type="button"
+            aria-label={`筛选${label}`}
+            aria-pressed={Boolean(value)}
+            title={
+              value
+                ? `当前筛选：${
+                    options.find((option) => option.value === value)?.label ??
+                    value
+                  }`
+                : `筛选${label}`
+            }
+            className="inline-flex h-5 w-5 items-center justify-center rounded-lg text-[var(--overview-slateLight)] hover:bg-[var(--overview-slateSoft)] aria-pressed:bg-[var(--overview-blueSoft)] aria-pressed:text-[var(--overview-blue)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <FilterFilled className="text-xs" />
+          </button>
+        </Dropdown>
+      </span>
+    );
+  };
   const groups = new Map<string, RepoRow[]>();
-  filtered.forEach((repo) =>
+  rows.forEach((repo) =>
     groups.set(repo.teamName, [...(groups.get(repo.teamName) || []), repo])
   );
   const teamRows = Array.from(groups, ([name, values]) =>
@@ -198,13 +273,18 @@ const CiRepoProgressSection: React.FC<Props> = ({
   const repoColumns: TableProps<RepoRow>['columns'] = [
     indexColumn,
     {
-      title: '仓库',
+      title: filterHeader('repo', '仓库', repoOptions),
       dataIndex: 'slug',
       key: 'name',
       width: 210,
       sorter: (a, b) => a.slug.localeCompare(b.slug),
     },
-    { title: '责任团队', dataIndex: 'teamName', width: 110, ellipsis: true },
+    {
+      title: filterHeader('team', '责任团队', teamOptions),
+      dataIndex: 'teamName',
+      width: 110,
+      ellipsis: true,
+    },
     {
       title: '综合体验评分',
       dataIndex: 'scoreOverall',
@@ -245,7 +325,7 @@ const CiRepoProgressSection: React.FC<Props> = ({
   const teamColumns: TableProps<TeamRow>['columns'] = [
     indexColumn,
     {
-      title: '责任团队',
+      title: filterHeader('team', '责任团队', teamOptions),
       dataIndex: 'name',
       key: 'name',
       width: 210,
@@ -341,6 +421,10 @@ const CiRepoProgressSection: React.FC<Props> = ({
       columns={repoColumns}
       dataSource={sortRepos(items)}
       pagination={false}
+      loading={filtering}
+      locale={{
+        emptyText: filtering || repoQuery.isError ? '' : '暂无匹配仓库',
+      }}
       tableLayout="fixed"
       scroll={{ x: 1172 }}
     />
@@ -448,31 +532,62 @@ const CiRepoProgressSection: React.FC<Props> = ({
       view={view}
       onViewChange={setView}
       actions={
-        <Input
-          className="!ml-auto !h-8 !w-56 max-w-full !border-[rgba(var(--overview-slateBorder-rgb),0.8)] !bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] !px-3 !text-sm !shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] [&.ant-input-affix-wrapper]:!rounded-2xl [&_.ant-input]:!bg-transparent"
-          aria-label="搜索仓库或团队"
-          placeholder="搜索仓库或团队"
-          value={search}
-          prefix={<SearchOutlined className="text-[var(--overview-slate)]" />}
-          allowClear
-          onChange={(event) => setSearch(event.target.value)}
-        />
+        <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2">
+          {view === 'team' && (
+            <Select
+              aria-label="筛选仓库"
+              placeholder="全部仓库"
+              className="overview-select min-w-[140px]"
+              options={repoOptions}
+              value={filters.repo || undefined}
+              onChange={(value) => setFilter('repo', value ?? '')}
+              showSearch
+              optionFilterProp="label"
+              allowClear
+            />
+          )}
+          <Select
+            aria-label="筛选仓库分类"
+            placeholder="全部仓库分类"
+            className="overview-select min-w-[140px]"
+            options={categoryOptions}
+            value={filters.category || undefined}
+            onChange={(value) => setFilter('category', value ?? '')}
+            showSearch
+            optionFilterProp="label"
+            allowClear
+          />
+          <Input
+            className="!h-8 !w-56 max-w-full !border-[rgba(var(--overview-slateBorder-rgb),0.8)] !bg-[linear-gradient(180deg,var(--overview-white)_0%,var(--overview-slateSoft)_100%)] !px-3 !text-sm !shadow-[0_2px_6px_rgba(var(--overview-text-rgb),0.06)] [&.ant-input-affix-wrapper]:!rounded-2xl [&_.ant-input]:!bg-transparent"
+            aria-label="搜索仓库、团队或分类"
+            placeholder="搜索仓库、团队或分类"
+            value={filters.keyword}
+            maxLength={100}
+            prefix={<SearchOutlined className="text-[var(--overview-slate)]" />}
+            allowClear
+            onChange={(event) => setFilter('keyword', event.target.value)}
+          />
+        </div>
       }
     >
-      {teams.isError && (
+      {repoQuery.isError && (
         <Alert
           className="mb-3"
           type="warning"
-          message="团队信息加载失败"
+          message="仓库筛选结果加载失败"
           action={
-            <button type="button" onClick={() => void teams.refetch()}>
+            <button
+              type="button"
+              className="rounded-lg"
+              onClick={() => void repoQuery.refetch()}
+            >
               重试
             </button>
           }
         />
       )}
       {view === 'repo' ? (
-        repoTable(filtered)
+        repoTable(rows)
       ) : (
         <Table<TeamRow>
           className="overview-ant-table"
@@ -480,6 +595,10 @@ const CiRepoProgressSection: React.FC<Props> = ({
           columns={teamColumns}
           dataSource={teamRows}
           pagination={false}
+          loading={filtering}
+          locale={{
+            emptyText: filtering || repoQuery.isError ? '' : '暂无匹配责任团队',
+          }}
           scroll={{ x: 1172 }}
           onChange={(_pagination, _filters, sorter) => {
             const item = Array.isArray(sorter) ? sorter[0] : sorter;
@@ -498,20 +617,16 @@ const CiRepoProgressSection: React.FC<Props> = ({
           }}
         />
       )}
-      <Modal
-        open={!!detail}
+      <CiIssueListModal
         title={
-          detail ? `${detail.title} · 痛点问题（${detail.issues.length}）` : ''
+          detail
+            ? `${detail.title} · 痛点问题（${detail.issues.length}）`
+            : undefined
         }
-        onCancel={() => setDetail(null)}
-        footer={null}
-        width={1080}
-        destroyOnClose
-      >
-        {detail && (
-          <CiIssueTable issues={detail.issues} reportHref={reportHref} />
-        )}
-      </Modal>
+        issues={detail?.issues}
+        reportHref={reportHref}
+        onClose={() => setDetail(null)}
+      />
     </OverviewRepoComparison>
   );
 };

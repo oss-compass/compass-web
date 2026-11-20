@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { FilterFilled } from '@ant-design/icons';
 import { Descriptions, Modal, Table, Tag, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import type { CiPri } from '../../types';
@@ -16,44 +17,111 @@ export const CiPriorityTag: React.FC<{ pri: CiPri }> = ({ pri }) => (
   </Tag>
 );
 
+const issueName = (issue: CiTopIssue) => issue.kb || issue.title;
+const issueParty = (issue: CiTopIssue) =>
+  issue.responsible_party?.trim() || '—';
+const issuePerson = (issue: CiTopIssue) =>
+  issue.responsible_person?.trim() || '—';
+const issueStages = (issue: CiTopIssue) =>
+  issue.journeyStages.length ? issue.journeyStages : ['跨段/未映射'];
+const statusLabel = (status: string) =>
+  CI_OVERVIEW_STATUS_META[status as CiTopIssue['status']].label;
+
 const CiIssueTable: React.FC<{
   issues: CiTopIssue[];
   reportHref: CiReportHref;
 }> = ({ issues, reportHref }) => {
   const [detail, setDetail] = React.useState<CiTopIssue | null>(null);
+  const [activeFilters, setActiveFilters] = React.useState<
+    Record<string, unknown[] | null>
+  >({});
+  const columnFilter = (
+    key: string,
+    title: string,
+    getValues: (issue: CiTopIssue) => string[],
+    label: (value: string) => string = (value) => value
+  ) => ({
+    key,
+    title,
+    filters: Array.from(new Set(issues.flatMap(getValues)))
+      .sort((a, b) => a.localeCompare(b, 'zh-CN'))
+      .map((value) => ({ text: label(value), value })),
+    filterSearch: true,
+    onFilter: (value: React.Key | boolean, issue: CiTopIssue) =>
+      getValues(issue).includes(String(value)),
+    filterDropdownProps: {
+      children: (
+        <button
+          type="button"
+          aria-label={`筛选${title}`}
+          title={`筛选${title}`}
+          aria-pressed={Boolean(activeFilters[key]?.length)}
+          className="ml-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 hover:text-slate-700 aria-pressed:bg-blue-50 aria-pressed:text-blue-600"
+        >
+          <FilterFilled className="text-xs" />
+        </button>
+      ),
+    },
+  });
   const columns: TableProps<CiTopIssue>['columns'] = [
     {
-      title: '优先级',
+      ...columnFilter('pri', '优先级', (issue) => [issue.pri]),
       dataIndex: 'pri',
-      width: 88,
+      width: '10%',
       render: (pri: CiPri) => <CiPriorityTag pri={pri} />,
     },
     {
-      title: '问题',
-      key: 'problem',
+      ...columnFilter('problem', '问题', (issue) => [issueName(issue)]),
       render: (_value, issue) => (
         <Tooltip title={issue.title}>
           <button
             type="button"
-            className="text-left text-sm font-medium text-slate-800 hover:text-blue-600"
+            className="max-w-full break-words rounded-lg text-left text-sm font-medium text-slate-800 hover:text-blue-600"
             onClick={() => setDetail(issue)}
           >
-            {issue.kb || issue.title}
+            {issueName(issue)}
           </button>
         </Tooltip>
       ),
     },
-    { title: '仓库', dataIndex: 'slug', width: 140, ellipsis: true },
     {
-      title: '步骤',
-      key: 'stages',
-      width: 170,
-      render: (_value, issue) => issue.journeyStages.join('、'),
+      ...columnFilter('slug', '仓库', (issue) => [issue.slug]),
+      dataIndex: 'slug',
+      width: '13%',
+      render: (slug: string) => <span className="break-words">{slug}</span>,
     },
     {
-      title: '处理状态',
+      ...columnFilter('stages', '步骤', issueStages),
+      width: '15%',
+      render: (_value, issue) => issueStages(issue).join('、'),
+    },
+    {
+      ...columnFilter('responsible_party', '责任方', (issue) => [
+        issueParty(issue),
+      ]),
+      width: '13%',
+      render: (_value, issue) => (
+        <span className="break-words">{issueParty(issue)}</span>
+      ),
+    },
+    {
+      ...columnFilter('responsible_person', '责任人', (issue) => [
+        issuePerson(issue),
+      ]),
+      width: '11%',
+      render: (_value, issue) => (
+        <span className="break-words">{issuePerson(issue)}</span>
+      ),
+    },
+    {
+      ...columnFilter(
+        'status',
+        '处理状态',
+        (issue) => [issue.status],
+        statusLabel
+      ),
       dataIndex: 'status',
-      width: 155,
+      width: '13%',
       render: (status: CiTopIssue['status']) => (
         <Tag color={CI_OVERVIEW_STATUS_META[status].color}>
           {CI_OVERVIEW_STATUS_META[status].label}
@@ -63,7 +131,7 @@ const CiIssueTable: React.FC<{
     {
       title: '报告',
       key: 'report',
-      width: 100,
+      width: '10%',
       render: (_value, issue) => (
         <Link
           href={reportHref(issue.repo, issue.day)}
@@ -79,16 +147,28 @@ const CiIssueTable: React.FC<{
       <Table<CiTopIssue>
         className="overview-ant-table ci-issue-table"
         rowKey="key"
+        tableLayout="fixed"
         columns={columns}
         dataSource={issues}
+        onChange={(_pagination, filters) => setActiveFilters(filters)}
         pagination={{
-          pageSize: 10,
+          pageSize: 12,
           showSizeChanger: false,
           hideOnSinglePage: true,
           showTotal: (total) => `共 ${total} 项`,
         }}
-        scroll={{ x: 930 }}
-        locale={{ emptyText: '暂无匹配的痛点问题' }}
+        scroll={{
+          x: 760,
+          y: 'min(calc(100dvh - 176px), 800px)',
+          scrollToFirstRowOnChange: true,
+        }}
+        locale={{
+          emptyText: '暂无匹配的痛点问题',
+          filterConfirm: '确定',
+          filterReset: '重置',
+          filterEmptyText: '暂无筛选项',
+          filterSearchPlaceholder: '搜索筛选项',
+        }}
       />
       <Modal
         open={!!detail}
@@ -118,7 +198,13 @@ const CiIssueTable: React.FC<{
                 {detail.dim || '—'}
               </Descriptions.Item>
               <Descriptions.Item label="步骤">
-                {detail.journeyStages.join('、')}
+                {issueStages(detail).join('、')}
+              </Descriptions.Item>
+              <Descriptions.Item label="责任方">
+                {issueParty(detail)}
+              </Descriptions.Item>
+              <Descriptions.Item label="责任人">
+                {issuePerson(detail)}
               </Descriptions.Item>
               <Descriptions.Item label="涉及 run">
                 {detail.impact.runs ?? '—'}
@@ -139,4 +225,22 @@ const CiIssueTable: React.FC<{
     </>
   );
 };
-export default CiIssueTable;
+
+export const CiIssueListModal: React.FC<{
+  title?: string;
+  issues?: CiTopIssue[];
+  reportHref: CiReportHref;
+  onClose: () => void;
+}> = ({ title, issues, reportHref, onClose }) => (
+  <Modal
+    open={Boolean(issues)}
+    title={title}
+    onCancel={onClose}
+    footer={null}
+    width="min(96vw, 1480px)"
+    centered
+    destroyOnHidden
+  >
+    {issues && <CiIssueTable issues={issues} reportHref={reportHref} />}
+  </Modal>
+);

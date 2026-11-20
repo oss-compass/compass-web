@@ -1,11 +1,14 @@
 import { compassApiFetch } from '../../UserJourney/rawData/apiClient';
-import type { CiPri, CiProblemImpact } from './types';
+import type { CiPri, CiProblem, CiProblemImpact } from './types';
 import type {
   TrackingScope,
   TrackingStatus,
 } from './components/PainTracking/model';
 
-export type CiPainIssue = {
+export type CiPainIssue = Pick<
+  CiProblem,
+  'responsible_party' | 'responsible_person'
+> & {
   problemKey: string;
   pri: CiPri;
   status: TrackingStatus;
@@ -22,6 +25,51 @@ export type CiPainReport = TrackingScope & {
 };
 
 export type CiPainOverview = { reports: CiPainReport[] };
+
+export type CiRepoComparisonFilters = {
+  repo: string;
+  team: string;
+  category: string;
+  keyword: string;
+};
+
+export type CiRepoComparisonResult = {
+  items: {
+    repo: string;
+    slug: string;
+    teamName: string;
+    repoCategory: string;
+  }[];
+  options: {
+    repos: { value: string; label: string }[];
+    teams: string[];
+    categories: string[];
+  };
+};
+
+export const fetchCiRepoComparison = async (
+  filters: CiRepoComparisonFilters,
+  signal?: AbortSignal
+): Promise<CiRepoComparisonResult> => {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+  const query = params.toString();
+  const response = await compassApiFetch<CiRepoComparisonResult>(
+    `/ci-experience/ci-data/overview/repos${query ? `?${query}` : ''}`,
+    { signal }
+  );
+  if (
+    !Array.isArray(response.items) ||
+    !Array.isArray(response.options?.repos) ||
+    !Array.isArray(response.options?.teams) ||
+    !Array.isArray(response.options?.categories)
+  ) {
+    throw new Error('CI 仓库筛选结果格式异常');
+  }
+  return response;
+};
 
 export type CiPainTrendPoint = {
   weekStart: string;

@@ -46,7 +46,8 @@ type CiJourneyPanoramaProps = {
   focus?: CiJourneyFocus | null;
 };
 
-type Tone = 'good' | 'warn' | 'bad' | 'neutral';
+type EvaluatedStage = CiJourneyStage & { segscore: number };
+type Tone = 'good' | 'warn' | 'bad';
 
 /** 段元信息（图标 / 主题色 / 英文眉标 / 简介），按段名索引（仓无关，家族同构） */
 const SEG_META: Record<
@@ -102,10 +103,7 @@ const segMeta = (seg: string) =>
     code: '',
   };
 
-const scoreTone = (score: number | null): Tone => {
-  if (score == null) {
-    return 'neutral';
-  }
+const scoreTone = (score: number): Tone => {
   if (score >= 80) {
     return 'good';
   }
@@ -119,14 +117,12 @@ const SCORE_TONE_TEXT: Record<Tone, string> = {
   good: 'text-emerald-600',
   warn: 'text-amber-600',
   bad: 'text-rose-600',
-  neutral: 'text-slate-400',
 };
 
 const CARD_TONE: Record<Tone, string> = {
   good: 'border-emerald-200 bg-white',
   warn: 'border-amber-200 bg-white',
   bad: 'border-rose-200 bg-white',
-  neutral: 'border-slate-200 bg-white',
 };
 
 const getStarText = (stars: number) => {
@@ -151,16 +147,15 @@ const stageProblemCount = (stage: CiJourneyStage) =>
 
 /** 单张旅程段卡（借鉴社区入门体验旅程全景图 StepNode 样式） */
 const StageCard: React.FC<{
-  stage: CiJourneyStage;
+  stage: EvaluatedStage;
   active: boolean;
   onClick: () => void;
 }> = ({ stage, active, onClick }) => {
   const meta = segMeta(stage.seg);
-  const hasScore = stage.segscore != null;
   const tone = scoreTone(stage.segscore);
   const attention = stageAttention(stage);
   const statusWord = stageStatusWord(stage);
-  const stars = Math.round((stage.segscore ?? 0) / 20);
+  const stars = Math.round(stage.segscore / 20);
   const problems = getStageProblems(stage);
   const observations = getStageObservations(stage);
   const recommendations = getStageRecommendations(problems);
@@ -176,7 +171,7 @@ const StageCard: React.FC<{
             onClick();
           }
         }}
-        title={`${stage.seg} · ${hasScore ? statusWord : '本次未评估'}`}
+        title={`${stage.seg} · ${statusWord}`}
         className={`flex h-[260px] w-full cursor-pointer flex-col rounded-[20px] border px-4 pb-3 pt-4 shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 ${
           CARD_TONE[tone]
         } ${stage.parallel ? 'border-dashed border-indigo-300' : ''} ${
@@ -204,125 +199,73 @@ const StageCard: React.FC<{
           </div>
         </div>
 
-        {hasScore ? (
-          <>
-            <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
-              {getStarText(stars)}
-            </div>
-            <div className="mt-1.5 text-center">
-              <span
-                className={`text-[28px] font-semibold leading-none ${SCORE_TONE_TEXT[tone]}`}
-              >
-                {stage.segscore}
-              </span>
-              <span className="ml-1 text-xs font-medium text-slate-500">
-                分
-              </span>
-            </div>
-            <div
-              className={`mt-1 text-center text-[12px] font-medium ${
-                statusWord === '需处理'
-                  ? 'text-rose-600'
-                  : statusWord === '关注'
-                  ? 'text-amber-600'
-                  : 'text-slate-400'
-              }`}
-            >
-              {statusWord}
-            </div>
-          </>
-        ) : (
-          /* 未评估态：对齐社区入门体验旅程全景图 StepNode 的 Not Evaluated 样式 */
-          <div className="mt-3 flex flex-col items-center gap-1">
-            <div className="flex items-center gap-1.5">
-              <span className="h-px w-5 bg-slate-300" />
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
-                Not Evaluated
-              </span>
-              <span className="h-px w-5 bg-slate-300" />
-            </div>
-          </div>
-        )}
-
+        <div className="mt-3 text-center text-[19px] font-semibold leading-none tracking-[0.18em] text-amber-500">
+          {getStarText(stars)}
+        </div>
+        <div className="mt-1.5 text-center">
+          <span
+            className={`text-[28px] font-semibold leading-none ${SCORE_TONE_TEXT[tone]}`}
+          >
+            {stage.segscore}
+          </span>
+          <span className="ml-1 text-xs font-medium text-slate-500">分</span>
+        </div>
         <div
-          className={`mt-3 flex flex-1 flex-col justify-end rounded-2xl border px-2 py-1.5 ${
-            hasScore
-              ? 'border-slate-200/70 bg-white/80'
-              : 'border-dashed border-slate-200 bg-slate-50/60'
+          className={`mt-1 text-center text-[12px] font-medium ${
+            statusWord === '需处理'
+              ? 'text-rose-600'
+              : statusWord === '关注'
+              ? 'text-amber-600'
+              : 'text-slate-400'
           }`}
         >
-          {hasScore ? (
-            <div
-              role="group"
-              aria-label={`${stage.seg}统计`}
-              className="grid grid-cols-3"
-            >
-              {[
-                {
-                  label: '痛点',
-                  value: problems.length,
-                  color: problems.length ? 'text-rose-500' : 'text-slate-400',
-                  description: '本步骤关联的独立痛点数量，与下方痛点列表一致',
-                },
-                {
-                  label: '指标',
-                  value: observations.length,
-                  color: 'text-slate-900',
-                  description:
-                    '本步骤实际有观测值的代表指标数，不含仓库级参考项；跨维度重复指标合并',
-                },
-                {
-                  label: '建议',
-                  value: recommendations.length,
-                  color: 'text-emerald-600',
-                  description: '本步骤痛点中实际提供的建议动作条目数',
-                },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  aria-label={`${stat.label}：${stat.value}`}
-                  title={stat.description}
-                  className="flex flex-col items-center py-1"
-                >
-                  <span
-                    className={`text-[20px] font-bold leading-none ${stat.color}`}
-                  >
-                    {stat.value}
-                  </span>
-                  <span className="mt-1 whitespace-nowrap text-[12px] text-slate-400">
-                    {stat.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-2">
-              <svg
-                className="h-7 w-7 text-slate-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
+          {statusWord}
+        </div>
+
+        <div className="mt-3 flex flex-1 flex-col justify-end rounded-2xl border border-slate-200/70 bg-white/80 px-2 py-1.5">
+          <div
+            role="group"
+            aria-label={`${stage.seg}统计`}
+            className="grid grid-cols-3"
+          >
+            {[
+              {
+                label: '痛点',
+                value: problems.length,
+                color: problems.length ? 'text-rose-500' : 'text-slate-400',
+                description: '本步骤关联的独立痛点数量，与下方痛点列表一致',
+              },
+              {
+                label: '指标',
+                value: observations.length,
+                color: 'text-slate-900',
+                description:
+                  '本步骤实际有观测值的代表指标数，不含仓库级参考项；跨维度重复指标合并',
+              },
+              {
+                label: '建议',
+                value: recommendations.length,
+                color: 'text-emerald-600',
+                description: '本步骤痛点中实际提供的建议动作条目数',
+              },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                aria-label={`${stat.label}：${stat.value}`}
+                title={stat.description}
+                className="flex flex-col items-center py-1"
               >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="9"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeDasharray="3 2"
-                />
-                <path
-                  d="M9 12h6M12 9v6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="text-center text-base leading-4 text-slate-400">
-                本次未评估
-              </span>
-            </div>
-          )}
+                <span
+                  className={`text-[20px] font-bold leading-none ${stat.color}`}
+                >
+                  {stat.value}
+                </span>
+                <span className="mt-1 whitespace-nowrap text-[12px] text-slate-400">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -331,7 +274,7 @@ const StageCard: React.FC<{
 
 /** 左侧旅程段菜单（对齐 Issue 体验路径总览 IssueStageDirectory 交互/UI） */
 const JourneyDirectory: React.FC<{
-  stages: CiJourneyStage[];
+  stages: EvaluatedStage[];
   activeKey: string;
   unsegCount: number;
   onSelect: (key: string) => void;
@@ -381,10 +324,7 @@ const JourneyDirectory: React.FC<{
                     active ? 'text-slate-300' : 'text-slate-500'
                   }`}
                 >
-                  {segMeta(stage.seg).code} ·{' '}
-                  {stage.segscore != null
-                    ? `${stage.segscore} 分`
-                    : '本次未评估'}
+                  {segMeta(stage.seg).code} · {stage.segscore} 分
                 </span>
               </span>
               {probn > 0 ? (
@@ -548,6 +488,10 @@ const StageProblem: React.FC<{
               }`}
             >
               {problem.title}
+            </span>
+            <span className="mt-1 flex flex-wrap gap-x-4 gap-y-1 break-words text-xs text-slate-500">
+              <span>责任方：{problem.responsible_party?.trim() || '—'}</span>
+              <span>责任人：{problem.responsible_person?.trim() || '—'}</span>
             </span>
           </span>
         </button>
@@ -766,7 +710,7 @@ const StageRecommendations: React.FC<{ problems: CiJourneyProblem[] }> = ({
  * 主体=四维明细卡片网格 + 段趋势 + 段内问题）。
  */
 const StageDetailPanel: React.FC<{
-  stage: CiJourneyStage;
+  stage: EvaluatedStage;
   repo: CiRepoKey;
   workflow: string;
   highlightKey?: string | null;
@@ -801,20 +745,10 @@ const StageDetailPanel: React.FC<{
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
-              stage.segscore != null
-                ? 'border-fuchsia-300 bg-[linear-gradient(180deg,#fdf4ff_0%,#fae8ff_100%)] text-fuchsia-700'
-                : 'border-slate-200 bg-white text-slate-500'
-            }`}
-          >
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-fuchsia-300 bg-[linear-gradient(180deg,#fdf4ff_0%,#fae8ff_100%)] px-3.5 py-1.5 text-sm font-semibold text-fuchsia-700">
             <span>步骤得分</span>
-            <span
-              className={`text-base leading-none ${
-                stage.segscore != null ? 'text-fuchsia-900' : ''
-              }`}
-            >
-              {stage.segscore ?? '本次未评估'}
+            <span className="text-base leading-none text-fuchsia-900">
+              {stage.segscore}
             </span>
           </span>
           <span
@@ -921,13 +855,12 @@ const StageDetailPanel: React.FC<{
                         '分数',
                         '状态',
                         '代表指标（当日值）',
-                        '改进责任方',
                         '问题',
                       ].map((heading, index) => (
                         <th
                           key={heading}
                           className={`border-b border-slate-200 bg-slate-50/80 px-3 py-2 text-xs font-semibold text-slate-500 ${
-                            index === 1 || index === 5
+                            index === 1 || index === 4
                               ? 'text-right'
                               : 'text-left'
                           }`}
@@ -983,17 +916,6 @@ const StageDetailPanel: React.FC<{
                                 </b>
                               </>
                             )}
-                          </td>
-                          <td
-                            className={`border-b border-slate-100 px-3 py-2 font-semibold ${
-                              cell.owner?.startsWith('混合')
-                                ? 'text-amber-600'
-                                : cell.owner
-                                ? 'text-sky-600'
-                                : 'text-slate-400'
-                            }`}
-                          >
-                            {cell.owner || '—'}
                           </td>
                           <td className="border-b border-slate-100 px-3 py-2 text-right tabular-nums text-slate-600">
                             {cell.fallback || !cell.probn ? '·' : cell.probn}
@@ -1106,7 +1028,7 @@ const UnsegDetailPanel: React.FC<{
 );
 
 /**
- * 开发者旅程全景图：主轴=旅程段（八段横排，借鉴社区入门体验旅程全景图样式），
+ * 开发者旅程全景图：主轴=当日已评估的旅程段（借鉴社区入门体验旅程全景图样式），
  * 每卡=段综合分 + 星级 + 状态词 + 段三宫格。详情区为主从式布局（对齐 Issue 体验路径总览）：
  * 左=旅程段菜单，右=段详情（四维明细 / 段趋势 / 段内问题）；顶部卡片与左菜单双向联动。
  * 内容参考 v2 设计稿；日观测板 / 周复盘切换已隐藏，默认只展示日观测板。
@@ -1119,35 +1041,48 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
   focus,
 }) => {
   const board = journey.boards[day];
-  const stages = board?.stages ?? [];
+  const stages = (board?.stages ?? []).filter(
+    (stage): stage is EvaluatedStage => stage.segscore != null
+  );
+  const unsegProblems = board?.unsegProblems ?? [];
   // 默认选中首个「有问题」段，其次首个「需处理」段（对齐设计稿默认落在系统测试）
   const defaultKey =
     stages.find((s) => stageProblemCount(s) > 0)?.seg ??
     stages.find((s) => stageAttention(s))?.seg ??
     stages[0]?.seg ??
-    '';
-  const [activeKey, setActiveKey] = useState<string>(defaultKey);
+    (unsegProblems.length > 0 ? '__unseg' : '');
+  const [selectedKey, setSelectedKey] = useState<string>(defaultKey);
+  const activeKey =
+    (selectedKey === '__unseg' && unsegProblems.length > 0) ||
+    stages.some((stage) => stage.seg === selectedKey)
+      ? selectedKey
+      : defaultKey;
   const [detailExpanded, setDetailExpanded] = useState(true);
   const detailId = useId();
   const selectStage = (key: string) => {
-    setActiveKey(key);
+    setSelectedKey(key);
     setDetailExpanded(true);
   };
   // 外部跳转定位时临时高亮的问题 key
   const [highlightKey, setHighlightKey] = useState<string | null>(null);
 
   useEffect(() => {
-    setActiveKey(defaultKey);
+    setSelectedKey(defaultKey);
     setDetailExpanded(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repo]);
 
   // 响应报告概览问题行的跳转请求：切段 → 等详情渲染后滚动到同一问题 → 短暂高亮
   useEffect(() => {
-    if (!focus) {
+    if (
+      !focus ||
+      (focus.seg === '__unseg'
+        ? unsegProblems.length === 0
+        : !stages.some((stage) => stage.seg === focus.seg))
+    ) {
       return;
     }
-    setActiveKey(focus.seg);
+    setSelectedKey(focus.seg);
     setDetailExpanded(true);
     setHighlightKey(focus.probKey);
     const scrollTimer = window.setTimeout(() => {
@@ -1165,12 +1100,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus?.nonce]);
 
-  const unsegProblems = board?.unsegProblems ?? [];
-
-  const activeStage =
-    activeKey === '__unseg'
-      ? null
-      : stages.find((s) => s.seg === activeKey) ?? stages[0] ?? null;
+  const activeStage = stages.find((stage) => stage.seg === activeKey);
 
   return (
     <section>
@@ -1195,6 +1125,11 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
 
         {/* 旅程段按可用宽度自动分列，空间不足时换行，避免横向滚动。 */}
         <div className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(208px,1fr))] items-start gap-x-10 gap-y-6 px-2 pb-2 pt-1">
+          {stages.length === 0 ? (
+            <p className="text-center text-sm text-slate-500">
+              当日暂无已评估的旅程步骤。
+            </p>
+          ) : null}
           {stages.map((stage, index) => {
             return (
               <div key={stage.seg} className="relative min-w-0">
@@ -1226,7 +1161,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
         </div>
 
         {/* 分隔条与社区入门报告一致；详情保留左目录、右内容布局。 */}
-        <div className="mt-6">
+        <div className="mt-6" hidden={!activeKey}>
           <button
             type="button"
             aria-expanded={detailExpanded}
@@ -1301,11 +1236,7 @@ const CiJourneyPanorama: React.FC<CiJourneyPanoramaProps> = ({
                     workflow={workflow}
                     highlightKey={highlightKey}
                   />
-                ) : (
-                  <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-4 py-5 text-center text-sm text-slate-400">
-                    点击左侧菜单或上方全景图卡片查看对应旅程段详情
-                  </div>
-                )}
+                ) : null}
               </div>
             </div>
           </div>

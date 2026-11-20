@@ -41,7 +41,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
   if (im.wasted_min) {
     metaParts.push(`关联机时 ${(im.wasted_min / 60).toFixed(1)} 机时`);
   }
-  metaParts.push(`责任方：${problem.owner}`);
+  metaParts.push(`责任方：${problem.responsible_party?.trim() || '—'}`);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">

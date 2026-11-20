@@ -6,7 +6,12 @@ import {
   fetchCiReportPage,
 } from './api';
 import type { CiRepoKey } from './types';
-import { fetchCiPainOverview, fetchCiPainTrends } from './overviewApi';
+import {
+  fetchCiPainOverview,
+  fetchCiPainTrends,
+  fetchCiRepoComparison,
+  type CiRepoComparisonFilters,
+} from './overviewApi';
 
 const queryOptions = {
   staleTime: 5 * 60 * 1000,
@@ -62,6 +67,15 @@ export const useCiPainTrendsQuery = (enabled = true) =>
     staleTime: 0,
     refetchOnMount: 'always',
     enabled,
+  });
+
+export const useCiRepoComparisonQuery = (filters: CiRepoComparisonFilters) =>
+  useQuery({
+    ...queryOptions,
+    queryKey: ['ci-data', 'overview', 'repo-comparison', filters],
+    queryFn: ({ signal }) => fetchCiRepoComparison(filters, signal),
+    keepPreviousData: true,
+    staleTime: 0,
   });
 
 export const useCiReportPageQuery = (

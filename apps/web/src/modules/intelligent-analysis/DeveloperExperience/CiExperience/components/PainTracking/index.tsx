@@ -770,7 +770,7 @@ export const CiPainTrackingProvider: React.FC<{
           loading={loading}
           size="middle"
           tableLayout="fixed"
-          scroll={{ x: 720 }}
+          scroll={{ x: 960 }}
           pagination={{
             pageSize: 10,
             hideOnSinglePage: true,
@@ -827,6 +827,16 @@ export const CiPainTrackingProvider: React.FC<{
                   label
                 );
               },
+            },
+            {
+              title: '责任方',
+              width: 120,
+              render: (_, problem) => problem.responsible_party?.trim() || '—',
+            },
+            {
+              title: '责任人',
+              width: 120,
+              render: (_, problem) => problem.responsible_person?.trim() || '—',
             },
             {
               title: '处理状态',

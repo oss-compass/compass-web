@@ -181,6 +181,9 @@ const CiMetricDetails: React.FC<CiMetricDetailsProps> = ({
                   <span>
                     {problem.impact.runs} 次执行 · {problem.impact.prs} 个 PR
                   </span>
+                  <span>
+                    责任方：{problem.responsible_party?.trim() || '—'}
+                  </span>
                 </div>
               </div>
             ))}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import OverviewPainProgress from '../../../../UserJourney/OverviewDashboard/OverviewPainProgress';
 import {
   TrendChart,
@@ -24,7 +24,9 @@ import {
 
 export { REPAIR_RATE_NOTE } from './statusPresentation';
 
-const CiIssueTable = dynamic(() => import('./CiIssueTable'));
+const CiIssueListModal = dynamic(() =>
+  import('./CiIssueTable').then((module) => module.CiIssueListModal)
+);
 
 const CiPainProgress: React.FC<{
   issues: CiTopIssue[];
@@ -161,18 +163,12 @@ const CiPainProgress: React.FC<{
           </>
         }
       />
-      <Modal
-        open={!!detail}
+      <CiIssueListModal
         title={detail?.title}
-        onCancel={() => setDetail(null)}
-        footer={null}
-        width={1080}
-        destroyOnClose
-      >
-        {detail && (
-          <CiIssueTable issues={detail.issues} reportHref={reportHref} />
-        )}
-      </Modal>
+        issues={detail?.issues}
+        reportHref={reportHref}
+        onClose={() => setDetail(null)}
+      />
     </>
   );
 };
