@@ -14,6 +14,7 @@ import useLabelStatus from '@modules/analyze/hooks/useLabelStatus';
 import { useRouter } from 'next/router';
 import { useHandleQueryParams } from '@modules/analyze/hooks/useHandleQueryParams';
 import DetailHeaderFilter from '@modules/analyze/components/MetricDetail/DetailHeaderFilter';
+import { parseMileage } from './queryParams';
 
 const MetricContributor = () => {
   const { t } = useTranslation();
@@ -25,10 +26,7 @@ const MetricContributor = () => {
   const [tab, setTab] = useState(queryCard || '1');
   const { timeStart, timeEnd } = useVerifyDateRange();
   const options = useMileageOptions();
-  const queryMileage = router.query?.mileage as string;
-  const defaultMileage = queryMileage
-    ? JSON.parse(queryMileage)
-    : ['core', 'regular'];
+  const defaultMileage = parseMileage(router.query?.mileage);
   const [mileage, setMileage] = useState<string[]>(defaultMileage);
   const [isBot, setIsBot] = useState(false);
   const [repoList, setRepoList] = useState([]);
