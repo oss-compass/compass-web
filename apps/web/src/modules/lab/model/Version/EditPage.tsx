@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import gqlClient from '@common/gqlClient';
 import { toast } from 'react-hot-toast';
@@ -9,6 +9,7 @@ import Form from '../Form';
 import Link from 'next/link';
 import { formState, actions } from '../Form/state';
 import { useLabModelVersion, useLabModelDetail } from '../hooks';
+import { ModelVersionQueryBoundary } from '../Provider/ModelVersionProvider';
 
 const ModelVersionEdit = () => {
   const { t } = useTranslation();
@@ -16,25 +17,46 @@ const ModelVersionEdit = () => {
   const modelId = Number(router.query.model);
   const versionId = Number(router.query.version);
 
-  const { isLoading, data: modelDetail } = useLabModelDetail();
+  const {
+    isLoading,
+    data: modelDetail,
+    error: modelError,
+  } = useLabModelDetail();
+  const {
+    isLoading: vLoading,
+    data: modelVersion,
+    error: versionError,
+  } = useLabModelVersion();
+  const initialized = useRef(false);
+  const [initializedTarget, setInitializedTarget] = useState<string | null>(
+    null
+  );
+  const target = `${modelId}/${versionId}`;
 
   useEffect(() => {
+    // Query refreshes must not reset an in-progress edit of the same version.
     actions.resetForm();
+    initialized.current = false;
+    setInitializedTarget(null);
+  }, [modelId, versionId]);
 
-    if (modelDetail?.labModelDetail) {
+  useEffect(() => {
+    // Initialize both halves together, regardless of which request finishes first.
+    if (
+      !initialized.current &&
+      modelId &&
+      versionId &&
+      !modelError &&
+      !versionError &&
+      modelDetail?.labModelDetail?.id &&
+      modelVersion?.labModelVersion?.id
+    ) {
       const { name, isPublic, description } = modelDetail.labModelDetail;
       formState.name = name;
       formState.description = description;
       // formState.dimension = dimension;
       // formState.isGeneral = isGeneral;
       formState.isPublic = isPublic;
-    }
-  }, [modelDetail]);
-
-  const { isLoading: vLoading, data: modelVersion } = useLabModelVersion();
-
-  useEffect(() => {
-    if (modelVersion?.labModelVersion) {
       const { algorithm, metrics, version, isScore } =
         modelVersion.labModelVersion;
       formState.version = version;
@@ -60,8 +82,18 @@ const ModelVersionEdit = () => {
           category: i.category,
         };
       });
+      initialized.current = true;
+      setInitializedTarget(target);
     }
-  }, [modelVersion]);
+  }, [
+    modelId,
+    versionId,
+    target,
+    modelDetail,
+    modelVersion,
+    modelError,
+    versionError,
+  ]);
 
   const updateMutation = useUpdateLabModelVersionMutation(gqlClient, {
     onSuccess(res) {
@@ -95,27 +127,36 @@ const ModelVersionEdit = () => {
           </div>
         </div>
 
-        <Form
+        <ModelVersionQueryBoundary
           loading={isLoading || vLoading}
-          formType={'VersionEdit'}
-          submitLoading={updateMutation.isLoading}
-          onSubmit={() => {
-            const { version, isScore, metricSet, algorithm } = formState;
-            updateMutation.mutate({
-              modelId,
-              versionId,
-              version,
-              algorithm,
-              isScore,
-              metrics: metricSet.map((i) => ({
-                id: i.metricId,
+          failed={Boolean(modelError || versionError)}
+          hasData={Boolean(
+            modelDetail?.labModelDetail?.id && modelVersion?.labModelVersion?.id
+          )}
+        >
+          <Form
+            loading={initializedTarget !== target}
+            formType={'VersionEdit'}
+            submitLoading={updateMutation.isLoading}
+            onSubmit={() => {
+              if (initializedTarget !== target) return;
+              const { version, isScore, metricSet, algorithm } = formState;
+              updateMutation.mutate({
+                modelId,
                 versionId,
-                threshold: i.threshold,
-                weight: i.weight,
-              })),
-            });
-          }}
-        />
+                version,
+                algorithm,
+                isScore,
+                metrics: metricSet.map((i) => ({
+                  id: i.metricId,
+                  versionId,
+                  threshold: i.threshold,
+                  weight: i.weight,
+                })),
+              });
+            }}
+          />
+        </ModelVersionQueryBoundary>
       </Center>
     </div>
   );
