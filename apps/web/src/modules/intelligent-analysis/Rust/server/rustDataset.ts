@@ -509,10 +509,15 @@ export async function getRustLeaderboardPage(
 
 export function parseRegionList(value: unknown): string[] {
   if (!value) return [];
-  return String(value)
-    .split(',')
-    .map((region) => normalizeCountry(region))
-    .filter(Boolean);
+  return (
+    String(value)
+      .split(',')
+      .map((region) => normalizeText(region))
+      // 先剔除空项：normalizeCountry 会把空串归一成「未知」，
+      // 若放在归一之后过滤，空项就会变成一次真实的「未知」地区筛选。
+      .filter(Boolean)
+      .map((region) => normalizeCountry(region))
+  );
 }
 
 export function isRustLeaderboardType(
