@@ -4,6 +4,7 @@ import {
   getNameSpace,
   getRepoName,
   getLastPathSegment,
+  getHubUrl,
   getRepoOrigin,
   getRepoPath,
   getRepoUrlByName,
@@ -13,6 +14,33 @@ import {
 } from './url';
 
 describe('utils url ', () => {
+  it('builds an AtomGit profile URL', () => {
+    expect(getHubUrl('atomgit', 'alice')).toEqual('https://atomgit.com/alice');
+  });
+
+  it.each(['atomgit:owner/repo', 'atomgit.com/owner/repo'])(
+    'recognizes the AtomGit origin and path in %s',
+    (repo) => {
+      expect(getRepoOrigin(repo, 'github')).toEqual('atomgit');
+      expect(getRepoPath(repo)).toEqual('owner/repo');
+    }
+  );
+
+  it.each([
+    'atomgit:owner/repo',
+    'atomgit.com/owner/repo',
+    'atomgit.com/owner/repo/',
+    'https://atomgit.com/owner/repo/',
+  ])('builds an AtomGit repository URL from %s', (repo) => {
+    expect(getRepoUrlByName(repo)).toEqual('https://atomgit.com/owner/repo');
+  });
+
+  it('supports AtomGit as the fallback for a bare repository path', () => {
+    expect(getRepoUrlByName('owner/repo', 'atomgit')).toEqual(
+      'https://atomgit.com/owner/repo'
+    );
+  });
+
   it('getPathname', () => {
     const testCases = [
       {

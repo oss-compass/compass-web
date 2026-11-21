@@ -142,6 +142,8 @@ export const getHubUrl = (origin, name) => {
       return 'https://gitee.com/' + name;
     case 'gitcode':
       return 'https://gitcode.com/' + name;
+    case 'atomgit':
+      return 'https://atomgit.com/' + name;
     // return <SiGitee color="#c71c27" className="mr-0" />;
     default:
       return null;
@@ -157,7 +159,7 @@ export const getRepoOrigin = (repo?: string, fallbackOrigin = 'github') => {
   }
 
   const matchedOrigin = repo.match(
-    /^(github|gitee|gitcode)(?::|\.com\/)/i
+    /^(github|gitee|gitcode|atomgit)(?::|\.com\/)/i
   )?.[1];
   return matchedOrigin?.toLowerCase() || fallbackOrigin;
 };
@@ -170,8 +172,8 @@ export const getRepoPath = (repo?: string) => {
   }
 
   return repo
-    .replace(/^(github|gitee|gitcode):/i, '')
-    .replace(/^(github|gitee|gitcode)\.com\//i, '')
+    .replace(/^(github|gitee|gitcode|atomgit):/i, '')
+    .replace(/^(github|gitee|gitcode|atomgit)\.com\//i, '')
     .replace(/^\/+/, '');
 };
 
@@ -182,7 +184,7 @@ export const getRepoUrlByName = (repo?: string, fallbackOrigin = 'github') => {
     return removeTrailingSlash(repo);
   }
 
-  if (/^(github|gitee|gitcode)\.com\//i.test(repo)) {
+  if (/^(github|gitee|gitcode|atomgit)\.com\//i.test(repo)) {
     return fillHttps(repo);
   }
 
