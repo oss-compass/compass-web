@@ -5,6 +5,8 @@ import {
 } from '@modules/intelligent-analysis/server/intelligentAnalysisNewDatasetCache';
 import { isSafePathSegment } from '@modules/intelligent-analysis/server/pathSafety';
 
+import { parsePagination } from '../../pagination';
+
 function parseCsvList(value: unknown): string[] {
   if (!value) return [];
   return String(value)
@@ -112,8 +114,7 @@ export default async function handler(
   const mode: 'backup' | 'detail' =
     req.query.mode === 'detail' ? 'detail' : 'backup';
 
-  const page = Math.max(1, Number(req.query.page || 1));
-  const pageSize = Math.min(100, Math.max(1, Number(req.query.pageSize || 10)));
+  const { page, pageSize } = parsePagination(req.query);
 
   const q = normalizeSearchText(req.query.q);
   const regions = parseCsvList(req.query.regions);
