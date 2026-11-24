@@ -9,6 +9,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   CiPainTrackingButton,
   CiPainTrackingProvider,
@@ -19,6 +20,8 @@ import { fetchTrackings, saveTracking, TrackingApiError } from './api';
 import { trackingProblemKey } from './model';
 import type { TrackingRecord } from './model';
 import type { CiProblem } from '../../types';
+import { fetchRunRuleReviews, savePainRunReview } from '../../ruleReviews';
+import { CiRuleReviewProvider } from '../RuleReviews';
 import { formatTrackingTime } from '../../../IssueContribution/components/PainTrackingModal/utils';
 
 jest.mock('./api', () => ({
@@ -29,6 +32,11 @@ jest.mock('./api', () => ({
       super(message);
     }
   },
+}));
+jest.mock('../../ruleReviews', () => ({
+  ...jest.requireActual('../../ruleReviews'),
+  fetchRunRuleReviews: jest.fn(),
+  savePainRunReview: jest.fn(),
 }));
 jest.mock('react-hot-toast', () => ({
   __esModule: true,
@@ -80,14 +88,14 @@ const confirmed = {
 const mockedFetch = fetchTrackings as jest.Mock;
 const mockedSave = saveTracking as jest.Mock;
 
-const page = (day = scope.day) => (
+const page = (day = scope.day, problems = [problem]) => (
   <CiPainTrackingProvider
     key={day}
     scope={{ ...scope, day }}
     repo="runtime"
-    problems={[problem]}
+    problems={problems}
   >
-    <CiPainTrackingButton problem={problem} />
+    <CiPainTrackingButton problem={problems[0]} />
   </CiPainTrackingProvider>
 );
 
@@ -109,6 +117,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockedSave.mockReset();
   localStorage.clear();
   mockedFetch.mockResolvedValue({ items: [] });
 });
@@ -134,10 +143,131 @@ const enterEvidence = () => {
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
-  fireEvent.change(screen.getByLabelText('判断依据或修复说明'), {
+  fireEvent.change(screen.getByRole('textbox', { name: /修复说明/ }), {
     target: { value: '已核实执行日志' },
   });
 };
+
+it('keeps the report, fields, and run reviews separate and focuses a missing submitter', async () => {
+  const runProblem = {
+    ...problem,
+    runs: [
+      {
+        n: 1,
+        id: '101',
+        pr: '1',
+        t: '',
+        stage: 'Compile',
+        job: 'build',
+        msg: '执行失败',
+      },
+    ],
+  };
+  jest.mocked(fetchRunRuleReviews).mockResolvedValue({
+    items: [
+      {
+        instance_id: '1'.repeat(64),
+        problem_key: trackingProblemKey(runProblem),
+        title: runProblem.title,
+        dim: runProblem.dim,
+        kb: runProblem.kb,
+        run: runProblem.runs[0],
+        rule_id: 'compile',
+        rule_status: 'matched',
+        rule: { rule_id: 'compile', version: 'v1' },
+        status: 'pending',
+        decision: null,
+        history: [],
+        evidence: {},
+        revision: 0,
+        evidence_revision: 'a'.repeat(64),
+      },
+    ],
+  });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { cacheTime: 0 } },
+  });
+  render(
+    <QueryClientProvider client={queryClient}>
+      <CiRuleReviewProvider repo={scope.repo} day={scope.day}>
+        {page(scope.day, [runProblem])}
+      </CiRuleReviewProvider>
+    </QueryClientProvider>
+  );
+  await openModal();
+
+  const dialog = within(screen.getByRole('dialog', { name: '痛点管理' }));
+  const information = dialog.getByRole('region', { name: '痛点信息' });
+  const handling = dialog.getByRole('region', { name: '处理信息' });
+  const executions = dialog.getByRole('region', { name: '执行记录' });
+  expect(within(information).getByText(problem.title)).toBeInTheDocument();
+  expect(within(information).queryByRole('textbox')).not.toBeInTheDocument();
+  const operator = within(handling).getByRole('textbox', { name: '提交人' });
+  expect(operator).toBeRequired();
+  expect(within(executions).queryByLabelText('提交人')).not.toBeInTheDocument();
+  const reviewPrompt = await within(executions).findByText(
+    '待确认：请逐条审核判据'
+  );
+  expect(
+    handling.compareDocumentPosition(reviewPrompt) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  fireEvent.click(
+    within(executions).getByRole('button', { name: '执行记录 #1：判据正确' })
+  );
+  expect(operator).toHaveFocus();
+  expect(operator).toHaveAccessibleDescription('请填写提交人');
+  expect(savePainRunReview).not.toHaveBeenCalled();
+
+  const section = within(handling).getByRole('region', {
+    name: '共性问题判断',
+  });
+  expect(
+    section.compareDocumentPosition(operator) & Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+  fireEvent.click(within(section).getByText('共性问题参考'));
+  expect(within(section).getByText('暂无已知共性问题')).toBeInTheDocument();
+  const yes = within(section).getByRole('radio', { name: '是' });
+  const no = within(section).getByRole('radio', { name: '否' });
+  expect(yes).not.toBeChecked();
+  expect(no).not.toBeChecked();
+
+  fireEvent.click(yes);
+  expect(yes).toBeChecked();
+  expect(within(section).getByText('报告暂无可选类型')).toBeInTheDocument();
+  fireEvent.click(no);
+  expect(no).toBeChecked();
+  expect(within(section).queryByText('共性问题类型')).not.toBeInTheDocument();
+  expect(mockedSave).not.toHaveBeenCalled();
+});
+
+it('prefills the judgment and lists types supplied by the report', async () => {
+  render(
+    page(scope.day, [
+      { ...problem, is_common_issue: true, common_issue_type: '环境一致性' },
+      {
+        ...problem,
+        title: '日志缺少统一格式',
+        common_issue_type: '日志规范',
+      },
+    ])
+  );
+  await openModal();
+
+  const section = screen.getByRole('region', { name: '共性问题判断' });
+  expect(within(section).getByRole('radio', { name: '是' })).toBeChecked();
+  const reportType = within(section).getByRole('radio', { name: '环境一致性' });
+  const alternativeType = within(section).getByRole('radio', {
+    name: '日志规范',
+  });
+  expect(reportType).toBeChecked();
+  fireEvent.click(within(section).getByText('共性问题参考'));
+  expect(
+    within(section).getByText('日志规范 · 日志缺少统一格式')
+  ).toBeInTheDocument();
+  fireEvent.click(alternativeType);
+  expect(alternativeType).toBeChecked();
+});
 
 it('confirms, manually fixes, shares status across entries and leaves rerun disabled', async () => {
   mockedSave.mockResolvedValueOnce({ data: confirmed }).mockResolvedValueOnce({
@@ -179,7 +309,9 @@ it('confirms, manually fixes, shares status across entries and leaves rerun disa
   expect(toast.success).toHaveBeenCalledWith(
     '已确认有效问题，进入「已确认待修复」'
   );
-  expect(screen.getAllByText('已确认待修复').length).toBeGreaterThanOrEqual(3);
+  expect(
+    within(screen.getByRole('dialog')).getByText('已确认待修复')
+  ).toBeInTheDocument();
   expect(screen.getByLabelText('待确认时间')).toHaveTextContent(
     formatTrackingTime(confirmed.history[0].at)
   );

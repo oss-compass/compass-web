@@ -26,7 +26,7 @@ export const NON_TERMINAL_RERUN_STATUSES = new Set([
   'running',
 ]);
 
-const DEFAULT_RERUN_OS = 'debian-13';
+const DEFAULT_RERUN_OS = 'ubuntu-24.04';
 
 const getDefaultRerunOs = (osTags: unknown, busyOs: Iterable<string> = []) => {
   const options = (Array.isArray(osTags) ? osTags : [])
@@ -721,8 +721,7 @@ const RepoRerunInfoCard: React.FC<RepoRerunInfoCardProps> = ({
                           />
                         </div>
                         <div className="mt-2 text-xs leading-5 text-[var(--overview-orangeDark)]">
-                          默认选择 debian-13，历史报告同样基于 debian-13
-                          生成。如需复现历史报告中的痛点，请保持该选项。
+                          {`默认选择 ${DEFAULT_RERUN_OS}，如需复现历史报告中的痛点，请和历史报告操作系统保持一致。`}
                         </div>
                       </div>
                     ) : null}

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
-import { Form, Modal, Steps } from 'antd';
+import { Button, Form, Modal, Steps } from 'antd';
 
 import {
   fetchOverviewCommonIssues,
@@ -233,6 +233,7 @@ const PainLevelConfirmModal: React.FC<Props> = ({
   const currentStepIndex = isCurrentNonProjectIssue
     ? 0
     : Math.max(stepSequence.indexOf(displayedStepStatus), 0);
+  const previousStep = stepSequence[currentStepIndex - 1];
 
   const openRollback = useCallback((target: PainStatus) => {
     setRollbackTarget(target);
@@ -440,21 +441,35 @@ const PainLevelConfirmModal: React.FC<Props> = ({
         },
       }}
       destroyOnHidden
-      footer={
-        useCustomFooter ? (
-          <ModalFooter
-            showHistory={showHistory}
-            setShowHistory={setShowHistory}
-            isReviewingHistoryStep={isReviewingHistoryStep}
-            onCancel={onCancel}
-            isCurrentNonProjectIssue={isCurrentNonProjectIssue}
-            currentStatus={currentStatus}
-            showRetestDecision={showRetestDecision}
-            rollbackTargets={rollbackTargets}
-            onRollback={openRollback}
-          />
-        ) : undefined
-      }
+      footer={(defaultFooter) => (
+        <>
+          {!showHistory &&
+            !isReviewingHistoryStep &&
+            previousStep !== undefined && (
+              <Button
+                disabled={submitting}
+                onClick={() => setSelectedStep(previousStep)}
+              >
+                上一步
+              </Button>
+            )}
+          {useCustomFooter ? (
+            <ModalFooter
+              showHistory={showHistory}
+              setShowHistory={setShowHistory}
+              isReviewingHistoryStep={isReviewingHistoryStep}
+              onCancel={onCancel}
+              isCurrentNonProjectIssue={isCurrentNonProjectIssue}
+              currentStatus={currentStatus}
+              showRetestDecision={showRetestDecision}
+              rollbackTargets={rollbackTargets}
+              onRollback={openRollback}
+            />
+          ) : (
+            defaultFooter
+          )}
+        </>
+      )}
     >
       <div className="space-y-6">
         <div className="rounded-lg bg-slate-50 p-4">

@@ -4,17 +4,19 @@ import {
   Button,
   Checkbox,
   Empty,
+  Grid,
   Input,
   Modal,
   Progress,
   Table,
   Tooltip,
 } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import toast from 'react-hot-toast';
 import type { CiProblem, CiRun } from '../../types';
 import type { TrackingRecord, TrackingScope } from './model';
 import { trackingProblemKey } from './model';
+import PainModalSection from './PainModalSection';
 import RunBatchReview from './RunBatchReview';
 import { RunRuleCell, RunLogCell, RunDecisionCell } from './RunReviewCells';
 import { prURL, runURL } from '../../helpers';
@@ -38,7 +40,6 @@ type Props = {
   problem: CiProblem;
   scope: TrackingScope;
   operator: string;
-  operatorField: React.ReactNode;
   busy: boolean;
   onBusy: (value: boolean) => void;
   onOperatorInvalid: (message: string) => void;
@@ -46,11 +47,68 @@ type Props = {
   onTracking: (record: TrackingRecord) => void;
 };
 
+const RunReviewProgress: React.FC<{
+  completed: number;
+  available: number;
+  unavailable: number;
+}> = ({ completed, available, unavailable }) => {
+  if (available === 0) {
+    return <Alert type="info" showIcon message="该报告暂无可审核的判据" />;
+  }
+  const done = completed === available;
+  const title = done
+    ? unavailable > 0
+      ? '已审核全部可用判据'
+      : '已完成全部判据审核'
+    : '待确认：请逐条审核判据';
+  return (
+    <div
+      className={`rounded-lg border px-3.5 py-2.5 ${
+        done
+          ? 'border-emerald-100 bg-emerald-50/60'
+          : 'border-amber-100 bg-amber-50/60'
+      }`}
+    >
+      <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
+        <div className="flex items-center gap-2">
+          {done ? (
+            <CheckCircleOutlined className="text-emerald-600" />
+          ) : (
+            <InfoCircleOutlined className="text-amber-600" />
+          )}
+          <span>{title}</span>
+        </div>
+        <span className="shrink-0 tabular-nums">
+          {completed}/{available}
+        </span>
+      </div>
+      {!done && (
+        <p className="mt-1 text-xs leading-5 text-slate-600">
+          判据由 AI
+          生成。请核对日志，在「判据审核」列选择结论，有误时需填写原因。
+        </p>
+      )}
+      {unavailable > 0 && (
+        <p className="mt-1 text-xs leading-5 text-slate-600">
+          另有 {unavailable} 条执行记录暂无审核数据。
+        </p>
+      )}
+      <Progress
+        aria-label="判据审核完成进度"
+        percent={Math.round((completed / available) * 100)}
+        showInfo={false}
+        className="!mb-0 mt-2"
+        strokeColor={done ? '#059669' : '#f59e0b'}
+        size={['100%', 6]}
+      />
+    </div>
+  );
+};
+
 const RunReviewTable: React.FC<Props> = ({
   problem,
   scope,
   operator,
-  operatorField,
   busy,
   onBusy,
   onOperatorInvalid,
@@ -59,6 +117,7 @@ const RunReviewTable: React.FC<Props> = ({
 }) => {
   const repositoryUrl = useCiRepositoryUrl();
   const context = useCiRuleReviews();
+  const { md } = Grid.useBreakpoint();
   const [editing, setEditing] = useState<{
     key: string;
     action: CiRunReviewAction;
@@ -91,9 +150,13 @@ const RunReviewTable: React.FC<Props> = ({
     )[occurrence];
     return { key: review?.instance_id || `${key}:${index}`, run, review };
   });
-  const completed = reviews.filter(
-    (row) => row.status === 'confirmed' || row.status === 'incorrect'
+  const reviewableRows = rows.filter((row) => row.review);
+  const completed = reviewableRows.filter(
+    ({ review }) =>
+      review?.status === 'confirmed' || review?.status === 'incorrect'
   ).length;
+  const canReview = context && !context.error && !context.loading;
+  const missingReviewLabel = canReview ? '暂无审核数据' : '—';
   const selectedReviews = rows
     .filter((row) => selectedIds.includes(row.key))
     .flatMap((row) => (row.review ? [row.review] : []));
@@ -179,51 +242,33 @@ const RunReviewTable: React.FC<Props> = ({
     setReason('');
   };
   return (
-    <section className="space-y-4" aria-label="逐条判据审核">
-      <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-        <span>涉及执行记录</span>
-        <span className="font-normal text-slate-400">共 {rows.length} 条</span>
-      </div>
-      <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <Tooltip title="判据由 AI 生成，请核对判据内容；如有误，请填写原因及建议修正内容。">
-              <InfoCircleOutlined className="text-amber-500" />
-            </Tooltip>
-            {rows.length > 0 && completed === rows.length
-              ? '已完成全部判据审核'
-              : '待确认：请逐条审核判据'}
-          </div>
-          <span className="shrink-0 text-sm font-semibold text-amber-600">
-            {completed}/{rows.length}
-          </span>
-        </div>
-        <Progress
-          aria-label="判据审核完成进度"
-          percent={
-            rows.length ? Math.round((completed / rows.length) * 100) : 0
-          }
-          showInfo={false}
-          className="!mb-0 mt-2"
-          strokeColor="#f59e0b"
-          size={['100%', 6]}
+    <PainModalSection title="执行记录" count={rows.length}>
+      {canReview && rows.length > 0 && (
+        <RunReviewProgress
+          completed={completed}
+          available={reviewableRows.length}
+          unavailable={rows.length - reviewableRows.length}
         />
-      </div>
-      {context?.error || !context ? (
+      )}
+      {(!context || context.error) && (
         <Alert
           type="error"
           showIcon
           message="执行记录判据与审核状态读取失败"
-          action={<Button onClick={() => void context?.retry()}>重试</Button>}
+          action={
+            context && (
+              <Button onClick={() => void context.retry()}>重试</Button>
+            )
+          }
         />
-      ) : null}
+      )}
       {error ? <Alert type="error" showIcon message={error} /> : null}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <p className=">md:hidden text-xs text-slate-500">
+        横向滚动可查看判据和审核操作。
+      </p>
+      <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
         <RunBatchReview
           scope={scope}
-          operatorField={operatorField}
-          completed={completed}
-          total={rows.length}
           problemKey={trackingProblemKey(problem)}
           selected={selectedReviews}
           pending={pendingReviews}
@@ -257,27 +302,23 @@ const RunReviewTable: React.FC<Props> = ({
             fixed: 'right',
             columnTitle: (
               <Tooltip
-                title={`全选所有页，共 ${
-                  rows.filter((row) => row.review).length
-                } 条`}
+                title={`全选各页可审核记录，共 ${reviewableRows.length} 条`}
               >
                 <Checkbox
                   aria-label="选择全部执行记录"
-                  disabled={busy || Boolean(context?.error)}
+                  disabled={busy || reviewableRows.length === 0}
                   checked={
                     selectedReviews.length > 0 &&
-                    selectedReviews.length ===
-                      rows.filter((row) => row.review).length
+                    selectedReviews.length === reviewableRows.length
                   }
                   indeterminate={
                     selectedReviews.length > 0 &&
-                    selectedReviews.length <
-                      rows.filter((row) => row.review).length
+                    selectedReviews.length < reviewableRows.length
                   }
                   onChange={(event) =>
                     setSelectedIds(
                       event.target.checked
-                        ? rows.filter((row) => row.review).map((row) => row.key)
+                        ? reviewableRows.map((row) => row.key)
                         : []
                     )
                   }
@@ -460,14 +501,18 @@ const RunReviewTable: React.FC<Props> = ({
               render: (_, row) => (
                 <span
                   className={`inline-flex rounded-md border px-2 py-0.5 text-[11px] leading-4 ${
-                    row.review?.status === 'confirmed'
+                    !row.review
+                      ? 'border-slate-200 bg-slate-50 text-slate-500'
+                      : row.review.status === 'confirmed'
                       ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                      : row.review?.status === 'incorrect'
+                      : row.review.status === 'incorrect'
                       ? 'border-rose-200 bg-rose-50 text-rose-600'
                       : 'border-amber-200 bg-amber-50 text-amber-600'
                   }`}
                 >
-                  {row.review ? runReviewLabels[row.review.status] : '待确认'}
+                  {row.review
+                    ? runReviewLabels[row.review.status]
+                    : missingReviewLabel}
                 </span>
               ),
             },
@@ -475,12 +520,16 @@ const RunReviewTable: React.FC<Props> = ({
               title: (
                 <span className="flex items-center gap-1.5">
                   <span>判据审核</span>
-                  <span className="rounded-full border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-amber-600">
-                    必填
-                  </span>
+                  {canReview && completed < reviewableRows.length && (
+                    <span className="text-[11px] font-normal text-rose-600">
+                      必审
+                    </span>
+                  )}
                 </span>
               ),
               width: 174,
+              className: 'ci-run-review-action',
+              fixed: md ? 'right' : undefined,
               render: (_, row) => (
                 <RunDecisionCell
                   review={row.review}
@@ -509,7 +558,7 @@ const RunReviewTable: React.FC<Props> = ({
         className="ci-pain-invalid-modal"
         width={480}
         centered
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         maskClosable={!busy}
         closable={!busy}
@@ -527,7 +576,10 @@ const RunReviewTable: React.FC<Props> = ({
             请说明判据有误的原因及建议修正内容，提交后保留在审核记录中。
           </p>
           <label className="block text-sm font-medium text-slate-700">
-            原因<span className="ml-1 text-rose-500">*</span>
+            原因
+            <span className="ml-1 text-rose-600" aria-hidden="true">
+              *
+            </span>
             <Input.TextArea
               aria-label={`执行记录 #${editing?.runNumber} 原因`}
               placeholder="请说明判据有误的原因及建议修正内容"
@@ -536,7 +588,8 @@ const RunReviewTable: React.FC<Props> = ({
               rows={4}
               maxLength={500}
               disabled={busy}
-              className="mt-2 !rounded-[10px]"
+              required
+              className="mt-2"
             />
             <span className="mt-2 block text-right text-xs font-normal leading-5 text-slate-400">
               {reason.length} / 500
@@ -579,12 +632,21 @@ const RunReviewTable: React.FC<Props> = ({
         .ci-run-review-table .ant-table-thead > tr > th::before {
           display: none !important;
         }
+        .ci-run-review-table .ant-table-thead > tr > th.ci-run-review-action {
+          border-left: 1px solid #e2e8f0;
+          background: #eff6ff;
+          color: #334155;
+        }
         .ci-run-review-table .ant-table-tbody > tr > td {
           padding: 10px 12px;
           vertical-align: top;
           color: #475569;
           font-size: 12px;
           border-bottom: 1px solid #f1f5f9;
+        }
+        .ci-run-review-table .ant-table-tbody > tr > td.ci-run-review-action {
+          border-left: 1px solid #e2e8f0;
+          background: #f8fbff;
         }
         .ci-run-review-table .ant-table-tbody > tr.ant-table-row:hover > td {
           background: #f8fafc;
@@ -603,7 +665,7 @@ const RunReviewTable: React.FC<Props> = ({
           margin: 12px !important;
         }
       `}</style>
-    </section>
+    </PainModalSection>
   );
 };
 export default RunReviewTable;

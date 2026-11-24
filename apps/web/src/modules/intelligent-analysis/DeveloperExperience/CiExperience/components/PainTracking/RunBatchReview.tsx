@@ -26,9 +26,6 @@ type Props = {
   onBusy: (value: boolean) => void;
   onTracking: (record: TrackingRecord) => void;
   onRefresh: () => Promise<unknown>;
-  operatorField?: React.ReactNode;
-  completed?: number;
-  total?: number;
 };
 
 const RunBatchReview: React.FC<Props> = (props) => {
@@ -130,16 +127,11 @@ const RunBatchReview: React.FC<Props> = (props) => {
         <span
           className="mr-auto text-xs text-slate-500"
           role="status"
-          aria-label="判据审核进度"
+          aria-label="批量选择"
           aria-live="polite"
         >
-          已审核{' '}
-          <span>
-            {props.completed || 0}/{props.total ?? props.pending.length}
-          </span>{' '}
-          项 · 已选 {props.selected.length} 项
+          已选 {props.selected.length} 条
         </span>
-        {props.operatorField}
         <div className="flex h-7 items-center gap-2">
           <Button
             size="small"
@@ -221,7 +213,7 @@ const RunBatchReview: React.FC<Props> = (props) => {
         className="ci-pain-invalid-modal"
         width={520}
         centered
-        destroyOnClose
+        destroyOnHidden
         footer={null}
         closable={!props.busy}
         maskClosable={!props.busy}
@@ -236,7 +228,10 @@ const RunBatchReview: React.FC<Props> = (props) => {
           <p className="text-sm text-slate-600">提交人：{props.operator}</p>
           {target?.action !== 'confirmed' ? (
             <label className="block text-sm font-medium text-slate-700">
-              原因<span className="ml-1 text-rose-500">*</span>
+              原因
+              <span className="ml-1 text-rose-600" aria-hidden="true">
+                *
+              </span>
               <Input.TextArea
                 aria-label="批量审核原因"
                 placeholder="请说明判据有误的原因及建议修正内容"
@@ -245,7 +240,8 @@ const RunBatchReview: React.FC<Props> = (props) => {
                 onChange={(event) => setReason(event.target.value)}
                 maxLength={500}
                 rows={4}
-                className="mt-2 !rounded-[10px]"
+                required
+                className="mt-2"
               />
               <span className="mt-2 block text-right text-xs font-normal leading-5 text-slate-400">
                 {reason.length} / 500
@@ -269,9 +265,6 @@ const RunBatchReview: React.FC<Props> = (props) => {
         </div>
       </Modal>
       <style jsx global>{`
-        .ci-run-bulk-button.ant-btn {
-          border-radius: 10px !important;
-        }
         .ci-run-bulk-button.ant-btn:disabled {
           border-color: #e2e8f0 !important;
           background: #f8fafc !important;

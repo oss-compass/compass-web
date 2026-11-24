@@ -88,27 +88,27 @@ function Harness({ inputProblem = problem }: { inputProblem?: CiProblem }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   return (
-    <RunReviewTable
-      problem={inputProblem}
-      scope={scope}
-      operator={operator}
-      operatorField={
-        <label>
-          提交人
-          <input
-            aria-label="提交人"
-            value={operator}
-            onChange={(event) => setOperator(event.target.value)}
-          />
-          <span>{error}</span>
-        </label>
-      }
-      busy={busy}
-      onBusy={setBusy}
-      onOperatorInvalid={setError}
-      rememberOperator={(value) => value.trim()}
-      onTracking={onTracking}
-    />
+    <>
+      <label>
+        提交人
+        <input
+          aria-label="提交人"
+          value={operator}
+          onChange={(event) => setOperator(event.target.value)}
+        />
+        <span>{error}</span>
+      </label>
+      <RunReviewTable
+        problem={inputProblem}
+        scope={scope}
+        operator={operator}
+        busy={busy}
+        onBusy={setBusy}
+        onOperatorInvalid={setError}
+        rememberOperator={(value) => value.trim()}
+        onTracking={onTracking}
+      />
+    </>
   );
 }
 function page(inputProblem = problem) {
@@ -177,9 +177,9 @@ test('keeps selection across pages and submits only the two selected runs', asyn
   fireEvent.click(
     await screen.findByRole('checkbox', { name: '选择执行记录 #11' })
   );
-  expect(
-    screen.getByRole('status', { name: '判据审核进度' })
-  ).toHaveTextContent('已选 2 项');
+  expect(screen.getByRole('status', { name: '批量选择' })).toHaveTextContent(
+    '已选 2 条'
+  );
   fireEvent.click(screen.getByRole('button', { name: '批量确认判据正确' }));
   fireEvent.click(await screen.findByRole('button', { name: '确认提交 2 条' }));
   await screen.findByText('已保存 2/2 条');
@@ -217,9 +217,9 @@ test('batch non-effective decisions require a reason and preserve failed selecti
   });
   fireEvent.click(confirm);
   await screen.findByText('已保存 1/2 条，请查看失败明细');
-  expect(
-    screen.getByRole('status', { name: '判据审核进度' })
-  ).toHaveTextContent('已选 1 项');
+  expect(screen.getByRole('status', { name: '批量选择' })).toHaveTextContent(
+    '已选 1 条'
+  );
   expect(
     screen.getByRole('checkbox', { name: '选择执行记录 #2' })
   ).toBeChecked();
@@ -275,6 +275,20 @@ test('reviews a single run in the pain table using the shared submitter', async 
   expect(
     screen.queryByRole('link', { name: '进入审核' })
   ).not.toBeInTheDocument();
+});
+
+test('keeps old execution records visible when no review data is available', async () => {
+  fetchRows.mockResolvedValue({ items: [] });
+  page();
+  const records = screen.getByRole('region', { name: '执行记录' });
+  expect(
+    await within(records).findByText('该报告暂无可审核的判据')
+  ).toBeVisible();
+  expect(within(records).getByText('error 1')).toBeVisible();
+  expect(within(records).queryByText('必审')).not.toBeInTheDocument();
+  expect(
+    within(records).getByRole('button', { name: '执行记录 #1：判据正确' })
+  ).toBeDisabled();
 });
 
 test('non-effective decisions require a reason in the confirmation modal and update the shared pain state', async () => {

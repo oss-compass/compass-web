@@ -1,15 +1,7 @@
 import {
-  CheckCircleOutlined,
-  CheckOutlined,
-  ClockCircleOutlined,
-  CloseOutlined,
   DownOutlined,
-  ExclamationCircleFilled,
   HistoryOutlined,
   ReloadOutlined,
-  StopOutlined,
-  ToolOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import PainTrackingStatusButton from '../../../components/PainTrackingStatusButton';
 import { getTrackingStatusMeta } from '../../../IssueContribution/components/PainTrackingModal/constants';
@@ -18,6 +10,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react';
@@ -32,10 +25,11 @@ import {
   Steps,
   Table,
   Tag,
-  Tooltip,
+  type InputRef,
 } from 'antd';
 import type { CiDimKey, CiPri, CiProblem, CiRepoKey } from '../../types';
 import { DIM_NAME } from '../../helpers';
+import PainHandlingPanel, { OperatorField } from './PainHandlingPanel';
 import RunReviewTable from './RunReviewTable';
 import { useTrackingOperator } from '../../../IssueContribution/components/PainTrackingModal/hooks';
 import {
@@ -65,7 +59,7 @@ export const useCiPainListNavigation = () =>
 const CI_PAIN_MODAL_BUTTON_STYLE: React.CSSProperties = {
   height: 36,
   paddingInline: 20,
-  borderRadius: 10,
+  borderRadius: 8,
   boxShadow: 'none',
 };
 
@@ -145,7 +139,7 @@ const CiTrackingSteps: React.FC<{
   status: TrackingStatus;
   record?: TrackingRecord;
 }> = ({ status, record }) => (
-  <div className="rounded-lg bg-slate-50 p-4">
+  <div className="rounded-lg bg-slate-50 p-4 sm:p-3">
     <Steps
       size="small"
       className="pain-steps"
@@ -183,343 +177,58 @@ const CiTrackingSteps: React.FC<{
   </div>
 );
 
-const WORKFLOW_PANEL_META: Record<
-  TrackingStatus,
-  {
-    eyebrow: string;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-    shellClass: string;
-    iconClass: string;
-    badgeClass: string;
-  }
-> = {
-  pending: {
-    eyebrow: '第一步 · 人工确认',
-    title: '这个痛点是真实存在的问题吗？',
-    description:
-      '请核对上方执行记录和日志。确认有效后进入修复阶段；无效时需说明判断依据。',
-    icon: <ClockCircleOutlined />,
-    shellClass: 'border-amber-200 bg-amber-50/50',
-    iconClass: 'bg-amber-100 text-amber-700',
-    badgeClass: 'border-amber-200 bg-white text-amber-700',
-  },
-  confirmed: {
-    eyebrow: '第二步 · 处理问题',
-    title: '问题已确认，请在修复后更新状态',
-    description:
-      '完成代码、配置或流水线修复后，在这里记录结果，随后进入待复测阶段。',
-    icon: <ToolOutlined />,
-    shellClass: 'border-sky-200 bg-sky-50/50',
-    iconClass: 'bg-sky-100 text-sky-700',
-    badgeClass: 'border-sky-200 bg-white text-sky-700',
-  },
-  fixed: {
-    eyebrow: '第三步 · 等待验证',
-    title: '修复已完成，等待重跑复测',
-    description:
-      '重跑功能正在接入。当前可查看修复记录，发现误操作时可撤销修复。',
-    icon: <CheckCircleOutlined />,
-    shellClass: 'border-violet-200 bg-violet-50/50',
-    iconClass: 'bg-violet-100 text-violet-700',
-    badgeClass: 'border-violet-200 bg-white text-violet-700',
-  },
-  invalid: {
-    eyebrow: '人工判定结果',
-    title: '该痛点已判定为非有效问题',
-    description:
-      '该问题已停止修复跟踪。如判断有误，可恢复为有效问题并重新进入修复阶段。',
-    icon: <StopOutlined />,
-    shellClass: 'border-slate-200 bg-slate-50/80',
-    iconClass: 'bg-slate-200 text-slate-600',
-    badgeClass: 'border-slate-200 bg-white text-slate-600',
-  },
-};
-
-const OperatorField: React.FC<{
-  operator: string;
-  operatorError: string;
-  saving: boolean;
-  compact?: boolean;
-  onOperatorChange: (value: string) => void;
-}> = ({
-  operator,
-  operatorError,
-  saving,
-  compact = false,
-  onOperatorChange,
-}) => (
-  <div className={compact ? 'shrink-0' : undefined}>
-    <div className={compact ? 'flex h-7 items-center gap-2' : undefined}>
-      <label
-        htmlFor="ci-pain-tracking-operator"
-        className={
-          compact
-            ? 'flex shrink-0 items-center gap-1.5 text-xs font-medium text-slate-600'
-            : 'mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-slate-600'
-        }
-      >
-        <UserOutlined
-          className={operatorError ? 'text-rose-500' : 'text-slate-400'}
-        />
-        提交人<span className="text-rose-500">*</span>
-      </label>
-      <Input
-        id="ci-pain-tracking-operator"
-        aria-label="提交人"
-        status={operatorError ? 'error' : undefined}
-        size={compact ? 'small' : 'middle'}
-        className={
-          compact
-            ? '!h-7 !w-36 !rounded-lg !border-slate-200 !bg-white !px-2.5'
-            : '!h-10 !rounded-[10px] !border-slate-200 !bg-white !px-3'
-        }
-        value={operator}
-        placeholder="请输入姓名"
-        maxLength={20}
-        autoComplete="off"
-        disabled={saving}
-        onChange={(event) => onOperatorChange(event.target.value)}
-      />
-    </div>
-    {operatorError ? (
-      <div
-        role="alert"
-        className="mt-1.5 flex items-center gap-1 text-xs text-rose-500"
-      >
-        <ExclamationCircleFilled />
-        <span>{operatorError}</span>
-      </div>
-    ) : null}
-  </div>
-);
-
-const StatusWorkflowPanel: React.FC<{
-  status: TrackingStatus;
-  operator: string;
-  operatorError: string;
-  reason: string;
-  saving: boolean;
-  ready: boolean;
-  onOperatorChange: (value: string) => void;
-  onReasonChange: (value: string) => void;
-  onAction: (action: TrackingAction, reason?: string) => void;
-  onInvalid: () => void;
-  showOperator?: boolean;
-  perRunDecision?: boolean;
-}> = ({
-  status,
-  operator,
-  operatorError,
-  reason,
-  saving,
-  ready,
-  onOperatorChange,
-  onReasonChange,
-  onAction,
-  onInvalid,
-  showOperator = true,
-  perRunDecision = false,
-}) => {
-  const meta = WORKFLOW_PANEL_META[status];
-  const disabled = !ready || saving;
+const PainInformation: React.FC<{
+  problem: CiProblem;
+  scope: TrackingScope;
+}> = ({ problem, scope }) => {
+  const headingId = useId();
   return (
     <section
-      className={`overflow-hidden rounded-2xl border ${meta.shellClass}`}
+      aria-labelledby={headingId}
+      className="min-w-0 rounded-lg border border-rose-100 bg-rose-50/80 px-4 py-3"
     >
-      <div className="flex items-start gap-3 border-b border-black/5 px-5 py-4">
-        <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg ${meta.iconClass}`}
-        >
-          {meta.icon}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-            {meta.eyebrow}
-          </div>
-          <div className="mt-0.5 text-base font-semibold text-slate-900">
-            {meta.title}
-          </div>
-          <p className="mt-1 text-sm leading-6 text-slate-500">
-            {meta.description}
-          </p>
-        </div>
-        <span
-          className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${meta.badgeClass}`}
-        >
-          {STATUS_META[status].label}
+      <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 id={headingId} className="text-sm font-semibold text-rose-900">
+          痛点信息
+        </h2>
+        <span className="min-w-0 break-words text-xs text-rose-700">
+          {[scope.org, scope.repo].filter(Boolean).join(' / ')} · {scope.day} ·{' '}
+          {scope.workflow}
         </span>
+      </header>
+      <div className="mt-2 break-words text-sm leading-relaxed text-rose-800">
+        <p className="font-semibold">{problem.kb}</p>
+        <p>{problem.title}</p>
       </div>
-
-      <div
-        className={
-          showOperator
-            ? 'grid gap-4 bg-white/70 p-5 lg:grid-cols-[220px_minmax(0,1fr)]'
-            : 'space-y-3 bg-white/70 p-5'
-        }
+      <details
+        open={problem.runs.length === 0}
+        className="mt-2.5 rounded-lg border border-rose-100 bg-white/70 px-3 py-2 text-sm"
       >
-        {showOperator ? (
-          <OperatorField
-            operator={operator}
-            operatorError={operatorError}
-            saving={saving}
-            onOperatorChange={onOperatorChange}
-          />
-        ) : null}
-
-        {status === 'pending' ? (
-          <div>
-            <div className="mb-1.5 text-xs font-semibold text-slate-600">
-              是否为有效问题
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                disabled={disabled}
-                onClick={() => onAction('confirm')}
-                className="group flex min-h-[78px] cursor-pointer items-center gap-3 rounded-[10px] border border-emerald-200 bg-emerald-50/70 px-4 text-left transition-all hover:border-emerald-300 hover:bg-emerald-50 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                  <CheckOutlined />
-                </span>
-                <span>
-                  <span className="block text-sm font-semibold text-slate-800">
-                    是，有效问题
-                  </span>
-                  <span className="mt-0.5 block text-xs text-slate-500">
-                    确认并进入待修复
-                  </span>
-                </span>
-              </button>
-              <button
-                type="button"
-                disabled={disabled}
-                onClick={onInvalid}
-                className="group flex min-h-[78px] cursor-pointer items-center gap-3 rounded-[10px] border border-slate-200 bg-white px-4 text-left transition-all hover:border-rose-200 hover:bg-rose-50/60 hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 group-hover:bg-rose-100 group-hover:text-rose-600">
-                  <CloseOutlined />
-                </span>
-                <span>
-                  <span className="block text-sm font-semibold text-slate-800">
-                    否，非有效问题
-                  </span>
-                  <span className="mt-0.5 block text-xs text-slate-500">
-                    填写依据后结束跟踪
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <label className="block">
-              <span className="text-xs font-semibold text-slate-600">
-                {status === 'confirmed'
-                  ? '修复说明（选填）'
-                  : '操作说明（选填）'}
-              </span>
-              <Input.TextArea
-                aria-label="判断依据或修复说明"
-                value={reason}
-                maxLength={500}
-                rows={2}
-                disabled={saving}
-                onChange={(event) => onReasonChange(event.target.value)}
-                className="mt-1.5 !rounded-[10px] !border-slate-200 !bg-white"
-                placeholder={
-                  status === 'confirmed'
-                    ? '可填写修复内容、PR 或工单链接'
-                    : '可填写本次状态调整的原因'
-                }
-              />
-            </label>
-            <div className="flex flex-wrap items-center gap-2">
-              {status === 'confirmed' ? (
-                <Button
-                  type="primary"
-                  icon={<CheckOutlined />}
-                  aria-label="完成修复"
-                  loading={saving}
-                  disabled={!ready}
-                  className="!h-9 !rounded-[10px] !px-5"
-                  onClick={() => onAction('mark_fixed', reason)}
-                >
-                  完成修复
-                </Button>
-              ) : null}
-              {status === 'fixed' ? (
-                <Tooltip title="重跑能力正在接入">
-                  <span>
-                    <Button
-                      icon={<ReloadOutlined />}
-                      aria-label="重跑（暂未开放）"
-                      disabled
-                      className="!h-9 !rounded-[10px]"
-                    >
-                      重跑（暂未开放）
-                    </Button>
-                  </span>
-                </Tooltip>
-              ) : null}
-              {status === 'fixed' ? (
-                <Button
-                  aria-label="撤销修复"
-                  disabled={disabled}
-                  className="!h-9 !rounded-[10px]"
-                  onClick={() => onAction('undo_fixed', reason)}
-                >
-                  撤销修复
-                </Button>
-              ) : null}
-              {status === 'invalid' && !perRunDecision ? (
-                <Button
-                  type="primary"
-                  aria-label="恢复为有效问题"
-                  disabled={disabled}
-                  className="!h-9 !rounded-[10px] !px-5"
-                  onClick={() => onAction('restore_valid', reason)}
-                >
-                  恢复为有效问题
-                </Button>
-              ) : null}
-              {status !== 'invalid' && !perRunDecision ? (
-                <Button
-                  danger
-                  disabled={disabled}
-                  className="!h-9 !rounded-[10px]"
-                  onClick={onInvalid}
-                >
-                  判为非有效问题
-                </Button>
-              ) : null}
-              {!perRunDecision ? (
-                <Button
-                  type="text"
-                  disabled={disabled}
-                  className="!h-9 !rounded-[10px] !text-slate-500"
-                  onClick={() => onAction('reset', reason)}
-                >
-                  回退待确认
-                </Button>
-              ) : null}
-            </div>
-          </div>
-        )}
-      </div>
+        <summary className="cursor-pointer rounded font-medium text-slate-700">
+          报告判断依据
+          <span className="ml-2 inline-block text-xs font-normal text-slate-500">
+            影响 {problem.impact.runs} 次执行 · {problem.impact.prs} 个 PR
+          </span>
+        </summary>
+        <div className="mt-2 space-y-2 break-words border-t border-rose-100 pt-2 text-slate-600">
+          <p>原报告归因：{problem.owner || '待确认'}</p>
+          <p className="whitespace-pre-wrap">
+            {problem.root.cause || '原因待确认'}
+          </p>
+          {problem.root.evidence?.length ? (
+            <ul className="list-disc space-y-1 pl-5">
+              {problem.root.evidence.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          ) : null}
+          {problem.root.guess ? <p>未确认推测：{problem.root.guess}</p> : null}
+          {problem.root.action ? <p>建议：{problem.root.action}</p> : null}
+        </div>
+      </details>
     </section>
   );
 };
-
-const ActionErrorAlert: React.FC<{ message: string; hidden?: boolean }> = ({
-  message,
-  hidden = false,
-}) =>
-  hidden || !message ? null : <Alert type="error" showIcon message={message} />;
-
-const showsPainWorkflow = (problem: CiProblem, status: TrackingStatus) =>
-  problem.runs.length === 0 || status !== 'pending';
 
 export const CiPainTrackingProvider: React.FC<{
   scope: TrackingScope;
@@ -560,6 +269,7 @@ export const CiPainTrackingProvider: React.FC<{
   const [reason, setReason] = useState('');
   const [actionError, setActionError] = useState('');
   const [operatorError, setOperatorError] = useState('');
+  const operatorInput = useRef<InputRef>(null);
   const [invalidReasonOpen, setInvalidReasonOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -605,6 +315,10 @@ export const CiPainTrackingProvider: React.FC<{
   }, []);
   const record = selected ? records[trackingProblemKey(selected)] : undefined;
   const status = record?.status ?? 'pending';
+  const showOperatorError = (message: string) => {
+    setOperatorError(message);
+    if (message) operatorInput.current?.focus();
+  };
   const performAction = async (
     nextAction: TrackingAction,
     nextReason = ''
@@ -612,7 +326,7 @@ export const CiPainTrackingProvider: React.FC<{
     if (!selected || !ready || savingRef.current) return false;
     const invalidOperator = validateOperator(operator);
     if (invalidOperator) {
-      setOperatorError(
+      showOperatorError(
         invalidOperator === '请填写提交人'
           ? '请先填写提交人，再进行痛点判定'
           : invalidOperator
@@ -661,7 +375,7 @@ export const CiPainTrackingProvider: React.FC<{
   const requestInvalidDecision = () => {
     const invalidOperator = validateOperator(operator);
     if (invalidOperator) {
-      setOperatorError(
+      showOperatorError(
         invalidOperator === '请填写提交人'
           ? '请先填写提交人，再进行痛点判定'
           : invalidOperator
@@ -859,7 +573,7 @@ export const CiPainTrackingProvider: React.FC<{
         }
         width="calc(100vw - 32px)"
         style={{ maxWidth: 1280 }}
-        destroyOnClose
+        destroyOnHidden
         styles={{
           body: { height: '70vh', overflowY: 'auto', paddingRight: '8px' },
         }}
@@ -872,40 +586,10 @@ export const CiPainTrackingProvider: React.FC<{
         }}
       >
         {selected ? (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {ready ? <CiTrackingSteps status={status} record={record} /> : null}
-            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3">
-              <div className="text-sm font-semibold leading-6 text-slate-900">
-                {selected.kb}
-              </div>
-              <div className="mt-1 text-sm leading-6 text-slate-700">
-                {selected.title}
-              </div>
-              <div className="mt-1 text-xs text-slate-500">
-                {scope.org} / {scope.repo} · {scope.day} · {scope.workflow}
-              </div>
-            </div>
-            {ready && showsPainWorkflow(selected, status) ? (
-              <StatusWorkflowPanel
-                status={status}
-                operator={operator}
-                operatorError={operatorError}
-                reason={reason}
-                saving={saving}
-                ready={ready}
-                onOperatorChange={(value) => {
-                  setOperator(value);
-                  if (value.trim()) setOperatorError('');
-                }}
-                onReasonChange={setReason}
-                onAction={(nextAction, nextReason) =>
-                  void performAction(nextAction, nextReason)
-                }
-                onInvalid={requestInvalidDecision}
-                showOperator={selected.runs.length === 0}
-                perRunDecision={selected.runs.length > 0}
-              />
-            ) : !ready ? (
+            <PainInformation problem={selected} scope={scope} />
+            {!ready && (
               <Alert
                 type={loading ? 'info' : 'error'}
                 showIcon
@@ -920,59 +604,43 @@ export const CiPainTrackingProvider: React.FC<{
                   </Button>
                 }
               />
-            ) : null}
-            <details
-              open={selected.runs.length === 0}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm"
-            >
-              <summary className="cursor-pointer font-medium text-slate-700">
-                判断依据
-              </summary>
-              <p className="mt-2">
-                影响 {selected.impact.runs} 次执行、{selected.impact.prs} 个
-                PR；原报告归因：{selected.owner || '待确认'}。
-              </p>
-              <p className="mt-2 whitespace-pre-wrap">
-                {selected.root.cause || '原因待确认'}
-              </p>
-              {selected.root.evidence?.length ? (
-                <ul className="mt-2 list-disc space-y-1 pl-5">
-                  {selected.root.evidence.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              ) : null}
-              {selected.root.guess ? (
-                <p className="mt-2">未确认推测：{selected.root.guess}</p>
-              ) : null}
-              {selected.root.action ? (
-                <p className="mt-2">建议：{selected.root.action}</p>
-              ) : null}
-            </details>
+            )}
+            <PainHandlingPanel
+              problem={selected}
+              problems={problems}
+              ready={ready}
+              status={status}
+              reason={reason}
+              saving={saving}
+              error={invalidReasonOpen ? '' : actionError}
+              operatorField={
+                <OperatorField
+                  inputRef={operatorInput}
+                  value={operator}
+                  error={operatorError}
+                  disabled={saving}
+                  onChange={(value) => {
+                    setOperator(value);
+                    if (value.trim()) setOperatorError('');
+                  }}
+                />
+              }
+              onReasonChange={setReason}
+              onAction={performAction}
+              onInvalid={requestInvalidDecision}
+            />
             {selected.runs.length ? (
               <RunReviewTable
                 key={trackingProblemKey(selected)}
                 problem={selected}
                 scope={scope}
                 operator={operator}
-                operatorField={
-                  <OperatorField
-                    compact
-                    operator={operator}
-                    operatorError={operatorError}
-                    saving={saving}
-                    onOperatorChange={(value) => {
-                      setOperator(value);
-                      if (value.trim()) setOperatorError('');
-                    }}
-                  />
-                }
                 busy={saving}
                 onBusy={(value) => {
                   savingRef.current = value;
                   if (mounted.current) setSaving(value);
                 }}
-                onOperatorInvalid={setOperatorError}
+                onOperatorInvalid={showOperatorError}
                 rememberOperator={rememberOperator}
                 onTracking={(data) => {
                   if (mounted.current)
@@ -983,17 +651,13 @@ export const CiPainTrackingProvider: React.FC<{
                 }}
               />
             ) : null}
-            <ActionErrorAlert
-              message={actionError}
-              hidden={invalidReasonOpen}
-            />
             {record?.history.length ? (
-              <div className="mt-6">
+              <div>
                 <button
                   type="button"
                   aria-expanded={historyOpen}
                   onClick={() => setHistoryOpen((value) => !value)}
-                  className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
+                  className="flex w-full items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-left text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-100"
                 >
                   <HistoryOutlined className="text-slate-500" />
                   <span>操作记录</span>
@@ -1056,7 +720,7 @@ export const CiPainTrackingProvider: React.FC<{
         title="判定为非有效问题"
         width={480}
         centered
-        destroyOnClose
+        destroyOnHidden
         okText="确认判定"
         cancelText="取消"
         confirmLoading={saving}
@@ -1083,10 +747,14 @@ export const CiPainTrackingProvider: React.FC<{
             请填写判定依据。该记录会保留在操作历史中，后续仍可改判为有效问题。
           </p>
           <label className="block text-sm font-medium text-slate-700">
-            判断依据<span className="ml-1 text-rose-500">*</span>
+            判断依据
+            <span className="ml-1 text-rose-600" aria-hidden="true">
+              *
+            </span>
             <Input.TextArea
               aria-label="无效问题判断依据"
-              className="mt-1 !rounded-[10px] !border-slate-300"
+              className="mt-2"
+              required
               value={reason}
               maxLength={500}
               showCount
@@ -1111,8 +779,23 @@ export const CiPainTrackingProvider: React.FC<{
         .ci-pain-management-modal .ant-input,
         .ci-pain-invalid-modal .ant-btn,
         .ci-pain-invalid-modal .ant-input {
-          border-radius: 10px !important;
+          border-radius: 8px !important;
           box-shadow: none !important;
+        }
+        .ci-pain-management-modal .ant-input:focus-visible,
+        .ci-pain-invalid-modal .ant-input:focus-visible {
+          outline: 2px solid #60a5fa;
+          outline-offset: 2px;
+        }
+        .ci-pain-management-modal
+          .pain-steps.ant-steps.ant-steps-vertical
+          .ant-steps-item-content {
+          min-height: 36px;
+        }
+        .ci-pain-management-modal
+          .pain-steps.ant-steps.ant-steps-vertical.ant-steps-small
+          .ant-steps-item-tail {
+          padding-block: 26px 2px;
         }
       `}</style>
     </TrackingContext.Provider>

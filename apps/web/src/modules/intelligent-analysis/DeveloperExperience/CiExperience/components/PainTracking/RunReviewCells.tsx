@@ -120,12 +120,12 @@ export const RunLogCell: React.FC<{ message: string }> = ({ message }) =>
   );
 
 const segmentClass = (active: boolean, positive: boolean) =>
-  `inline-flex h-6 min-w-12 items-center justify-center gap-1 rounded-md border px-2 py-0 text-[11px] font-medium leading-5 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+  `inline-flex h-7 min-w-12 items-center justify-center gap-1 rounded-lg border px-2 text-xs font-medium leading-5 transition-colors focus-visible:outline-sky-600 disabled:cursor-not-allowed disabled:opacity-50 ${
     active
       ? positive
         ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
         : 'border-rose-200 bg-rose-50 text-rose-600'
-      : 'border-transparent bg-transparent text-slate-500 hover:bg-white hover:text-slate-700'
+      : 'border-transparent bg-white text-slate-700 hover:border-slate-200 hover:bg-slate-50'
   }`;
 
 export const RunDecisionCell: React.FC<{
@@ -143,59 +143,69 @@ export const RunDecisionCell: React.FC<{
   onDecision,
   onHistory,
 }) => (
-  <div className="flex items-center gap-1">
+  <div>
     <div
-      role="group"
-      aria-label={`执行记录 #${runNumber} 判据审核`}
-      className="inline-flex shrink-0 items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-100/80 p-0.5"
+      className=">md:hidden mb-1 text-[11px] text-slate-600"
+      aria-hidden="true"
     >
-      <button
-        type="button"
-        aria-label={`执行记录 #${runNumber}：判据正确`}
-        aria-pressed={review?.status === 'confirmed'}
-        aria-busy={loadingAction === 'confirmed'}
-        disabled={disabled}
-        onClick={() => onDecision('confirmed')}
-        className={segmentClass(review?.status === 'confirmed', true)}
-      >
-        {loadingAction === 'confirmed' ? (
-          <LoadingOutlined className="text-[10px]" />
-        ) : (
-          <CheckOutlined className="text-[10px]" />
-        )}
-        正确
-      </button>
-      <button
-        type="button"
-        aria-label={`执行记录 #${runNumber}：判据有误`}
-        aria-pressed={review?.status === 'incorrect'}
-        aria-busy={loadingAction === 'incorrect'}
-        disabled={disabled}
-        onClick={() => onDecision('incorrect')}
-        className={segmentClass(review?.status === 'incorrect', false)}
-      >
-        {loadingAction === 'incorrect' ? (
-          <LoadingOutlined className="text-[10px]" />
-        ) : (
-          <CloseOutlined className="text-[10px]" />
-        )}
-        有误
-      </button>
+      #{runNumber}
     </div>
-    <Dropdown
-      trigger={['click']}
-      menu={{
-        items: [{ key: 'history', label: '查看审核记录', onClick: onHistory }],
-      }}
-    >
-      <button
-        type="button"
-        disabled={disabled}
-        aria-label={`执行记录 #${runNumber} 更多操作`}
-        className="flex h-7 w-6 shrink-0 items-center justify-center rounded text-slate-400 hover:bg-slate-100 hover:text-slate-600 disabled:opacity-50"
+    <div className="flex items-center gap-1">
+      <div
+        role="group"
+        aria-label={`执行记录 #${runNumber} 判据审核`}
+        className="inline-flex shrink-0 items-center gap-0.5 rounded-lg border border-slate-200 bg-white p-0.5"
       >
-        <MoreOutlined />
-      </button>
-    </Dropdown>
+        <button
+          type="button"
+          aria-label={`执行记录 #${runNumber}：判据正确`}
+          aria-pressed={review?.status === 'confirmed'}
+          aria-busy={loadingAction === 'confirmed'}
+          disabled={disabled}
+          onClick={() => onDecision('confirmed')}
+          className={segmentClass(review?.status === 'confirmed', true)}
+        >
+          {loadingAction === 'confirmed' ? (
+            <LoadingOutlined className="text-[10px]" />
+          ) : (
+            <CheckOutlined className="text-[10px]" />
+          )}
+          正确
+        </button>
+        <button
+          type="button"
+          aria-label={`执行记录 #${runNumber}：判据有误`}
+          aria-pressed={review?.status === 'incorrect'}
+          aria-busy={loadingAction === 'incorrect'}
+          disabled={disabled}
+          onClick={() => onDecision('incorrect')}
+          className={segmentClass(review?.status === 'incorrect', false)}
+        >
+          {loadingAction === 'incorrect' ? (
+            <LoadingOutlined className="text-[10px]" />
+          ) : (
+            <CloseOutlined className="text-[10px]" />
+          )}
+          有误
+        </button>
+      </div>
+      <Dropdown
+        trigger={['click']}
+        menu={{
+          items: [
+            { key: 'history', label: '查看审核记录', onClick: onHistory },
+          ],
+        }}
+      >
+        <button
+          type="button"
+          disabled={disabled}
+          aria-label={`执行记录 #${runNumber} 更多操作`}
+          className="flex h-7 w-6 shrink-0 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-sky-600 disabled:opacity-50"
+        >
+          <MoreOutlined />
+        </button>
+      </Dropdown>
+    </div>
   </div>
 );
