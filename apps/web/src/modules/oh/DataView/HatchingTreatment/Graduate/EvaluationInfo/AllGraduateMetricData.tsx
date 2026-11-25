@@ -1,4 +1,5 @@
 import { toFixed } from '@common/utils';
+import { formatEcologyTestCoverageDetail } from './ecologyTestCoverageDetail';
 
 const OATRender = (oatDetail) => {
   if (oatDetail?.length > 0) {
@@ -462,22 +463,13 @@ export const allMetricData = [
       coverageScore,
       duplicationRatio,
       duplicationScore,
-    }) => {
-      let res = '';
-      if (coverageRatio !== null) {
-        res += `测试覆盖率：${toFixed(coverageRatio * 100, 2) + '%'}；`;
-        if (coverageScore !== null) {
-          res += `测试覆盖率得分：${coverageScore}；`;
-        }
-      }
-      if (duplicationRatio !== null) {
-        res += `代码重复率：${toFixed(duplicationRatio * 100, 2) + '%'}；`;
-        if (duplicationScore !== null) {
-          res += `代码重复率得分：${duplicationScore}；`;
-        }
-      }
-      return res || '无';
-    },
+    }) =>
+      formatEcologyTestCoverageDetail({
+        coverageRatio,
+        coverageScore,
+        duplicationRatio,
+        duplicationScore,
+      }),
     维度: '技术生态',
     指标名称: '测试覆盖度',
     '风险重要性\n(去除)': '高',
