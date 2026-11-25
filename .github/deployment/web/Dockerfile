@@ -37,7 +37,7 @@ ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 
 COPY . .
 
-RUN yarn build
+RUN NODE_OPTIONS=--max-old-space-size=4096 yarn build
 
 # If using npm comment out above and use below instead
 # RUN npm run build
