@@ -64,3 +64,22 @@ describe('getEmail', () => {
     ]);
   });
 });
+
+it('splits mixed comma styles and trims every submitted recipient', () => {
+  const input = ' first@example.com , second@example.com， third@example.com ';
+  expect(verifyEmail(input)).toBe(true);
+  expect(getEmail(input)).toEqual([
+    'first@example.com',
+    'second@example.com',
+    'third@example.com',
+  ]);
+});
+
+it.each([
+  'first@example.com trailing text',
+  'first@example.com@another.example',
+  'first@example.com，invalid,second@example.com',
+  'first@example.com,',
+])('rejects an invalid complete recipient in %s', (input) => {
+  expect(verifyEmail(input)).toBe(false);
+});
