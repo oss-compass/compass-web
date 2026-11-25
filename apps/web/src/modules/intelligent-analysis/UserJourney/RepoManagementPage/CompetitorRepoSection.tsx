@@ -1,3 +1,4 @@
+import FilterSearchInput from '@common/components/FilterSearchInput';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -263,8 +264,7 @@ const CompetitorRepoSection: React.FC<Props> = ({ isAdmin, authChecking }) => {
     <div>
       {contextHolder}
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <Input.Search
-          allowClear
+        <FilterSearchInput
           placeholder="搜索仓库、链接或备注"
           value={keyword}
           onChange={(event) => {

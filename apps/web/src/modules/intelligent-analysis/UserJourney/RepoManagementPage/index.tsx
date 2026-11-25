@@ -1,3 +1,4 @@
+import FilterSearchInput from '@common/components/FilterSearchInput';
 import useManagementControls from '@common/hooks/useManagementControls';
 import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
 import { buildIssueTaskManagementHref } from '../../DeveloperExperience/routes';
@@ -18,7 +19,6 @@ import {
   Card,
   Form,
   Grid,
-  Input,
   Modal,
   Popconfirm,
   Select,
@@ -1403,6 +1403,7 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
       );
       const payload = {
         ...values,
+        team_name: values.team_name || (editingRecord ? '' : undefined),
         owner: ownerContacts.map((contact) => contact.name.trim()),
         owner_email: ownerContacts.map((contact) => contact.email.trim()),
         hardware_envs: parseHardwareEnvInput(values.hardware_env),
@@ -1534,8 +1535,6 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
     'group inline-flex h-9 flex-shrink-0 items-center gap-2 !rounded-full border border-white/80 bg-white px-3.5 text-sm font-semibold text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:!-translate-y-0.5 hover:!border-sky-200 hover:!bg-white hover:!text-sky-700 hover:!shadow-[0_16px_36px_rgba(59,130,246,0.18)]';
   const filterSelectClassName =
     '[&_.ant-select-arrow]:text-slate-500 [&_.ant-select-selector]:!h-8 [&_.ant-select-selector]:!rounded-2xl [&_.ant-select-selector]:!border-slate-200/80 [&_.ant-select-selector]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-select-selector]:!px-3 [&_.ant-select-selector]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-select-selection-item]:!text-sm [&_.ant-select-selection-placeholder]:!text-sm';
-  const searchClassName =
-    '[&_.ant-input-affix-wrapper]:!h-8 [&_.ant-input-affix-wrapper]:!rounded-l-2xl [&_.ant-input-affix-wrapper]:!border-slate-200/80 [&_.ant-input-affix-wrapper]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-input-affix-wrapper]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-input-group-addon_.ant-btn]:!h-8 [&_.ant-input-group-addon_.ant-btn]:!rounded-r-2xl [&_.ant-input-group-addon_.ant-btn]:!border-slate-200/80';
   const sortableTitle = useCallback(
     (label: string) => (
       <span className="sortable-col-title">
@@ -2026,11 +2025,9 @@ const RepoManagementPage: React.FC<RepoManagementPageProps> = ({
                   repoCategory === 'cann' ? '' : 'hidden'
                 }`}
               >
-                <Input.Search
-                  allowClear
+                <FilterSearchInput
                   placeholder="搜索仓库 / 负责人 / 竞品 / 备注"
                   value={keyword}
-                  className={searchClassName}
                   onChange={(event) => {
                     setKeyword(event.target.value);
                     setPage(1);

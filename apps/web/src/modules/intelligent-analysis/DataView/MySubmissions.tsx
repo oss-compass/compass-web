@@ -1,3 +1,4 @@
+import FilterSearchInput from '@common/components/FilterSearchInput';
 import React, { useState, useEffect } from 'react';
 import {
   Card,
@@ -8,14 +9,11 @@ import {
   Modal,
   Descriptions,
   message,
-  Input,
   Select,
 } from 'antd';
 import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useTranslation } from 'next-i18next';
 import type { ColumnsType } from 'antd/es/table';
-
-const { Search } = Input;
 
 interface Submission {
   id: string;
@@ -46,7 +44,7 @@ const MySubmissions: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
   // 模拟数据
-  const mockData: Submission[] = []
+  const mockData: Submission[] = [];
 
   useEffect(() => {
     fetchSubmissions();
@@ -238,12 +236,11 @@ const MySubmissions: React.FC = () => {
           {/* 搜索和筛选区域 */}
           <div className="mb-6">
             <Space wrap size="middle">
-              <Search
+              <FilterSearchInput
                 placeholder={t('my_submissions.search_placeholder')}
                 style={{ width: 300 }}
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                allowClear
               />
               <Select
                 placeholder={t('my_submissions.filter_status')}

@@ -1,6 +1,6 @@
 import React from 'react';
-import { DownOutlined } from '@ant-design/icons';
-import { Empty, Modal, Skeleton, Table, Tooltip } from 'antd';
+import { DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { Empty, Modal, Popover, Skeleton, Table, Tooltip } from 'antd';
 import type { TableProps } from 'antd';
 import Link from 'next/link';
 import { ScoreSparkline } from './CloseRateTrendChart';
@@ -16,6 +16,7 @@ export type OverviewScoreCardRepo = {
   stageScores: Array<{
     key: string;
     label: string;
+    description?: string;
     score: number | null;
     groupKey?: string;
     groupLabel?: string;
@@ -40,6 +41,7 @@ type Props = {
 type DistributionItem = {
   key: string;
   label: string;
+  description?: string;
   groupKey?: string;
   groupLabel?: string;
   groupOrder?: number;
@@ -93,6 +95,7 @@ const buildMetricDistribution = (
     string,
     {
       label: string;
+      description?: string;
       groupKey?: string;
       groupLabel?: string;
       groupOrder?: number;
@@ -104,6 +107,7 @@ const buildMetricDistribution = (
       if (typeof stage.score !== 'number') return;
       const current = grouped.get(stage.key) ?? {
         label: stage.label,
+        description: stage.description,
         groupKey: stage.groupKey,
         groupLabel: stage.groupLabel,
         groupOrder: stage.groupOrder,
@@ -148,6 +152,22 @@ const DistributionRows: React.FC<{
           band,
           repos: item.values.filter((value) => band.matches(value.score)),
         }));
+        const label = (
+          <span
+            tabIndex={item.description ? 0 : undefined}
+            className={`flex min-w-0 items-center gap-1.5 text-sm font-medium text-[var(--overview-slateDark)] ${
+              item.description ? 'cursor-help' : ''
+            }`}
+          >
+            <span className="truncate">{item.label}</span>
+            {item.description ? (
+              <QuestionCircleOutlined
+                className="shrink-0 text-[12px] text-[var(--overview-slateLight)]"
+                title="查看指标说明"
+              />
+            ) : null}
+          </span>
+        );
         return (
           <React.Fragment key={item.key}>
             {showGroup && (
@@ -162,11 +182,19 @@ const DistributionRows: React.FC<{
                   : 'rounded-lg py-1'
               }`}
             >
-              <Tooltip title={distributionLabel(item)}>
-                <span className="truncate text-sm font-medium text-[var(--overview-slateDark)]">
-                  {item.label}
-                </span>
-              </Tooltip>
+              {item.description ? (
+                <Popover
+                  title={distributionLabel(item)}
+                  content={<p className="max-w-xs">{item.description}</p>}
+                  trigger={['hover', 'focus']}
+                  placement="top"
+                  mouseEnterDelay={0.15}
+                >
+                  {label}
+                </Popover>
+              ) : (
+                <Tooltip title={distributionLabel(item)}>{label}</Tooltip>
+              )}
               <div
                 className="flex h-[22px] overflow-hidden rounded-[7px] border border-[var(--overview-slateBorder)] bg-[var(--overview-slateSoft)]"
                 style={{

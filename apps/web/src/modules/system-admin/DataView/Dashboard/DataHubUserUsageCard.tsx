@@ -1,10 +1,10 @@
+import FilterSearchInput from '@common/components/FilterSearchInput';
 import React, { useState, useMemo } from 'react';
 import {
   Card,
   Table,
   Tabs,
   Select,
-  Input,
   Space,
   Statistic,
   Row,
@@ -366,12 +366,11 @@ const DataHubUserUsageCard: React.FC<DataHubUserUsageCardProps> = ({
             optionFilterProp="children"
             options={apiOptions}
           />
-          <Input.Search
+          <FilterSearchInput
             placeholder={`搜索用户、${activeTab === 'api' ? 'API' : '数据集'}`}
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             style={{ width: 200 }}
-            allowClear
           />
         </div>
       </div>

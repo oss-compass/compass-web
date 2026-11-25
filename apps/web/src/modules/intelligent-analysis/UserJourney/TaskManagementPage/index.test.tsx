@@ -104,6 +104,30 @@ test('allows administrators to open community weekly report management', async (
   expect(screen.getByText('周报管理内容')).toBeInTheDocument();
 });
 
+test('filters on input and reloads the unfiltered task list when cleared', async () => {
+  const fetchTasks = jest.mocked(fetchOverviewAllRepoRerunRecords);
+  fetchTasks.mockClear();
+  mount('admin');
+
+  const search = await screen.findByRole('textbox', {
+    name: '搜索仓库 / 任务ID / 操作人 / 报告ID',
+  });
+  fireEvent.change(search, { target: { value: 'ops-cv' } });
+  await waitFor(() =>
+    expect(fetchTasks).toHaveBeenLastCalledWith(
+      expect.objectContaining({ keyword: 'ops-cv', page: 1 })
+    )
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: 'close-circle' }));
+  expect(search).toHaveValue('');
+  await waitFor(() =>
+    expect(fetchTasks).toHaveBeenLastCalledWith(
+      expect.objectContaining({ keyword: undefined, page: 1 })
+    )
+  );
+});
+
 test('requests a global task sort and preserves it when paging', async () => {
   const fetchTasks = jest.mocked(fetchOverviewAllRepoRerunRecords);
   fetchTasks.mockClear();

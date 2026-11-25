@@ -1,3 +1,4 @@
+import FilterSearchInput from '@common/components/FilterSearchInput';
 import useManagementControls from '@common/hooks/useManagementControls';
 import styles from './styles.module.scss';
 import AdminReviewButton from '../../DeveloperExperience/components/AdminReviewButton';
@@ -17,7 +18,6 @@ import {
   Button,
   Card,
   Grid,
-  Input,
   Popconfirm,
   Space,
   Table,
@@ -1362,8 +1362,6 @@ const TaskManagementPage: React.FC = () => {
 
   const controlClassName =
     'h-8 !rounded-2xl border-slate-200/80 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] text-sm shadow-[0_2px_6px_rgba(15,23,42,0.06)]';
-  const searchClassName =
-    '[&_.ant-input-affix-wrapper]:!h-8 [&_.ant-input-affix-wrapper]:!rounded-l-2xl [&_.ant-input-affix-wrapper]:!border-slate-200/80 [&_.ant-input-affix-wrapper]:!bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] [&_.ant-input-affix-wrapper]:!shadow-[0_2px_6px_rgba(15,23,42,0.06)] [&_.ant-input-group-addon_.ant-btn]:!h-8 [&_.ant-input-group-addon_.ant-btn]:!rounded-r-2xl [&_.ant-input-group-addon_.ant-btn]:!border-slate-200/80';
   const rerunTargetRepo = toRepoProgressRow(rerunModal.job);
   const rerunRecordsTargetRepo = toRepoProgressRow(rerunRecordsModal.job);
   const rerunHardware =
@@ -1483,11 +1481,9 @@ const TaskManagementPage: React.FC = () => {
             {activeTaskTab !== 'weekly_report' ? (
               <>
                 <div className="mb-5 flex flex-wrap items-center gap-3">
-                  <Input.Search
-                    allowClear
+                  <FilterSearchInput
                     placeholder="搜索仓库 / 任务ID / 操作人 / 报告ID"
                     value={keyword}
-                    className={searchClassName}
                     onChange={(event) => {
                       setKeyword(event.target.value);
                       setPage(1);

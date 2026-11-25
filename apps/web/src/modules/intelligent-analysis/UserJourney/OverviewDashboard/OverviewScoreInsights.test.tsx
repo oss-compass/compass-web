@@ -1,5 +1,11 @@
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import OverviewScoreInsights, {
   type OverviewScoreCardRepo,
 } from './OverviewScoreInsights';
@@ -69,6 +75,20 @@ it('opens backend metric scores from rankings without generating placeholder met
   expect(
     within(screen.getByRole('dialog')).getByText('85.0')
   ).toBeInTheDocument();
+});
+
+it('shows a question-mark icon that opens the metric description', async () => {
+  const scoredRepo = repo('actual', 85);
+  const description = '已结束的流水线中，总耗时不超过 30 分钟的比例。';
+  scoredRepo.stageScores[0].description = description;
+  render(<OverviewScoreInsights repos={[scoredRepo]} overallScore={85} />);
+  const distribution = within(
+    screen.getByRole('region', { name: '综合体验评分分布' })
+  );
+  fireEvent.click(distribution.getByRole('tab', { name: '指标', exact: true }));
+  const icon = distribution.getByRole('img', { name: 'question-circle' });
+  fireEvent.mouseEnter(icon);
+  await waitFor(() => expect(screen.getByText(description)).toBeVisible());
 });
 
 it('groups metrics by their source dimension, orders group scores and keeps equal labels separate', () => {

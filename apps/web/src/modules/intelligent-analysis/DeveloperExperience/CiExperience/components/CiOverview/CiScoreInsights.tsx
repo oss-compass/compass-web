@@ -3,6 +3,7 @@ import OverviewScoreInsights, {
   type OverviewScoreCardRepo,
 } from '../../../../UserJourney/OverviewDashboard/OverviewScoreInsights';
 import { OVERVIEW_SCORE_BANDS } from '../../../../UserJourney/OverviewDashboard/scoreVisuals';
+import { getCiMetricDescription } from '../../metricDescriptions';
 import type { CiRepoSummary } from './communityMetrics';
 import type { CiReportHref } from './CiIssueTable';
 import { useCiRepoTeams } from './useCiRepoTeams';
@@ -29,7 +30,10 @@ const CiScoreInsights: React.FC<{
                 : '未分配团队'),
             reportUrl: reportHref(repo.repo, repo.latestDay),
             latestScore: repo.scoreOverall,
-            stageScores: repo.scoreMetrics,
+            stageScores: repo.scoreMetrics.map((metric) => ({
+              ...metric,
+              description: getCiMetricDescription(metric.label),
+            })),
             scoreHistory: repo.scoreHistory,
           },
         ]

@@ -1,5 +1,6 @@
 import { CiProblemRuleSummary, CiRunRuleCell } from '../RuleReviews';
 import { useCiRepositoryUrl } from '../../repository';
+import { getCiMetricDescription } from '../../metricDescriptions';
 import React, { useEffect, useId, useState } from 'react';
 import { CiPainTrackingButton } from '../PainTracking';
 import {
@@ -795,26 +796,34 @@ const StageDetailPanel: React.FC<{
           </div>
           {observations.length ? (
             <ul className=">lg:grid-cols-3 >2xl:grid-cols-4 mt-3 grid grid-cols-2 gap-3 pb-1">
-              {observations.map((observation) => (
-                <li
-                  key={JSON.stringify([observation.name, observation.value])}
-                  className="min-w-0 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 text-[13px] font-medium leading-5 text-slate-600">
-                      {observation.name}
+              {observations.map((observation) => {
+                const description = getCiMetricDescription(observation.name);
+                return (
+                  <li
+                    key={JSON.stringify([observation.name, observation.value])}
+                    className="min-w-0 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-[0_10px_20px_rgba(15,23,42,0.04)]"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 text-[13px] font-medium leading-5 text-slate-600">
+                        {observation.name}
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-2 break-words text-[22px] font-bold leading-none tracking-tight text-slate-900">
-                    {observation.value}
-                  </div>
-                  <Tooltip title={observation.dimensions.join(' · ')}>
-                    <div className="mt-3 truncate text-[12px] leading-5 text-slate-400">
-                      {observation.dimensions.join(' · ')}
+                    <div className="mt-2 break-words text-[22px] font-bold leading-none tracking-tight text-slate-900">
+                      {observation.value}
                     </div>
-                  </Tooltip>
-                </li>
-              ))}
+                    {description ? (
+                      <p className="mt-2 text-xs leading-5 text-slate-500">
+                        {description}
+                      </p>
+                    ) : null}
+                    <Tooltip title={observation.dimensions.join(' · ')}>
+                      <div className="mt-3 truncate text-[12px] leading-5 text-slate-400">
+                        {observation.dimensions.join(' · ')}
+                      </div>
+                    </Tooltip>
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <p className="mt-3 text-sm text-slate-500">
