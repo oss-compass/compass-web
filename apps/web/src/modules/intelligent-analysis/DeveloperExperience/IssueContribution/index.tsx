@@ -312,6 +312,7 @@ const IssueContribution: React.FC<IssueContributionProps> = ({ org }) => {
           'decide_issue',
           'decide_issues',
           'revise_issue_validity',
+          'withdraw_invalid_decision',
           'rollback_to_pending',
         ].includes(payload.type)
       ) {

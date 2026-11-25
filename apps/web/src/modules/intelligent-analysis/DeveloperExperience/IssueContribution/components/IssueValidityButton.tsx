@@ -18,6 +18,7 @@ type Props = {
   operator?: string;
   disabled?: boolean;
   batch?: boolean;
+  withdrawal?: { reviewId?: string; wasEffective: boolean };
   onDone?: () => void;
 };
 
@@ -29,32 +30,51 @@ const IssueValidityButton: React.FC<Props> = ({
   operator: initialOperator,
   disabled,
   batch,
+  withdrawal,
   onDone,
 }) => {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [targetNumbers, setTargetNumbers] = useState<string[]>([]);
+  const [targetReviewId, setTargetReviewId] = useState<string>();
   const { operator, setOperator, rememberOperator } = useTrackingOperator();
-  const label = valid ? '恢复为有效问题' : '判定为非有效问题';
+  const label = withdrawal
+    ? '撤销非有效判定'
+    : valid
+    ? '恢复为有效问题'
+    : '判定为非有效问题';
   const submit = async () => {
     const error = validateOperator(operator);
     if (error) return void toast.error(error);
-    if (!reason.trim()) return void toast.error('请填写判断原因');
+    if (!withdrawal && !reason.trim())
+      return void toast.error('请填写判断原因');
     setSubmitting(true);
     try {
       await onAction({
         trackingKey: tracking.trackingKey,
-        type: 'revise_issue_validity',
-        issueNumbers: targetNumbers,
-        valid,
-        reason: reason.trim(),
+        ...(withdrawal
+          ? {
+              type: 'withdraw_invalid_decision' as const,
+              issueNumber: targetNumbers[0],
+              reviewId: targetReviewId,
+            }
+          : {
+              type: 'revise_issue_validity' as const,
+              issueNumbers: targetNumbers,
+              valid,
+              reason: reason.trim(),
+            }),
         operator: rememberOperator(operator),
       });
       setOpen(false);
       onDone?.();
       toast.success(
-        valid ? '已恢复为有效问题，需重新修复' : '已提交非有效问题审核'
+        withdrawal
+          ? '已撤销非有效判定，请重新判定'
+          : valid
+          ? '已恢复为有效问题，需重新修复'
+          : '已提交非有效问题审核'
       );
     } catch {
       // 页面 action handler 展示服务端错误；保留表单便于重试。
@@ -71,6 +91,7 @@ const IssueValidityButton: React.FC<Props> = ({
         onClick={() => {
           if (initialOperator !== undefined) setOperator(initialOperator);
           setTargetNumbers([...issueNumbers]);
+          setTargetReviewId(withdrawal?.reviewId);
           setReason('');
           setOpen(true);
         }}
@@ -106,7 +127,7 @@ const IssueValidityButton: React.FC<Props> = ({
             style={{ borderRadius: 10 }}
             onClick={() => void submit()}
           >
-            {valid ? '确认修改' : '提交审核'}
+            {withdrawal ? '确认撤销' : valid ? '确认修改' : '提交审核'}
           </Button>,
         ]}
       >
@@ -115,7 +136,13 @@ const IssueValidityButton: React.FC<Props> = ({
             {targetNumbers.map((number) => '#' + number).join('、')}
           </p>
           <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
-            {valid ? (
+            {withdrawal ? (
+              withdrawal.wasEffective ? (
+                '撤销后，该 Issue 将回到未判定，v4 报告会重新纳入对应指标评分。'
+              ) : (
+                '撤销后，该 Issue 将退出待审核列表并回到未判定，可以重新选择「是」或「否」。'
+              )
+            ) : valid ? (
               '恢复后按未修复处理，需重新完成修复和复测。v4 报告会重新纳入对应指标评分并更新各级得分。'
             ) : (
               <>
@@ -138,21 +165,23 @@ const IssueValidityButton: React.FC<Props> = ({
               onChange={(event) => setOperator(event.target.value)}
             />
           </label>
-          <label className="block text-sm text-slate-600">
-            判断原因 <span className="text-rose-500">*</span>
-            <Input.TextArea
-              value={reason}
-              disabled={submitting}
-              rows={3}
-              maxLength={200}
-              placeholder="请说明修改判定的原因"
-              style={{ borderRadius: 10, marginTop: 6 }}
-              onChange={(event) => setReason(event.target.value)}
-            />
-            <span className="mt-1 block text-right text-xs text-slate-400">
-              {reason.length}/200
-            </span>
-          </label>
+          {!withdrawal && (
+            <label className="block text-sm text-slate-600">
+              判断原因 <span className="text-rose-500">*</span>
+              <Input.TextArea
+                value={reason}
+                disabled={submitting}
+                rows={3}
+                maxLength={200}
+                placeholder="请说明修改判定的原因"
+                style={{ borderRadius: 10, marginTop: 6 }}
+                onChange={(event) => setReason(event.target.value)}
+              />
+              <span className="mt-1 block text-right text-xs text-slate-400">
+                {reason.length}/200
+              </span>
+            </label>
+          )}
         </div>
       </Modal>
       <style jsx global>{`

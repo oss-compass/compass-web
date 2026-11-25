@@ -1,5 +1,11 @@
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import PainIssueTable from './PainIssueTable';
 import type { IssuePainTracking } from '../types';
 import { IssuePainTrackingStatus } from '../types';
@@ -46,6 +52,62 @@ describe('PainIssueTable with overview slim Issue data', () => {
 });
 
 describe('PainIssueTable independent review operations', () => {
+  it.each([
+    { reviewStatus: 'pending', status: IssuePainTrackingStatus.PENDING },
+    { reviewStatus: 'approved', status: IssuePainTrackingStatus.INVALID },
+  ])(
+    'confirms withdrawal of a $reviewStatus decision',
+    async ({ reviewStatus, status }) => {
+      const tracking = {
+        trackingKey: 'repo#I3#metric',
+        status,
+        trackingType: 'fix',
+        archivedIssues: [],
+        activeIssues: [
+          {
+            number: '609',
+            valid: reviewStatus === 'approved' ? false : null,
+            fixed: false,
+            invalid_review: {
+              id: 'review-1',
+              status: reviewStatus,
+              reason: '误判',
+            },
+          },
+        ],
+      } as unknown as IssuePainTracking;
+      const onTrackingAction = jest.fn().mockResolvedValue(tracking);
+      render(
+        <PainIssueTable
+          issues={[{ number: '609', score: 20, metric_code: '' }]}
+          tracking={tracking}
+          onTrackingAction={onTrackingAction}
+        />
+      );
+      fireEvent.click(screen.getByRole('button', { name: '撤销非有效判定' }));
+      const dialog = await screen.findByRole('dialog', {
+        name: '撤销非有效判定',
+      });
+      expect(onTrackingAction).not.toHaveBeenCalled();
+      fireEvent.change(within(dialog).getByPlaceholderText('请输入提交人'), {
+        target: { value: '测试人员' },
+      });
+      fireEvent.click(within(dialog).getByRole('button', { name: '确认撤销' }));
+      expect(onTrackingAction).toHaveBeenCalledWith({
+        trackingKey: tracking.trackingKey,
+        type: 'withdraw_invalid_decision',
+        issueNumber: '609',
+        reviewId: 'review-1',
+        operator: '测试人员',
+      });
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('dialog', { name: '撤销非有效判定' })
+        ).not.toBeInTheDocument()
+      );
+    }
+  );
+
   it('locks only the pending-review row while a fixed valid Issue can retest', () => {
     const tracking = {
       trackingKey: 'repo#I3#metric',

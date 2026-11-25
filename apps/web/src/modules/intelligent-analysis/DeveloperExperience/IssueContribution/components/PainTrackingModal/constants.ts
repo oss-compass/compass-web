@@ -48,6 +48,7 @@ export const getTrackingStatusMeta = (
 
 export const ACTION_LABELS: Record<string, string> = {
   revise_issue_validity: '修改 Issue 有效性',
+  withdraw_invalid_decision: '撤销非有效判定',
   confirm: '确认痛点',
   confirm_issues: '逐项确认涉及 Issue',
   decide_issue: '判定 Issue 有效性',

@@ -324,7 +324,7 @@ export type IssuePainTrackingIssue = {
   decision_reason?: string | null;
   invalid_review?: {
     id: string;
-    status: 'pending' | 'approved' | 'rejected';
+    status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
     reason: string;
     submitted_by: string;
     submitted_at: string;
@@ -506,6 +506,7 @@ export type IssuePainTrackingResponse = {
 
 export type IssuePainTrackingActionType =
   | 'revise_issue_validity'
+  | 'withdraw_invalid_decision'
   | 'confirm_issues'
   | 'decide_issue'
   | 'decide_issues'
@@ -522,6 +523,7 @@ export type IssuePainTrackingActionPayload = {
   type: IssuePainTrackingActionType;
   operator: string;
   issueNumber?: string;
+  reviewId?: string;
   issueNumbers?: string[];
   reason?: string;
   valid?: boolean;

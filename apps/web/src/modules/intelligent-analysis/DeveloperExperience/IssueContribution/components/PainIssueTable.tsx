@@ -933,6 +933,37 @@ const DecisionTooltipContent: React.FC<{ issue: ActiveTrackingIssue }> = ({
   </div>
 );
 
+const InvalidDecisionWithdrawal: React.FC<{
+  issue?: ActiveTrackingIssue;
+  tracking?: IssuePainTracking;
+  onAction?: TrackingActionHandler;
+  operator: string;
+  disabled?: boolean;
+}> = ({ issue, tracking, onAction, operator, disabled }) => {
+  if (
+    !issue ||
+    issue.synthetic ||
+    tracking?.trackingType !== 'fix' ||
+    !onAction
+  )
+    return null;
+  if (issue.valid !== false && !isIssueAwaitingReview(issue)) return null;
+  return (
+    <IssueValidityButton
+      tracking={tracking}
+      issueNumbers={[issue.number]}
+      valid={false}
+      onAction={onAction}
+      operator={operator}
+      disabled={disabled}
+      withdrawal={{
+        reviewId: issue.invalid_review?.id,
+        wasEffective: issue.valid === false,
+      }}
+    />
+  );
+};
+
 type DecisionCellProps = {
   issue: IssueReportPainIssue;
   activeIssue?: ActiveTrackingIssue;
@@ -946,6 +977,7 @@ type DecisionCellProps = {
   operator: string;
   requiresCompletionConfirm: boolean;
   onOperatorInvalid: (message: string) => void;
+  manualDisabledReason?: string | null;
 };
 
 const IssueDecisionCell: React.FC<DecisionCellProps> = ({
@@ -961,12 +993,25 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
   operator,
   requiresCompletionConfirm,
   onOperatorInvalid,
+  manualDisabledReason,
 }) => {
   if (!show) return null;
+  const withdrawal = (
+    <InvalidDecisionWithdrawal
+      issue={activeIssue}
+      tracking={tracking}
+      onAction={onTrackingAction}
+      operator={operator}
+      disabled={Boolean(manualDisabledReason)}
+    />
+  );
   if (activeIssue?.invalid_review?.status === 'pending') {
     return (
       <td className="border-b border-slate-100 px-3 py-2.5">
-        <InvalidReviewInfo issue={activeIssue} />
+        <div className="flex flex-col items-start gap-1">
+          <InvalidReviewInfo issue={activeIssue} />
+          {withdrawal}
+        </div>
       </td>
     );
   }
@@ -1005,6 +1050,7 @@ const IssueDecisionCell: React.FC<DecisionCellProps> = ({
               <InvalidReviewInfo issue={activeIssue} />
             </div>
           )}
+        {withdrawal}
       </td>
     );
   }
@@ -1340,10 +1386,17 @@ const IssueActionCell: React.FC<{
             ? withDisabledTooltip(rerunButton, rerunDisabledReason)
             : null}
         </div>
-      ) : validityAction ? null : (
+      ) : validityAction || isIssueAwaitingReview(activeIssue) ? null : (
         <span className="text-[11px] text-slate-300">—</span>
       )}
       {validityAction}
+      <InvalidDecisionWithdrawal
+        issue={activeIssue}
+        tracking={tracking}
+        onAction={onTrackingAction}
+        operator={operator}
+        disabled={Boolean(manualDisabledReason)}
+      />
     </td>
   );
 };
@@ -1414,6 +1467,7 @@ const PainIssueTableRow: React.FC<PainIssueTableRowProps> = (props) => {
         operator={props.operator}
         requiresCompletionConfirm={props.requiresCompletionConfirm}
         onOperatorInvalid={props.onOperatorInvalid}
+        manualDisabledReason={props.manualDisabledReason}
       />
       <IssueStatusCell
         show={props.showStatus}
