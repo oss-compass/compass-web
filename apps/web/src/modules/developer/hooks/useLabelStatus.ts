@@ -3,6 +3,7 @@ import { useQueries, UseQueryResult } from '@tanstack/react-query';
 import useContributorName from './useContributorName';
 import useQueryDateRange from '@modules/developer/hooks/useQueryDateRange';
 import { ContributorOverviewData } from '@modules/developer/context/StatusContext';
+import { formatDateParam } from './formatDateParam';
 
 // API 请求体
 interface ApiRequestBody {
@@ -36,8 +37,8 @@ const useContributorOverviews = () => {
   const { timeStart, timeEnd } = useQueryDateRange();
 
   // 将 Date 对象格式化为 ISO 字符串，如果 API 需要特定格式，请调整
-  const beginDateStr = timeStart ? timeStart.toISOString().split('T')[0] : '';
-  const endDateStr = timeEnd ? timeEnd.toISOString().split('T')[0] : '';
+  const beginDateStr = formatDateParam(timeStart);
+  const endDateStr = formatDateParam(timeEnd);
 
   const queries = useQueries({
     queries: [contributorName].map((contributorId) => {
