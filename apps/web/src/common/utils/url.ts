@@ -38,7 +38,9 @@ export function getNameSpace(path: string) {
   return getPathname(path).match(/(.+?)\/.+?\/?$/)?.[1] || '';
 }
 export function getUsername(url: string) {
-  const urlObj = new URL(url);
+  // Same rule as parseUrl() above: a relative or malformed URL must not throw.
+  const urlObj = parseUrl(url);
+  if (!urlObj) return '';
   const pathSegments = urlObj.pathname
     .split('/')
     .filter((segment) => segment !== '');
