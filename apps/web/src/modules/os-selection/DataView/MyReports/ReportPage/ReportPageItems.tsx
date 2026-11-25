@@ -7,7 +7,7 @@ const ReportPageItems = ({
   canClarify = false,
   targetSoftware = null,
 }) => {
-  if (!reportItems && reportItems === 0) {
+  if (!reportItems || reportItems.length === 0) {
     return <NotFoundOh />;
   }
   if (reportItems.length === 1) {
