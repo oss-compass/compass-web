@@ -20,4 +20,13 @@ describe('time', () => {
   it('formatToNowStrict', function () {
     expect(formatToNowStrict('2022-09-28T02:11:54Z')).toBe('2 months');
   });
+
+  it('returns an empty string for unparsable timestamps', function () {
+    // `format()` throws RangeError for an Invalid Date and formatDistanceToNow returns
+    // "Invalid Date"; a single malformed value from the api must not break the page.
+    expect(formatISO('N/A')).toBe('');
+    expect(formatISO('not-a-date')).toBe('');
+    expect(formatToNow('N/A')).toBe('');
+    expect(formatToNowStrict('N/A')).toBe('');
+  });
 });
