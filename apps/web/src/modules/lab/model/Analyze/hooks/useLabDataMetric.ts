@@ -8,18 +8,14 @@ const useLabDataMetric = () => {
     return {
       label: i.label,
       level: i.level,
-      panels: detail?.panels,
+      panels: detail?.panels?.filter((panel) => panel.metric?.ident) || [],
     };
   });
 
   const pickDataByMetric = (ident: string) => {
-    const panelResult = panelsResults.map(({ label, level, panels }) => {
-      const item = panels.find((i) => i.metric.ident === ident);
-      return {
-        label,
-        level,
-        ...item,
-      };
+    const panelResult = panelsResults.flatMap(({ label, level, panels }) => {
+      const item = panels.find((i) => i.metric?.ident === ident);
+      return item ? [{ label, level, ...item }] : [];
     });
     // align with date
 
