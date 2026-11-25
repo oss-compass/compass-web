@@ -18,6 +18,17 @@ export function resolveFileInsideDir(
   fileName: string
 ): string | null {
   const resolved = path.resolve(dir, fileName);
-  const dirWithSep = dir.endsWith(path.sep) ? dir : dir + path.sep;
-  return resolved.startsWith(dirWithSep) ? resolved : null;
+  // String comparison with path.sep only works when `dir` uses the platform
+  // separator: on Windows `path.resolve` returns "C:\..." while the dataset
+  // directories are addressed with "/", so every file was rejected.
+  const relative = path.relative(path.resolve(dir), resolved);
+  if (
+    relative === '' ||
+    relative === '..' ||
+    relative.startsWith('..' + path.sep) ||
+    path.isAbsolute(relative)
+  ) {
+    return null;
+  }
+  return resolved;
 }
