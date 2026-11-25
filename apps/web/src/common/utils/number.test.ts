@@ -36,5 +36,8 @@ describe('utils number ', () => {
     expect(countDecimalPlaces(NaN)).toEqual(0);
     expect(countDecimalPlaces(-1.2)).toEqual(1);
     expect(countDecimalPlaces(0.123456789)).toEqual(9);
+    expect(countDecimalPlaces(1e-7)).toEqual(7);
+    expect(countDecimalPlaces(1.2e-7)).toEqual(8);
+    expect(countDecimalPlaces(1.2e21)).toEqual(0);
   });
 });
