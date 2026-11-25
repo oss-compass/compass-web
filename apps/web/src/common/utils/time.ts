@@ -1,4 +1,5 @@
 import {
+  isValid,
   formatDistanceToNow,
   formatDistanceToNowStrict,
   format,
@@ -14,18 +15,23 @@ const languages = { en: enGB, zh: zhCN };
 export const formatISO = (s: string, layout?: string) => {
   if (!s) return '';
   const p = parseJSON(s);
+  // date-fns format() throws RangeError on an invalid date; a malformed value in
+  // the series must not take the whole page down.
+  if (!isValid(p)) return '';
   return format(p, layout || FORMAT_YMD);
 };
 
 export const formatToNow = (s: string) => {
   if (!s) return '';
   const p = parseJSON(s);
+  if (!isValid(p)) return '';
   return formatDistanceToNow(p, { locale: languages[local] });
 };
 
 export const formatToNowStrict = (s: string) => {
   if (!s) return '';
   const p = parseJSON(s);
+  if (!isValid(p)) return '';
   return formatDistanceToNowStrict(p, { locale: languages[local] });
 };
 
