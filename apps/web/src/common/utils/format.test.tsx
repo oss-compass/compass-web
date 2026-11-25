@@ -32,4 +32,9 @@ describe('format', () => {
     expect(roundedNum(1.2345, 3)).toEqual(1.235);
     expect(roundedNum(100000)).toEqual(100000);
   });
+
+  it('honours a zero decimal count instead of falling back to two', function () {
+    expect(roundedNum(1.9, 0)).toEqual(2);
+    expect(roundedNum(1.4, 0)).toEqual(1);
+  });
 });
