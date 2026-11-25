@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { RangeTag, rangeTags, timeRange } from '../constant';
+import { isDateRange } from '@common/utils/dateRange';
 
 const defaultVal = {
   range: '3Y' as RangeTag,
@@ -8,19 +9,7 @@ const defaultVal = {
   timeEnd: timeRange['3Y'].end,
 };
 
-export const isDateRange = (range: string) => {
-  if (range.includes(' ~ ')) {
-    const start = range.split(' ~ ')[0];
-    const end = range.split(' ~ ')[1];
-    const re = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/;
-    const r = start.match(re) && end.match(re);
-    if (r) {
-      return { start: new Date(start), end: new Date(end) };
-    }
-    return false;
-  }
-  return false;
-};
+export { isDateRange };
 const useQueryDateRange = () => {
   const router = useRouter();
   const range = router.query.range as RangeTag;
