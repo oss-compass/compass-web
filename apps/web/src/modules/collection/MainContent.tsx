@@ -174,7 +174,12 @@ const MainContent = ({
           compareIds={compareIds}
           total={total}
           compareMode={compareMode}
-          onCompareModeChange={(v) => setCompareMode(v)}
+          onCompareModeChange={(v) => {
+            setCompareMode(v);
+            if (!v) {
+              setCompareIds([]);
+            }
+          }}
           keyword={keyword}
           setKeyword={(v) => {
             setKeyword(v);
