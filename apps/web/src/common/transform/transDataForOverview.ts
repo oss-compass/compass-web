@@ -42,7 +42,9 @@ export function transDataForOverview(
   const metricObj: any = {};
   for (let i = 0; i < maxLen; i++) {
     opts.forEach(({ type, key }) => {
-      const item = filteredData[type][i];
+      // A type listed in `opts` may be absent from `data`; the length lookup
+      // above already guards that case, this access has to as well.
+      const item = filteredData[type]?.[i];
       if (item) {
         const time = item[timeKey];
         set(metricObj, [time, [key]], item[key]);
