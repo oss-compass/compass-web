@@ -21,3 +21,21 @@ describe('time', () => {
     expect(formatToNowStrict('2022-09-28T02:11:54Z')).toBe('2 months');
   });
 });
+
+describe('time locale', () => {
+  it('follows the locale that is active at call time', () => {
+    let locale = 'en';
+    jest.isolateModules(() => {
+      jest.doMock('@common/utils/getLocale', () => ({
+        __esModule: true,
+        default: () => locale,
+      }));
+      const mod = require('./time');
+      const en = mod.formatToNow('2022-09-28T02:11:54Z');
+      locale = 'zh';
+      const zh = mod.formatToNow('2022-09-28T02:11:54Z');
+      expect(en).toContain('about');
+      expect(zh).not.toEqual(en);
+    });
+  });
+});
