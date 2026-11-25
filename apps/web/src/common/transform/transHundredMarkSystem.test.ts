@@ -10,4 +10,11 @@ describe('utils number ', () => {
     expect(transHundredMarkSystem(0.7)).toBe(90);
     // expect(transHundredMarkSystem(null)).toBeNull();
   });
+
+  it('returns "-" for a value that is not a number instead of throwing', function () {
+    // @ts-ignore
+    expect(transHundredMarkSystem('abc')).toBe('-');
+    // @ts-ignore
+    expect(transHundredMarkSystem(undefined)).toBe('-');
+  });
 });
