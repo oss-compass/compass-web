@@ -34,6 +34,13 @@ const Collections = () => {
           'md:grid-cols-1 md:gap-4'
         )}
       >
+        {hotItemsCard.map((item) => {
+          return (
+            <div key={item.ident} className="hidden xl:block">
+              <CollectionCard collection={item} />
+            </div>
+          );
+        })}
         {CardItems.map((item) => {
           return <CollectionCard key={item.ident} collection={item} />;
         })}
