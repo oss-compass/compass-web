@@ -62,7 +62,12 @@ const Subscribe = () => {
               key={item.id}
               item={item}
               onRefresh={() => {
-                refetch();
+                const lastPage = Math.max(1, Math.ceil((count - 1) / per));
+                if (page > lastPage) {
+                  setPage(lastPage);
+                } else {
+                  refetch();
+                }
               }}
             />
           );
