@@ -48,6 +48,21 @@ const levelOptions: { value: OsBoardAlertLevel; labelKey: string }[] = [
 // 默认时间范围（最近几个月）
 const DEFAULT_TIME_RANGE = 3;
 
+/**
+ * Threshold input text -> value.
+ *
+ * The input is controlled by this state, so it must not store `Number(raw)` directly:
+ * `Number('')` is 0 (the field could never be cleared) and `Number('-')` is NaN (React then
+ * renders an uncontrolled input). Keep an empty value while the text is not a number yet.
+ */
+export const parseThresholdInput = (raw: string): number | '' => {
+  if (raw.trim() === '') {
+    return '';
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : '';
+};
+
 const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   open,
   onClose,
@@ -62,7 +77,7 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   const [metricKey, setMetricKey] = useState<string>('');
   const [metricName, setMetricName] = useState<string>('');
   const [operator, setOperator] = useState<Operator>('>');
-  const [threshold, setThreshold] = useState<number>(0);
+  const [threshold, setThreshold] = useState<number | ''>(0);
   const [thresholdType, setThresholdType] = useState<ThresholdType>('value');
   const [level, setLevel] = useState<OsBoardAlertLevel>('warning');
   const [enabled, setEnabled] = useState<boolean>(true);
@@ -94,7 +109,10 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
   const createAlertRule = useCreateAlertRule();
   const updateAlertRule = useUpdateAlertRule();
 
-  const isFormValid = !!metricKey && threshold !== undefined;
+  const isFormValid =
+    !!metricKey &&
+    typeof threshold === 'number' &&
+    Number.isFinite(threshold);
   const isLoading = metricsLoading || (!!editRuleIdNum && ruleLoading);
 
   // 编辑模式下回填数据
@@ -152,7 +170,7 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
 
   // 保存规则
   const handleSave = async () => {
-    if (!metricKey) return;
+    if (!metricKey || typeof threshold !== 'number') return;
     setSubmitting(true);
     setSubmitError('');
     try {
@@ -327,7 +345,9 @@ const AlertRuleDialog: React.FC<AlertRuleDialogProps> = ({
                         type="number"
                         className="h-10 w-full border bg-white px-3 text-sm outline-none focus:border-black"
                         value={threshold}
-                        onChange={(e) => setThreshold(Number(e.target.value))}
+                        onChange={(e) =>
+                          setThreshold(parseThresholdInput(e.target.value))
+                        }
                       />
                       {currentMetricUnit && (
                         <span className="ml-2 shrink-0 text-[#585858]">
