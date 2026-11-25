@@ -96,7 +96,7 @@ const ModalSelect = ({
 
   const content = () => {
     if (throttleSearch) {
-      if (searchResult.length === 0) {
+      if (searchResult?.length === 0) {
         return (
           <div className="text-secondary w-full text-center ">
             {t('common:no_data')}
