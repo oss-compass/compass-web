@@ -39,9 +39,11 @@ const UpdatedSince = () => {
   };
 
   const indicators = t('analyze:negative_indicators') as string;
-  const unit = t('analyze:unit_label', {
-    unit: t('analyze:unit_day'),
-  } as any) as string;
+  const unit = String(
+    t('analyze:unit_label', {
+      unit: t('analyze:unit_day'),
+    } as any)
+  );
 
   const {
     getOptions,
