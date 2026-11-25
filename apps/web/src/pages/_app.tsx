@@ -115,7 +115,7 @@ function MyApp({
       <UserInfoFetcher />
       <CommunityExperienceButtonStyles />
       <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 }
