@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Card,
   Tag,
@@ -78,6 +78,7 @@ const UserManagement: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [keywords, setKeywords] = useState('');
   const [searchKeywords, setSearchKeywords] = useState('');
+  const latestRequestId = useRef(0);
 
   // 角色筛选相关状态
   const [selectedRoleLevels, setSelectedRoleLevels] = useState<number[]>([]);
@@ -103,6 +104,7 @@ const UserManagement: React.FC = () => {
     keywords: string = '',
     role_level: number[] = []
   ) => {
+    const requestId = ++latestRequestId.current;
     setLoading(true);
     try {
       const requestData: any = {
@@ -121,15 +123,21 @@ const UserManagement: React.FC = () => {
         requestData
       );
 
+      if (requestId !== latestRequestId.current) return;
+
       setUserData(response.data.data);
       setTotal(response.data.total);
       setCurrentPage(response.data.page);
       setPageSize(response.data.per_page);
     } catch (error) {
+      if (requestId !== latestRequestId.current) return;
+
       console.error('获取用户数据失败：', error);
       message.error('获取用户数据失败');
     } finally {
-      setLoading(false);
+      if (requestId === latestRequestId.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -170,6 +178,9 @@ const UserManagement: React.FC = () => {
   // 组件加载时获取数据
   useEffect(() => {
     fetchUserData();
+    return () => {
+      latestRequestId.current += 1;
+    };
   }, []);
 
   // 搜索处理
