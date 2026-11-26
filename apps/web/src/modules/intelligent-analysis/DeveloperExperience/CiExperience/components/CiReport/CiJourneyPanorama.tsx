@@ -25,6 +25,7 @@ import type {
 } from '../../types';
 import {
   ROOT_STATUS_LABEL,
+  formatProblemEvidence,
   priBadgeClass,
   problemKey,
   prURL,
@@ -546,7 +547,7 @@ const StageProblem: React.FC<{
                 <b className="font-semibold text-slate-700">已核证据</b>
                 <ul className="mt-1 list-disc pl-5">
                   {root.evidence.map((e, i) => (
-                    <li key={i}>{e}</li>
+                    <li key={i}>{formatProblemEvidence(e)}</li>
                   ))}
                 </ul>
               </div>

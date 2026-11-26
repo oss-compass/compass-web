@@ -28,7 +28,7 @@ import {
   type InputRef,
 } from 'antd';
 import type { CiDimKey, CiPri, CiProblem, CiRepoKey } from '../../types';
-import { DIM_NAME } from '../../helpers';
+import { DIM_NAME, formatProblemEvidence } from '../../helpers';
 import PainHandlingPanel, { OperatorField } from './PainHandlingPanel';
 import RunReviewTable from './RunReviewTable';
 import { useTrackingOperator } from '../../../IssueContribution/components/PainTrackingModal/hooks';
@@ -218,7 +218,7 @@ const PainInformation: React.FC<{
           {problem.root.evidence?.length ? (
             <ul className="list-disc space-y-1 pl-5">
               {problem.root.evidence.map((item, index) => (
-                <li key={index}>{item}</li>
+                <li key={index}>{formatProblemEvidence(item)}</li>
               ))}
             </ul>
           ) : null}

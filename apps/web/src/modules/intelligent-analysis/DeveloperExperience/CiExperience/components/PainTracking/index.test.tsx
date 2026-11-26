@@ -139,6 +139,25 @@ const openModal = async () => {
     })[0]
   );
 };
+it('shows legacy and structured evidence in the pain management dialog', async () => {
+  const reportProblem: CiProblem = {
+    ...problem,
+    root: {
+      ...problem.root,
+      evidence: [
+        '历史证据文本',
+        { step: '编译', line: 42, text: '缺少构建依赖' },
+      ],
+    },
+  };
+  render(page(scope.day, [reportProblem]));
+  await openModal();
+
+  const modal = within(await screen.findByRole('dialog', { name: '痛点管理' }));
+  expect(modal.getByText('历史证据文本')).toBeInTheDocument();
+  expect(modal.getByText('编译 · L42：缺少构建依赖')).toBeInTheDocument();
+});
+
 const enterEvidence = () => {
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },

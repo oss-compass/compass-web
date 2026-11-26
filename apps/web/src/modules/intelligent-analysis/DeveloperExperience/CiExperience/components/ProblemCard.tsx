@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import type { CiProblem, CiRepoKey } from '../types';
 import {
+  formatProblemEvidence,
   prURL,
   ROOT_STATUS_LABEL,
   rootStatusBadgeClass,
@@ -109,7 +110,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
                 <span className="font-semibold text-slate-700">已核证据</span>
                 <ul className="mt-1 list-disc space-y-0.5 pl-5">
                   {rt.evidence.map((e, i) => (
-                    <li key={i}>{e}</li>
+                    <li key={i}>{formatProblemEvidence(e)}</li>
                   ))}
                 </ul>
               </div>

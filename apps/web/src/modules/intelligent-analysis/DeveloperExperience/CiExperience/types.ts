@@ -71,11 +71,15 @@ export type CiProblemImpact = {
 export type CiProblemRoot = {
   status: CiRootStatus;
   cause?: string;
-  evidence?: string[];
+  evidence?: CiProblemEvidence[];
   guess?: string;
   action?: string;
   dest?: string;
 };
+
+export type CiProblemEvidence =
+  | string
+  | { text: string; step?: string | null; line?: number | string | null };
 
 /** 单个问题卡 */
 export type CiProblem = CiRuleReference & {

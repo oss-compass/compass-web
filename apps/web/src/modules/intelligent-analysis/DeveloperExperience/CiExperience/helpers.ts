@@ -2,12 +2,25 @@ import type {
   CiBoard,
   CiDimKey,
   CiPri,
+  CiProblemEvidence,
   CiRepoData,
   CiRepoKey,
   CiRootStatus,
   CiStatus,
   CiVal,
 } from './types';
+
+export const formatProblemEvidence = (evidence: CiProblemEvidence): string => {
+  if (typeof evidence === 'string') return evidence;
+
+  const location = [
+    evidence.step?.trim(),
+    evidence.line != null && evidence.line !== '' ? `L${evidence.line}` : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
+  return location ? `${location}：${evidence.text}` : evidence.text;
+};
 
 /** 仓库身份来自后端目录，支持新增仓库与后端提供的名称别名。 */
 export const parseRepoKey = (
