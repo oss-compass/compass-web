@@ -43,6 +43,7 @@ type Props = {
   busy: boolean;
   onBusy: (value: boolean) => void;
   onOperatorInvalid: (message: string) => void;
+  validateCommonIssue?: () => boolean;
   rememberOperator: (value: string) => string;
   onTracking: (record: TrackingRecord) => void;
 };
@@ -112,6 +113,7 @@ const RunReviewTable: React.FC<Props> = ({
   busy,
   onBusy,
   onOperatorInvalid,
+  validateCommonIssue,
   rememberOperator,
   onTracking,
 }) => {
@@ -173,6 +175,7 @@ const RunReviewTable: React.FC<Props> = ({
       onOperatorInvalid(validation);
       return;
     }
+    if (validateCommonIssue?.() === false) return;
     if (action !== 'confirmed' && !reason.trim()) {
       setError('请填写原因');
       return;
@@ -225,6 +228,7 @@ const RunReviewTable: React.FC<Props> = ({
       onOperatorInvalid(validation);
       return;
     }
+    if (validateCommonIssue?.() === false) return;
     onOperatorInvalid('');
     setError('');
     if (action === 'confirmed') {
@@ -275,6 +279,7 @@ const RunReviewTable: React.FC<Props> = ({
           busy={busy}
           operator={operator}
           onOperatorInvalid={onOperatorInvalid}
+          validateCommonIssue={validateCommonIssue}
           rememberOperator={rememberOperator}
           onSelectPending={() =>
             setSelectedIds(pendingReviews.map((row) => row.instance_id))

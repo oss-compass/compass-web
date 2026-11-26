@@ -3,17 +3,38 @@ import { Radio, Space } from 'antd';
 import type { CiProblem } from '../../types';
 import { trackingProblemKey } from './model';
 
+export const getReportedCommonIssue = (problem: CiProblem) =>
+  problem.is_common_issue ??
+  (problem.common_issue_type?.trim() ? true : undefined);
+
+export type CommonIssueRadioRef = React.ComponentRef<typeof Radio>;
+
 const CommonIssueJudgment: React.FC<{
   problem: CiProblem;
   problems: CiProblem[];
   disabled: boolean;
-}> = ({ problem, problems, disabled }) => {
+  isCommon: boolean | undefined;
+  invalid: boolean;
+  inputRef: React.RefObject<CommonIssueRadioRef>;
+  onChange: (value: boolean) => void;
+}> = ({
+  problem,
+  problems,
+  disabled,
+  isCommon,
+  invalid,
+  inputRef,
+  onChange,
+}) => {
   const formId = useId();
+  const errorId = `${formId}-error`;
   const reportType = problem.common_issue_type?.trim();
-  const [isCommon, setIsCommon] = useState(
-    problem.is_common_issue ?? (reportType ? true : undefined)
-  );
   const [issueType, setIssueType] = useState(isCommon ? reportType : undefined);
+  const requiredRadioProps = {
+    required: true,
+    'aria-invalid': invalid,
+    'aria-describedby': invalid ? errorId : undefined,
+  };
   const knownIssues = problems.filter(
     (item) => item.is_common_issue ?? Boolean(item.common_issue_type?.trim())
   );
@@ -32,20 +53,35 @@ const CommonIssueJudgment: React.FC<{
         <fieldset>
           <legend className="mb-2 text-sm font-medium text-slate-700">
             是否共性问题
-            <span className="ml-1 text-xs text-slate-500">（选填）</span>
+            <span className="ml-1 text-rose-600" aria-hidden="true">
+              *
+            </span>
           </legend>
           <Radio.Group
             name={`${formId}-is-common`}
             value={isCommon}
             disabled={disabled}
             onChange={(event) => {
-              setIsCommon(event.target.value);
+              onChange(event.target.value);
               if (event.target.value === false) setIssueType(undefined);
             }}
           >
-            <Radio value={true}>是</Radio>
-            <Radio value={false}>否</Radio>
+            <Radio ref={inputRef} value={true} {...requiredRadioProps}>
+              是
+            </Radio>
+            <Radio value={false} {...requiredRadioProps}>
+              否
+            </Radio>
           </Radio.Group>
+          {invalid && (
+            <p
+              id={errorId}
+              role="alert"
+              className="mt-1.5 text-xs text-rose-600"
+            >
+              请选择是否共性问题
+            </p>
+          )}
         </fieldset>
         {isCommon === true && (
           <fieldset className="min-w-0">

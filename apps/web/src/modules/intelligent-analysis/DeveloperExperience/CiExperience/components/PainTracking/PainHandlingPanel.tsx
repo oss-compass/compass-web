@@ -6,13 +6,8 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import type { CiProblem } from '../../types';
-import CommonIssueJudgment from './CommonIssueJudgment';
 import PainModalSection from './PainModalSection';
-import {
-  trackingProblemKey,
-  type TrackingAction,
-  type TrackingStatus,
-} from './model';
+import { type TrackingAction, type TrackingStatus } from './model';
 
 export const OperatorField: React.FC<{
   inputRef: React.RefObject<InputRef>;
@@ -210,29 +205,28 @@ const WorkflowActions: React.FC<WorkflowActionsProps> = ({
 const PainHandlingPanel: React.FC<
   Omit<WorkflowActionsProps, 'hasRuns'> & {
     problem: CiProblem;
-    problems: CiProblem[];
     ready: boolean;
+    commonIssueField: React.ReactNode;
     operatorField: React.ReactNode;
     error: string;
   }
-> = ({ problem, problems, ready, operatorField, error, ...actions }) => {
+> = ({
+  problem,
+  ready,
+  commonIssueField,
+  operatorField,
+  error,
+  ...actions
+}) => {
   const hasRuns = problem.runs.length > 0;
   if (!ready && !hasRuns) return null;
-  const showCommonIssue = ready && actions.status === 'pending';
   const showActions = ready && (!hasRuns || actions.status !== 'pending');
   return (
     <PainModalSection title="处理信息">
-      {showCommonIssue && (
-        <CommonIssueJudgment
-          key={trackingProblemKey(problem)}
-          problem={problem}
-          problems={problems}
-          disabled={actions.saving}
-        />
-      )}
+      {commonIssueField}
       <div
         className={
-          showCommonIssue ? 'border-t border-slate-200 pt-3' : undefined
+          commonIssueField ? 'border-t border-slate-200 pt-3' : undefined
         }
       >
         {operatorField}

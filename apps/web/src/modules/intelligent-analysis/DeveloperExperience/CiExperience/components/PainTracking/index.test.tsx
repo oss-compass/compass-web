@@ -248,11 +248,34 @@ it('keeps the report, fields, and run reviews separate and focuses a missing sub
   expect(within(section).getByText('暂无已知共性问题')).toBeInTheDocument();
   const yes = within(section).getByRole('radio', { name: '是' });
   const no = within(section).getByRole('radio', { name: '否' });
+  expect(yes).toBeRequired();
+  expect(no).toBeRequired();
   expect(yes).not.toBeChecked();
   expect(no).not.toBeChecked();
+  expect(within(section).queryByText('（选填）')).not.toBeInTheDocument();
+
+  fireEvent.change(operator, { target: { value: '张三' } });
+  fireEvent.click(
+    within(executions).getByRole('button', { name: '执行记录 #1：判据正确' })
+  );
+  expect(yes).toHaveFocus();
+  expect(yes).toHaveAccessibleDescription('请选择是否共性问题');
+  expect(savePainRunReview).not.toHaveBeenCalled();
+
+  fireEvent.click(
+    within(executions).getByRole('checkbox', { name: '选择执行记录 #1' })
+  );
+  fireEvent.click(
+    within(executions).getByRole('button', { name: '批量确认判据正确' })
+  );
+  expect(yes).toHaveFocus();
+  expect(
+    screen.queryByRole('button', { name: '确认提交 1 条' })
+  ).not.toBeInTheDocument();
 
   fireEvent.click(yes);
   expect(yes).toBeChecked();
+  expect(within(section).queryByRole('alert')).not.toBeInTheDocument();
   expect(within(section).getByText('报告暂无可选类型')).toBeInTheDocument();
   fireEvent.click(no);
   expect(no).toBeChecked();
@@ -312,6 +335,13 @@ it('confirms, manually fixes, shares status across entries and leaves rerun disa
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
+  fireEvent.click(screen.getByRole('button', { name: /是，有效问题/ }));
+  expect(mockedSave).not.toHaveBeenCalled();
+  expect(screen.getByText('请选择是否共性问题')).toBeInTheDocument();
+  const commonIssue = within(
+    screen.getByRole('region', { name: '共性问题判断' })
+  );
+  fireEvent.click(commonIssue.getByRole('radio', { name: '否' }));
   fireEvent.click(screen.getByRole('button', { name: /是，有效问题/ }));
   await waitFor(() =>
     expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled()
@@ -387,6 +417,15 @@ it('keeps input on save failure and reloads a concurrent change without retrying
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
+  fireEvent.click(screen.getByRole('button', { name: /否，非有效问题/ }));
+  expect(screen.getByText('请选择是否共性问题')).toBeInTheDocument();
+  expect(screen.queryByLabelText('无效问题判断依据')).not.toBeInTheDocument();
+  fireEvent.click(
+    within(screen.getByRole('region', { name: '共性问题判断' })).getByRole(
+      'radio',
+      { name: '是' }
+    )
+  );
   fireEvent.click(screen.getByRole('button', { name: /否，非有效问题/ }));
   fireEvent.change(screen.getByLabelText('无效问题判断依据'), {
     target: { value: '已核实执行日志' },

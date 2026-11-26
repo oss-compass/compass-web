@@ -29,6 +29,10 @@ import {
 } from 'antd';
 import type { CiDimKey, CiPri, CiProblem, CiRepoKey } from '../../types';
 import { DIM_NAME, formatProblemEvidence } from '../../helpers';
+import CommonIssueJudgment, {
+  getReportedCommonIssue,
+  type CommonIssueRadioRef,
+} from './CommonIssueJudgment';
 import PainHandlingPanel, { OperatorField } from './PainHandlingPanel';
 import RunReviewTable from './RunReviewTable';
 import { useTrackingOperator } from '../../../IssueContribution/components/PainTrackingModal/hooks';
@@ -270,6 +274,9 @@ export const CiPainTrackingProvider: React.FC<{
   const [actionError, setActionError] = useState('');
   const [operatorError, setOperatorError] = useState('');
   const operatorInput = useRef<InputRef>(null);
+  const [isCommonIssue, setIsCommonIssue] = useState<boolean>();
+  const [commonIssueInvalid, setCommonIssueInvalid] = useState(false);
+  const commonIssueInput = useRef<CommonIssueRadioRef>(null);
   const [invalidReasonOpen, setInvalidReasonOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -311,6 +318,8 @@ export const CiPainTrackingProvider: React.FC<{
     setReason('');
     setActionError('');
     setOperatorError('');
+    setIsCommonIssue(getReportedCommonIssue(problem));
+    setCommonIssueInvalid(false);
     setInvalidReasonOpen(false);
   }, []);
   const record = selected ? records[trackingProblemKey(selected)] : undefined;
@@ -318,6 +327,13 @@ export const CiPainTrackingProvider: React.FC<{
   const showOperatorError = (message: string) => {
     setOperatorError(message);
     if (message) operatorInput.current?.focus();
+  };
+  const validateCommonIssue = () => {
+    if (!ready) return false;
+    if (status !== 'pending' || isCommonIssue !== undefined) return true;
+    setCommonIssueInvalid(true);
+    commonIssueInput.current?.focus();
+    return false;
   };
   const performAction = async (
     nextAction: TrackingAction,
@@ -333,6 +349,7 @@ export const CiPainTrackingProvider: React.FC<{
       );
       return false;
     }
+    if (!validateCommonIssue()) return false;
     if (nextAction === 'mark_invalid' && !nextReason.trim()) {
       setActionError('判为非有效问题时请填写判断依据');
       return false;
@@ -351,6 +368,9 @@ export const CiPainTrackingProvider: React.FC<{
       });
       if (!mounted.current) return;
       setRecords((current) => ({ ...current, [data.problemKey]: data }));
+      if (nextAction === 'reset') {
+        setIsCommonIssue(getReportedCommonIssue(selected));
+      }
       setReason('');
       setInvalidReasonOpen(false);
       toast.success(ACTION_SUCCESS_MESSAGES[nextAction]);
@@ -382,6 +402,7 @@ export const CiPainTrackingProvider: React.FC<{
       );
       return;
     }
+    if (!validateCommonIssue()) return;
     setOperatorError('');
     setActionError('');
     setReason('');
@@ -607,12 +628,28 @@ export const CiPainTrackingProvider: React.FC<{
             )}
             <PainHandlingPanel
               problem={selected}
-              problems={problems}
               ready={ready}
               status={status}
               reason={reason}
               saving={saving}
               error={invalidReasonOpen ? '' : actionError}
+              commonIssueField={
+                ready && status === 'pending' ? (
+                  <CommonIssueJudgment
+                    key={trackingProblemKey(selected)}
+                    problem={selected}
+                    problems={problems}
+                    disabled={saving}
+                    isCommon={isCommonIssue}
+                    invalid={commonIssueInvalid}
+                    inputRef={commonIssueInput}
+                    onChange={(value) => {
+                      setIsCommonIssue(value);
+                      setCommonIssueInvalid(false);
+                    }}
+                  />
+                ) : null
+              }
               operatorField={
                 <OperatorField
                   inputRef={operatorInput}
@@ -641,6 +678,7 @@ export const CiPainTrackingProvider: React.FC<{
                   if (mounted.current) setSaving(value);
                 }}
                 onOperatorInvalid={showOperatorError}
+                validateCommonIssue={validateCommonIssue}
                 rememberOperator={rememberOperator}
                 onTracking={(data) => {
                   if (mounted.current)

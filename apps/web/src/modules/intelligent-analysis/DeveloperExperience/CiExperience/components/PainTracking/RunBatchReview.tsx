@@ -19,6 +19,7 @@ type Props = {
   busy: boolean;
   operator: string;
   onOperatorInvalid: (message: string) => void;
+  validateCommonIssue?: () => boolean;
   rememberOperator: (value: string) => string;
   onSelectPending: () => void;
   onClear: () => void;
@@ -46,6 +47,7 @@ const RunBatchReview: React.FC<Props> = (props) => {
       props.onOperatorInvalid(validation);
       return;
     }
+    if (props.validateCommonIssue?.() === false) return;
     props.onOperatorInvalid('');
     setReason('');
     setTarget({ action, rows: [...props.selected] });
@@ -57,6 +59,7 @@ const RunBatchReview: React.FC<Props> = (props) => {
       props.onOperatorInvalid(validation);
       return;
     }
+    if (props.validateCommonIssue?.() === false) return;
     if (target.action !== 'confirmed' && !reason.trim()) return;
     submitting.current = true;
     setLoadingAction(target.action);
