@@ -4,6 +4,7 @@ import useGetTableOption from './useGetTableOption';
 import { useTpcSoftwareSelectionReportPageQuery } from '@oss-compass/graphql';
 import client from '@common/gqlClient';
 import { useTableColumns } from './useTableColumns';
+import { buildMyReportsQuery } from './myReportsQuery';
 import { useUserInfo } from '@modules/auth';
 import { Button, message } from 'antd'; // 导入 Button 和 message
 import { useRouter } from 'next/router'; // 导入 useRouter
@@ -27,11 +28,7 @@ const ReportTable = () => {
   const [selectedRows, setSelectedRows] = useState<any[]>([]); // 新增状态：选中行的完整数据
 
   const myQuery = useMemo(
-    () => ({
-      ...query,
-      reportTypeList: [0],
-      filterOpts: [{ type: 'user', values: [currentUser?.name] }],
-    }),
+    () => buildMyReportsQuery(query, currentUser?.name),
     [query, currentUser?.name] // 添加 currentUser.name 依赖
   );
 
