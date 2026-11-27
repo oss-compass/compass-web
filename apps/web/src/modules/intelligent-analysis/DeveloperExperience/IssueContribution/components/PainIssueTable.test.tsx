@@ -10,6 +10,17 @@ import PainIssueTable from './PainIssueTable';
 import type { IssuePainTracking } from '../types';
 import { IssuePainTrackingStatus } from '../types';
 
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    value: jest.fn().mockReturnValue({
+      matches: false,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    }),
+  });
+});
+
 describe('PainIssueTable with overview slim Issue data', () => {
   it('shows report assignees and the state snapshot time in the shared table', async () => {
     render(
@@ -52,6 +63,45 @@ describe('PainIssueTable with overview slim Issue data', () => {
 });
 
 describe('PainIssueTable independent review operations', () => {
+  it('keeps selections over the rerun limit and allows the user to deselect down to the limit', () => {
+    const issues = Array.from({ length: 2001 }, (_, index) => ({
+      number: String(index + 1),
+      score: 20,
+      metric_code: '',
+    }));
+    const tracking = {
+      status: IssuePainTrackingStatus.TRACKING,
+      trackingType: 'fix',
+      activeIssues: issues.map((issue) => ({
+        ...issue,
+        valid: true,
+        fixed: true,
+      })),
+      archivedIssues: [],
+    } as unknown as IssuePainTracking;
+    const onRerun = jest.fn();
+    render(
+      <PainIssueTable issues={issues} tracking={tracking} onRerun={onRerun} />
+    );
+
+    const header = screen.getByRole('row', { name: /责任人/ });
+    fireEvent.click(within(header).getByRole('checkbox'));
+    const rerun = screen.getByRole('button', { name: /批量发起复测/ });
+    expect(rerun).toBeDisabled();
+    expect(screen.getByRole('status')).toHaveTextContent(
+      /2,001.*单次最多 2,000/
+    );
+    expect(onRerun).not.toHaveBeenCalled();
+
+    const checkbox = within(
+      screen.getByRole('row', { name: /#1\b/ })
+    ).getByRole('checkbox');
+    expect(checkbox).toBeChecked();
+    fireEvent.click(checkbox);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /批量发起复测/ })).toBeEnabled();
+  });
+
   it.each([
     { reviewStatus: 'pending', status: IssuePainTrackingStatus.PENDING },
     { reviewStatus: 'approved', status: IssuePainTrackingStatus.INVALID },

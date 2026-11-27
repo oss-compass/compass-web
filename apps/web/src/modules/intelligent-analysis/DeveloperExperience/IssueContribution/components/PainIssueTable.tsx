@@ -77,6 +77,27 @@ const sortEvidenceByTime = (evidence: IssueReportPainIssue['evidence']) =>
     return left.time.localeCompare(right.time);
   });
 
+// 与后端单次提交上限一致，服务端内部拆批的大小不在界面展示。
+const MAX_RERUN_ISSUES = 2000;
+
+const getRerunLimitMessage = (count: number) =>
+  count > MAX_RERUN_ISSUES
+    ? `已选 ${count.toLocaleString(
+        'en-US'
+      )} 条可复测 Issue，单次最多 ${MAX_RERUN_ISSUES.toLocaleString(
+        'en-US'
+      )} 条。请减少勾选后再提交。`
+    : null;
+
+const RerunLimitHint: React.FC<{ count: number }> = ({ count }) => {
+  const message = getRerunLimitMessage(count);
+  return message ? (
+    <p role="status" className="w-full text-xs text-amber-700">
+      {message}
+    </p>
+  ) : null;
+};
+
 const PAIN_ISSUE_TABLE_LAYOUTS = {
   default: {
     table: 'min-w-[1320px]',
@@ -1531,6 +1552,7 @@ type PainIssueTableToolbarProps = {
   canBatchUndo: boolean;
   showManualFixActions: boolean;
   canBatchRerun: boolean;
+  rerunIssueCount: number;
   rerunLabel: string;
   /** 全局重跑置灰原因（同周期锁定/提交中）；为空表示可发起。 */
   rerunDisabledReason?: string | null;
@@ -1707,6 +1729,7 @@ const PainIssueTableToolbar: React.FC<PainIssueTableToolbarProps> = (props) => {
             batchRerunReason
           )}
         </div>
+        <RerunLimitHint count={props.rerunIssueCount} />
       </div>
     );
   }
@@ -2231,7 +2254,12 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
     setBatchInvalidReasonOpen(true);
   };
   const applyBatchRerun = async () => {
-    if (!onRerun || !rerunIssueNumbers.length) return;
+    if (
+      !onRerun ||
+      !rerunIssueNumbers.length ||
+      rerunIssueNumbers.length > MAX_RERUN_ISSUES
+    )
+      return;
     const validation = validateOperator(operator);
     if (validation) {
       notifyOperatorInvalid(validation);
@@ -2278,8 +2306,11 @@ const PainIssueTable: React.FC<PainIssueTableProps> = ({
         canBatchUndo={canBatchUndo}
         showManualFixActions={tracking?.trackingType === 'fix'}
         canBatchRerun={canBatchRerun}
+        rerunIssueCount={rerunIssueNumbers.length}
         rerunLabel={getBatchRerunLabel(tracking)}
-        rerunDisabledReason={rerunDisabledReason}
+        rerunDisabledReason={
+          getRerunLimitMessage(rerunIssueNumbers.length) ?? rerunDisabledReason
+        }
         lockedSelectedCount={lockedSelectedCount}
         completesPendingDecision={completesPendingDecision}
         onOperatorChange={(value) => {

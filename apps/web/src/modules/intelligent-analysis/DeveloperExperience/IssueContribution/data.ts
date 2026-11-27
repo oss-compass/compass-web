@@ -512,29 +512,64 @@ export const postIssuePainTrackingAction = async (
       body: JSON.stringify(payload),
     }
   );
-  if (!response.ok) {
-    const body = (await response.json().catch(() => null)) as {
-      detail?: { message?: string } | string;
-    } | null;
-    const errorMessage =
-      typeof body?.detail === 'string'
-        ? body.detail
-        : body?.detail?.message || `操作失败（${response.status}）`;
-    throw new Error(errorMessage);
-  }
+  if (!response.ok) throw new Error(await parseApiError(response, '操作'));
   return response.json() as Promise<{
     message: string;
     data: IssuePainTracking;
   }>;
 };
 
-const parseApiError = async (response: Response) => {
+type ApiValidationError = {
+  loc?: Array<string | number>;
+  type?: string;
+  ctx?: { max_length?: number };
+};
+
+const formatApiValidationError = (
+  errors: ApiValidationError[]
+): string | undefined => {
+  const issueLimit = errors.find(
+    (error) => error?.loc?.includes('issueNumbers') && error.type === 'too_long'
+  )?.ctx?.max_length;
+  if (typeof issueLimit === 'number') {
+    return `单次最多提交 ${issueLimit.toLocaleString(
+      'en-US'
+    )} 条 Issue，请减少勾选后再提交。`;
+  }
+  if (errors.some((error) => error?.loc?.includes('operator'))) {
+    return '提交人填写有误，请填写有效的姓名（最多 20 个字符）后再提交。';
+  }
+  if (errors.some((error) => error?.loc?.includes('reportKey'))) {
+    return '报告信息缺失或无效，请刷新报告后再提交。';
+  }
+  if (
+    errors.some(
+      (error) =>
+        error?.loc?.includes('issueNumbers') ||
+        error?.loc?.includes('issueNumber')
+    )
+  ) {
+    return 'Issue 选择有误，请重新勾选后再提交。';
+  }
+  return undefined;
+};
+
+const parseApiError = async (response: Response, action = '请求') => {
   const body = (await response.json().catch(() => null)) as {
-    detail?: { message?: string } | string;
+    detail?: { message?: string } | string | ApiValidationError[];
   } | null;
-  return typeof body?.detail === 'string'
-    ? body.detail
-    : body?.detail?.message || `请求失败（${response.status}）`;
+  const detail = body?.detail;
+  if (typeof detail === 'string' && detail.trim()) return detail;
+  if (Array.isArray(detail)) {
+    const message = formatApiValidationError(detail);
+    if (message) return message;
+  } else if (typeof detail === 'object' && detail?.message) {
+    return detail.message;
+  }
+  if (response.status === 422) {
+    return '提交内容未通过校验，请检查提交人和所选 Issue 后重试。';
+  }
+  return `${action}失败（${response.status}）`;
 };
 
 export const createIssuePainRerun = async (payload: {

@@ -1,4 +1,8 @@
-import { fetchIssuePainTrackings, postIssuePainTrackingAction } from './data';
+import {
+  createIssuePainRerun,
+  fetchIssuePainTrackings,
+  postIssuePainTrackingAction,
+} from './data';
 
 describe('Issue tracking report scope', () => {
   const originalFetch = global.fetch;
@@ -42,4 +46,79 @@ describe('Issue tracking report scope', () => {
       issueNumber: '70',
     });
   });
+
+  it.each([
+    [500, '500'],
+    [2000, '2,000'],
+  ])(
+    'shows the actual server limit (%i) for batch actions and reruns',
+    async (limit, display) => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 422,
+        json: async () => ({
+          detail: [
+            {
+              loc: ['body', 'issueNumbers'],
+              type: 'too_long',
+              ctx: { max_length: limit },
+            },
+          ],
+        }),
+      });
+      const payload = {
+        community: 'cann/demo',
+        trackingKey: 'tracking',
+        reportKey: 'report',
+        operator: 'tester',
+        issueNumbers: ['70'],
+      };
+      const message = `单次最多提交 ${display} 条 Issue，请减少勾选后再提交。`;
+      await expect(
+        postIssuePainTrackingAction({
+          ...payload,
+          type: 'decide_issues',
+          valid: true,
+        })
+      ).rejects.toThrow(message);
+      await expect(createIssuePainRerun(payload)).rejects.toThrow(message);
+    }
+  );
+
+  it.each([
+    [
+      422,
+      [{ loc: ['body', 'operator'], type: 'string_too_long' }],
+      '提交人填写有误',
+    ],
+    [
+      422,
+      [{ loc: ['body', 'reportKey'], type: 'missing' }],
+      '请刷新报告后再提交',
+    ],
+    [422, [], '提交内容未通过校验'],
+    [
+      503,
+      { message: '部分任务未能入队，请查看重跑记录' },
+      '部分任务未能入队，请查看重跑记录',
+    ],
+  ])(
+    'reports a useful message for HTTP %i',
+    async (status, detail, expected) => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status,
+        json: async () => ({ detail }),
+      });
+      await expect(
+        createIssuePainRerun({
+          community: 'cann/demo',
+          trackingKey: 'tracking',
+          reportKey: 'report',
+          operator: 'tester',
+          issueNumbers: ['70'],
+        })
+      ).rejects.toThrow(expected);
+    }
+  );
 });
