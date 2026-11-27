@@ -21,7 +21,8 @@ function getLocale(reqCookies?: NextApiRequestCookies | undefined): TypeLang {
     const language = reqCookies[USER_LOCALE_KEY] as TypeLang;
     return locales.includes(language) ? language : 'en';
   } else if (typeof reqCookies === 'undefined') {
-    return (cookieGetLocale() as TypeLang) || 'en';
+    const language = cookieGetLocale() as TypeLang;
+    return locales.includes(language) ? language : 'en';
   }
   return 'en';
 }
