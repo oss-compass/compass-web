@@ -2,25 +2,35 @@ import React, { PropsWithChildren } from 'react';
 import classnames from 'classnames';
 import { useLabModelVersion, useLabModelDetail } from '../hooks';
 
-const ModelVersionProvider: React.FC<
-  PropsWithChildren<{
-    loadingClassName?: string;
-    loadingUi?: React.ReactNode;
-  }>
-> = ({ children, loadingClassName, loadingUi }) => {
-  const { isLoading, data: modelData, error: modelError } = useLabModelDetail();
-  const {
-    isLoading: versionLoading,
-    data: versionData,
-    error: versionError,
-  } = useLabModelVersion();
+type ProviderProps = PropsWithChildren<{
+  loadingClassName?: string;
+  loadingUi?: React.ReactNode;
+}>;
 
-  if (isLoading || versionLoading) {
+// Keep query status rendering reusable without adding another query observer
+// that could unmount the editor and discard its initialization state on errors.
+export const ModelVersionQueryBoundary = ({
+  children,
+  loadingClassName,
+  loadingUi,
+  loading,
+  failed,
+  hasData,
+}: ProviderProps & {
+  loading: boolean;
+  failed: boolean;
+  hasData: boolean;
+}) => {
+  if (loading) {
     if (loadingUi) {
-      return <div className={classnames(loadingClassName)}>{loadingUi}</div>;
+      return (
+        <div role="status" className={classnames(loadingClassName)}>
+          {loadingUi}
+        </div>
+      );
     }
     return (
-      <div className={classnames(loadingClassName)}>
+      <div role="status" className={classnames(loadingClassName)}>
         <div className="flex-1 animate-pulse space-y-4">
           <div className="h-6 rounded bg-slate-200"></div>
           <div className="grid grid-cols-3 gap-4">
@@ -38,21 +48,40 @@ const ModelVersionProvider: React.FC<
     );
   }
 
-  if (modelError || versionError) {
+  if (failed) {
     return (
-      <div className="py-10 text-center text-lg text-gray-600">
+      <div role="alert" className="py-10 text-center text-lg text-gray-600">
         404 not found
       </div>
     );
   }
 
-  if (!modelData?.labModelDetail?.id || !versionData?.labModelVersion?.id) {
+  if (!hasData) {
     return (
-      <div className="py-10 text-center text-lg text-gray-600">Forbidden</div>
+      <div role="alert" className="py-10 text-center text-lg text-gray-600">
+        Forbidden
+      </div>
     );
   }
 
   return <>{children}</>;
+};
+
+const ModelVersionProvider = ({ children, ...props }: ProviderProps) => {
+  const model = useLabModelDetail();
+  const version = useLabModelVersion();
+  return (
+    <ModelVersionQueryBoundary
+      {...props}
+      loading={model.isLoading || version.isLoading}
+      failed={Boolean(model.error || version.error)}
+      hasData={Boolean(
+        model.data?.labModelDetail?.id && version.data?.labModelVersion?.id
+      )}
+    >
+      {children}
+    </ModelVersionQueryBoundary>
+  );
 };
 
 export default ModelVersionProvider;
