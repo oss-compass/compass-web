@@ -6,6 +6,7 @@ import UnderAnalysis from './Status/UnderAnalysis';
 import NotFoundAnalysis from './Status/NotFoundAnalysis';
 import LoadingAnalysis from './Status/LoadingAnalysis';
 import Charts from './Charts';
+import ReportPrint from '@modules/analyze/components/ReportPrint';
 
 const DataView = () => {
   const { notFound, isLoading, status } = useStatusContext();
@@ -25,6 +26,9 @@ const DataView = () => {
   return (
     <div className="mx-auto w-full flex-1">
       <CompareBar />
+      <div className="mt-4 flex justify-end px-4">
+        <ReportPrint />
+      </div>
       <Charts />
     </div>
   );
