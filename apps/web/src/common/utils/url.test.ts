@@ -1,5 +1,6 @@
 import {
   getPathname,
+  getCanonicalRepoPath,
   getProvider,
   getNameSpace,
   getRepoName,
@@ -30,6 +31,67 @@ describe('utils url ', () => {
     ];
     testCases.map((item) => {
       expect(getPathname(item.input)).toEqual(item.result);
+    });
+  });
+
+  it('getCanonicalRepoPath', () => {
+    const testCases = [
+      // Every provider for the same namespace/repo must collapse to one value,
+      // otherwise the same repo compared across hosts looks like two entries.
+      {
+        input: 'https://github.com/oss-compass/compass-web',
+        result: 'oss-compass/compass-web',
+      },
+      {
+        input: 'https://gitee.com/oss-compass/compass-web',
+        result: 'oss-compass/compass-web',
+      },
+      {
+        input: 'http://gitcode.com/oss-compass/compass-web',
+        result: 'oss-compass/compass-web',
+      },
+      // Trailing slashes used to survive getPathname and break equality.
+      {
+        input: 'https://github.com/oss-compass/compass-web/',
+        result: 'oss-compass/compass-web',
+      },
+      {
+        input: 'https://gitee.com/oss-compass/compass-web/',
+        result: 'oss-compass/compass-web',
+      },
+      // Hosts and owner/repo names are compared case-insensitively.
+      {
+        input: 'https://github.com/OSS-Compass/Compass-Web',
+        result: 'oss-compass/compass-web',
+      },
+      // A `.git` suffix is a clone URL artifact, not part of the identity.
+      {
+        input: 'https://github.com/apache/dubbo.git',
+        result: 'apache/dubbo',
+      },
+      // Deeper paths (issues, trees, ...) must not change the repo identity.
+      {
+        input: 'https://github.com/apache/dubbo/issues/1',
+        result: 'apache/dubbo',
+      },
+      // A longer basename is a different repository, not the same one.
+      {
+        input: 'https://github.com/apache/dubbo-go',
+        result: 'apache/dubbo-go',
+      },
+      {
+        input: 'https://github.com/cli/cli-extra',
+        result: 'cli/cli-extra',
+      },
+      // Non-URLs and incomplete paths cannot be compared and must be empty.
+      { input: 'apache/dubbo', result: '' },
+      { input: 'https://github.com/apache', result: '' },
+      { input: 'https://github.com/', result: '' },
+      { input: '', result: '' },
+      { input: undefined, result: '' },
+    ];
+    testCases.map((item) => {
+      expect(getCanonicalRepoPath(item.input)).toEqual(item.result);
     });
   });
 
