@@ -8,6 +8,8 @@ import {
   resolveFileInsideDir,
 } from '@modules/intelligent-analysis/server/pathSafety';
 
+import { parsePagination } from '../../pagination';
+
 type ParticipantTableRow = {
   key: string;
   具体人员: string;
@@ -90,18 +92,6 @@ async function resolveDatasetDir(dataset: string): Promise<string> {
   return candidates[0];
 }
 
-function parsePage(value: unknown) {
-  const num = Number(value);
-  if (!Number.isFinite(num) || num <= 0) return 1;
-  return Math.floor(num);
-}
-
-function parsePageSize(value: unknown) {
-  const num = Number(value);
-  if (!Number.isFinite(num) || num <= 0) return 10;
-  return Math.min(100, Math.floor(num));
-}
-
 function buildMetaByEcosystem(organizationData: Record<string, any>) {
   const metaByEcosystem: Record<string, EcosystemMeta> = {};
   for (const [ecosystemName, ecosystemData] of Object.entries(
@@ -110,7 +100,7 @@ function buildMetaByEcosystem(organizationData: Record<string, any>) {
     if (!ecosystemData || typeof ecosystemData !== 'object') continue;
     const participants =
       (ecosystemData as any)?.['人员参与项目清单'] &&
-        typeof (ecosystemData as any)['人员参与项目清单'] === 'object'
+      typeof (ecosystemData as any)['人员参与项目清单'] === 'object'
         ? (ecosystemData as any)['人员参与项目清单']
         : {};
     let totalItems = 0;
@@ -122,14 +112,14 @@ function buildMetaByEcosystem(organizationData: Record<string, any>) {
     const codeTotal =
       Number(
         (ecosystemData as any)['2024-2025组织代码贡献总量'] ??
-        (ecosystemData as any)['2025-2026组织代码贡献总量'] ??
-        0
+          (ecosystemData as any)['2025-2026组织代码贡献总量'] ??
+          0
       ) || 0;
     const issueTotal =
       Number(
         (ecosystemData as any)['2024-2025组织Issue贡献总量'] ??
-        (ecosystemData as any)['2025-2026组织Issue贡献总量'] ??
-        0
+          (ecosystemData as any)['2025-2026组织Issue贡献总量'] ??
+          0
       ) || 0;
 
     metaByEcosystem[ecosystemName] = {
@@ -137,12 +127,12 @@ function buildMetaByEcosystem(organizationData: Record<string, any>) {
       '2024-2025组织Issue贡献总量': issueTotal,
       '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
         (ecosystemData as any)[
-        '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+          '2024组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
         ] || ''
       ),
       '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)': String(
         (ecosystemData as any)[
-        '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
+          '2025组织网络影响力(社区核心度/协作影响力/联通控制力/PageRank)'
         ] || ''
       ),
       totalItems,
@@ -286,8 +276,7 @@ export default async function handler(
     return;
   }
 
-  const page = parsePage(req.query.page);
-  const pageSize = parsePageSize(req.query.pageSize);
+  const { page, pageSize } = parsePagination(req.query);
   const ecosystemName = String(req.query.ecosystemName || '').trim();
 
   try {
