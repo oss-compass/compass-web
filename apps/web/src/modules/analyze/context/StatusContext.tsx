@@ -14,15 +14,19 @@ export type VerifiedLabelItem = {
 export interface ConfigValue {
   status: string;
   isLoading: boolean;
+  isError: boolean;
   notFound: boolean;
   verifiedItems: VerifiedLabelItem[];
+  refetch: () => void;
 }
 
 export const DEFAULT_CONFIG: ConfigValue = {
   status: '',
   isLoading: false,
+  isError: false,
   notFound: false,
   verifiedItems: [],
+  refetch: () => {},
 };
 
 export const StatusContext = createContext<ConfigValue>(DEFAULT_CONFIG);
