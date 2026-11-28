@@ -10,6 +10,9 @@ import { useGetEcologicalText } from '../contribution';
 import { gradientRamp } from '@common/options';
 import PieDropDownMenu from '../../PieDropDownMenu';
 import type { EChartsOption } from 'echarts';
+import ContributorDomainPersonaTooltip, {
+  useContributorPersonaHover,
+} from '../ContributorDomainPersonaTooltip';
 
 const ContributorContribution: React.FC<{
   label: string;
@@ -211,6 +214,7 @@ const EcoContributorContribution: React.FC<{
 }) => {
   const { t } = useTranslation();
   const chartRef = useRef<HTMLDivElement>(null);
+  const { hover, chartEvents, popperHandlers } = useContributorPersonaHover();
   const { data, isLoading } = useEcoContributorsOverviewQuery(client, {
     label: label,
     level: level,
@@ -291,6 +295,15 @@ const EcoContributorContribution: React.FC<{
         option={option}
         containerRef={chartRef}
         filterData={getSeries.contributorsData}
+        onEvents={chartEvents}
+      />
+      <ContributorDomainPersonaTooltip
+        label={label}
+        level={level}
+        beginDate={beginDate}
+        endDate={endDate}
+        hover={hover}
+        popperHandlers={popperHandlers}
       />
     </div>
   );
