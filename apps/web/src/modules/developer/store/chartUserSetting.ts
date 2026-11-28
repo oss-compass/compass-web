@@ -2,7 +2,7 @@ import { proxy, subscribe } from 'valtio';
 import { CommunityRepoType } from '@common/constant';
 import isBrowser from '@common/utils/isBrowser';
 
-const KEY = 'analyze.setting.chart';
+const KEY = 'developer.setting.chart';
 
 const localSet = (content: string) => {
   return localStorage.setItem(KEY, content);
