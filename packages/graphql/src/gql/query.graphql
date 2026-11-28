@@ -242,8 +242,12 @@ query metric(
   }
 }
 
-query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
-  summaryActivity(beginDate: $start, endDate: $end) {
+query summary(
+  $start: ISO8601DateTime
+  $end: ISO8601DateTime
+  $category: String
+) {
+  summaryActivity(beginDate: $start, endDate: $end, category: $category) {
     activeC1IssueCommentsContributorCount {
       ...metricStat
     }
@@ -291,7 +295,7 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
       ...metricStat
     }
   }
-  summaryCodequality(beginDate: $start, endDate: $end) {
+  summaryCodequality(beginDate: $start, endDate: $end, category: $category) {
     activeC1PrCommentsContributorCount {
       ...metricStat
     }
@@ -357,7 +361,7 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
       ...metricStat
     }
   }
-  summaryCommunity(beginDate: $start, endDate: $end) {
+  summaryCommunity(beginDate: $start, endDate: $end, category: $category) {
     bugIssueOpenTimeAvg {
       ...metricStat
     }
@@ -399,7 +403,7 @@ query summary($start: ISO8601DateTime, $end: ISO8601DateTime) {
       ...metricStat
     }
   }
-  summaryGroupActivity(beginDate: $start, endDate: $end) {
+  summaryGroupActivity(beginDate: $start, endDate: $end, category: $category) {
     commitFrequency {
       ...metricStat
     }
