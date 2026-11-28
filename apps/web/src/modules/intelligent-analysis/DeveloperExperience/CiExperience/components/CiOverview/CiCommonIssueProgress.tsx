@@ -4,6 +4,7 @@ import { Button, Modal, Table, Tag, Typography } from 'antd';
 import { getIssuePriorityLabel } from '../../../IssueContribution/components/IssueOverview/IssuePriorityTag';
 import type { CiCommonIssue, CiCommonIssueSnapshot } from '../../overviewApi';
 import type { CiReportHref } from './CiIssueTable';
+import CiCommonIssueList from './CiCommonIssueList';
 import CiOverviewFilter from './CiOverviewFilter';
 import { OverviewSectionPlaceholder } from '../../../../UserJourney/OverviewDashboard/OverviewLoadingState';
 
@@ -115,13 +116,10 @@ const CiCommonIssueProgress: React.FC<{
     )
       ? cause
       : null;
-  const repositories = new Set(
-    groups.flatMap((group) => Array.from(group.repositories))
-  );
 
   return (
     <section
-      className="absolute inset-0 flex flex-col overflow-y-auto"
+      className="absolute inset-0 flex flex-col"
       aria-label="共性问题总览"
     >
       {loading ? (
@@ -135,54 +133,53 @@ const CiCommonIssueProgress: React.FC<{
         </p>
       ) : groups.length > 0 ? (
         <>
-          <p className="mb-3 flex shrink-0 flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--overview-slate)]">
-            <span>
-              <strong className="text-[var(--overview-text)]">
-                {groups.length}
-              </strong>{' '}
-              组共性问题
-            </span>
-            <span>涉及 {repositories.size} 个仓库</span>
+          <p className="mb-3 shrink-0 text-sm text-[var(--overview-slate)]">
+            共 {groups.length} 组
           </p>
-          <ul className="m-0 grid shrink-0 grow list-none grid-cols-1 gap-2 p-0">
-            {groups.map(
-              ({ key, latest, priority, repositories, observations }) => (
-                <li
-                  key={key}
-                  className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,20rem)] content-center items-center gap-x-5 gap-y-1.5 rounded-lg border border-slate-200 bg-slate-50/40 px-4 py-2.5 md:px-3 lg:grid-cols-1"
-                >
-                  <div className="flex min-w-0 items-start gap-2">
-                    <Tag
-                      className="!mr-0 shrink-0"
-                      color={priorityColor[priority]}
+          <CiCommonIssueList
+            items={groups}
+            renderItem={({
+              key,
+              latest,
+              priority,
+              repositories,
+              observations,
+            }) => (
+              <li
+                key={key}
+                className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,20rem)] content-center items-center gap-x-5 gap-y-1.5 rounded-lg border border-slate-200 bg-slate-50/40 px-4 py-2.5 md:px-3 lg:grid-cols-1"
+              >
+                <div className="flex min-w-0 items-start gap-2">
+                  <Tag
+                    className="!mr-0 shrink-0"
+                    color={priorityColor[priority]}
+                  >
+                    {getIssuePriorityLabel(priority)}
+                  </Tag>
+                  <div className="min-w-0">
+                    <button
+                      type="button"
+                      className="block max-w-full break-words rounded-lg text-left text-sm font-semibold leading-6 text-[var(--overview-blue)] hover:underline focus-visible:outline-blue-600"
+                      onClick={() =>
+                        setDetail({ groupKey: key, day: observations[0].day })
+                      }
                     >
-                      {getIssuePriorityLabel(priority)}
-                    </Tag>
-                    <div className="min-w-0">
-                      <button
-                        type="button"
-                        className="block max-w-full break-words rounded-lg text-left text-sm font-semibold leading-6 text-[var(--overview-blue)] hover:underline focus-visible:outline-blue-600"
-                        onClick={() =>
-                          setDetail({ groupKey: key, day: observations[0].day })
-                        }
-                      >
-                        {latest.name}
-                      </button>
-                      {latest.responsibility && (
-                        <p className="mt-0.5 break-words text-xs leading-5 text-[var(--overview-slate)]">
-                          责任归类 · {latest.responsibility}
-                        </p>
-                      )}
-                    </div>
+                      {latest.name}
+                    </button>
+                    {latest.responsibility && (
+                      <p className="mt-0.5 break-words text-xs leading-5 text-[var(--overview-slate)]">
+                        责任归类 · {latest.responsibility}
+                      </p>
+                    )}
                   </div>
-                  <p className="flex min-w-0 flex-wrap justify-end gap-x-3 gap-y-1 break-words text-xs leading-5 text-[var(--overview-slate)] lg:justify-start">
-                    <span>涉及 {repositories.size} 仓</span>
-                    <span>出现 {observations.length} 天</span>
-                  </p>
-                </li>
-              )
+                </div>
+                <p className="flex min-w-0 flex-wrap justify-end gap-x-3 gap-y-1 break-words text-xs leading-5 text-[var(--overview-slate)] lg:justify-start">
+                  <span>涉及 {repositories.size} 仓</span>
+                  <span>出现 {observations.length} 天</span>
+                </p>
+              </li>
             )}
-          </ul>
+          />
         </>
       ) : (
         legacyContent ?? (

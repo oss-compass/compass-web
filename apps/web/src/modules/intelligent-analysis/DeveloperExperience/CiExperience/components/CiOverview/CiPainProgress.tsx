@@ -13,6 +13,7 @@ import {
 import { useCiCommonIssuesQuery, useCiPainTrendsQuery } from '../../queries';
 import dynamic from 'next/dynamic';
 import CiCommonIssueProgress from './CiCommonIssueProgress';
+import CiCommonIssueList from './CiCommonIssueList';
 import type { CiReportHref } from './CiIssueTable';
 import type { TrackingStatus } from '../PainTracking/model';
 import {
@@ -55,9 +56,10 @@ const CommonIssueList: React.FC<{
     );
   }
   return (
-    <div className="grid shrink-0 grow grid-cols-1 gap-2">
-      {Array.from(groups, ([key, group]) => (
-        <div
+    <CiCommonIssueList
+      items={Array.from(groups)}
+      renderItem={([key, group]) => (
+        <li
           className="grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,28rem)] content-center items-center gap-x-5 gap-y-1.5 rounded-lg border border-slate-200 bg-slate-50/40 px-4 py-2.5 md:px-3 lg:grid-cols-1"
           key={key}
         >
@@ -91,9 +93,9 @@ const CommonIssueList: React.FC<{
               )}
             </span>
           </div>
-        </div>
-      ))}
-    </div>
+        </li>
+      )}
+    />
   );
 };
 

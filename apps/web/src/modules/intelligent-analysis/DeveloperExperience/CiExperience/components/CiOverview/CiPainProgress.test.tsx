@@ -233,3 +233,50 @@ it('groups reported common issues by classification and title across repositorie
   ).toBeInTheDocument();
   expect(overview.queryByText('仓库独有问题')).not.toBeInTheDocument();
 });
+
+it('paginates long common-issue lists and returns to a valid page when data shrinks', () => {
+  const issues = Array.from({ length: 12 }, (_, index) => ({
+    id: `common-${index + 1}`,
+    name: `共性问题 ${index + 1}`,
+    priority: 'P2',
+    repositories: [],
+    segments: [],
+    runs: 0,
+    prs: 0,
+  }));
+  const setIssues = (visible: typeof issues) =>
+    (useCiCommonIssuesQuery as jest.Mock).mockReturnValue({
+      data: { snapshots: [{ day: '2026-11-25', issues: visible }] },
+    });
+  setIssues(issues);
+  (useCiPainTrendsQuery as jest.Mock).mockReturnValue({ data: { points: [] } });
+  const page = () => (
+    <CiPainProgress issues={[]} reportHref={() => '/report'} />
+  );
+  const { rerender } = render(page());
+  fireEvent.click(screen.getByRole('radio', { name: '共性问题' }));
+  const overview = within(screen.getByRole('region', { name: '共性问题总览' }));
+  const rows = () =>
+    within(overview.getByRole('list', { name: '共性问题列表' }));
+  expect(rows().getAllByRole('listitem')).toHaveLength(10);
+  expect(
+    rows().queryByRole('button', { name: '共性问题 12' })
+  ).not.toBeInTheDocument();
+
+  const pagination = within(
+    overview.getByRole('navigation', { name: '共性问题分页' })
+  );
+  fireEvent.click(pagination.getByText('2', { exact: true }));
+  expect(rows().getAllByRole('listitem')).toHaveLength(2);
+  expect(rows().getByRole('button', { name: '共性问题 12' })).toBeVisible();
+  expect(
+    rows().queryByRole('button', { name: '共性问题 1' })
+  ).not.toBeInTheDocument();
+
+  setIssues(issues.slice(0, 4));
+  rerender(page());
+  expect(overview.getByRole('button', { name: '共性问题 1' })).toBeVisible();
+  expect(
+    overview.queryByRole('navigation', { name: '共性问题分页' })
+  ).not.toBeInTheDocument();
+});
