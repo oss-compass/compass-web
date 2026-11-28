@@ -1,9 +1,10 @@
 import React from 'react';
+import { getHubUrl } from '@common/utils/url';
 import { getIcons } from '../utils';
 
 const DomainPersona = ({ name, origin }) => {
   let icon = getIcons(origin, name);
-  let url = getHubUrl(origin, name);
+  const url = getHubUrl(origin, name);
   return (
     <div className="flex">
       <div>{icon}</div>
@@ -21,20 +22,6 @@ const DomainPersona = ({ name, origin }) => {
       )}
     </div>
   );
-};
-
-const getHubUrl = (origin, name) => {
-  switch (origin) {
-    case 'github':
-      return 'https://github.com/' + name;
-    case 'gitee':
-      return 'https://gitee.com/' + name;
-    case 'gitcode':
-      return 'https://gitcode.com/' + name;
-    // return <SiGitee color="#c71c27" className="mr-0" />;
-    default:
-      return null;
-  }
 };
 
 export default DomainPersona;
