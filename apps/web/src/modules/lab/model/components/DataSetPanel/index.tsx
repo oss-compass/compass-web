@@ -124,7 +124,7 @@ const DataSetPanel: React.FC<{
                   return;
                 }
                 setCompareList((pre) => {
-                  return pre.splice(pre.indexOf(shortCode), 1);
+                  return pre.filter((code) => code !== shortCode);
                 });
               }}
             />
