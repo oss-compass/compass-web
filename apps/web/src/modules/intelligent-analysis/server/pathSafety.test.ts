@@ -1,3 +1,4 @@
+import path from 'path';
 import { isSafePathSegment, resolveFileInsideDir } from './pathSafety';
 
 describe('isSafePathSegment', () => {
@@ -28,11 +29,13 @@ describe('resolveFileInsideDir', () => {
   const dir = '/srv/compass/public/test/intelligent-analysis-new/CANN';
 
   it('resolves ordinary file names inside the dir', () => {
+    // resolveFileInsideDir returns a platform-native path, so build the
+    // expectation the same way instead of pinning POSIX separators.
     expect(resolveFileInsideDir(dir, 'alice_main.json')).toBe(
-      dir + '/alice_main.json'
+      path.resolve(dir, 'alice_main.json')
     );
     expect(resolveFileInsideDir(dir + '/', 'alice.json')).toBe(
-      dir + '/alice.json'
+      path.resolve(dir, 'alice.json')
     );
   });
 
