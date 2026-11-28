@@ -2,7 +2,16 @@ import type { CiRepoKey } from '../../types';
 import type { CiOverviewDataset, CiOverviewJourney } from '../../api';
 import type { CiPainIssue, CiPainOverview } from '../../overviewApi';
 import type { TrackingStatus } from '../PainTracking/model';
-import { delta, DIM_KEYS, DIM_NAME, type CiDelta } from '../../helpers';
+import {
+  CI_REPOS,
+  delta,
+  DIM_KEYS,
+  DIM_NAME,
+  repoSlug,
+  type CiDelta,
+} from '../../helpers';
+
+const repoOrder = new Map(CI_REPOS.map(({ key }, index) => [key, index]));
 
 export type CiRepoSummary = {
   repo: CiRepoKey;
@@ -106,7 +115,7 @@ export const computeCommunityOverview = (
     const scores = journeys[repo]?.boards[latestDay]?.scores;
     return {
       repo,
-      slug: dataset.name,
+      slug: dataset.name || repoSlug(repo),
       workflow: dataset.workflow,
       days: dataset.days,
       latestDay,
@@ -133,6 +142,11 @@ export const computeCommunityOverview = (
       ),
     };
   });
+  repos.sort(
+    (a, b) =>
+      (repoOrder.get(a.repo) ?? Infinity) -
+      (repoOrder.get(b.repo) ?? Infinity)
+  );
   const days = Array.from(new Set(repos.flatMap((repo) => repo.days))).sort();
   const datePool = repos
     .map((repo) => repo.latestDay)
