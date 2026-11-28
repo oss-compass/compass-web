@@ -107,7 +107,7 @@ const RepoSelect: React.FC<{ onConfirm: (val: string) => void }> = ({
             </div>
           )}
 
-          {!isError && !search && hasMore && (
+          {!isError && hasMore && (
             <div
               className="text-primary flex cursor-pointer items-center justify-center py-4 text-center"
               onClick={() => {
