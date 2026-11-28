@@ -19,7 +19,7 @@ export const CI_OVERVIEW_STATUS_META: Record<
     valueClassName: 'ov-value-blue',
   },
   fixed: {
-    label: '已闭环',
+    label: '已修复',
     color: 'green',
     fill: OVERVIEW_STATUS_COLORS.resolved.solidBg,
     valueClassName: 'ov-value-green',
@@ -33,4 +33,4 @@ export const CI_OVERVIEW_STATUS_META: Record<
 };
 
 export const REPAIR_RATE_NOTE =
-  '已闭环问题 ÷ 有效问题（含待处理）；非有效问题不计入分母。无有效问题时为 100%。';
+  '已修复问题 ÷ 有效问题（含待处理）；非有效问题不计入分母。无有效问题时为 100%。';

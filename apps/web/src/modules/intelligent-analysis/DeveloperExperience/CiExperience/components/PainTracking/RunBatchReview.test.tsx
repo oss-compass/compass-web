@@ -72,11 +72,10 @@ test('large selections use at most 100 items per request and stop on network unc
       onClear={jest.fn()}
       onSaved={onSaved}
       onBusy={jest.fn()}
-      onTracking={jest.fn()}
       onRefresh={onRefresh}
     />
   );
-  fireEvent.click(screen.getByRole('button', { name: '批量确认判据正确' }));
+  fireEvent.click(screen.getByRole('button', { name: '批量标记正确' }));
   fireEvent.click(
     await screen.findByRole('button', { name: '确认提交 201 条' })
   );

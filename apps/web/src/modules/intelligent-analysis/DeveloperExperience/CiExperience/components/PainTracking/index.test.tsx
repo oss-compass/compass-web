@@ -69,7 +69,21 @@ const problem: CiProblem = {
   runs: [],
   root: { status: 'pending' },
 };
-const confirmed = {
+const runProblem: CiProblem = {
+  ...problem,
+  runs: [
+    {
+      n: 1,
+      id: '101',
+      pr: '1',
+      t: '',
+      stage: 'Compile',
+      job: 'build',
+      msg: '执行失败',
+    },
+  ],
+};
+const confirmed: TrackingRecord = {
   problemKey: trackingProblemKey(problem),
   status: 'confirmed',
   revision: 1,
@@ -129,13 +143,13 @@ const openModal = async () => {
   await waitFor(() =>
     expect(
       screen.getAllByRole('button', {
-        name: /待确认|已确认待修复|状态加载失败/,
+        name: /待确认|进行中|状态加载失败/,
       })[0]
     ).toBeEnabled()
   );
   fireEvent.click(
     screen.getAllByRole('button', {
-      name: /待确认|已确认待修复|状态加载失败/,
+      name: /待确认|进行中|状态加载失败/,
     })[0]
   );
 };
@@ -158,50 +172,92 @@ it('shows legacy and structured evidence in the pain management dialog', async (
   expect(modal.getByText('编译 · L42：缺少构建依赖')).toBeInTheDocument();
 });
 
-const enterEvidence = () => {
-  fireEvent.change(screen.getByLabelText('提交人'), {
+it('changes the responsible party before the rule reviews are complete', async () => {
+  const original = { ...runProblem, responsible_party: '业务团队' };
+  mockedSave.mockResolvedValueOnce({
+    data: {
+      problemKey: trackingProblemKey(original),
+      status: 'pending',
+      responsibleParty: '平台',
+      revision: 1,
+      updatedAt: '2026-09-15T10:00:00Z',
+      history: [],
+    },
+  });
+  render(page(scope.day, [original]));
+  await openModal();
+
+  const dialog = within(screen.getByRole('dialog', { name: '痛点管理' }));
+  const responsibility = within(dialog.getByRole('group', { name: '责任方' }));
+  expect(responsibility.getByText('业务团队')).toBeInTheDocument();
+  const editParty = responsibility.getByRole('button', { name: '更改' });
+  fireEvent.click(editParty);
+  const choices = within(
+    await screen.findByRole('radiogroup', { name: '新责任方' })
+  );
+  expect(choices.getAllByRole('radio')).toHaveLength(3);
+  expect(choices.getByRole('radio', { name: '开发者' })).toBeInTheDocument();
+  expect(choices.getByRole('radio', { name: '业务团队' })).toBeChecked();
+  fireEvent.click(choices.getByRole('radio', { name: '平台' }));
+  expect(mockedSave).not.toHaveBeenCalled();
+  expect(dialog.getByRole('textbox', { name: '提交人' })).toHaveFocus();
+  await waitFor(() =>
+    expect(editParty).toHaveAttribute('aria-expanded', 'false')
+  );
+
+  fireEvent.change(dialog.getByRole('textbox', { name: '提交人' }), {
     target: { value: '张三' },
   });
-  fireEvent.change(screen.getByRole('textbox', { name: /修复说明/ }), {
-    target: { value: '已核实执行日志' },
-  });
-};
+  fireEvent.click(editParty);
+  fireEvent.click(await screen.findByRole('radio', { name: '平台' }));
+  expect(await responsibility.findByText('平台')).toBeInTheDocument();
+  await waitFor(() =>
+    expect(editParty).toHaveAttribute('aria-expanded', 'false')
+  );
+  expect(mockedSave).toHaveBeenCalledWith(
+    expect.objectContaining({
+      type: 'change_responsible_party',
+      responsibleParty: '平台',
+      operator: '张三',
+      revision: 0,
+    })
+  );
+  fireEvent.click(dialog.getByRole('button', { name: 'Close' }));
+  expect(await screen.findByRole('cell', { name: '平台' })).toBeInTheDocument();
+});
 
-it('keeps the report, fields, and run reviews separate and focuses a missing submitter', async () => {
-  const runProblem = {
-    ...problem,
-    runs: [
-      {
-        n: 1,
-        id: '101',
-        pr: '1',
-        t: '',
-        stage: 'Compile',
-        job: 'build',
-        msg: '执行失败',
-      },
-    ],
+it('asks for the submitter, then all run reviews, then an explicit overall conclusion', async () => {
+  const commonProblem = {
+    ...runProblem,
+    is_common_issue: true,
+    runs: [runProblem.runs[0], { ...runProblem.runs[0], id: 'run2', n: 2 }],
   };
-  jest.mocked(fetchRunRuleReviews).mockResolvedValue({
-    items: [
-      {
-        instance_id: '1'.repeat(64),
-        problem_key: trackingProblemKey(runProblem),
-        title: runProblem.title,
-        dim: runProblem.dim,
-        kb: runProblem.kb,
-        run: runProblem.runs[0],
-        rule_id: 'compile',
-        rule_status: 'matched',
-        rule: { rule_id: 'compile', version: 'v1' },
-        status: 'pending',
-        decision: null,
-        history: [],
-        evidence: {},
-        revision: 0,
-        evidence_revision: 'a'.repeat(64),
-      },
-    ],
+  const items = commonProblem.runs.map((run) => ({
+    instance_id: String(run.n).repeat(64),
+    problem_key: trackingProblemKey(commonProblem),
+    title: commonProblem.title,
+    dim: commonProblem.dim,
+    kb: commonProblem.kb,
+    run,
+    rule_id: 'compile',
+    rule_status: 'matched' as const,
+    rule: { rule_id: 'compile', version: 'v1' },
+    status: 'pending' as const,
+    decision: null,
+    history: [],
+    evidence: {},
+    revision: 0,
+    evidence_revision: 'a'.repeat(64),
+  }));
+  const reviews = jest.mocked(fetchRunRuleReviews);
+  reviews.mockResolvedValue({ items });
+  const reviewRun = jest.mocked(savePainRunReview);
+  reviewRun.mockResolvedValue({
+    data: { instance_id: items[0].instance_id },
+    tracking: null,
+  });
+  mockedSave.mockResolvedValueOnce({
+    data: { ...confirmed, manualDecision: true },
   });
   const queryClient = new QueryClient({
     defaultOptions: { queries: { cacheTime: 0 } },
@@ -209,112 +265,138 @@ it('keeps the report, fields, and run reviews separate and focuses a missing sub
   render(
     <QueryClientProvider client={queryClient}>
       <CiRuleReviewProvider repo={scope.repo} day={scope.day}>
-        {page(scope.day, [runProblem])}
+        {page(scope.day, [commonProblem])}
       </CiRuleReviewProvider>
     </QueryClientProvider>
   );
   await openModal();
 
   const dialog = within(screen.getByRole('dialog', { name: '痛点管理' }));
-  const information = dialog.getByRole('region', { name: '痛点信息' });
-  const handling = dialog.getByRole('region', { name: '处理信息' });
-  const executions = dialog.getByRole('region', { name: '执行记录' });
-  expect(within(information).getByText(problem.title)).toBeInTheDocument();
-  expect(within(information).queryByRole('textbox')).not.toBeInTheDocument();
-  const operator = within(handling).getByRole('textbox', { name: '提交人' });
-  expect(operator).toBeRequired();
-  expect(within(executions).queryByLabelText('提交人')).not.toBeInTheDocument();
-  const reviewPrompt = await within(executions).findByText(
-    '待确认：请逐条审核判据'
-  );
-  expect(
-    handling.compareDocumentPosition(reviewPrompt) &
-      Node.DOCUMENT_POSITION_FOLLOWING
-  ).toBeTruthy();
-  fireEvent.click(
-    within(executions).getByRole('button', { name: '执行记录 #1：判据正确' })
-  );
-  expect(operator).toHaveFocus();
-  expect(operator).toHaveAccessibleDescription('请填写提交人');
-  expect(savePainRunReview).not.toHaveBeenCalled();
-
-  const section = within(handling).getByRole('region', {
-    name: '共性问题判断',
+  const section = dialog.getByRole('region', { name: '问题审核' });
+  const form = within(section).getByRole('form', { name: '问题审核表单' });
+  const operator = within(form).getByRole('textbox', { name: '提交人' });
+  const review = within(form).getByRole('region', { name: '判据审核' });
+  const validity = within(form).getByRole('radiogroup', {
+    name: '是否为有效问题',
   });
-  expect(
-    section.compareDocumentPosition(operator) & Node.DOCUMENT_POSITION_FOLLOWING
-  ).toBeTruthy();
-  fireEvent.click(within(section).getByText('共性问题参考'));
-  expect(within(section).getByText('暂无已知共性问题')).toBeInTheDocument();
-  const yes = within(section).getByRole('radio', { name: '是' });
-  const no = within(section).getByRole('radio', { name: '否' });
-  expect(yes).toBeRequired();
-  expect(no).toBeRequired();
-  expect(yes).not.toBeChecked();
-  expect(no).not.toBeChecked();
-  expect(within(section).queryByText('（选填）')).not.toBeInTheDocument();
+  const yes = within(validity).getByRole('radio', { name: '是' });
+  const submit = within(form).getByRole('button', { name: '提交' });
+  const approveFirst = within(form).getByRole('button', {
+    name: '执行记录 #1：判据正确',
+  });
+  await within(review).findByText('判据待审核');
+  expect(operator).toBeRequired();
+  expect(validity).toBeRequired();
+  expect(validity).toHaveAccessibleDescription(
+    '请先完成全部判据审核，再提交问题结论或更新处理状态。'
+  );
+  expect(approveFirst).toBeDisabled();
+  expect(yes).toBeDisabled();
+  expect(submit).toBeDisabled();
 
   fireEvent.change(operator, { target: { value: '张三' } });
-  fireEvent.click(
-    within(executions).getByRole('button', { name: '执行记录 #1：判据正确' })
-  );
-  expect(yes).toHaveFocus();
-  expect(yes).toHaveAccessibleDescription('请选择是否共性问题');
-  expect(savePainRunReview).not.toHaveBeenCalled();
+  expect(approveFirst).toBeEnabled();
+  expect(yes).toBeDisabled();
+  reviews.mockResolvedValueOnce({
+    items: [{ ...items[0], status: 'confirmed' }, items[1]],
+  });
+  fireEvent.click(approveFirst);
+  await within(form).findByText('1/2');
+  expect(yes).toBeDisabled();
+  expect(mockedSave).not.toHaveBeenCalled();
 
+  reviews.mockResolvedValueOnce({
+    items: [
+      { ...items[0], status: 'confirmed' },
+      { ...items[1], status: 'confirmed' },
+    ],
+  });
   fireEvent.click(
-    within(executions).getByRole('checkbox', { name: '选择执行记录 #1' })
+    within(form).getByRole('button', { name: '执行记录 #2：判据正确' })
   );
-  fireEvent.click(
-    within(executions).getByRole('button', { name: '批量确认判据正确' })
-  );
-  expect(yes).toHaveFocus();
+  await waitFor(() => expect(yes).toBeEnabled());
+  expect(validity).not.toHaveAccessibleDescription();
+  expect(yes).not.toBeChecked();
+  expect(submit).toBeDisabled();
+  expect(mockedSave).not.toHaveBeenCalled();
   expect(
-    screen.queryByRole('button', { name: '确认提交 1 条' })
+    dialog.queryByRole('button', { name: '完成修复' })
   ).not.toBeInTheDocument();
 
   fireEvent.click(yes);
-  expect(yes).toBeChecked();
-  expect(within(section).queryByRole('alert')).not.toBeInTheDocument();
-  expect(within(section).getByText('报告暂无可选类型')).toBeInTheDocument();
-  fireEvent.click(no);
-  expect(no).toBeChecked();
-  expect(within(section).queryByText('共性问题类型')).not.toBeInTheDocument();
-  expect(mockedSave).not.toHaveBeenCalled();
+  fireEvent.click(submit);
+  expect(await dialog.findByText('调整问题判定')).toBeInTheDocument();
+  expect(mockedSave).toHaveBeenCalledWith(
+    expect.objectContaining({
+      ...scope,
+      problemKey: trackingProblemKey(commonProblem),
+      type: 'confirm',
+      operator: '张三',
+    })
+  );
+  expect(reviewRun).toHaveBeenCalledTimes(2);
 });
 
-it('prefills the judgment and lists types supplied by the report', async () => {
+it('requires evidence for an overall negative decision and allows restoring validity for a common issue', async () => {
+  const invalid: TrackingRecord = {
+    ...confirmed,
+    status: 'invalid',
+    manualDecision: true,
+    history: [],
+  };
+  mockedSave.mockResolvedValueOnce({ data: invalid }).mockResolvedValueOnce({
+    data: { ...confirmed, manualDecision: true, revision: 2 },
+  });
   render(
     page(scope.day, [
       { ...problem, is_common_issue: true, common_issue_type: '环境一致性' },
-      {
-        ...problem,
-        title: '日志缺少统一格式',
-        common_issue_type: '日志规范',
-      },
     ])
   );
   await openModal();
 
-  const section = screen.getByRole('region', { name: '共性问题判断' });
-  expect(within(section).getByRole('radio', { name: '是' })).toBeChecked();
-  const reportType = within(section).getByRole('radio', { name: '环境一致性' });
-  const alternativeType = within(section).getByRole('radio', {
-    name: '日志规范',
-  });
-  expect(reportType).toBeChecked();
-  fireEvent.click(within(section).getByText('共性问题参考'));
   expect(
-    within(section).getByText('日志规范 · 日志缺少统一格式')
+    screen.queryByRole('region', { name: '共性问题判断' })
+  ).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('提交人'), {
+    target: { value: '张三' },
+  });
+  const no = screen.getByRole('radio', { name: '否' });
+  fireEvent.click(no);
+  expect(no).toBeChecked();
+  const evidence = screen.getByLabelText('无效问题判断依据');
+  expect(evidence).toBeRequired();
+  expect(mockedSave).not.toHaveBeenCalled();
+  const submit = screen.getByRole('button', { name: '提交' });
+  fireEvent.change(evidence, { target: { value: '   ' } });
+  fireEvent.click(submit);
+  expect(await screen.findByText('请填写判断依据')).toBeInTheDocument();
+  expect(mockedSave).not.toHaveBeenCalled();
+  fireEvent.change(evidence, { target: { value: '重复告警' } });
+  fireEvent.click(submit);
+  fireEvent.click(await screen.findByRole('button', { name: '调整问题判定' }));
+  fireEvent.click(screen.getByRole('checkbox', { name: '是' }));
+  const restore = screen.getByRole('button', { name: '保存判定' });
+  expect(mockedSave).toHaveBeenCalledWith(
+    expect.objectContaining({ type: 'mark_invalid', reason: '重复告警' })
+  );
+
+  fireEvent.click(restore);
+  expect(
+    await within(screen.getByRole('dialog')).findByText('进行中（观测中）')
   ).toBeInTheDocument();
-  fireEvent.click(alternativeType);
-  expect(alternativeType).toBeChecked();
+  expect(mockedSave).toHaveBeenLastCalledWith(
+    expect.objectContaining({ type: 'restore_valid', revision: 1 })
+  );
 });
 
-it('confirms, manually fixes, shares status across entries and leaves rerun disabled', async () => {
-  mockedSave.mockResolvedValueOnce({ data: confirmed }).mockResolvedValueOnce({
-    data: { ...confirmed, status: 'fixed', revision: 2 },
-  });
+it('enters automatic observation on confirmation and displays the refreshed repair result', async () => {
+  const observation = {
+    daysRequired: 7,
+    cleanDays: 0,
+    lastSeenDay: scope.day,
+    fixedOn: null,
+  };
+  mockedSave.mockResolvedValueOnce({ data: { ...confirmed, observation } });
   render(page());
   await openModal();
   expect(
@@ -324,28 +406,19 @@ it('confirms, manually fixes, shares status across entries and leaves rerun disa
     screen.queryByRole('button', { name: '完成修复' })
   ).not.toBeInTheDocument();
   expect(screen.getByText('是否为有效问题')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /是，有效问题/ })).toBeEnabled();
-  expect(screen.getByRole('button', { name: /否，非有效问题/ })).toBeEnabled();
-  fireEvent.click(screen.getByRole('button', { name: /是，有效问题/ }));
+  expect(screen.getByRole('radio', { name: '是' })).not.toBeChecked();
+  expect(screen.getByRole('radio', { name: '否' })).not.toBeChecked();
+  const submit = screen.getByRole('button', { name: '提交' });
+  expect(submit).toBeDisabled();
+  expect(screen.getByText('请先填写提交人。')).toBeInTheDocument();
   expect(mockedSave).not.toHaveBeenCalled();
-  expect(
-    screen.getByText('请先填写提交人，再进行痛点判定')
-  ).toBeInTheDocument();
   expect(screen.queryByLabelText('无效问题判断依据')).not.toBeInTheDocument();
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
-  fireEvent.click(screen.getByRole('button', { name: /是，有效问题/ }));
-  expect(mockedSave).not.toHaveBeenCalled();
-  expect(screen.getByText('请选择是否共性问题')).toBeInTheDocument();
-  const commonIssue = within(
-    screen.getByRole('region', { name: '共性问题判断' })
-  );
-  fireEvent.click(commonIssue.getByRole('radio', { name: '否' }));
-  fireEvent.click(screen.getByRole('button', { name: /是，有效问题/ }));
-  await waitFor(() =>
-    expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled()
-  );
+  fireEvent.click(screen.getByRole('radio', { name: '是' }));
+  fireEvent.click(submit);
+  expect(await screen.findByText('观测进度 0/7 天')).toBeInTheDocument();
   expect(mockedSave).toHaveBeenCalledWith(
     expect.objectContaining({
       ...scope,
@@ -356,26 +429,57 @@ it('confirms, manually fixes, shares status across entries and leaves rerun disa
     })
   );
   expect(toast.success).toHaveBeenCalledWith(
-    '已确认有效问题，进入「已确认待修复」'
+    '已确认有效问题，当前状态为「进行中（观测中）」'
   );
   expect(
-    within(screen.getByRole('dialog')).getByText('已确认待修复')
+    within(screen.getByRole('dialog')).getByText('进行中（观测中）')
   ).toBeInTheDocument();
   expect(screen.getByLabelText('待确认时间')).toHaveTextContent(
     formatTrackingTime(confirmed.history[0].at)
   );
-  enterEvidence();
-  fireEvent.click(screen.getByRole('button', { name: '完成修复' }));
-  await waitFor(() =>
-    expect(screen.getByRole('button', { name: '撤销修复' })).toBeEnabled()
+  const review = within(screen.getByRole('region', { name: '问题审核' }));
+  expect(review.getByText('已完成')).toBeInTheDocument();
+  const conclusion = within(
+    review.getByRole('group', { name: '是否为有效问题' })
   );
-  expect(mockedSave).toHaveBeenLastCalledWith(
-    expect.objectContaining({ type: 'mark_fixed', revision: 1 })
-  );
+  const savedYes = conclusion.getByRole('checkbox', { name: '是' });
+  const savedNo = conclusion.getByRole('checkbox', { name: '否' });
+  expect(savedYes).toBeChecked();
+  expect(savedYes).toBeDisabled();
+  expect(savedNo).not.toBeChecked();
+  expect(savedNo).toBeDisabled();
+
+  fireEvent.click(review.getByRole('button', { name: '调整问题判定' }));
+  expect(savedNo).toBeEnabled();
+  fireEvent.click(savedNo);
+  expect(savedNo).toBeChecked();
+  expect(savedYes).not.toBeChecked();
+  expect(review.getByLabelText('无效问题判断依据')).toBeRequired();
+  expect(review.getByRole('button', { name: '保存判定' })).toBeDisabled();
+  fireEvent.click(review.getByRole('button', { name: '取消调整' }));
+  expect(savedYes).toBeChecked();
+  expect(savedNo).toBeDisabled();
   expect(
-    screen.getByRole('button', { name: '重跑（暂未开放）' })
-  ).toBeDisabled();
-  expect(screen.getByText('修复已完成，等待重跑复测')).toBeInTheDocument();
+    screen.queryByRole('button', { name: '完成修复' })
+  ).not.toBeInTheDocument();
+  mockedFetch.mockResolvedValueOnce({
+    items: [
+      {
+        ...confirmed,
+        status: 'fixed',
+        observation: { ...observation, cleanDays: 7, fixedOn: '2026-09-22' },
+      },
+    ],
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  fireEvent.click(screen.getByRole('button', { name: '刷新状态' }));
+  await waitFor(() =>
+    expect(screen.getAllByRole('button', { name: '已修复' })[0]).toBeEnabled()
+  );
+  fireEvent.click(screen.getAllByRole('button', { name: '已修复' })[0]);
+  expect(screen.getByText('已达到修复条件')).toBeInTheDocument();
+  expect(screen.getByLabelText('已修复时间')).toHaveTextContent('2026-09-22');
+  expect(mockedSave).toHaveBeenCalledTimes(1);
 });
 
 it('does not treat a read failure as pending and allows retry', async () => {
@@ -386,7 +490,7 @@ it('does not treat a read failure as pending and allows retry', async () => {
   await screen.findByText('痛点状态加载失败');
   expect(
     screen.getAllByRole('button', {
-      name: /待确认|已确认待修复|状态加载失败/,
+      name: /待确认|进行中|状态加载失败/,
     })[0]
   ).toBeDisabled();
   fireEvent.click(
@@ -397,15 +501,15 @@ it('does not treat a read failure as pending and allows retry', async () => {
   expect(details).toHaveTextContent('处理状态暂不可用');
   expect(within(details).queryByText('待确认')).not.toBeInTheDocument();
   expect(
-    within(details).queryByRole('button', { name: /是，有效问题/ })
+    within(details).queryByRole('radiogroup', { name: '是否为有效问题' })
   ).not.toBeInTheDocument();
   fireEvent.click(
     within(details).getByRole('button', { name: '重新加载状态' })
   );
-  await waitFor(() =>
-    expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled()
-  );
-  expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled();
+  expect(
+    await within(details).findByText('进行中（观测中）')
+  ).toBeInTheDocument();
+  expect(within(details).getByLabelText('提交人')).toBeEnabled();
 });
 
 it('keeps input on save failure and reloads a concurrent change without retrying the action', async () => {
@@ -417,40 +521,36 @@ it('keeps input on save failure and reloads a concurrent change without retrying
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
-  fireEvent.click(screen.getByRole('button', { name: /否，非有效问题/ }));
-  expect(screen.getByText('请选择是否共性问题')).toBeInTheDocument();
-  expect(screen.queryByLabelText('无效问题判断依据')).not.toBeInTheDocument();
-  fireEvent.click(
-    within(screen.getByRole('region', { name: '共性问题判断' })).getByRole(
-      'radio',
-      { name: '是' }
-    )
-  );
-  fireEvent.click(screen.getByRole('button', { name: /否，非有效问题/ }));
+  fireEvent.click(screen.getByRole('radio', { name: '否' }));
   fireEvent.change(screen.getByLabelText('无效问题判断依据'), {
     target: { value: '已核实执行日志' },
   });
-  fireEvent.click(screen.getByRole('button', { name: '确认判定' }));
+  fireEvent.click(screen.getByRole('button', { name: '提交' }));
   await screen.findByText('保存失败');
   expect(toast.error).toHaveBeenCalledWith('保存失败');
   expect(screen.getByLabelText('无效问题判断依据')).toHaveValue(
     '已核实执行日志'
   );
   mockedFetch.mockResolvedValueOnce({ items: [confirmed] });
-  fireEvent.click(screen.getByRole('button', { name: '确认判定' }));
+  fireEvent.click(screen.getByRole('button', { name: '提交' }));
   await screen.findByText('记录已被更新');
-  await waitFor(() =>
-    expect(screen.getByRole('button', { name: '完成修复' })).toBeEnabled()
-  );
+  expect(
+    await within(screen.getByRole('dialog')).findByText('进行中（观测中）')
+  ).toBeInTheDocument();
   expect(mockedSave).toHaveBeenCalledTimes(2);
   await waitFor(() =>
     expect(screen.queryByLabelText('无效问题判断依据')).not.toBeInTheDocument()
   );
 });
 
-it('closes the old report modal and requests the new date', async () => {
+it('opens without a selected validity choice after changing report dates', async () => {
   const { rerender } = render(page());
   await openModal();
+  fireEvent.change(screen.getByLabelText('提交人'), {
+    target: { value: '张三' },
+  });
+  fireEvent.click(screen.getByRole('radio', { name: '否' }));
+  expect(screen.getByRole('radio', { name: '否' })).toBeChecked();
   rerender(page('2026-09-16'));
   await waitFor(() =>
     expect(mockedFetch).toHaveBeenLastCalledWith(
@@ -459,12 +559,61 @@ it('closes the old report modal and requests the new date', async () => {
     )
   );
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  await openModal();
+  expect(screen.getByRole('radio', { name: '是' })).not.toBeChecked();
+  expect(screen.getByRole('radio', { name: '否' })).not.toBeChecked();
+  expect(screen.queryByLabelText('无效问题判断依据')).not.toBeInTheDocument();
+});
+
+it('prefills other pains and report dates with the last successfully submitted operator', async () => {
+  const other = { ...problem, title: '构建等待时间过长' };
+  mockedSave
+    .mockResolvedValueOnce({ data: confirmed })
+    .mockRejectedValueOnce(new Error('保存失败'));
+  const { rerender } = render(page(scope.day, [problem, other]));
+  await openModal();
+
+  fireEvent.change(screen.getByLabelText('提交人'), {
+    target: { value: ' 张三 ' },
+  });
+  fireEvent.click(screen.getByRole('radio', { name: '是' }));
+  fireEvent.click(screen.getByRole('button', { name: '提交' }));
+  await within(screen.getByRole('dialog')).findByText('调整问题判定');
+  expect(mockedSave).toHaveBeenLastCalledWith(
+    expect.objectContaining({ operator: '张三' })
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+  const openOther = () =>
+    fireEvent.click(screen.getByRole('button', { name: /构建等待时间过长/ }));
+  openOther();
+  expect(screen.getByLabelText('提交人')).toHaveValue('张三');
+  fireEvent.change(screen.getByLabelText('提交人'), {
+    target: { value: '李四' },
+  });
+  fireEvent.click(screen.getByRole('radio', { name: '是' }));
+  fireEvent.click(screen.getByRole('button', { name: '提交' }));
+  await screen.findByText('保存失败');
+  expect(screen.getByLabelText('提交人')).toHaveValue('李四');
+  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+  openOther();
+  expect(screen.getByLabelText('提交人')).toHaveValue('张三');
+  rerender(page('2026-09-16', [problem, other]));
+  await openModal();
+  expect(screen.getByLabelText('提交人')).toHaveValue('张三');
 });
 
 it('only shows times for states reached in the current flow', () => {
   const fixedRecord: TrackingRecord = {
     problemKey: trackingProblemKey(problem),
     status: 'fixed',
+    observation: {
+      daysRequired: 7,
+      cleanDays: 7,
+      lastSeenDay: scope.day,
+      fixedOn: '2026-09-22',
+    },
     revision: 2,
     updatedAt: '2026-09-15T11:00:00Z',
     history: [
@@ -486,11 +635,12 @@ it('only shows times for states reached in the current flow', () => {
       },
     ],
   };
-  expect(findStepTime(fixedRecord, 'fixed')).toBe('2026-09-15T11:00:00Z');
+  expect(findStepTime(fixedRecord, 'fixed')).toBe('2026-09-22');
 
   const revertedRecord: TrackingRecord = {
     ...fixedRecord,
     status: 'confirmed',
+    observation: null,
     revision: 3,
     history: [
       ...fixedRecord.history,
@@ -506,7 +656,7 @@ it('only shows times for states reached in the current flow', () => {
   };
   expect(findStepTime(revertedRecord, 'fixed')).toBeUndefined();
   expect(findStepTime(revertedRecord, 'confirmed')).toBe(
-    '2026-09-15T12:00:00Z'
+    '2026-09-15T10:00:00Z'
   );
 
   const resetRecord: TrackingRecord = {
@@ -624,7 +774,7 @@ it('jumps to the full pain list and clears dimension, priority and status filter
   );
   expect(list).not.toHaveTextContent('另一个维度的痛点');
   fireEvent.mouseDown(screen.getByRole('combobox'));
-  fireEvent.click(await screen.findByText('已修复待复测（0）'));
+  fireEvent.click(await screen.findByText('已修复（0）'));
   expect(list).not.toHaveTextContent(problem.title);
   fireEvent.click(screen.getByRole('button', { name: '查看全部痛点' }));
   expect(list).toHaveTextContent(problem.title);

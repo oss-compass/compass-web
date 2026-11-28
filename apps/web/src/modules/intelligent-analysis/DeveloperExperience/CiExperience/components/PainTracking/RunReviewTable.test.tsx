@@ -1,4 +1,5 @@
 import React, { act, useState } from 'react';
+import toast from 'react-hot-toast';
 import {
   fireEvent,
   render,
@@ -7,7 +8,7 @@ import {
   within,
 } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import RunReviewTable from './RunReviewTable';
+import RunReviewTable, { usePainRunReviews } from './RunReviewTable';
 import { CiRuleReviewProvider } from '../RuleReviews';
 import {
   fetchRunRuleReviews,
@@ -36,7 +37,6 @@ const save = savePainRunReview as jest.MockedFunction<typeof savePainRunReview>;
 const saveBatch = savePainRunReviews as jest.MockedFunction<
   typeof savePainRunReviews
 >;
-const onTracking = jest.fn();
 const scope = { org: 'cann', repo: 'repo', workflow: 'wf', day: '2026-11-01' };
 const problem: CiProblem = {
   pri: 'P1',
@@ -87,6 +87,7 @@ function Harness({ inputProblem = problem }: { inputProblem?: CiProblem }) {
   const [operator, setOperator] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const reviewState = usePainRunReviews(inputProblem);
   return (
     <>
       <label>
@@ -100,13 +101,13 @@ function Harness({ inputProblem = problem }: { inputProblem?: CiProblem }) {
       </label>
       <RunReviewTable
         problem={inputProblem}
+        reviewState={reviewState}
         scope={scope}
         operator={operator}
         busy={busy}
         onBusy={setBusy}
         onOperatorInvalid={setError}
         rememberOperator={(value) => value.trim()}
-        onTracking={onTracking}
       />
     </>
   );
@@ -180,9 +181,12 @@ test('keeps selection across pages and submits only the two selected runs', asyn
   expect(screen.getByRole('status', { name: '批量选择' })).toHaveTextContent(
     '已选 2 条'
   );
-  fireEvent.click(screen.getByRole('button', { name: '批量确认判据正确' }));
+  fireEvent.click(screen.getByRole('button', { name: '批量标记正确' }));
   fireEvent.click(await screen.findByRole('button', { name: '确认提交 2 条' }));
-  await screen.findByText('已保存 2/2 条');
+  await waitFor(() =>
+    expect(toast.success).toHaveBeenCalledWith('已保存 2/2 条')
+  );
+  expect(screen.queryByText('已保存 2/2 条')).not.toBeInTheDocument();
   expect(saveBatch).toHaveBeenCalledTimes(1);
   expect(
     saveBatch.mock.calls[0][0].items.map((item) => item.instance_id)
@@ -196,11 +200,8 @@ test('batch non-effective decisions require a reason and preserve failed selecti
   fireEvent.change(screen.getByLabelText('提交人'), {
     target: { value: '张三' },
   });
-  fireEvent.click(screen.getByRole('button', { name: '更多批量操作' }));
-  fireEvent.click(
-    await screen.findByRole('menuitem', { name: '选择全部待确认（2）' })
-  );
-  fireEvent.click(screen.getByRole('button', { name: '批量标记判据有误' }));
+  fireEvent.click(screen.getByRole('button', { name: '选择全部待审核（2）' }));
+  fireEvent.click(screen.getByRole('button', { name: '批量标记有误' }));
   const confirm = await screen.findByRole('button', { name: '确认提交 2 条' });
   expect(confirm).toBeDisabled();
   fireEvent.change(screen.getByLabelText('批量审核原因'), {
@@ -235,6 +236,9 @@ test('reviews a single run in the pain table using the shared submitter', async 
   expect(
     screen.getByRole('columnheader', { name: '判据' })
   ).toBeInTheDocument();
+  expect(
+    screen.getByRole('columnheader', { name: '判据审核' })
+  ).toHaveTextContent('判据审核*');
   fireEvent.click(
     screen.getByRole('button', { name: '执行记录 #1：判据正确' })
   );
@@ -282,16 +286,16 @@ test('keeps old execution records visible when no review data is available', asy
   page();
   const records = screen.getByRole('region', { name: '执行记录' });
   expect(
-    await within(records).findByText('该报告暂无可审核的判据')
+    await within(records).findByText(/条执行记录的审核数据缺失/)
   ).toBeVisible();
   expect(within(records).getByText('error 1')).toBeVisible();
-  expect(within(records).queryByText('必审')).not.toBeInTheDocument();
+  expect(within(records).getByText('0/2')).toBeVisible();
   expect(
     within(records).getByRole('button', { name: '执行记录 #1：判据正确' })
   ).toBeDisabled();
 });
 
-test('non-effective decisions require a reason in the confirmation modal and update the shared pain state', async () => {
+test('non-effective decisions require a reason in the confirmation modal and refresh the review list', async () => {
   page();
   await screen.findAllByText('编译判据说明');
   fireEvent.change(screen.getByLabelText('提交人'), {
@@ -307,19 +311,8 @@ test('non-effective decisions require a reason in the confirmation modal and upd
   fireEvent.change(screen.getByLabelText('执行记录 #2 原因'), {
     target: { value: '预期环境行为' },
   });
-  const tracking = {
-    problemKey: trackingProblemKey(problem),
-    status: 'confirmed' as const,
-    revision: 1,
-    updatedAt: '',
-    history: [],
-  };
-  save.mockResolvedValueOnce({
-    data: { instance_id: rows[1].instance_id },
-    tracking,
-  });
   fireEvent.click(screen.getByRole('button', { name: '提交审核' }));
-  await waitFor(() => expect(onTracking).toHaveBeenCalledWith(tracking));
+  await waitFor(() => expect(fetchRows).toHaveBeenCalledTimes(2));
   expect(save).toHaveBeenCalledWith(
     expect.objectContaining({
       instance_id: rows[1].instance_id,
@@ -365,8 +358,9 @@ test('more-action menus expose review history and pending selection without evid
   expect(
     screen.queryByRole('menuitem', { name: '标记证据不足' })
   ).not.toBeInTheDocument();
-  fireEvent.click(screen.getByLabelText('更多批量操作'));
-  await screen.findByRole('menuitem', { name: '选择全部待确认（2）' });
+  expect(
+    screen.getByRole('button', { name: '选择全部待审核（2）' })
+  ).toBeInTheDocument();
   expect(
     screen.queryByRole('menuitem', { name: '批量标记证据不足' })
   ).not.toBeInTheDocument();

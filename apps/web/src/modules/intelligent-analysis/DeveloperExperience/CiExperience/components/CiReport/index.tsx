@@ -41,7 +41,7 @@ const CiReport: React.FC<CiReportProps> = ({
   const scope = {
     org: data.org || org || '',
     repo,
-    workflow: data.workflow,
+    workflow: data.boards[day]?.tracking_workflow || data.workflow,
     day,
   };
   const journeyBoard = journey.boards[day];

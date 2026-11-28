@@ -5,7 +5,7 @@ import type { CiBoard, CiDimKey, CiPri, CiProblem } from '../../types';
 import { priBadgeClass } from '../../helpers';
 import { Collapsible, ValText } from '../shared';
 import DiagBlock from '../DiagBlock';
-import { CiPainTrackingButton } from '../PainTracking';
+import { CiPainTrackingButton, useCiResponsibleParty } from '../PainTracking';
 import { trackingProblemKey } from '../PainTracking/model';
 
 export type CiMetricDetailsBoard = Pick<CiBoard, 'metrics' | 'diag'>;
@@ -27,6 +27,7 @@ const CiMetricDetails: React.FC<CiMetricDetailsProps> = ({
   onClearPriority,
   onProblemJump,
 }) => {
+  const responsibleParty = useCiResponsibleParty();
   const metrics = board?.metrics?.[dimension] ?? [];
   const relatedProblems = problems.filter(
     (problem) =>
@@ -181,9 +182,7 @@ const CiMetricDetails: React.FC<CiMetricDetailsProps> = ({
                   <span>
                     {problem.impact.runs} 次执行 · {problem.impact.prs} 个 PR
                   </span>
-                  <span>
-                    责任方：{problem.responsible_party?.trim() || '—'}
-                  </span>
+                  <span>责任方：{responsibleParty(problem)}</span>
                 </div>
               </div>
             ))}

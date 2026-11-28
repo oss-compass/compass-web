@@ -13,6 +13,7 @@ export type CiPainIssue = Pick<
   | 'common_issue_type'
 > & {
   problemKey: string;
+  lastSeenDay?: string;
   pri: CiPri;
   status: TrackingStatus;
   title: string;
@@ -28,6 +29,54 @@ export type CiPainReport = TrackingScope & {
 };
 
 export type CiPainOverview = { reports: CiPainReport[] };
+
+export type CiCommonIssue = {
+  id: string;
+  name: string;
+  priority: CiPri;
+  segments: string[];
+  responsibility: string | null;
+  recurring: boolean;
+  runs: number;
+  prs: number;
+  cause: string | null;
+  repositories: {
+    name: string;
+    reportRepo: string | null;
+    runs: number;
+    prs: number;
+    cards: { step: string | null; cause: string | null }[];
+  }[];
+};
+
+export type CiCommonIssueSnapshot = { day: string; issues: CiCommonIssue[] };
+
+export const fetchCiCommonIssues = async (
+  signal?: AbortSignal
+): Promise<{ snapshots: CiCommonIssueSnapshot[] }> => {
+  const response = await compassApiFetch<{
+    snapshots: CiCommonIssueSnapshot[];
+  }>('/ci-experience/ci-data/common-issues', { signal });
+  if (
+    !Array.isArray(response.snapshots) ||
+    response.snapshots.some(
+      (snapshot) =>
+        !/^\d{4}-\d{2}-\d{2}$/.test(snapshot.day) ||
+        !Array.isArray(snapshot.issues) ||
+        snapshot.issues.some(
+          (issue) =>
+            !issue.id ||
+            !issue.name ||
+            !['P0', 'P1', 'P2'].includes(issue.priority) ||
+            !Array.isArray(issue.segments) ||
+            !Array.isArray(issue.repositories) ||
+            issue.repositories.some((repo) => !Array.isArray(repo.cards))
+        )
+    )
+  )
+    throw new Error('CI 共性问题数据格式异常');
+  return response;
+};
 
 export type CiRepoComparisonFilters = {
   repo: string;

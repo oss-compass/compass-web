@@ -106,21 +106,21 @@ it('limits the ranking to five groups and opens details matching each closure vi
   expect(
     await dialog.findAllByRole('link', { name: '查看报告', exact: true })
   ).toHaveLength(2);
-  expect(dialog.queryByText('已闭环')).not.toBeInTheDocument();
+  expect(dialog.queryByText('已修复')).not.toBeInTheDocument();
   fireEvent.click(dialog.getByRole('button', { name: 'Close', exact: true }));
   await waitFor(() =>
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   );
 
-  fireEvent.click(card.getByRole('radio', { name: '已闭环', exact: true }));
+  fireEvent.click(card.getByRole('radio', { name: '已修复', exact: true }));
   fireEvent.click(
-    card.getByRole('button', { name: '查看执行失败的已闭环问题数，1项' })
+    card.getByRole('button', { name: '查看执行失败的已修复问题数，1项' })
   );
   dialog = within(screen.getByRole('dialog'));
   expect(
     await dialog.findByRole('link', { name: '查看报告', exact: true })
   ).toHaveAttribute('href', '/ci?repo=three');
-  expect(dialog.getByText('已闭环')).toBeInTheDocument();
+  expect(dialog.getByText('已修复')).toBeInTheDocument();
 });
 
 it('shows an empty result without placeholder problems', () => {

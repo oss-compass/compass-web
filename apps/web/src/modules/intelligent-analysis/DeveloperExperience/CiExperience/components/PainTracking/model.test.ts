@@ -19,11 +19,10 @@ describe('CI pain identity and action availability', () => {
     ).toHaveLength(3);
   });
 
-  it('requires confirmation before fixing and never offers a rerun action', () => {
-    expect(ACTIONS.pending).not.toContain('mark_fixed');
-    expect(ACTIONS.invalid).not.toContain('mark_fixed');
-    expect(ACTIONS.confirmed).toContain('mark_fixed');
-    expect(ACTIONS.fixed).toContain('undo_fixed');
+  it('permits validity corrections while repair status is computed by observation', () => {
+    expect(ACTIONS.confirmed).toEqual(['mark_invalid', 'reset']);
+    expect(ACTIONS.fixed).toEqual(['mark_invalid', 'reset']);
+    expect(Object.values(ACTIONS).flat()).not.toContain('mark_fixed');
     expect(Object.values(ACTIONS).flat()).not.toContain('rerun');
   });
 });

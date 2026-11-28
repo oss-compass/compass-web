@@ -8,7 +8,10 @@ import type {
   CiJourneyProblem,
 } from '../../types';
 
-jest.mock('../PainTracking', () => ({ CiPainTrackingButton: () => null }));
+jest.mock('../PainTracking', () => ({
+  ...jest.requireActual('../PainTracking'),
+  CiPainTrackingButton: () => null,
+}));
 
 const day = '2026-11-03';
 const cell: CiJourneyCell = {

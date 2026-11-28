@@ -14,9 +14,8 @@ import {
 import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import toast from 'react-hot-toast';
 import type { CiProblem, CiRun } from '../../types';
-import type { TrackingRecord, TrackingScope } from './model';
+import type { TrackingScope } from './model';
 import { trackingProblemKey } from './model';
-import PainModalSection from './PainModalSection';
 import RunBatchReview from './RunBatchReview';
 import { RunRuleCell, RunLogCell, RunDecisionCell } from './RunReviewCells';
 import { prURL, runURL } from '../../helpers';
@@ -38,30 +37,77 @@ import {
 type RunRow = { key: string; run: CiRun; review?: CiRunRuleReview };
 type Props = {
   problem: CiProblem;
+  reviewState: ReturnType<typeof usePainRunReviews>;
   scope: TrackingScope;
   operator: string;
   busy: boolean;
   onBusy: (value: boolean) => void;
   onOperatorInvalid: (message: string) => void;
-  validateCommonIssue?: () => boolean;
-  rememberOperator: (value: string) => string;
-  onTracking: (record: TrackingRecord) => void;
+  rememberOperator: (value: string) => void;
+};
+
+export const usePainRunReviews = (problem?: CiProblem) => {
+  const context = useCiRuleReviews();
+  const reviews = problem
+    ? context?.rows.filter((row) => sameReviewProblem(row, problem)) ?? []
+    : [];
+  const runKey = (run: CiRun) =>
+    JSON.stringify([run.id || ['report-row', run.n], run.stage, run.job]);
+  const reviewsByRun = new Map<string, CiRunRuleReview[]>();
+  for (const review of reviews) {
+    const key = runKey(review.run);
+    const matches = reviewsByRun.get(key) ?? [];
+    matches.push(review);
+    reviewsByRun.set(key, matches);
+  }
+  const occurrences = new Map<string, number>();
+  const rows: RunRow[] = (problem?.runs ?? []).map((run, index) => {
+    const key = runKey(run);
+    const occurrence = occurrences.get(key) ?? 0;
+    occurrences.set(key, occurrence + 1);
+    const review = reviewsByRun.get(key)?.[occurrence];
+    return { key: review?.instance_id || `${key}:${index}`, run, review };
+  });
+  const matchedIds = new Set(rows.map(({ review }) => review?.instance_id));
+  for (const review of reviews) {
+    if (!matchedIds.has(review.instance_id)) {
+      rows.push({ key: review.instance_id, run: review.run, review });
+    }
+  }
+  const reviewableRows = rows.filter((row) => row.review);
+  const completed = reviewableRows.filter(
+    ({ review }) =>
+      review?.status === 'confirmed' || review?.status === 'incorrect'
+  ).length;
+  const canReview = Boolean(context && !context.error && !context.loading);
+  const missingRows = rows.filter(({ review }) => !review);
+  const unavailable = missingRows.filter(({ run }) =>
+    Boolean(run.id || run.rule_id || problem?.rule_id)
+  ).length;
+  const unreviewable = missingRows.length - unavailable;
+  const complete =
+    (reviewableRows.length === 0 && unavailable === 0) ||
+    (canReview && unavailable === 0 && completed === reviewableRows.length);
+  return {
+    context,
+    rows,
+    reviewableRows,
+    completed,
+    unavailable,
+    unreviewable,
+    canReview,
+    complete,
+  };
 };
 
 const RunReviewProgress: React.FC<{
   completed: number;
   available: number;
   unavailable: number;
-}> = ({ completed, available, unavailable }) => {
-  if (available === 0) {
-    return <Alert type="info" showIcon message="该报告暂无可审核的判据" />;
-  }
-  const done = completed === available;
-  const title = done
-    ? unavailable > 0
-      ? '已审核全部可用判据'
-      : '已完成全部判据审核'
-    : '待确认：请逐条审核判据';
+  onRetry: () => void;
+}> = ({ completed, available, unavailable, onRetry }) => {
+  const done = completed === available && unavailable === 0;
+  const title = done ? '已完成全部判据审核' : '判据待审核';
   return (
     <div
       className={`rounded-lg border px-3.5 py-2.5 ${
@@ -80,23 +126,25 @@ const RunReviewProgress: React.FC<{
           <span>{title}</span>
         </div>
         <span className="shrink-0 tabular-nums">
-          {completed}/{available}
+          {completed}/{available + unavailable}
         </span>
       </div>
       {!done && (
         <p className="mt-1 text-xs leading-5 text-slate-600">
-          判据由 AI
-          生成。请核对日志，在「判据审核」列选择结论，有误时需填写原因。
+          请核对日志后逐条审核，也可选中待审核记录批量提交。
         </p>
       )}
       {unavailable > 0 && (
         <p className="mt-1 text-xs leading-5 text-slate-600">
-          另有 {unavailable} 条执行记录暂无审核数据。
+          {unavailable} 条执行记录的审核数据缺失。
+          <Button type="link" size="small" onClick={onRetry}>
+            重新加载判据
+          </Button>
         </p>
       )}
       <Progress
         aria-label="判据审核完成进度"
-        percent={Math.round((completed / available) * 100)}
+        percent={Math.round((completed / (available + unavailable)) * 100)}
         showInfo={false}
         className="!mb-0 mt-2"
         strokeColor={done ? '#059669' : '#f59e0b'}
@@ -108,17 +156,15 @@ const RunReviewProgress: React.FC<{
 
 const RunReviewTable: React.FC<Props> = ({
   problem,
+  reviewState,
   scope,
   operator,
   busy,
   onBusy,
   onOperatorInvalid,
-  validateCommonIssue,
   rememberOperator,
-  onTracking,
 }) => {
   const repositoryUrl = useCiRepositoryUrl();
-  const context = useCiRuleReviews();
   const { md } = Grid.useBreakpoint();
   const [editing, setEditing] = useState<{
     key: string;
@@ -137,27 +183,17 @@ const RunReviewTable: React.FC<Props> = ({
     key: string;
     action: CiRunReviewAction;
   } | null>(null);
-  const reviews =
-    context?.rows.filter((row) => sameReviewProblem(row, problem)) || [];
-  const occurrences = new Map<string, number>();
-  const rows: RunRow[] = problem.runs.map((run, index) => {
-    const key = JSON.stringify([run.id, run.stage, run.job]);
-    const occurrence = occurrences.get(key) || 0;
-    occurrences.set(key, occurrence + 1);
-    const review = reviews.filter(
-      (item) =>
-        item.run.id === run.id &&
-        item.run.stage === run.stage &&
-        item.run.job === run.job
-    )[occurrence];
-    return { key: review?.instance_id || `${key}:${index}`, run, review };
-  });
-  const reviewableRows = rows.filter((row) => row.review);
-  const completed = reviewableRows.filter(
-    ({ review }) =>
-      review?.status === 'confirmed' || review?.status === 'incorrect'
-  ).length;
-  const canReview = context && !context.error && !context.loading;
+  const {
+    context,
+    rows,
+    reviewableRows,
+    completed,
+    unavailable,
+    unreviewable,
+    canReview,
+  } = reviewState;
+  const hasExpectedReviews = rows.length > unreviewable;
+  const reviewDisabled = busy || !canReview;
   const missingReviewLabel = canReview ? '暂无审核数据' : '—';
   const selectedReviews = rows
     .filter((row) => selectedIds.includes(row.key))
@@ -169,13 +205,12 @@ const RunReviewTable: React.FC<Props> = ({
       : []
   );
   const submit = async (row: RunRow, action: CiRunReviewAction) => {
-    if (!row.review || submitting.current || busy) return;
+    if (!row.review || submitting.current || reviewDisabled) return;
     const validation = validateOperator(operator);
     if (validation) {
       onOperatorInvalid(validation);
       return;
     }
-    if (validateCommonIssue?.() === false) return;
     if (action !== 'confirmed' && !reason.trim()) {
       setError('请填写原因');
       return;
@@ -189,17 +224,17 @@ const RunReviewTable: React.FC<Props> = ({
         action !== 'confirmed' && editing?.key === row.key
           ? editing
           : row.review;
-      const result = await savePainRunReview({
+      await savePainRunReview({
         ...scope,
         problemKey: trackingProblemKey(problem),
         instance_id: row.review.instance_id,
         evidence_revision: expected.evidence_revision,
         revision: expected.revision,
         action,
-        operator: rememberOperator(operator),
+        operator: operator.trim(),
         reason: action === 'confirmed' ? '' : reason.trim(),
       });
-      if (result.tracking) onTracking(result.tracking);
+      rememberOperator(operator);
       setEditing(null);
       setReason('');
       await context?.retry();
@@ -228,7 +263,6 @@ const RunReviewTable: React.FC<Props> = ({
       onOperatorInvalid(validation);
       return;
     }
-    if (validateCommonIssue?.() === false) return;
     onOperatorInvalid('');
     setError('');
     if (action === 'confirmed') {
@@ -246,19 +280,30 @@ const RunReviewTable: React.FC<Props> = ({
     setReason('');
   };
   return (
-    <PainModalSection title="执行记录" count={rows.length}>
-      {canReview && rows.length > 0 && (
+    <section aria-label="执行记录" className="space-y-3">
+      {canReview && hasExpectedReviews && (
         <RunReviewProgress
           completed={completed}
           available={reviewableRows.length}
-          unavailable={rows.length - reviewableRows.length}
+          unavailable={unavailable}
+          onRetry={() => void context?.retry()}
         />
       )}
-      {(!context || context.error) && (
+      {unreviewable > 0 && (
+        <p className="text-xs text-slate-500">
+          {unreviewable} 条执行记录缺少执行 ID 和判据，仅供查看。
+        </p>
+      )}
+      {hasExpectedReviews && context?.loading && (
+        <div role="status" className="text-sm text-slate-500">
+          正在加载判据审核…
+        </div>
+      )}
+      {hasExpectedReviews && (!context || context.error) && (
         <Alert
           type="error"
           showIcon
-          message="执行记录判据与审核状态读取失败"
+          message="判据审核状态读取失败"
           action={
             context && (
               <Button onClick={() => void context.retry()}>重试</Button>
@@ -276,10 +321,9 @@ const RunReviewTable: React.FC<Props> = ({
           problemKey={trackingProblemKey(problem)}
           selected={selectedReviews}
           pending={pendingReviews}
-          busy={busy}
+          busy={reviewDisabled}
           operator={operator}
           onOperatorInvalid={onOperatorInvalid}
-          validateCommonIssue={validateCommonIssue}
           rememberOperator={rememberOperator}
           onSelectPending={() =>
             setSelectedIds(pendingReviews.map((row) => row.instance_id))
@@ -291,7 +335,6 @@ const RunReviewTable: React.FC<Props> = ({
             )
           }
           onBusy={onBusy}
-          onTracking={onTracking}
           onRefresh={() => context?.retry() || Promise.resolve()}
         />
         <Table<RunRow>
@@ -311,7 +354,7 @@ const RunReviewTable: React.FC<Props> = ({
               >
                 <Checkbox
                   aria-label="选择全部执行记录"
-                  disabled={busy || reviewableRows.length === 0}
+                  disabled={reviewDisabled || reviewableRows.length === 0}
                   checked={
                     selectedReviews.length > 0 &&
                     selectedReviews.length === reviewableRows.length
@@ -334,7 +377,7 @@ const RunReviewTable: React.FC<Props> = ({
             preserveSelectedRowKeys: true,
             onChange: (keys) => setSelectedIds(keys.map(String)),
             getCheckboxProps: (row) => ({
-              disabled: busy || !row.review || Boolean(context?.error),
+              disabled: reviewDisabled || !row.review,
               'aria-label': `选择执行记录 #${row.run.n}`,
             }),
           }}
@@ -440,16 +483,19 @@ const RunReviewTable: React.FC<Props> = ({
             {
               title: '执行记录',
               width: 90,
-              render: (_, row) => (
-                <a
-                  href={runURL(repositoryUrl, row.run.id)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-sky-600 hover:underline"
-                >
-                  #{row.run.n}
-                </a>
-              ),
+              render: (_, row) =>
+                row.run.id ? (
+                  <a
+                    href={runURL(repositoryUrl, row.run.id)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-sky-600 hover:underline"
+                  >
+                    #{row.run.n}
+                  </a>
+                ) : (
+                  <span>#{row.run.n}</span>
+                ),
             },
             {
               title: 'PR',
@@ -523,17 +569,14 @@ const RunReviewTable: React.FC<Props> = ({
             },
             {
               title: (
-                <span className="flex items-center gap-1.5">
-                  <span>判据审核</span>
-                  {canReview && completed < reviewableRows.length && (
-                    <span className="text-[11px] font-normal text-rose-600">
-                      必审
-                    </span>
-                  )}
+                <span>
+                  判据审核
+                  <span className="ml-1 text-rose-600" aria-hidden="true">
+                    *
+                  </span>
                 </span>
               ),
               width: 174,
-              className: 'ci-run-review-action',
               fixed: md ? 'right' : undefined,
               render: (_, row) => (
                 <RunDecisionCell
@@ -544,7 +587,7 @@ const RunReviewTable: React.FC<Props> = ({
                       ? activeSubmission.action
                       : undefined
                   }
-                  disabled={busy || !row.review || Boolean(context?.error)}
+                  disabled={reviewDisabled || !row.review}
                   onDecision={(action) => startDecision(row, action)}
                   onHistory={() => {
                     setExpanded(expanded.includes(row.key) ? [] : [row.key]);
@@ -577,8 +620,10 @@ const RunReviewTable: React.FC<Props> = ({
       >
         <div className="space-y-4">
           <p className="text-sm leading-6 text-slate-600">
-            执行记录 #{editing?.runNumber} ·
-            请说明判据有误的原因及建议修正内容，提交后保留在审核记录中。
+            执行记录 #{editing?.runNumber}
+            {editing?.action === 'insufficient'
+              ? ' · 请说明还需要补充哪些证据。'
+              : ' · 请说明判据有误的原因，可附上修正建议。'}
           </p>
           <label className="block text-sm font-medium text-slate-700">
             原因
@@ -587,7 +632,11 @@ const RunReviewTable: React.FC<Props> = ({
             </span>
             <Input.TextArea
               aria-label={`执行记录 #${editing?.runNumber} 原因`}
-              placeholder="请说明判据有误的原因及建议修正内容"
+              placeholder={
+                editing?.action === 'insufficient'
+                  ? '请填写缺失的证据'
+                  : '请填写原因及修正建议'
+              }
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               rows={4}
@@ -637,21 +686,12 @@ const RunReviewTable: React.FC<Props> = ({
         .ci-run-review-table .ant-table-thead > tr > th::before {
           display: none !important;
         }
-        .ci-run-review-table .ant-table-thead > tr > th.ci-run-review-action {
-          border-left: 1px solid #e2e8f0;
-          background: #eff6ff;
-          color: #334155;
-        }
         .ci-run-review-table .ant-table-tbody > tr > td {
           padding: 10px 12px;
           vertical-align: top;
           color: #475569;
           font-size: 12px;
           border-bottom: 1px solid #f1f5f9;
-        }
-        .ci-run-review-table .ant-table-tbody > tr > td.ci-run-review-action {
-          border-left: 1px solid #e2e8f0;
-          background: #f8fbff;
         }
         .ci-run-review-table .ant-table-tbody > tr.ant-table-row:hover > td {
           background: #f8fafc;
@@ -670,7 +710,7 @@ const RunReviewTable: React.FC<Props> = ({
           margin: 12px !important;
         }
       `}</style>
-    </PainModalSection>
+    </section>
   );
 };
 export default RunReviewTable;

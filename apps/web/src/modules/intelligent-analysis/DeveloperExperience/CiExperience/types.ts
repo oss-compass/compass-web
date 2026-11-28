@@ -212,6 +212,7 @@ export type CiMatrices = {
 
 /** 日观测板：一天一份 */
 export type CiBoard = {
+  tracking_workflow?: string;
   date: string;
   meta: CiLabeledVal[];
   default_dim: CiDimKey;

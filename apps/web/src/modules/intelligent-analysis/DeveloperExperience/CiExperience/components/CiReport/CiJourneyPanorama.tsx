@@ -2,7 +2,7 @@ import { CiProblemRuleSummary, CiRunRuleCell } from '../RuleReviews';
 import { useCiRepositoryUrl } from '../../repository';
 import { getCiMetricDescription } from '../../metricDescriptions';
 import React, { useEffect, useId, useState } from 'react';
-import { CiPainTrackingButton } from '../PainTracking';
+import { CiPainTrackingButton, useCiResponsibleParty } from '../PainTracking';
 import {
   AppstoreOutlined,
   ArrowRightOutlined,
@@ -435,6 +435,7 @@ const StageProblem: React.FC<{
   highlighted?: boolean;
 }> = ({ problem, repo, highlighted }) => {
   const repositoryUrl = useCiRepositoryUrl();
+  const responsibleParty = useCiResponsibleParty();
   const { root, impact } = problem;
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -492,7 +493,7 @@ const StageProblem: React.FC<{
               {problem.title}
             </span>
             <span className="mt-1 flex flex-wrap gap-x-4 gap-y-1 break-words text-xs text-slate-500">
-              <span>责任方：{problem.responsible_party?.trim() || '—'}</span>
+              <span>责任方：{responsibleParty(problem)}</span>
               <span>责任人：{problem.responsible_person?.trim() || '—'}</span>
             </span>
           </span>

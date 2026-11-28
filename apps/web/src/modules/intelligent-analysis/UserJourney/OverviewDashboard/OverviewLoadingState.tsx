@@ -1,15 +1,23 @@
 import React from 'react';
 
-export const OverviewSectionPlaceholder: React.FC<{ minHeight?: number }> = ({
-  minHeight = 320,
+export const OverviewSectionPlaceholder: React.FC<{
+  minHeight?: number;
+  label?: string;
+  embedded?: boolean;
+}> = ({
+  embedded = false,
+  minHeight = embedded ? 0 : 320,
+  label = '看板加载中...',
 }) => (
   <div
     role="status"
-    aria-label="看板加载中..."
+    aria-label={label}
     style={{ minHeight }}
-    className="rounded-2xl border border-slate-100 bg-white p-5"
+    className={
+      embedded ? 'min-w-0' : 'rounded-2xl border border-slate-100 bg-white p-5'
+    }
   >
-    <span className="sr-only">看板加载中...</span>
+    <span className="sr-only">{label}</span>
     <div aria-hidden="true" className="space-y-4 motion-safe:animate-pulse">
       <div className="h-5 w-36 rounded bg-slate-100" />
       <div className="h-16 rounded-xl bg-slate-50" />

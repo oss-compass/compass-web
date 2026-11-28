@@ -11,7 +11,7 @@ import {
   runURL,
 } from '../helpers';
 import { Badge, DimTag, PriBadge } from './shared';
-import { CiPainTrackingButton } from './PainTracking';
+import { CiPainTrackingButton, useCiResponsibleParty } from './PainTracking';
 
 type ProblemCardProps = {
   problem: CiProblem;
@@ -20,6 +20,7 @@ type ProblemCardProps = {
 
 const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
   const repositoryUrl = useCiRepositoryUrl();
+  const responsibleParty = useCiResponsibleParty();
   const [open, setOpen] = useState(problem.pri === 'P0');
   const [runsOpen, setRunsOpen] = useState(true);
   const im = problem.impact;
@@ -42,7 +43,7 @@ const ProblemCard: React.FC<ProblemCardProps> = ({ problem, repo }) => {
   if (im.wasted_min) {
     metaParts.push(`关联机时 ${(im.wasted_min / 60).toFixed(1)} 机时`);
   }
-  metaParts.push(`责任方：${problem.responsible_party?.trim() || '—'}`);
+  metaParts.push(`责任方：${responsibleParty(problem)}`);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">

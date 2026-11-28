@@ -14,18 +14,17 @@ import {
 } from './communityMetrics';
 import dynamic from 'next/dynamic';
 import type { CiReportHref } from './CiIssueTable';
-import { REPAIR_RATE_NOTE } from './statusPresentation';
+import {
+  CI_OVERVIEW_STATUS_META,
+  REPAIR_RATE_NOTE,
+} from './statusPresentation';
 import { IssueProgressBar } from '../../../../UserJourney/OverviewDashboard/ProgressComponents';
 
 const CiIssueListModal = dynamic(() =>
   import('./CiIssueTable').then((module) => module.CiIssueListModal)
 );
 
-const PROGRESS_STATUS = {
-  pending: { status: 'pending', label: '待处理' },
-  inProgress: { status: 'confirmed', label: '进行中' },
-  resolved: { status: 'fixed', label: '已闭环' },
-} as const;
+const PROGRESS_STATUS = ['pending', 'confirmed', 'fixed'] as const;
 
 export type RepoRow = CiRepoSummary & {
   teamName: string;
@@ -199,15 +198,18 @@ const CiRepoProgressSection: React.FC<Props> = ({
     return (
       <div onClick={(event) => event.stopPropagation()}>
         <IssueProgressBar
-          pending={counts.pending}
-          inProgress={counts.confirmed}
-          resolved={counts.fixed}
-          onBucketClick={(bucket) => {
-            if (bucket === 'na') return;
-            const { status, label } = PROGRESS_STATUS[bucket];
+          states={PROGRESS_STATUS.map((status) => ({
+            key: status,
+            label: CI_OVERVIEW_STATUS_META[status].label,
+            value: counts[status],
+            color: CI_OVERVIEW_STATUS_META[status].fill,
+          }))}
+          onStateClick={(status) => {
+            const bucket = PROGRESS_STATUS.find((state) => state === status);
+            if (!bucket) return;
             openIssues(
-              `${title} · ${label}`,
-              values.filter((issue) => issue.status === status)
+              `${title} · ${CI_OVERVIEW_STATUS_META[bucket].label}`,
+              values.filter((issue) => issue.status === bucket)
             );
           }}
         />

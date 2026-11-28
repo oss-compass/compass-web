@@ -28,6 +28,7 @@ const OverviewPainProgress: React.FC<{
   cards: OverviewPainSummaryCard[];
   priorities: OverviewPainPriority[];
   states: readonly OverviewPainState[];
+  embedded?: boolean;
   headerActions?: React.ReactNode;
   progressContent?: React.ReactNode;
   priorityTitle?: string;
@@ -43,6 +44,7 @@ const OverviewPainProgress: React.FC<{
   cards,
   priorities,
   states,
+  embedded = false,
   headerActions,
   progressContent,
   priorityTitle = '各优先级问题闭环进展',
@@ -55,13 +57,21 @@ const OverviewPainProgress: React.FC<{
   trendLegend,
   trendEmpty = '所选时间范围暂无数据',
 }) => (
-  <div className="section-card pain-progress-reference">
-    <div className="mb-3 flex flex-wrap items-center gap-3">
-      <div className="text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
-        痛点问题进展及趋势
+  <div
+    className={
+      embedded
+        ? 'pain-progress-reference'
+        : 'section-card pain-progress-reference'
+    }
+  >
+    {!embedded && (
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <div className="text-[16px] font-extrabold leading-6 text-[var(--overview-text)]">
+          痛点问题进展及趋势
+        </div>
+        {headerActions}
       </div>
-      {headerActions}
-    </div>
+    )}
     <div className="ov-row">
       {cards.map((card) => (
         <div key={card.label} className="ov-item">

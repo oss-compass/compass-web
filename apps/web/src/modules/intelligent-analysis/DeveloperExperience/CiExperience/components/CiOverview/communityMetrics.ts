@@ -185,7 +185,7 @@ export const computeCommunityOverview = (
         repo: report.repo,
         slug: report.slug,
         workflow: report.workflow,
-        day: report.day,
+        day: issue.lastSeenDay || report.day,
       }))
     )
     .sort(

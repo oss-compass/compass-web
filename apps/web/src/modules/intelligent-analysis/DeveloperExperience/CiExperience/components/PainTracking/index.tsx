@@ -18,7 +18,6 @@ import toast from 'react-hot-toast';
 import {
   Alert,
   Button,
-  Input,
   Modal,
   Select,
   Space,
@@ -29,12 +28,9 @@ import {
 } from 'antd';
 import type { CiDimKey, CiPri, CiProblem, CiRepoKey } from '../../types';
 import { DIM_NAME, formatProblemEvidence } from '../../helpers';
-import CommonIssueJudgment, {
-  getReportedCommonIssue,
-  type CommonIssueRadioRef,
-} from './CommonIssueJudgment';
 import PainHandlingPanel, { OperatorField } from './PainHandlingPanel';
-import RunReviewTable from './RunReviewTable';
+import RunReviewTable, { usePainRunReviews } from './RunReviewTable';
+import ResponsiblePartyField from './ResponsiblePartyField';
 import { useTrackingOperator } from '../../../IssueContribution/components/PainTrackingModal/hooks';
 import {
   formatTrackingTime,
@@ -43,6 +39,7 @@ import {
 import { fetchTrackings, saveTracking, TrackingApiError } from './api';
 import { ACTION_LABELS, STATUS_META, trackingProblemKey } from './model';
 import type {
+  ResponsibleParty,
   TrackingAction,
   TrackingRecord,
   TrackingScope,
@@ -60,20 +57,21 @@ const TrackingContext = createContext<TrackingContextValue | null>(null);
 export const useCiPainListNavigation = () =>
   useContext(TrackingContext)?.showAllProblems;
 
-const CI_PAIN_MODAL_BUTTON_STYLE: React.CSSProperties = {
-  height: 36,
-  paddingInline: 20,
-  borderRadius: 8,
-  boxShadow: 'none',
+const getResponsibleParty = (problem: CiProblem, record?: TrackingRecord) =>
+  record?.responsibleParty || problem.responsible_party?.trim() || '—';
+
+export const useCiResponsibleParty = () => {
+  const context = useContext(TrackingContext);
+  return (problem: CiProblem) =>
+    getResponsibleParty(problem, context?.records[trackingProblemKey(problem)]);
 };
 
 const ACTION_SUCCESS_MESSAGES: Record<TrackingAction, string> = {
-  confirm: '已确认有效问题，进入「已确认待修复」',
+  confirm: '已确认有效问题',
   mark_invalid: '已判定为非有效问题',
-  restore_valid: '已恢复为有效问题，进入「已确认待修复」',
-  mark_fixed: '已记录完成修复，进入「已修复待复测」',
-  undo_fixed: '已撤销修复，回到「已确认待修复」',
+  restore_valid: '已恢复为有效问题',
   reset: '已回退到「待确认」',
+  change_responsible_party: '责任方已更新',
 };
 
 /** 放在可折叠按钮外，防止嵌套 button。所有入口共用报告级状态。 */
@@ -85,8 +83,9 @@ export const CiPainTrackingButton: React.FC<{ problem: CiProblem }> = ({
   const status =
     context.records[trackingProblemKey(problem)]?.status ?? 'pending';
   const meta = getTrackingStatusMeta(
-    { pending: 1, confirmed: 2, fixed: 3, invalid: 6 }[status],
-    'fix'
+    { pending: 1, confirmed: 2, fixed: 5, invalid: 6 }[status],
+    'fix',
+    STATUS_META[status].label
   );
   return (
     <PainTrackingStatusButton
@@ -119,11 +118,12 @@ export const CiPainTrackingButton: React.FC<{ problem: CiProblem }> = ({
 
 export const findStepTime = (
   record: TrackingRecord | undefined,
-  state: TrackingStatus | 'retest'
+  state: TrackingStatus
 ) => {
-  if (!record || record.status === 'pending' || state === 'retest') {
+  if (!record || record.status === 'pending') {
     return undefined;
   }
+  if (state === 'fixed') return record.observation?.fixedOn ?? undefined;
   const lastResetIndex = record.history
     .map((entry) => entry.action === 'reset' && entry.to === 'pending')
     .lastIndexOf(true);
@@ -134,9 +134,13 @@ export const findStepTime = (
     )?.at;
   }
   if (state === 'confirmed' && record.status === 'invalid') return undefined;
-  if (state === 'fixed' && record.status !== 'fixed') return undefined;
   if (state === 'invalid' && record.status !== 'invalid') return undefined;
-  return history.find((entry) => entry.to === state)?.at;
+  return history.find(
+    (entry) =>
+      entry.to === state &&
+      entry.from !== entry.to &&
+      entry.action !== 'undo_fixed'
+  )?.at;
 };
 
 const CiTrackingSteps: React.FC<{
@@ -155,16 +159,11 @@ const CiTrackingSteps: React.FC<{
           ]
         : [
             { title: '待确认', state: 'pending' },
-            { title: '已确认待修复', state: 'confirmed' },
-            { title: '已修复待复测', state: 'fixed' },
-            {
-              title: '已复测通过',
-              state: 'retest',
-              disabled: true,
-            },
+            { title: STATUS_META.confirmed.label, state: 'confirmed' },
+            { title: STATUS_META.fixed.label, state: 'fixed' },
           ]
       ).map(({ state, ...item }) => {
-        const at = findStepTime(record, state as TrackingStatus | 'retest');
+        const at = findStepTime(record, state as TrackingStatus);
         return {
           ...item,
           description: at ? (
@@ -172,7 +171,7 @@ const CiTrackingSteps: React.FC<{
               aria-label={`${item.title}时间`}
               className="text-xs text-slate-500"
             >
-              {formatTrackingTime(at)}
+              {state === 'fixed' ? at : formatTrackingTime(at)}
             </span>
           ) : null,
         };
@@ -184,7 +183,8 @@ const CiTrackingSteps: React.FC<{
 const PainInformation: React.FC<{
   problem: CiProblem;
   scope: TrackingScope;
-}> = ({ problem, scope }) => {
+  responsiblePartyField: React.ReactNode;
+}> = ({ problem, scope, responsiblePartyField }) => {
   const headingId = useId();
   return (
     <section
@@ -204,15 +204,13 @@ const PainInformation: React.FC<{
         <p className="font-semibold">{problem.kb}</p>
         <p>{problem.title}</p>
       </div>
+      {responsiblePartyField}
       <details
         open={problem.runs.length === 0}
-        className="mt-2.5 rounded-lg border border-rose-100 bg-white/70 px-3 py-2 text-sm"
+        className="mt-2.5 rounded-lg border border-rose-100 bg-white/70 px-3 py-1.5 text-sm leading-6"
       >
         <summary className="cursor-pointer rounded font-medium text-slate-700">
           报告判断依据
-          <span className="ml-2 inline-block text-xs font-normal text-slate-500">
-            影响 {problem.impact.runs} 次执行 · {problem.impact.prs} 个 PR
-          </span>
         </summary>
         <div className="mt-2 space-y-2 break-words border-t border-rose-100 pt-2 text-slate-600">
           <p>原报告归因：{problem.owner || '待确认'}</p>
@@ -272,17 +270,15 @@ export const CiPainTrackingProvider: React.FC<{
   const [retry, setRetry] = useState(0);
   const [reason, setReason] = useState('');
   const [actionError, setActionError] = useState('');
+  const [partyError, setPartyError] = useState('');
   const [operatorError, setOperatorError] = useState('');
   const operatorInput = useRef<InputRef>(null);
-  const [isCommonIssue, setIsCommonIssue] = useState<boolean>();
-  const [commonIssueInvalid, setCommonIssueInvalid] = useState(false);
-  const commonIssueInput = useRef<CommonIssueRadioRef>(null);
-  const [invalidReasonOpen, setInvalidReasonOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
   const mounted = useRef(true);
-  const { operator, setOperator, rememberOperator } = useTrackingOperator();
+  const { operator, setOperator, rememberOperator, restoreOperator } =
+    useTrackingOperator();
   // 父级按完整 scope 设 key；仓库/日期变化立即销毁弹窗与在途读取。
   useEffect(() => {
     mounted.current = true;
@@ -312,101 +308,100 @@ export const CiPainTrackingProvider: React.FC<{
   }, [scopeString, retry]);
 
   const ready = !loading && !loadError;
-  const open = useCallback((problem: CiProblem) => {
-    setSelected(problem);
-    setHistoryOpen(false);
-    setReason('');
-    setActionError('');
-    setOperatorError('');
-    setIsCommonIssue(getReportedCommonIssue(problem));
-    setCommonIssueInvalid(false);
-    setInvalidReasonOpen(false);
-  }, []);
+  const open = useCallback(
+    (problem: CiProblem) => {
+      restoreOperator();
+      setSelected(problem);
+      setHistoryOpen(false);
+      setReason('');
+      setActionError('');
+      setPartyError('');
+      setOperatorError('');
+    },
+    [restoreOperator]
+  );
   const record = selected ? records[trackingProblemKey(selected)] : undefined;
   const status = record?.status ?? 'pending';
+  const reviewState = usePainRunReviews(selected ?? undefined);
+  const {
+    complete: reviewComplete,
+    context: reviewContext,
+    rows: reviewRows,
+  } = reviewState;
+  const operatorIssue = validateOperator(operator);
   const showOperatorError = (message: string) => {
     setOperatorError(message);
     if (message) operatorInput.current?.focus();
   };
-  const validateCommonIssue = () => {
-    if (!ready) return false;
-    if (status !== 'pending' || isCommonIssue !== undefined) return true;
-    setCommonIssueInvalid(true);
-    commonIssueInput.current?.focus();
-    return false;
-  };
   const performAction = async (
     nextAction: TrackingAction,
-    nextReason = ''
+    nextReason = '',
+    nextParty?: ResponsibleParty
   ): Promise<boolean> => {
     if (!selected || !ready || savingRef.current) return false;
+    const changingParty = nextAction === 'change_responsible_party';
+    const updateError = changingParty ? setPartyError : setActionError;
     const invalidOperator = validateOperator(operator);
     if (invalidOperator) {
       showOperatorError(
         invalidOperator === '请填写提交人'
-          ? '请先填写提交人，再进行痛点判定'
+          ? changingParty
+            ? '请先填写提交人，再更改责任方'
+            : '请先填写提交人，再进行痛点判定'
           : invalidOperator
       );
       return false;
     }
-    if (!validateCommonIssue()) return false;
+    if (!reviewComplete && nextAction !== 'reset' && !changingParty) {
+      setActionError('请先完成全部判据审核');
+      return false;
+    }
     if (nextAction === 'mark_invalid' && !nextReason.trim()) {
       setActionError('判为非有效问题时请填写判断依据');
       return false;
     }
     savingRef.current = true;
     setSaving(true);
-    setActionError('');
+    updateError('');
     try {
       const { data } = await saveTracking({
         ...scope,
         problemKey: trackingProblemKey(selected),
         type: nextAction,
-        operator: rememberOperator(operator),
+        operator: operator.trim(),
         reason: nextReason.trim(),
         revision: record?.revision ?? 0,
+        ...(nextParty && { responsibleParty: nextParty }),
       });
+      rememberOperator(operator);
       if (!mounted.current) return;
       setRecords((current) => ({ ...current, [data.problemKey]: data }));
-      if (nextAction === 'reset') {
-        setIsCommonIssue(getReportedCommonIssue(selected));
-      }
-      setReason('');
-      setInvalidReasonOpen(false);
-      toast.success(ACTION_SUCCESS_MESSAGES[nextAction]);
+      if (!changingParty) setReason('');
+      const message = ACTION_SUCCESS_MESSAGES[nextAction];
+      toast.success(
+        nextAction === 'confirm' || nextAction === 'restore_valid'
+          ? `${message}，当前状态为「${STATUS_META[data.status].label}」`
+          : message
+      );
       return true;
     } catch (error) {
       if (!mounted.current) return;
       const errorMessage =
         error instanceof Error ? error.message : '保存失败，请重试';
-      setActionError(errorMessage);
+      updateError(errorMessage);
       toast.error(errorMessage);
       if (error instanceof TrackingApiError && error.status === 409) {
-        setInvalidReasonOpen(false);
-        setReason('');
         setRetry((value) => value + 1);
+        if (!changingParty) {
+          setReason('');
+          void reviewContext?.retry();
+        }
       }
       return false;
     } finally {
       savingRef.current = false;
       if (mounted.current) setSaving(false);
     }
-  };
-  const requestInvalidDecision = () => {
-    const invalidOperator = validateOperator(operator);
-    if (invalidOperator) {
-      showOperatorError(
-        invalidOperator === '请填写提交人'
-          ? '请先填写提交人，再进行痛点判定'
-          : invalidOperator
-      );
-      return;
-    }
-    if (!validateCommonIssue()) return;
-    setOperatorError('');
-    setActionError('');
-    setReason('');
-    setInvalidReasonOpen(true);
   };
   const scopedProblems = problems.filter(
     (problem) =>
@@ -566,7 +561,11 @@ export const CiPainTrackingProvider: React.FC<{
             {
               title: '责任方',
               width: 120,
-              render: (_, problem) => problem.responsible_party?.trim() || '—',
+              render: (_, problem) =>
+                getResponsibleParty(
+                  problem,
+                  records[trackingProblemKey(problem)]
+                ),
             },
             {
               title: '责任人',
@@ -609,7 +608,37 @@ export const CiPainTrackingProvider: React.FC<{
         {selected ? (
           <div className="space-y-4">
             {ready ? <CiTrackingSteps status={status} record={record} /> : null}
-            <PainInformation problem={selected} scope={scope} />
+            <PainInformation
+              problem={selected}
+              scope={scope}
+              responsiblePartyField={
+                <ResponsiblePartyField
+                  key={trackingProblemKey(selected)}
+                  current={getResponsibleParty(selected, record)}
+                  disabled={saving || !ready}
+                  operatorReady={!operatorIssue}
+                  error={partyError}
+                  clearError={() => setPartyError('')}
+                  onSave={(party) =>
+                    performAction('change_responsible_party', '', party)
+                  }
+                />
+              }
+            />
+            {ready && record?.observation && (
+              <div className="rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700">
+                <p className="font-medium">
+                  {record.status === 'fixed'
+                    ? '已达到修复条件'
+                    : `观测进度 ${record.observation.cleanDays}/${record.observation.daysRequired} 天`}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  最近出现于 {record.observation.lastSeenDay}。连续{' '}
+                  {record.observation.daysRequired}{' '}
+                  天的完整日报未检出后自动标记为已修复，再次检出后恢复进行中。
+                </p>
+              </div>
+            )}
             {!ready && (
               <Alert
                 type={loading ? 'info' : 'error'}
@@ -627,68 +656,54 @@ export const CiPainTrackingProvider: React.FC<{
               />
             )}
             <PainHandlingPanel
-              problem={selected}
+              key={`handling:${trackingProblemKey(selected)}`}
+              reviewComplete={reviewComplete}
+              operatorReady={!operatorIssue}
               ready={ready}
               status={status}
               reason={reason}
               saving={saving}
-              error={invalidReasonOpen ? '' : actionError}
-              commonIssueField={
-                ready && status === 'pending' ? (
-                  <CommonIssueJudgment
-                    key={trackingProblemKey(selected)}
-                    problem={selected}
-                    problems={problems}
-                    disabled={saving}
-                    isCommon={isCommonIssue}
-                    invalid={commonIssueInvalid}
-                    inputRef={commonIssueInput}
-                    onChange={(value) => {
-                      setIsCommonIssue(value);
-                      setCommonIssueInvalid(false);
-                    }}
-                  />
-                ) : null
-              }
+              error={actionError}
               operatorField={
                 <OperatorField
                   inputRef={operatorInput}
                   value={operator}
                   error={operatorError}
-                  disabled={saving}
+                  disabled={saving || !ready}
                   onChange={(value) => {
                     setOperator(value);
-                    if (value.trim()) setOperatorError('');
+                    if (operatorError)
+                      setOperatorError(validateOperator(value) || '');
+                  }}
+                  onBlur={() => {
+                    if (operator.trim()) setOperatorError(operatorIssue || '');
                   }}
                 />
               }
-              onReasonChange={setReason}
+              onReasonChange={(value) => {
+                setReason(value);
+                if (actionError) setActionError('');
+              }}
               onAction={performAction}
-              onInvalid={requestInvalidDecision}
+              runReview={
+                reviewRows.length ? (
+                  <RunReviewTable
+                    key={trackingProblemKey(selected)}
+                    problem={selected}
+                    reviewState={reviewState}
+                    scope={scope}
+                    operator={operator}
+                    busy={saving || !ready || Boolean(operatorIssue)}
+                    onBusy={(value) => {
+                      savingRef.current = value;
+                      if (mounted.current) setSaving(value);
+                    }}
+                    onOperatorInvalid={showOperatorError}
+                    rememberOperator={rememberOperator}
+                  />
+                ) : null
+              }
             />
-            {selected.runs.length ? (
-              <RunReviewTable
-                key={trackingProblemKey(selected)}
-                problem={selected}
-                scope={scope}
-                operator={operator}
-                busy={saving}
-                onBusy={(value) => {
-                  savingRef.current = value;
-                  if (mounted.current) setSaving(value);
-                }}
-                onOperatorInvalid={showOperatorError}
-                validateCommonIssue={validateCommonIssue}
-                rememberOperator={rememberOperator}
-                onTracking={(data) => {
-                  if (mounted.current)
-                    setRecords((current) => ({
-                      ...current,
-                      [data.problemKey]: data,
-                    }));
-                }}
-              />
-            ) : null}
             {record?.history.length ? (
               <div>
                 <button
@@ -731,7 +746,7 @@ export const CiPainTrackingProvider: React.FC<{
                         {
                           title: '操作',
                           dataIndex: 'action',
-                          render: (value: TrackingAction) =>
+                          render: (value: keyof typeof ACTION_LABELS) =>
                             ACTION_LABELS[value],
                           width: 140,
                         },
@@ -742,7 +757,19 @@ export const CiPainTrackingProvider: React.FC<{
                             STATUS_META[value].label,
                           width: 170,
                         },
-                        { title: '依据 / 说明', dataIndex: 'reason' },
+                        {
+                          title: '依据 / 说明',
+                          dataIndex: 'reason',
+                          render: (
+                            value: string,
+                            entry: TrackingRecord['history'][number]
+                          ) =>
+                            entry.toParty
+                              ? `${entry.fromParty || '未指定'} → ${
+                                  entry.toParty
+                                }`
+                              : value,
+                        },
                       ]}
                     />
                   </div>
@@ -752,71 +779,17 @@ export const CiPainTrackingProvider: React.FC<{
           </div>
         ) : null}
       </Modal>
-      <Modal
-        open={invalidReasonOpen}
-        className="ci-pain-invalid-modal"
-        title="判定为非有效问题"
-        width={480}
-        centered
-        destroyOnHidden
-        okText="确认判定"
-        cancelText="取消"
-        confirmLoading={saving}
-        styles={{ content: { borderRadius: 16, overflow: 'hidden' } }}
-        okButtonProps={{
-          danger: true,
-          disabled: !reason.trim(),
-          style: CI_PAIN_MODAL_BUTTON_STYLE,
-        }}
-        cancelButtonProps={{ style: CI_PAIN_MODAL_BUTTON_STYLE }}
-        maskClosable={!saving}
-        closable={!saving}
-        onCancel={() => {
-          if (!savingRef.current) {
-            setInvalidReasonOpen(false);
-            setReason('');
-            setActionError('');
-          }
-        }}
-        onOk={() => void performAction('mark_invalid', reason)}
-      >
-        <div className="space-y-3">
-          <p className="text-sm leading-6 text-slate-600">
-            请填写判定依据。该记录会保留在操作历史中，后续仍可改判为有效问题。
-          </p>
-          <label className="block text-sm font-medium text-slate-700">
-            判断依据
-            <span className="ml-1 text-rose-600" aria-hidden="true">
-              *
-            </span>
-            <Input.TextArea
-              aria-label="无效问题判断依据"
-              className="mt-2"
-              required
-              value={reason}
-              maxLength={500}
-              showCount
-              rows={4}
-              disabled={saving}
-              placeholder="请说明为什么该痛点不是有效问题"
-              onChange={(event) => {
-                setReason(event.target.value);
-                if (event.target.value.trim()) setActionError('');
-              }}
-            />
-          </label>
-          {actionError ? (
-            <Alert type="error" showIcon message={actionError} />
-          ) : null}
-        </div>
-      </Modal>
       <style jsx global>{`
         .ci-pain-management .ci-pain-refresh.ant-btn,
         .ci-pain-management .ant-select-selector,
-        .ci-pain-management-modal .ant-btn,
-        .ci-pain-management-modal .ant-input,
-        .ci-pain-invalid-modal .ant-btn,
-        .ci-pain-invalid-modal .ant-input {
+        :is(.ci-pain-management-modal, .ci-pain-invalid-modal)
+          :is(
+            .ant-btn,
+            .ant-input,
+            .ant-input-affix-wrapper,
+            .ant-select-selector
+          ),
+        .ci-pain-management-modal .ant-pagination-options-quick-jumper input {
           border-radius: 8px !important;
           box-shadow: none !important;
         }

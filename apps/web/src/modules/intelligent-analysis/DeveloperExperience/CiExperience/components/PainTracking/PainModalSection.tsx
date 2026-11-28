@@ -1,8 +1,8 @@
 import React, { useId } from 'react';
 
 const PainModalSection: React.FC<
-  React.PropsWithChildren<{ title: string; count?: number }>
-> = ({ title, count, children }) => {
+  React.PropsWithChildren<{ title: string; completed?: boolean }>
+> = ({ title, completed, children }) => {
   const headingId = useId();
   return (
     <section
@@ -13,8 +13,10 @@ const PainModalSection: React.FC<
         <h2 id={headingId} className="text-sm font-semibold text-slate-800">
           {title}
         </h2>
-        {count !== undefined && (
-          <span className="text-xs text-slate-500">共 {count} 条</span>
+        {completed && (
+          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+            已完成
+          </span>
         )}
       </header>
       <div className="space-y-3 p-4">{children}</div>

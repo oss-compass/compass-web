@@ -30,7 +30,7 @@ const CiFrequentPainSection: React.FC<{
     view === 'open'
       ? '未闭环问题数'
       : view === 'done'
-      ? '已闭环问题数'
+      ? '已修复问题数'
       : '问题数';
   const columns: TableProps<CiFrequentPain>['columns'] = [
     {
@@ -135,7 +135,7 @@ const CiFrequentPainSection: React.FC<{
             options={[
               { label: '全部', value: 'all' },
               { label: '未闭环', value: 'open' },
-              { label: '已闭环', value: 'done' },
+              { label: '已修复', value: 'done' },
             ]}
             onChange={(next) => {
               setView(next);

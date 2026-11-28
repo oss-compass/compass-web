@@ -7,6 +7,7 @@ import {
 } from './api';
 import type { CiRepoKey } from './types';
 import {
+  fetchCiCommonIssues,
   fetchCiPainOverview,
   fetchCiPainTrends,
   fetchCiRepoComparison,
@@ -59,13 +60,22 @@ export const useCiPainOverviewQuery = (enabled = true) =>
     enabled,
   });
 
-export const useCiPainTrendsQuery = (commonOnly = false) =>
+export const useCiPainTrendsQuery = (commonOnly = false, enabled = true) =>
   useQuery({
     ...queryOptions,
     queryKey: ['ci-data', 'pain-trends', commonOnly],
     queryFn: ({ signal }) => fetchCiPainTrends(signal, commonOnly),
     staleTime: 0,
     refetchOnMount: 'always',
+    enabled,
+  });
+
+export const useCiCommonIssuesQuery = (enabled: boolean) =>
+  useQuery({
+    ...queryOptions,
+    queryKey: ['ci-data', 'common-issues'],
+    queryFn: ({ signal }) => fetchCiCommonIssues(signal),
+    enabled,
   });
 
 export const useCiRepoComparisonQuery = (filters: CiRepoComparisonFilters) =>

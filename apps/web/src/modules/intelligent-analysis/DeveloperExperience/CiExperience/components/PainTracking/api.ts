@@ -1,4 +1,9 @@
-import type { TrackingAction, TrackingRecord, TrackingScope } from './model';
+import type {
+  ResponsibleParty,
+  TrackingAction,
+  TrackingRecord,
+  TrackingScope,
+} from './model';
 
 const base = process.env.NEXT_PUBLIC_COMPASS_API_URL?.replace(/\/$/, '') || '';
 const prefix =
@@ -88,6 +93,7 @@ export const saveTracking = async (
   payload: TrackingScope & {
     problemKey: string;
     type: TrackingAction;
+    responsibleParty?: ResponsibleParty;
     operator: string;
     reason: string;
     revision: number;

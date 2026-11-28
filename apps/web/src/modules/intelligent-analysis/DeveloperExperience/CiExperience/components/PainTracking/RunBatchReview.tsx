@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Alert, Button, Dropdown, Input, Modal, Tooltip } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { Alert, Button, Input, Modal } from 'antd';
 import toast from 'react-hot-toast';
-import type { TrackingRecord, TrackingScope } from './model';
+import type { TrackingScope } from './model';
 import {
   savePainRunReviews,
   runReviewLabels,
@@ -19,13 +18,11 @@ type Props = {
   busy: boolean;
   operator: string;
   onOperatorInvalid: (message: string) => void;
-  validateCommonIssue?: () => boolean;
-  rememberOperator: (value: string) => string;
+  rememberOperator: (value: string) => void;
   onSelectPending: () => void;
   onClear: () => void;
   onSaved: (ids: string[]) => void;
   onBusy: (value: boolean) => void;
-  onTracking: (record: TrackingRecord) => void;
   onRefresh: () => Promise<unknown>;
 };
 
@@ -35,8 +32,10 @@ const RunBatchReview: React.FC<Props> = (props) => {
     rows: CiRunRuleReview[];
   } | null>(null);
   const [reason, setReason] = useState('');
-  const [failures, setFailures] = useState<string[]>([]);
-  const [summary, setSummary] = useState('');
+  const [failure, setFailure] = useState<{
+    message: string;
+    errors: string[];
+  } | null>(null);
   const submitting = useRef(false);
   const [loadingAction, setLoadingAction] = useState<CiRunReviewAction | null>(
     null
@@ -47,7 +46,6 @@ const RunBatchReview: React.FC<Props> = (props) => {
       props.onOperatorInvalid(validation);
       return;
     }
-    if (props.validateCommonIssue?.() === false) return;
     props.onOperatorInvalid('');
     setReason('');
     setTarget({ action, rows: [...props.selected] });
@@ -59,7 +57,6 @@ const RunBatchReview: React.FC<Props> = (props) => {
       props.onOperatorInvalid(validation);
       return;
     }
-    if (props.validateCommonIssue?.() === false) return;
     if (target.action !== 'confirmed' && !reason.trim()) return;
     submitting.current = true;
     setLoadingAction(target.action);
@@ -76,7 +73,7 @@ const RunBatchReview: React.FC<Props> = (props) => {
             ...props.scope,
             problemKey: props.problemKey,
             action: target.action,
-            operator: props.rememberOperator(props.operator),
+            operator: props.operator.trim(),
             reason: reason.trim(),
             items: chunk.map((row) => ({
               instance_id: row.instance_id,
@@ -95,7 +92,6 @@ const RunBatchReview: React.FC<Props> = (props) => {
                 `#${row.run.n}：${item?.error || '未返回保存结果，请刷新确认'}`
               );
           });
-          if (result.tracking) props.onTracking(result.tracking);
           if (result.tracking_error) errors.push(result.tracking_error);
         } catch (e) {
           uncertain = true;
@@ -107,12 +103,12 @@ const RunBatchReview: React.FC<Props> = (props) => {
           break;
         }
       }
+      if (succeeded.length) props.rememberOperator(props.operator);
       props.onSaved(succeeded);
       const message = `${uncertain ? '已确认保存' : '已保存'} ${
         succeeded.length
       }/${target.rows.length} 条${errors.length ? '，请查看失败明细' : ''}`;
-      setSummary(message);
-      setFailures(errors);
+      setFailure(errors.length ? { message, errors } : null);
       setTarget(null);
       if (errors.length) toast.error(message);
       else toast.success(message);
@@ -135,81 +131,65 @@ const RunBatchReview: React.FC<Props> = (props) => {
         >
           已选 {props.selected.length} 条
         </span>
-        <div className="flex h-7 items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="link"
+            size="small"
+            disabled={props.busy || !props.pending.length}
+            onClick={props.onSelectPending}
+          >
+            选择全部待审核（{props.pending.length}）
+          </Button>
+          {props.selected.length > 0 && (
+            <Button
+              type="text"
+              size="small"
+              disabled={props.busy}
+              onClick={props.onClear}
+            >
+              清空选择
+            </Button>
+          )}
           <Button
             size="small"
-            aria-label="批量确认判据正确"
             className="ci-run-bulk-button !h-7 !border-emerald-200 !bg-emerald-50 !px-3 !font-medium !text-emerald-700 !shadow-none hover:!border-emerald-300 hover:!bg-emerald-100"
             disabled={disabled}
             loading={loadingAction === 'confirmed'}
             onClick={() => open('confirmed')}
           >
-            批量通过
+            批量标记正确
           </Button>
           <Button
             size="small"
-            aria-label="批量标记判据有误"
             className="ci-run-bulk-button !h-7 !border-rose-200 !bg-rose-50 !px-3 !font-medium !text-rose-600 !shadow-none hover:!border-rose-300 hover:!bg-rose-100"
             disabled={disabled}
             loading={loadingAction === 'incorrect'}
             onClick={() => open('incorrect')}
           >
-            批量不通过
+            批量标记有误
           </Button>
-          <Dropdown
-            trigger={['click']}
-            disabled={props.busy}
-            menu={{
-              items: [
-                {
-                  key: 'pending',
-                  label: `选择全部待确认（${props.pending.length}）`,
-                  disabled: !props.pending.length,
-                  onClick: props.onSelectPending,
-                },
-                {
-                  key: 'clear',
-                  label: '清空选择',
-                  disabled,
-                  onClick: props.onClear,
-                },
-              ],
-            }}
-          >
-            <Tooltip title="全选、清空及其他批量操作">
-              <Button
-                type="text"
-                size="small"
-                aria-label="更多批量操作"
-                icon={<MoreOutlined />}
-                className="!h-7 !w-7 !text-slate-500"
-              />
-            </Tooltip>
-          </Dropdown>
         </div>
       </div>
-      {summary ? (
+      {failure && (
         <Alert
-          type={failures.length ? 'warning' : 'success'}
+          type="warning"
           showIcon
-          message={summary}
+          message={failure.message}
           description={
-            failures.length ? (
-              <details>
-                <summary className="cursor-pointer">查看失败明细</summary>
-                <ul className="mt-2 space-y-1">
-                  {failures.map((error, index) => (
-                    <li key={index}>{error}</li>
-                  ))}
-                </ul>
-                <div className="mt-2">
-                  未成功的记录保留勾选，请核对最新状态后重新选择并提交。
-                </div>
-              </details>
-            ) : undefined
+            <details>
+              <summary className="cursor-pointer">查看失败明细</summary>
+              <ul className="mt-2 space-y-1">
+                {failure.errors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+              <div className="mt-2">
+                未成功的记录保留勾选，请核对最新状态后重新选择并提交。
+              </div>
+            </details>
           }
         />
-      ) : null}
+      )}
       <Modal
         open={Boolean(target)}
         title={`批量审核：${target ? runReviewLabels[target.action] : ''}`}
@@ -221,7 +201,9 @@ const RunBatchReview: React.FC<Props> = (props) => {
         closable={!props.busy}
         maskClosable={!props.busy}
         keyboard={!props.busy}
-        onCancel={() => setTarget(null)}
+        onCancel={() => {
+          if (!props.busy) setTarget(null);
+        }}
       >
         <div className="space-y-4">
           <p className="text-sm leading-6 text-slate-600">

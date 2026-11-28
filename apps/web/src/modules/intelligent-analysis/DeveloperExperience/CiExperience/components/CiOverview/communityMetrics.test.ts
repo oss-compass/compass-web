@@ -140,6 +140,18 @@ it('uses latest daily pain cards without legacy weekly problems and rejects mism
   expect(overview.topIssues[0].title).toBe('后端当日问题');
   expect(overview.kpis[1]).toMatchObject({ value: '0', unit: '%' });
   expect(painReportsMatch(overview.repos, pain)).toBe(true);
+  pain.reports[0].issues[0].status = 'fixed';
+  pain.reports[0].issues[0].lastSeenDay = data.days[data.days.length - 2];
+  const repaired = computeCommunityOverview(
+    { runtime: data },
+    { runtime: journey },
+    pain
+  );
+  expect(repaired.topIssues[0]).toMatchObject({
+    day: pain.reports[0].issues[0].lastSeenDay,
+    status: 'fixed',
+  });
+  expect(repaired.kpis[1]).toMatchObject({ value: '100', unit: '%' });
   pain.reports[0].day = '2000-01-01';
   expect(painReportsMatch(overview.repos, pain)).toBe(false);
   expect(
@@ -236,7 +248,7 @@ it('shows 100 percent only for a known report with no effective pain issues', ()
   pain.reports[0].issues.push({
     ...pain.reports[0].issues[0],
     problemKey: 'fixed',
-    title: '已修复待复测',
+    title: '已修复',
     status: 'fixed',
   });
   pain.reports[0].issues.push({
